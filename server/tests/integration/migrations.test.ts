@@ -59,4 +59,22 @@ describe("D1 migrations", () => {
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     db.close();
   });
+
+  it("applies the local admin principal seed for Admin Console development", async () => {
+    const db = await createMigratedDb();
+    const seedPath = join(process.cwd(), "packages/db/seeds/dev/0002_local_admin_principal.sql");
+
+    expect(existsSync(seedPath)).toBe(true);
+    db.run(readFileSync(seedPath, "utf8"));
+
+    const principal = db.exec(`
+      SELECT access_subject, role, status, display_name
+      FROM admin_principals
+      WHERE id = 'dev-local-owner'
+    `);
+
+    expect(principal[0]?.values).toEqual([["access|local-owner", "OWNER", "ACTIVE", "Local Owner"]]);
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
 });
