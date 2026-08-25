@@ -42,12 +42,16 @@ describe("repository architecture", () => {
   it("documents Access protection for admin domains without protecting Game API", () => {
     const adminAccess = readFileSync(join(root, "docs/cloudflare/admin-access.md"), "utf8");
     const setup = readFileSync(join(root, "docs/cloudflare/setup.md"), "utf8");
+    const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { scripts: Record<string, string> };
 
     expect(adminAccess).toContain("dev-admin.lastrail.app");
     expect(adminAccess).toContain("LAST RAIL Admin DEV");
+    expect(adminAccess).toContain("pnpm access:dev:apply-vars");
     expect(adminAccess).toContain("Confirm `https://dev-api.lastrail.app/status` remains public");
     expect(adminAccess).toContain("`api.lastrail.app` is public Game API traffic and must not be protected by Cloudflare Access.");
     expect(setup).toContain("Keep `dev-api.lastrail.app` public.");
+    expect(packageJson.scripts["access:dev:apply-vars"]).toBe("tsx scripts/cloudflare/apply-dev-admin-access-vars.ts");
+    expect(existsSync(join(root, "scripts/cloudflare/apply-dev-admin-access-vars.ts"))).toBe(true);
   });
 
   it("targets the DEV D1 binding when seeding DEV balance config", () => {

@@ -54,3 +54,36 @@ Admin API sets `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED` for DEV/STAGING/PRODUCTION.
 - `ADMIN_ACCESS_AUD`: the Application Audience (AUD) tag from the Access application
 
 `ADMIN_ACCESS_ISSUER` and `ADMIN_ACCESS_AUD` are not secrets, but they must match the actual Cloudflare Access application. DEV remains blocked with `ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED` until these values are configured.
+
+## Apply DEV Access Values
+
+After the DEV Access application exists, copy:
+
+- Team domain: `https://<team-name>.cloudflareaccess.com`
+- Application Audience (AUD) tag
+
+Then apply them locally without storing any token:
+
+```bash
+DEV_ADMIN_ACCESS_ISSUER="https://<team-name>.cloudflareaccess.com" \
+DEV_ADMIN_ACCESS_AUD="<application-aud-tag>" \
+pnpm access:dev:apply-vars
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:DEV_ADMIN_ACCESS_ISSUER = "https://<team-name>.cloudflareaccess.com"
+$env:DEV_ADMIN_ACCESS_AUD = "<application-aud-tag>"
+pnpm access:dev:apply-vars
+```
+
+Follow with:
+
+```bash
+pnpm wrangler:types
+pnpm typecheck
+pnpm test
+pnpm dry-run:admin-api:dev
+pnpm --filter @lastrail/admin-api wrangler deploy --env dev
+```
