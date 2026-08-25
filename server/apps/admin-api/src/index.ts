@@ -13,6 +13,25 @@ type AdminPrincipalRow = {
   display_name: string | null;
 };
 
+type BalanceDraftRow = {
+  id: string;
+  base_version: number | null;
+  schema_version: number;
+  required_content_version: number;
+  config_json: string;
+  checksum: string;
+  revision: number;
+  status: "DRAFT" | "PUBLISHED" | "DISCARDED";
+};
+
+type ActiveBalanceRow = {
+  version: number;
+};
+
+type NextVersionRow = {
+  next_version: number;
+};
+
 type AppContext = Context<{ Bindings: Env }>;
 
 type AccessJwtPayload = {
@@ -218,6 +237,126 @@ app.post("/v1/admin/balance-config/drafts", async (c) => {
         checksum,
         revision: 1,
         status: "DRAFT",
+      },
+    },
+    201,
+  );
+});
+app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (principal.role !== "OWNER") {
+    return c.json({ error: "ADMIN_PERMISSION_DENIED" }, 403);
+  }
+
+  const draftId = c.req.param("draftId");
+  const body = (await c.req.json()) as {
+    expectedRevision?: unknown;
+    expectedChecksum?: unknown;
+  };
+  if (draftId.length === 0 || !isPositiveInteger(body.expectedRevision) || typeof body.expectedChecksum !== "string" || body.expectedChecksum.length === 0) {
+    return c.json({ error: "BALANCE_PUBLISH_INVALID" }, 400);
+  }
+
+  const draft = await c.env.DB.prepare(
+    `SELECT id, base_version, schema_version, required_content_version, config_json, checksum, revision, status
+     FROM balance_config_drafts
+     WHERE id = ?
+       AND status = 'DRAFT'`,
+  )
+    .bind(draftId)
+    .first<BalanceDraftRow>();
+  if (draft === null) {
+    return c.json({ error: "BALANCE_DRAFT_NOT_FOUND" }, 404);
+  }
+  if (draft.revision !== body.expectedRevision || draft.checksum !== body.expectedChecksum) {
+    return c.json({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" }, 409);
+  }
+
+  const active = await c.env.DB.prepare(
+    `SELECT version
+     FROM balance_config_active
+     WHERE singleton_id = 1`,
+  )
+    .bind()
+    .first<ActiveBalanceRow>();
+  const activeVersion = active?.version ?? null;
+  if (draft.base_version !== activeVersion) {
+    return c.json({ error: "BALANCE_DRAFT_STALE_BASE" }, 409);
+  }
+
+  const nextVersionRow = await c.env.DB.prepare(
+    `SELECT COALESCE(MAX(version), 0) + 1 AS next_version
+     FROM balance_config_versions`,
+  )
+    .bind()
+    .first<NextVersionRow>();
+  const nextVersion = nextVersionRow?.next_version ?? 1;
+  const now = Date.now();
+  const publishClaimId = `publish_${createRequestId().slice(4)}`;
+  const activationId = `activation_${createRequestId().slice(4)}`;
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO balance_config_versions (
+         version,
+         schema_version,
+         required_content_version,
+         checksum,
+         config_json,
+         published_at,
+         published_by,
+         draft_id
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(nextVersion, draft.schema_version, draft.required_content_version, draft.checksum, draft.config_json, now, principal.id, draft.id),
+    c.env.DB.prepare(
+      `INSERT INTO balance_config_publish_claims (
+         id,
+         draft_id,
+         expected_revision,
+         expected_checksum,
+         published_version,
+         created_at
+       ) VALUES (?, ?, ?, ?, ?, ?)`,
+    ).bind(publishClaimId, draft.id, body.expectedRevision, body.expectedChecksum, nextVersion, now),
+    c.env.DB.prepare(
+      `UPDATE balance_config_drafts
+       SET status = 'PUBLISHED',
+           updated_at = ?
+       WHERE id = ?
+         AND status = 'DRAFT'`,
+    ).bind(now, draft.id),
+    c.env.DB.prepare(
+      `INSERT INTO balance_config_activations (
+         id,
+         version,
+         activation_type,
+         activated_by,
+         activated_at,
+         reason
+       ) VALUES (?, ?, 'PUBLISH', ?, ?, ?)`,
+    ).bind(activationId, nextVersion, principal.id, now, null),
+    c.env.DB.prepare(
+      `INSERT INTO balance_config_active (
+         singleton_id,
+         version,
+         activation_id,
+         updated_at
+       ) VALUES (1, ?, ?, ?)
+       ON CONFLICT(singleton_id) DO UPDATE SET
+         version = excluded.version,
+         activation_id = excluded.activation_id,
+         updated_at = excluded.updated_at`,
+    ).bind(nextVersion, activationId, now),
+  ]);
+
+  return c.json(
+    {
+      publish: {
+        draftId: draft.id,
+        version: nextVersion,
+        activationId,
+        checksum: draft.checksum,
       },
     },
     201,
