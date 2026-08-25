@@ -49,4 +49,13 @@ describe("repository architecture", () => {
     expect(adminAccess).toContain("`api.lastrail.app` is public Game API traffic and must not be protected by Cloudflare Access.");
     expect(setup).toContain("Keep `dev-api.lastrail.app` public.");
   });
+
+  it("targets the DEV D1 binding when seeding DEV balance config", () => {
+    const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { scripts: Record<string, string> };
+
+    expect(packageJson.scripts["d1:dev:seed:balance"]).toContain("wrangler d1 execute DB");
+    expect(packageJson.scripts["d1:dev:seed:balance"]).toContain("--env dev");
+    expect(packageJson.scripts["d1:dev:seed:balance"]).toContain("--remote");
+    expect(packageJson.scripts["d1:dev:seed:balance"]).toContain("apps/game-api/wrangler.jsonc");
+  });
 });

@@ -64,5 +64,6 @@ Keep `dev-api.lastrail.app` public. Do not put Game API traffic behind Cloudflar
    - `pnpm exec wrangler d1 execute lastrail-core-dev --remote --command "PRAGMA quick_check;"`
 5. Generate types with `pnpm wrangler:types`.
 6. Run `pnpm typecheck`, `pnpm test`, and DEV deploy dry-runs.
+7. Optional DEV-only balance bootstrap: `pnpm d1:dev:seed:balance`.
 
 When R2 is enabled, create a DEV-only bucket first, then add the matching `r2_buckets` binding to the affected Worker configs. When Analytics Engine is enabled, add per-Worker DEV datasets via `analytics_engine_datasets`. Keep STAGING/PRODUCTION names as config placeholders until those environments are explicitly approved.
