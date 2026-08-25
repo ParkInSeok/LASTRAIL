@@ -223,6 +223,14 @@ function isNonNegativeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
+function d1Changes(result: unknown): number | null {
+  if (result === null || typeof result !== "object") return null;
+  const meta = "meta" in result ? result.meta : null;
+  if (meta === null || typeof meta !== "object") return null;
+  const changes = "changes" in meta ? meta.changes : null;
+  return typeof changes === "number" ? changes : null;
+}
+
 function toIso(timestampMs: number): string {
   return new Date(timestampMs).toISOString();
 }
@@ -785,7 +793,7 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
   const activationId = `activation_${createRequestId().slice(4)}`;
   const requestId = createRequestId();
 
-  await c.env.DB.batch([
+  const batchResults = await c.env.DB.batch([
     c.env.DB.prepare(
       `UPDATE admin_confirmations
        SET consumed_at = ?
@@ -803,8 +811,15 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
          published_at,
          published_by,
          draft_id
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(nextVersion, draft.schema_version, draft.required_content_version, draft.checksum, draft.config_json, now, principal.id, draft.id),
+       )
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?
+       WHERE EXISTS (
+         SELECT 1
+         FROM admin_confirmations
+         WHERE id = ?
+           AND consumed_at = ?
+       )`,
+    ).bind(nextVersion, draft.schema_version, draft.required_content_version, draft.checksum, draft.config_json, now, principal.id, draft.id, confirmation.id, now),
     c.env.DB.prepare(
       `INSERT INTO balance_config_publish_claims (
          id,
@@ -813,15 +828,28 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
          expected_checksum,
          published_version,
          created_at
-       ) VALUES (?, ?, ?, ?, ?, ?)`,
-    ).bind(publishClaimId, draft.id, body.expectedRevision, body.expectedChecksum, nextVersion, now),
+       )
+       SELECT ?, ?, ?, ?, ?, ?
+       WHERE EXISTS (
+         SELECT 1
+         FROM admin_confirmations
+         WHERE id = ?
+           AND consumed_at = ?
+       )`,
+    ).bind(publishClaimId, draft.id, body.expectedRevision, body.expectedChecksum, nextVersion, now, confirmation.id, now),
     c.env.DB.prepare(
       `UPDATE balance_config_drafts
        SET status = 'PUBLISHED',
            updated_at = ?
        WHERE id = ?
-         AND status = 'DRAFT'`,
-    ).bind(now, draft.id),
+         AND status = 'DRAFT'
+         AND EXISTS (
+           SELECT 1
+           FROM admin_confirmations
+           WHERE id = ?
+             AND consumed_at = ?
+         )`,
+    ).bind(now, draft.id, confirmation.id, now),
     c.env.DB.prepare(
       `INSERT INTO balance_config_activations (
          id,
@@ -830,20 +858,34 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
          activated_by,
          activated_at,
          reason
-       ) VALUES (?, ?, 'PUBLISH', ?, ?, ?)`,
-    ).bind(activationId, nextVersion, principal.id, now, null),
+       )
+       SELECT ?, ?, 'PUBLISH', ?, ?, ?
+       WHERE EXISTS (
+         SELECT 1
+         FROM admin_confirmations
+         WHERE id = ?
+           AND consumed_at = ?
+       )`,
+    ).bind(activationId, nextVersion, principal.id, now, null, confirmation.id, now),
     c.env.DB.prepare(
       `INSERT INTO balance_config_active (
          singleton_id,
          version,
          activation_id,
          updated_at
-       ) VALUES (1, ?, ?, ?)
+       )
+       SELECT 1, ?, ?, ?
+       WHERE EXISTS (
+         SELECT 1
+         FROM admin_confirmations
+         WHERE id = ?
+           AND consumed_at = ?
+       )
        ON CONFLICT(singleton_id) DO UPDATE SET
          version = excluded.version,
          activation_id = excluded.activation_id,
          updated_at = excluded.updated_at`,
-    ).bind(nextVersion, activationId, now),
+    ).bind(nextVersion, activationId, now, confirmation.id, now),
     c.env.DB.prepare(
       `INSERT INTO admin_audit_logs (
          id,
@@ -861,7 +903,14 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
          result,
          error_code,
          created_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 'SUCCESS', NULL, ?)`,
+       )
+       SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 'SUCCESS', NULL, ?
+       WHERE EXISTS (
+         SELECT 1
+         FROM admin_confirmations
+         WHERE id = ?
+           AND consumed_at = ?
+       )`,
     ).bind(
       `audit_${createRequestId().slice(4)}`,
       principal.id,
@@ -875,8 +924,18 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
       confirmation.payload_hash,
       canonicalJson({ publishedVersion: nextVersion, activationId, checksum: draft.checksum }),
       now,
+      confirmation.id,
+      now,
     ),
   ]);
+  if (d1Changes(batchResults[0]) !== 1) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "ADMIN_CONFIRMATION_CONSUME_FAILED", payloadHash, {
+      confirmationId: confirmation.id,
+      expectedRevision: body.expectedRevision,
+      expectedChecksum: body.expectedChecksum,
+    });
+    return c.json({ error: "ADMIN_CONFIRMATION_CONSUME_FAILED" }, 409);
+  }
 
   return c.json(
     {

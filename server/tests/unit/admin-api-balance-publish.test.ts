@@ -25,6 +25,7 @@ function createEnv(options: {
   activeVersion?: number | null;
   nextVersion?: number;
   confirmation?: ConfirmationRow | null;
+  consumeChanges?: number;
   onBatch?: (statements: unknown[]) => void;
   onRun?: (sql: string, values: unknown[]) => void;
 } = {}): Env {
@@ -88,7 +89,12 @@ function createEnv(options: {
       prepare,
       batch: async (statements: unknown[]) => {
         options.onBatch?.(statements);
-        return statements.map(() => ({ success: true }));
+        return statements.map((_, index) => ({
+          success: true,
+          meta: {
+            changes: index === 0 ? (options.consumeChanges ?? 1) : 1,
+          },
+        }));
       },
     } as unknown as D1Database,
   };
@@ -307,6 +313,42 @@ describe("admin-api balance publish", () => {
 
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({ error: "ADMIN_CONFIRMATION_INVALID" });
+    expect(failureAuditWritten).toBe(true);
+  });
+
+  it("rejects publish when confirmation consume updates no rows", async () => {
+    let batchCount = 0;
+    let failureAuditWritten = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_token",
+        }),
+      },
+      createEnv({
+        consumeChanges: 0,
+        onBatch: (statements) => {
+          batchCount = statements.length;
+        },
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("ADMIN_CONFIRMATION_CONSUME_FAILED");
+          }
+        },
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: "ADMIN_CONFIRMATION_CONSUME_FAILED" });
+    expect(batchCount).toBe(7);
     expect(failureAuditWritten).toBe(true);
   });
 
