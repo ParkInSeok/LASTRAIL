@@ -77,4 +77,42 @@ describe("D1 migrations", () => {
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     db.close();
   });
+
+  it("applies sample Admin Console read-only data for local verification", async () => {
+    const db = await createMigratedDb();
+    const balanceSeedPath = join(process.cwd(), "packages/db/seeds/dev/0001_balance_config_v1.sql");
+    const sampleSeedPath = join(process.cwd(), "packages/db/seeds/dev/0003_admin_console_sample_data.sql");
+
+    expect(existsSync(sampleSeedPath)).toBe(true);
+    db.run(readFileSync(balanceSeedPath, "utf8"));
+    db.run(readFileSync(sampleSeedPath, "utf8"));
+
+    const account = db.exec(`
+      SELECT a.id, pp.display_name, ac.balance
+      FROM accounts a
+      JOIN player_profiles pp ON pp.account_id = a.id
+      JOIN account_currencies ac ON ac.account_id = a.id AND ac.currency = 'OPERATOR_EXP'
+      WHERE a.id = 'sample-account-1'
+    `);
+    const core = db.exec(`
+      SELECT COUNT(*), MIN(trained_level), MAX(trained_level)
+      FROM operator_training_core_slots
+      WHERE account_id = 'sample-account-1'
+    `);
+    const run = db.exec(`
+      SELECT r.id, r.account_id, r.balance_config_version, rs.snapshot_json
+      FROM runs r
+      JOIN run_snapshots rs ON rs.run_id = r.id
+      WHERE r.id = 'sample-run-1'
+    `);
+
+    expect(account[0]?.values).toEqual([["sample-account-1", "Kyle Account", 1840]]);
+    expect(core[0]?.values).toEqual([[5, 30, 33]]);
+    expect(JSON.parse(String(run[0]?.values[0]?.[3]))).toMatchObject({
+      operatorIds: ["kyle", "reina", "eve", "sera", "mira"],
+      ultimateOperatorId: "kyle",
+    });
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
 });
