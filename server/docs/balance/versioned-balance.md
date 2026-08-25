@@ -4,6 +4,15 @@ Published balance versions are immutable. Admin edits happen only in drafts. Pub
 
 Rollback never edits a version; it changes the active pointer and appends activation history.
 
+## Draft Creation
+
+Admin draft creation writes only to `balance_config_drafts`.
+
+- OWNER and OPERATOR can create drafts.
+- VIEWER cannot create drafts.
+- The server canonicalizes the config JSON and computes the checksum.
+- Draft creation does not publish, activate, or modify published versions.
+
 ## DEV Seed
 
 DEV can be bootstrapped with `packages/db/seeds/dev/0001_balance_config_v1.sql`.

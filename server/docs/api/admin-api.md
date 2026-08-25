@@ -21,3 +21,19 @@ Current behavior:
 - Local header mode reads `Cf-Access-Subject`, maps it to active `admin_principals.access_subject`, and returns the principal role.
 
 Do not seed real admin principals or expose operational Admin routes until Cloudflare Access is applied and DEV `ADMIN_ACCESS_ISSUER` / `ADMIN_ACCESS_AUD` are configured.
+
+## Balance Config Drafts
+
+`POST /v1/admin/balance-config/drafts` creates a draft row in `balance_config_drafts`.
+
+Required body:
+
+- `schemaVersion`: positive integer
+- `requiredContentVersion`: non-negative integer
+- `config`: JSON object
+
+Optional body:
+
+- `baseVersion`: positive integer or `null`
+
+OWNER and OPERATOR can create drafts. VIEWER is denied. The server canonicalizes `config`, computes a `sha256:<hex>` checksum, stores revision `1`, and returns draft metadata. This endpoint does not publish, activate, or mutate existing published versions.
