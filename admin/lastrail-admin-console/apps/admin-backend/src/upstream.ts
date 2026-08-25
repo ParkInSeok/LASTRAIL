@@ -32,6 +32,10 @@ export function createUpstreamClient(config: AdminBackendConfig): UpstreamClient
       headers.set("authorization", `Bearer ${config.adminApiToken}`);
     }
 
+    if (config.profile === "local" && config.localAccessSubject) {
+      headers.set("Cf-Access-Subject", config.localAccessSubject);
+    }
+
     const response = await fetch(url, {
       method: init.method,
       headers
@@ -44,4 +48,3 @@ export function createUpstreamClient(config: AdminBackendConfig): UpstreamClient
     return response.json();
   };
 }
-

@@ -16,6 +16,7 @@ Set these outside source control before launching the backend:
 - `CF_ACCESS_CLIENT_ID`
 - `CF_ACCESS_CLIENT_SECRET`
 - `ADMIN_API_TOKEN`
+- `ADMIN_LOCAL_ACCESS_SUBJECT` for local `ADMIN_AUTH_MODE=LOCAL_HEADER` development only
 
 The browser must only call the local backend under `/api`. Secrets stay in the backend process.
 

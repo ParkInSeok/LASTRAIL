@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { UpstreamClient } from "./upstream";
 import { buildServer } from "./server";
+import { createUpstreamClient } from "./upstream";
 
 describe("admin backend routes", () => {
   it("returns bootstrap identity with request id", async () => {
@@ -92,5 +93,41 @@ describe("admin backend routes", () => {
     expect(response.statusCode).toBe(502);
     expect(response.json().error.code).toBe("UPSTREAM_SCHEMA_INVALID");
     expect(response.json().error.requestId).toEqual(expect.any(String));
+  });
+
+  it("sends a local Access subject only for local Admin API development", async () => {
+    const originalFetch = globalThis.fetch;
+    const seenHeaders: Record<string, string | null> = {};
+    globalThis.fetch = (async (_url: RequestInfo | URL, init?: RequestInit) => {
+      const headers = new Headers(init?.headers);
+      seenHeaders.subject = headers.get("Cf-Access-Subject");
+      return Response.json({
+        principal: {
+          id: "admin-1",
+          accessSubject: "access|local-owner",
+          displayName: "Local Owner",
+          role: "OWNER"
+        }
+      });
+    }) as typeof fetch;
+
+    try {
+      const upstream = createUpstreamClient({
+        adminApiBaseUrl: "http://127.0.0.1:8787",
+        profile: "local",
+        host: "127.0.0.1",
+        port: 4174,
+        localAccessSubject: "access|local-owner"
+      });
+
+      await upstream("/v1/admin/me", {
+        method: "GET",
+        requestId: "req-local"
+      });
+
+      expect(seenHeaders.subject).toBe("access|local-owner");
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
   });
 });

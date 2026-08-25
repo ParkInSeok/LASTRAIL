@@ -9,7 +9,8 @@ const ConfigSchema = z.object({
   ADMIN_BACKEND_PORT: z.coerce.number().int().positive().default(4174),
   CF_ACCESS_CLIENT_ID: z.string().optional(),
   CF_ACCESS_CLIENT_SECRET: z.string().optional(),
-  ADMIN_API_TOKEN: z.string().optional()
+  ADMIN_API_TOKEN: z.string().optional(),
+  ADMIN_LOCAL_ACCESS_SUBJECT: z.string().optional()
 });
 
 export type AdminBackendConfig = {
@@ -20,6 +21,7 @@ export type AdminBackendConfig = {
   cloudflareAccessClientId?: string;
   cloudflareAccessClientSecret?: string;
   adminApiToken?: string;
+  localAccessSubject?: string;
 };
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AdminBackendConfig {
@@ -32,7 +34,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AdminBackendCo
     port: parsed.ADMIN_BACKEND_PORT,
     cloudflareAccessClientId: parsed.CF_ACCESS_CLIENT_ID,
     cloudflareAccessClientSecret: parsed.CF_ACCESS_CLIENT_SECRET,
-    adminApiToken: parsed.ADMIN_API_TOKEN
+    adminApiToken: parsed.ADMIN_API_TOKEN,
+    localAccessSubject: parsed.ADMIN_LOCAL_ACCESS_SUBJECT
   };
 }
-
