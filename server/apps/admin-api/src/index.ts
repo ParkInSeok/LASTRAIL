@@ -603,6 +603,7 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish/confirmations", async
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
   if (principal.role !== "OWNER") {
+    await writeBalancePublishFailureAudit(c, principal, c.req.param("draftId"), "ADMIN_PERMISSION_DENIED", null, { reason: "role_not_owner" });
     return c.json({ error: "ADMIN_PERMISSION_DENIED" }, 403);
   }
 
@@ -627,6 +628,12 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish/confirmations", async
     return c.json({ error: "BALANCE_DRAFT_NOT_FOUND" }, 404);
   }
   if (draft.revision !== body.expectedRevision || draft.checksum !== body.expectedChecksum) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "BALANCE_DRAFT_PRECONDITION_FAILED", null, {
+      expectedRevision: body.expectedRevision,
+      actualRevision: draft.revision,
+      expectedChecksum: body.expectedChecksum,
+      actualChecksum: draft.checksum,
+    });
     return c.json({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" }, 409);
   }
 
@@ -639,6 +646,10 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish/confirmations", async
     .first<ActiveBalanceRow>();
   const activeVersion = active?.version ?? null;
   if (draft.base_version !== activeVersion) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "BALANCE_DRAFT_STALE_BASE", null, {
+      draftBaseVersion: draft.base_version,
+      activeVersion,
+    });
     return c.json({ error: "BALANCE_DRAFT_STALE_BASE" }, 409);
   }
 

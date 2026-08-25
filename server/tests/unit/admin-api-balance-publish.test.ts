@@ -163,6 +163,95 @@ describe("admin-api balance publish", () => {
     expect(insertedConfirmation).toBe(true);
   });
 
+  it("audits confirmation creation permission failures", async () => {
+    let failureAuditWritten = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish/confirmations",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+        }),
+      },
+      createEnv({
+        role: "OPERATOR",
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("ADMIN_PERMISSION_DENIED");
+          }
+        },
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({ error: "ADMIN_PERMISSION_DENIED" });
+    expect(failureAuditWritten).toBe(true);
+  });
+
+  it("audits confirmation creation precondition failures", async () => {
+    let failureAuditWritten = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish/confirmations",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 1,
+          expectedChecksum: "sha256:abc",
+        }),
+      },
+      createEnv({
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("BALANCE_DRAFT_PRECONDITION_FAILED");
+          }
+        },
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" });
+    expect(failureAuditWritten).toBe(true);
+  });
+
+  it("audits confirmation creation stale base failures", async () => {
+    let failureAuditWritten = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish/confirmations",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+        }),
+      },
+      createEnv({
+        activeVersion: 2,
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("BALANCE_DRAFT_STALE_BASE");
+          }
+        },
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: "BALANCE_DRAFT_STALE_BASE" });
+    expect(failureAuditWritten).toBe(true);
+  });
+
   it("requires a confirmation token when publishing a balance draft", async () => {
     let batchCalled = false;
     const response = await app.request(
