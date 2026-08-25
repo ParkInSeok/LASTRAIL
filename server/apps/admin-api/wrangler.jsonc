@@ -8,7 +8,8 @@
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "vars": {
     "ENVIRONMENT": "LOCAL",
-    "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173"
+    "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173",
+    "ADMIN_AUTH_MODE": "LOCAL_HEADER"
   },
   "d1_databases": [
     { "binding": "DB", "database_name": "lastrail-core-local", "database_id": "local", "migrations_dir": "../../packages/db/migrations" }
@@ -21,7 +22,7 @@
       "name": "lastrail-admin-api-dev",
       "workers_dev": false,
       "routes": [{ "pattern": "dev-admin.lastrail.app", "custom_domain": true }],
-      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app" },
+      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED" },
       "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }],
       "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-dev" }] }
     },
@@ -29,7 +30,7 @@
       "name": "lastrail-admin-api-staging",
       "workers_dev": false,
       "routes": [{ "pattern": "staging-admin.lastrail.app", "custom_domain": true }],
-      "vars": { "ENVIRONMENT": "STAGING", "ALLOWED_ADMIN_ORIGINS": "https://staging-admin.lastrail.app" },
+      "vars": { "ENVIRONMENT": "STAGING", "ALLOWED_ADMIN_ORIGINS": "https://staging-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED" },
       "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-staging", "database_id": "__STAGING_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }],
       "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-staging" }] }
     },
@@ -37,7 +38,7 @@
       "name": "lastrail-admin-api-production",
       "workers_dev": false,
       "routes": [{ "pattern": "admin.lastrail.app", "custom_domain": true }],
-      "vars": { "ENVIRONMENT": "PRODUCTION", "ALLOWED_ADMIN_ORIGINS": "https://admin.lastrail.app" },
+      "vars": { "ENVIRONMENT": "PRODUCTION", "ALLOWED_ADMIN_ORIGINS": "https://admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED" },
       "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-production", "database_id": "__PRODUCTION_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }],
       "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-production" }] }
     }

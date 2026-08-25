@@ -47,3 +47,5 @@ Rollback:
 Wrangler does not manage Access applications. To automate this later, use a Cloudflare API token with Zero Trust Access application and policy write permissions. Do not store that token in Git.
 
 The current Wrangler OAuth login has Workers/D1/Queues permissions but does not expose Access application write operations. If automation is required, create a scoped Cloudflare API token outside Git and provide it only through a local environment variable for the current shell.
+
+Admin API currently sets `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED` for DEV/STAGING/PRODUCTION. Protected Admin routes remain blocked with `ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED` until Access JWT verification is implemented.
