@@ -38,4 +38,15 @@ describe("repository architecture", () => {
     expect(asyncWorker.env.staging.routes).toBeUndefined();
     expect(asyncWorker.env.production.routes).toBeUndefined();
   });
+
+  it("documents Access protection for admin domains without protecting Game API", () => {
+    const adminAccess = readFileSync(join(root, "docs/cloudflare/admin-access.md"), "utf8");
+    const setup = readFileSync(join(root, "docs/cloudflare/setup.md"), "utf8");
+
+    expect(adminAccess).toContain("dev-admin.lastrail.app");
+    expect(adminAccess).toContain("LAST RAIL Admin DEV");
+    expect(adminAccess).toContain("Confirm `https://dev-api.lastrail.app/status` remains public");
+    expect(adminAccess).toContain("`api.lastrail.app` is public Game API traffic and must not be protected by Cloudflare Access.");
+    expect(setup).toContain("Keep `dev-api.lastrail.app` public.");
+  });
 });

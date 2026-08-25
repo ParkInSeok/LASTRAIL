@@ -37,6 +37,21 @@ The root `lastrail.app` is reserved for the public website, Privacy Policy, Term
 
 Do not create STAGING or PRODUCTION DNS/custom domains until explicitly approved.
 
+## DEV Admin Access Procedure
+
+Dashboard path:
+
+1. Open Cloudflare Dashboard > Zero Trust > Access controls > Applications.
+2. Create a new Self-hosted public hostname application.
+3. Set application name to `LAST RAIL Admin DEV`.
+4. Set public hostname to `dev-admin.lastrail.app`.
+5. Add an Allow policy named `LAST RAIL Admin DEV Owner`.
+6. Include only the owner email or approved test operator emails.
+7. Require MFA when the selected IdP can report MFA, or configure Cloudflare Access independent MFA if available.
+8. Save the application and test from a fresh browser session.
+
+Keep `dev-api.lastrail.app` public. Do not put Game API traffic behind Cloudflare Access.
+
 ## DEV Resource Procedure
 
 1. Confirm auth with `pnpm exec wrangler whoami`.
