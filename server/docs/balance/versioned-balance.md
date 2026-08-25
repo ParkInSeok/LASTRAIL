@@ -35,7 +35,7 @@ Publish success means publish and activate in the same operation:
 - Move `balance_config_active` to the new version.
 - Append `admin_audit_logs` with permission `BALANCE_PUBLISH`.
 
-Failed publish attempts currently return structured error codes; failure audit rows remain the next implementation step before production operational use.
+Failed publish attempts after admin authentication return structured error codes and append `admin_audit_logs` with `result = 'FAILURE'`. The raw confirmation token is never written to audit logs.
 
 ## DEV Seed
 

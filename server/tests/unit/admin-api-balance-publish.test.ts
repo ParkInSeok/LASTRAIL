@@ -26,6 +26,7 @@ function createEnv(options: {
   nextVersion?: number;
   confirmation?: ConfirmationRow | null;
   onBatch?: (statements: unknown[]) => void;
+  onRun?: (sql: string, values: unknown[]) => void;
 } = {}): Env {
   const role = options.role ?? "OWNER";
   const draft = options.draft ?? {
@@ -68,7 +69,10 @@ function createEnv(options: {
           if (sql.includes("FROM admin_confirmations")) return confirmation;
           return null;
         },
-        run: async () => ({ success: true }),
+        run: async () => {
+          options.onRun?.(sql, values);
+          return { success: true };
+        },
       };
     },
   });
@@ -187,6 +191,7 @@ describe("admin-api balance publish", () => {
   });
 
   it("rejects publish when confirmation token is missing or invalid", async () => {
+    let failureAuditWritten = false;
     const response = await app.request(
       "/v1/admin/balance-config/drafts/draft_1/publish",
       {
@@ -203,15 +208,22 @@ describe("admin-api balance publish", () => {
       },
       createEnv({
         confirmation: null,
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("ADMIN_CONFIRMATION_INVALID");
+          }
+        },
       }),
     );
 
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({ error: "ADMIN_CONFIRMATION_INVALID" });
+    expect(failureAuditWritten).toBe(true);
   });
 
   it("does not allow an operator to publish a balance draft", async () => {
     let batchCalled = false;
+    let failureAuditWritten = false;
     const response = await app.request(
       "/v1/admin/balance-config/drafts/draft_1/publish",
       {
@@ -231,15 +243,22 @@ describe("admin-api balance publish", () => {
         onBatch: () => {
           batchCalled = true;
         },
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("ADMIN_PERMISSION_DENIED");
+          }
+        },
       }),
     );
 
     expect(response.status).toBe(403);
     await expect(response.json()).resolves.toEqual({ error: "ADMIN_PERMISSION_DENIED" });
     expect(batchCalled).toBe(false);
+    expect(failureAuditWritten).toBe(true);
   });
 
   it("rejects publish when the expected revision or checksum does not match", async () => {
+    let failureAuditWritten = false;
     const response = await app.request(
       "/v1/admin/balance-config/drafts/draft_1/publish",
       {
@@ -254,14 +273,22 @@ describe("admin-api balance publish", () => {
           confirmationToken: "confirm_token",
         }),
       },
-      createEnv(),
+      createEnv({
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("BALANCE_DRAFT_PRECONDITION_FAILED");
+          }
+        },
+      }),
     );
 
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" });
+    expect(failureAuditWritten).toBe(true);
   });
 
   it("rejects publish when the draft base version is not the active version", async () => {
+    let failureAuditWritten = false;
     const response = await app.request(
       "/v1/admin/balance-config/drafts/draft_1/publish",
       {
@@ -288,10 +315,16 @@ describe("admin-api balance publish", () => {
           status: "DRAFT",
         },
         activeVersion: 2,
+        onRun: (sql, values) => {
+          if (sql.includes("admin_audit_logs")) {
+            failureAuditWritten = JSON.stringify(values).includes("FAILURE") && JSON.stringify(values).includes("BALANCE_DRAFT_STALE_BASE");
+          }
+        },
       }),
     );
 
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({ error: "BALANCE_DRAFT_STALE_BASE" });
+    expect(failureAuditWritten).toBe(true);
   });
 });

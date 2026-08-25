@@ -70,4 +70,4 @@ Confirmation creation and publish both validate:
 
 On success, the server consumes the matching confirmation, inserts an immutable row in `balance_config_versions`, records a publish claim, marks the draft `PUBLISHED`, inserts activation history with `PUBLISH`, moves `balance_config_active` to the new version, and appends `admin_audit_logs` in one D1 batch.
 
-Current beta limitation: failed publish attempts are returned with error codes but failure audit rows are not yet appended.
+Failed publish attempts after admin authentication append `admin_audit_logs` with `result = 'FAILURE'` and a structured error code. The raw confirmation token is never written to audit logs.

@@ -192,6 +192,51 @@ async function createBalancePublishPayloadHash(draftId: string, expectedRevision
   });
 }
 
+async function writeBalancePublishFailureAudit(
+  c: AppContext,
+  principal: AdminPrincipalRow,
+  resourceId: string,
+  errorCode: string,
+  payloadHash: string | null,
+  changeSummary: JsonValue,
+): Promise<void> {
+  await c.env.DB.prepare(
+    `INSERT INTO admin_audit_logs (
+       id,
+       principal_id,
+       role,
+       permission,
+       action,
+       resource_type,
+       resource_id,
+       request_id,
+       confirmation_id,
+       payload_hash,
+       change_summary_json,
+       account_mutation_id,
+       result,
+       error_code,
+       created_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, NULL, ?, ?, ?)`,
+  )
+    .bind(
+      `audit_${createRequestId().slice(4)}`,
+      principal.id,
+      principal.role,
+      BALANCE_PUBLISH_PERMISSION,
+      "BALANCE_CONFIG_PUBLISH",
+      "balance_config_draft",
+      resourceId,
+      createRequestId(),
+      payloadHash,
+      canonicalJson(changeSummary),
+      "FAILURE",
+      errorCode,
+      Date.now(),
+    )
+    .run();
+}
+
 app.get("/status", (c) => c.json({ ok: true, service: "admin-api", requestId: createRequestId() }));
 app.get("/v1/admin/me", async (c) => {
   const principal = await authenticateAdmin(c);
@@ -349,6 +394,7 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
   if (principal.role !== "OWNER") {
+    await writeBalancePublishFailureAudit(c, principal, c.req.param("draftId"), "ADMIN_PERMISSION_DENIED", null, { reason: "role_not_owner" });
     return c.json({ error: "ADMIN_PERMISSION_DENIED" }, 403);
   }
 
@@ -368,6 +414,7 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
   ) {
     return c.json({ error: "BALANCE_PUBLISH_INVALID" }, 400);
   }
+  const payloadHash = await createBalancePublishPayloadHash(draftId, body.expectedRevision, body.expectedChecksum);
 
   const draft = await c.env.DB.prepare(
     `SELECT id, base_version, schema_version, required_content_version, config_json, checksum, revision, status
@@ -378,9 +425,16 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     .bind(draftId)
     .first<BalanceDraftRow>();
   if (draft === null) {
+    await writeBalancePublishFailureAudit(c, principal, draftId, "BALANCE_DRAFT_NOT_FOUND", payloadHash, { draftId });
     return c.json({ error: "BALANCE_DRAFT_NOT_FOUND" }, 404);
   }
   if (draft.revision !== body.expectedRevision || draft.checksum !== body.expectedChecksum) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "BALANCE_DRAFT_PRECONDITION_FAILED", payloadHash, {
+      expectedRevision: body.expectedRevision,
+      actualRevision: draft.revision,
+      expectedChecksum: body.expectedChecksum,
+      actualChecksum: draft.checksum,
+    });
     return c.json({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" }, 409);
   }
 
@@ -393,6 +447,10 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     .first<ActiveBalanceRow>();
   const activeVersion = active?.version ?? null;
   if (draft.base_version !== activeVersion) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "BALANCE_DRAFT_STALE_BASE", payloadHash, {
+      draftBaseVersion: draft.base_version,
+      activeVersion,
+    });
     return c.json({ error: "BALANCE_DRAFT_STALE_BASE" }, 409);
   }
 
@@ -404,7 +462,6 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     .first<NextVersionRow>();
   const nextVersion = nextVersionRow?.next_version ?? 1;
   const now = Date.now();
-  const payloadHash = await createBalancePublishPayloadHash(draft.id, body.expectedRevision, body.expectedChecksum);
   const tokenHash = await createTokenHash(body.confirmationToken);
   const confirmation = await c.env.DB.prepare(
     `SELECT id, payload_hash
@@ -419,6 +476,10 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     .bind(principal.id, BALANCE_PUBLISH_PERMISSION, payloadHash, tokenHash, now)
     .first<AdminConfirmationRow>();
   if (confirmation === null) {
+    await writeBalancePublishFailureAudit(c, principal, draft.id, "ADMIN_CONFIRMATION_INVALID", payloadHash, {
+      expectedRevision: body.expectedRevision,
+      expectedChecksum: body.expectedChecksum,
+    });
     return c.json({ error: "ADMIN_CONFIRMATION_INVALID" }, 409);
   }
 
