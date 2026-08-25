@@ -32,7 +32,15 @@ type NextVersionRow = {
   next_version: number;
 };
 
+type AdminConfirmationRow = {
+  id: string;
+  payload_hash: string;
+};
+
 type AppContext = Context<{ Bindings: Env }>;
+
+const BALANCE_PUBLISH_PERMISSION = "BALANCE_PUBLISH";
+const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 
 type AccessJwtPayload = {
   iss?: unknown;
@@ -167,6 +175,23 @@ function isNonNegativeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
 }
 
+async function createPayloadHash(payload: JsonValue): Promise<string> {
+  return `sha256:${await sha256Hex(canonicalJson(payload))}`;
+}
+
+async function createTokenHash(token: string): Promise<string> {
+  return `sha256:${await sha256Hex(token)}`;
+}
+
+async function createBalancePublishPayloadHash(draftId: string, expectedRevision: number, expectedChecksum: string): Promise<string> {
+  return createPayloadHash({
+    permission: BALANCE_PUBLISH_PERMISSION,
+    draftId,
+    expectedRevision,
+    expectedChecksum,
+  });
+}
+
 app.get("/status", (c) => c.json({ ok: true, service: "admin-api", requestId: createRequestId() }));
 app.get("/v1/admin/me", async (c) => {
   const principal = await authenticateAdmin(c);
@@ -242,7 +267,7 @@ app.post("/v1/admin/balance-config/drafts", async (c) => {
     201,
   );
 });
-app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
+app.post("/v1/admin/balance-config/drafts/:draftId/publish/confirmations", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
   if (principal.role !== "OWNER") {
@@ -255,6 +280,92 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     expectedChecksum?: unknown;
   };
   if (draftId.length === 0 || !isPositiveInteger(body.expectedRevision) || typeof body.expectedChecksum !== "string" || body.expectedChecksum.length === 0) {
+    return c.json({ error: "BALANCE_PUBLISH_CONFIRMATION_INVALID" }, 400);
+  }
+
+  const draft = await c.env.DB.prepare(
+    `SELECT id, base_version, schema_version, required_content_version, config_json, checksum, revision, status
+     FROM balance_config_drafts
+     WHERE id = ?
+       AND status = 'DRAFT'`,
+  )
+    .bind(draftId)
+    .first<BalanceDraftRow>();
+  if (draft === null) {
+    return c.json({ error: "BALANCE_DRAFT_NOT_FOUND" }, 404);
+  }
+  if (draft.revision !== body.expectedRevision || draft.checksum !== body.expectedChecksum) {
+    return c.json({ error: "BALANCE_DRAFT_PRECONDITION_FAILED" }, 409);
+  }
+
+  const active = await c.env.DB.prepare(
+    `SELECT version
+     FROM balance_config_active
+     WHERE singleton_id = 1`,
+  )
+    .bind()
+    .first<ActiveBalanceRow>();
+  const activeVersion = active?.version ?? null;
+  if (draft.base_version !== activeVersion) {
+    return c.json({ error: "BALANCE_DRAFT_STALE_BASE" }, 409);
+  }
+
+  const now = Date.now();
+  const expiresAt = now + CONFIRMATION_TTL_MS;
+  const confirmationId = `confirmation_${createRequestId().slice(4)}`;
+  const token = `confirm_${createRequestId().slice(4)}`;
+  const payloadHash = await createBalancePublishPayloadHash(draft.id, body.expectedRevision, body.expectedChecksum);
+  const tokenHash = await createTokenHash(token);
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO admin_confirmations (
+         id,
+         principal_id,
+         permission,
+         payload_hash,
+         token_hash,
+         expires_at,
+         consumed_at,
+         created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, NULL, ?)`,
+    ).bind(confirmationId, principal.id, BALANCE_PUBLISH_PERMISSION, payloadHash, tokenHash, expiresAt, now),
+  ]);
+
+  return c.json(
+    {
+      confirmation: {
+        id: confirmationId,
+        permission: BALANCE_PUBLISH_PERMISSION,
+        payloadHash,
+        expiresAt,
+        token,
+      },
+    },
+    201,
+  );
+});
+app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (principal.role !== "OWNER") {
+    return c.json({ error: "ADMIN_PERMISSION_DENIED" }, 403);
+  }
+
+  const draftId = c.req.param("draftId");
+  const body = (await c.req.json()) as {
+    expectedRevision?: unknown;
+    expectedChecksum?: unknown;
+    confirmationToken?: unknown;
+  };
+  if (
+    draftId.length === 0 ||
+    !isPositiveInteger(body.expectedRevision) ||
+    typeof body.expectedChecksum !== "string" ||
+    body.expectedChecksum.length === 0 ||
+    typeof body.confirmationToken !== "string" ||
+    body.confirmationToken.length === 0
+  ) {
     return c.json({ error: "BALANCE_PUBLISH_INVALID" }, 400);
   }
 
@@ -293,10 +404,36 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
     .first<NextVersionRow>();
   const nextVersion = nextVersionRow?.next_version ?? 1;
   const now = Date.now();
+  const payloadHash = await createBalancePublishPayloadHash(draft.id, body.expectedRevision, body.expectedChecksum);
+  const tokenHash = await createTokenHash(body.confirmationToken);
+  const confirmation = await c.env.DB.prepare(
+    `SELECT id, payload_hash
+     FROM admin_confirmations
+     WHERE principal_id = ?
+       AND permission = ?
+       AND payload_hash = ?
+       AND token_hash = ?
+       AND consumed_at IS NULL
+       AND expires_at > ?`,
+  )
+    .bind(principal.id, BALANCE_PUBLISH_PERMISSION, payloadHash, tokenHash, now)
+    .first<AdminConfirmationRow>();
+  if (confirmation === null) {
+    return c.json({ error: "ADMIN_CONFIRMATION_INVALID" }, 409);
+  }
+
   const publishClaimId = `publish_${createRequestId().slice(4)}`;
   const activationId = `activation_${createRequestId().slice(4)}`;
+  const requestId = createRequestId();
 
   await c.env.DB.batch([
+    c.env.DB.prepare(
+      `UPDATE admin_confirmations
+       SET consumed_at = ?
+       WHERE id = ?
+         AND consumed_at IS NULL
+         AND expires_at > ?`,
+    ).bind(now, confirmation.id, now),
     c.env.DB.prepare(
       `INSERT INTO balance_config_versions (
          version,
@@ -348,6 +485,38 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
          activation_id = excluded.activation_id,
          updated_at = excluded.updated_at`,
     ).bind(nextVersion, activationId, now),
+    c.env.DB.prepare(
+      `INSERT INTO admin_audit_logs (
+         id,
+         principal_id,
+         role,
+         permission,
+         action,
+         resource_type,
+         resource_id,
+         request_id,
+         confirmation_id,
+         payload_hash,
+         change_summary_json,
+         account_mutation_id,
+         result,
+         error_code,
+         created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, 'SUCCESS', NULL, ?)`,
+    ).bind(
+      `audit_${createRequestId().slice(4)}`,
+      principal.id,
+      principal.role,
+      BALANCE_PUBLISH_PERMISSION,
+      "BALANCE_CONFIG_PUBLISH",
+      "balance_config_draft",
+      draft.id,
+      requestId,
+      confirmation.id,
+      confirmation.payload_hash,
+      canonicalJson({ publishedVersion: nextVersion, activationId, checksum: draft.checksum }),
+      now,
+    ),
   ]);
 
   return c.json(
@@ -357,6 +526,8 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
         version: nextVersion,
         activationId,
         checksum: draft.checksum,
+        confirmationId: confirmation.id,
+        requestId,
       },
     },
     201,

@@ -40,7 +40,7 @@ OWNER and OPERATOR can create drafts. VIEWER is denied. The server canonicalizes
 
 ## Balance Config Publish
 
-`POST /v1/admin/balance-config/drafts/:draftId/publish` publishes a draft and immediately activates the new published version.
+`POST /v1/admin/balance-config/drafts/:draftId/publish/confirmations` creates a short-lived confirmation token for a publish payload.
 
 Required body:
 
@@ -49,13 +49,25 @@ Required body:
 
 OWNER only. OPERATOR and VIEWER are denied.
 
-Publish validates:
+The response returns the raw `token` once. The server stores only `token_hash`; never persist or log the raw token.
+
+`POST /v1/admin/balance-config/drafts/:draftId/publish` publishes a draft and immediately activates the new published version.
+
+Required body:
+
+- `expectedRevision`: positive integer
+- `expectedChecksum`: checksum returned by the draft endpoint
+- `confirmationToken`: raw confirmation token returned by the confirmation endpoint
+
+OWNER only. OPERATOR and VIEWER are denied. Execute-time permission is checked again before token consumption and domain writes.
+
+Confirmation creation and publish both validate:
 
 - The draft exists and is still `DRAFT`.
 - `expectedRevision` equals the draft revision.
 - `expectedChecksum` equals the draft checksum.
 - The draft `baseVersion` equals the current active balance version.
 
-On success, the server inserts an immutable row in `balance_config_versions`, records a publish claim, marks the draft `PUBLISHED`, inserts activation history with `PUBLISH`, and moves `balance_config_active` to the new version in one D1 batch.
+On success, the server consumes the matching confirmation, inserts an immutable row in `balance_config_versions`, records a publish claim, marks the draft `PUBLISHED`, inserts activation history with `PUBLISH`, moves `balance_config_active` to the new version, and appends `admin_audit_logs` in one D1 batch.
 
-Current beta limitation: Admin Confirmation Token consumption and `admin_audit_logs` append are still pending and must be added before production operational use.
+Current beta limitation: failed publish attempts are returned with error codes but failure audit rows are not yet appended.

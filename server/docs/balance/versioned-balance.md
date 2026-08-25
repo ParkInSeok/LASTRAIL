@@ -19,19 +19,23 @@ Admin draft publish writes the first operational versioned-balance flow:
 
 - OWNER only.
 - Request body must provide `expectedRevision` and `expectedChecksum`.
+- A short-lived confirmation token must be created for the same publish payload before execute.
+- The raw confirmation token is returned once and only its hash is stored.
 - The draft must still be `DRAFT`.
 - The expected revision and checksum must match the stored draft.
 - During beta, `draft.baseVersion` must equal the current `balance_config_active.version`.
 
 Publish success means publish and activate in the same operation:
 
+- Consume the matching `admin_confirmations` row.
 - Insert a new immutable `balance_config_versions` row.
 - Insert `balance_config_publish_claims`.
 - Mark the draft `PUBLISHED`.
 - Insert `balance_config_activations` with `PUBLISH`.
 - Move `balance_config_active` to the new version.
+- Append `admin_audit_logs` with permission `BALANCE_PUBLISH`.
 
-Admin Confirmation Token consumption and append-only Admin Audit logging are required by the server Source of Truth and remain the next implementation step before production operational use.
+Failed publish attempts currently return structured error codes; failure audit rows remain the next implementation step before production operational use.
 
 ## DEV Seed
 

@@ -14,11 +14,17 @@ type DraftRow = {
   status: "DRAFT" | "PUBLISHED";
 };
 
+type ConfirmationRow = {
+  id: string;
+  payload_hash: string;
+};
+
 function createEnv(options: {
   role?: AdminPrincipalRole;
   draft?: DraftRow | null;
   activeVersion?: number | null;
   nextVersion?: number;
+  confirmation?: ConfirmationRow | null;
   onBatch?: (statements: unknown[]) => void;
 } = {}): Env {
   const role = options.role ?? "OWNER";
@@ -34,6 +40,13 @@ function createEnv(options: {
   };
   const activeVersion = options.activeVersion ?? 1;
   const nextVersion = options.nextVersion ?? 2;
+  const confirmation =
+    options.confirmation === undefined
+      ? {
+          id: "confirmation_1",
+          payload_hash: "sha256:payload",
+        }
+      : options.confirmation;
 
   const prepare = (sql: string) => ({
     bind(...values: unknown[]) {
@@ -52,6 +65,7 @@ function createEnv(options: {
           if (sql.includes("FROM balance_config_drafts")) return draft;
           if (sql.includes("FROM balance_config_active")) return activeVersion === null ? null : { version: activeVersion };
           if (sql.includes("MAX(version)")) return { next_version: nextVersion };
+          if (sql.includes("FROM admin_confirmations")) return confirmation;
           return null;
         },
         run: async () => ({ success: true }),
@@ -90,6 +104,7 @@ describe("admin-api balance publish", () => {
         body: JSON.stringify({
           expectedRevision: 2,
           expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_token",
         }),
       },
       createEnv({
@@ -107,7 +122,92 @@ describe("admin-api balance publish", () => {
         checksum: "sha256:abc",
       },
     });
-    expect(batchCount).toBe(5);
+    expect(batchCount).toBe(7);
+  });
+
+  it("creates a confirmation token for a balance publish payload", async () => {
+    let insertedConfirmation = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish/confirmations",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+        }),
+      },
+      createEnv({
+        onBatch: (statements) => {
+          insertedConfirmation = statements.length === 1;
+        },
+      }),
+    );
+
+    expect(response.status).toBe(201);
+    const body = await response.json();
+    expect(body.confirmation).toMatchObject({
+      permission: "BALANCE_PUBLISH",
+      payloadHash: expect.stringMatching(/^sha256:[a-f0-9]{64}$/u),
+    });
+    expect(body.confirmation.id).toMatch(/^confirmation_/u);
+    expect(body.confirmation.token).toMatch(/^confirm_/u);
+    expect(body.confirmation.expiresAt).toEqual(expect.any(Number));
+    expect(insertedConfirmation).toBe(true);
+  });
+
+  it("requires a confirmation token when publishing a balance draft", async () => {
+    let batchCalled = false;
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+        }),
+      },
+      createEnv({
+        onBatch: () => {
+          batchCalled = true;
+        },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: "BALANCE_PUBLISH_INVALID" });
+    expect(batchCalled).toBe(false);
+  });
+
+  it("rejects publish when confirmation token is missing or invalid", async () => {
+    const response = await app.request(
+      "/v1/admin/balance-config/drafts/draft_1/publish",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+        },
+        body: JSON.stringify({
+          expectedRevision: 2,
+          expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_wrong",
+        }),
+      },
+      createEnv({
+        confirmation: null,
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: "ADMIN_CONFIRMATION_INVALID" });
   });
 
   it("does not allow an operator to publish a balance draft", async () => {
@@ -123,6 +223,7 @@ describe("admin-api balance publish", () => {
         body: JSON.stringify({
           expectedRevision: 2,
           expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_token",
         }),
       },
       createEnv({
@@ -150,6 +251,7 @@ describe("admin-api balance publish", () => {
         body: JSON.stringify({
           expectedRevision: 1,
           expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_token",
         }),
       },
       createEnv(),
@@ -171,6 +273,7 @@ describe("admin-api balance publish", () => {
         body: JSON.stringify({
           expectedRevision: 2,
           expectedChecksum: "sha256:abc",
+          confirmationToken: "confirm_token",
         }),
       },
       createEnv({
