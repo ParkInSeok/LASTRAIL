@@ -22,6 +22,34 @@ Current behavior:
 
 Do not seed real admin principals or expose operational Admin routes until Cloudflare Access is applied and DEV `ADMIN_ACCESS_ISSUER` / `ADMIN_ACCESS_AUD` are configured.
 
+## Read-only Operations
+
+`GET /v1/admin/players` returns account search rows for the Admin Console.
+
+Query:
+
+- `q`: optional account id or display name search text
+
+Response:
+
+- `items[].accountId`
+- `items[].displayName`
+- `items[].status`
+- `items[].syncLevel`
+- `items[].lastSeenAt`
+
+`GET /v1/admin/players/:accountId` returns account detail with the Training Core / Sync progression inspector. `syncLevel` is the minimum `trained_level` across exactly 5 Training Core slots. Non-core operators use `levelSource: "SYNC"` and `effectiveLevel: syncLevel`. Core operators use `levelSource: "TRAINED"` and their direct `trainedLevel`.
+
+`GET /v1/admin/runs` returns run search rows.
+
+Query:
+
+- `accountId`: optional account filter
+
+Response includes run balance version, result, risk tier, and validator version when available.
+
+`GET /v1/admin/runs/:runId` returns run detail with frozen `run_snapshots.snapshot_json`, run balance version, current active balance version, client build, content version, validator version, and validator runtime revision.
+
 ## Balance Config Drafts
 
 `POST /v1/admin/balance-config/drafts` creates a draft row in `balance_config_drafts`.

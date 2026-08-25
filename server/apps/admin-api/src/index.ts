@@ -28,6 +28,53 @@ type ActiveBalanceRow = {
   version: number;
 };
 
+type AdminPlayerSearchRow = {
+  account_id: string;
+  display_name: string | null;
+  status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  updated_at: number;
+  sync_level: number | null;
+};
+
+type AdminPlayerDetailRow = {
+  account_id: string;
+  display_name: string | null;
+  status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  created_at: number;
+  operator_exp: number | null;
+};
+
+type AdminTrainingCoreRow = {
+  slot_index: number;
+  operator_id: string;
+  trained_level: number;
+};
+
+type AdminOperatorRow = {
+  operator_id: string;
+  skill_training: number;
+  promotion: number;
+};
+
+type AdminRunSearchRow = {
+  run_id: string;
+  account_id: string;
+  status: string;
+  started_at: number;
+  finished_at: number | null;
+  risk: string | null;
+  balance_config_version: number;
+  validator_version: string | null;
+};
+
+type AdminRunDetailRow = AdminRunSearchRow & {
+  current_active_balance_version: number | null;
+  build_id: string | null;
+  content_version: number | null;
+  validator_runtime_revision: number | null;
+  snapshot_json: string;
+};
+
 type NextVersionRow = {
   next_version: number;
 };
@@ -157,7 +204,8 @@ async function authenticateAdmin(c: AppContext): Promise<AdminPrincipalRow | Res
 
 function isJsonValue(value: unknown): value is JsonValue {
   if (value === null) return true;
-  if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") return Number.isFinite(value);
+  if (typeof value === "boolean" || typeof value === "string") return true;
+  if (typeof value === "number") return Number.isFinite(value);
   if (Array.isArray(value)) return value.every((item) => isJsonValue(item));
   if (typeof value === "object") return Object.values(value).every((item) => isJsonValue(item));
   return false;
@@ -173,6 +221,39 @@ function isPositiveInteger(value: unknown): value is number {
 
 function isNonNegativeInteger(value: unknown): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+}
+
+function toIso(timestampMs: number): string {
+  return new Date(timestampMs).toISOString();
+}
+
+function mapRunResult(status: string): "IN_PROGRESS" | "CLEARED" | "FAILED" | "INVALIDATED" {
+  if (status === "ACTIVE" || status === "FINISH_PENDING") return "IN_PROGRESS";
+  if (status === "COMPLETED") return "CLEARED";
+  if (status === "QUARANTINED") return "INVALIDATED";
+  return "FAILED";
+}
+
+function normalizeRiskTier(risk: string | null): "I" | "II" | "III" | "IV" | "V" {
+  if (risk === "II" || risk === "III" || risk === "IV" || risk === "V") return risk;
+  return "I";
+}
+
+function syncLevelFrom(coreRows: AdminTrainingCoreRow[]): number {
+  if (coreRows.length !== 5) return 1;
+  return Math.min(...coreRows.map((row) => row.trained_level));
+}
+
+function coreLevelSpreadFrom(coreRows: AdminTrainingCoreRow[]): number {
+  if (coreRows.length !== 5) return 0;
+  const levels = coreRows.map((row) => row.trained_level);
+  return Math.max(...levels) - Math.min(...levels);
+}
+
+function parseRunSnapshot(snapshotJson: string): JsonValue {
+  const parsed = JSON.parse(snapshotJson) as unknown;
+  if (!isJsonValue(parsed)) throw new Error("RUN_SNAPSHOT_INVALID_JSON");
+  return parsed;
 }
 
 async function createPayloadHash(payload: JsonValue): Promise<string> {
@@ -249,6 +330,212 @@ app.get("/v1/admin/me", async (c) => {
       role: principal.role,
       displayName: principal.display_name,
     },
+  });
+});
+app.get("/v1/admin/players", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const rawQuery = c.req.query("q") ?? "";
+  const query = rawQuery.trim();
+  const likeQuery = `%${query}%`;
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       pp.display_name AS display_name,
+       a.status AS status,
+       a.updated_at AS updated_at,
+       CASE
+         WHEN (SELECT COUNT(*) FROM operator_training_core_slots core WHERE core.account_id = a.id) = 5
+         THEN (SELECT MIN(trained_level) FROM operator_training_core_slots core WHERE core.account_id = a.id)
+         ELSE 1
+       END AS sync_level
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     WHERE (? = '' OR a.id LIKE ? OR pp.display_name LIKE ?)
+     ORDER BY a.updated_at DESC
+     LIMIT 50`,
+  )
+    .bind(query, likeQuery, likeQuery)
+    .all<AdminPlayerSearchRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      accountId: row.account_id,
+      displayName: row.display_name ?? row.account_id,
+      status: row.status,
+      syncLevel: row.sync_level ?? 1,
+      lastSeenAt: toIso(row.updated_at),
+    })),
+  });
+});
+app.get("/v1/admin/players/:accountId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const accountId = c.req.param("accountId");
+  const account = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       pp.display_name AS display_name,
+       a.status AS status,
+       a.created_at AS created_at,
+       ac.balance AS operator_exp
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     LEFT JOIN account_currencies ac
+       ON ac.account_id = a.id
+      AND ac.currency = 'OPERATOR_EXP'
+     WHERE a.id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminPlayerDetailRow>();
+  if (account === null) {
+    return c.json({ error: "ADMIN_PLAYER_NOT_FOUND" }, 404);
+  }
+
+  const core = await c.env.DB.prepare(
+    `SELECT slot_index, operator_id, trained_level
+     FROM operator_training_core_slots
+     WHERE account_id = ?
+     ORDER BY slot_index ASC`,
+  )
+    .bind(accountId)
+    .all<AdminTrainingCoreRow>();
+  const operators = await c.env.DB.prepare(
+    `SELECT operator_id, skill_training, promotion
+     FROM account_operators
+     WHERE account_id = ?
+     ORDER BY operator_id ASC`,
+  )
+    .bind(accountId)
+    .all<AdminOperatorRow>();
+
+  const coreRows = core.results;
+  const syncLevel = syncLevelFrom(coreRows);
+  const coreByOperator = new Map(coreRows.map((row) => [row.operator_id, row]));
+
+  return c.json({
+    accountId: account.account_id,
+    displayName: account.display_name ?? account.account_id,
+    status: account.status,
+    createdAt: toIso(account.created_at),
+    progression: {
+      operatorExp: account.operator_exp ?? 0,
+      syncLevel,
+      coreLevelSpread: coreLevelSpreadFrom(coreRows),
+      trainingCore: coreRows.map((row) => ({
+        slot: row.slot_index + 1,
+        operatorId: row.operator_id,
+        name: row.operator_id,
+        trainedLevel: row.trained_level,
+      })),
+      operators: operators.results.map((operator) => {
+        const coreSlot = coreByOperator.get(operator.operator_id);
+        const isTrainingCore = coreSlot !== undefined;
+        return {
+          operatorId: operator.operator_id,
+          name: operator.operator_id,
+          effectiveLevel: isTrainingCore ? coreSlot.trained_level : syncLevel,
+          levelSource: isTrainingCore ? "TRAINED" : "SYNC",
+          trainedLevel: coreSlot?.trained_level ?? 1,
+          skillTraining: operator.skill_training,
+          promotion: String(operator.promotion),
+          ...(coreSlot ? { coreSlot: coreSlot.slot_index + 1 } : {}),
+        };
+      }),
+    },
+  });
+});
+app.get("/v1/admin/runs", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const accountId = c.req.query("accountId")?.trim();
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       r.id AS run_id,
+       r.account_id AS account_id,
+       r.status AS status,
+       r.started_at AS started_at,
+       r.finished_at AS finished_at,
+       op.risk AS risk,
+       r.balance_config_version AS balance_config_version,
+       vv.version AS validator_version
+     FROM runs r
+     LEFT JOIN operation_previews op ON op.id = r.preview_id
+     LEFT JOIN validator_runtime_active vra ON vra.singleton_id = 1
+     LEFT JOIN validator_runtime_configs vrc ON vrc.id = vra.runtime_config_id
+     LEFT JOIN validator_versions vv ON vv.id = vrc.validator_version_id
+     WHERE (? IS NULL OR r.account_id = ?)
+     ORDER BY r.started_at DESC
+     LIMIT 50`,
+  )
+    .bind(accountId ?? null, accountId ?? null)
+    .all<AdminRunSearchRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      runId: row.run_id,
+      accountId: row.account_id,
+      startedAt: toIso(row.started_at),
+      ...(row.finished_at ? { completedAt: toIso(row.finished_at) } : {}),
+      result: mapRunResult(row.status),
+      riskTier: normalizeRiskTier(row.risk),
+      balanceVersion: String(row.balance_config_version),
+      ...(row.validator_version ? { validatorVersion: row.validator_version } : {}),
+    })),
+  });
+});
+app.get("/v1/admin/runs/:runId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const row = await c.env.DB.prepare(
+    `SELECT
+       r.id AS run_id,
+       r.account_id AS account_id,
+       r.status AS status,
+       r.started_at AS started_at,
+       r.finished_at AS finished_at,
+       op.risk AS risk,
+       r.balance_config_version AS balance_config_version,
+       active.version AS current_active_balance_version,
+       r.build_id AS build_id,
+       cb.content_version AS content_version,
+       vv.version AS validator_version,
+       vrc.runtime_revision AS validator_runtime_revision,
+       rs.snapshot_json AS snapshot_json
+     FROM runs r
+     INNER JOIN run_snapshots rs ON rs.run_id = r.id
+     LEFT JOIN operation_previews op ON op.id = r.preview_id
+     LEFT JOIN client_builds cb ON cb.id = r.build_id
+     LEFT JOIN balance_config_active active ON active.singleton_id = 1
+     LEFT JOIN validator_runtime_active vra ON vra.singleton_id = 1
+     LEFT JOIN validator_runtime_configs vrc ON vrc.id = vra.runtime_config_id
+     LEFT JOIN validator_versions vv ON vv.id = vrc.validator_version_id
+     WHERE r.id = ?`,
+  )
+    .bind(c.req.param("runId"))
+    .first<AdminRunDetailRow>();
+  if (row === null) {
+    return c.json({ error: "ADMIN_RUN_NOT_FOUND" }, 404);
+  }
+
+  return c.json({
+    runId: row.run_id,
+    accountId: row.account_id,
+    startedAt: toIso(row.started_at),
+    ...(row.finished_at ? { completedAt: toIso(row.finished_at) } : {}),
+    result: mapRunResult(row.status),
+    riskTier: normalizeRiskTier(row.risk),
+    balanceVersion: String(row.balance_config_version),
+    currentActiveBalanceVersion: String(row.current_active_balance_version ?? row.balance_config_version),
+    clientBuild: row.build_id ?? "UNKNOWN",
+    contentVersion: String(row.content_version ?? 0),
+    validatorVersion: row.validator_version ?? "UNKNOWN",
+    validatorRuntimeRevision: String(row.validator_runtime_revision ?? 0),
+    snapshot: parseRunSnapshot(row.snapshot_json),
   });
 });
 app.post("/v1/admin/balance-config/drafts", async (c) => {
