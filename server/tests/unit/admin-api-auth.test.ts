@@ -14,6 +14,8 @@ function createEnv(row: AdminPrincipalRow | null): Env {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     ADMIN_AUTH_MODE: "LOCAL_HEADER",
+    ADMIN_ACCESS_ISSUER: "",
+    ADMIN_ACCESS_AUD: "",
     ADMIN_JOBS_QUEUE: {} as Queue,
     DB: {
       prepare(sql: string) {
@@ -32,6 +34,80 @@ function createEnv(row: AdminPrincipalRow | null): Env {
 }
 
 describe("admin-api auth", () => {
+  const issuer = "https://last-rail.cloudflareaccess.com";
+  const audience = "admin-dev-aud";
+
+  async function createAccessJwt(input: {
+    subject: string;
+    audience?: string;
+    expiresAt?: number;
+  }): Promise<{ token: string; publicJwk: JsonWebKey & { kid: string; alg: string; use: string } }> {
+    const keyPair = await crypto.subtle.generateKey(
+      {
+        name: "RSASSA-PKCS1-v1_5",
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256",
+      },
+      true,
+      ["sign", "verify"],
+    );
+
+    const kid = "test-key-1";
+    const header = { alg: "RS256", typ: "JWT", kid };
+    const payload = {
+      iss: issuer,
+      aud: input.audience ?? audience,
+      sub: input.subject,
+      exp: input.expiresAt ?? Math.floor(Date.now() / 1000) + 300,
+    };
+
+    const encodedHeader = base64UrlEncode(JSON.stringify(header));
+    const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+    const signingInput = `${encodedHeader}.${encodedPayload}`;
+    const signature = await crypto.subtle.sign(
+      "RSASSA-PKCS1-v1_5",
+      keyPair.privateKey,
+      new TextEncoder().encode(signingInput),
+    );
+    const publicJwk = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+
+    return {
+      token: `${signingInput}.${base64UrlEncodeBytes(new Uint8Array(signature))}`,
+      publicJwk: { ...publicJwk, kid, alg: "RS256", use: "sig" },
+    };
+  }
+
+  function base64UrlEncode(value: string): string {
+    return base64UrlEncodeBytes(new TextEncoder().encode(value));
+  }
+
+  function base64UrlEncodeBytes(value: Uint8Array): string {
+    return btoa(String.fromCharCode(...value)).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+  }
+
+  function createAccessEnv(row: AdminPrincipalRow | null): Env {
+    const env = createEnv(row);
+    env.ADMIN_AUTH_MODE = "ACCESS_JWT_REQUIRED";
+    env.ADMIN_ACCESS_ISSUER = issuer;
+    env.ADMIN_ACCESS_AUD = audience;
+    return env;
+  }
+
+  async function withJwks<T>(jwk: JsonWebKey, run: () => Promise<T>): Promise<T> {
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = (async (url: RequestInfo | URL) => {
+      expect(String(url)).toBe(`${issuer}/cdn-cgi/access/certs`);
+      return Response.json({ keys: [jwk] });
+    }) as typeof fetch;
+
+    try {
+      return await run();
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  }
+
   it("rejects protected admin routes without an Access subject", async () => {
     const response = await app.request("/v1/admin/me", {}, createEnv(null));
 
@@ -92,5 +168,48 @@ describe("admin-api auth", () => {
 
     expect(response.status).toBe(501);
     await expect(response.json()).resolves.toEqual({ error: "ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED" });
+  });
+
+  it("maps a valid Access JWT subject to the admin principal", async () => {
+    const { token, publicJwk } = await createAccessJwt({ subject: "access|owner-1" });
+
+    await withJwks(publicJwk, async () => {
+      const response = await app.request(
+        "/v1/admin/me",
+        { headers: { "Cf-Access-Jwt-Assertion": token } },
+        createAccessEnv({
+          id: "principal-1",
+          access_subject: "access|owner-1",
+          role: "OWNER",
+          status: "ACTIVE",
+          display_name: "Owner",
+        }),
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual({
+        principal: {
+          id: "principal-1",
+          accessSubject: "access|owner-1",
+          role: "OWNER",
+          displayName: "Owner",
+        },
+      });
+    });
+  });
+
+  it("rejects Access JWTs for a different audience", async () => {
+    const { token, publicJwk } = await createAccessJwt({ subject: "access|owner-1", audience: "other-aud" });
+
+    await withJwks(publicJwk, async () => {
+      const response = await app.request(
+        "/v1/admin/me",
+        { headers: { "Cf-Access-Jwt-Assertion": token } },
+        createAccessEnv(null),
+      );
+
+      expect(response.status).toBe(403);
+      await expect(response.json()).resolves.toEqual({ error: "ADMIN_ACCESS_JWT_INVALID" });
+    });
   });
 });

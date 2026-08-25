@@ -49,6 +49,9 @@ Dashboard path:
 6. Include only the owner email or approved test operator emails.
 7. Require MFA when the selected IdP can report MFA, or configure Cloudflare Access independent MFA if available.
 8. Save the application and test from a fresh browser session.
+9. Copy the Access team domain as `ADMIN_ACCESS_ISSUER`, for example `https://<team-name>.cloudflareaccess.com`.
+10. Copy the application AUD tag as `ADMIN_ACCESS_AUD`.
+11. Put the DEV values into `apps/admin-api/wrangler.jsonc`, regenerate types, dry-run, and deploy DEV admin-api.
 
 Keep `dev-api.lastrail.app` public. Do not put Game API traffic behind Cloudflare Access.
 

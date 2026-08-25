@@ -16,7 +16,8 @@ Current behavior:
 
 - `LOCAL` uses `ADMIN_AUTH_MODE=LOCAL_HEADER` for local tests and development only.
 - DEV/STAGING/PRODUCTION use `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED`.
-- Until Access JWT verification is implemented, non-local modes return `ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED`.
+- Non-local modes validate `Cf-Access-Jwt-Assertion` with the configured Cloudflare Access issuer and AUD tag.
+- If issuer or AUD is not configured, protected routes return `ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED`.
 - Local header mode reads `Cf-Access-Subject`, maps it to active `admin_principals.access_subject`, and returns the principal role.
 
-Do not seed real admin principals or expose operational Admin routes until Cloudflare Access is applied and JWT verification is implemented.
+Do not seed real admin principals or expose operational Admin routes until Cloudflare Access is applied and DEV `ADMIN_ACCESS_ISSUER` / `ADMIN_ACCESS_AUD` are configured.
