@@ -1,0 +1,40 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lastrail-game-api-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": {
+    "ENVIRONMENT": "LOCAL",
+    "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "lastrail-core-local", "database_id": "local", "migrations_dir": "../../packages/db/migrations" }
+  ],
+  "env": {
+    "dev": {
+      "name": "lastrail-game-api-dev",
+      "workers_dev": false,
+      "routes": [{ "pattern": "dev-api.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }]
+    },
+    "staging": {
+      "name": "lastrail-game-api-staging",
+      "workers_dev": false,
+      "routes": [{ "pattern": "staging-api.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "STAGING", "ALLOWED_ADMIN_ORIGINS": "https://staging-admin.lastrail.app" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-staging", "database_id": "__STAGING_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }]
+    },
+    "production": {
+      "name": "lastrail-game-api-production",
+      "workers_dev": false,
+      "routes": [{ "pattern": "api.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "PRODUCTION", "ALLOWED_ADMIN_ORIGINS": "https://admin.lastrail.app" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-production", "database_id": "__PRODUCTION_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }]
+    }
+  }
+}
+

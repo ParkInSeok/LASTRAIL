@@ -1,0 +1,40 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lastrail-async-worker-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": { "ENVIRONMENT": "LOCAL", "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-local" },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "lastrail-core-local", "database_id": "local", "migrations_dir": "../../packages/db/migrations" }
+  ],
+  "queues": {
+    "consumers": [{ "queue": "lastrail-admin-jobs-local", "max_batch_size": 10, "max_batch_timeout": 30 }]
+  },
+  "env": {
+    "dev": {
+      "name": "lastrail-async-worker-dev",
+      "workers_dev": false,
+      "vars": { "ENVIRONMENT": "DEV", "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-dev" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }],
+      "queues": { "consumers": [{ "queue": "lastrail-admin-jobs-dev", "max_batch_size": 10, "max_batch_timeout": 30 }] }
+    },
+    "staging": {
+      "name": "lastrail-async-worker-staging",
+      "workers_dev": false,
+      "vars": { "ENVIRONMENT": "STAGING", "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-staging" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-staging", "database_id": "__STAGING_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }],
+      "queues": { "consumers": [{ "queue": "lastrail-admin-jobs-staging", "max_batch_size": 10, "max_batch_timeout": 30 }] }
+    },
+    "production": {
+      "name": "lastrail-async-worker-production",
+      "workers_dev": false,
+      "vars": { "ENVIRONMENT": "PRODUCTION", "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-production" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-production", "database_id": "__PRODUCTION_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }],
+      "queues": { "consumers": [{ "queue": "lastrail-admin-jobs-production", "max_batch_size": 10, "max_batch_timeout": 30 }] }
+    }
+  }
+}
+

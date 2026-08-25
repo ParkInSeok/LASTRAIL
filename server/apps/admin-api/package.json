@@ -1,0 +1,13 @@
+{
+  "name": "@lastrail/admin-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "wrangler": "wrangler --config wrangler.jsonc",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.13.3"
+  }
+}

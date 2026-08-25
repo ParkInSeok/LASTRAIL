@@ -1,0 +1,11 @@
+CREATE INDEX idx_auth_sessions_account_status ON auth_sessions(account_id, status);
+CREATE INDEX idx_account_mutations_account_sequence ON account_mutations(account_id, sequence);
+CREATE INDEX idx_currency_ledger_account_currency_created ON currency_ledger(account_id, currency, created_at);
+CREATE INDEX idx_reward_transactions_account_created ON reward_transactions(account_id, created_at);
+CREATE INDEX idx_operation_previews_account_status_expires ON operation_previews(account_id, status, expires_at);
+CREATE INDEX idx_runs_account_status_started ON runs(account_id, status, started_at);
+CREATE INDEX idx_run_checkpoints_run_wave ON run_checkpoints(run_id, checkpoint_wave);
+CREATE INDEX idx_integrity_events_account_classification_created ON integrity_events(account_id, classification, created_at);
+CREATE INDEX idx_compensation_recipients_status ON compensation_recipients(status, compensation_id);
+CREATE INDEX idx_admin_jobs_status_lease ON admin_jobs(status, lease_expires_at);
+CREATE INDEX idx_ad_reward_transactions_account_status ON ad_reward_transactions(account_id, status);

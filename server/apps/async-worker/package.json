@@ -1,0 +1,10 @@
+{
+  "name": "@lastrail/async-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "wrangler": "wrangler --config wrangler.jsonc",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  }
+}
