@@ -7,6 +7,7 @@ export default tseslint.config(
       "dist/**",
       "node_modules/**",
       ".wrangler/**",
+      "**/.wrangler/**",
       "**/dist/**",
       "**/worker-configuration.d.ts"
     ]
