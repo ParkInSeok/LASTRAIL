@@ -1,0 +1,33 @@
+{
+  "name": "lastrail-workspace-root",
+  "private": true,
+  "scripts": {
+    "test:contracts": "npm --prefix lastrail-admin-console/packages/admin-contracts test",
+    "test:backend": "npm --prefix lastrail-admin-console/apps/admin-backend test",
+    "test:web": "npm --prefix lastrail-admin-console/apps/admin-web test",
+    "test": "npm run test:contracts && npm run test:backend && npm run test:web",
+    "typecheck:contracts": "npm --prefix lastrail-admin-console/packages/admin-contracts run typecheck",
+    "typecheck:backend": "npm --prefix lastrail-admin-console/apps/admin-backend run typecheck",
+    "typecheck:web": "npm --prefix lastrail-admin-console/apps/admin-web run typecheck",
+    "typecheck": "npm run typecheck:contracts && npm run typecheck:backend && npm run typecheck:web",
+    "build:web": "npm --prefix lastrail-admin-console/apps/admin-web run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3",
+    "vitest": "^3.0.9"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.69.0",
+    "fastify": "^5.2.1",
+    "pino": "^9.6.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.4.0",
+    "zod": "^3.24.2"
+  }
+}

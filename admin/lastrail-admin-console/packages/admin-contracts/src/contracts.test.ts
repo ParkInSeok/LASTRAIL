@@ -1,0 +1,70 @@
+import { describe, expect, it } from "vitest";
+import {
+  BootstrapResponseSchema,
+  PlayerDetailSchema,
+  hasPermission
+} from "./index";
+
+describe("admin contracts", () => {
+  it("derives read permissions from the permission registry", () => {
+    const bootstrap = BootstrapResponseSchema.parse({
+      environment: "staging",
+      admin: {
+        id: "admin-1",
+        displayName: "Operator One",
+        role: "OPERATOR",
+        permissions: ["ACCOUNT_READ", "RUN_READ"]
+      }
+    });
+
+    expect(hasPermission(bootstrap.admin, "ACCOUNT_READ")).toBe(true);
+    expect(hasPermission(bootstrap.admin, "BALANCE_PUBLISH")).toBe(false);
+  });
+
+  it("requires Training Core and Sync fields for player progression", () => {
+    const player = PlayerDetailSchema.parse({
+      accountId: "account-1",
+      displayName: "LASTRAIL Tester",
+      status: "ACTIVE",
+      createdAt: "2026-08-25T00:00:00.000Z",
+      progression: {
+        operatorExp: 1840,
+        syncLevel: 30,
+        coreLevelSpread: 3,
+        trainingCore: [
+          { slot: 1, operatorId: "kyle", name: "Kyle", trainedLevel: 32 },
+          { slot: 2, operatorId: "reina", name: "Reina", trainedLevel: 31 },
+          { slot: 3, operatorId: "eve", name: "Eve", trainedLevel: 30 },
+          { slot: 4, operatorId: "sera", name: "Sera", trainedLevel: 30 },
+          { slot: 5, operatorId: "mira", name: "Mira", trainedLevel: 33 }
+        ],
+        operators: [
+          {
+            operatorId: "kyle",
+            name: "Kyle",
+            effectiveLevel: 32,
+            levelSource: "TRAINED",
+            trainedLevel: 32,
+            skillTraining: 3,
+            promotion: "I",
+            coreSlot: 1
+          },
+          {
+            operatorId: "vex",
+            name: "Vex",
+            effectiveLevel: 30,
+            levelSource: "SYNC",
+            trainedLevel: 1,
+            skillTraining: 1,
+            promotion: "0"
+          }
+        ]
+      }
+    });
+
+    expect(player.progression.trainingCore).toHaveLength(5);
+    expect(player.progression.syncLevel).toBe(30);
+    expect(player.progression.operators[1].levelSource).toBe("SYNC");
+  });
+});
+

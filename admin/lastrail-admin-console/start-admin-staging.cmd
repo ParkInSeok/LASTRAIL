@@ -1,0 +1,6 @@
+@echo off
+set LASTRAIL_ADMIN_PROFILE=staging
+set ADMIN_BACKEND_HOST=127.0.0.1
+set ADMIN_BACKEND_PORT=4174
+npm run dev --workspace @lastrail/admin-backend
+
