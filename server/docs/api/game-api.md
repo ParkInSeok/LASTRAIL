@@ -25,3 +25,14 @@ This response must not include secrets, tokens, Cloudflare credentials, Admin AP
 ## Balance Config
 
 Balance payloads remain on Game API: `GET /v1/balance-config/:version`.
+
+The endpoint reads published versions from D1 `balance_config_versions` and returns:
+
+- `version`
+- `schemaVersion`
+- `requiredContentVersion`
+- `checksum`
+- `publishedAt`
+- `payload`
+
+Only positive integer versions are accepted. Missing/unpublished versions return `BALANCE_CONFIG_NOT_PUBLISHED`. Invalid stored JSON returns `BALANCE_CONFIG_PAYLOAD_INVALID`.
