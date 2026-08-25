@@ -19,6 +19,14 @@ Set these outside source control before launching the backend:
 
 The browser must only call the local backend under `/api`. Secrets stay in the backend process.
 
+The local backend maps browser routes to the versioned Admin API:
+
+- `/api/bootstrap` -> `/v1/admin/me`
+- `/api/players` -> `/v1/admin/players`
+- `/api/players/:accountId` -> `/v1/admin/players/:accountId`
+- `/api/runs` -> `/v1/admin/runs`
+- `/api/runs/:runId` -> `/v1/admin/runs/:runId`
+
 ## Commands
 
 ```cmd

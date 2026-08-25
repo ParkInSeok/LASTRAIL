@@ -1,12 +1,14 @@
 import crypto from "node:crypto";
 import fastify, { type FastifyInstance } from "fastify";
-import { ZodError, type ZodSchema } from "zod";
+import { z, ZodError, type ZodSchema } from "zod";
 import {
+  AdminRoleSchema,
   BootstrapResponseSchema,
   PlayerDetailSchema,
   PlayerSearchResponseSchema,
   RunDetailSchema,
-  RunSearchResponseSchema
+  RunSearchResponseSchema,
+  rolePermissions
 } from "@lastrail/admin-contracts";
 import type { AdminBackendConfig } from "./config";
 import { createUpstreamClient, type UpstreamClient } from "./upstream";
@@ -15,6 +17,15 @@ type BuildServerOptions = {
   config: AdminBackendConfig;
   upstream?: UpstreamClient;
 };
+
+const AdminMeResponseSchema = z.object({
+  principal: z.object({
+    id: z.string().min(1),
+    accessSubject: z.string().min(1),
+    role: AdminRoleSchema,
+    displayName: z.string().nullable()
+  })
+});
 
 class ProxyRouteError extends Error {
   constructor(
@@ -60,14 +71,14 @@ function normalizeError(error: unknown, requestId: string) {
   };
 }
 
-async function proxyRead(
+async function proxyRead<T>(
   server: FastifyInstance,
-  schema: ZodSchema,
+  schema: ZodSchema<T>,
   upstream: UpstreamClient,
   upstreamPath: string,
   requestId: string,
   searchParams?: URLSearchParams
-) {
+): Promise<T> {
   try {
     const raw = await upstream(upstreamPath, {
       method: "GET",
@@ -118,13 +129,23 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
   });
 
   server.get("/api/bootstrap", async (request) => {
-    return proxyRead(
+    const adminMe = await proxyRead(
       server,
-      BootstrapResponseSchema,
+      AdminMeResponseSchema,
       upstream,
-      "/bootstrap",
+      "/v1/admin/me",
       requestIdFrom(request.headers)
     );
+
+    return BootstrapResponseSchema.parse({
+      environment: options.config.profile,
+      admin: {
+        id: adminMe.principal.id,
+        displayName: adminMe.principal.displayName ?? adminMe.principal.id,
+        role: adminMe.principal.role,
+        permissions: rolePermissions[adminMe.principal.role]
+      }
+    });
   });
 
   server.get("/api/players", async (request) => {
@@ -137,7 +158,7 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       server,
       PlayerSearchResponseSchema,
       upstream,
-      "/players",
+      "/v1/admin/players",
       requestIdFrom(request.headers),
       query
     );
@@ -149,7 +170,7 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       server,
       PlayerDetailSchema,
       upstream,
-      `/players/${encodeURIComponent(params.accountId)}`,
+      `/v1/admin/players/${encodeURIComponent(params.accountId)}`,
       requestIdFrom(request.headers)
     );
   });
@@ -164,7 +185,7 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       server,
       RunSearchResponseSchema,
       upstream,
-      "/runs",
+      "/v1/admin/runs",
       requestIdFrom(request.headers),
       query
     );
@@ -176,7 +197,7 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       server,
       RunDetailSchema,
       upstream,
-      `/runs/${encodeURIComponent(params.runId)}`,
+      `/v1/admin/runs/${encodeURIComponent(params.runId)}`,
       requestIdFrom(request.headers)
     );
   });
