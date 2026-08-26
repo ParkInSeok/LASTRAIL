@@ -26,7 +26,7 @@
       "name": "lastrail-admin-api-dev",
       "workers_dev": false,
       "routes": [{ "pattern": "dev-admin.lastrail.app", "custom_domain": true }],
-      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED", "ADMIN_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0", "ADMIN_DELEGATED_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_DELEGATED_ACCESS_AUD": "__DEV_ADMIN_PAGES_ACCESS_AUD__" },
+      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED", "ADMIN_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0", "ADMIN_DELEGATED_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_DELEGATED_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0" },
       "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }],
       "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-dev" }] }
     },
