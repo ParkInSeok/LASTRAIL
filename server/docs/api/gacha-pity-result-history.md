@@ -17,7 +17,7 @@ pull probability logic, payment processing, or admin UI.
 
 ## Existing Schema Compatibility
 
-Existing migration `0001` to `0011` status:
+Before migration `0013`, existing migration `0001` to `0012` status:
 
 - `accounts(id)` exists and is the account FK target.
 - `account_mutations` exists and should serialize gacha writes per account.
@@ -130,7 +130,12 @@ CREATE TABLE gacha_banners (
   pity_config_json TEXT NOT NULL,
   pool_snapshot_json TEXT NOT NULL,
   created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  CHECK (ends_at IS NULL OR ends_at > starts_at),
+  CHECK (
+    (banner_type = 'PICKUP' AND pickup_operator_id IS NOT NULL)
+    OR (banner_type != 'PICKUP' AND pickup_operator_id IS NULL)
+  )
 );
 ```
 
@@ -193,6 +198,7 @@ CREATE TABLE gacha_pull_batches (
   rng_seed_hash TEXT NOT NULL,
   result_summary_json TEXT NOT NULL,
   created_at INTEGER NOT NULL,
+  CHECK (cost_quantity = pull_count),
   UNIQUE(account_id, banner_id, idempotency_key)
 );
 ```
@@ -406,14 +412,8 @@ CREATE INDEX idx_gacha_pull_results_account_created
 
 ## Migration Impact
 
-Recommended next migration scope:
-
-```text
-0013_gacha_pity_result_history.sql
-```
-
-If `0012_run_reward_previews.sql` is created first for reward preview/claim,
-gacha should follow as `0013`.
+Migration `0013_gacha_pity_result_history.sql` adds the gacha/pity/result
+history schema after `0012_run_reward_previews.sql`.
 
 Tables:
 

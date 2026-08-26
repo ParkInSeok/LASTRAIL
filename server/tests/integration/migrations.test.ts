@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-2])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(12);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-3])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(13);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0012 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0013 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -129,6 +129,160 @@ describe("D1 migrations", () => {
          id, account_id, run_id, balance_config_version, status, reward_plan_json, expires_at, created_at, claimed_at, reward_claim_id
        ) VALUES (
          'reward-preview-1', 'account-reward-1', 'run-reward-1', 101, 'ACTIVE', '{"lines":[]}', 86400001, 1, NULL, NULL
+       );`
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates gacha pity and result history tables with inventory ledger linkage", async () => {
+    const db = await createMigratedDb();
+
+    const tableColumns = (tableName: string) =>
+      db.exec(`PRAGMA table_info(${tableName});`)[0]?.values.map((row) => row[1]);
+    const indexNames = (tableName: string) =>
+      db.exec(`PRAGMA index_list(${tableName});`)[0]?.values.map((row) => row[1]) ?? [];
+
+    expect(tableColumns("account_items")).toEqual(["account_id", "item_id", "quantity", "updated_at"]);
+    expect(tableColumns("item_ledger")).toEqual([
+      "id",
+      "account_id",
+      "mutation_id",
+      "item_id",
+      "delta",
+      "quantity_after",
+      "reason",
+      "source_type",
+      "source_id",
+      "created_at",
+    ]);
+    expect(tableColumns("gacha_banners")).toEqual([
+      "id",
+      "banner_type",
+      "status",
+      "balance_config_version",
+      "pickup_operator_id",
+      "starts_at",
+      "ends_at",
+      "pity_config_json",
+      "pool_snapshot_json",
+      "created_at",
+      "updated_at",
+    ]);
+    expect(tableColumns("player_gacha_pity")).toEqual([
+      "account_id",
+      "banner_id",
+      "total_pull_count",
+      "elite_pity_count",
+      "pickup_elite_pity_count",
+      "rare_or_higher_pity_count",
+      "revision",
+      "last_batch_id",
+      "updated_at",
+    ]);
+    expect(tableColumns("gacha_pull_batches")).toEqual([
+      "id",
+      "account_id",
+      "banner_id",
+      "mutation_id",
+      "idempotency_key",
+      "pull_count",
+      "cost_item_id",
+      "cost_quantity",
+      "cost_ledger_id",
+      "pre_pity_json",
+      "post_pity_json",
+      "rng_seed_hash",
+      "result_summary_json",
+      "created_at",
+    ]);
+    expect(tableColumns("gacha_pull_results")).toEqual([
+      "id",
+      "batch_id",
+      "account_id",
+      "banner_id",
+      "pull_sequence",
+      "result_rarity",
+      "result_type",
+      "result_id",
+      "is_pickup",
+      "guarantee_type",
+      "was_duplicate",
+      "duplicate_conversion_json",
+      "operator_id",
+      "item_ledger_id",
+      "progression_ledger_id",
+      "created_at",
+    ]);
+    expect(indexNames("item_ledger")).toContain("idx_item_ledger_account_item_created");
+    expect(indexNames("gacha_pull_batches")).toEqual(
+      expect.arrayContaining(["idx_gacha_pull_batches_account_created", "idx_gacha_pull_batches_banner_created"])
+    );
+    expect(indexNames("gacha_pull_results")).toEqual(
+      expect.arrayContaining(["idx_gacha_pull_results_banner_rarity_created", "idx_gacha_pull_results_account_created"])
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-gacha-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO balance_config_drafts (
+         id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+       ) VALUES (
+         'draft-gacha-1', NULL, 1, 1, '{}', 'checksum-gacha-1', 1, 'PUBLISHED', 'test', 1, 1
+       );`
+    );
+    db.run(
+      `INSERT INTO balance_config_versions (
+         version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+       ) VALUES (
+         201, 1, 1, 'checksum-gacha-1', '{}', 1, 'test', 'draft-gacha-1'
+       );`
+    );
+    db.run(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES ('mutation-gacha-1', 'account-gacha-1', 1, 'GACHA_PULL', 'idem-gacha-1', 1);`
+    );
+    db.run(
+      `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+       VALUES ('account-gacha-1', 'cur_command_ticket', 9, 2);`
+    );
+    db.run(
+      `INSERT INTO item_ledger (
+         id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at
+       ) VALUES (
+         'item-ledger-cost-1', 'account-gacha-1', 'mutation-gacha-1', 'cur_command_ticket', -1, 9, 'GACHA_PULL_COST', 'GACHA_PULL', 'gacha-batch-1', 2
+       );`
+    );
+    db.run(
+      `INSERT INTO gacha_banners (
+         id, banner_type, status, balance_config_version, pickup_operator_id, starts_at, ends_at, pity_config_json, pool_snapshot_json, created_at, updated_at
+       ) VALUES (
+         'banner-gacha-1', 'PICKUP', 'ACTIVE', 201, 'op_vex', 1, NULL, '{"elite":30,"pickup":60,"rare":10}', '{"operators":["op_vex"]}', 1, 1
+       );`
+    );
+    db.run(
+      `INSERT INTO gacha_pull_batches (
+         id, account_id, banner_id, mutation_id, idempotency_key, pull_count, cost_item_id, cost_quantity, cost_ledger_id,
+         pre_pity_json, post_pity_json, rng_seed_hash, result_summary_json, created_at
+       ) VALUES (
+         'gacha-batch-1', 'account-gacha-1', 'banner-gacha-1', 'mutation-gacha-1', 'idem-gacha-1', 1,
+         'cur_command_ticket', 1, 'item-ledger-cost-1', '{"elite":29}', '{"elite":0}', 'seed-hash-1', '{"elite":1}', 2
+       );`
+    );
+    db.run(
+      `INSERT INTO player_gacha_pity (
+         account_id, banner_id, total_pull_count, elite_pity_count, pickup_elite_pity_count, rare_or_higher_pity_count, revision, last_batch_id, updated_at
+       ) VALUES (
+         'account-gacha-1', 'banner-gacha-1', 30, 0, 0, 0, 2, 'gacha-batch-1', 2
+       );`
+    );
+    db.run(
+      `INSERT INTO gacha_pull_results (
+         id, batch_id, account_id, banner_id, pull_sequence, result_rarity, result_type, result_id, is_pickup, guarantee_type,
+         was_duplicate, duplicate_conversion_json, operator_id, item_ledger_id, progression_ledger_id, created_at
+       ) VALUES (
+         'gacha-result-1', 'gacha-batch-1', 'account-gacha-1', 'banner-gacha-1', 1, 'ELITE', 'ELITE_OPERATOR',
+         'op_vex', 1, 'ELITE_30', 0, NULL, 'op_vex', NULL, NULL, 2
        );`
     );
 
