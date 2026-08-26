@@ -25,4 +25,13 @@ describe("ErrorLogsPage configuration", () => {
     expect(errorLogSummaryCards.every((card) => card.value === "연동 대기")).toBe(true);
     expect(errorLogDetailPlaceholders.every((placeholder) => placeholder.status === "연동 대기")).toBe(true);
   });
+
+  it("uses Korean labels while keeping ops log stable codes visible", () => {
+    const options = errorLogFilterGroups.flatMap((group) => group.options);
+
+    expect(options).toContain("개발 (DEV)");
+    expect(options).toContain("운영 (PRD)");
+    expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
+    expect(options).toContain("치명 오류 (fatal)");
+  });
 });

@@ -26,6 +26,10 @@ type ReviewStatus =
 type RunResult =
   | RunSearchResponse["items"][number]["result"]
   | SuspiciousPlayerDetail["suspiciousRuns"][number]["result"];
+type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" | "NONE";
+type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
+type OpsEnvironment = "DEV" | "PRD";
+type OpsSeverity = "warn" | "error" | "fatal";
 
 function labelFor<T extends string>(labels: Record<T, string>, value: T | string): string {
   return labels[value as T] ?? value;
@@ -116,6 +120,67 @@ export function enforcementLabel(enforcement: string): string {
 
 export function levelSourceLabel(source: LevelSource): string {
   return labelFor({ TRAINED: "훈련", SYNC: "동기화" }, source);
+}
+
+export function gachaErrorCodeLabel(code: string): string {
+  return labelFor(
+    {
+      insufficient_command_ticket: "지휘권 부족",
+      auth_required: "플레이어 인증 필요",
+      banner_inactive: "비활성 배너",
+      invalid_pull_count: "모집 횟수 오류",
+      contract_violation: "계약 위반",
+      gacha_pool_unavailable: "모집 풀 사용 불가",
+      gacha_state_conflict: "모집 상태 충돌",
+      gacha_temporarily_unavailable: "요원 모집 일시 사용 불가"
+    },
+    code
+  );
+}
+
+export function gachaGuaranteeTypeLabel(guaranteeType: GachaGuaranteeType | string | null): string {
+  if (!guaranteeType) return "보장 정보 없음";
+  return labelFor(
+    {
+      RARE_OR_HIGHER_10: "10회 희귀 이상 보장",
+      ELITE_30: "30뽑 정예 보장",
+      PICKUP_ELITE_60: "60뽑 픽업 정예 보장",
+      NONE: "보장 발동 없음"
+    },
+    guaranteeType
+  );
+}
+
+export function gachaResultStatusLabel(status: GachaResultStatus | string): string {
+  return labelFor(
+    {
+      ACCEPTED: "처리 완료",
+      DUPLICATE_REPLAY: "이전 결과 재조회",
+      REJECTED: "거절"
+    },
+    status
+  );
+}
+
+export function opsEnvironmentLabel(environment: OpsEnvironment | string): string {
+  return labelFor({ DEV: "개발", PRD: "운영" }, environment);
+}
+
+export function opsServiceLabel(service: string): string {
+  return labelFor(
+    {
+      "Admin API": "Admin API",
+      "Game API": "Game API",
+      "Async Worker": "Async Worker",
+      "Pages Function": "Pages Function",
+      "Unity Client Diagnostic": "Unity 클라이언트 진단"
+    },
+    service
+  );
+}
+
+export function opsSeverityLabel(severity: OpsSeverity | string): string {
+  return labelFor({ warn: "경고", error: "오류", fatal: "치명 오류" }, severity);
 }
 
 export function permissionLabel(permission: string): string {

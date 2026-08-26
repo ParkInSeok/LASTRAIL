@@ -1,9 +1,17 @@
+import {
+  gachaErrorCodeLabel,
+  gachaGuaranteeTypeLabel,
+  gachaResultStatusLabel
+} from "../shared/labels/adminLabels";
+
 type GachaReadOnlySection = {
   title: string;
   status: "조회 API 대기";
   description: string;
   fields: string[];
 };
+
+const labeledCode = (label: string, code: string) => `${label} (${code})`;
 
 export const gachaReadOnlySections: GachaReadOnlySection[] = [
   {
@@ -22,7 +30,41 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
     title: "뽑기 이력",
     status: "조회 API 대기",
     description: "pull batch/request와 개별 pull result를 순서대로 추적합니다.",
-    fields: ["batch ID", "Idempotency-Key", "소모 지휘권", "개별 결과", "픽업/보장 발동"]
+    fields: [
+      "batch ID",
+      "Idempotency-Key",
+      "소모 지휘권",
+      "개별 결과",
+      labeledCode(gachaResultStatusLabel("ACCEPTED"), "ACCEPTED"),
+      labeledCode(gachaResultStatusLabel("DUPLICATE_REPLAY"), "DUPLICATE_REPLAY"),
+      labeledCode(gachaResultStatusLabel("REJECTED"), "REJECTED")
+    ]
+  },
+  {
+    title: "보장 발동",
+    status: "조회 API 대기",
+    description: "서버가 확정한 guaranteeType을 표시하고 클라이언트 계산값은 사용하지 않습니다.",
+    fields: [
+      labeledCode(gachaGuaranteeTypeLabel("RARE_OR_HIGHER_10"), "RARE_OR_HIGHER_10"),
+      labeledCode(gachaGuaranteeTypeLabel("ELITE_30"), "ELITE_30"),
+      labeledCode(gachaGuaranteeTypeLabel("PICKUP_ELITE_60"), "PICKUP_ELITE_60"),
+      labeledCode(gachaGuaranteeTypeLabel("NONE"), "NONE")
+    ]
+  },
+  {
+    title: "거절/오류 코드",
+    status: "조회 API 대기",
+    description: "문의 대응과 진단에 필요한 gacha errorCode를 한국어로 표시합니다.",
+    fields: [
+      labeledCode(gachaErrorCodeLabel("insufficient_command_ticket"), "insufficient_command_ticket"),
+      labeledCode(gachaErrorCodeLabel("auth_required"), "auth_required"),
+      labeledCode(gachaErrorCodeLabel("banner_inactive"), "banner_inactive"),
+      labeledCode(gachaErrorCodeLabel("invalid_pull_count"), "invalid_pull_count"),
+      labeledCode(gachaErrorCodeLabel("contract_violation"), "contract_violation"),
+      labeledCode(gachaErrorCodeLabel("gacha_pool_unavailable"), "gacha_pool_unavailable"),
+      labeledCode(gachaErrorCodeLabel("gacha_state_conflict"), "gacha_state_conflict"),
+      labeledCode(gachaErrorCodeLabel("gacha_temporarily_unavailable"), "gacha_temporarily_unavailable")
+    ]
   },
   {
     title: "중복/조각 변환",

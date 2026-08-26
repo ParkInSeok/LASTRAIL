@@ -1,3 +1,9 @@
+import {
+  opsEnvironmentLabel,
+  opsServiceLabel,
+  opsSeverityLabel
+} from "../shared/labels/adminLabels";
+
 type ErrorLogSummaryCard = {
   label: string;
   value: "연동 대기";
@@ -15,6 +21,8 @@ type ErrorLogDetailPlaceholder = {
   description: string;
 };
 
+const labeledCode = (label: string, code: string) => `${label} (${code})`;
+
 export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
   { label: "최근 오류", value: "연동 대기", note: "최근 런타임 error 이벤트" },
   { label: "경고", value: "연동 대기", note: "warn 심각도 이벤트" },
@@ -24,9 +32,14 @@ export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
 ];
 
 export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
-  { label: "환경", options: ["DEV", "PRD"] },
-  { label: "서비스", options: ["Admin API", "Game API", "Async Worker", "Pages Function", "Unity Client Diagnostic"] },
-  { label: "심각도", options: ["warn", "error", "fatal"] },
+  { label: "환경", options: ["DEV", "PRD"].map((code) => labeledCode(opsEnvironmentLabel(code), code)) },
+  {
+    label: "서비스",
+    options: ["Admin API", "Game API", "Async Worker", "Pages Function", "Unity Client Diagnostic"].map((code) =>
+      labeledCode(opsServiceLabel(code), code)
+    )
+  },
+  { label: "심각도", options: ["warn", "error", "fatal"].map((code) => labeledCode(opsSeverityLabel(code), code)) },
   { label: "식별자", options: ["errorCode", "requestId", "accountId", "runId", "rewardPreviewId", "gachaBatchId"] },
   { label: "시간 범위", options: ["최근 1시간", "최근 24시간", "최근 7일", "사용자 지정"] }
 ];

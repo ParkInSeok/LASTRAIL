@@ -7,7 +7,13 @@ import {
   classificationLabel,
   enforcementLabel,
   evidenceCodeLabel,
+  gachaErrorCodeLabel,
+  gachaGuaranteeTypeLabel,
+  gachaResultStatusLabel,
   levelSourceLabel,
+  opsEnvironmentLabel,
+  opsServiceLabel,
+  opsSeverityLabel,
   permissionLabel,
   priorityLabel,
   resourceTypeLabel,
@@ -39,5 +45,32 @@ describe("adminLabels", () => {
   it("keeps unknown backend codes readable instead of hiding them", () => {
     expect(enforcementLabel("CUSTOM_MARK")).toBe("CUSTOM_MARK");
     expect(evidenceCodeLabel("UNKNOWN_SIGNAL")).toBe("UNKNOWN_SIGNAL");
+  });
+
+  it("translates gacha guarantee and result codes into Korean labels", () => {
+    expect(gachaGuaranteeTypeLabel("RARE_OR_HIGHER_10")).toBe("10회 희귀 이상 보장");
+    expect(gachaGuaranteeTypeLabel("ELITE_30")).toBe("30뽑 정예 보장");
+    expect(gachaGuaranteeTypeLabel("PICKUP_ELITE_60")).toBe("60뽑 픽업 정예 보장");
+    expect(gachaGuaranteeTypeLabel("NONE")).toBe("보장 발동 없음");
+    expect(gachaResultStatusLabel("ACCEPTED")).toBe("처리 완료");
+    expect(gachaResultStatusLabel("DUPLICATE_REPLAY")).toBe("이전 결과 재조회");
+    expect(gachaResultStatusLabel("REJECTED")).toBe("거절");
+  });
+
+  it("translates gacha error codes while preserving unknown fallback", () => {
+    expect(gachaErrorCodeLabel("insufficient_command_ticket")).toBe("지휘권 부족");
+    expect(gachaErrorCodeLabel("auth_required")).toBe("플레이어 인증 필요");
+    expect(gachaErrorCodeLabel("gacha_temporarily_unavailable")).toBe("요원 모집 일시 사용 불가");
+    expect(gachaErrorCodeLabel("unknown_gacha_code")).toBe("unknown_gacha_code");
+  });
+
+  it("translates ops error log environment, service, and severity labels", () => {
+    expect(opsEnvironmentLabel("DEV")).toBe("개발");
+    expect(opsEnvironmentLabel("PRD")).toBe("운영");
+    expect(opsServiceLabel("Pages Function")).toBe("Pages Function");
+    expect(opsServiceLabel("Unity Client Diagnostic")).toBe("Unity 클라이언트 진단");
+    expect(opsSeverityLabel("warn")).toBe("경고");
+    expect(opsSeverityLabel("error")).toBe("오류");
+    expect(opsSeverityLabel("fatal")).toBe("치명 오류");
   });
 });
