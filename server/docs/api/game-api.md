@@ -37,3 +37,10 @@ The endpoint reads published versions from D1 `balance_config_versions` and retu
 - `payload`
 
 Only positive integer versions are accepted. Missing/unpublished versions return `BALANCE_CONFIG_NOT_PUBLISHED`. Invalid stored JSON returns `BALANCE_CONFIG_PAYLOAD_INVALID`.
+
+## Run Finish / Reward
+
+Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.md`.
+
+Accepted run finish responses return `rewardPreviewId` first. Reward review and
+claim/commit follow `docs/api/run-reward-preview-claim.md`.

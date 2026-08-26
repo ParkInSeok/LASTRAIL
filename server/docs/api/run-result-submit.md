@@ -2,6 +2,8 @@
 
 This draft is the server-side contract for Unity run result submission. It is not an implementation plan for reward calculation details.
 
+Reward preview and claim/commit follow-up is defined in `docs/api/run-reward-preview-claim.md`.
+
 ## Endpoint
 
 Use the existing run resource shape from the server Source of Truth:
