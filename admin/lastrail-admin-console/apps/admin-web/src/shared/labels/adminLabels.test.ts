@@ -49,9 +49,9 @@ describe("adminLabels", () => {
 
   it("translates gacha guarantee and result codes into Korean labels", () => {
     expect(gachaGuaranteeTypeLabel("RARE_OR_HIGHER_10")).toBe("10회 희귀 이상 보장");
-    expect(gachaGuaranteeTypeLabel("ELITE_30")).toBe("30뽑 정예 보장");
-    expect(gachaGuaranteeTypeLabel("PICKUP_ELITE_60")).toBe("60뽑 픽업 정예 보장");
-    expect(gachaGuaranteeTypeLabel("NONE")).toBe("보장 발동 없음");
+    expect(gachaGuaranteeTypeLabel("ELITE_30")).toBe("30뽑 정예 확정");
+    expect(gachaGuaranteeTypeLabel("PICKUP_ELITE_60")).toBe("60뽑 픽업 정예 확정");
+    expect(gachaGuaranteeTypeLabel("NONE")).toBe("보장 없음");
     expect(gachaResultStatusLabel("ACCEPTED")).toBe("처리 완료");
     expect(gachaResultStatusLabel("DUPLICATE_REPLAY")).toBe("이전 결과 재조회");
     expect(gachaResultStatusLabel("REJECTED")).toBe("거절");
@@ -59,8 +59,10 @@ describe("adminLabels", () => {
 
   it("translates gacha error codes while preserving unknown fallback", () => {
     expect(gachaErrorCodeLabel("insufficient_command_ticket")).toBe("지휘권 부족");
-    expect(gachaErrorCodeLabel("auth_required")).toBe("플레이어 인증 필요");
-    expect(gachaErrorCodeLabel("gacha_temporarily_unavailable")).toBe("요원 모집 일시 사용 불가");
+    expect(gachaErrorCodeLabel("auth_required")).toBe("인증 필요");
+    expect(gachaErrorCodeLabel("banner_inactive")).toBe("비활성 모집 배너");
+    expect(gachaErrorCodeLabel("invalid_pull_count")).toBe("잘못된 모집 횟수");
+    expect(gachaErrorCodeLabel("gacha_temporarily_unavailable")).toBe("모집 일시 사용 불가");
     expect(gachaErrorCodeLabel("unknown_gacha_code")).toBe("unknown_gacha_code");
   });
 

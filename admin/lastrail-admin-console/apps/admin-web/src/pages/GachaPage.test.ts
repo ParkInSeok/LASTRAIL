@@ -21,7 +21,7 @@ describe("GachaPage configuration", () => {
   it("uses Korean labels while keeping stable backend codes visible", () => {
     const fields = gachaReadOnlySections.flatMap((section) => section.fields);
 
-    expect(fields).toContain("60뽑 픽업 정예 보장 (PICKUP_ELITE_60)");
+    expect(fields).toContain("60뽑 픽업 정예 확정 (PICKUP_ELITE_60)");
     expect(fields).toContain("이전 결과 재조회 (DUPLICATE_REPLAY)");
     expect(fields).toContain("지휘권 부족 (insufficient_command_ticket)");
   });

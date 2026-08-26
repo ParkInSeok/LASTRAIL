@@ -126,13 +126,13 @@ export function gachaErrorCodeLabel(code: string): string {
   return labelFor(
     {
       insufficient_command_ticket: "지휘권 부족",
-      auth_required: "플레이어 인증 필요",
-      banner_inactive: "비활성 배너",
-      invalid_pull_count: "모집 횟수 오류",
+      auth_required: "인증 필요",
+      banner_inactive: "비활성 모집 배너",
+      invalid_pull_count: "잘못된 모집 횟수",
       contract_violation: "계약 위반",
       gacha_pool_unavailable: "모집 풀 사용 불가",
       gacha_state_conflict: "모집 상태 충돌",
-      gacha_temporarily_unavailable: "요원 모집 일시 사용 불가"
+      gacha_temporarily_unavailable: "모집 일시 사용 불가"
     },
     code
   );
@@ -143,9 +143,9 @@ export function gachaGuaranteeTypeLabel(guaranteeType: GachaGuaranteeType | stri
   return labelFor(
     {
       RARE_OR_HIGHER_10: "10회 희귀 이상 보장",
-      ELITE_30: "30뽑 정예 보장",
-      PICKUP_ELITE_60: "60뽑 픽업 정예 보장",
-      NONE: "보장 발동 없음"
+      ELITE_30: "30뽑 정예 확정",
+      PICKUP_ELITE_60: "60뽑 픽업 정예 확정",
+      NONE: "보장 없음"
     },
     guaranteeType
   );
