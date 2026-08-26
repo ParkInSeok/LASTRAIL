@@ -3,7 +3,7 @@ import { z } from "zod";
 const ConfigSchema = z.object({
   ADMIN_API_BASE_URL: z.string().url(),
   LASTRAIL_ADMIN_PROFILE: z
-    .enum(["local", "staging", "production"])
+    .enum(["local", "dev", "prd"])
     .default("local"),
   ADMIN_BACKEND_HOST: z.string().default("127.0.0.1"),
   ADMIN_BACKEND_PORT: z.coerce.number().int().positive().default(4174),
@@ -15,7 +15,7 @@ const ConfigSchema = z.object({
 
 export type AdminBackendConfig = {
   adminApiBaseUrl: string;
-  profile: "local" | "staging" | "production";
+  profile: "local" | "dev" | "prd";
   host: string;
   port: number;
   cloudflareAccessClientId?: string;

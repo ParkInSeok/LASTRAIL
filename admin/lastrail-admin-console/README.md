@@ -53,12 +53,14 @@ Deploy commands from `apps/admin-web`:
 
 ```cmd
 npm run deploy:preview
-npm run deploy:production
+npm run deploy:prd
 ```
 
-Staging and production use separate launchers:
+Local DEV and PRD-mode launchers:
 
 ```cmd
-lastrail-admin-console\start-admin-staging.cmd
+lastrail-admin-console\start-admin-dev.cmd
 lastrail-admin-console\start-admin-production.cmd
 ```
+
+PRD is kept as a code/config axis only. Do not run PRD deploys, set production secrets, connect the official domain, or finalize Access without an explicit release instruction.

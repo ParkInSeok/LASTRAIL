@@ -12,7 +12,7 @@ import {
 describe("admin contracts", () => {
   it("derives read permissions from the permission registry", () => {
     const bootstrap = BootstrapResponseSchema.parse({
-      environment: "staging",
+      environment: "dev",
       admin: {
         id: "admin-1",
         displayName: "Operator One",

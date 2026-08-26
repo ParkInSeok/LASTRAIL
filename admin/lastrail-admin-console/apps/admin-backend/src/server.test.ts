@@ -8,7 +8,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174,
         cloudflareAccessClientId: "client-id",
@@ -44,7 +44,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -78,7 +78,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -119,7 +119,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -160,7 +160,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -206,7 +206,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -248,7 +248,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -289,7 +289,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },
@@ -335,7 +335,7 @@ describe("admin backend routes", () => {
     const server = buildServer({
       config: {
         adminApiBaseUrl: "https://admin-api.example.test",
-        profile: "staging",
+        profile: "dev",
         host: "127.0.0.1",
         port: 4174
       },

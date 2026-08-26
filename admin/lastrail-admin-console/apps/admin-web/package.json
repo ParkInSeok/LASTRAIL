@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1 --port 5174",
     "build": "tsc --noEmit && vite build",
     "deploy:preview": "npm run build && wrangler pages deploy dist --project-name lastrail-admin-console --branch preview",
-    "deploy:production": "npm run build && wrangler pages deploy dist --project-name lastrail-admin-console --branch production",
+    "deploy:prd": "npm run build && wrangler pages deploy dist --project-name lastrail-admin-console --branch production",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -20,7 +20,7 @@ export const AdminIdentitySchema = z.object({
 });
 
 export const BootstrapResponseSchema = z.object({
-  environment: z.enum(["local", "staging", "production"]),
+  environment: z.enum(["local", "dev", "prd"]),
   admin: AdminIdentitySchema
 });
 

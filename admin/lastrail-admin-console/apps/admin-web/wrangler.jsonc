@@ -5,19 +5,19 @@
   "compatibility_date": "2026-08-26",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "ADMIN_PROFILE": "production",
+    "ADMIN_PROFILE": "prd",
     "ADMIN_API_BASE_URL": "https://admin.lastrail.app"
   },
   "env": {
     "preview": {
       "vars": {
-        "ADMIN_PROFILE": "staging",
+        "ADMIN_PROFILE": "dev",
         "ADMIN_API_BASE_URL": "https://dev-admin.lastrail.app"
       }
     },
     "production": {
       "vars": {
-        "ADMIN_PROFILE": "production",
+        "ADMIN_PROFILE": "prd",
         "ADMIN_API_BASE_URL": "https://admin.lastrail.app"
       }
     }

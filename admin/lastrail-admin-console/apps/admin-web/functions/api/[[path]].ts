@@ -2,7 +2,7 @@ import { AdminRoleSchema, BootstrapResponseSchema, rolePermissions } from "@last
 
 type Env = {
   ADMIN_API_BASE_URL: string;
-  ADMIN_PROFILE?: "local" | "staging" | "production";
+  ADMIN_PROFILE?: "local" | "dev" | "prd";
   CF_ACCESS_CLIENT_ID?: string;
   CF_ACCESS_CLIENT_SECRET?: string;
   ADMIN_API_TOKEN?: string;
@@ -86,7 +86,7 @@ async function bootstrap(request: Request, env: Env, requestId: string): Promise
   const role = AdminRoleSchema.parse(raw.principal.role);
   return Response.json(
     BootstrapResponseSchema.parse({
-      environment: env.ADMIN_PROFILE ?? "production",
+      environment: env.ADMIN_PROFILE ?? "prd",
       admin: {
         id: raw.principal.id,
         displayName: raw.principal.displayName ?? raw.principal.id,
