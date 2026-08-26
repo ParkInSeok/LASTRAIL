@@ -90,7 +90,9 @@ pnpm --filter @lastrail/admin-api wrangler deploy --env dev
 
 ## Register DEV Admin Principal
 
-After signing in through the DEV Access application, copy the Access JWT `sub` that should become the DEV admin owner. Do not invent a subject and do not authorize by email alone.
+After signing in through the DEV Access application, call `GET /v1/admin/bootstrap/access-subject` to read the verified Access JWT `sub` that should become the DEV admin owner. This endpoint is available only when `ENVIRONMENT=DEV`; it must not be exposed for STAGING or PRODUCTION.
+
+Do not copy raw Access JWTs, inspect browser cookies, invent a subject, or authorize by email alone.
 
 Apply the DEV principal with:
 

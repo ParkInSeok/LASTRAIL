@@ -150,6 +150,38 @@ describe("admin-api auth", () => {
     await expect(response.json()).resolves.toEqual({ error: "ADMIN_PRINCIPAL_NOT_AUTHORIZED" });
   });
 
+  it("returns the verified Access subject for DEV bootstrap without requiring a principal", async () => {
+    const { token, publicJwk } = await createAccessJwt({ subject: "access|owner-1" });
+
+    await withJwks(publicJwk, async () => {
+      const response = await app.request(
+        "/v1/admin/bootstrap/access-subject",
+        { headers: { "Cf-Access-Jwt-Assertion": token } },
+        createAccessEnv(null),
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual({ accessSubject: "access|owner-1" });
+    });
+  });
+
+  it("does not expose the Access subject bootstrap endpoint outside DEV", async () => {
+    const { token, publicJwk } = await createAccessJwt({ subject: "access|owner-1" });
+    const env = createAccessEnv(null);
+    env.ENVIRONMENT = "PRODUCTION";
+
+    await withJwks(publicJwk, async () => {
+      const response = await app.request(
+        "/v1/admin/bootstrap/access-subject",
+        { headers: { "Cf-Access-Jwt-Assertion": token } },
+        env,
+      );
+
+      expect(response.status).toBe(404);
+      await expect(response.json()).resolves.toEqual({ error: "NOT_FOUND" });
+    });
+  });
+
   it("does not trust subject headers outside local header auth mode", async () => {
     const env = createEnv({
       id: "principal-1",

@@ -192,28 +192,32 @@ async function verifyAccessJwt(token: string, issuer: string, audience: string, 
   return payload.sub;
 }
 
-async function authenticateAdmin(c: AppContext): Promise<AdminPrincipalRow | Response> {
-  let accessSubject: string | null = null;
-
+async function extractAccessSubject(c: AppContext): Promise<string | Response> {
   if (c.env.ADMIN_AUTH_MODE === "LOCAL_HEADER") {
-    accessSubject = c.req.header("Cf-Access-Subject") ?? null;
+    const accessSubject = c.req.header("Cf-Access-Subject") ?? null;
+    if (!accessSubject) {
+      return c.json({ error: "ADMIN_ACCESS_SUBJECT_REQUIRED" }, 401);
+    }
+    return accessSubject;
   } else if (c.env.ADMIN_ACCESS_ISSUER.length > 0 && c.env.ADMIN_ACCESS_AUD.length > 0) {
     const token = c.req.header("Cf-Access-Jwt-Assertion");
     if (!token) {
       return c.json({ error: "ADMIN_ACCESS_JWT_REQUIRED" }, 401);
     }
 
-    accessSubject = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD);
+    const accessSubject = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD);
     if (accessSubject === null) {
       return c.json({ error: "ADMIN_ACCESS_JWT_INVALID" }, 403);
     }
+    return accessSubject;
   } else {
     return c.json({ error: "ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED" }, 501);
   }
+}
 
-  if (!accessSubject) {
-    return c.json({ error: "ADMIN_ACCESS_SUBJECT_REQUIRED" }, 401);
-  }
+async function authenticateAdmin(c: AppContext): Promise<AdminPrincipalRow | Response> {
+  const accessSubject = await extractAccessSubject(c);
+  if (accessSubject instanceof Response) return accessSubject;
 
   const principal = await c.env.DB.prepare(
     `SELECT id, access_subject, role, status, display_name
@@ -370,6 +374,16 @@ async function writeBalancePublishFailureAudit(
 }
 
 app.get("/status", (c) => c.json({ ok: true, service: "admin-api", requestId: createRequestId() }));
+app.get("/v1/admin/bootstrap/access-subject", async (c) => {
+  if (c.env.ENVIRONMENT !== "DEV") {
+    return c.json({ error: "NOT_FOUND" }, 404);
+  }
+
+  const accessSubject = await extractAccessSubject(c);
+  if (accessSubject instanceof Response) return accessSubject;
+
+  return c.json({ accessSubject });
+});
 app.get("/v1/admin/me", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;

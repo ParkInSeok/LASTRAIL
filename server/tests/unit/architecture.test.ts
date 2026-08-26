@@ -47,6 +47,7 @@ describe("repository architecture", () => {
     expect(adminAccess).toContain("dev-admin.lastrail.app");
     expect(adminAccess).toContain("LAST RAIL Admin DEV");
     expect(adminAccess).toContain("pnpm access:dev:apply-vars");
+    expect(adminAccess).toContain("GET /v1/admin/bootstrap/access-subject");
     expect(adminAccess).toContain("Confirm `https://dev-api.lastrail.app/status` remains public");
     expect(adminAccess).toContain("`api.lastrail.app` is public Game API traffic and must not be protected by Cloudflare Access.");
     expect(setup).toContain("Keep `dev-api.lastrail.app` public.");
