@@ -44,3 +44,8 @@ Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.m
 
 Accepted run finish responses return `rewardPreviewId` first. Reward review and
 claim/commit follow `docs/api/run-reward-preview-claim.md`.
+
+## Gacha
+
+Gacha pull history, banner pity state, duplicate conversion, and ticket/material
+ledger linkage are drafted in `docs/api/gacha-pity-result-history.md`.
