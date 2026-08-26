@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import type { AuditLogsResponse } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 
@@ -24,12 +24,33 @@ export function auditResourceHref(resourceType: string, resourceId: string | nul
   return null;
 }
 
+function auditResultFromSearchParam(value: string | null): AuditFilters["result"] {
+  if (value === "SUCCESS" || value === "FAILURE") return value;
+  return "";
+}
+
+export function auditFiltersFromSearchParams(searchParams: URLSearchParams): AuditFilters {
+  return {
+    action: searchParams.get("action")?.trim() ?? "",
+    resourceId: searchParams.get("resourceId")?.trim() ?? "",
+    result: auditResultFromSearchParam(searchParams.get("result"))
+  };
+}
+
+export function auditSearchParamsFromFilters(filters: AuditFilters): URLSearchParams {
+  const searchParams = new URLSearchParams();
+  const action = filters.action.trim();
+  const resourceId = filters.resourceId.trim();
+  if (action) searchParams.set("action", action);
+  if (resourceId) searchParams.set("resourceId", resourceId);
+  if (filters.result) searchParams.set("result", filters.result);
+  return searchParams;
+}
+
 export function AuditPage() {
-  const [draft, setDraft] = useState<AuditFilters>({
-    action: "",
-    resourceId: "",
-    result: ""
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentFilters = auditFiltersFromSearchParams(searchParams);
+  const [draft, setDraft] = useState<AuditFilters>(currentFilters);
   const [filters, setFilters] = useState<AuditFilters>(draft);
   const [selectedAuditLog, setSelectedAuditLog] = useState<AuditLogItem | null>(null);
   const query = useQuery({
@@ -45,6 +66,7 @@ export function AuditPage() {
   function submitFilters(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFilters(draft);
+    setSearchParams(auditSearchParamsFromFilters(draft));
   }
 
   return (
