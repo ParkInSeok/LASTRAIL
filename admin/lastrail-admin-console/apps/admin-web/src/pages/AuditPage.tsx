@@ -1,5 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import type { AuditLogsResponse } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 
 type AuditFilters = {
@@ -8,9 +10,18 @@ type AuditFilters = {
   result: "" | "SUCCESS" | "FAILURE";
 };
 
-function compactSummary(value: unknown): string {
+type AuditLogItem = AuditLogsResponse["items"][number];
+
+export function compactAuditSummary(value: unknown): string {
   if (value === null || typeof value !== "object") return String(value);
   return JSON.stringify(value);
+}
+
+export function auditResourceHref(resourceType: string, resourceId: string | null): string | null {
+  if (!resourceId) return null;
+  if (resourceType === "account") return `/players/${encodeURIComponent(resourceId)}`;
+  if (resourceType === "run") return `/runs/${encodeURIComponent(resourceId)}`;
+  return null;
 }
 
 export function AuditPage() {
@@ -20,6 +31,7 @@ export function AuditPage() {
     result: ""
   });
   const [filters, setFilters] = useState<AuditFilters>(draft);
+  const [selectedAuditLog, setSelectedAuditLog] = useState<AuditLogItem | null>(null);
   const query = useQuery({
     queryKey: ["audit", filters],
     queryFn: () =>
@@ -71,39 +83,95 @@ export function AuditPage() {
       {query.error ? <p className="error">Audit request failed</p> : null}
       {query.data?.items.length === 0 ? <p>No audit logs found</p> : null}
       {query.data && query.data.items.length > 0 ? (
-        <table>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Actor</th>
-              <th>Action</th>
-              <th>Resource</th>
-              <th>Result</th>
-              <th>Summary</th>
-            </tr>
-          </thead>
-          <tbody>
-            {query.data.items.map((item) => (
-              <tr key={item.id}>
-                <td>{new Date(item.createdAt).toLocaleString()}</td>
-                <td>
-                  {item.principalDisplayName}
-                  <small>{item.role}</small>
-                </td>
-                <td>
-                  {item.action}
-                  <small>{item.permission}</small>
-                </td>
-                <td>
-                  {item.resourceType}
-                  <small>{item.resourceId ?? "-"}</small>
-                </td>
-                <td>{item.result}</td>
-                <td className="audit-summary">{compactSummary(item.changeSummary)}</td>
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Actor</th>
+                <th>Action</th>
+                <th>Resource</th>
+                <th>Result</th>
+                <th>Summary</th>
+                <th>Detail</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {query.data.items.map((item) => {
+                const resourceHref = auditResourceHref(item.resourceType, item.resourceId);
+                return (
+                  <tr key={item.id}>
+                    <td>{new Date(item.createdAt).toLocaleString()}</td>
+                    <td>
+                      {item.principalDisplayName}
+                      <small>{item.role}</small>
+                    </td>
+                    <td>
+                      {item.action}
+                      <small>{item.permission}</small>
+                    </td>
+                    <td>
+                      {item.resourceType}
+                      <small>
+                        {resourceHref ? (
+                          <Link to={resourceHref}>{item.resourceId}</Link>
+                        ) : (
+                          item.resourceId ?? "-"
+                        )}
+                      </small>
+                    </td>
+                    <td>{item.result}</td>
+                    <td className="audit-summary">{compactAuditSummary(item.changeSummary)}</td>
+                    <td>
+                      <button type="button" onClick={() => setSelectedAuditLog(item)}>
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {selectedAuditLog ? (
+            <aside className="detail-panel" aria-label="Audit detail">
+              <header className="detail-panel-header">
+                <div>
+                  <h2>{selectedAuditLog.action}</h2>
+                  <p>{selectedAuditLog.id}</p>
+                </div>
+                <button type="button" onClick={() => setSelectedAuditLog(null)}>
+                  Close
+                </button>
+              </header>
+              <dl className="detail-list">
+                <dt>Actor</dt>
+                <dd>
+                  {selectedAuditLog.principalDisplayName} ({selectedAuditLog.role})
+                </dd>
+                <dt>Permission</dt>
+                <dd>{selectedAuditLog.permission}</dd>
+                <dt>Resource</dt>
+                <dd>
+                  {selectedAuditLog.resourceType} / {selectedAuditLog.resourceId ?? "-"}
+                </dd>
+                <dt>Request</dt>
+                <dd>{selectedAuditLog.requestId}</dd>
+                <dt>Confirmation</dt>
+                <dd>{selectedAuditLog.confirmationId ?? "-"}</dd>
+                <dt>Payload hash</dt>
+                <dd>{selectedAuditLog.payloadHash ?? "-"}</dd>
+                <dt>Result</dt>
+                <dd>
+                  {selectedAuditLog.result}
+                  {selectedAuditLog.errorCode ? ` (${selectedAuditLog.errorCode})` : ""}
+                </dd>
+                <dt>Created</dt>
+                <dd>{new Date(selectedAuditLog.createdAt).toLocaleString()}</dd>
+              </dl>
+              <pre>{JSON.stringify(selectedAuditLog.changeSummary, null, 2)}</pre>
+            </aside>
+          ) : null}
+        </>
       ) : null}
     </main>
   );
