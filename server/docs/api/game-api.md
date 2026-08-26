@@ -89,7 +89,43 @@ Security notes:
 - `auth_sessions.refresh_token_hash` stores only a SHA-256 hash.
 - Access token TTL is currently 15 minutes.
 - Guest refresh token/session TTL is currently 30 days.
-- `POST /v1/auth/refresh` is reserved for the next auth slice.
+
+`POST /v1/auth/refresh` rotates a refresh token and returns a new token pair.
+
+Request:
+
+```json
+{
+  "refreshToken": "refresh_..."
+}
+```
+
+Response:
+
+```json
+{
+  "tokenType": "Bearer",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:30:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:15:00.000Z"
+}
+```
+
+Refresh rules:
+
+- Lookup uses `sha256(refreshToken)` against
+  `auth_sessions.refresh_token_hash`.
+- Only `ACTIVE` sessions for `ACTIVE` accounts can refresh.
+- Successful refresh marks the old session `ROTATED`.
+- Successful refresh inserts a new `ACTIVE` session in the same family with
+  `generation + 1`.
+- Reusing an already `ROTATED` refresh token marks active/rotated sessions in
+  that family as `REUSED` and returns `refresh_token_reused`.
 
 ## Client Config
 

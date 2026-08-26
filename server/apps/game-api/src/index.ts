@@ -76,6 +76,12 @@ type AuthSessionAccountRow = {
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
 };
 
+type RefreshSessionAccountRow = AuthSessionAccountRow & {
+  refresh_token_hash: string;
+  family_id: string;
+  generation: number;
+};
+
 type AuthContext = {
   accountId: string;
   sessionId: string;
@@ -295,6 +301,98 @@ app.post("/v1/auth/guest", async (c) => {
     accessToken,
     accessTokenExpiresAt: toIso(accessTokenExpiresAt),
     refreshToken,
+    refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
+  });
+});
+app.post("/v1/auth/refresh", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  let body: { refreshToken?: unknown };
+  try {
+    body = await c.req.json();
+  } catch {
+    body = {};
+  }
+
+  if (typeof body.refreshToken !== "string" || body.refreshToken.trim() === "") {
+    return c.json(createAuthError("contract_violation", "refreshToken is required."), 400);
+  }
+
+  const refreshTokenHash = await hashRefreshToken(body.refreshToken);
+  const row = await c.env.DB.prepare(
+    `SELECT sessions.id AS session_id, sessions.account_id, sessions.refresh_token_hash,
+            sessions.family_id, sessions.generation, sessions.status AS session_status,
+            sessions.expires_at AS session_expires_at, accounts.status AS account_status
+     FROM auth_sessions sessions
+     JOIN accounts ON accounts.id = sessions.account_id
+     WHERE sessions.refresh_token_hash = ?`,
+  )
+    .bind(refreshTokenHash)
+    .first<RefreshSessionAccountRow>();
+
+  if (row === null) {
+    return c.json(createAuthError("refresh_token_invalid", "Refresh token is invalid."), 401);
+  }
+
+  const now = Date.now();
+  if (row.session_status === "ROTATED") {
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        `UPDATE auth_sessions
+         SET status = 'REUSED', rotated_at = ?
+         WHERE family_id = ? AND status IN ('ACTIVE','ROTATED')`,
+      ).bind(now, row.family_id),
+    ]);
+    return c.json(createAuthError("refresh_token_reused", "Refresh token was already rotated."), 401);
+  }
+
+  if (row.session_status !== "ACTIVE" || row.session_expires_at <= now) {
+    return c.json(createAuthError("refresh_session_invalid", "Refresh session is invalid or expired."), 401);
+  }
+
+  if (row.account_status !== "ACTIVE") {
+    return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+  }
+
+  const newSessionId = createDomainId("session");
+  const newRefreshToken = createRefreshToken();
+  const newRefreshTokenHash = await hashRefreshToken(newRefreshToken);
+  const accessTokenTtlMs = 15 * 60 * 1000;
+  const refreshTokenTtlMs = 30 * 24 * 60 * 60 * 1000;
+  const accessTokenExpiresAt = now + accessTokenTtlMs;
+  const refreshTokenExpiresAt = now + refreshTokenTtlMs;
+  const accessToken = await createAccessToken({
+    secret,
+    accountId: row.account_id,
+    sessionId: newSessionId,
+    nowMs: now,
+    ttlMs: accessTokenTtlMs,
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `UPDATE auth_sessions
+       SET status = 'ROTATED', rotated_at = ?
+       WHERE id = ? AND status = 'ACTIVE'`,
+    ).bind(now, row.session_id),
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(newSessionId, row.account_id, newRefreshTokenHash, row.family_id, row.generation + 1, now, refreshTokenExpiresAt),
+  ]);
+
+  return c.json({
+    tokenType: "Bearer",
+    account: {
+      id: row.account_id,
+      status: "ACTIVE",
+    },
+    accessToken,
+    accessTokenExpiresAt: toIso(accessTokenExpiresAt),
+    refreshToken: newRefreshToken,
     refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
   });
 });
