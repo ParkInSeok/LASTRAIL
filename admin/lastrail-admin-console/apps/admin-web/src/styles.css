@@ -194,6 +194,51 @@ th {
   margin-top: 0;
 }
 
+.dashboard-sections {
+  display: grid;
+  gap: 18px;
+}
+
+.metric-grid,
+.shortcut-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.metric-card,
+.shortcut-card {
+  background: #f8fafc;
+  border: 1px solid #e5e9f0;
+  border-radius: 6px;
+  min-height: 104px;
+  padding: 14px;
+}
+
+.metric-card span {
+  color: #667085;
+  display: block;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.metric-card strong,
+.shortcut-card strong {
+  color: #1a1d21;
+  display: block;
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.shortcut-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shortcut-card:hover {
+  border-color: #9db3d8;
+}
+
 .note-form {
   display: grid;
   gap: 10px;
