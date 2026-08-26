@@ -124,6 +124,7 @@ Response:
   "runId": "run_...",
   "rewardPreviewId": "reward_preview_...",
   "status": "ACTIVE",
+  "claimability": "CLAIMABLE",
   "balanceVersion": "1",
   "expiresAt": "2026-08-27T00:00:00.000Z",
   "serverCalculatedAt": "2026-08-26T00:00:00.000Z",
@@ -155,6 +156,7 @@ Response:
 Rules:
 
 - `balanceVersion` is a string in the API response.
+- `claimability` is `CLAIMABLE`, `ALREADY_CLAIMED`, `EXPIRED`, or `INVALIDATED`.
 - Quantities are safe integers and server-calculated.
 - `rewardLines` are displayable preview data, not a committed ledger.
 - The response must not expose internal ledger IDs before claim.
@@ -299,6 +301,7 @@ Reward preview lookup DTO:
 runId: string
 rewardPreviewId: string
 status: ACTIVE | CLAIMED | EXPIRED | INVALIDATED
+claimability: CLAIMABLE | ALREADY_CLAIMED | EXPIRED | INVALIDATED
 balanceVersion: string
 expiresAt: ISO UTC string
 serverCalculatedAt: ISO UTC string
