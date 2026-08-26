@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import app from "../../apps/game-api/src/index";
+import { createAccessToken } from "../../apps/game-api/src/auth";
 
 type GachaBannerRow = {
   id: string;
@@ -8,18 +9,48 @@ type GachaBannerRow = {
   ends_at: number | null;
 };
 
-function createEnv(row: GachaBannerRow | null): Env {
+type TestEnv = Env & {
+  AUTH_SIGNING_KEY_CURRENT: string;
+};
+
+const authSecret = "test-secret-minimum-32-characters";
+
+async function createAuthorizationHeader(): Promise<string> {
+  const token = await createAccessToken({
+    secret: authSecret,
+    accountId: "account_1",
+    sessionId: "session_1",
+    nowMs: Date.now(),
+    ttlMs: 900000,
+  });
+  return `Bearer ${token}`;
+}
+
+function createEnv(row: GachaBannerRow | null): TestEnv {
   return {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+    AUTH_SIGNING_KEY_CURRENT: authSecret,
     DB: {
       prepare(sql: string) {
-        expect(sql).toContain("gacha_banners");
         return {
-          bind(bannerId: string) {
-            expect(bannerId).toBe("banner_pickup_1");
+          bind(...values: unknown[]) {
             return {
-              first: async () => row,
+              first: async () => {
+                if (sql.includes("FROM auth_sessions")) {
+                  expect(values).toEqual(["session_1", "account_1"]);
+                  return {
+                    account_id: "account_1",
+                    session_id: "session_1",
+                    session_status: "ACTIVE",
+                    session_expires_at: Date.now() + 900000,
+                    account_status: "ACTIVE",
+                  };
+                }
+                expect(sql).toContain("gacha_banners");
+                expect(values).toEqual(["banner_pickup_1"]);
+                return row;
+              },
             };
           },
         };
@@ -117,7 +148,10 @@ describe("game-api gacha pull contract", () => {
       "/v1/gacha/banners/banner_pickup_1/pulls",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "gacha-idem-1" },
+        headers: {
+          "Idempotency-Key": "gacha-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
         body: JSON.stringify({ pullCount: 10 }),
       },
       createEnv(null),
@@ -147,7 +181,10 @@ describe("game-api gacha pull contract", () => {
       "/v1/gacha/banners/banner_pickup_1/pulls",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "gacha-idem-1" },
+        headers: {
+          "Idempotency-Key": "gacha-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
         body: JSON.stringify({ pullCount: 10 }),
       },
       createEnv({
@@ -182,7 +219,10 @@ describe("game-api gacha pull contract", () => {
       "/v1/gacha/banners/banner_pickup_1/pulls",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "gacha-idem-1" },
+        headers: {
+          "Idempotency-Key": "gacha-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
         body: JSON.stringify({ pullCount: 10 }),
       },
       createEnv({

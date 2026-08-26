@@ -1,7 +1,15 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 import { createRequestId } from "@lastrail/common";
+import { createAccessToken, hashRefreshToken, verifyAccessToken } from "./auth";
 
 const app = new Hono<{ Bindings: Env }>();
+
+type GameApiContext = Context<{ Bindings: Env }>;
+
+type GameApiEnv = Env & {
+  AUTH_SIGNING_KEY_CURRENT?: string;
+};
 
 const apiBaseUrls = {
   LOCAL: "http://localhost:8787",
@@ -60,6 +68,27 @@ type GachaBannerRow = {
   ends_at: number | null;
 };
 
+type AuthSessionAccountRow = {
+  account_id: string;
+  session_id: string;
+  session_status: "ACTIVE" | "ROTATED" | "REUSED" | "REVOKED" | "EXPIRED";
+  session_expires_at: number;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+};
+
+type AuthContext = {
+  accountId: string;
+  sessionId: string;
+};
+
+type AuthFailureStatus = 401 | 403 | 500;
+
+type AuthFailure = {
+  status: AuthFailureStatus;
+  errorCode: string;
+  message: string;
+};
+
 const currencyIdToD1Currency = {
   cur_credits: "CREDITS",
   cur_machine_parts: "MACHINE_PARTS",
@@ -80,6 +109,10 @@ function toIso(ms: number): string {
 
 function createDomainId(prefix: string): string {
   return `${prefix}_${createRequestId().slice(4)}`;
+}
+
+function createRefreshToken(): string {
+  return `refresh_${createRequestId().slice(4)}${createRequestId().slice(4)}`;
 }
 
 function getRewardLines(rewardPlanJson: string): unknown[] {
@@ -135,7 +168,136 @@ function isActiveGachaBanner(row: GachaBannerRow, now: number): boolean {
   return row.status === "ACTIVE" && row.starts_at <= now && (row.ends_at === null || row.ends_at > now);
 }
 
+function getAuthSecret(env: Env): string | null {
+  return (env as GameApiEnv).AUTH_SIGNING_KEY_CURRENT ?? null;
+}
+
+function createAuthError(errorCode: string, message: string) {
+  return {
+    errorCode,
+    message,
+  };
+}
+
+function createAuthFailure(status: AuthFailureStatus, errorCode: string, message: string): AuthFailure {
+  return {
+    status,
+    errorCode,
+    message,
+  };
+}
+
+function isAuthFailure(value: AuthContext | AuthFailure): value is AuthFailure {
+  return "errorCode" in value;
+}
+
+async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | AuthFailure> {
+  const authorization = c.req.header("Authorization");
+  if (authorization === undefined || !authorization.startsWith("Bearer ")) {
+    return createAuthFailure(401, "auth_required", "Authorization bearer token is required.");
+  }
+
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return createAuthFailure(500, "auth_not_configured", "Auth signing key is not configured.");
+  }
+
+  const token = authorization.slice("Bearer ".length).trim();
+  const verified = await verifyAccessToken({ secret, token, nowMs: Date.now() });
+  if (verified === null) {
+    return createAuthFailure(401, "access_token_invalid", "Access token is invalid or expired.");
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT sessions.account_id, sessions.id AS session_id, sessions.status AS session_status,
+            sessions.expires_at AS session_expires_at, accounts.status AS account_status
+     FROM auth_sessions sessions
+     JOIN accounts ON accounts.id = sessions.account_id
+     WHERE sessions.id = ? AND sessions.account_id = ?`,
+  )
+    .bind(verified.sessionId, verified.accountId)
+    .first<AuthSessionAccountRow>();
+
+  if (row === null || row.session_status !== "ACTIVE" || row.session_expires_at <= Date.now()) {
+    return createAuthFailure(401, "auth_session_invalid", "Auth session is invalid or expired.");
+  }
+
+  if (row.account_status !== "ACTIVE") {
+    return createAuthFailure(403, "account_not_active", "Account is not active.");
+  }
+
+  return {
+    accountId: row.account_id,
+    sessionId: row.session_id,
+  };
+}
+
 app.get("/status", (c) => c.json({ ok: true, service: "game-api", requestId: createRequestId() }));
+app.post("/v1/auth/guest", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const now = Date.now();
+  const accountId = createDomainId("account");
+  const identityId = createDomainId("identity");
+  const sessionId = createDomainId("session");
+  const familyId = createDomainId("family");
+  const providerSubject = createDomainId("guest");
+  const refreshToken = createRefreshToken();
+  const refreshTokenHash = await hashRefreshToken(refreshToken);
+  const accessTokenTtlMs = 15 * 60 * 1000;
+  const refreshTokenTtlMs = 30 * 24 * 60 * 60 * 1000;
+  const accessTokenExpiresAt = now + accessTokenTtlMs;
+  const refreshTokenExpiresAt = now + refreshTokenTtlMs;
+  const accessToken = await createAccessToken({
+    secret,
+    accountId,
+    sessionId,
+    nowMs: now,
+    ttlMs: accessTokenTtlMs,
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO accounts (id, status, created_at, updated_at)
+       VALUES (?, 'ACTIVE', ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
+       VALUES (?, ?, 'GUEST', ?, ?)`,
+    ).bind(identityId, accountId, providerSubject, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(sessionId, accountId, refreshTokenHash, familyId, now, refreshTokenExpiresAt),
+    c.env.DB.prepare(
+      `INSERT INTO player_profiles (account_id, display_name, commander_xp, created_at, updated_at)
+       VALUES (?, NULL, 0, ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_runtime_state (account_id, protection_mode, maintenance_until, updated_at)
+       VALUES (?, 'NORMAL', NULL, ?)`,
+    ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
+       VALUES (?, 'NOT_STARTED', NULL, ?)`,
+    ).bind(accountId, now),
+  ]);
+
+  return c.json({
+    tokenType: "Bearer",
+    account: {
+      id: accountId,
+      status: "ACTIVE",
+    },
+    accessToken,
+    accessTokenExpiresAt: toIso(accessTokenExpiresAt),
+    refreshToken,
+    refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
+  });
+});
 app.get("/v1/client-config", (c) =>
   c.json({
     environment: c.env.ENVIRONMENT,
@@ -221,6 +383,16 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       errorCode: "invalid_pull_count",
       message: "pullCount must be 1 or 10.",
     }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
   }
 
   const row = await c.env.DB.prepare(

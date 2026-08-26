@@ -50,6 +50,47 @@ Idempotency linkage:
 - The `accountId` used for idempotency must match all written batch, result,
   item ledger, progression ledger, and mutation rows in the same transaction.
 
+## Auth
+
+`POST /v1/auth/guest` creates a guest account and returns the initial token
+pair.
+
+Response:
+
+```json
+{
+  "tokenType": "Bearer",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:15:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z"
+}
+```
+
+Server writes:
+
+- `accounts`
+- `auth_identities` with provider `GUEST`
+- `auth_sessions` with the refresh token hash only
+- `player_profiles`
+- `account_runtime_state`
+- `account_tutorial_state`
+
+Security notes:
+
+- Access tokens are signed by `AUTH_SIGNING_KEY_CURRENT`.
+- Store `AUTH_SIGNING_KEY_CURRENT` as a Worker secret or local `.dev.vars`
+  value. Do not commit the secret to Git.
+- Refresh token plaintext is returned once and never stored in D1.
+- `auth_sessions.refresh_token_hash` stores only a SHA-256 hash.
+- Access token TTL is currently 15 minutes.
+- Guest refresh token/session TTL is currently 30 days.
+- `POST /v1/auth/refresh` is reserved for the next auth slice.
+
 ## Client Config
 
 `GET /v1/client-config` returns public Unity client configuration:
