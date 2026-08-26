@@ -49,3 +49,25 @@ claim/commit follow `docs/api/run-reward-preview-claim.md`.
 
 Gacha pull history, banner pity state, duplicate conversion, and ticket/material
 ledger linkage are drafted in `docs/api/gacha-pity-result-history.md`.
+
+Pull execution uses:
+
+```text
+POST /v1/gacha/banners/:bannerId/pulls
+Idempotency-Key: <client-generated-key>
+```
+
+Contract baseline:
+
+- Request body is `{ "pullCount": 1 }` or `{ "pullCount": 10 }`.
+- `bannerId` is path-only; sending `bannerId` in the body is
+  `contract_violation`.
+- The server returns `resultStatus` as `ACCEPTED`, `DUPLICATE_REPLAY`, or
+  `REJECTED`.
+- Success and duplicate replay responses include stored pull results and
+  `postPityState`.
+- `postPityState` is the state Unity should display after the pull.
+- Cost is server-calculated as `cur_command_ticket` with quantity equal to
+  `pullCount`.
+- Pull probability, pity, duplicate conversion, ticket spend, grants, and ledger
+  writes are server Source of Truth.

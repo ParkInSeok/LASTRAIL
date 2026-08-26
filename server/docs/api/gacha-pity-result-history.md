@@ -300,7 +300,10 @@ Order:
 No result row should exist without its batch. No batch should commit without its
 cost spend and pity update.
 
-## API Contract Candidate
+## Pull API Contract
+
+This section is the contract baseline for implementing the Game API route. The
+DB schema above remains the durable Source of Truth.
 
 Endpoint:
 
@@ -309,19 +312,41 @@ POST /v1/gacha/banners/:bannerId/pulls
 Idempotency-Key: <client-generated-key>
 ```
 
+Method:
+
+- `POST`
+
+Path/body `bannerId` policy:
+
+- `:bannerId` in the path is the only banner identifier accepted by the API.
+- The request body must not include `bannerId`.
+- If a client sends `bannerId` in the body, the server returns
+  `400 contract_violation`.
+- This avoids two competing banner identifiers in a write request.
+
 Request body:
 
 ```json
 {
-  "bannerId": "banner_...",
   "pullCount": 10
 }
 ```
 
-Response body:
+Request rules:
+
+- `Idempotency-Key` header is required and must be non-empty.
+- `pullCount` must be `1` or `10`.
+- The server reads banner status, active window, balance config version, pool
+  snapshot, pity config, account item balance, and current pity state from D1.
+- The client does not send cost, rates, pity counters, result IDs, duplicate
+  conversion, granted resources, or RNG material.
+
+Success response:
 
 ```json
 {
+  "accepted": true,
+  "resultStatus": "ACCEPTED",
   "batchId": "gacha_batch_...",
   "bannerId": "banner_...",
   "pullCount": 10,
@@ -335,30 +360,215 @@ Response body:
       "resultRarity": "ELITE",
       "resultType": "ELITE_OPERATOR",
       "resultId": "op_vex",
+      "reward": {
+        "kind": "OPERATOR",
+        "id": "op_vex",
+        "quantity": 1
+      },
       "isPickup": true,
       "guaranteeType": "PICKUP_ELITE_60",
       "wasDuplicate": false,
       "duplicateConversion": null
     }
   ],
-  "pityState": {
+  "postPityState": {
     "totalPullCount": 130,
     "elitePityCount": 0,
     "pickupElitePityCount": 0,
-    "rareOrHigherPityCount": 0
+    "rareOrHigherPityCount": 0,
+    "revision": 12
   },
-  "createdAt": "2026-08-26T00:00:00.000Z"
+  "createdAt": "2026-08-26T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
 }
 ```
 
-Duplicate idempotency replay:
+Duplicate idempotency replay response:
 
-- Return `200`.
-- Return the existing `batchId`.
-- Do not spend tickets again.
-- Do not grant results again.
-- Either return the stored result rows or return a compact marker requiring
-  bootstrap/economy sync. Returning stored rows is preferred for UX and support.
+```json
+{
+  "accepted": false,
+  "resultStatus": "DUPLICATE_REPLAY",
+  "batchId": "gacha_batch_...",
+  "bannerId": "banner_...",
+  "pullCount": 10,
+  "cost": {
+    "itemId": "cur_command_ticket",
+    "quantity": 10
+  },
+  "results": [
+    {
+      "pullSequence": 1,
+      "resultRarity": "ELITE",
+      "resultType": "ELITE_OPERATOR",
+      "resultId": "op_vex",
+      "reward": {
+        "kind": "OPERATOR",
+        "id": "op_vex",
+        "quantity": 1
+      },
+      "isPickup": true,
+      "guaranteeType": "PICKUP_ELITE_60",
+      "wasDuplicate": false,
+      "duplicateConversion": null
+    }
+  ],
+  "postPityState": {
+    "totalPullCount": 130,
+    "elitePityCount": 0,
+    "pickupElitePityCount": 0,
+    "rareOrHigherPityCount": 0,
+    "revision": 12
+  },
+  "createdAt": "2026-08-26T00:00:00.000Z",
+  "errorCode": "duplicate_replay",
+  "message": "Gacha pull was already committed."
+}
+```
+
+Rejected response:
+
+```json
+{
+  "accepted": false,
+  "resultStatus": "REJECTED",
+  "batchId": null,
+  "bannerId": "banner_...",
+  "pullCount": 10,
+  "cost": {
+    "itemId": "cur_command_ticket",
+    "quantity": 10
+  },
+  "results": [],
+  "postPityState": null,
+  "createdAt": null,
+  "errorCode": "insufficient_command_ticket",
+  "message": "Not enough command tickets."
+}
+```
+
+HTTP status rules:
+
+- `200` + `ACCEPTED` for committed pulls.
+- `200` + `DUPLICATE_REPLAY` for successful idempotency replay.
+- `400` + `REJECTED` for request contract violations.
+- `404` + `REJECTED` for unknown banners.
+- `409` + `REJECTED` for account state conflicts or insufficient resources.
+- `503` + `REJECTED` for temporarily unavailable gacha validation/execution.
+
+`resultStatus` enum:
+
+```text
+ACCEPTED
+DUPLICATE_REPLAY
+REJECTED
+```
+
+Cost policy:
+
+- Initial gacha cost is always `cur_command_ticket`.
+- Cost quantity equals `pullCount`.
+- The cost is spent from `account_items` and recorded in `item_ledger`.
+- Cost is server-calculated. The client only displays the returned `cost`.
+
+Pity counter policy:
+
+- DB stores both `pre_pity_json` and `post_pity_json` in
+  `gacha_pull_batches`.
+- `pre_pity_json` is the state used to calculate this batch.
+- `post_pity_json` is the state after every pull in the batch has been applied.
+- API response exposes `postPityState` only; this is the state Unity should show
+  after the pull.
+- Admin/support read APIs can expose pre/post state later from batch history.
+- Counter meanings:
+  - `totalPullCount`: total pulls after this committed batch.
+  - `elitePityCount`: pulls since the latest elite after this batch.
+  - `pickupElitePityCount`: pulls since the latest pickup elite after this
+    batch. For `STANDARD` banners this remains `0`.
+  - `rareOrHigherPityCount`: pulls since the latest rare-or-higher after this
+    batch.
+  - `revision`: `player_gacha_pity.revision` after commit.
+
+Pull result shape:
+
+- `pullSequence`: 1-based sequence within the batch.
+- `resultRarity`: `COMMON`, `RARE`, or `ELITE`.
+- `resultType`: exactly one of the `gacha_pull_results.result_type` enum values.
+- `resultId`: stable ID of the rolled result.
+- `reward`: displayable grant summary derived from the committed DB writes.
+- `isPickup`: true only when the result is the banner pickup operator/result.
+- `guaranteeType`: `NONE`, `RARE_OR_HIGHER_10`, `ELITE_30`, or
+  `PICKUP_ELITE_60`.
+- `wasDuplicate`: true when a rolled operator was already owned and converted.
+- `duplicateConversion`: null for non-duplicates, otherwise the exact conversion
+  grant recorded in `duplicate_conversion_json`.
+
+Duplicate conversion response example:
+
+```json
+{
+  "pullSequence": 4,
+  "resultRarity": "ELITE",
+  "resultType": "ELITE_OPERATOR",
+  "resultId": "op_vex",
+  "reward": {
+    "kind": "ITEM",
+    "id": "cur_operator_token",
+    "quantity": 50,
+    "operatorId": "op_vex"
+  },
+  "isPickup": true,
+  "guaranteeType": "NONE",
+  "wasDuplicate": true,
+  "duplicateConversion": {
+    "sourceResultType": "ELITE_OPERATOR",
+    "sourceResultId": "op_vex",
+    "itemId": "cur_operator_token",
+    "operatorId": "op_vex",
+    "quantity": 50
+  }
+}
+```
+
+Reward summary `kind` values:
+
+```text
+OPERATOR
+ITEM
+CURRENCY
+```
+
+The `CURRENCY` kind is reserved for the five canonical server currencies if
+gacha ever grants them. Command tickets, fragments, operator tokens, fuel cans,
+shards, and material-like rewards should use `ITEM`.
+
+Idempotency duplicate replay policy:
+
+- Only successful committed `gacha_pull` operations are stored in
+  `idempotency_records`.
+- Error responses are not stored as permanent idempotency results.
+- Replay lookup uses:
+  - `account_id`
+  - `operation = 'gacha_pull'`
+  - `Idempotency-Key`
+- On replay, the server returns `200 DUPLICATE_REPLAY` and reconstructs the
+  response from `gacha_pull_batches`, `gacha_pull_results`, and current/stored
+  post-pity data.
+- The server must not spend command tickets again.
+- The server must not grant operators/items/currencies again.
+- `UNIQUE(account_id, banner_id, idempotency_key)` on `gacha_pull_batches` is
+  retained as a domain duplicate guard.
+
+Server Source of Truth boundary:
+
+- Pull probability, pity activation, duplicate conversion, cost spend, operator
+  acquisition, item grants, and ledger writes are server responsibilities.
+- Unity does not calculate or trust cost, pity, probability, reward, duplicate
+  conversion, or ledger results.
+- `rng_seed_hash` is a commitment/hash only. Raw RNG material is not returned to
+  the client.
+- All permanent mutations occur in one account mutation transaction.
 
 ## Error Codes
 
