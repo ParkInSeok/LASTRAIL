@@ -60,7 +60,7 @@ Rules:
 
 ## Preview State Model
 
-Use a dedicated table in the next reward migration.
+Use `run_reward_previews`, introduced by migration `0012_run_reward_previews.sql`.
 
 ```sql
 CREATE TABLE run_reward_previews (
@@ -73,8 +73,14 @@ CREATE TABLE run_reward_previews (
   expires_at INTEGER NOT NULL,
   created_at INTEGER NOT NULL,
   claimed_at INTEGER,
-  reward_claim_id TEXT,
-  UNIQUE(run_id)
+  reward_claim_id TEXT REFERENCES reward_transactions(id) ON DELETE SET NULL,
+  CHECK (expires_at > created_at),
+  CHECK (
+    (status = 'CLAIMED' AND claimed_at IS NOT NULL AND reward_claim_id IS NOT NULL)
+    OR (status != 'CLAIMED' AND claimed_at IS NULL AND reward_claim_id IS NULL)
+  ),
+  UNIQUE(run_id),
+  UNIQUE(reward_claim_id)
 );
 ```
 
@@ -88,9 +94,8 @@ CREATE INDEX idx_run_reward_previews_run_status
   ON run_reward_previews(run_id, status);
 ```
 
-`reward_claim_id` should reference `reward_transactions(id)` once the migration
-can safely order the FK. If circular migration ordering becomes awkward, keep it
-as a denormalized reference and enforce consistency in the claim transaction.
+`reward_claim_id` references `reward_transactions(id)`. The claim transaction
+creates the reward transaction first, then marks the preview `CLAIMED`.
 
 ## Preview Expiration
 
@@ -334,11 +339,10 @@ Existing migration compatibility:
   economy ledger.
 - `idempotency_records` already supports successful operation replay.
 
-New migration needed:
+Migration `0012_run_reward_previews.sql` adds:
 
 - `run_reward_previews` table.
 - Indexes for account/status/expiration lookup and run/status lookup.
-- Optional later `reward_claim_id` FK hardening if migration ordering permits.
 
 No change is needed to Unity result submit response beyond the existing
 `rewardPreviewId` contract.

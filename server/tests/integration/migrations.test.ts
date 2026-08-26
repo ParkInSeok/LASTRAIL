@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-1])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(11);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-2])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(12);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0011 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0012 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -67,6 +67,68 @@ describe("D1 migrations", () => {
          account_id, status, assigned_to, reason, updated_by, updated_at, created_at
        ) VALUES (
          'account-review-1', 'REWARD_HELD', NULL, 'mark-only review', 'principal-review-1', 2, 1
+       );`
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates run reward preview table for claimable run rewards", async () => {
+    const db = await createMigratedDb();
+
+    const preview = db.exec("PRAGMA table_info(run_reward_previews);");
+    const indexes = db.exec("PRAGMA index_list(run_reward_previews);");
+
+    expect(preview[0]?.values.map((row) => row[1])).toEqual([
+      "id",
+      "account_id",
+      "run_id",
+      "balance_config_version",
+      "status",
+      "reward_plan_json",
+      "expires_at",
+      "created_at",
+      "claimed_at",
+      "reward_claim_id",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining([
+        "idx_run_reward_previews_account_status_expires",
+        "idx_run_reward_previews_run_status",
+      ])
+    );
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-reward-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO balance_config_drafts (
+         id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+       ) VALUES (
+         'draft-reward-1', NULL, 1, 1, '{}', 'checksum-reward-1', 1, 'PUBLISHED', 'test', 1, 1
+       );`
+    );
+    db.run(
+      `INSERT INTO balance_config_versions (
+         version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+       ) VALUES (
+         101, 1, 1, 'checksum-reward-1', '{}', 1, 'test', 'draft-reward-1'
+       );`
+    );
+    db.run(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES ('mutation-run-1', 'account-reward-1', 1, 'RUN_START', 'idem-run-start-1', 1);`
+    );
+    db.run(
+      `INSERT INTO runs (
+         id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id
+       ) VALUES (
+         'run-reward-1', 'account-reward-1', NULL, 'mutation-run-1', 101, 'FINISH_PENDING', 1, NULL, NULL
+       );`
+    );
+    db.run(
+      `INSERT INTO run_reward_previews (
+         id, account_id, run_id, balance_config_version, status, reward_plan_json, expires_at, created_at, claimed_at, reward_claim_id
+       ) VALUES (
+         'reward-preview-1', 'account-reward-1', 'run-reward-1', 101, 'ACTIVE', '{"lines":[]}', 86400001, 1, NULL, NULL
        );`
     );
 
