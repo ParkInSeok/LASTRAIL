@@ -87,6 +87,7 @@ type AdminConfirmationRow = {
 type AppContext = Context<{ Bindings: Env }>;
 
 const BALANCE_PUBLISH_PERMISSION = "BALANCE_PUBLISH";
+const ACCOUNT_NOTE_WRITE_PERMISSION = "ACCOUNT_NOTE_WRITE";
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 
 type AccessJwtPayload = {
@@ -454,6 +455,77 @@ app.get("/v1/admin/players/:accountId", async (c) => {
       }),
     },
   });
+});
+app.post("/v1/admin/players/:accountId/notes", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (principal.role === "VIEWER") {
+    return c.json({ error: "ADMIN_PERMISSION_DENIED" }, 403);
+  }
+
+  const accountId = c.req.param("accountId");
+  const body = (await c.req.json()) as { note?: unknown };
+  const note = typeof body.note === "string" ? body.note.trim() : "";
+  if (accountId.length === 0 || note.length === 0 || note.length > 1000) {
+    return c.json({ error: "PLAYER_NOTE_INVALID" }, 400);
+  }
+
+  const account = await c.env.DB.prepare("SELECT id FROM accounts WHERE id = ?")
+    .bind(accountId)
+    .first<{ id: string }>();
+  if (account === null) {
+    return c.json({ error: "ADMIN_PLAYER_NOT_FOUND" }, 404);
+  }
+
+  const requestId = c.req.header("x-request-id") ?? createRequestId();
+  const changeSummary = { note };
+  const payloadHash = await createPayloadHash({ accountId, ...changeSummary });
+  await c.env.DB.prepare(
+    `INSERT INTO admin_audit_logs (
+       id,
+       principal_id,
+       role,
+       permission,
+       action,
+       resource_type,
+       resource_id,
+       request_id,
+       confirmation_id,
+       payload_hash,
+       change_summary_json,
+       account_mutation_id,
+       result,
+       error_code,
+       created_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, NULL, ?, NULL, ?)`,
+  )
+    .bind(
+      `audit_${createRequestId().slice(4)}`,
+      principal.id,
+      principal.role,
+      ACCOUNT_NOTE_WRITE_PERMISSION,
+      "PLAYER_NOTE_CREATE",
+      "account",
+      account.id,
+      requestId,
+      payloadHash,
+      canonicalJson(changeSummary),
+      "SUCCESS",
+      Date.now(),
+    )
+    .run();
+
+  return c.json(
+    {
+      note: {
+        accountId: account.id,
+        action: "PLAYER_NOTE_CREATE",
+        result: "SUCCESS",
+        requestId,
+      },
+    },
+    201,
+  );
 });
 app.get("/v1/admin/runs", async (c) => {
   const principal = await authenticateAdmin(c);

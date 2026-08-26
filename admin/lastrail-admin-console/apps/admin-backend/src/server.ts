@@ -4,6 +4,8 @@ import { z, ZodError, type ZodSchema } from "zod";
 import {
   AdminRoleSchema,
   BootstrapResponseSchema,
+  CreatePlayerNoteRequestSchema,
+  CreatePlayerNoteResponseSchema,
   PlayerDetailSchema,
   PlayerSearchResponseSchema,
   RunDetailSchema,
@@ -97,6 +99,31 @@ async function proxyRead<T>(
   }
 }
 
+async function proxyWrite<T>(
+  schema: ZodSchema<T>,
+  upstream: UpstreamClient,
+  upstreamPath: string,
+  requestId: string,
+  body: unknown
+): Promise<T> {
+  try {
+    const raw = await upstream(upstreamPath, {
+      method: "POST",
+      requestId,
+      body
+    });
+    return schema.parse(raw);
+  } catch (error) {
+    const normalized = normalizeError(error, requestId);
+    throw new ProxyRouteError(
+      normalized.statusCode,
+      normalized.body.error.code,
+      normalized.body.error.message,
+      requestId
+    );
+  }
+}
+
 export function buildServer(options: BuildServerOptions): FastifyInstance {
   const server = fastify({
     logger: {
@@ -173,6 +200,20 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       `/v1/admin/players/${encodeURIComponent(params.accountId)}`,
       requestIdFrom(request.headers)
     );
+  });
+
+  server.post("/api/players/:accountId/notes", async (request, reply) => {
+    const params = request.params as { accountId: string };
+    const body = CreatePlayerNoteRequestSchema.parse(request.body);
+    const response = await proxyWrite(
+      CreatePlayerNoteResponseSchema,
+      upstream,
+      `/v1/admin/players/${encodeURIComponent(params.accountId)}/notes`,
+      requestIdFrom(request.headers),
+      body
+    );
+
+    return reply.status(201).send(response);
   });
 
   server.get("/api/runs", async (request) => {

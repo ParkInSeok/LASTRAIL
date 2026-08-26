@@ -3,7 +3,7 @@ import app from "../../apps/admin-api/src/index";
 
 type QueryResult = Record<string, unknown> | Record<string, unknown>[] | null;
 
-function createEnv(results: QueryResult[]): Env {
+function createEnv(results: QueryResult[], onStatement?: (sql: string, values: unknown[]) => void): Env {
   const queue = [...results];
 
   return {
@@ -16,7 +16,8 @@ function createEnv(results: QueryResult[]): Env {
     DB: {
       prepare(sql: string) {
         return {
-          bind() {
+          bind(...values: unknown[]) {
+            onStatement?.(sql, values);
             return {
               first: async () => {
                 if (sql.includes("admin_principals")) {
@@ -36,6 +37,7 @@ function createEnv(results: QueryResult[]): Env {
                 const result = queue.shift();
                 return { results: Array.isArray(result) ? result : result === null ? [] : [result] };
               },
+              run: async () => ({ success: true }),
             };
           },
         };
@@ -245,5 +247,48 @@ describe("admin-api read-only operations", () => {
     expect(body.balanceVersion).toBe("7");
     expect(body.currentActiveBalanceVersion).toBe("8");
     expect(body.snapshot.operatorIds).toEqual(snapshot.operatorIds);
+  });
+
+  it("creates a player note as an audit log entry", async () => {
+    const writes: Array<{ sql: string; values: unknown[] }> = [];
+    const response = await app.request(
+      "/v1/admin/players/account-1/notes",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Cf-Access-Subject": "access|owner-1",
+          "x-request-id": "req-note-1",
+        },
+        body: JSON.stringify({ note: "Reviewed abnormal Training Core spread." }),
+      },
+      createEnv([{ id: "account-1" }], (sql, values) => {
+        if (sql.includes("admin_audit_logs")) writes.push({ sql, values });
+      }),
+    );
+
+    expect(response.status).toBe(201);
+    await expect(response.json()).resolves.toMatchObject({
+      note: {
+        accountId: "account-1",
+        action: "PLAYER_NOTE_CREATE",
+        result: "SUCCESS",
+      },
+    });
+    expect(writes).toHaveLength(1);
+    expect(writes[0]?.values).toEqual([
+      expect.stringMatching(/^audit_/u),
+      "principal-1",
+      "OWNER",
+      "ACCOUNT_NOTE_WRITE",
+      "PLAYER_NOTE_CREATE",
+      "account",
+      "account-1",
+      "req-note-1",
+      expect.stringMatching(/^sha256:[a-f0-9]{64}$/u),
+      '{"note":"Reviewed abnormal Training Core spread."}',
+      "SUCCESS",
+      expect.any(Number),
+    ]);
   });
 });

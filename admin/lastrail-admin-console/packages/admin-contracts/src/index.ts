@@ -91,6 +91,19 @@ export const PlayerDetailSchema = z.object({
   progression: PlayerProgressionSchema
 });
 
+export const CreatePlayerNoteRequestSchema = z.object({
+  note: z.string().trim().min(1).max(1000)
+});
+
+export const CreatePlayerNoteResponseSchema = z.object({
+  note: z.object({
+    accountId: z.string().min(1),
+    action: z.literal("PLAYER_NOTE_CREATE"),
+    result: z.literal("SUCCESS"),
+    requestId: z.string().min(1)
+  })
+});
+
 export const RunSummarySchema = z.object({
   runId: z.string().min(1),
   accountId: z.string().min(1),
@@ -138,9 +151,10 @@ export const NormalizedErrorSchema = z.object({
 });
 
 export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
+export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
+export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
 export type PlayerSearchResponse = z.infer<typeof PlayerSearchResponseSchema>;
 export type PlayerDetail = z.infer<typeof PlayerDetailSchema>;
 export type RunSearchResponse = z.infer<typeof RunSearchResponseSchema>;
 export type RunDetail = z.infer<typeof RunDetailSchema>;
 export type NormalizedError = z.infer<typeof NormalizedErrorSchema>;
-

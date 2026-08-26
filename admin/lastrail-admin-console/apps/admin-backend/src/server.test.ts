@@ -74,6 +74,47 @@ describe("admin backend routes", () => {
     expect(response.json().items[0].accountId).toBe("account-1");
   });
 
+  it("proxies player note creation to the versioned Admin API path", async () => {
+    const server = buildServer({
+      config: {
+        adminApiBaseUrl: "https://admin-api.example.test",
+        profile: "staging",
+        host: "127.0.0.1",
+        port: 4174
+      },
+      upstream: (async (path, init) => {
+        expect(path).toBe("/v1/admin/players/account-1/notes");
+        expect(init.method).toBe("POST");
+        expect(init.body).toEqual({ note: "Reviewed abnormal Training Core spread." });
+        return {
+          note: {
+            accountId: "account-1",
+            action: "PLAYER_NOTE_CREATE",
+            result: "SUCCESS",
+            requestId: init.requestId
+          }
+        };
+      }) satisfies UpstreamClient
+    });
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/api/players/account-1/notes",
+      headers: { "x-request-id": "req-note-1" },
+      payload: { note: "Reviewed abnormal Training Core spread." }
+    });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.json()).toMatchObject({
+      note: {
+        accountId: "account-1",
+        action: "PLAYER_NOTE_CREATE",
+        result: "SUCCESS",
+        requestId: "req-note-1"
+      }
+    });
+  });
+
   it("normalizes schema validation failures from upstream", async () => {
     const server = buildServer({
       config: {

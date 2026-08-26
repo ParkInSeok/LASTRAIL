@@ -2,6 +2,7 @@ export const roles = ["OWNER", "OPERATOR", "VIEWER"] as const;
 
 export const permissions = [
   "ACCOUNT_READ",
+  "ACCOUNT_NOTE_WRITE",
   "RUN_READ",
   "ECONOMY_READ",
   "ECONOMY_GRANT",
@@ -46,6 +47,7 @@ export const rolePermissions: Record<AdminRole, AdminPermission[]> = {
   OWNER: [...permissions],
   OPERATOR: [
     "ACCOUNT_READ",
+    "ACCOUNT_NOTE_WRITE",
     "RUN_READ",
     "ECONOMY_READ",
     "INTEGRITY_READ",
@@ -83,4 +85,3 @@ export function hasPermission(
 ): boolean {
   return admin.permissions.includes(permission);
 }
-

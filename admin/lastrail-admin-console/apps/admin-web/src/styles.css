@@ -19,7 +19,8 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
   border: 1px solid #c8ced8;
   border-radius: 6px;
   font: inherit;
@@ -31,6 +32,11 @@ button {
   background: #1f2937;
   color: white;
   cursor: pointer;
+}
+
+button:disabled {
+  background: #98a2b3;
+  cursor: not-allowed;
 }
 
 .shell {
@@ -171,6 +177,47 @@ th {
   font-size: 20px;
 }
 
+.admin-panel {
+  background: white;
+  border: 1px solid #d9dee7;
+  border-radius: 6px;
+  margin-top: 18px;
+  padding: 16px;
+}
+
+.admin-panel h2 {
+  margin-top: 0;
+}
+
+.note-form {
+  display: grid;
+  gap: 10px;
+}
+
+.note-form label {
+  color: #485264;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.note-form textarea {
+  min-height: 96px;
+  padding: 10px 12px;
+  resize: vertical;
+  width: 100%;
+}
+
+.form-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.success {
+  color: #067647;
+}
+
 .center {
   display: grid;
   min-height: 100vh;
@@ -194,4 +241,3 @@ th {
     padding: 20px;
   }
 }
-

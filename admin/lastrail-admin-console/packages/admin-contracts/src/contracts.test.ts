@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   BootstrapResponseSchema,
   PlayerDetailSchema,
-  hasPermission
+  hasPermission,
+  rolePermissions
 } from "./index";
 
 describe("admin contracts", () => {
@@ -19,6 +20,11 @@ describe("admin contracts", () => {
 
     expect(hasPermission(bootstrap.admin, "ACCOUNT_READ")).toBe(true);
     expect(hasPermission(bootstrap.admin, "BALANCE_PUBLISH")).toBe(false);
+  });
+
+  it("allows operators to create player notes while keeping viewers read-only", () => {
+    expect(hasPermission({ permissions: rolePermissions.OPERATOR }, "ACCOUNT_NOTE_WRITE")).toBe(true);
+    expect(hasPermission({ permissions: rolePermissions.VIEWER }, "ACCOUNT_NOTE_WRITE")).toBe(false);
   });
 
   it("requires Training Core and Sync fields for player progression", () => {
@@ -67,4 +73,3 @@ describe("admin contracts", () => {
     expect(player.progression.operators[1].levelSource).toBe("SYNC");
   });
 });
-

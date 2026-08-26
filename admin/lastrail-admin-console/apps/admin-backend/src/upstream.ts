@@ -3,9 +3,10 @@ import type { AdminBackendConfig } from "./config";
 export type UpstreamClient = (
   path: string,
   init: {
-    method: "GET";
+    method: "GET" | "POST";
     requestId: string;
     searchParams?: URLSearchParams;
+    body?: unknown;
   }
 ) => Promise<unknown>;
 
@@ -22,6 +23,9 @@ export function createUpstreamClient(config: AdminBackendConfig): UpstreamClient
       accept: "application/json",
       "x-request-id": init.requestId
     });
+    if (init.body !== undefined) {
+      headers.set("content-type", "application/json");
+    }
 
     if (config.cloudflareAccessClientId && config.cloudflareAccessClientSecret) {
       headers.set("CF-Access-Client-Id", config.cloudflareAccessClientId);
@@ -38,7 +42,8 @@ export function createUpstreamClient(config: AdminBackendConfig): UpstreamClient
 
     const response = await fetch(url, {
       method: init.method,
-      headers
+      headers,
+      ...(init.body !== undefined ? { body: JSON.stringify(init.body) } : {})
     });
 
     if (!response.ok) {
