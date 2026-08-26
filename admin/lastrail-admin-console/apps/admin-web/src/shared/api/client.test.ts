@@ -161,7 +161,7 @@ describe("admin web API client", () => {
             suspiciousRuns: 2,
             lastDetectionAt: "2026-08-26T04:00:00.000Z",
             primaryReason: "DAMAGE_SPIKE",
-            reviewStatus: "IN_REVIEW",
+            reviewStatus: "REVIEWING",
             currentEnforcement: "NONE",
             reviewOwner: "operator-1"
           }
@@ -170,16 +170,54 @@ describe("admin web API client", () => {
     );
     vi.stubGlobal("fetch", fetchSpy);
 
-    const result = await adminApi.suspiciousPlayers({ reviewStatus: "IN_REVIEW" });
+    const result = await adminApi.suspiciousPlayers({ reviewStatus: "REVIEWING" });
 
     expect(result.items[0]?.priority).toBe("HIGH");
     expect(fetchSpy).toHaveBeenCalledWith(
-      "/api/integrity/suspicious-players?reviewStatus=IN_REVIEW",
+      "/api/integrity/suspicious-players?reviewStatus=REVIEWING",
       {
         headers: {
           accept: "application/json"
         }
       }
     );
+  });
+
+  it("reads suspicious player detail by account id", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        account: {
+          accountId: "account-1",
+          displayName: "Kyle Account",
+          status: "ACTIVE",
+          createdAt: "2026-08-25T12:00:00.000Z"
+        },
+        summary: {
+          priority: "CRITICAL",
+          openSignals: 2,
+          hardViolations: 1,
+          suspiciousRuns: 2,
+          lastDetectionAt: "2026-08-26T04:00:00.000Z",
+          primaryReason: "IMPOSSIBLE_DAMAGE",
+          reviewStatus: "REVIEWING",
+          currentEnforcement: "REWARD_HELD",
+          reviewOwner: "operator-1"
+        },
+        riskSignals: [],
+        suspiciousRuns: [],
+        notes: [],
+        decisions: []
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.suspiciousPlayerDetail("account-1");
+
+    expect(result.summary.currentEnforcement).toBe("REWARD_HELD");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/integrity/suspicious-players/account-1", {
+      headers: {
+        accept: "application/json"
+      }
+    });
   });
 });

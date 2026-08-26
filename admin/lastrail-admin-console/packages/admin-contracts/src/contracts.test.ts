@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BootstrapResponseSchema,
   IntegrityEventsResponseSchema,
+  SuspiciousPlayerDetailSchema,
   SuspiciousPlayersResponseSchema,
   PlayerDetailSchema,
   hasPermission,
@@ -110,7 +111,7 @@ describe("admin contracts", () => {
           suspiciousRuns: 2,
           lastDetectionAt: "2026-08-26T04:00:00.000Z",
           primaryReason: "DAMAGE_SPIKE",
-          reviewStatus: "IN_REVIEW",
+          reviewStatus: "REVIEWING",
           currentEnforcement: "NONE",
           reviewOwner: "operator-1"
         }
@@ -119,5 +120,56 @@ describe("admin contracts", () => {
 
     expect(response.items[0].priority).toBe("HIGH");
     expect(response.items[0]).not.toHaveProperty("banAction");
+  });
+
+  it("describes suspicious player detail as a read-only investigation dossier", () => {
+    const detail = SuspiciousPlayerDetailSchema.parse({
+      account: {
+        accountId: "account-1",
+        displayName: "Kyle Account",
+        status: "ACTIVE",
+        createdAt: "2026-08-25T00:00:00.000Z"
+      },
+      summary: {
+        priority: "CRITICAL",
+        openSignals: 4,
+        hardViolations: 2,
+        suspiciousRuns: 2,
+        lastDetectionAt: "2026-08-26T04:00:00.000Z",
+        primaryReason: "IMPOSSIBLE_DAMAGE",
+        reviewStatus: "ESCALATED",
+        currentEnforcement: "REWARD_HELD",
+        reviewOwner: "operator-1"
+      },
+      riskSignals: [
+        {
+          id: "event-1",
+          runId: "run-1",
+          classification: "HARD_VIOLATION",
+          category: "DAMAGE_ANALYSIS",
+          evidenceCode: "IMPOSSIBLE_DAMAGE",
+          evidence: { maxDamageRatio: 12.8 },
+          reviewStatus: "ESCALATED",
+          reviewOwner: "operator-1",
+          createdAt: "2026-08-26T04:00:00.000Z"
+        }
+      ],
+      suspiciousRuns: [
+        {
+          runId: "run-1",
+          runType: "RUN",
+          result: "CLEARED",
+          riskTier: "V",
+          balanceVersion: "7",
+          startedAt: "2026-08-26T03:30:00.000Z",
+          completedAt: "2026-08-26T03:45:00.000Z"
+        }
+      ],
+      notes: [],
+      decisions: []
+    });
+
+    expect(detail.summary.reviewStatus).toBe("ESCALATED");
+    expect(detail.riskSignals[0]).not.toHaveProperty("banAction");
   });
 });

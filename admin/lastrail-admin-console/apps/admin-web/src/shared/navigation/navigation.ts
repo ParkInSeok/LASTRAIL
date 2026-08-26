@@ -22,7 +22,7 @@ const navigation: NavigationGroup[] = [
       { label: "Players", path: "/players", permission: "ACCOUNT_READ" },
       { label: "Runs", path: "/runs", permission: "RUN_READ" },
       { label: "Integrity", path: "/integrity", permission: "INTEGRITY_READ" },
-      { label: "Suspicious Players", path: "/integrity/suspicious-players", permission: "INTEGRITY_READ" },
+      { label: "의심 플레이어", path: "/integrity/suspicious-players", permission: "INTEGRITY_READ" },
       { label: "Incidents", path: "/incidents", permission: "INCIDENT_READ" },
       { label: "Enforcement", path: "/enforcement", permission: "ENFORCEMENT_SUSPEND" }
     ]

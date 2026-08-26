@@ -441,7 +441,7 @@ describe("admin-api read-only operations", () => {
 
   it("lists suspicious players grouped by open integrity signals", async () => {
     const response = await app.request(
-      "/v1/admin/integrity/suspicious-players?reviewStatus=IN_REVIEW",
+      "/v1/admin/integrity/suspicious-players?reviewStatus=REVIEWING",
       { headers: { "Cf-Access-Subject": "access|owner-1" } },
       createEnv([
         [
@@ -473,9 +473,181 @@ describe("admin-api read-only operations", () => {
           suspiciousRuns: 2,
           lastDetectionAt: "2026-08-26T04:00:00.000Z",
           primaryReason: "DAMAGE_SPIKE",
-          reviewStatus: "IN_REVIEW",
+          reviewStatus: "REVIEWING",
           currentEnforcement: "NONE",
           reviewOwner: "operator-1",
+        },
+      ],
+    });
+  });
+
+  it("returns suspicious player detail as a read-only investigation dossier", async () => {
+    const response = await app.request(
+      "/v1/admin/integrity/suspicious-players/account-1",
+      { headers: { "Cf-Access-Subject": "access|owner-1" } },
+      createEnv([
+        {
+          account_id: "account-1",
+          display_name: "Kyle Account",
+          status: "ACTIVE",
+          created_at: 1787659200000,
+        },
+        [
+          {
+            id: "event-1",
+            account_id: "account-1",
+            run_id: "run-1",
+            classification: "HARD_VIOLATION",
+            category: "DAMAGE_ANALYSIS",
+            evidence_code: "IMPOSSIBLE_DAMAGE",
+            evidence_json: '{"maxDamageRatio":12.8}',
+            review_state: "IN_REVIEW",
+            assigned_to: "operator-1",
+            created_at: 1787716800000,
+          },
+          {
+            id: "event-2",
+            account_id: "account-1",
+            run_id: "run-raid-1",
+            classification: "SOFT_ANOMALY",
+            category: "RAID_SCORE_ANALYSIS",
+            evidence_code: "RAID_SCORE_REPEAT",
+            evidence_json: '{"score":990000}',
+            review_state: "OPEN",
+            assigned_to: null,
+            created_at: 1787716200000,
+          },
+        ],
+        [
+          {
+            run_id: "run-1",
+            status: "COMPLETED",
+            risk: "V",
+            balance_config_version: 7,
+            started_at: 1787715000000,
+            finished_at: 1787715900000,
+          },
+          {
+            run_id: "run-raid-1",
+            status: "COMPLETED",
+            risk: "IV",
+            balance_config_version: 7,
+            started_at: 1787714000000,
+            finished_at: 1787714900000,
+          },
+        ],
+        [
+          {
+            id: "audit-note-1",
+            principal_id: "principal-1",
+            display_name: "Owner",
+            action: "PLAYER_NOTE_CREATE",
+            resource_id: "account-1",
+            request_id: "req-note-1",
+            change_summary_json: '{"note":"검토 중인 피해량 이상치."}',
+            created_at: 1787717000000,
+          },
+        ],
+        [
+          {
+            id: "audit-decision-1",
+            display_name: "Owner",
+            role: "OWNER",
+            action: "INTEGRITY_REVIEW_MARK",
+            resource_id: "account-1",
+            change_summary_json: '{"reviewStatus":"ESCALATED"}',
+            result: "SUCCESS",
+            created_at: 1787717100000,
+          },
+        ],
+        {
+          type: "REWARD_RESTRICTED",
+        },
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      account: {
+        accountId: "account-1",
+        displayName: "Kyle Account",
+        status: "ACTIVE",
+        createdAt: "2026-08-25T12:00:00.000Z",
+      },
+      summary: {
+        priority: "CRITICAL",
+        openSignals: 2,
+        hardViolations: 1,
+        suspiciousRuns: 2,
+        lastDetectionAt: "2026-08-26T04:00:00.000Z",
+        primaryReason: "IMPOSSIBLE_DAMAGE",
+        reviewStatus: "REVIEWING",
+        currentEnforcement: "REWARD_HELD",
+        reviewOwner: "operator-1",
+      },
+      riskSignals: [
+        {
+          id: "event-1",
+          runId: "run-1",
+          classification: "HARD_VIOLATION",
+          category: "DAMAGE_ANALYSIS",
+          evidenceCode: "IMPOSSIBLE_DAMAGE",
+          evidence: { maxDamageRatio: 12.8 },
+          reviewStatus: "REVIEWING",
+          reviewOwner: "operator-1",
+          createdAt: "2026-08-26T04:00:00.000Z",
+        },
+        {
+          id: "event-2",
+          runId: "run-raid-1",
+          classification: "SOFT_ANOMALY",
+          category: "RAID_SCORE_ANALYSIS",
+          evidenceCode: "RAID_SCORE_REPEAT",
+          evidence: { score: 990000 },
+          reviewStatus: "NEW",
+          reviewOwner: null,
+          createdAt: "2026-08-26T03:50:00.000Z",
+        },
+      ],
+      suspiciousRuns: [
+        {
+          runId: "run-1",
+          runType: "RUN",
+          result: "CLEARED",
+          riskTier: "V",
+          balanceVersion: "7",
+          startedAt: "2026-08-26T03:30:00.000Z",
+          completedAt: "2026-08-26T03:45:00.000Z",
+        },
+        {
+          runId: "run-raid-1",
+          runType: "RAID_RUN",
+          result: "CLEARED",
+          riskTier: "IV",
+          balanceVersion: "7",
+          startedAt: "2026-08-26T03:13:20.000Z",
+          completedAt: "2026-08-26T03:28:20.000Z",
+        },
+      ],
+      notes: [
+        {
+          id: "audit-note-1",
+          accountId: "account-1",
+          note: "검토 중인 피해량 이상치.",
+          authorId: "principal-1",
+          authorDisplayName: "Owner",
+          requestId: "req-note-1",
+          createdAt: "2026-08-26T04:03:20.000Z",
+        },
+      ],
+      decisions: [
+        {
+          id: "audit-decision-1",
+          action: "INTEGRITY_REVIEW_MARK",
+          result: "SUCCESS",
+          principalDisplayName: "Owner",
+          changeSummary: { reviewStatus: "ESCALATED" },
+          createdAt: "2026-08-26T04:05:00.000Z",
         },
       ],
     });

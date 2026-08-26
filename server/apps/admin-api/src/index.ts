@@ -110,6 +110,37 @@ type AdminSuspiciousPlayerRow = {
   review_owner: string | null;
 };
 
+type AdminSuspiciousPlayerAccountRow = {
+  account_id: string;
+  display_name: string | null;
+  status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  created_at: number;
+};
+
+type AdminSuspiciousPlayerRunRow = {
+  run_id: string;
+  status: string;
+  risk: string | null;
+  balance_config_version: number;
+  started_at: number;
+  finished_at: number | null;
+};
+
+type AdminSuspiciousPlayerDecisionRow = {
+  id: string;
+  display_name: string | null;
+  role: "OWNER" | "OPERATOR" | "VIEWER";
+  action: string;
+  resource_id: string | null;
+  change_summary_json: string;
+  result: "SUCCESS" | "FAILURE";
+  created_at: number;
+};
+
+type AdminActiveEnforcementRow = {
+  type: string;
+};
+
 type AdminRunSearchRow = {
   run_id: string;
   account_id: string;
@@ -306,17 +337,71 @@ function normalizeRiskTier(risk: string | null): "I" | "II" | "III" | "IV" | "V"
   return "I";
 }
 
-function suspiciousPriority(openSignals: number, hardViolations: number): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
+type SuspiciousPlayerReviewStatus =
+  | "NEW"
+  | "REVIEWING"
+  | "CLEARED"
+  | "SCORE_EXCLUDED"
+  | "REWARD_HELD"
+  | "ESCALATED"
+  | "ACTIONED"
+  | "FALSE_POSITIVE";
+
+function suspiciousPriority(
+  openSignals: number,
+  hardViolations: number,
+  evidenceCodes: readonly string[] = [],
+): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
+  if (
+    evidenceCodes.some((code) =>
+      code === "CHECKSUM_MISMATCH" ||
+      code === "IMPOSSIBLE_SCORE" ||
+      code === "IMPOSSIBLE_DAMAGE" ||
+      code === "BALANCE_VERSION_REWARD_MISMATCH"
+    )
+  ) {
+    return "CRITICAL";
+  }
+  if (
+    evidenceCodes.some((code) =>
+      code === "ABNORMAL_CLEAR_TIME" ||
+      code === "ABNORMAL_ULTIMATE_USAGE" ||
+      code === "RAID_SCORE_REPEAT"
+    )
+  ) {
+    return "HIGH";
+  }
   if (hardViolations >= 3 || openSignals >= 10) return "CRITICAL";
   if (hardViolations > 0 || openSignals >= 3) return "HIGH";
   if (openSignals >= 2) return "MEDIUM";
   return "LOW";
 }
 
-function suspiciousReviewStatus(value: string): "UNREVIEWED" | "IN_REVIEW" | "NEEDS_MORE_EVIDENCE" | "CONFIRMED_VIOLATION" | "CLEARED" | "FALSE_POSITIVE" | "LINKED_INCIDENT" {
-  if (value === "IN_REVIEW") return "IN_REVIEW";
-  if (value === "RESOLVED") return "CONFIRMED_VIOLATION";
-  return "UNREVIEWED";
+function suspiciousReviewStatus(value: string): SuspiciousPlayerReviewStatus {
+  if (value === "REVIEWING" || value === "IN_REVIEW") return "REVIEWING";
+  if (value === "CLEARED") return "CLEARED";
+  if (value === "SCORE_EXCLUDED") return "SCORE_EXCLUDED";
+  if (value === "REWARD_HELD") return "REWARD_HELD";
+  if (value === "ESCALATED") return "ESCALATED";
+  if (value === "ACTIONED" || value === "RESOLVED") return "ACTIONED";
+  if (value === "FALSE_POSITIVE") return "FALSE_POSITIVE";
+  return "NEW";
+}
+
+function legacyReviewStateFromSuspiciousStatus(value: SuspiciousPlayerReviewStatus): "OPEN" | "IN_REVIEW" | "RESOLVED" {
+  if (value === "REVIEWING") return "IN_REVIEW";
+  if (value === "NEW") return "OPEN";
+  return "RESOLVED";
+}
+
+function currentEnforcementStatus(type: string | null): "NONE" | "REWARD_HELD" | "SCORE_EXCLUDED" | "ACTIONED" {
+  if (type === "REWARD_RESTRICTED") return "REWARD_HELD";
+  if (type === "TEMP_SUSPENDED" || type === "PERMANENT_BAN") return "ACTIONED";
+  return "NONE";
+}
+
+function suspiciousRunType(runId: string): "RUN" | "RAID_RUN" {
+  return runId.includes("raid") ? "RAID_RUN" : "RUN";
 }
 
 function syncLevelFrom(coreRows: AdminTrainingCoreRow[]): number {
@@ -778,12 +863,18 @@ app.get("/v1/admin/integrity/suspicious-players", async (c) => {
   const reviewStatus = c.req.query("reviewStatus")?.trim() || null;
   if (
     reviewStatus !== null &&
-    reviewStatus !== "UNREVIEWED" &&
-    reviewStatus !== "IN_REVIEW" &&
-    reviewStatus !== "CONFIRMED_VIOLATION"
+    reviewStatus !== "NEW" &&
+    reviewStatus !== "REVIEWING" &&
+    reviewStatus !== "CLEARED" &&
+    reviewStatus !== "SCORE_EXCLUDED" &&
+    reviewStatus !== "REWARD_HELD" &&
+    reviewStatus !== "ESCALATED" &&
+    reviewStatus !== "ACTIONED" &&
+    reviewStatus !== "FALSE_POSITIVE"
   ) {
     return c.json({ error: "SUSPICIOUS_PLAYERS_FILTER_INVALID" }, 400);
   }
+  const reviewStateFilter = reviewStatus === null ? null : legacyReviewStateFromSuspiciousStatus(reviewStatus);
 
   const rows = await c.env.DB.prepare(
     `SELECT
@@ -816,27 +907,196 @@ app.get("/v1/admin/integrity/suspicious-players", async (c) => {
      HAVING (? IS NULL OR
        CASE COALESCE(review_status, 'OPEN')
          WHEN 'IN_REVIEW' THEN 'IN_REVIEW'
-         ELSE 'UNREVIEWED'
+         ELSE 'OPEN'
        END = ?)
      ORDER BY last_detection_at DESC
      LIMIT 100`,
   )
-    .bind(reviewStatus, reviewStatus)
+    .bind(reviewStateFilter, reviewStateFilter)
     .all<AdminSuspiciousPlayerRow>();
 
   return c.json({
     items: rows.results.map((row) => ({
       accountId: row.account_id,
       displayName: row.display_name ?? row.account_id,
-      priority: suspiciousPriority(row.open_signals, row.hard_violations),
+      priority: suspiciousPriority(row.open_signals, row.hard_violations, [row.primary_reason]),
       openSignals: row.open_signals,
       hardViolations: row.hard_violations,
       suspiciousRuns: row.suspicious_runs,
       lastDetectionAt: toIso(row.last_detection_at),
       primaryReason: row.primary_reason,
       reviewStatus: suspiciousReviewStatus(row.review_status),
-      currentEnforcement: row.current_enforcement ?? "NONE",
+      currentEnforcement: currentEnforcementStatus(row.current_enforcement),
       reviewOwner: row.review_owner,
+    })),
+  });
+});
+app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const accountId = c.req.param("accountId");
+  const account = await c.env.DB.prepare(
+    `SELECT account.id AS account_id,
+            profile.display_name AS display_name,
+            account.status AS status,
+            account.created_at AS created_at
+     FROM accounts account
+     LEFT JOIN player_profiles profile ON profile.account_id = account.id
+     WHERE account.id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminSuspiciousPlayerAccountRow>();
+
+  if (account === null) {
+    return c.json({ error: "ACCOUNT_NOT_FOUND" }, 404);
+  }
+
+  const signals = await c.env.DB.prepare(
+    `SELECT event.id AS id,
+            event.account_id AS account_id,
+            event.run_id AS run_id,
+            event.classification AS classification,
+            event.category AS category,
+            event.evidence_code AS evidence_code,
+            event.evidence_json AS evidence_json,
+            COALESCE(review.state, 'OPEN') AS review_state,
+            review.assigned_to AS assigned_to,
+            event.created_at AS created_at
+     FROM integrity_events event
+     LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     WHERE event.account_id = ?
+     ORDER BY event.created_at DESC
+     LIMIT 100`,
+  )
+    .bind(accountId)
+    .all<AdminIntegrityEventRow>();
+
+  const runIds = [...new Set(signals.results.map((signal) => signal.run_id).filter((runId): runId is string => runId !== null))];
+  const runs = runIds.length > 0
+    ? await c.env.DB.prepare(
+        `SELECT run.id AS run_id,
+                run.status AS status,
+                preview.risk AS risk,
+                run.balance_config_version AS balance_config_version,
+                run.started_at AS started_at,
+                run.finished_at AS finished_at
+         FROM runs run
+         LEFT JOIN operation_previews preview ON preview.id = run.preview_id
+         WHERE run.id IN (${runIds.map(() => "?").join(", ")})
+         ORDER BY run.started_at DESC`,
+      )
+        .bind(...runIds)
+        .all<AdminSuspiciousPlayerRunRow>()
+    : { results: [] };
+
+  const notes = await c.env.DB.prepare(
+    `SELECT audit.id AS id,
+            audit.principal_id AS principal_id,
+            principal.display_name AS display_name,
+            audit.resource_id AS resource_id,
+            audit.request_id AS request_id,
+            audit.change_summary_json AS change_summary_json,
+            audit.created_at AS created_at
+     FROM admin_audit_logs audit
+     LEFT JOIN admin_principals principal ON principal.id = audit.principal_id
+     WHERE audit.action = 'PLAYER_NOTE_CREATE'
+       AND audit.resource_id = ?
+     ORDER BY audit.created_at DESC
+     LIMIT 25`,
+  )
+    .bind(accountId)
+    .all<AdminPlayerNoteRow>();
+
+  const decisions = await c.env.DB.prepare(
+    `SELECT audit.id AS id,
+            principal.display_name AS display_name,
+            audit.role AS role,
+            audit.action AS action,
+            audit.resource_id AS resource_id,
+            audit.change_summary_json AS change_summary_json,
+            audit.result AS result,
+            audit.created_at AS created_at
+     FROM admin_audit_logs audit
+     LEFT JOIN admin_principals principal ON principal.id = audit.principal_id
+     WHERE audit.resource_id = ?
+       AND audit.action IN ('INTEGRITY_REVIEW_MARK', 'INTEGRITY_REVIEW_STATUS_CHANGE')
+     ORDER BY audit.created_at DESC
+     LIMIT 25`,
+  )
+    .bind(accountId)
+    .all<AdminSuspiciousPlayerDecisionRow>();
+
+  const enforcement = await c.env.DB.prepare(
+    `SELECT type
+     FROM account_enforcements
+     WHERE account_id = ?
+       AND status = 'ACTIVE'
+     ORDER BY created_at DESC
+     LIMIT 1`,
+  )
+    .bind(accountId)
+    .first<AdminActiveEnforcementRow>();
+
+  const hardViolations = signals.results.filter((signal) => signal.classification === "HARD_VIOLATION").length;
+  const reviewOwner = signals.results.find((signal) => signal.assigned_to !== null)?.assigned_to ?? null;
+  const hasReviewingSignal = signals.results.some((signal) => suspiciousReviewStatus(signal.review_state) === "REVIEWING");
+  const evidenceCodes = signals.results.map((signal) => signal.evidence_code);
+
+  return c.json({
+    account: {
+      accountId: account.account_id,
+      displayName: account.display_name ?? account.account_id,
+      status: account.status,
+      createdAt: toIso(account.created_at),
+    },
+    summary: {
+      priority: suspiciousPriority(signals.results.length, hardViolations, evidenceCodes),
+      openSignals: signals.results.length,
+      hardViolations,
+      suspiciousRuns: runIds.length,
+      lastDetectionAt: signals.results[0] ? toIso(signals.results[0].created_at) : null,
+      primaryReason: signals.results[0]?.evidence_code ?? null,
+      reviewStatus: hasReviewingSignal ? "REVIEWING" : "NEW",
+      currentEnforcement: currentEnforcementStatus(enforcement?.type ?? null),
+      reviewOwner,
+    },
+    riskSignals: signals.results.map((signal) => ({
+      id: signal.id,
+      runId: signal.run_id,
+      classification: signal.classification,
+      category: signal.category,
+      evidenceCode: signal.evidence_code,
+      evidence: parseJsonValue(signal.evidence_json),
+      reviewStatus: suspiciousReviewStatus(signal.review_state),
+      reviewOwner: signal.assigned_to,
+      createdAt: toIso(signal.created_at),
+    })),
+    suspiciousRuns: runs.results.map((run) => ({
+      runId: run.run_id,
+      runType: suspiciousRunType(run.run_id),
+      result: mapRunResult(run.status),
+      riskTier: normalizeRiskTier(run.risk),
+      balanceVersion: String(run.balance_config_version),
+      startedAt: toIso(run.started_at),
+      completedAt: run.finished_at === null ? null : toIso(run.finished_at),
+    })),
+    notes: notes.results.map((row) => ({
+      id: row.id,
+      accountId: row.resource_id,
+      note: parsePlayerNoteSummary(row.change_summary_json),
+      authorId: row.principal_id,
+      authorDisplayName: row.display_name ?? row.principal_id,
+      requestId: row.request_id,
+      createdAt: toIso(row.created_at),
+    })),
+    decisions: decisions.results.map((row) => ({
+      id: row.id,
+      action: row.action,
+      result: row.result,
+      principalDisplayName: row.display_name ?? row.role,
+      changeSummary: parseJsonValue(row.change_summary_json),
+      createdAt: toIso(row.created_at),
     })),
   });
 });

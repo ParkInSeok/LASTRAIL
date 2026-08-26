@@ -255,7 +255,7 @@ describe("admin backend routes", () => {
       upstream: (async (path, init) => {
         expect(path).toBe("/v1/admin/integrity/suspicious-players");
         expect(init.method).toBe("GET");
-        expect(init.searchParams?.get("reviewStatus")).toBe("IN_REVIEW");
+        expect(init.searchParams?.get("reviewStatus")).toBe("REVIEWING");
         return {
           items: [
             {
@@ -267,7 +267,7 @@ describe("admin backend routes", () => {
               suspiciousRuns: 2,
               lastDetectionAt: "2026-08-26T04:00:00.000Z",
               primaryReason: "DAMAGE_SPIKE",
-              reviewStatus: "IN_REVIEW",
+              reviewStatus: "REVIEWING",
               currentEnforcement: "NONE",
               reviewOwner: "operator-1"
             }
@@ -278,11 +278,57 @@ describe("admin backend routes", () => {
 
     const response = await server.inject({
       method: "GET",
-      url: "/api/integrity/suspicious-players?reviewStatus=IN_REVIEW"
+      url: "/api/integrity/suspicious-players?reviewStatus=REVIEWING"
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json().items[0].primaryReason).toBe("DAMAGE_SPIKE");
+  });
+
+  it("proxies suspicious player detail to the versioned Admin API path", async () => {
+    const server = buildServer({
+      config: {
+        adminApiBaseUrl: "https://admin-api.example.test",
+        profile: "staging",
+        host: "127.0.0.1",
+        port: 4174
+      },
+      upstream: (async (path, init) => {
+        expect(path).toBe("/v1/admin/integrity/suspicious-players/account-1");
+        expect(init.method).toBe("GET");
+        return {
+          account: {
+            accountId: "account-1",
+            displayName: "Kyle Account",
+            status: "ACTIVE",
+            createdAt: "2026-08-25T12:00:00.000Z"
+          },
+          summary: {
+            priority: "CRITICAL",
+            openSignals: 2,
+            hardViolations: 1,
+            suspiciousRuns: 2,
+            lastDetectionAt: "2026-08-26T04:00:00.000Z",
+            primaryReason: "IMPOSSIBLE_DAMAGE",
+            reviewStatus: "REVIEWING",
+            currentEnforcement: "REWARD_HELD",
+            reviewOwner: "operator-1"
+          },
+          riskSignals: [],
+          suspiciousRuns: [],
+          notes: [],
+          decisions: []
+        };
+      }) satisfies UpstreamClient
+    });
+
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/integrity/suspicious-players/account-1"
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().summary.reviewStatus).toBe("REVIEWING");
   });
 
   it("normalizes schema validation failures from upstream", async () => {

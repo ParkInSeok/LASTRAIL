@@ -176,13 +176,14 @@ export const IntegrityEventsResponseSchema = z.object({
 
 export const SuspiciousPlayerPrioritySchema = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
 export const SuspiciousPlayerReviewStatusSchema = z.enum([
-  "UNREVIEWED",
-  "IN_REVIEW",
-  "NEEDS_MORE_EVIDENCE",
-  "CONFIRMED_VIOLATION",
+  "NEW",
+  "REVIEWING",
   "CLEARED",
+  "SCORE_EXCLUDED",
+  "REWARD_HELD",
+  "ESCALATED",
+  "ACTIONED",
   "FALSE_POSITIVE",
-  "LINKED_INCIDENT"
 ]);
 
 export const SuspiciousPlayerItemSchema = z.object({
@@ -202,6 +203,61 @@ export const SuspiciousPlayerItemSchema = z.object({
 export const SuspiciousPlayersResponseSchema = z.object({
   items: z.array(SuspiciousPlayerItemSchema),
   nextCursor: z.string().optional()
+});
+
+export const SuspiciousPlayerRiskSignalSchema = z.object({
+  id: z.string().min(1),
+  runId: z.string().min(1).nullable(),
+  classification: IntegrityEventClassificationSchema,
+  category: z.string().min(1),
+  evidenceCode: z.string().min(1),
+  evidence: JsonValueSchema,
+  reviewStatus: SuspiciousPlayerReviewStatusSchema,
+  reviewOwner: z.string().min(1).nullable(),
+  createdAt: z.string().datetime()
+});
+
+export const SuspiciousPlayerRunSchema = z.object({
+  runId: z.string().min(1),
+  runType: z.enum(["RUN", "RAID_RUN"]),
+  result: z.enum(["IN_PROGRESS", "CLEARED", "FAILED", "INVALIDATED"]),
+  riskTier: z.enum(["I", "II", "III", "IV", "V"]),
+  balanceVersion: z.string().min(1),
+  startedAt: z.string().datetime(),
+  completedAt: z.string().datetime().nullable()
+});
+
+export const SuspiciousPlayerDecisionSchema = z.object({
+  id: z.string().min(1),
+  action: z.string().min(1),
+  result: z.enum(["SUCCESS", "FAILURE"]),
+  principalDisplayName: z.string().min(1),
+  changeSummary: JsonValueSchema,
+  createdAt: z.string().datetime()
+});
+
+export const SuspiciousPlayerDetailSchema = z.object({
+  account: z.object({
+    accountId: z.string().min(1),
+    displayName: z.string().min(1),
+    status: AccountStatusSchema,
+    createdAt: z.string().datetime()
+  }),
+  summary: z.object({
+    priority: SuspiciousPlayerPrioritySchema,
+    openSignals: z.number().int().min(0),
+    hardViolations: z.number().int().min(0),
+    suspiciousRuns: z.number().int().min(0),
+    lastDetectionAt: z.string().datetime().nullable(),
+    primaryReason: z.string().min(1).nullable(),
+    reviewStatus: SuspiciousPlayerReviewStatusSchema,
+    currentEnforcement: z.string().min(1),
+    reviewOwner: z.string().min(1).nullable()
+  }),
+  riskSignals: z.array(SuspiciousPlayerRiskSignalSchema),
+  suspiciousRuns: z.array(SuspiciousPlayerRunSchema),
+  notes: z.array(PlayerNoteItemSchema),
+  decisions: z.array(SuspiciousPlayerDecisionSchema)
 });
 
 export const RunSummarySchema = z.object({
@@ -254,6 +310,7 @@ export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
 export type AuditLogsResponse = z.infer<typeof AuditLogsResponseSchema>;
 export type IntegrityEventsResponse = z.infer<typeof IntegrityEventsResponseSchema>;
 export type SuspiciousPlayersResponse = z.infer<typeof SuspiciousPlayersResponseSchema>;
+export type SuspiciousPlayerDetail = z.infer<typeof SuspiciousPlayerDetailSchema>;
 export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
 export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
 export type PlayerNotesResponse = z.infer<typeof PlayerNotesResponseSchema>;

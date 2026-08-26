@@ -4,11 +4,20 @@ import { Link, useSearchParams } from "react-router-dom";
 import { adminApi } from "../shared/api/client";
 
 type SuspiciousPlayersFilters = {
-  reviewStatus: "" | "UNREVIEWED" | "IN_REVIEW" | "CONFIRMED_VIOLATION";
+  reviewStatus: "" | "NEW" | "REVIEWING" | "CLEARED" | "SCORE_EXCLUDED" | "REWARD_HELD" | "ESCALATED" | "ACTIONED" | "FALSE_POSITIVE";
 };
 
 function reviewStatusFromSearchParam(value: string | null): SuspiciousPlayersFilters["reviewStatus"] {
-  if (value === "UNREVIEWED" || value === "IN_REVIEW" || value === "CONFIRMED_VIOLATION") {
+  if (
+    value === "NEW" ||
+    value === "REVIEWING" ||
+    value === "CLEARED" ||
+    value === "SCORE_EXCLUDED" ||
+    value === "REWARD_HELD" ||
+    value === "ESCALATED" ||
+    value === "ACTIONED" ||
+    value === "FALSE_POSITIVE"
+  ) {
     return value;
   }
   return "";
@@ -27,7 +36,21 @@ export function suspiciousPlayersSearchParamsFromFilters(filters: SuspiciousPlay
 }
 
 export function suspiciousPlayerHref(accountId: string): string {
-  return `/players/${encodeURIComponent(accountId)}`;
+  return `/integrity/suspicious-players/${encodeURIComponent(accountId)}`;
+}
+
+function reviewStatusLabel(status: Exclude<SuspiciousPlayersFilters["reviewStatus"], "">): string {
+  const labels: Record<Exclude<SuspiciousPlayersFilters["reviewStatus"], "">, string> = {
+    NEW: "신규",
+    REVIEWING: "검토 중",
+    CLEARED: "정상 처리",
+    SCORE_EXCLUDED: "순위 제외",
+    REWARD_HELD: "보상 보류",
+    ESCALATED: "제재 검토",
+    ACTIONED: "조치 완료",
+    FALSE_POSITIVE: "오탐"
+  };
+  return labels[status];
 }
 
 export function SuspiciousPlayersPage() {
@@ -52,12 +75,12 @@ export function SuspiciousPlayersPage() {
   return (
     <main className="content">
       <header>
-        <h1>Suspicious Players</h1>
-        <p>Account-level investigation queue from open integrity signals</p>
+        <h1>의심 플레이어</h1>
+        <p>열린 무결성 신호를 계정 단위로 묶은 검토 큐</p>
       </header>
       <form className="toolbar" onSubmit={submitFilters}>
         <select
-          aria-label="Review Status"
+          aria-label="리뷰 상태"
           value={draft.reviewStatus}
           onChange={(event) =>
             setDraft({
@@ -65,28 +88,33 @@ export function SuspiciousPlayersPage() {
             })
           }
         >
-          <option value="">Any status</option>
-          <option value="UNREVIEWED">Unreviewed</option>
-          <option value="IN_REVIEW">In review</option>
-          <option value="CONFIRMED_VIOLATION">Confirmed violation</option>
+          <option value="">전체 상태</option>
+          <option value="NEW">신규</option>
+          <option value="REVIEWING">검토 중</option>
+          <option value="CLEARED">정상 처리</option>
+          <option value="SCORE_EXCLUDED">순위 제외</option>
+          <option value="REWARD_HELD">보상 보류</option>
+          <option value="ESCALATED">제재 검토</option>
+          <option value="ACTIONED">조치 완료</option>
+          <option value="FALSE_POSITIVE">오탐</option>
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">적용</button>
       </form>
-      {query.isLoading ? <p>Loading suspicious players</p> : null}
-      {query.error ? <p className="error">Suspicious players request failed</p> : null}
-      {query.data?.items.length === 0 ? <p>No suspicious players found</p> : null}
+      {query.isLoading ? <p>의심 플레이어를 불러오는 중</p> : null}
+      {query.error ? <p className="error">의심 플레이어 요청 실패</p> : null}
+      {query.data?.items.length === 0 ? <p>의심 플레이어가 없습니다</p> : null}
       {query.data && query.data.items.length > 0 ? (
         <table>
           <thead>
             <tr>
-              <th>Account</th>
-              <th>Priority</th>
-              <th>Signals</th>
-              <th>Suspicious Runs</th>
-              <th>Last Detection</th>
-              <th>Primary Reason</th>
-              <th>Review</th>
-              <th>Enforcement</th>
+              <th>계정</th>
+              <th>우선순위</th>
+              <th>신호</th>
+              <th>의심 출격</th>
+              <th>마지막 탐지</th>
+              <th>주요 사유</th>
+              <th>리뷰</th>
+              <th>운영 조치</th>
             </tr>
           </thead>
           <tbody>
@@ -105,8 +133,8 @@ export function SuspiciousPlayersPage() {
                 <td>{new Date(player.lastDetectionAt).toLocaleString()}</td>
                 <td>{player.primaryReason}</td>
                 <td>
-                  {player.reviewStatus}
-                  <small>{player.reviewOwner ?? "Unassigned"}</small>
+                  {reviewStatusLabel(player.reviewStatus)}
+                  <small>{player.reviewOwner ?? "미배정"}</small>
                 </td>
                 <td>{player.currentEnforcement}</td>
               </tr>

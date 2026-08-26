@@ -9,6 +9,7 @@ import {
   PlayerSearchResponseSchema,
   RunDetailSchema,
   RunSearchResponseSchema,
+  SuspiciousPlayerDetailSchema,
   SuspiciousPlayersResponseSchema
 } from "@lastrail/admin-contracts";
 
@@ -95,13 +96,18 @@ export const adminApi = {
     );
   },
   async suspiciousPlayers(filters: {
-    reviewStatus?: "UNREVIEWED" | "IN_REVIEW" | "CONFIRMED_VIOLATION";
+    reviewStatus?: "NEW" | "REVIEWING" | "CLEARED" | "SCORE_EXCLUDED" | "REWARD_HELD" | "ESCALATED" | "ACTIONED" | "FALSE_POSITIVE";
   }) {
     const params = new URLSearchParams();
     if (filters.reviewStatus) params.set("reviewStatus", filters.reviewStatus);
     const query = params.toString();
     return SuspiciousPlayersResponseSchema.parse(
       await readJson(`/api/integrity/suspicious-players${query ? `?${query}` : ""}`)
+    );
+  },
+  async suspiciousPlayerDetail(accountId: string) {
+    return SuspiciousPlayerDetailSchema.parse(
+      await readJson(`/api/integrity/suspicious-players/${encodeURIComponent(accountId)}`)
     );
   },
   async searchRuns(accountId?: string) {
