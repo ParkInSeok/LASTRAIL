@@ -108,6 +108,12 @@ type GachaPityRow = {
   revision: number;
 };
 
+type GachaPityConfig = {
+  elite: number;
+  pickup: number;
+  rare: number;
+};
+
 type GachaPoolResult = {
   resultRarity: "COMMON" | "RARE" | "ELITE";
   resultType: "ELITE_OPERATOR" | "RARE_OPERATOR" | "ELITE_OPERATOR_SHARD" | "RARE_OPERATOR_SHARD" | "OPERATOR_TOKEN" | "TRAINING_MATERIAL" | "WORK_SKILL_MATERIAL";
@@ -140,6 +146,8 @@ type AccountItemRow = {
 type ExistingOperatorRow = {
   operator_id: string;
 };
+
+type GachaGuaranteeType = GachaCommittedResult["guaranteeType"];
 
 type GachaReplayBatchRow = {
   id: string;
@@ -325,6 +333,15 @@ function parseGachaPoolResults(poolSnapshotJson: string): GachaPoolResult[] {
   });
 }
 
+function parseGachaPityConfig(pityConfigJson: string): GachaPityConfig {
+  const parsed = JSON.parse(pityConfigJson) as Record<string, unknown>;
+  return {
+    elite: typeof parsed.elite === "number" && Number.isSafeInteger(parsed.elite) && parsed.elite > 0 ? parsed.elite : 30,
+    pickup: typeof parsed.pickup === "number" && Number.isSafeInteger(parsed.pickup) && parsed.pickup > 0 ? parsed.pickup : 60,
+    rare: typeof parsed.rare === "number" && Number.isSafeInteger(parsed.rare) && parsed.rare > 0 ? parsed.rare : 10,
+  };
+}
+
 function getInitialPityState(row: GachaPityRow | null): GachaPityState {
   if (row === null) {
     return {
@@ -362,6 +379,86 @@ function finalizeGachaPityState(state: GachaPityState): GachaPityState {
     ...state,
     revision: state.revision + 1,
   };
+}
+
+function getNextGachaGuaranteeType(options: {
+  banner: GachaBannerRow;
+  pityState: GachaPityState;
+  pityConfig: GachaPityConfig;
+}): GachaGuaranteeType {
+  if (
+    options.banner.banner_type === "PICKUP"
+    && options.banner.pickup_operator_id !== null
+    && options.pityState.pickupElitePityCount + 1 >= options.pityConfig.pickup
+  ) {
+    return "PICKUP_ELITE_60";
+  }
+  if (options.pityState.elitePityCount + 1 >= options.pityConfig.elite) {
+    return "ELITE_30";
+  }
+  if (options.pityState.rareOrHigherPityCount + 1 >= options.pityConfig.rare) {
+    return "RARE_OR_HIGHER_10";
+  }
+  return "NONE";
+}
+
+function isGachaPoolResultEligibleForGuarantee(
+  result: GachaPoolResult,
+  guaranteeType: GachaGuaranteeType,
+  banner: GachaBannerRow,
+): boolean {
+  if (guaranteeType === "PICKUP_ELITE_60") {
+    return result.resultRarity === "ELITE"
+      && (result.isPickup === true || result.resultId === banner.pickup_operator_id);
+  }
+  if (guaranteeType === "ELITE_30") {
+    return result.resultRarity === "ELITE";
+  }
+  if (guaranteeType === "RARE_OR_HIGHER_10") {
+    return result.resultRarity === "RARE" || result.resultRarity === "ELITE";
+  }
+  return true;
+}
+
+function hashStringToUint32(input: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function getGachaResultWeight(result: GachaPoolResult, guaranteeType: GachaGuaranteeType): number {
+  if (guaranteeType !== "NONE") {
+    return typeof result.weight === "number" && Number.isFinite(result.weight) && result.weight > 0
+      ? result.weight
+      : 1;
+  }
+  return typeof result.weight === "number" && Number.isFinite(result.weight) && result.weight > 0
+    ? result.weight
+    : 0;
+}
+
+function selectGachaPoolResult(options: {
+  poolResults: GachaPoolResult[];
+  guaranteeType: GachaGuaranteeType;
+  banner: GachaBannerRow;
+  seed: string;
+}): GachaPoolResult | null {
+  const candidates = options.poolResults
+    .filter((result) => isGachaPoolResultEligibleForGuarantee(result, options.guaranteeType, options.banner))
+    .map((result) => ({ result, weight: getGachaResultWeight(result, options.guaranteeType) }))
+    .filter((candidate) => candidate.weight > 0);
+  const totalWeight = candidates.reduce((sum, candidate) => sum + candidate.weight, 0);
+  if (totalWeight <= 0) return null;
+
+  let roll = hashStringToUint32(options.seed) % totalWeight;
+  for (const candidate of candidates) {
+    if (roll < candidate.weight) return candidate.result;
+    roll -= candidate.weight;
+  }
+  return candidates[candidates.length - 1]?.result ?? null;
 }
 
 function getOperatorShardItemId(operatorId: string): string {
@@ -829,6 +926,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     .bind(authContext.accountId, bannerId)
     .first<GachaPityRow>();
   const prePityState = getInitialPityState(pityRow);
+  const pityConfig = parseGachaPityConfig(row.pity_config_json);
   let nextPityState = prePityState;
   const now = Date.now();
   const batchId = createDomainId("gacha_batch");
@@ -869,9 +967,43 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
   for (const operator of existingOperators.results) {
     ownedOperatorIds.add(operator.operator_id);
   }
+  const itemBalanceCache = new Map<string, number>();
+
+  const getCachedItemBalance = async (itemId: string): Promise<number> => {
+    const cachedBalance = itemBalanceCache.get(itemId);
+    if (cachedBalance !== undefined) return cachedBalance;
+    const row = await c.env.DB.prepare(
+      `SELECT quantity
+       FROM account_items
+       WHERE account_id = ? AND item_id = ?`,
+    )
+      .bind(authContext.accountId, itemId)
+      .first<AccountItemRow>();
+    const balance = row?.quantity ?? 0;
+    itemBalanceCache.set(itemId, balance);
+    return balance;
+  };
 
   for (let index = 0; index < pullCount; index += 1) {
-    const poolResult = poolResults[index % poolResults.length] as GachaPoolResult;
+    const guaranteeType = getNextGachaGuaranteeType({
+      banner: row,
+      pityState: nextPityState,
+      pityConfig,
+    });
+    const poolResult = selectGachaPoolResult({
+      poolResults,
+      guaranteeType,
+      banner: row,
+      seed: `${authContext.accountId}:${bannerId}:${idempotencyKey}:${index + 1}`,
+    });
+    if (poolResult === null) {
+      return c.json(createGachaRejectedResponse({
+        bannerId,
+        pullCount,
+        errorCode: "gacha_pool_unavailable",
+        message: "Gacha pool is unavailable.",
+      }), 503);
+    }
     const isOperator = poolResult.resultType === "ELITE_OPERATOR" || poolResult.resultType === "RARE_OPERATOR";
     const isDuplicate = isOperator && ownedOperatorIds.has(poolResult.resultId);
     const isPickup = Boolean(poolResult.isPickup) || poolResult.resultId === row.pickup_operator_id;
@@ -884,14 +1016,8 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     if (isOperator && isDuplicate) {
       const conversionQuantity = getDuplicateConversionQuantity(poolResult.resultType);
       const shardItemId = getOperatorShardItemId(poolResult.resultId);
-      const currentShardBalance = await c.env.DB.prepare(
-        `SELECT quantity
-         FROM account_items
-         WHERE account_id = ? AND item_id = ?`,
-      )
-        .bind(authContext.accountId, shardItemId)
-        .first<AccountItemRow>();
-      const shardBalanceAfter = (currentShardBalance?.quantity ?? 0) + conversionQuantity;
+      const shardBalanceAfter = await getCachedItemBalance(shardItemId) + conversionQuantity;
+      itemBalanceCache.set(shardItemId, shardBalanceAfter);
       itemLedgerId = createDomainId("item_ledger");
       duplicateConversion = {
         sourceResultType: poolResult.resultType,
@@ -937,14 +1063,8 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       ownedOperatorIds.add(poolResult.resultId);
     } else {
       const quantity = poolResult.quantity ?? 1;
-      const currentItemBalance = await c.env.DB.prepare(
-        `SELECT quantity
-         FROM account_items
-         WHERE account_id = ? AND item_id = ?`,
-      )
-        .bind(authContext.accountId, poolResult.resultId)
-        .first<AccountItemRow>();
-      const itemBalanceAfter = (currentItemBalance?.quantity ?? 0) + quantity;
+      const itemBalanceAfter = await getCachedItemBalance(poolResult.resultId) + quantity;
+      itemBalanceCache.set(poolResult.resultId, itemBalanceAfter);
       itemLedgerId = createDomainId("item_ledger");
       reward = {
         kind: "ITEM",
@@ -972,7 +1092,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       resultId: poolResult.resultId,
       reward,
       isPickup,
-      guaranteeType: "NONE",
+      guaranteeType,
       wasDuplicate: isDuplicate,
       duplicateConversion,
       operatorId: isOperator ? poolResult.resultId : null,

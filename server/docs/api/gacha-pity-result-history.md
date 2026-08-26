@@ -143,6 +143,13 @@ Rules:
 
 - `pickup_operator_id` is required for `PICKUP` banners.
 - `pool_snapshot_json` stores the resolved pool IDs/rates used for audit.
+- Pull execution currently expects `pool_snapshot_json.results[]` entries with
+  stable `resultRarity`, `resultType`, `resultId`, and optional positive
+  `weight`, `quantity`, and `isPickup`.
+- Normal weighted selection only considers candidates with positive `weight`.
+- Guarantee enforcement may select an eligible candidate with `weight: 0`; this
+  allows a frozen pool to keep guarantee-only rare/elite/pickup candidates
+  audit-visible without making them part of ordinary weighted selection.
 - `pity_config_json` stores thresholds such as 10/30/60 so historic pulls can
   be audited even after balance changes.
 - Pull execution must use the banner's frozen `balance_config_version` and pool
@@ -511,6 +518,17 @@ Pity counter policy:
   - `rareOrHigherPityCount`: pulls since the latest rare-or-higher after this
     batch.
   - `revision`: `player_gacha_pity.revision` after commit.
+
+Guarantee enforcement order per pull:
+
+1. `PICKUP_ELITE_60` for pickup banners when the next pull reaches the pickup
+   elite threshold.
+2. `ELITE_30` when the next pull reaches the elite threshold.
+3. `RARE_OR_HIGHER_10` when the next pull reaches the rare-or-higher threshold.
+4. `NONE` for ordinary weighted selection.
+
+The selected result is applied immediately before evaluating the next pull in a
+10-pull batch, so later pulls use the updated pity counters.
 
 Pull result shape:
 

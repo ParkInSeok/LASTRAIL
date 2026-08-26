@@ -114,7 +114,18 @@ async function createAuthorizationHeader(): Promise<string> {
   return `Bearer ${token}`;
 }
 
-function seedBaseGachaState(db: initSqlJs.Database, options: { alreadyOwnsPickup: boolean; tickets: number }): void {
+function seedBaseGachaState(db: initSqlJs.Database, options: {
+  alreadyOwnsPickup: boolean;
+  tickets: number;
+  pityState?: {
+    totalPullCount: number;
+    elitePityCount: number;
+    pickupElitePityCount: number;
+    rareOrHigherPityCount: number;
+    revision: number;
+  };
+  poolSnapshotJson?: string;
+}): void {
   db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-gacha-smoke-1', 'ACTIVE', 1, 1);");
   db.run(
     `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
@@ -150,11 +161,29 @@ function seedBaseGachaState(db: initSqlJs.Database, options: { alreadyOwnsPickup
        1,
        NULL,
        '{"elite":30,"pickup":60,"rare":10}',
-       '{"results":[{"resultRarity":"ELITE","resultType":"ELITE_OPERATOR","resultId":"op_vex","weight":1,"isPickup":true}]}',
+       '${options.poolSnapshotJson ?? '{"results":[{"resultRarity":"ELITE","resultType":"ELITE_OPERATOR","resultId":"op_vex","weight":1,"isPickup":true}]}'}',
        1,
        1
      );`,
   );
+
+  if (options.pityState !== undefined) {
+    db.run(
+      `INSERT INTO player_gacha_pity (
+         account_id, banner_id, total_pull_count, elite_pity_count, pickup_elite_pity_count, rare_or_higher_pity_count, revision, last_batch_id, updated_at
+       ) VALUES (
+         'account-gacha-smoke-1',
+         'banner-gacha-smoke-1',
+         ${options.pityState.totalPullCount},
+         ${options.pityState.elitePityCount},
+         ${options.pityState.pickupElitePityCount},
+         ${options.pityState.rareOrHigherPityCount},
+         ${options.pityState.revision},
+         NULL,
+         1
+       );`,
+    );
+  }
 
   if (options.alreadyOwnsPickup) {
     db.run(
@@ -291,6 +320,133 @@ describe("game-api gacha pull local D1 smoke", () => {
     expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_batches WHERE account_id = 'account-gacha-smoke-1';")).toBe(1);
     expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results WHERE account_id = 'account-gacha-smoke-1';")).toBe(1);
     expect(scalar(db, "SELECT total_pull_count FROM player_gacha_pity WHERE account_id = 'account-gacha-smoke-1' AND banner_id = 'banner-gacha-smoke-1';")).toBe(1);
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+    db.close();
+  });
+
+  it("enforces the 10-pull rare guarantee without changing the response shape", async () => {
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, {
+      alreadyOwnsPickup: false,
+      tickets: 10,
+      poolSnapshotJson: `{"results":[
+        {"resultRarity":"COMMON","resultType":"TRAINING_MATERIAL","resultId":"mat_scrap","weight":1,"quantity":1},
+        {"resultRarity":"RARE","resultType":"TRAINING_MATERIAL","resultId":"mat_rare_manual","weight":0,"quantity":1}
+      ]}`,
+    });
+
+    const response = await app.request(
+      "/v1/gacha/banners/banner-gacha-smoke-1/pulls",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "gacha-smoke-idem-10-rare-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv(db),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      bannerId: "banner-gacha-smoke-1",
+      balanceVersion: "301",
+      pullCount: 10,
+      cost: { itemId: "cur_command_ticket", quantity: 10 },
+      postPityState: {
+        totalPullCount: 10,
+        elitePityCount: 10,
+        pickupElitePityCount: 10,
+        rareOrHigherPityCount: 0,
+        revision: 1,
+      },
+      errorCode: null,
+      message: null,
+    });
+    expect(body.results).toHaveLength(10);
+    expect(body.results.slice(0, 9).map((result: { resultId: string; guaranteeType: string }) => ({
+      resultId: result.resultId,
+      guaranteeType: result.guaranteeType,
+    }))).toEqual(Array.from({ length: 9 }, () => ({ resultId: "mat_scrap", guaranteeType: "NONE" })));
+    expect(body.results[9]).toMatchObject({
+      pullSequence: 10,
+      resultRarity: "RARE",
+      resultType: "TRAINING_MATERIAL",
+      resultId: "mat_rare_manual",
+      reward: { kind: "ITEM", id: "mat_rare_manual", quantity: 1 },
+      guaranteeType: "RARE_OR_HIGHER_10",
+      wasDuplicate: false,
+      duplicateConversion: null,
+    });
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id = 'account-gacha-smoke-1' AND item_id = 'cur_command_ticket';")).toBe(0);
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id = 'account-gacha-smoke-1' AND item_id = 'mat_scrap';")).toBe(9);
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id = 'account-gacha-smoke-1' AND item_id = 'mat_rare_manual';")).toBe(1);
+    expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results WHERE account_id = 'account-gacha-smoke-1';")).toBe(10);
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+    db.close();
+  });
+
+  it("enforces pickup elite guarantee from stored pity state", async () => {
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, {
+      alreadyOwnsPickup: false,
+      tickets: 1,
+      pityState: {
+        totalPullCount: 59,
+        elitePityCount: 29,
+        pickupElitePityCount: 59,
+        rareOrHigherPityCount: 9,
+        revision: 7,
+      },
+      poolSnapshotJson: `{"results":[
+        {"resultRarity":"COMMON","resultType":"TRAINING_MATERIAL","resultId":"mat_scrap","weight":1,"quantity":1},
+        {"resultRarity":"ELITE","resultType":"ELITE_OPERATOR","resultId":"op_vex","weight":0,"isPickup":true}
+      ]}`,
+    });
+
+    const response = await app.request(
+      "/v1/gacha/banners/banner-gacha-smoke-1/pulls",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "gacha-smoke-idem-pickup-60-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({ pullCount: 1 }),
+      },
+      createEnv(db),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      results: [
+        {
+          resultRarity: "ELITE",
+          resultType: "ELITE_OPERATOR",
+          resultId: "op_vex",
+          isPickup: true,
+          guaranteeType: "PICKUP_ELITE_60",
+        },
+      ],
+      postPityState: {
+        totalPullCount: 60,
+        elitePityCount: 0,
+        pickupElitePityCount: 0,
+        rareOrHigherPityCount: 0,
+        revision: 8,
+      },
+    });
+    expect(scalar(db, "SELECT COUNT(*) FROM account_operators WHERE account_id = 'account-gacha-smoke-1' AND operator_id = 'op_vex';")).toBe(1);
+    expect(scalar(db, "SELECT elite_pity_count FROM player_gacha_pity WHERE account_id = 'account-gacha-smoke-1' AND banner_id = 'banner-gacha-smoke-1';")).toBe(0);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();
