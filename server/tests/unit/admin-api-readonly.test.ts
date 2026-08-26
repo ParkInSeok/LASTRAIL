@@ -291,4 +291,59 @@ describe("admin-api read-only operations", () => {
       expect.any(Number),
     ]);
   });
+
+  it("lists player notes from audit logs newest first", async () => {
+    const response = await app.request(
+      "/v1/admin/players/account-1/notes",
+      { headers: { "Cf-Access-Subject": "access|owner-1" } },
+      createEnv([
+        [
+          {
+            id: "audit-newer",
+            principal_id: "principal-1",
+            display_name: "Owner",
+            action: "PLAYER_NOTE_CREATE",
+            resource_id: "account-1",
+            request_id: "req-note-2",
+            change_summary_json: '{"note":"Second note."}',
+            created_at: 1787715000000,
+          },
+          {
+            id: "audit-older",
+            principal_id: "principal-2",
+            display_name: null,
+            action: "PLAYER_NOTE_CREATE",
+            resource_id: "account-1",
+            request_id: "req-note-1",
+            change_summary_json: '{"note":"First note."}',
+            created_at: 1787714000000,
+          },
+        ],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      items: [
+        {
+          id: "audit-newer",
+          accountId: "account-1",
+          note: "Second note.",
+          authorId: "principal-1",
+          authorDisplayName: "Owner",
+          requestId: "req-note-2",
+          createdAt: "2026-08-26T03:30:00.000Z",
+        },
+        {
+          id: "audit-older",
+          accountId: "account-1",
+          note: "First note.",
+          authorId: "principal-2",
+          authorDisplayName: "principal-2",
+          requestId: "req-note-1",
+          createdAt: "2026-08-26T03:13:20.000Z",
+        },
+      ],
+    });
+  });
 });

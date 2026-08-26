@@ -115,6 +115,47 @@ describe("admin backend routes", () => {
     });
   });
 
+  it("proxies player note history to the versioned Admin API path", async () => {
+    const server = buildServer({
+      config: {
+        adminApiBaseUrl: "https://admin-api.example.test",
+        profile: "staging",
+        host: "127.0.0.1",
+        port: 4174
+      },
+      upstream: (async (path, init) => {
+        expect(path).toBe("/v1/admin/players/account-1/notes");
+        expect(init.method).toBe("GET");
+        return {
+          items: [
+            {
+              id: "audit-1",
+              accountId: "account-1",
+              note: "Reviewed abnormal Training Core spread.",
+              authorId: "principal-1",
+              authorDisplayName: "Owner",
+              requestId: init.requestId,
+              createdAt: "2026-08-26T03:30:00.000Z"
+            }
+          ]
+        };
+      }) satisfies UpstreamClient
+    });
+
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/players/account-1/notes",
+      headers: { "x-request-id": "req-note-list-1" }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().items[0]).toMatchObject({
+      id: "audit-1",
+      note: "Reviewed abnormal Training Core spread.",
+      requestId: "req-note-list-1"
+    });
+  });
+
   it("normalizes schema validation failures from upstream", async () => {
     const server = buildServer({
       config: {

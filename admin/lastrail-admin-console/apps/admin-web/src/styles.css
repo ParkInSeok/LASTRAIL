@@ -218,6 +218,40 @@ th {
   color: #067647;
 }
 
+.note-history {
+  border-top: 1px solid #e5e9f0;
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+}
+
+.note-history h3 {
+  font-size: 14px;
+  margin: 0;
+}
+
+.note-history article {
+  border: 1px solid #e5e9f0;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.note-history article header {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.note-history article p {
+  color: #1a1d21;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 .center {
   display: grid;
   min-height: 100vh;

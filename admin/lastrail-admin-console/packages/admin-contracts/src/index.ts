@@ -104,6 +104,21 @@ export const CreatePlayerNoteResponseSchema = z.object({
   })
 });
 
+export const PlayerNoteItemSchema = z.object({
+  id: z.string().min(1),
+  accountId: z.string().min(1),
+  note: z.string().min(1),
+  authorId: z.string().min(1),
+  authorDisplayName: z.string().min(1),
+  requestId: z.string().min(1),
+  createdAt: z.string().datetime()
+});
+
+export const PlayerNotesResponseSchema = z.object({
+  items: z.array(PlayerNoteItemSchema),
+  nextCursor: z.string().optional()
+});
+
 export const RunSummarySchema = z.object({
   runId: z.string().min(1),
   accountId: z.string().min(1),
@@ -153,6 +168,7 @@ export const NormalizedErrorSchema = z.object({
 export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
 export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
 export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
+export type PlayerNotesResponse = z.infer<typeof PlayerNotesResponseSchema>;
 export type PlayerSearchResponse = z.infer<typeof PlayerSearchResponseSchema>;
 export type PlayerDetail = z.infer<typeof PlayerDetailSchema>;
 export type RunSearchResponse = z.infer<typeof RunSearchResponseSchema>;

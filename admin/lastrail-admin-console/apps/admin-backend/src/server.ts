@@ -7,6 +7,7 @@ import {
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
   PlayerDetailSchema,
+  PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
   RunDetailSchema,
   RunSearchResponseSchema,
@@ -214,6 +215,17 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
     );
 
     return reply.status(201).send(response);
+  });
+
+  server.get("/api/players/:accountId/notes", async (request) => {
+    const params = request.params as { accountId: string };
+    return proxyRead(
+      server,
+      PlayerNotesResponseSchema,
+      upstream,
+      `/v1/admin/players/${encodeURIComponent(params.accountId)}/notes`,
+      requestIdFrom(request.headers)
+    );
   });
 
   server.get("/api/runs", async (request) => {

@@ -37,4 +37,32 @@ describe("admin web API client", () => {
       body: JSON.stringify({ note: "Reviewed abnormal Training Core spread." })
     });
   });
+
+  it("reads player notes from the account note endpoint", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        items: [
+          {
+            id: "audit-1",
+            accountId: "account-1",
+            note: "Reviewed abnormal Training Core spread.",
+            authorId: "principal-1",
+            authorDisplayName: "Owner",
+            requestId: "req-note-list-1",
+            createdAt: "2026-08-26T03:30:00.000Z"
+          }
+        ]
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.playerNotes("account-1");
+
+    expect(result.items[0]?.note).toBe("Reviewed abnormal Training Core spread.");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/players/account-1/notes", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });

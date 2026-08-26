@@ -3,6 +3,7 @@ import {
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
   PlayerDetailSchema,
+  PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
   RunDetailSchema,
   RunSearchResponseSchema
@@ -59,6 +60,11 @@ export const adminApi = {
     const body = CreatePlayerNoteRequestSchema.parse({ note });
     return CreatePlayerNoteResponseSchema.parse(
       await writeJson(`/api/players/${encodeURIComponent(accountId)}/notes`, body)
+    );
+  },
+  async playerNotes(accountId: string) {
+    return PlayerNotesResponseSchema.parse(
+      await readJson(`/api/players/${encodeURIComponent(accountId)}/notes`)
     );
   },
   async searchRuns(accountId?: string) {

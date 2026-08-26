@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { FormEvent, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { hasPermission } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 import { useAdmin } from "../shared/auth/AdminContext";
@@ -9,6 +9,7 @@ export function PlayerDetailPage() {
   const { accountId = "" } = useParams();
   const { bootstrap } = useAdmin();
   const canWriteNote = bootstrap ? hasPermission(bootstrap.admin, "ACCOUNT_NOTE_WRITE") : false;
+  const queryClient = useQueryClient();
   const [note, setNote] = useState("");
   const [lastNoteRequestId, setLastNoteRequestId] = useState<string | null>(null);
   const query = useQuery({
@@ -16,11 +17,17 @@ export function PlayerDetailPage() {
     queryFn: () => adminApi.playerDetail(accountId),
     enabled: accountId.length > 0
   });
+  const notesQuery = useQuery({
+    queryKey: ["player-notes", accountId],
+    queryFn: () => adminApi.playerNotes(accountId),
+    enabled: accountId.length > 0
+  });
   const noteMutation = useMutation({
     mutationFn: () => adminApi.createPlayerNote(accountId, note),
     onSuccess: (result) => {
       setNote("");
       setLastNoteRequestId(result.note.requestId);
+      void queryClient.invalidateQueries({ queryKey: ["player-notes", accountId] });
     }
   });
 
@@ -60,9 +67,9 @@ export function PlayerDetailPage() {
           <strong>{player.progression.coreLevelSpread}</strong>
         </div>
       </section>
-      {canWriteNote ? (
-        <section className="admin-panel">
-          <h2>Operator Note</h2>
+      <section className="admin-panel">
+        <h2>Operator Notes</h2>
+        {canWriteNote ? (
           <form className="note-form" onSubmit={submitNote}>
             <label htmlFor="player-note">Note</label>
             <textarea
@@ -82,8 +89,23 @@ export function PlayerDetailPage() {
             {lastNoteRequestId ? <p className="success">Note saved. Request {lastNoteRequestId}</p> : null}
             {noteMutation.error ? <p className="error">Note save failed</p> : null}
           </form>
-        </section>
-      ) : null}
+        ) : null}
+        <div className="note-history">
+          <h3>Recent Notes</h3>
+          {notesQuery.isLoading ? <p>Loading notes</p> : null}
+          {notesQuery.error ? <p className="error">Note history failed</p> : null}
+          {notesQuery.data?.items.length === 0 ? <p>No notes yet</p> : null}
+          {notesQuery.data?.items.map((item) => (
+            <article key={item.id}>
+              <header>
+                <strong>{item.authorDisplayName}</strong>
+                <span>{new Date(item.createdAt).toLocaleString()}</span>
+              </header>
+              <p>{item.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
       <h2>Training Core</h2>
       <table>
         <thead>

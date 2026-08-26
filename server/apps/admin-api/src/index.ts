@@ -56,6 +56,16 @@ type AdminOperatorRow = {
   promotion: number;
 };
 
+type AdminPlayerNoteRow = {
+  id: string;
+  principal_id: string;
+  display_name: string | null;
+  resource_id: string;
+  request_id: string;
+  change_summary_json: string;
+  created_at: number;
+};
+
 type AdminRunSearchRow = {
   run_id: string;
   account_id: string;
@@ -263,6 +273,14 @@ function parseRunSnapshot(snapshotJson: string): JsonValue {
   const parsed = JSON.parse(snapshotJson) as unknown;
   if (!isJsonValue(parsed)) throw new Error("RUN_SNAPSHOT_INVALID_JSON");
   return parsed;
+}
+
+function parsePlayerNoteSummary(summaryJson: string): string {
+  const parsed = JSON.parse(summaryJson) as unknown;
+  if (!isJsonObject(parsed) || typeof parsed.note !== "string" || parsed.note.length === 0) {
+    throw new Error("PLAYER_NOTE_INVALID_JSON");
+  }
+  return parsed.note;
 }
 
 async function createPayloadHash(payload: JsonValue): Promise<string> {
@@ -526,6 +544,44 @@ app.post("/v1/admin/players/:accountId/notes", async (c) => {
     },
     201,
   );
+});
+app.get("/v1/admin/players/:accountId/notes", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const accountId = c.req.param("accountId");
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       audit.id AS id,
+       audit.principal_id AS principal_id,
+       principal.display_name AS display_name,
+       audit.resource_id AS resource_id,
+       audit.request_id AS request_id,
+       audit.change_summary_json AS change_summary_json,
+       audit.created_at AS created_at
+     FROM admin_audit_logs audit
+     LEFT JOIN admin_principals principal ON principal.id = audit.principal_id
+     WHERE audit.action = 'PLAYER_NOTE_CREATE'
+       AND audit.resource_type = 'account'
+       AND audit.resource_id = ?
+       AND audit.result = 'SUCCESS'
+     ORDER BY audit.created_at DESC
+     LIMIT 20`,
+  )
+    .bind(accountId)
+    .all<AdminPlayerNoteRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      id: row.id,
+      accountId: row.resource_id,
+      note: parsePlayerNoteSummary(row.change_summary_json),
+      authorId: row.principal_id,
+      authorDisplayName: row.display_name ?? row.principal_id,
+      requestId: row.request_id,
+      createdAt: toIso(row.created_at),
+    })),
+  });
 });
 app.get("/v1/admin/runs", async (c) => {
   const principal = await authenticateAdmin(c);
