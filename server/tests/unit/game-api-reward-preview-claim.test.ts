@@ -190,6 +190,73 @@ describe("game-api reward preview and claim contract", () => {
     });
   });
 
+  it("replays a committed reward claim from idempotency_records without granting again", async () => {
+    const env = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind() {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM run_reward_previews")) {
+                    return {
+                      id: "reward_preview_1",
+                      account_id: "account_1",
+                      run_id: "run_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      reward_plan_json: JSON.stringify({ rewardLines: [] }),
+                      expires_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      created_at: Date.parse("2026-08-26T00:00:00.000Z"),
+                      claimed_at: null,
+                      reward_claim_id: null,
+                    } satisfies RewardPreviewRow;
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    return {
+                      result_ref: "reward_claim_1",
+                      created_at: Date.parse("2026-08-26T01:00:00.000Z"),
+                      reward_created_at: Date.parse("2026-08-26T01:00:00.000Z"),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("duplicate idempotency replay must not write a second batch");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/reward-preview/reward_preview_1/claim",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "claim-idem-1" },
+        body: JSON.stringify({ runId: "run_1", rewardPreviewId: "reward_preview_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      runId: "run_1",
+      rewardPreviewId: "reward_preview_1",
+      rewardClaimId: "reward_claim_1",
+      status: "DUPLICATE_REPLAY",
+      serverClaimedAt: "2026-08-26T01:00:00.000Z",
+      balanceVersion: "1",
+      rewardLines: [],
+      errorCode: "duplicate_replay",
+      message: "Reward claim was already committed.",
+    });
+  });
+
   it("commits an active reward claim and writes economy ledger statements in one batch", async () => {
     const batchSql: string[] = [];
     const env = {

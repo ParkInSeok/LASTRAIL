@@ -47,6 +47,12 @@ type AccountCurrencyRow = {
   balance: number;
 };
 
+type IdempotencyRecordRow = {
+  result_ref: string;
+  created_at: number;
+  reward_created_at: number | null;
+};
+
 const currencyIdToD1Currency = {
   cur_credits: "CREDITS",
   cur_machine_parts: "MACHINE_PARTS",
@@ -262,6 +268,29 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
       rewardLines: [],
       errorCode: `reward_preview_${getClaimability(row).toLowerCase()}`,
       message: "Reward preview is not claimable.",
+    });
+  }
+
+  const idempotencyRecord = await c.env.DB.prepare(
+    `SELECT idem.result_ref, idem.created_at, reward.created_at AS reward_created_at
+     FROM idempotency_records idem
+     LEFT JOIN reward_transactions reward ON reward.id = idem.result_ref
+     WHERE idem.account_id = ? AND idem.operation = 'run_reward_claim' AND idem.idempotency_key = ?`,
+  )
+    .bind(row.account_id, idempotencyKey)
+    .first<IdempotencyRecordRow>();
+
+  if (idempotencyRecord !== null) {
+    return c.json({
+      runId: row.run_id,
+      rewardPreviewId: row.id,
+      rewardClaimId: idempotencyRecord.result_ref,
+      status: "DUPLICATE_REPLAY",
+      serverClaimedAt: toIso(idempotencyRecord.reward_created_at ?? idempotencyRecord.created_at),
+      balanceVersion: String(row.balance_config_version),
+      rewardLines: [],
+      errorCode: "duplicate_replay",
+      message: "Reward claim was already committed.",
     });
   }
 
