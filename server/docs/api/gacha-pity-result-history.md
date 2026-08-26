@@ -216,6 +216,9 @@ Rules:
 - `cost_quantity` should equal `pull_count`.
 - `rng_seed_hash` stores a hash or commitment, not raw sensitive RNG material.
 - `pre_pity_json` and `post_pity_json` allow support/audit reconstruction.
+- `result_summary_json.responseResults` stores the client-visible result shape
+  used for idempotency replay, so display-only fields such as item quantity and
+  `guaranteeType` are replayed exactly without re-running grant logic.
 - Successful batches write `idempotency_records` with operation `gacha_pull`.
 - Error responses are not stored as permanent idempotency results.
 
@@ -593,8 +596,8 @@ Idempotency duplicate replay policy:
   - `operation = 'gacha_pull'`
   - `Idempotency-Key`
 - On replay, the server returns `200 DUPLICATE_REPLAY` and reconstructs the
-  response from `gacha_pull_batches`, `gacha_pull_results`, and current/stored
-  post-pity data.
+  response from `gacha_pull_batches.result_summary_json.responseResults`,
+  `gacha_pull_results`, and stored post-pity data.
 - The server must not spend command tickets again.
 - The server must not grant operators/items/currencies again.
 - `UNIQUE(account_id, banner_id, idempotency_key)` on `gacha_pull_batches` is

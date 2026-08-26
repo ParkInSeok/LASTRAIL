@@ -157,6 +157,7 @@ type GachaReplayBatchRow = {
   cost_item_id: string;
   cost_quantity: number;
   post_pity_json: string;
+  result_summary_json: string;
   created_at: number;
 };
 
@@ -513,6 +514,21 @@ function toGachaReplayResult(row: GachaReplayResultRow): Omit<GachaCommittedResu
   };
 }
 
+function getGachaReplayResponseResults(options: {
+  resultSummaryJson: string;
+  resultRows: GachaReplayResultRow[];
+}): Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">> {
+  try {
+    const parsed = JSON.parse(options.resultSummaryJson) as { responseResults?: unknown };
+    if (Array.isArray(parsed.responseResults)) {
+      return parsed.responseResults as Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">>;
+    }
+  } catch {
+    return options.resultRows.map(toGachaReplayResult);
+  }
+  return options.resultRows.map(toGachaReplayResult);
+}
+
 function getAuthSecret(env: Env): string | null {
   return (env as GameApiEnv).AUTH_SIGNING_KEY_CURRENT ?? null;
 }
@@ -834,7 +850,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
 
   const replayBatch = await c.env.DB.prepare(
     `SELECT batch.id, batch.banner_id, banner.balance_config_version, batch.pull_count, batch.cost_item_id, batch.cost_quantity,
-            batch.post_pity_json, batch.created_at
+            batch.post_pity_json, batch.result_summary_json, batch.created_at
      FROM idempotency_records idem
      JOIN gacha_pull_batches batch ON batch.id = idem.result_ref
      JOIN gacha_banners banner ON banner.id = batch.banner_id
@@ -859,7 +875,10 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       bannerId: replayBatch.banner_id,
       balanceVersion: String(replayBatch.balance_config_version),
       pullCount: replayBatch.pull_count as 1 | 10,
-      results: replayResults.results.map(toGachaReplayResult),
+      results: getGachaReplayResponseResults({
+        resultSummaryJson: replayBatch.result_summary_json,
+        resultRows: replayResults.results,
+      }),
       postPityState: JSON.parse(replayBatch.post_pity_json) as GachaPityState,
       createdAt: replayBatch.created_at,
     }));
@@ -1104,6 +1123,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
   }
 
   const postPityState = finalizeGachaPityState(nextPityState);
+  const responseResults = committedResults.map(toGachaResponseResult);
   statements.push(
     c.env.DB.prepare(
       `INSERT INTO gacha_pull_batches (
@@ -1123,6 +1143,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       JSON.stringify(postPityState),
       `rng_hash_${createRequestId().slice(4)}`,
       JSON.stringify({
+        responseResults,
         results: committedResults.map((result) => ({
           resultRarity: result.resultRarity,
           resultType: result.resultType,
@@ -1198,7 +1219,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     bannerId,
     balanceVersion: String(row.balance_config_version),
     pullCount,
-    results: committedResults.map(toGachaResponseResult),
+    results: responseResults,
     postPityState,
     createdAt: now,
   }));

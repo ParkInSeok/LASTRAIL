@@ -72,6 +72,33 @@ function createEnv(row: GachaBannerRow | null): TestEnv {
   };
 }
 
+function expectNoForbiddenFields(value: unknown): void {
+  const forbiddenKeys = new Set([
+    "accountId",
+    "accessToken",
+    "refreshToken",
+    "secret",
+    "rngSeed",
+    "rawRng",
+    "rawRngMaterial",
+    "probability",
+    "weighted",
+  ]);
+  const visit = (candidate: unknown): void => {
+    if (Array.isArray(candidate)) {
+      for (const item of candidate) visit(item);
+      return;
+    }
+    if (typeof candidate !== "object" || candidate === null) return;
+    for (const [key, child] of Object.entries(candidate)) {
+      expect(forbiddenKeys.has(key)).toBe(false);
+      visit(child);
+    }
+  };
+
+  visit(value);
+}
+
 describe("game-api gacha pull contract", () => {
   it("rejects pull requests without Idempotency-Key", async () => {
     const response = await app.request(
@@ -214,7 +241,8 @@ describe("game-api gacha pull contract", () => {
     );
 
     expect(response.status).toBe(409);
-    await expect(response.json()).resolves.toEqual({
+    const body = await response.json();
+    expect(body).toEqual({
       accepted: false,
       resultStatus: "REJECTED",
       batchId: null,
@@ -257,7 +285,8 @@ describe("game-api gacha pull contract", () => {
     );
 
     expect(response.status).toBe(409);
-    await expect(response.json()).resolves.toEqual({
+    const body = await response.json();
+    expect(body).toEqual({
       accepted: false,
       resultStatus: "REJECTED",
       batchId: null,
@@ -273,5 +302,6 @@ describe("game-api gacha pull contract", () => {
       errorCode: "insufficient_command_ticket",
       message: "Not enough command tickets.",
     });
+    expectNoForbiddenFields(body);
   });
 });
