@@ -87,3 +87,27 @@ pnpm test
 pnpm dry-run:admin-api:dev
 pnpm --filter @lastrail/admin-api wrangler deploy --env dev
 ```
+
+## Register DEV Admin Principal
+
+After signing in through the DEV Access application, copy the Access JWT `sub` that should become the DEV admin owner. Do not invent a subject and do not authorize by email alone.
+
+Apply the DEV principal with:
+
+```bash
+DEV_ADMIN_ACCESS_SUB="<access-jwt-sub>" \
+DEV_ADMIN_PRINCIPAL_ID="dev-owner" \
+DEV_ADMIN_DISPLAY_NAME="DEV Owner" \
+pnpm admin:dev:upsert-principal
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:DEV_ADMIN_ACCESS_SUB = "<access-jwt-sub>"
+$env:DEV_ADMIN_PRINCIPAL_ID = "dev-owner"
+$env:DEV_ADMIN_DISPLAY_NAME = "DEV Owner"
+pnpm admin:dev:upsert-principal
+```
+
+This writes only to `lastrail-core-dev`. Do not use the local `access|local-owner` seed subject for remote DEV Access authorization.

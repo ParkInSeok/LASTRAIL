@@ -51,7 +51,9 @@ describe("repository architecture", () => {
     expect(adminAccess).toContain("`api.lastrail.app` is public Game API traffic and must not be protected by Cloudflare Access.");
     expect(setup).toContain("Keep `dev-api.lastrail.app` public.");
     expect(packageJson.scripts["access:dev:apply-vars"]).toBe("tsx scripts/cloudflare/apply-dev-admin-access-vars.ts");
+    expect(packageJson.scripts["admin:dev:upsert-principal"]).toBe("tsx scripts/cloudflare/upsert-dev-admin-principal.ts");
     expect(existsSync(join(root, "scripts/cloudflare/apply-dev-admin-access-vars.ts"))).toBe(true);
+    expect(existsSync(join(root, "scripts/cloudflare/upsert-dev-admin-principal.ts"))).toBe(true);
   });
 
   it("targets the DEV D1 binding when seeding DEV balance config", () => {
