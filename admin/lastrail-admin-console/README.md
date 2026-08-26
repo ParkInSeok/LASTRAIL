@@ -37,6 +37,25 @@ npm run typecheck
 npm run build:web
 ```
 
+## Cloudflare Pages
+
+`apps/admin-web` deploys the React console to Cloudflare Pages. Static assets are built to `dist`, and Pages Functions proxy browser `/api/*` requests to the versioned Admin API under `/v1/admin/*`.
+
+Required Pages environment variables:
+
+- `ADMIN_API_BASE_URL`
+- `ADMIN_PROFILE`
+- `CF_ACCESS_CLIENT_ID`
+- `CF_ACCESS_CLIENT_SECRET`
+- `ADMIN_API_TOKEN` if the Admin API environment requires it
+
+Deploy commands from `apps/admin-web`:
+
+```cmd
+npm run deploy:preview
+npm run deploy:production
+```
+
 Staging and production use separate launchers:
 
 ```cmd

@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lastrail-admin-console",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-08-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "ADMIN_PROFILE": "production",
+    "ADMIN_API_BASE_URL": "https://admin.lastrail.app"
+  },
+  "env": {
+    "preview": {
+      "vars": {
+        "ADMIN_PROFILE": "staging",
+        "ADMIN_API_BASE_URL": "https://staging-admin.lastrail.app"
+      }
+    },
+    "production": {
+      "vars": {
+        "ADMIN_PROFILE": "production",
+        "ADMIN_API_BASE_URL": "https://admin.lastrail.app"
+      }
+    }
+  }
+}
