@@ -147,4 +147,39 @@ describe("admin web API client", () => {
       }
     );
   });
+
+  it("reads suspicious players with optional filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        items: [
+          {
+            accountId: "account-1",
+            displayName: "Kyle Account",
+            priority: "HIGH",
+            openSignals: 3,
+            hardViolations: 1,
+            suspiciousRuns: 2,
+            lastDetectionAt: "2026-08-26T04:00:00.000Z",
+            primaryReason: "DAMAGE_SPIKE",
+            reviewStatus: "IN_REVIEW",
+            currentEnforcement: "NONE",
+            reviewOwner: "operator-1"
+          }
+        ]
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.suspiciousPlayers({ reviewStatus: "IN_REVIEW" });
+
+    expect(result.items[0]?.priority).toBe("HIGH");
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/integrity/suspicious-players?reviewStatus=IN_REVIEW",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
 });

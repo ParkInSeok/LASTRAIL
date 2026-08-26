@@ -174,6 +174,36 @@ export const IntegrityEventsResponseSchema = z.object({
   nextCursor: z.string().optional()
 });
 
+export const SuspiciousPlayerPrioritySchema = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
+export const SuspiciousPlayerReviewStatusSchema = z.enum([
+  "UNREVIEWED",
+  "IN_REVIEW",
+  "NEEDS_MORE_EVIDENCE",
+  "CONFIRMED_VIOLATION",
+  "CLEARED",
+  "FALSE_POSITIVE",
+  "LINKED_INCIDENT"
+]);
+
+export const SuspiciousPlayerItemSchema = z.object({
+  accountId: z.string().min(1),
+  displayName: z.string().min(1),
+  priority: SuspiciousPlayerPrioritySchema,
+  openSignals: z.number().int().min(0),
+  hardViolations: z.number().int().min(0),
+  suspiciousRuns: z.number().int().min(0),
+  lastDetectionAt: z.string().datetime(),
+  primaryReason: z.string().min(1),
+  reviewStatus: SuspiciousPlayerReviewStatusSchema,
+  currentEnforcement: z.string().min(1),
+  reviewOwner: z.string().min(1).nullable()
+});
+
+export const SuspiciousPlayersResponseSchema = z.object({
+  items: z.array(SuspiciousPlayerItemSchema),
+  nextCursor: z.string().optional()
+});
+
 export const RunSummarySchema = z.object({
   runId: z.string().min(1),
   accountId: z.string().min(1),
@@ -223,6 +253,7 @@ export const NormalizedErrorSchema = z.object({
 export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
 export type AuditLogsResponse = z.infer<typeof AuditLogsResponseSchema>;
 export type IntegrityEventsResponse = z.infer<typeof IntegrityEventsResponseSchema>;
+export type SuspiciousPlayersResponse = z.infer<typeof SuspiciousPlayersResponseSchema>;
 export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
 export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
 export type PlayerNotesResponse = z.infer<typeof PlayerNotesResponseSchema>;

@@ -13,6 +13,7 @@ import {
   PlayerSearchResponseSchema,
   RunDetailSchema,
   RunSearchResponseSchema,
+  SuspiciousPlayersResponseSchema,
   rolePermissions
 } from "@lastrail/admin-contracts";
 import type { AdminBackendConfig } from "./config";
@@ -259,6 +260,21 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       IntegrityEventsResponseSchema,
       upstream,
       "/v1/admin/integrity/events",
+      requestIdFrom(request.headers),
+      query
+    );
+  });
+
+  server.get("/api/integrity/suspicious-players", async (request) => {
+    const query = new URLSearchParams();
+    const rawQuery = request.query as Record<string, string | undefined>;
+    if (rawQuery.reviewStatus) query.set("reviewStatus", rawQuery.reviewStatus);
+
+    return proxyRead(
+      server,
+      SuspiciousPlayersResponseSchema,
+      upstream,
+      "/v1/admin/integrity/suspicious-players",
       requestIdFrom(request.headers),
       query
     );

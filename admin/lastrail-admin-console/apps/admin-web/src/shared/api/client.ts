@@ -8,7 +8,8 @@ import {
   PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
   RunDetailSchema,
-  RunSearchResponseSchema
+  RunSearchResponseSchema,
+  SuspiciousPlayersResponseSchema
 } from "@lastrail/admin-contracts";
 
 async function readJson(path: string): Promise<unknown> {
@@ -91,6 +92,16 @@ export const adminApi = {
     const query = params.toString();
     return IntegrityEventsResponseSchema.parse(
       await readJson(`/api/integrity/events${query ? `?${query}` : ""}`)
+    );
+  },
+  async suspiciousPlayers(filters: {
+    reviewStatus?: "UNREVIEWED" | "IN_REVIEW" | "CONFIRMED_VIOLATION";
+  }) {
+    const params = new URLSearchParams();
+    if (filters.reviewStatus) params.set("reviewStatus", filters.reviewStatus);
+    const query = params.toString();
+    return SuspiciousPlayersResponseSchema.parse(
+      await readJson(`/api/integrity/suspicious-players${query ? `?${query}` : ""}`)
     );
   },
   async searchRuns(accountId?: string) {

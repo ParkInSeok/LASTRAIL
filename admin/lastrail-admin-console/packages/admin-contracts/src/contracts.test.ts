@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   BootstrapResponseSchema,
   IntegrityEventsResponseSchema,
+  SuspiciousPlayersResponseSchema,
   PlayerDetailSchema,
   hasPermission,
   rolePermissions
@@ -94,6 +95,29 @@ describe("admin contracts", () => {
 
     expect(response.items[0].classification).toBe("SOFT_ANOMALY");
     expect(response.items[0].evidence).toEqual({ maxDamageRatio: 2.4 });
+    expect(response.items[0]).not.toHaveProperty("banAction");
+  });
+
+  it("describes suspicious players as review queues without automatic enforcement", () => {
+    const response = SuspiciousPlayersResponseSchema.parse({
+      items: [
+        {
+          accountId: "account-1",
+          displayName: "Kyle Account",
+          priority: "HIGH",
+          openSignals: 3,
+          hardViolations: 1,
+          suspiciousRuns: 2,
+          lastDetectionAt: "2026-08-26T04:00:00.000Z",
+          primaryReason: "DAMAGE_SPIKE",
+          reviewStatus: "IN_REVIEW",
+          currentEnforcement: "NONE",
+          reviewOwner: "operator-1"
+        }
+      ]
+    });
+
+    expect(response.items[0].priority).toBe("HIGH");
     expect(response.items[0]).not.toHaveProperty("banAction");
   });
 });

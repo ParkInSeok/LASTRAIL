@@ -8,6 +8,7 @@ import { PlayerDetailPage } from "../pages/PlayerDetailPage";
 import { PlayersPage } from "../pages/PlayersPage";
 import { RunDetailPage } from "../pages/RunDetailPage";
 import { RunsPage } from "../pages/RunsPage";
+import { SuspiciousPlayersPage } from "../pages/SuspiciousPlayersPage";
 
 function Shell() {
   const { bootstrap, isLoading, error } = useAdmin();
@@ -43,6 +44,7 @@ function Shell() {
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/players/:accountId" element={<PlayerDetailPage />} />
         <Route path="/integrity" element={<IntegrityPage />} />
+        <Route path="/integrity/suspicious-players" element={<SuspiciousPlayersPage />} />
         <Route path="/runs" element={<RunsPage />} />
         <Route path="/runs/:runId" element={<RunDetailPage />} />
         <Route path="/audit" element={<AuditPage />} />

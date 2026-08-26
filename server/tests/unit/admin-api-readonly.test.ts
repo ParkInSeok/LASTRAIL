@@ -438,4 +438,46 @@ describe("admin-api read-only operations", () => {
       ],
     });
   });
+
+  it("lists suspicious players grouped by open integrity signals", async () => {
+    const response = await app.request(
+      "/v1/admin/integrity/suspicious-players?reviewStatus=IN_REVIEW",
+      { headers: { "Cf-Access-Subject": "access|owner-1" } },
+      createEnv([
+        [
+          {
+            account_id: "account-1",
+            display_name: "Kyle Account",
+            open_signals: 3,
+            hard_violations: 1,
+            suspicious_runs: 2,
+            last_detection_at: 1787716800000,
+            primary_reason: "DAMAGE_SPIKE",
+            review_status: "IN_REVIEW",
+            current_enforcement: "NONE",
+            review_owner: "operator-1",
+          },
+        ],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      items: [
+        {
+          accountId: "account-1",
+          displayName: "Kyle Account",
+          priority: "HIGH",
+          openSignals: 3,
+          hardViolations: 1,
+          suspiciousRuns: 2,
+          lastDetectionAt: "2026-08-26T04:00:00.000Z",
+          primaryReason: "DAMAGE_SPIKE",
+          reviewStatus: "IN_REVIEW",
+          currentEnforcement: "NONE",
+          reviewOwner: "operator-1",
+        },
+      ],
+    });
+  });
 });

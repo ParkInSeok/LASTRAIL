@@ -97,6 +97,19 @@ type AdminIntegrityEventRow = {
   created_at: number;
 };
 
+type AdminSuspiciousPlayerRow = {
+  account_id: string;
+  display_name: string | null;
+  open_signals: number;
+  hard_violations: number;
+  suspicious_runs: number;
+  last_detection_at: number;
+  primary_reason: string;
+  review_status: string;
+  current_enforcement: string | null;
+  review_owner: string | null;
+};
+
 type AdminRunSearchRow = {
   run_id: string;
   account_id: string;
@@ -291,6 +304,19 @@ function mapRunResult(status: string): "IN_PROGRESS" | "CLEARED" | "FAILED" | "I
 function normalizeRiskTier(risk: string | null): "I" | "II" | "III" | "IV" | "V" {
   if (risk === "II" || risk === "III" || risk === "IV" || risk === "V") return risk;
   return "I";
+}
+
+function suspiciousPriority(openSignals: number, hardViolations: number): "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" {
+  if (hardViolations >= 3 || openSignals >= 10) return "CRITICAL";
+  if (hardViolations > 0 || openSignals >= 3) return "HIGH";
+  if (openSignals >= 2) return "MEDIUM";
+  return "LOW";
+}
+
+function suspiciousReviewStatus(value: string): "UNREVIEWED" | "IN_REVIEW" | "NEEDS_MORE_EVIDENCE" | "CONFIRMED_VIOLATION" | "CLEARED" | "FALSE_POSITIVE" | "LINKED_INCIDENT" {
+  if (value === "IN_REVIEW") return "IN_REVIEW";
+  if (value === "RESOLVED") return "CONFIRMED_VIOLATION";
+  return "UNREVIEWED";
 }
 
 function syncLevelFrom(coreRows: AdminTrainingCoreRow[]): number {
@@ -742,6 +768,75 @@ app.get("/v1/admin/integrity/events", async (c) => {
       reviewState: row.review_state,
       assignedTo: row.assigned_to,
       createdAt: toIso(row.created_at),
+    })),
+  });
+});
+app.get("/v1/admin/integrity/suspicious-players", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const reviewStatus = c.req.query("reviewStatus")?.trim() || null;
+  if (
+    reviewStatus !== null &&
+    reviewStatus !== "UNREVIEWED" &&
+    reviewStatus !== "IN_REVIEW" &&
+    reviewStatus !== "CONFIRMED_VIOLATION"
+  ) {
+    return c.json({ error: "SUSPICIOUS_PLAYERS_FILTER_INVALID" }, 400);
+  }
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       event.account_id AS account_id,
+       profile.display_name AS display_name,
+       COUNT(*) AS open_signals,
+       SUM(CASE WHEN event.classification = 'HARD_VIOLATION' THEN 1 ELSE 0 END) AS hard_violations,
+       COUNT(DISTINCT event.run_id) AS suspicious_runs,
+       MAX(event.created_at) AS last_detection_at,
+       latest.evidence_code AS primary_reason,
+       COALESCE(review.state, 'OPEN') AS review_status,
+       enforcement.type AS current_enforcement,
+       review.assigned_to AS review_owner
+     FROM integrity_events event
+     LEFT JOIN player_profiles profile ON profile.account_id = event.account_id
+     LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     LEFT JOIN account_enforcements enforcement
+       ON enforcement.account_id = event.account_id
+      AND enforcement.status = 'ACTIVE'
+     LEFT JOIN integrity_events latest
+       ON latest.id = (
+         SELECT inner_event.id
+         FROM integrity_events inner_event
+         WHERE inner_event.account_id = event.account_id
+         ORDER BY inner_event.created_at DESC
+         LIMIT 1
+       )
+     WHERE COALESCE(review.state, 'OPEN') IN ('OPEN', 'IN_REVIEW')
+     GROUP BY event.account_id
+     HAVING (? IS NULL OR
+       CASE COALESCE(review_status, 'OPEN')
+         WHEN 'IN_REVIEW' THEN 'IN_REVIEW'
+         ELSE 'UNREVIEWED'
+       END = ?)
+     ORDER BY last_detection_at DESC
+     LIMIT 100`,
+  )
+    .bind(reviewStatus, reviewStatus)
+    .all<AdminSuspiciousPlayerRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      accountId: row.account_id,
+      displayName: row.display_name ?? row.account_id,
+      priority: suspiciousPriority(row.open_signals, row.hard_violations),
+      openSignals: row.open_signals,
+      hardViolations: row.hard_violations,
+      suspiciousRuns: row.suspicious_runs,
+      lastDetectionAt: toIso(row.last_detection_at),
+      primaryReason: row.primary_reason,
+      reviewStatus: suspiciousReviewStatus(row.review_status),
+      currentEnforcement: row.current_enforcement ?? "NONE",
+      reviewOwner: row.review_owner,
     })),
   });
 });
