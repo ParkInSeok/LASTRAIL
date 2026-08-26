@@ -53,6 +53,13 @@ type IdempotencyRecordRow = {
   reward_created_at: number | null;
 };
 
+type GachaBannerRow = {
+  id: string;
+  status: "DRAFT" | "ACTIVE" | "ENDED" | "DISABLED";
+  starts_at: number;
+  ends_at: number | null;
+};
+
 const currencyIdToD1Currency = {
   cur_credits: "CREDITS",
   cur_machine_parts: "MACHINE_PARTS",
@@ -101,6 +108,33 @@ function getClaimability(row: RewardPreviewRow): "CLAIMABLE" | "ALREADY_CLAIMED"
   return "CLAIMABLE";
 }
 
+function createGachaRejectedResponse(options: {
+  bannerId: string;
+  pullCount: number | null;
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    accepted: false,
+    resultStatus: "REJECTED",
+    batchId: null,
+    bannerId: options.bannerId,
+    pullCount: options.pullCount,
+    cost: options.pullCount === 1 || options.pullCount === 10
+      ? { itemId: "cur_command_ticket", quantity: options.pullCount }
+      : null,
+    results: [],
+    postPityState: null,
+    createdAt: null,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function isActiveGachaBanner(row: GachaBannerRow, now: number): boolean {
+  return row.status === "ACTIVE" && row.starts_at <= now && (row.ends_at === null || row.ends_at > now);
+}
+
 app.get("/status", (c) => c.json({ ok: true, service: "game-api", requestId: createRequestId() }));
 app.get("/v1/client-config", (c) =>
   c.json({
@@ -145,6 +179,82 @@ app.get("/v1/balance-config/:version", async (c) => {
     publishedAt: row.published_at,
     payload,
   });
+});
+
+app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
+  const bannerId = c.req.param("bannerId");
+  const idempotencyKey = c.req.header("Idempotency-Key");
+
+  if (idempotencyKey === undefined || idempotencyKey.trim() === "") {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount: null,
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    }), 400);
+  }
+
+  let body: { bannerId?: unknown; pullCount?: unknown };
+  try {
+    body = await c.req.json();
+  } catch {
+    body = {};
+  }
+
+  const pullCount = typeof body.pullCount === "number" && Number.isSafeInteger(body.pullCount)
+    ? body.pullCount
+    : null;
+
+  if (body.bannerId !== undefined) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "contract_violation",
+      message: "Request body must not include bannerId.",
+    }), 400);
+  }
+
+  if (pullCount !== 1 && pullCount !== 10) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "invalid_pull_count",
+      message: "pullCount must be 1 or 10.",
+    }), 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT id, status, starts_at, ends_at
+     FROM gacha_banners
+     WHERE id = ?`,
+  )
+    .bind(bannerId)
+    .first<GachaBannerRow>();
+
+  if (row === null) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "banner_not_found",
+      message: "Gacha banner was not found.",
+    }), 404);
+  }
+
+  if (!isActiveGachaBanner(row, Date.now())) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "banner_inactive",
+      message: "Gacha banner is not active.",
+    }), 409);
+  }
+
+  return c.json(createGachaRejectedResponse({
+    bannerId,
+    pullCount,
+    errorCode: "gacha_pull_not_implemented",
+    message: "Gacha pull commit transaction is not implemented yet.",
+  }), 501);
 });
 
 app.get("/v1/runs/:runId/reward-preview/:rewardPreviewId", async (c) => {

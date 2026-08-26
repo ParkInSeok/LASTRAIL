@@ -1,0 +1,214 @@
+import { describe, expect, it } from "vitest";
+import app from "../../apps/game-api/src/index";
+
+type GachaBannerRow = {
+  id: string;
+  status: "DRAFT" | "ACTIVE" | "ENDED" | "DISABLED";
+  starts_at: number;
+  ends_at: number | null;
+};
+
+function createEnv(row: GachaBannerRow | null): Env {
+  return {
+    ENVIRONMENT: "DEV",
+    ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+    DB: {
+      prepare(sql: string) {
+        expect(sql).toContain("gacha_banners");
+        return {
+          bind(bannerId: string) {
+            expect(bannerId).toBe("banner_pickup_1");
+            return {
+              first: async () => row,
+            };
+          },
+        };
+      },
+    } as unknown as D1Database,
+  };
+}
+
+describe("game-api gacha pull contract", () => {
+  it("rejects pull requests without Idempotency-Key", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv(null),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: null,
+      cost: null,
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    });
+  });
+
+  it("rejects body bannerId because the path bannerId is the only source of truth", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "gacha-idem-1" },
+        body: JSON.stringify({ bannerId: "banner_pickup_1", pullCount: 10 }),
+      },
+      createEnv(null),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: 10,
+      cost: {
+        itemId: "cur_command_ticket",
+        quantity: 10,
+      },
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "contract_violation",
+      message: "Request body must not include bannerId.",
+    });
+  });
+
+  it("rejects pull counts other than 1 or 10", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "gacha-idem-1" },
+        body: JSON.stringify({ pullCount: 3 }),
+      },
+      createEnv(null),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: 3,
+      cost: null,
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "invalid_pull_count",
+      message: "pullCount must be 1 or 10.",
+    });
+  });
+
+  it("returns 404 rejected when the banner does not exist", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "gacha-idem-1" },
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv(null),
+    );
+
+    expect(response.status).toBe(404);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: 10,
+      cost: {
+        itemId: "cur_command_ticket",
+        quantity: 10,
+      },
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "banner_not_found",
+      message: "Gacha banner was not found.",
+    });
+  });
+
+  it("returns 409 rejected when the banner is not active", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "gacha-idem-1" },
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv({
+        id: "banner_pickup_1",
+        status: "ENDED",
+        starts_at: Date.parse("2026-08-01T00:00:00.000Z"),
+        ends_at: Date.parse("2026-08-20T00:00:00.000Z"),
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: 10,
+      cost: {
+        itemId: "cur_command_ticket",
+        quantity: 10,
+      },
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "banner_inactive",
+      message: "Gacha banner is not active.",
+    });
+  });
+
+  it("returns an explicit placeholder for active banners until commit transaction is implemented", async () => {
+    const response = await app.request(
+      "/v1/gacha/banners/banner_pickup_1/pulls",
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "gacha-idem-1" },
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv({
+        id: "banner_pickup_1",
+        status: "ACTIVE",
+        starts_at: Date.parse("2026-08-01T00:00:00.000Z"),
+        ends_at: null,
+      }),
+    );
+
+    expect(response.status).toBe(501);
+    await expect(response.json()).resolves.toEqual({
+      accepted: false,
+      resultStatus: "REJECTED",
+      batchId: null,
+      bannerId: "banner_pickup_1",
+      pullCount: 10,
+      cost: {
+        itemId: "cur_command_ticket",
+        quantity: 10,
+      },
+      results: [],
+      postPityState: null,
+      createdAt: null,
+      errorCode: "gacha_pull_not_implemented",
+      message: "Gacha pull commit transaction is not implemented yet.",
+    });
+  });
+});
