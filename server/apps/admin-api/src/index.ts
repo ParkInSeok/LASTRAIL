@@ -181,6 +181,7 @@ type AccessJwtPayload = {
   aud?: unknown;
   sub?: unknown;
   email?: unknown;
+  common_name?: unknown;
   exp?: unknown;
   nbf?: unknown;
 };
@@ -189,6 +190,17 @@ type AccessIdentity = {
   subject: string;
   email: string | null;
 };
+
+type VerifiedAccessJwt =
+  | {
+      kind: "user";
+      subject: string;
+      email: string | null;
+    }
+  | {
+      kind: "service";
+      commonName: string;
+    };
 
 type AccessJwk = JsonWebKey & {
   kid?: string;
@@ -216,7 +228,13 @@ function hasAudience(payloadAudience: unknown, expectedAudience: string): boolea
   return false;
 }
 
-async function verifyAccessJwt(token: string, issuer: string, audience: string, nowSeconds = Math.floor(Date.now() / 1000)): Promise<AccessIdentity | null> {
+async function verifyAccessJwt(
+  token: string,
+  issuer: string,
+  audience: string,
+  options: { allowServiceToken?: boolean; nowSeconds?: number } = {},
+): Promise<VerifiedAccessJwt | null> {
+  const nowSeconds = options.nowSeconds ?? Math.floor(Date.now() / 1000);
   const [encodedHeader, encodedPayload, encodedSignature] = token.split(".");
   if (encodedHeader === undefined || encodedPayload === undefined || encodedSignature === undefined) return null;
 
@@ -249,13 +267,49 @@ async function verifyAccessJwt(token: string, issuer: string, audience: string, 
   const payload = decodeJson<AccessJwtPayload>(encodedPayload);
   if (payload.iss !== issuer) return null;
   if (!hasAudience(payload.aud, audience)) return null;
-  if (typeof payload.sub !== "string" || payload.sub.length === 0) return null;
   if (typeof payload.exp !== "number" || payload.exp <= nowSeconds) return null;
   if (typeof payload.nbf === "number" && payload.nbf > nowSeconds) return null;
 
+  if (typeof payload.sub === "string" && payload.sub.length > 0) {
+    return {
+      kind: "user",
+      subject: payload.sub,
+      email: typeof payload.email === "string" && payload.email.length > 0 ? payload.email : null,
+    };
+  }
+
+  if (options.allowServiceToken && typeof payload.common_name === "string" && payload.common_name.length > 0) {
+    return {
+      kind: "service",
+      commonName: payload.common_name,
+    };
+  }
+
+  return null;
+}
+
+async function extractDelegatedAccessIdentity(c: AppContext): Promise<AccessIdentity | Response> {
+  if (c.env.ADMIN_DELEGATED_ACCESS_ISSUER.length === 0 || c.env.ADMIN_DELEGATED_ACCESS_AUD.length === 0) {
+    return c.json({ error: "ADMIN_DELEGATED_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED" }, 501);
+  }
+
+  const delegatedToken = c.req.header("X-Lastrail-User-Access-Jwt");
+  if (!delegatedToken) {
+    return c.json({ error: "ADMIN_DELEGATED_ACCESS_JWT_REQUIRED" }, 401);
+  }
+
+  const delegatedIdentity = await verifyAccessJwt(
+    delegatedToken,
+    c.env.ADMIN_DELEGATED_ACCESS_ISSUER,
+    c.env.ADMIN_DELEGATED_ACCESS_AUD,
+  );
+  if (delegatedIdentity === null || delegatedIdentity.kind !== "user") {
+    return c.json({ error: "ADMIN_DELEGATED_ACCESS_JWT_INVALID" }, 403);
+  }
+
   return {
-    subject: payload.sub,
-    email: typeof payload.email === "string" && payload.email.length > 0 ? payload.email : null,
+    subject: delegatedIdentity.subject,
+    email: delegatedIdentity.email,
   };
 }
 
@@ -272,11 +326,19 @@ async function extractAccessIdentity(c: AppContext): Promise<AccessIdentity | Re
       return c.json({ error: "ADMIN_ACCESS_JWT_REQUIRED" }, 401);
     }
 
-    const accessIdentity = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD);
+    const accessIdentity = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD, {
+      allowServiceToken: true,
+    });
     if (accessIdentity === null) {
       return c.json({ error: "ADMIN_ACCESS_JWT_INVALID" }, 403);
     }
-    return accessIdentity;
+    if (accessIdentity.kind === "service") {
+      return extractDelegatedAccessIdentity(c);
+    }
+    return {
+      subject: accessIdentity.subject,
+      email: accessIdentity.email,
+    };
   } else {
     return c.json({ error: "ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED" }, 501);
   }

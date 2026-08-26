@@ -16,6 +16,8 @@ function createEnv(row: AdminPrincipalRow | null): Env {
     ADMIN_AUTH_MODE: "LOCAL_HEADER",
     ADMIN_ACCESS_ISSUER: "",
     ADMIN_ACCESS_AUD: "",
+    ADMIN_DELEGATED_ACCESS_ISSUER: "",
+    ADMIN_DELEGATED_ACCESS_AUD: "",
     ADMIN_JOBS_QUEUE: {} as Queue,
     DB: {
       prepare(sql: string) {
@@ -36,11 +38,14 @@ function createEnv(row: AdminPrincipalRow | null): Env {
 describe("admin-api auth", () => {
   const issuer = "https://last-rail.cloudflareaccess.com";
   const audience = "admin-dev-aud";
+  const pagesAudience = "admin-pages-dev-aud";
 
   async function createAccessJwt(input: {
-    subject: string;
+    subject?: string;
     email?: string;
     audience?: string;
+    commonName?: string;
+    kid?: string;
     expiresAt?: number;
   }): Promise<{ token: string; publicJwk: JsonWebKey & { kid: string; alg: string; use: string } }> {
     const keyPair = await crypto.subtle.generateKey(
@@ -54,13 +59,14 @@ describe("admin-api auth", () => {
       ["sign", "verify"],
     );
 
-    const kid = "test-key-1";
+    const kid = input.kid ?? "test-key-1";
     const header = { alg: "RS256", typ: "JWT", kid };
     const payload = {
       iss: issuer,
       aud: input.audience ?? audience,
-      sub: input.subject,
+      sub: input.subject ?? "",
       email: input.email,
+      common_name: input.commonName,
       exp: input.expiresAt ?? Math.floor(Date.now() / 1000) + 300,
     };
 
@@ -96,11 +102,18 @@ describe("admin-api auth", () => {
     return env;
   }
 
-  async function withJwks<T>(jwk: JsonWebKey, run: () => Promise<T>): Promise<T> {
+  function createDelegatedAccessEnv(row: AdminPrincipalRow | null): Env {
+    const env = createAccessEnv(row);
+    env.ADMIN_DELEGATED_ACCESS_ISSUER = issuer;
+    env.ADMIN_DELEGATED_ACCESS_AUD = pagesAudience;
+    return env;
+  }
+
+  async function withJwks<T>(jwk: JsonWebKey | JsonWebKey[], run: () => Promise<T>): Promise<T> {
     const originalFetch = globalThis.fetch;
     globalThis.fetch = (async (url: RequestInfo | URL) => {
       expect(String(url)).toBe(`${issuer}/cdn-cgi/access/certs`);
-      return Response.json({ keys: [jwk] });
+      return Response.json({ keys: Array.isArray(jwk) ? jwk : [jwk] });
     }) as typeof fetch;
 
     try {
@@ -218,6 +231,49 @@ describe("admin-api auth", () => {
         "/v1/admin/me",
         { headers: { "Cf-Access-Jwt-Assertion": token } },
         createAccessEnv({
+          id: "principal-1",
+          access_subject: "access|owner-1",
+          role: "OWNER",
+          status: "ACTIVE",
+          display_name: "Owner",
+        }),
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toEqual({
+        principal: {
+          id: "principal-1",
+          accessSubject: "access|owner-1",
+          role: "OWNER",
+          displayName: "Owner",
+        },
+      });
+    });
+  });
+
+  it("maps a delegated Pages Access JWT subject when the upstream request used service auth", async () => {
+    const { token: serviceTokenJwt, publicJwk } = await createAccessJwt({
+      audience,
+      commonName: "lastrail-admin-pages-preview-proxy.access",
+      kid: "service-token-key",
+    });
+    const { token: pagesUserJwt, publicJwk: pagesPublicJwk } = await createAccessJwt({
+      subject: "access|owner-1",
+      email: "owner@example.com",
+      audience: pagesAudience,
+      kid: "pages-user-key",
+    });
+
+    await withJwks([publicJwk, pagesPublicJwk], async () => {
+      const response = await app.request(
+        "/v1/admin/me",
+        {
+          headers: {
+            "Cf-Access-Jwt-Assertion": serviceTokenJwt,
+            "X-Lastrail-User-Access-Jwt": pagesUserJwt,
+          },
+        },
+        createDelegatedAccessEnv({
           id: "principal-1",
           access_subject: "access|owner-1",
           role: "OWNER",

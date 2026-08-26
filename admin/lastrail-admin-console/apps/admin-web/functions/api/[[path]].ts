@@ -47,7 +47,7 @@ function headersFor(request: Request, env: Env, requestId: string): Headers {
   const accessJwt = request.headers.get("cf-access-jwt-assertion");
 
   if (contentType) headers.set("content-type", contentType);
-  if (accessJwt) headers.set("cf-access-jwt-assertion", accessJwt);
+  if (accessJwt) headers.set("x-lastrail-user-access-jwt", accessJwt);
   if (env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET) {
     headers.set("cf-access-client-id", env.CF_ACCESS_CLIENT_ID);
     headers.set("cf-access-client-secret", env.CF_ACCESS_CLIENT_SECRET);

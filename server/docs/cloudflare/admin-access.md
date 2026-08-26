@@ -54,6 +54,17 @@ Admin API sets `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED` for DEV/PRD. Protected Admi
 
 `ADMIN_ACCESS_ISSUER` and `ADMIN_ACCESS_AUD` are not secrets, but they must match the actual Cloudflare Access application. DEV remains blocked with `ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED` until these values are configured.
 
+Cloudflare Pages preview uses a service token to pass the `dev-admin.lastrail.app` Access policy, but Admin API authorization must still resolve to a human admin principal. For that path:
+
+1. Protect the Pages preview hostname with a Cloudflare Access application.
+2. Pages Function forwards the incoming Pages `Cf-Access-Jwt-Assertion` as `X-Lastrail-User-Access-Jwt`.
+3. Admin API validates the upstream service-token JWT against `ADMIN_ACCESS_AUD`, then validates `X-Lastrail-User-Access-Jwt` against the Pages Access application:
+
+- `ADMIN_DELEGATED_ACCESS_ISSUER`: the Pages Access team domain
+- `ADMIN_DELEGATED_ACCESS_AUD`: the Pages Access Application Audience (AUD) tag
+
+Do not authorize a service token by itself as an admin principal. The delegated user JWT `sub` must still match `admin_principals.access_subject`.
+
 ## Apply DEV Access Values
 
 After the DEV Access application exists, copy:

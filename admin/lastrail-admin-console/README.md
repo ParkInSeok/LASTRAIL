@@ -41,6 +41,8 @@ npm run build:web
 
 `apps/admin-web` deploys the React console to Cloudflare Pages. Static assets are built to `dist`, and Pages Functions proxy browser `/api/*` requests to the versioned Admin API under `/v1/admin/*`.
 
+Protect the Pages preview hostname with Cloudflare Access before using the remote Admin API. The Pages Function forwards the authenticated Pages user JWT to Admin API as `X-Lastrail-User-Access-Jwt`, while its service token only proves the proxy is allowed through the Admin API Access application.
+
 Required Pages environment variables:
 
 - `ADMIN_API_BASE_URL`
