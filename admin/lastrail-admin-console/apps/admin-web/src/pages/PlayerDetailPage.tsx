@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { hasPermission } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 import { useAdmin } from "../shared/auth/AdminContext";
+import { accountStatusLabel, levelSourceLabel } from "../shared/labels/adminLabels";
 
 export function PlayerDetailPage() {
   const { accountId = "" } = useParams();
@@ -37,9 +38,9 @@ export function PlayerDetailPage() {
     noteMutation.mutate();
   }
 
-  if (query.isLoading) return <main className="content">Loading player</main>;
-  if (query.error) return <main className="content error">Player request failed</main>;
-  if (!query.data) return <main className="content">No player selected</main>;
+  if (query.isLoading) return <main className="content">플레이어를 불러오는 중</main>;
+  if (query.error) return <main className="content error">플레이어 요청 실패</main>;
+  if (!query.data) return <main className="content">선택된 플레이어가 없습니다</main>;
 
   const player = query.data;
 
@@ -51,27 +52,27 @@ export function PlayerDetailPage() {
       </header>
       <section className="summary-grid">
         <div>
-          <span>Status</span>
-          <strong>{player.status}</strong>
+          <span>상태</span>
+          <strong>{accountStatusLabel(player.status)}</strong>
         </div>
         <div>
-          <span>Operator EXP</span>
+          <span>요원 경험치</span>
           <strong>{player.progression.operatorExp}</strong>
         </div>
         <div>
-          <span>Sync Level</span>
+          <span>동기화 레벨</span>
           <strong>{player.progression.syncLevel}</strong>
         </div>
         <div>
-          <span>Core Level Spread</span>
+          <span>코어 레벨 편차</span>
           <strong>{player.progression.coreLevelSpread}</strong>
         </div>
       </section>
       <section className="admin-panel">
-        <h2>Operator Notes</h2>
+        <h2>운영 노트</h2>
         {canWriteNote ? (
           <form className="note-form" onSubmit={submitNote}>
-            <label htmlFor="player-note">Note</label>
+            <label htmlFor="player-note">노트</label>
             <textarea
               id="player-note"
               maxLength={1000}
@@ -83,18 +84,18 @@ export function PlayerDetailPage() {
             <div className="form-row">
               <small>{note.length}/1000</small>
               <button type="submit" disabled={noteMutation.isPending || note.trim().length === 0}>
-                {noteMutation.isPending ? "Saving" : "Save note"}
+                {noteMutation.isPending ? "저장 중" : "노트 저장"}
               </button>
             </div>
-            {lastNoteRequestId ? <p className="success">Note saved. Request {lastNoteRequestId}</p> : null}
-            {noteMutation.error ? <p className="error">Note save failed</p> : null}
+            {lastNoteRequestId ? <p className="success">노트 저장 완료. 요청 {lastNoteRequestId}</p> : null}
+            {noteMutation.error ? <p className="error">노트 저장 실패</p> : null}
           </form>
         ) : null}
         <div className="note-history">
-          <h3>Recent Notes</h3>
-          {notesQuery.isLoading ? <p>Loading notes</p> : null}
-          {notesQuery.error ? <p className="error">Note history failed</p> : null}
-          {notesQuery.data?.items.length === 0 ? <p>No notes yet</p> : null}
+          <h3>최근 노트</h3>
+          {notesQuery.isLoading ? <p>노트를 불러오는 중</p> : null}
+          {notesQuery.error ? <p className="error">노트 이력 요청 실패</p> : null}
+          {notesQuery.data?.items.length === 0 ? <p>아직 노트가 없습니다</p> : null}
           {notesQuery.data?.items.map((item) => (
             <article key={item.id}>
               <header>
@@ -106,13 +107,13 @@ export function PlayerDetailPage() {
           ))}
         </div>
       </section>
-      <h2>Training Core</h2>
+      <h2>훈련 코어</h2>
       <table>
         <thead>
           <tr>
-            <th>Slot</th>
-            <th>Operator</th>
-            <th>Trained Level</th>
+            <th>슬롯</th>
+            <th>요원</th>
+            <th>훈련 레벨</th>
           </tr>
         </thead>
         <tbody>
@@ -125,17 +126,17 @@ export function PlayerDetailPage() {
           ))}
         </tbody>
       </table>
-      <h2>Operators</h2>
+      <h2>요원</h2>
       <table>
         <thead>
           <tr>
-            <th>Operator</th>
-            <th>Effective Level</th>
-            <th>Level Source</th>
-            <th>Trained Level</th>
-            <th>Skill</th>
-            <th>Promotion</th>
-            <th>Core Slot</th>
+            <th>요원</th>
+            <th>적용 레벨</th>
+            <th>레벨 출처</th>
+            <th>훈련 레벨</th>
+            <th>스킬</th>
+            <th>승급</th>
+            <th>코어 슬롯</th>
           </tr>
         </thead>
         <tbody>
@@ -143,7 +144,7 @@ export function PlayerDetailPage() {
             <tr key={operator.operatorId}>
               <td>{operator.name}</td>
               <td>{operator.effectiveLevel}</td>
-              <td>{operator.levelSource}</td>
+              <td>{levelSourceLabel(operator.levelSource)}</td>
               <td>{operator.trainedLevel}</td>
               <td>{operator.skillTraining}</td>
               <td>{operator.promotion}</td>
@@ -152,7 +153,7 @@ export function PlayerDetailPage() {
           ))}
         </tbody>
       </table>
-      <Link to={`/runs?accountId=${player.accountId}`}>View runs</Link>
+      <Link to={`/runs?accountId=${player.accountId}`}>출격 보기</Link>
     </main>
   );
 }

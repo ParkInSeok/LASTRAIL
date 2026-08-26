@@ -2,23 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import type { SuspiciousPlayerDetail } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
+import {
+  classificationLabel,
+  enforcementLabel,
+  categoryLabel,
+  evidenceCodeLabel,
+  priorityLabel,
+  reviewStatusLabel,
+  runResultLabel
+} from "../shared/labels/adminLabels";
 
-type ReviewStatus = SuspiciousPlayerDetail["summary"]["reviewStatus"];
 type SuspiciousRun = SuspiciousPlayerDetail["suspiciousRuns"][number];
-
-export function reviewStatusLabel(status: ReviewStatus): string {
-  const labels: Record<ReviewStatus, string> = {
-    NEW: "신규",
-    REVIEWING: "검토 중",
-    CLEARED: "정상 처리",
-    SCORE_EXCLUDED: "순위 제외",
-    REWARD_HELD: "보상 보류",
-    ESCALATED: "제재 검토",
-    ACTIONED: "조치 완료",
-    FALSE_POSITIVE: "오탐"
-  };
-  return labels[status];
-}
 
 export function runTypeLabel(runType: SuspiciousRun["runType"]): string {
   return runType === "RAID_RUN" ? "레이드 출격" : "출격";
@@ -77,8 +71,8 @@ function SuspiciousPlayerDetailContent({ detail }: { detail: SuspiciousPlayerDet
         </div>
         <div>
           <span>위험도</span>
-          <strong>{detail.summary.priority}</strong>
-          <small>{detail.summary.primaryReason ?? "신호 없음"}</small>
+          <strong>{priorityLabel(detail.summary.priority)}</strong>
+          <small>{evidenceCodeLabel(detail.summary.primaryReason)}</small>
         </div>
         <div>
           <span>리뷰 상태</span>
@@ -88,7 +82,7 @@ function SuspiciousPlayerDetailContent({ detail }: { detail: SuspiciousPlayerDet
         </div>
         <div>
           <span>운영 조치</span>
-          <strong>{detail.summary.currentEnforcement}</strong>
+          <strong>{enforcementLabel(detail.summary.currentEnforcement)}</strong>
           <small>읽기 전용</small>
         </div>
       </section>
@@ -111,10 +105,10 @@ function SuspiciousPlayerDetailContent({ detail }: { detail: SuspiciousPlayerDet
               <tr key={signal.id}>
                 <td>{formatDate(signal.createdAt)}</td>
                 <td>{signal.runId ? <Link to={runHref(signal.runId)}>{signal.runId}</Link> : "-"}</td>
-                <td>{signal.classification}</td>
+                <td>{classificationLabel(signal.classification)}</td>
                 <td>
-                  {signal.evidenceCode}
-                  <small>{signal.category}</small>
+                  {evidenceCodeLabel(signal.evidenceCode)}
+                  <small>{categoryLabel(signal.category)}</small>
                 </td>
                 <td>
                   {reviewStatusLabel(signal.reviewStatus)}
@@ -149,7 +143,7 @@ function SuspiciousPlayerDetailContent({ detail }: { detail: SuspiciousPlayerDet
                 <td>
                   <Link to={runHref(run.runId)}>{run.runId}</Link>
                 </td>
-                <td>{run.result}</td>
+                <td>{runResultLabel(run.result)}</td>
                 <td>{run.riskTier}</td>
                 <td>{run.balanceVersion}</td>
                 <td>

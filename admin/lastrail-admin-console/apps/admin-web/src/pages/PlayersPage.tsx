@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { accountStatusLabel, priorityLabel, reviewStatusLabel } from "../shared/labels/adminLabels";
 
 export function PlayersPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,28 +21,28 @@ export function PlayersPage() {
   return (
     <main className="content">
       <header>
-        <h1>Players</h1>
-        <p>Account search and read-only inspection</p>
+        <h1>플레이어</h1>
+        <p>계정 검색과 읽기 전용 조회</p>
       </header>
       <form className="toolbar" onSubmit={submit}>
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="Account ID or display name"
+          placeholder="계정 ID 또는 표시 이름"
         />
-        <button type="submit">Search</button>
+        <button type="submit">검색</button>
       </form>
-      {query.isLoading && <p>Loading players</p>}
-      {query.error && <p className="error">Players request failed</p>}
+      {query.isLoading && <p>플레이어를 불러오는 중</p>}
+      {query.error && <p className="error">플레이어 요청 실패</p>}
       {query.data && (
         <table>
           <thead>
             <tr>
-              <th>Account</th>
-              <th>Status</th>
-              <th>Sync</th>
-              <th>Risk</th>
-              <th>Review</th>
+              <th>계정</th>
+              <th>상태</th>
+              <th>동기화</th>
+              <th>위험도</th>
+              <th>검토</th>
             </tr>
           </thead>
           <tbody>
@@ -51,10 +52,10 @@ export function PlayersPage() {
                   <Link to={`/players/${player.accountId}`}>{player.displayName}</Link>
                   <small>{player.accountId}</small>
                 </td>
-                <td>{player.status}</td>
+                <td>{accountStatusLabel(player.status)}</td>
                 <td>{player.syncLevel}</td>
-                <td>{player.risk ?? "-"}</td>
-                <td>{player.reviewStatus ?? "-"}</td>
+                <td>{player.risk ? priorityLabel(player.risk) : "-"}</td>
+                <td>{player.reviewStatus ? reviewStatusLabel(player.reviewStatus) : "-"}</td>
               </tr>
             ))}
           </tbody>
@@ -63,4 +64,3 @@ export function PlayersPage() {
     </main>
   );
 }
-

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   auditDecisionLabel,
-  reviewStatusLabel,
   runHref,
   runTypeLabel,
   signalEvidenceSummary
 } from "./SuspiciousPlayerDetailPage";
+import { reviewStatusLabel } from "../shared/labels/adminLabels";
 
 describe("SuspiciousPlayerDetailPage helpers", () => {
   it("uses confirmed Korean operations labels for review states", () => {

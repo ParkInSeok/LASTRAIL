@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { levelSourceLabel } from "../shared/labels/adminLabels";
 
 export function RunDetailPage() {
   const { runId = "" } = useParams();
@@ -10,9 +11,9 @@ export function RunDetailPage() {
     enabled: runId.length > 0
   });
 
-  if (query.isLoading) return <main className="content">Loading run</main>;
-  if (query.error) return <main className="content error">Run request failed</main>;
-  if (!query.data) return <main className="content">No run selected</main>;
+  if (query.isLoading) return <main className="content">출격을 불러오는 중</main>;
+  if (query.error) return <main className="content error">출격 요청 실패</main>;
+  if (!query.data) return <main className="content">선택된 출격이 없습니다</main>;
 
   const run = query.data;
 
@@ -24,33 +25,33 @@ export function RunDetailPage() {
       </header>
       <section className="summary-grid">
         <div>
-          <span>Run Balance Version</span>
+          <span>출격 밸런스 버전</span>
           <strong>{run.balanceVersion}</strong>
         </div>
         <div>
-          <span>Current Active Balance Version</span>
+          <span>현재 게시 밸런스 버전</span>
           <strong>{run.currentActiveBalanceVersion}</strong>
         </div>
         <div>
-          <span>Client Build</span>
+          <span>클라이언트 빌드</span>
           <strong>{run.clientBuild}</strong>
         </div>
         <div>
-          <span>Validator Runtime Revision</span>
+          <span>검증 런타임 리비전</span>
           <strong>{run.validatorRuntimeRevision}</strong>
         </div>
       </section>
-      <h2>Snapshot</h2>
+      <h2>스냅샷</h2>
       <table>
         <thead>
           <tr>
-            <th>Operator</th>
-            <th>Effective Level</th>
-            <th>Level Source</th>
-            <th>Sync At Start</th>
-            <th>Trained At Start</th>
-            <th>Skill</th>
-            <th>Promotion</th>
+            <th>요원</th>
+            <th>적용 레벨</th>
+            <th>레벨 출처</th>
+            <th>시작 시 동기화</th>
+            <th>시작 시 훈련</th>
+            <th>스킬</th>
+            <th>승급</th>
           </tr>
         </thead>
         <tbody>
@@ -58,7 +59,7 @@ export function RunDetailPage() {
             <tr key={operator.operatorId}>
               <td>{operator.operatorId}</td>
               <td>{operator.effectiveLevel}</td>
-              <td>{operator.levelSource}</td>
+              <td>{levelSourceLabel(operator.levelSource)}</td>
               <td>{operator.syncLevelAtStart}</td>
               <td>{operator.trainedLevelAtStart ?? "-"}</td>
               <td>{operator.skillTraining}</td>
@@ -70,4 +71,3 @@ export function RunDetailPage() {
     </main>
   );
 }
-

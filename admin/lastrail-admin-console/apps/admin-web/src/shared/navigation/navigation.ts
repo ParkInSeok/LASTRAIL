@@ -13,29 +13,29 @@ export type NavigationGroup = {
 
 const navigation: NavigationGroup[] = [
   {
-    label: "Dashboard",
-    items: [{ label: "Overview", path: "/" }]
+    label: "현황",
+    items: [{ label: "개요", path: "/" }]
   },
   {
-    label: "Operations",
+    label: "운영",
     items: [
-      { label: "Players", path: "/players", permission: "ACCOUNT_READ" },
-      { label: "Runs", path: "/runs", permission: "RUN_READ" },
-      { label: "Integrity", path: "/integrity", permission: "INTEGRITY_READ" },
+      { label: "플레이어", path: "/players", permission: "ACCOUNT_READ" },
+      { label: "출격", path: "/runs", permission: "RUN_READ" },
+      { label: "무결성", path: "/integrity", permission: "INTEGRITY_READ" },
       { label: "의심 플레이어", path: "/integrity/suspicious-players", permission: "INTEGRITY_READ" },
-      { label: "Incidents", path: "/incidents", permission: "INCIDENT_READ" },
-      { label: "Enforcement", path: "/enforcement", permission: "ENFORCEMENT_SUSPEND" }
+      { label: "사건", path: "/incidents", permission: "INCIDENT_READ" },
+      { label: "제재", path: "/enforcement", permission: "ENFORCEMENT_SUSPEND" }
     ]
   },
   {
-    label: "Insights",
-    items: [{ label: "Analytics", path: "/analytics", permission: "ANALYTICS_READ" }]
+    label: "분석",
+    items: [{ label: "지표", path: "/analytics", permission: "ANALYTICS_READ" }]
   },
   {
-    label: "System",
+    label: "시스템",
     items: [
-      { label: "Game", path: "/game", permission: "BALANCE_READ" },
-      { label: "Audit", path: "/audit", permission: "AUDIT_READ" }
+      { label: "게임 설정", path: "/game", permission: "BALANCE_READ" },
+      { label: "감사 로그", path: "/audit", permission: "AUDIT_READ" }
     ]
   }
 ];

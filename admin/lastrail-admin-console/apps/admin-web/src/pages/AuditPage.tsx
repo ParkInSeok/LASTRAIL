@@ -3,6 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import type { AuditLogsResponse } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
+import {
+  auditActionLabel,
+  auditResultLabel,
+  permissionLabel,
+  resourceTypeLabel,
+  roleLabel
+} from "../shared/labels/adminLabels";
 
 type AuditFilters = {
   action: string;
@@ -72,50 +79,50 @@ export function AuditPage() {
   return (
     <main className="content">
       <header>
-        <h1>Audit</h1>
-        <p>Admin actions and operational history</p>
+        <h1>감사 로그</h1>
+        <p>운영자 작업과 운영 이력</p>
       </header>
       <form className="toolbar" onSubmit={submitFilters}>
         <input
-          aria-label="Action"
-          placeholder="Action"
+          aria-label="작업"
+          placeholder="작업"
           value={draft.action}
           onChange={(event) => setDraft({ ...draft, action: event.target.value })}
         />
         <input
-          aria-label="Resource ID"
-          placeholder="Resource ID"
+          aria-label="대상 ID"
+          placeholder="대상 ID"
           value={draft.resourceId}
           onChange={(event) => setDraft({ ...draft, resourceId: event.target.value })}
         />
         <select
-          aria-label="Result"
+          aria-label="결과"
           value={draft.result}
           onChange={(event) =>
             setDraft({ ...draft, result: event.target.value as AuditFilters["result"] })
           }
         >
-          <option value="">Any result</option>
-          <option value="SUCCESS">Success</option>
-          <option value="FAILURE">Failure</option>
+          <option value="">전체 결과</option>
+          <option value="SUCCESS">성공</option>
+          <option value="FAILURE">실패</option>
         </select>
-        <button type="submit">Apply</button>
+        <button type="submit">적용</button>
       </form>
-      {query.isLoading ? <p>Loading audit logs</p> : null}
-      {query.error ? <p className="error">Audit request failed</p> : null}
-      {query.data?.items.length === 0 ? <p>No audit logs found</p> : null}
+      {query.isLoading ? <p>감사 로그를 불러오는 중</p> : null}
+      {query.error ? <p className="error">감사 로그 요청 실패</p> : null}
+      {query.data?.items.length === 0 ? <p>감사 로그가 없습니다</p> : null}
       {query.data && query.data.items.length > 0 ? (
         <>
           <table>
             <thead>
               <tr>
-                <th>Time</th>
-                <th>Actor</th>
-                <th>Action</th>
-                <th>Resource</th>
-                <th>Result</th>
-                <th>Summary</th>
-                <th>Detail</th>
+                <th>시각</th>
+                <th>작업자</th>
+                <th>작업</th>
+                <th>대상</th>
+                <th>결과</th>
+                <th>요약</th>
+                <th>상세</th>
               </tr>
             </thead>
             <tbody>
@@ -126,14 +133,14 @@ export function AuditPage() {
                     <td>{new Date(item.createdAt).toLocaleString()}</td>
                     <td>
                       {item.principalDisplayName}
-                      <small>{item.role}</small>
+                      <small>{roleLabel(item.role)}</small>
                     </td>
                     <td>
-                      {item.action}
-                      <small>{item.permission}</small>
+                      {auditActionLabel(item.action)}
+                      <small>{permissionLabel(item.permission)}</small>
                     </td>
                     <td>
-                      {item.resourceType}
+                      {resourceTypeLabel(item.resourceType)}
                       <small>
                         {resourceHref ? (
                           <Link to={resourceHref}>{item.resourceId}</Link>
@@ -142,11 +149,11 @@ export function AuditPage() {
                         )}
                       </small>
                     </td>
-                    <td>{item.result}</td>
+                    <td>{auditResultLabel(item.result)}</td>
                     <td className="audit-summary">{compactAuditSummary(item.changeSummary)}</td>
                     <td>
                       <button type="button" onClick={() => setSelectedAuditLog(item)}>
-                        View
+                        보기
                       </button>
                     </td>
                   </tr>
@@ -155,39 +162,39 @@ export function AuditPage() {
             </tbody>
           </table>
           {selectedAuditLog ? (
-            <aside className="detail-panel" aria-label="Audit detail">
+            <aside className="detail-panel" aria-label="감사 로그 상세">
               <header className="detail-panel-header">
                 <div>
-                  <h2>{selectedAuditLog.action}</h2>
+                  <h2>{auditActionLabel(selectedAuditLog.action)}</h2>
                   <p>{selectedAuditLog.id}</p>
                 </div>
                 <button type="button" onClick={() => setSelectedAuditLog(null)}>
-                  Close
+                  닫기
                 </button>
               </header>
               <dl className="detail-list">
-                <dt>Actor</dt>
+                <dt>작업자</dt>
                 <dd>
-                  {selectedAuditLog.principalDisplayName} ({selectedAuditLog.role})
+                  {selectedAuditLog.principalDisplayName} ({roleLabel(selectedAuditLog.role)})
                 </dd>
-                <dt>Permission</dt>
-                <dd>{selectedAuditLog.permission}</dd>
-                <dt>Resource</dt>
+                <dt>권한</dt>
+                <dd>{permissionLabel(selectedAuditLog.permission)}</dd>
+                <dt>대상</dt>
                 <dd>
-                  {selectedAuditLog.resourceType} / {selectedAuditLog.resourceId ?? "-"}
+                  {resourceTypeLabel(selectedAuditLog.resourceType)} / {selectedAuditLog.resourceId ?? "-"}
                 </dd>
-                <dt>Request</dt>
+                <dt>요청</dt>
                 <dd>{selectedAuditLog.requestId}</dd>
-                <dt>Confirmation</dt>
+                <dt>확인</dt>
                 <dd>{selectedAuditLog.confirmationId ?? "-"}</dd>
-                <dt>Payload hash</dt>
+                <dt>페이로드 해시</dt>
                 <dd>{selectedAuditLog.payloadHash ?? "-"}</dd>
-                <dt>Result</dt>
+                <dt>결과</dt>
                 <dd>
-                  {selectedAuditLog.result}
+                  {auditResultLabel(selectedAuditLog.result)}
                   {selectedAuditLog.errorCode ? ` (${selectedAuditLog.errorCode})` : ""}
                 </dd>
-                <dt>Created</dt>
+                <dt>생성 시각</dt>
                 <dd>{new Date(selectedAuditLog.createdAt).toLocaleString()}</dd>
               </dl>
               <pre>{JSON.stringify(selectedAuditLog.changeSummary, null, 2)}</pre>

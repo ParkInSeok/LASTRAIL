@@ -2,6 +2,12 @@ import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import { adminApi } from "../shared/api/client";
+import {
+  enforcementLabel,
+  evidenceCodeLabel,
+  priorityLabel,
+  reviewStatusLabel
+} from "../shared/labels/adminLabels";
 
 type SuspiciousPlayersFilters = {
   reviewStatus: "" | "NEW" | "REVIEWING" | "CLEARED" | "SCORE_EXCLUDED" | "REWARD_HELD" | "ESCALATED" | "ACTIONED" | "FALSE_POSITIVE";
@@ -37,20 +43,6 @@ export function suspiciousPlayersSearchParamsFromFilters(filters: SuspiciousPlay
 
 export function suspiciousPlayerHref(accountId: string): string {
   return `/integrity/suspicious-players/${encodeURIComponent(accountId)}`;
-}
-
-function reviewStatusLabel(status: Exclude<SuspiciousPlayersFilters["reviewStatus"], "">): string {
-  const labels: Record<Exclude<SuspiciousPlayersFilters["reviewStatus"], "">, string> = {
-    NEW: "신규",
-    REVIEWING: "검토 중",
-    CLEARED: "정상 처리",
-    SCORE_EXCLUDED: "순위 제외",
-    REWARD_HELD: "보상 보류",
-    ESCALATED: "제재 검토",
-    ACTIONED: "조치 완료",
-    FALSE_POSITIVE: "오탐"
-  };
-  return labels[status];
 }
 
 export function SuspiciousPlayersPage() {
@@ -124,19 +116,19 @@ export function SuspiciousPlayersPage() {
                   <Link to={suspiciousPlayerHref(player.accountId)}>{player.displayName}</Link>
                   <small>{player.accountId}</small>
                 </td>
-                <td>{player.priority}</td>
+                <td>{priorityLabel(player.priority)}</td>
                 <td>
                   {player.openSignals}
-                  <small>{player.hardViolations} hard</small>
+                  <small>중대 {player.hardViolations}</small>
                 </td>
                 <td>{player.suspiciousRuns}</td>
                 <td>{new Date(player.lastDetectionAt).toLocaleString()}</td>
-                <td>{player.primaryReason}</td>
+                <td>{evidenceCodeLabel(player.primaryReason)}</td>
                 <td>
                   {reviewStatusLabel(player.reviewStatus)}
                   <small>{player.reviewOwner ?? "미배정"}</small>
                 </td>
-                <td>{player.currentEnforcement}</td>
+                <td>{enforcementLabel(player.currentEnforcement)}</td>
               </tr>
             ))}
           </tbody>

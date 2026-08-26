@@ -2,10 +2,9 @@ export function DashboardPage() {
   return (
     <main className="content">
       <header>
-        <h1>Dashboard</h1>
-        <p>Read-only operations overview</p>
+        <h1>운영 현황</h1>
+        <p>읽기 전용 운영 개요</p>
       </header>
     </main>
   );
 }
-

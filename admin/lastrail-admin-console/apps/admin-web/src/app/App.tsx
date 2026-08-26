@@ -16,13 +16,13 @@ function Shell() {
   const permissions = bootstrap?.admin.permissions ?? [];
   const groups = visibleNavigation(permissions);
 
-  if (isLoading) return <main className="center">Loading admin bootstrap</main>;
-  if (error) return <main className="center error">Admin bootstrap failed</main>;
+  if (isLoading) return <main className="center">운영 콘솔 초기 정보를 불러오는 중</main>;
+  if (error) return <main className="center error">운영 콘솔 초기화 실패</main>;
 
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand">LAST RAIL Admin</div>
+        <div className="brand">LAST RAIL 운영 콘솔</div>
         <div className="identity">
           <strong>{bootstrap?.admin.displayName}</strong>
           <span>{bootstrap?.environment}</span>
