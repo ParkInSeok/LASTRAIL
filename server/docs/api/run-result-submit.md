@@ -40,7 +40,7 @@ Stable fields:
   "currentWaveNumber": 0,
   "completedWaveCount": 15,
   "outcome": "VICTORY",
-  "runtimeStateJson": {},
+  "runtimeStateJson": "{}",
   "tacticSelections": [],
   "clientCompletedAt": "2026-08-26T00:00:00.000Z"
 }
@@ -54,7 +54,7 @@ Rules:
 - `currentWaveNumber=0` with `completedWaveCount=15` is allowed as Unity's terminal completed-run representation.
 - `outcome` is `VICTORY`, `FAILURE`, or `ABANDONED`.
 - Request must not include reward amounts, currency grants, or final reward decisions.
-- `runtimeStateJson` is validation input only. It is not a reward source of truth.
+- `runtimeStateJson` is a stringified JSON payload produced by Unity. The server parses it as validation input only. It is not a reward source of truth.
 
 ## Response Body
 
@@ -68,13 +68,15 @@ Stable fields:
   "rewardClaimId": null,
   "rewardPreviewId": "reward_preview_...",
   "serverReceivedAt": "2026-08-26T00:00:00.000Z",
-  "balanceVersion": 1,
+  "balanceVersion": "1",
   "message": null,
   "errorCode": null
 }
 ```
 
 Use ISO UTC `Z` timestamps. Server may emit JavaScript `Date.toISOString()` millisecond precision.
+
+`balanceVersion` is a string in the API contract to match Unity DTO handling and to avoid safe-integer ambiguity if version identifiers become non-numeric later. The server still stores current D1 `balance_config_version` values as INTEGER internally.
 
 ## Result Status
 
