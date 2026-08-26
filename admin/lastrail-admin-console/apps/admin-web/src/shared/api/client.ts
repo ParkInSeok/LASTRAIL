@@ -3,6 +3,7 @@ import {
   BootstrapResponseSchema,
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
+  IntegrityEventsResponseSchema,
   PlayerDetailSchema,
   PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
@@ -76,6 +77,20 @@ export const adminApi = {
     const query = params.toString();
     return AuditLogsResponseSchema.parse(
       await readJson(`/api/audit${query ? `?${query}` : ""}`)
+    );
+  },
+  async integrityEvents(filters: {
+    accountId?: string;
+    classification?: "SOFT_ANOMALY" | "HARD_VIOLATION";
+    reviewState?: "OPEN" | "IN_REVIEW" | "RESOLVED";
+  }) {
+    const params = new URLSearchParams();
+    if (filters.accountId) params.set("accountId", filters.accountId);
+    if (filters.classification) params.set("classification", filters.classification);
+    if (filters.reviewState) params.set("reviewState", filters.reviewState);
+    const query = params.toString();
+    return IntegrityEventsResponseSchema.parse(
+      await readJson(`/api/integrity/events${query ? `?${query}` : ""}`)
     );
   },
   async searchRuns(accountId?: string) {

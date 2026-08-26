@@ -109,4 +109,42 @@ describe("admin web API client", () => {
       }
     );
   });
+
+  it("reads integrity events with optional filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        items: [
+          {
+            id: "event-1",
+            accountId: "account-1",
+            runId: "run-1",
+            classification: "SOFT_ANOMALY",
+            category: "DAMAGE_ANALYSIS",
+            evidenceCode: "DAMAGE_SPIKE",
+            evidence: { maxDamageRatio: 2.4 },
+            reviewState: "OPEN",
+            assignedTo: null,
+            createdAt: "2026-08-26T04:00:00.000Z"
+          }
+        ]
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.integrityEvents({
+      accountId: "account-1",
+      classification: "SOFT_ANOMALY",
+      reviewState: "OPEN"
+    });
+
+    expect(result.items[0]?.evidenceCode).toBe("DAMAGE_SPIKE");
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/integrity/events?accountId=account-1&classification=SOFT_ANOMALY&reviewState=OPEN",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
 });

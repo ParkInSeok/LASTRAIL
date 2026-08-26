@@ -3,6 +3,7 @@ import { AdminProvider, useAdmin } from "../shared/auth/AdminContext";
 import { visibleNavigation } from "../shared/navigation/navigation";
 import { AuditPage } from "../pages/AuditPage";
 import { DashboardPage } from "../pages/DashboardPage";
+import { IntegrityPage } from "../pages/IntegrityPage";
 import { PlayerDetailPage } from "../pages/PlayerDetailPage";
 import { PlayersPage } from "../pages/PlayersPage";
 import { RunDetailPage } from "../pages/RunDetailPage";
@@ -41,6 +42,7 @@ function Shell() {
         <Route path="/" element={<DashboardPage />} />
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/players/:accountId" element={<PlayerDetailPage />} />
+        <Route path="/integrity" element={<IntegrityPage />} />
         <Route path="/runs" element={<RunsPage />} />
         <Route path="/runs/:runId" element={<RunDetailPage />} />
         <Route path="/audit" element={<AuditPage />} />

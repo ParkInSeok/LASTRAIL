@@ -7,6 +7,7 @@ import {
   BootstrapResponseSchema,
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
+  IntegrityEventsResponseSchema,
   PlayerDetailSchema,
   PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
@@ -241,6 +242,23 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       AuditLogsResponseSchema,
       upstream,
       "/v1/admin/audit",
+      requestIdFrom(request.headers),
+      query
+    );
+  });
+
+  server.get("/api/integrity/events", async (request) => {
+    const query = new URLSearchParams();
+    const rawQuery = request.query as Record<string, string | undefined>;
+    if (rawQuery.accountId) query.set("accountId", rawQuery.accountId);
+    if (rawQuery.classification) query.set("classification", rawQuery.classification);
+    if (rawQuery.reviewState) query.set("reviewState", rawQuery.reviewState);
+
+    return proxyRead(
+      server,
+      IntegrityEventsResponseSchema,
+      upstream,
+      "/v1/admin/integrity/events",
       requestIdFrom(request.headers),
       query
     );

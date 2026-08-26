@@ -397,4 +397,45 @@ describe("admin-api read-only operations", () => {
       ],
     });
   });
+
+  it("lists integrity events with review state and filters", async () => {
+    const response = await app.request(
+      "/v1/admin/integrity/events?accountId=account-1&classification=SOFT_ANOMALY&reviewState=OPEN",
+      { headers: { "Cf-Access-Subject": "access|owner-1" } },
+      createEnv([
+        [
+          {
+            id: "event-1",
+            account_id: "account-1",
+            run_id: "run-1",
+            classification: "SOFT_ANOMALY",
+            category: "DAMAGE_ANALYSIS",
+            evidence_code: "DAMAGE_SPIKE",
+            evidence_json: '{"maxDamageRatio":2.4}',
+            review_state: "OPEN",
+            assigned_to: null,
+            created_at: 1787716800000,
+          },
+        ],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      items: [
+        {
+          id: "event-1",
+          accountId: "account-1",
+          runId: "run-1",
+          classification: "SOFT_ANOMALY",
+          category: "DAMAGE_ANALYSIS",
+          evidenceCode: "DAMAGE_SPIKE",
+          evidence: { maxDamageRatio: 2.4 },
+          reviewState: "OPEN",
+          assignedTo: null,
+          createdAt: "2026-08-26T04:00:00.000Z",
+        },
+      ],
+    });
+  });
 });

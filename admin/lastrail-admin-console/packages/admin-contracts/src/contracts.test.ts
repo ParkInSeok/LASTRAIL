@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   BootstrapResponseSchema,
+  IntegrityEventsResponseSchema,
   PlayerDetailSchema,
   hasPermission,
   rolePermissions
@@ -71,5 +72,28 @@ describe("admin contracts", () => {
     expect(player.progression.trainingCore).toHaveLength(5);
     expect(player.progression.syncLevel).toBe(30);
     expect(player.progression.operators[1].levelSource).toBe("SYNC");
+  });
+
+  it("describes integrity events as investigation signals, not ban decisions", () => {
+    const response = IntegrityEventsResponseSchema.parse({
+      items: [
+        {
+          id: "event-1",
+          accountId: "account-1",
+          runId: "run-1",
+          classification: "SOFT_ANOMALY",
+          category: "DAMAGE_ANALYSIS",
+          evidenceCode: "DAMAGE_SPIKE",
+          evidence: { maxDamageRatio: 2.4 },
+          reviewState: "OPEN",
+          assignedTo: null,
+          createdAt: "2026-08-26T04:00:00.000Z"
+        }
+      ]
+    });
+
+    expect(response.items[0].classification).toBe("SOFT_ANOMALY");
+    expect(response.items[0].evidence).toEqual({ maxDamageRatio: 2.4 });
+    expect(response.items[0]).not.toHaveProperty("banAction");
   });
 });

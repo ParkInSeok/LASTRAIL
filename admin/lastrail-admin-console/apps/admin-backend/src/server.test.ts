@@ -202,6 +202,48 @@ describe("admin backend routes", () => {
     expect(response.json().items[0].action).toBe("PLAYER_NOTE_CREATE");
   });
 
+  it("proxies integrity event filters to the versioned Admin API path", async () => {
+    const server = buildServer({
+      config: {
+        adminApiBaseUrl: "https://admin-api.example.test",
+        profile: "staging",
+        host: "127.0.0.1",
+        port: 4174
+      },
+      upstream: (async (path, init) => {
+        expect(path).toBe("/v1/admin/integrity/events");
+        expect(init.method).toBe("GET");
+        expect(init.searchParams?.get("accountId")).toBe("account-1");
+        expect(init.searchParams?.get("classification")).toBe("SOFT_ANOMALY");
+        expect(init.searchParams?.get("reviewState")).toBe("OPEN");
+        return {
+          items: [
+            {
+              id: "event-1",
+              accountId: "account-1",
+              runId: "run-1",
+              classification: "SOFT_ANOMALY",
+              category: "DAMAGE_ANALYSIS",
+              evidenceCode: "DAMAGE_SPIKE",
+              evidence: { maxDamageRatio: 2.4 },
+              reviewState: "OPEN",
+              assignedTo: null,
+              createdAt: "2026-08-26T04:00:00.000Z"
+            }
+          ]
+        };
+      }) satisfies UpstreamClient
+    });
+
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/integrity/events?accountId=account-1&classification=SOFT_ANOMALY&reviewState=OPEN"
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().items[0].evidenceCode).toBe("DAMAGE_SPIKE");
+  });
+
   it("normalizes schema validation failures from upstream", async () => {
     const server = buildServer({
       config: {

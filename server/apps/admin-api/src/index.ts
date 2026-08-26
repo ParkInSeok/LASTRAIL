@@ -84,6 +84,19 @@ type AdminAuditLogRow = {
   created_at: number;
 };
 
+type AdminIntegrityEventRow = {
+  id: string;
+  account_id: string;
+  run_id: string | null;
+  classification: "SOFT_ANOMALY" | "HARD_VIOLATION";
+  category: string;
+  evidence_code: string;
+  evidence_json: string;
+  review_state: "OPEN" | "IN_REVIEW" | "RESOLVED";
+  assigned_to: string | null;
+  created_at: number;
+};
+
 type AdminRunSearchRow = {
   run_id: string;
   account_id: string;
@@ -676,6 +689,58 @@ app.get("/v1/admin/audit", async (c) => {
       changeSummary: parseJsonValue(row.change_summary_json),
       result: row.result,
       errorCode: row.error_code,
+      createdAt: toIso(row.created_at),
+    })),
+  });
+});
+app.get("/v1/admin/integrity/events", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const accountId = c.req.query("accountId")?.trim() || null;
+  const classification = c.req.query("classification")?.trim() || null;
+  const reviewState = c.req.query("reviewState")?.trim() || null;
+  if (classification !== null && classification !== "SOFT_ANOMALY" && classification !== "HARD_VIOLATION") {
+    return c.json({ error: "INTEGRITY_FILTER_INVALID" }, 400);
+  }
+  if (reviewState !== null && reviewState !== "OPEN" && reviewState !== "IN_REVIEW" && reviewState !== "RESOLVED") {
+    return c.json({ error: "INTEGRITY_FILTER_INVALID" }, 400);
+  }
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       event.id AS id,
+       event.account_id AS account_id,
+       event.run_id AS run_id,
+       event.classification AS classification,
+       event.category AS category,
+       event.evidence_code AS evidence_code,
+       event.evidence_json AS evidence_json,
+       COALESCE(review.state, 'OPEN') AS review_state,
+       review.assigned_to AS assigned_to,
+       event.created_at AS created_at
+     FROM integrity_events event
+     LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     WHERE (? IS NULL OR event.account_id = ?)
+       AND (? IS NULL OR event.classification = ?)
+       AND (? IS NULL OR COALESCE(review.state, 'OPEN') = ?)
+     ORDER BY event.created_at DESC
+     LIMIT 100`,
+  )
+    .bind(accountId, accountId, classification, classification, reviewState, reviewState)
+    .all<AdminIntegrityEventRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      id: row.id,
+      accountId: row.account_id,
+      runId: row.run_id,
+      classification: row.classification,
+      category: row.category,
+      evidenceCode: row.evidence_code,
+      evidence: parseJsonValue(row.evidence_json),
+      reviewState: row.review_state,
+      assignedTo: row.assigned_to,
       createdAt: toIso(row.created_at),
     })),
   });

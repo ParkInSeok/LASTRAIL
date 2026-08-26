@@ -153,6 +153,27 @@ export const AuditLogsResponseSchema = z.object({
   nextCursor: z.string().optional()
 });
 
+export const IntegrityEventClassificationSchema = z.enum(["SOFT_ANOMALY", "HARD_VIOLATION"]);
+export const IntegrityEventReviewStateSchema = z.enum(["OPEN", "IN_REVIEW", "RESOLVED"]);
+
+export const IntegrityEventItemSchema = z.object({
+  id: z.string().min(1),
+  accountId: z.string().min(1),
+  runId: z.string().min(1).nullable(),
+  classification: IntegrityEventClassificationSchema,
+  category: z.string().min(1),
+  evidenceCode: z.string().min(1),
+  evidence: JsonValueSchema,
+  reviewState: IntegrityEventReviewStateSchema,
+  assignedTo: z.string().min(1).nullable(),
+  createdAt: z.string().datetime()
+});
+
+export const IntegrityEventsResponseSchema = z.object({
+  items: z.array(IntegrityEventItemSchema),
+  nextCursor: z.string().optional()
+});
+
 export const RunSummarySchema = z.object({
   runId: z.string().min(1),
   accountId: z.string().min(1),
@@ -201,6 +222,7 @@ export const NormalizedErrorSchema = z.object({
 
 export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
 export type AuditLogsResponse = z.infer<typeof AuditLogsResponseSchema>;
+export type IntegrityEventsResponse = z.infer<typeof IntegrityEventsResponseSchema>;
 export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
 export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
 export type PlayerNotesResponse = z.infer<typeof PlayerNotesResponseSchema>;

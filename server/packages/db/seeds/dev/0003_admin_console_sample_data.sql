@@ -160,3 +160,47 @@ ON CONFLICT(singleton_id) DO UPDATE SET
   runtime_config_id = excluded.runtime_config_id,
   updated_at = excluded.updated_at;
 
+INSERT INTO integrity_events (
+  id,
+  account_id,
+  run_id,
+  balance_config_version,
+  run_start_build_id,
+  submission_build_id,
+  original_validator_version_id,
+  runtime_revision,
+  evaluated_validator_version_id,
+  category,
+  evidence_code,
+  evidence_json,
+  fingerprint,
+  classification,
+  created_at
+) VALUES (
+  'sample-integrity-event-1',
+  'sample-account-1',
+  'sample-run-1',
+  1,
+  'sample-build-1',
+  'sample-build-1',
+  'sample-validator-version-1',
+  1,
+  'sample-validator-version-1',
+  'DAMAGE_ANALYSIS',
+  'DAMAGE_SPIKE',
+  '{"maxDamageRatio":2.4,"expectedBand":"RECOMMENDED_SPEC"}',
+  'sample-integrity-event-1',
+  'SOFT_ANOMALY',
+  1787716800000
+)
+ON CONFLICT(fingerprint) DO UPDATE SET
+  evidence_json = excluded.evidence_json,
+  classification = excluded.classification,
+  created_at = excluded.created_at;
+
+INSERT INTO integrity_event_review_states (event_id, state, assigned_to, updated_at)
+VALUES ('sample-integrity-event-1', 'OPEN', NULL, 1787716800000)
+ON CONFLICT(event_id) DO UPDATE SET
+  state = excluded.state,
+  assigned_to = excluded.assigned_to,
+  updated_at = excluded.updated_at;
