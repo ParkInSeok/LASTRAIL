@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import { AdminProvider, useAdmin } from "../shared/auth/AdminContext";
 import { visibleNavigation } from "../shared/navigation/navigation";
+import { AuditPage } from "../pages/AuditPage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { PlayerDetailPage } from "../pages/PlayerDetailPage";
 import { PlayersPage } from "../pages/PlayersPage";
@@ -42,6 +43,7 @@ function Shell() {
         <Route path="/players/:accountId" element={<PlayerDetailPage />} />
         <Route path="/runs" element={<RunsPage />} />
         <Route path="/runs/:runId" element={<RunDetailPage />} />
+        <Route path="/audit" element={<AuditPage />} />
       </Routes>
     </div>
   );
@@ -54,4 +56,3 @@ export function App() {
     </AdminProvider>
   );
 }
-

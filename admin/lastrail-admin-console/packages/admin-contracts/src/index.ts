@@ -119,6 +119,40 @@ export const PlayerNotesResponseSchema = z.object({
   nextCursor: z.string().optional()
 });
 
+const JsonValueSchema: z.ZodType<unknown> = z.lazy(() =>
+  z.union([
+    z.null(),
+    z.boolean(),
+    z.number(),
+    z.string(),
+    z.array(JsonValueSchema),
+    z.record(z.string(), JsonValueSchema)
+  ])
+);
+
+export const AuditLogItemSchema = z.object({
+  id: z.string().min(1),
+  principalId: z.string().min(1).nullable(),
+  principalDisplayName: z.string().min(1),
+  role: AdminRoleSchema,
+  permission: z.string().min(1),
+  action: z.string().min(1),
+  resourceType: z.string().min(1),
+  resourceId: z.string().min(1).nullable(),
+  requestId: z.string().min(1),
+  confirmationId: z.string().min(1).nullable(),
+  payloadHash: z.string().min(1).nullable(),
+  changeSummary: JsonValueSchema,
+  result: z.enum(["SUCCESS", "FAILURE"]),
+  errorCode: z.string().min(1).nullable(),
+  createdAt: z.string().datetime()
+});
+
+export const AuditLogsResponseSchema = z.object({
+  items: z.array(AuditLogItemSchema),
+  nextCursor: z.string().optional()
+});
+
 export const RunSummarySchema = z.object({
   runId: z.string().min(1),
   accountId: z.string().min(1),
@@ -166,6 +200,7 @@ export const NormalizedErrorSchema = z.object({
 });
 
 export type BootstrapResponse = z.infer<typeof BootstrapResponseSchema>;
+export type AuditLogsResponse = z.infer<typeof AuditLogsResponseSchema>;
 export type CreatePlayerNoteRequest = z.infer<typeof CreatePlayerNoteRequestSchema>;
 export type CreatePlayerNoteResponse = z.infer<typeof CreatePlayerNoteResponseSchema>;
 export type PlayerNotesResponse = z.infer<typeof PlayerNotesResponseSchema>;

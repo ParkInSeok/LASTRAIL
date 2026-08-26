@@ -1,4 +1,5 @@
 import {
+  AuditLogsResponseSchema,
   BootstrapResponseSchema,
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
@@ -65,6 +66,16 @@ export const adminApi = {
   async playerNotes(accountId: string) {
     return PlayerNotesResponseSchema.parse(
       await readJson(`/api/players/${encodeURIComponent(accountId)}/notes`)
+    );
+  },
+  async auditLogs(filters: { action?: string; resourceId?: string; result?: "SUCCESS" | "FAILURE" }) {
+    const params = new URLSearchParams();
+    if (filters.action) params.set("action", filters.action);
+    if (filters.resourceId) params.set("resourceId", filters.resourceId);
+    if (filters.result) params.set("result", filters.result);
+    const query = params.toString();
+    return AuditLogsResponseSchema.parse(
+      await readJson(`/api/audit${query ? `?${query}` : ""}`)
     );
   },
   async searchRuns(accountId?: string) {

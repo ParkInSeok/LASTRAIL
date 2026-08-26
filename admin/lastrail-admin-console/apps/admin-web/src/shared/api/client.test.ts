@@ -65,4 +65,48 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads audit logs with optional filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        items: [
+          {
+            id: "audit-1",
+            principalId: "principal-1",
+            principalDisplayName: "Owner",
+            role: "OWNER",
+            permission: "ACCOUNT_NOTE_WRITE",
+            action: "PLAYER_NOTE_CREATE",
+            resourceType: "account",
+            resourceId: "account-1",
+            requestId: "req-note-1",
+            confirmationId: null,
+            payloadHash: "sha256:abc",
+            changeSummary: { note: "Reviewed abnormal Training Core spread." },
+            result: "SUCCESS",
+            errorCode: null,
+            createdAt: "2026-08-26T03:30:00.000Z"
+          }
+        ]
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.auditLogs({
+      action: "PLAYER_NOTE_CREATE",
+      resourceId: "account-1"
+    });
+
+    expect(result.items[0]?.changeSummary).toEqual({
+      note: "Reviewed abnormal Training Core spread."
+    });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/audit?action=PLAYER_NOTE_CREATE&resourceId=account-1",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
 });

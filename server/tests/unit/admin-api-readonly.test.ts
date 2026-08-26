@@ -346,4 +346,55 @@ describe("admin-api read-only operations", () => {
       ],
     });
   });
+
+  it("lists audit log entries with action and resource filters", async () => {
+    const response = await app.request(
+      "/v1/admin/audit?action=PLAYER_NOTE_CREATE&resourceId=account-1",
+      { headers: { "Cf-Access-Subject": "access|owner-1" } },
+      createEnv([
+        [
+          {
+            id: "audit-1",
+            principal_id: "principal-1",
+            display_name: "Owner",
+            role: "OWNER",
+            permission: "ACCOUNT_NOTE_WRITE",
+            action: "PLAYER_NOTE_CREATE",
+            resource_type: "account",
+            resource_id: "account-1",
+            request_id: "req-note-1",
+            confirmation_id: null,
+            payload_hash: "sha256:abc",
+            change_summary_json: '{"note":"Reviewed abnormal Training Core spread."}',
+            result: "SUCCESS",
+            error_code: null,
+            created_at: 1787715000000,
+          },
+        ],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      items: [
+        {
+          id: "audit-1",
+          principalId: "principal-1",
+          principalDisplayName: "Owner",
+          role: "OWNER",
+          permission: "ACCOUNT_NOTE_WRITE",
+          action: "PLAYER_NOTE_CREATE",
+          resourceType: "account",
+          resourceId: "account-1",
+          requestId: "req-note-1",
+          confirmationId: null,
+          payloadHash: "sha256:abc",
+          changeSummary: { note: "Reviewed abnormal Training Core spread." },
+          result: "SUCCESS",
+          errorCode: null,
+          createdAt: "2026-08-26T03:30:00.000Z",
+        },
+      ],
+    });
+  });
 });

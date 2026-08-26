@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import fastify, { type FastifyInstance } from "fastify";
 import { z, ZodError, type ZodSchema } from "zod";
 import {
+  AuditLogsResponseSchema,
   AdminRoleSchema,
   BootstrapResponseSchema,
   CreatePlayerNoteRequestSchema,
@@ -225,6 +226,23 @@ export function buildServer(options: BuildServerOptions): FastifyInstance {
       upstream,
       `/v1/admin/players/${encodeURIComponent(params.accountId)}/notes`,
       requestIdFrom(request.headers)
+    );
+  });
+
+  server.get("/api/audit", async (request) => {
+    const query = new URLSearchParams();
+    const rawQuery = request.query as Record<string, string | undefined>;
+    if (rawQuery.action) query.set("action", rawQuery.action);
+    if (rawQuery.resourceId) query.set("resourceId", rawQuery.resourceId);
+    if (rawQuery.result) query.set("result", rawQuery.result);
+
+    return proxyRead(
+      server,
+      AuditLogsResponseSchema,
+      upstream,
+      "/v1/admin/audit",
+      requestIdFrom(request.headers),
+      query
     );
   });
 

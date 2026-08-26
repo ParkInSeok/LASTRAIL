@@ -66,6 +66,24 @@ type AdminPlayerNoteRow = {
   created_at: number;
 };
 
+type AdminAuditLogRow = {
+  id: string;
+  principal_id: string | null;
+  display_name: string | null;
+  role: "OWNER" | "OPERATOR" | "VIEWER";
+  permission: string;
+  action: string;
+  resource_type: string;
+  resource_id: string | null;
+  request_id: string;
+  confirmation_id: string | null;
+  payload_hash: string | null;
+  change_summary_json: string;
+  result: "SUCCESS" | "FAILURE";
+  error_code: string | null;
+  created_at: number;
+};
+
 type AdminRunSearchRow = {
   run_id: string;
   account_id: string;
@@ -275,8 +293,14 @@ function parseRunSnapshot(snapshotJson: string): JsonValue {
   return parsed;
 }
 
+function parseJsonValue(json: string): JsonValue {
+  const parsed = JSON.parse(json) as unknown;
+  if (!isJsonValue(parsed)) throw new Error("JSON_VALUE_INVALID");
+  return parsed;
+}
+
 function parsePlayerNoteSummary(summaryJson: string): string {
-  const parsed = JSON.parse(summaryJson) as unknown;
+  const parsed = parseJsonValue(summaryJson);
   if (!isJsonObject(parsed) || typeof parsed.note !== "string" || parsed.note.length === 0) {
     throw new Error("PLAYER_NOTE_INVALID_JSON");
   }
@@ -579,6 +603,65 @@ app.get("/v1/admin/players/:accountId/notes", async (c) => {
       authorId: row.principal_id,
       authorDisplayName: row.display_name ?? row.principal_id,
       requestId: row.request_id,
+      createdAt: toIso(row.created_at),
+    })),
+  });
+});
+app.get("/v1/admin/audit", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+
+  const action = c.req.query("action")?.trim() || null;
+  const resourceId = c.req.query("resourceId")?.trim() || null;
+  const result = c.req.query("result")?.trim() || null;
+  if (result !== null && result !== "SUCCESS" && result !== "FAILURE") {
+    return c.json({ error: "AUDIT_FILTER_INVALID" }, 400);
+  }
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       audit.id AS id,
+       audit.principal_id AS principal_id,
+       principal.display_name AS display_name,
+       audit.role AS role,
+       audit.permission AS permission,
+       audit.action AS action,
+       audit.resource_type AS resource_type,
+       audit.resource_id AS resource_id,
+       audit.request_id AS request_id,
+       audit.confirmation_id AS confirmation_id,
+       audit.payload_hash AS payload_hash,
+       audit.change_summary_json AS change_summary_json,
+       audit.result AS result,
+       audit.error_code AS error_code,
+       audit.created_at AS created_at
+     FROM admin_audit_logs audit
+     LEFT JOIN admin_principals principal ON principal.id = audit.principal_id
+     WHERE (? IS NULL OR audit.action = ?)
+       AND (? IS NULL OR audit.resource_id = ?)
+       AND (? IS NULL OR audit.result = ?)
+     ORDER BY audit.created_at DESC
+     LIMIT 100`,
+  )
+    .bind(action, action, resourceId, resourceId, result, result)
+    .all<AdminAuditLogRow>();
+
+  return c.json({
+    items: rows.results.map((row) => ({
+      id: row.id,
+      principalId: row.principal_id,
+      principalDisplayName: row.display_name ?? row.principal_id ?? "Unknown",
+      role: row.role,
+      permission: row.permission,
+      action: row.action,
+      resourceType: row.resource_type,
+      resourceId: row.resource_id,
+      requestId: row.request_id,
+      confirmationId: row.confirmation_id,
+      payloadHash: row.payload_hash,
+      changeSummary: parseJsonValue(row.change_summary_json),
+      result: row.result,
+      errorCode: row.error_code,
       createdAt: toIso(row.created_at),
     })),
   });

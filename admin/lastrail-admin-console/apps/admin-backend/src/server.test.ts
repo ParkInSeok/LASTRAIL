@@ -156,6 +156,52 @@ describe("admin backend routes", () => {
     });
   });
 
+  it("proxies audit search filters to the versioned Admin API path", async () => {
+    const server = buildServer({
+      config: {
+        adminApiBaseUrl: "https://admin-api.example.test",
+        profile: "staging",
+        host: "127.0.0.1",
+        port: 4174
+      },
+      upstream: (async (path, init) => {
+        expect(path).toBe("/v1/admin/audit");
+        expect(init.method).toBe("GET");
+        expect(init.searchParams?.get("action")).toBe("PLAYER_NOTE_CREATE");
+        expect(init.searchParams?.get("resourceId")).toBe("account-1");
+        return {
+          items: [
+            {
+              id: "audit-1",
+              principalId: "principal-1",
+              principalDisplayName: "Owner",
+              role: "OWNER",
+              permission: "ACCOUNT_NOTE_WRITE",
+              action: "PLAYER_NOTE_CREATE",
+              resourceType: "account",
+              resourceId: "account-1",
+              requestId: "req-note-1",
+              confirmationId: null,
+              payloadHash: "sha256:abc",
+              changeSummary: { note: "Reviewed abnormal Training Core spread." },
+              result: "SUCCESS",
+              errorCode: null,
+              createdAt: "2026-08-26T03:30:00.000Z"
+            }
+          ]
+        };
+      }) satisfies UpstreamClient
+    });
+
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/audit?action=PLAYER_NOTE_CREATE&resourceId=account-1"
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().items[0].action).toBe("PLAYER_NOTE_CREATE");
+  });
+
   it("normalizes schema validation failures from upstream", async () => {
     const server = buildServer({
       config: {
