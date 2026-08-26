@@ -51,6 +51,12 @@ Response includes run balance version, result, risk tier, and validator version 
 
 `GET /v1/admin/runs/:runId` returns run detail with frozen `run_snapshots.snapshot_json`, run balance version, current active balance version, client build, content version, validator version, and validator runtime revision.
 
+System/runtime error log design is drafted in `docs/api/ops-error-logs.md`.
+Future read-only candidates are `GET /v1/admin/ops/error-logs` and
+`GET /v1/admin/ops/error-logs/:errorLogId`. The draft keeps runtime error
+observability separate from `admin_audit_logs`, and does not create D1 tables,
+Queues, R2 buckets, Workers Logs exports, or deployed routes yet.
+
 ## Balance Config Drafts
 
 `POST /v1/admin/balance-config/drafts` creates a draft row in `balance_config_drafts`.
