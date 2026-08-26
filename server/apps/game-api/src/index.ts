@@ -6,8 +6,7 @@ const app = new Hono<{ Bindings: Env }>();
 const apiBaseUrls = {
   LOCAL: "http://localhost:8787",
   DEV: "https://dev-api.lastrail.app",
-  STAGING: "https://staging-api.lastrail.app",
-  PRODUCTION: "https://api.lastrail.app",
+  PRD: "https://api.lastrail.app",
 } as const;
 
 type BalanceConfigRow = {

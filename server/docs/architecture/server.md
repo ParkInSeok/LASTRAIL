@@ -19,7 +19,7 @@
 
 를 짧게 보고한 뒤 다음 Phase를 진행한다.
 
-단, **STAGING/PRODUCTION에 실제 배포하거나 Production 데이터를 변경하는 행위는 내가 명시적으로 승인하기 전까지 금지한다.**
+단, **PRD에 실제 배포하거나 Production 데이터를 변경하는 행위는 내가 명시적으로 승인하기 전까지 금지한다.**
 
 Cloudflare 로그인이나 외부 계정 승인처럼 사용자 개입이 반드시 필요한 경우에만 중단하고 정확히 무엇을 해야 하는지 알려준다.
 
@@ -200,8 +200,7 @@ Route에서 Reward/Cost 직접 계산 금지.
 ```text
 LOCAL
 DEV
-STAGING
-PRODUCTION
+PRD
 ```
 
 을 완전히 분리한다.
@@ -210,27 +209,23 @@ Workers:
 
 ```text
 lastrail-game-api-dev
-lastrail-game-api-staging
-lastrail-game-api-production
+lastrail-game-api-prd
 
 lastrail-admin-api-dev
-lastrail-admin-api-staging
-lastrail-admin-api-production
+lastrail-admin-api-prd
 
 lastrail-async-worker-dev
-lastrail-async-worker-staging
-lastrail-async-worker-production
+lastrail-async-worker-prd
 ```
 
 D1:
 
 ```text
 lastrail-core-dev
-lastrail-core-staging
-lastrail-core-production
+lastrail-core-prd
 ```
 
-DEV/STAGING/PRODUCTION이 D1/Queue/R2/Secret을 공유하면 안 된다.
+DEV/PRD가 D1/Queue/R2/Secret을 공유하면 안 된다.
 
 ---
 
@@ -249,11 +244,7 @@ DEV
 dev-api.lastrail.app
 dev-admin.lastrail.app
 
-STAGING
-staging-api.lastrail.app
-staging-admin.lastrail.app
-
-PRODUCTION
+PRD
 api.lastrail.app
 admin.lastrail.app
 ```
@@ -2682,7 +2673,7 @@ admin-api DEV
 
 둘 다 같은 DEV Core DB에 연결한다.
 
-단 STAGING/PRODUCTION과 공유 금지.
+단 DEV/PRD와 공유 금지.
 
 DEV Remote Migration 적용.
 
@@ -2724,24 +2715,22 @@ Cloudflare Dashboard에서 필요한 정확한 설정 절차
 
 ---
 
-# 76. STAGING / PRODUCTION 금지선
+# 76. PRD 금지선
 
 내가 별도로 승인하기 전:
 
 ```text
-lastrail-core-staging 생성
-lastrail-core-production 생성
+lastrail-core-prd 생성
 
-staging 배포
-production 배포
+prd 배포
 
-api.lastrail.app production 연결
+api.lastrail.app PRD 연결
 
-admin.lastrail.app production 연결
+admin.lastrail.app PRD 연결
 
-Production Balance Publish
+PRD Balance Publish
 
-Production D1 Mutation
+PRD D1 Mutation
 ```
 
 실행 금지.
@@ -3035,7 +3024,7 @@ Admin Console에서 D1 직접 접근
 
 Secret Git 저장
 
-DEV/STAGING/PRODUCTION DB 공유
+DEV/PRD DB 공유
 
 Production 직접 SQL 수정
 

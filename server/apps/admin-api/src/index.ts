@@ -135,10 +135,6 @@ type AdminSuspiciousPlayerDecisionRow = {
   created_at: number;
 };
 
-type AdminActiveEnforcementRow = {
-  type: string;
-};
-
 type AdminSuspiciousPlayerReviewRow = {
   status: string;
   assigned_to: string | null;
@@ -184,8 +180,14 @@ type AccessJwtPayload = {
   iss?: unknown;
   aud?: unknown;
   sub?: unknown;
+  email?: unknown;
   exp?: unknown;
   nbf?: unknown;
+};
+
+type AccessIdentity = {
+  subject: string;
+  email: string | null;
 };
 
 type AccessJwk = JsonWebKey & {
@@ -214,7 +216,7 @@ function hasAudience(payloadAudience: unknown, expectedAudience: string): boolea
   return false;
 }
 
-async function verifyAccessJwt(token: string, issuer: string, audience: string, nowSeconds = Math.floor(Date.now() / 1000)): Promise<string | null> {
+async function verifyAccessJwt(token: string, issuer: string, audience: string, nowSeconds = Math.floor(Date.now() / 1000)): Promise<AccessIdentity | null> {
   const [encodedHeader, encodedPayload, encodedSignature] = token.split(".");
   if (encodedHeader === undefined || encodedPayload === undefined || encodedSignature === undefined) return null;
 
@@ -251,35 +253,38 @@ async function verifyAccessJwt(token: string, issuer: string, audience: string, 
   if (typeof payload.exp !== "number" || payload.exp <= nowSeconds) return null;
   if (typeof payload.nbf === "number" && payload.nbf > nowSeconds) return null;
 
-  return payload.sub;
+  return {
+    subject: payload.sub,
+    email: typeof payload.email === "string" && payload.email.length > 0 ? payload.email : null,
+  };
 }
 
-async function extractAccessSubject(c: AppContext): Promise<string | Response> {
+async function extractAccessIdentity(c: AppContext): Promise<AccessIdentity | Response> {
   if (c.env.ADMIN_AUTH_MODE === "LOCAL_HEADER") {
     const accessSubject = c.req.header("Cf-Access-Subject") ?? null;
     if (!accessSubject) {
       return c.json({ error: "ADMIN_ACCESS_SUBJECT_REQUIRED" }, 401);
     }
-    return accessSubject;
+    return { subject: accessSubject, email: null };
   } else if (c.env.ADMIN_ACCESS_ISSUER.length > 0 && c.env.ADMIN_ACCESS_AUD.length > 0) {
     const token = c.req.header("Cf-Access-Jwt-Assertion");
     if (!token) {
       return c.json({ error: "ADMIN_ACCESS_JWT_REQUIRED" }, 401);
     }
 
-    const accessSubject = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD);
-    if (accessSubject === null) {
+    const accessIdentity = await verifyAccessJwt(token, c.env.ADMIN_ACCESS_ISSUER, c.env.ADMIN_ACCESS_AUD);
+    if (accessIdentity === null) {
       return c.json({ error: "ADMIN_ACCESS_JWT_INVALID" }, 403);
     }
-    return accessSubject;
+    return accessIdentity;
   } else {
     return c.json({ error: "ADMIN_ACCESS_JWT_VERIFICATION_NOT_CONFIGURED" }, 501);
   }
 }
 
 async function authenticateAdmin(c: AppContext): Promise<AdminPrincipalRow | Response> {
-  const accessSubject = await extractAccessSubject(c);
-  if (accessSubject instanceof Response) return accessSubject;
+  const accessIdentity = await extractAccessIdentity(c);
+  if (accessIdentity instanceof Response) return accessIdentity;
 
   const principal = await c.env.DB.prepare(
     `SELECT id, access_subject, role, status, display_name
@@ -287,7 +292,7 @@ async function authenticateAdmin(c: AppContext): Promise<AdminPrincipalRow | Res
      WHERE access_subject = ?
        AND status = 'ACTIVE'`,
   )
-    .bind(accessSubject)
+    .bind(accessIdentity.subject)
     .first<AdminPrincipalRow>();
 
   if (principal === null) {
@@ -509,10 +514,13 @@ app.get("/v1/admin/bootstrap/access-subject", async (c) => {
     return c.json({ error: "NOT_FOUND" }, 404);
   }
 
-  const accessSubject = await extractAccessSubject(c);
-  if (accessSubject instanceof Response) return accessSubject;
+  const accessIdentity = await extractAccessIdentity(c);
+  if (accessIdentity instanceof Response) return accessIdentity;
 
-  return c.json({ accessSubject });
+  return c.json({
+    accessSubject: accessIdentity.subject,
+    email: accessIdentity.email,
+  });
 });
 app.get("/v1/admin/me", async (c) => {
   const principal = await authenticateAdmin(c);

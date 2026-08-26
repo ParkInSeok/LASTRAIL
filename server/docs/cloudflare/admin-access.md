@@ -3,7 +3,6 @@
 Admin domains are Cloudflare Access protected:
 
 - `dev-admin.lastrail.app`
-- `staging-admin.lastrail.app`
 - `admin.lastrail.app`
 
 Cloudflare Access authenticates the user. LAST RAIL authorizes the user by mapping the Access JWT `sub` to `admin_principals.access_subject`.
@@ -48,7 +47,7 @@ Wrangler does not manage Access applications. To automate this later, use a Clou
 
 The current Wrangler OAuth login has Workers/D1/Queues permissions but does not expose Access application write operations. If automation is required, create a scoped Cloudflare API token outside Git and provide it only through a local environment variable for the current shell.
 
-Admin API sets `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED` for DEV/STAGING/PRODUCTION. Protected Admin routes validate `Cf-Access-Jwt-Assertion` against:
+Admin API sets `ADMIN_AUTH_MODE=ACCESS_JWT_REQUIRED` for DEV/PRD. Protected Admin routes validate `Cf-Access-Jwt-Assertion` against:
 
 - `ADMIN_ACCESS_ISSUER`: `https://<team-name>.cloudflareaccess.com`
 - `ADMIN_ACCESS_AUD`: the Application Audience (AUD) tag from the Access application
@@ -90,9 +89,9 @@ pnpm --filter @lastrail/admin-api wrangler deploy --env dev
 
 ## Register DEV Admin Principal
 
-After signing in through the DEV Access application, call `GET /v1/admin/bootstrap/access-subject` to read the verified Access JWT `sub` that should become the DEV admin owner. This endpoint is available only when `ENVIRONMENT=DEV`; it must not be exposed for STAGING or PRODUCTION.
+After signing in through the DEV Access application, call `GET /v1/admin/bootstrap/access-subject` to read the verified Access JWT `sub` that should become the DEV admin owner. This DEV-only bootstrap response also includes the verified JWT `email` claim when Cloudflare Access provides one, so account routing can be diagnosed without copying raw JWTs. This endpoint is available only when `ENVIRONMENT=DEV`; it must not be exposed for PRD.
 
-Do not copy raw Access JWTs, inspect browser cookies, invent a subject, or authorize by email alone.
+Do not copy raw Access JWTs, inspect browser cookies, invent a subject, or authorize by email alone. The server authorization source remains `admin_principals.access_subject`.
 
 Apply the DEV principal with:
 

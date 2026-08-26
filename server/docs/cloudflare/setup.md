@@ -15,14 +15,14 @@ R2 and Analytics Engine are part of the backend architecture, but the Cloudflare
 Game API custom domains:
 
 - DEV: `dev-api.lastrail.app`
-- STAGING: `staging-api.lastrail.app`
-- PRODUCTION: `api.lastrail.app`
+- PRD: `api.lastrail.app`
 
 Admin API custom domains:
 
 - DEV: `dev-admin.lastrail.app`
-- STAGING: `staging-admin.lastrail.app`
-- PRODUCTION: `admin.lastrail.app`
+- PRD: `admin.lastrail.app`
+
+STAGING is currently outside scope. The active server environment axes are `dev` and `prd`.
 
 The root `lastrail.app` is reserved for the public website, Privacy Policy, Terms, and Support. Do not attach it to the server Workers by default. The async worker has no public custom domain.
 
@@ -35,7 +35,7 @@ The root `lastrail.app` is reserved for the public website, Privacy Policy, Term
 5. Verify Cloudflare creates the DNS record and certificate.
 6. For admin hostnames, create a Cloudflare Access self-hosted application before exposing operational Admin functionality.
 
-Do not create STAGING or PRODUCTION DNS/custom domains until explicitly approved.
+Do not create PRD DNS/custom domains until explicitly approved.
 
 ## DEV Admin Access Procedure
 
@@ -69,4 +69,4 @@ Keep `dev-api.lastrail.app` public. Do not put Game API traffic behind Cloudflar
 6. Run `pnpm typecheck`, `pnpm test`, and DEV deploy dry-runs.
 7. Optional DEV-only balance bootstrap: `pnpm d1:dev:seed:balance`.
 
-When R2 is enabled, create a DEV-only bucket first, then add the matching `r2_buckets` binding to the affected Worker configs. When Analytics Engine is enabled, add per-Worker DEV datasets via `analytics_engine_datasets`. Keep STAGING/PRODUCTION names as config placeholders until those environments are explicitly approved.
+When R2 is enabled, create a DEV-only bucket first, then add the matching `r2_buckets` binding to the affected Worker configs. When Analytics Engine is enabled, add per-Worker DEV datasets via `analytics_engine_datasets`. Keep PRD names as config placeholders until that environment is explicitly approved.

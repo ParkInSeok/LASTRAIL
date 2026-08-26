@@ -3,8 +3,9 @@
 Base domains:
 
 - DEV: `https://dev-api.lastrail.app`
-- STAGING: `https://staging-api.lastrail.app`
-- PRODUCTION: `https://api.lastrail.app`
+- PRD: `https://api.lastrail.app`
+
+The server currently uses `dev` and `prd` environment axes only. PRD resources and deploys remain approval-gated.
 
 Unversioned: `GET /status`.
 

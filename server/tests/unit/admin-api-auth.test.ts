@@ -39,6 +39,7 @@ describe("admin-api auth", () => {
 
   async function createAccessJwt(input: {
     subject: string;
+    email?: string;
     audience?: string;
     expiresAt?: number;
   }): Promise<{ token: string; publicJwk: JsonWebKey & { kid: string; alg: string; use: string } }> {
@@ -59,6 +60,7 @@ describe("admin-api auth", () => {
       iss: issuer,
       aud: input.audience ?? audience,
       sub: input.subject,
+      email: input.email,
       exp: input.expiresAt ?? Math.floor(Date.now() / 1000) + 300,
     };
 
@@ -151,7 +153,10 @@ describe("admin-api auth", () => {
   });
 
   it("returns the verified Access subject for DEV bootstrap without requiring a principal", async () => {
-    const { token, publicJwk } = await createAccessJwt({ subject: "access|owner-1" });
+    const { token, publicJwk } = await createAccessJwt({
+      subject: "access|owner-1",
+      email: "owner@example.com",
+    });
 
     await withJwks(publicJwk, async () => {
       const response = await app.request(
@@ -161,7 +166,10 @@ describe("admin-api auth", () => {
       );
 
       expect(response.status).toBe(200);
-      await expect(response.json()).resolves.toEqual({ accessSubject: "access|owner-1" });
+      await expect(response.json()).resolves.toEqual({
+        accessSubject: "access|owner-1",
+        email: "owner@example.com",
+      });
     });
   });
 

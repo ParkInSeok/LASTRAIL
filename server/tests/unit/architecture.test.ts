@@ -20,23 +20,26 @@ describe("repository architecture", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("game-api and admin-api declare separate custom domains for each environment", () => {
+  it("game-api and admin-api declare dev and prd custom domains only", () => {
     const game = parse(readFileSync(join(root, "apps/game-api/wrangler.jsonc"), "utf8"));
     const admin = parse(readFileSync(join(root, "apps/admin-api/wrangler.jsonc"), "utf8"));
+    expect(Object.keys(game.env).sort()).toEqual(["dev", "prd"]);
+    expect(Object.keys(admin.env).sort()).toEqual(["dev", "prd"]);
     expect(game.env.dev.routes).toEqual([{ pattern: "dev-api.lastrail.app", custom_domain: true }]);
-    expect(game.env.staging.routes).toEqual([{ pattern: "staging-api.lastrail.app", custom_domain: true }]);
-    expect(game.env.production.routes).toEqual([{ pattern: "api.lastrail.app", custom_domain: true }]);
+    expect(game.env.prd.routes).toEqual([{ pattern: "api.lastrail.app", custom_domain: true }]);
+    expect(game.env.prd.vars.ENVIRONMENT).toBe("PRD");
     expect(admin.env.dev.routes).toEqual([{ pattern: "dev-admin.lastrail.app", custom_domain: true }]);
-    expect(admin.env.staging.routes).toEqual([{ pattern: "staging-admin.lastrail.app", custom_domain: true }]);
-    expect(admin.env.production.routes).toEqual([{ pattern: "admin.lastrail.app", custom_domain: true }]);
+    expect(admin.env.prd.routes).toEqual([{ pattern: "admin.lastrail.app", custom_domain: true }]);
+    expect(admin.env.prd.vars.ENVIRONMENT).toBe("PRD");
   });
 
   it("async-worker has no public routes", () => {
     const asyncWorker = parse(readFileSync(join(root, "apps/async-worker/wrangler.jsonc"), "utf8"));
+    expect(Object.keys(asyncWorker.env).sort()).toEqual(["dev", "prd"]);
     expect(asyncWorker.routes).toBeUndefined();
     expect(asyncWorker.env.dev.routes).toBeUndefined();
-    expect(asyncWorker.env.staging.routes).toBeUndefined();
-    expect(asyncWorker.env.production.routes).toBeUndefined();
+    expect(asyncWorker.env.prd.routes).toBeUndefined();
+    expect(asyncWorker.env.prd.vars.ENVIRONMENT).toBe("PRD");
   });
 
   it("documents Access protection for admin domains without protecting Game API", () => {
