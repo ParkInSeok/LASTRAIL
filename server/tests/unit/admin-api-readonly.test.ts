@@ -453,7 +453,7 @@ describe("admin-api read-only operations", () => {
             suspicious_runs: 2,
             last_detection_at: 1787716800000,
             primary_reason: "DAMAGE_SPIKE",
-            review_status: "IN_REVIEW",
+            review_status: "REVIEWING",
             current_enforcement: "NONE",
             review_owner: "operator-1",
           },
@@ -491,6 +491,12 @@ describe("admin-api read-only operations", () => {
           display_name: "Kyle Account",
           status: "ACTIVE",
           created_at: 1787659200000,
+        },
+        {
+          status: "REWARD_HELD",
+          assigned_to: "principal-1",
+          reason: "mark-only reward hold while raid reward review is pending",
+          updated_at: 1787717050000,
         },
         [
           {
@@ -550,19 +556,14 @@ describe("admin-api read-only operations", () => {
         ],
         [
           {
-            id: "audit-decision-1",
+            id: "review-history-1",
             display_name: "Owner",
-            role: "OWNER",
-            action: "INTEGRITY_REVIEW_MARK",
-            resource_id: "account-1",
-            change_summary_json: '{"reviewStatus":"ESCALATED"}',
-            result: "SUCCESS",
+            from_status: "REVIEWING",
+            to_status: "REWARD_HELD",
+            reason: "mark-only reward hold while raid reward review is pending",
             created_at: 1787717100000,
           },
         ],
-        {
-          type: "REWARD_RESTRICTED",
-        },
       ]),
     );
 
@@ -581,9 +582,11 @@ describe("admin-api read-only operations", () => {
         suspiciousRuns: 2,
         lastDetectionAt: "2026-08-26T04:00:00.000Z",
         primaryReason: "IMPOSSIBLE_DAMAGE",
-        reviewStatus: "REVIEWING",
+        reviewStatus: "REWARD_HELD",
+        reviewReason: "mark-only reward hold while raid reward review is pending",
+        reviewUpdatedAt: "2026-08-26T04:04:10.000Z",
         currentEnforcement: "REWARD_HELD",
-        reviewOwner: "operator-1",
+        reviewOwner: "principal-1",
       },
       riskSignals: [
         {
@@ -642,11 +645,15 @@ describe("admin-api read-only operations", () => {
       ],
       decisions: [
         {
-          id: "audit-decision-1",
-          action: "INTEGRITY_REVIEW_MARK",
+          id: "review-history-1",
+          action: "SUSPICIOUS_PLAYER_REVIEW_MARK",
           result: "SUCCESS",
           principalDisplayName: "Owner",
-          changeSummary: { reviewStatus: "ESCALATED" },
+          changeSummary: {
+            fromStatus: "REVIEWING",
+            toStatus: "REWARD_HELD",
+            reason: "mark-only reward hold while raid reward review is pending",
+          },
           createdAt: "2026-08-26T04:05:00.000Z",
         },
       ],

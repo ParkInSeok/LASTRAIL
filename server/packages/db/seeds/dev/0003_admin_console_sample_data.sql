@@ -204,3 +204,57 @@ ON CONFLICT(event_id) DO UPDATE SET
   state = excluded.state,
   assigned_to = excluded.assigned_to,
   updated_at = excluded.updated_at;
+
+INSERT INTO suspicious_player_reviews (
+  account_id,
+  status,
+  assigned_to,
+  reason,
+  updated_by,
+  updated_at,
+  created_at
+) VALUES (
+  'sample-account-1',
+  'REVIEWING',
+  'dev-local-owner',
+  'Sample account-level mark-only review.',
+  'dev-local-owner',
+  1787717100000,
+  1787717000000
+)
+ON CONFLICT(account_id) DO UPDATE SET
+  status = excluded.status,
+  assigned_to = excluded.assigned_to,
+  reason = excluded.reason,
+  updated_by = excluded.updated_by,
+  updated_at = excluded.updated_at;
+
+INSERT INTO suspicious_player_review_history (
+  id,
+  account_id,
+  from_status,
+  to_status,
+  reason,
+  created_by,
+  created_at,
+  request_id,
+  audit_log_id
+) VALUES (
+  'sample-suspicious-review-history-1',
+  'sample-account-1',
+  'NEW',
+  'REVIEWING',
+  'Sample account-level mark-only review.',
+  'dev-local-owner',
+  1787717100000,
+  'sample-review-request-1',
+  NULL
+)
+ON CONFLICT(id) DO UPDATE SET
+  from_status = excluded.from_status,
+  to_status = excluded.to_status,
+  reason = excluded.reason,
+  created_by = excluded.created_by,
+  created_at = excluded.created_at,
+  request_id = excluded.request_id,
+  audit_log_id = excluded.audit_log_id;

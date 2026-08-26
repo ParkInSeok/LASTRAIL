@@ -129,16 +129,21 @@ type AdminSuspiciousPlayerRunRow = {
 type AdminSuspiciousPlayerDecisionRow = {
   id: string;
   display_name: string | null;
-  role: "OWNER" | "OPERATOR" | "VIEWER";
-  action: string;
-  resource_id: string | null;
-  change_summary_json: string;
-  result: "SUCCESS" | "FAILURE";
+  from_status: string | null;
+  to_status: string;
+  reason: string | null;
   created_at: number;
 };
 
 type AdminActiveEnforcementRow = {
   type: string;
+};
+
+type AdminSuspiciousPlayerReviewRow = {
+  status: string;
+  assigned_to: string | null;
+  reason: string | null;
+  updated_at: number;
 };
 
 type AdminRunSearchRow = {
@@ -388,15 +393,16 @@ function suspiciousReviewStatus(value: string): SuspiciousPlayerReviewStatus {
   return "NEW";
 }
 
-function legacyReviewStateFromSuspiciousStatus(value: SuspiciousPlayerReviewStatus): "OPEN" | "IN_REVIEW" | "RESOLVED" {
-  if (value === "REVIEWING") return "IN_REVIEW";
-  if (value === "NEW") return "OPEN";
-  return "RESOLVED";
-}
-
 function currentEnforcementStatus(type: string | null): "NONE" | "REWARD_HELD" | "SCORE_EXCLUDED" | "ACTIONED" {
   if (type === "REWARD_RESTRICTED") return "REWARD_HELD";
   if (type === "TEMP_SUSPENDED" || type === "PERMANENT_BAN") return "ACTIONED";
+  return "NONE";
+}
+
+function currentMarkOnlyStatus(status: SuspiciousPlayerReviewStatus | null): "NONE" | "REWARD_HELD" | "SCORE_EXCLUDED" | "ACTIONED" {
+  if (status === "REWARD_HELD") return "REWARD_HELD";
+  if (status === "SCORE_EXCLUDED") return "SCORE_EXCLUDED";
+  if (status === "ACTIONED") return "ACTIONED";
   return "NONE";
 }
 
@@ -874,8 +880,6 @@ app.get("/v1/admin/integrity/suspicious-players", async (c) => {
   ) {
     return c.json({ error: "SUSPICIOUS_PLAYERS_FILTER_INVALID" }, 400);
   }
-  const reviewStateFilter = reviewStatus === null ? null : legacyReviewStateFromSuspiciousStatus(reviewStatus);
-
   const rows = await c.env.DB.prepare(
     `SELECT
        event.account_id AS account_id,
@@ -885,12 +889,19 @@ app.get("/v1/admin/integrity/suspicious-players", async (c) => {
        COUNT(DISTINCT event.run_id) AS suspicious_runs,
        MAX(event.created_at) AS last_detection_at,
        latest.evidence_code AS primary_reason,
-       COALESCE(review.state, 'OPEN') AS review_status,
+       COALESCE(
+         MAX(account_review.status),
+         CASE MAX(CASE WHEN COALESCE(review.state, 'OPEN') = 'IN_REVIEW' THEN 1 ELSE 0 END)
+           WHEN 1 THEN 'REVIEWING'
+           ELSE 'NEW'
+         END
+       ) AS review_status,
        enforcement.type AS current_enforcement,
-       review.assigned_to AS review_owner
+       COALESCE(MAX(account_review.assigned_to), MAX(review.assigned_to)) AS review_owner
      FROM integrity_events event
      LEFT JOIN player_profiles profile ON profile.account_id = event.account_id
      LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     LEFT JOIN suspicious_player_reviews account_review ON account_review.account_id = event.account_id
      LEFT JOIN account_enforcements enforcement
        ON enforcement.account_id = event.account_id
       AND enforcement.status = 'ACTIVE'
@@ -905,30 +916,37 @@ app.get("/v1/admin/integrity/suspicious-players", async (c) => {
      WHERE COALESCE(review.state, 'OPEN') IN ('OPEN', 'IN_REVIEW')
      GROUP BY event.account_id
      HAVING (? IS NULL OR
-       CASE COALESCE(review_status, 'OPEN')
-         WHEN 'IN_REVIEW' THEN 'IN_REVIEW'
-         ELSE 'OPEN'
-       END = ?)
+       COALESCE(
+         MAX(account_review.status),
+         CASE MAX(CASE WHEN COALESCE(review.state, 'OPEN') = 'IN_REVIEW' THEN 1 ELSE 0 END)
+           WHEN 1 THEN 'REVIEWING'
+           ELSE 'NEW'
+         END
+       ) = ?)
      ORDER BY last_detection_at DESC
      LIMIT 100`,
   )
-    .bind(reviewStateFilter, reviewStateFilter)
+    .bind(reviewStatus, reviewStatus)
     .all<AdminSuspiciousPlayerRow>();
 
   return c.json({
-    items: rows.results.map((row) => ({
-      accountId: row.account_id,
-      displayName: row.display_name ?? row.account_id,
-      priority: suspiciousPriority(row.open_signals, row.hard_violations, [row.primary_reason]),
-      openSignals: row.open_signals,
-      hardViolations: row.hard_violations,
-      suspiciousRuns: row.suspicious_runs,
-      lastDetectionAt: toIso(row.last_detection_at),
-      primaryReason: row.primary_reason,
-      reviewStatus: suspiciousReviewStatus(row.review_status),
-      currentEnforcement: currentEnforcementStatus(row.current_enforcement),
-      reviewOwner: row.review_owner,
-    })),
+    items: rows.results.map((row) => {
+      const review = suspiciousReviewStatus(row.review_status);
+      const markOnlyStatus = currentMarkOnlyStatus(review);
+      return {
+        accountId: row.account_id,
+        displayName: row.display_name ?? row.account_id,
+        priority: suspiciousPriority(row.open_signals, row.hard_violations, [row.primary_reason]),
+        openSignals: row.open_signals,
+        hardViolations: row.hard_violations,
+        suspiciousRuns: row.suspicious_runs,
+        lastDetectionAt: toIso(row.last_detection_at),
+        primaryReason: row.primary_reason,
+        reviewStatus: review,
+        currentEnforcement: markOnlyStatus === "NONE" ? currentEnforcementStatus(row.current_enforcement) : markOnlyStatus,
+        reviewOwner: row.review_owner,
+      };
+    }),
   });
 });
 app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
@@ -951,6 +969,17 @@ app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
   if (account === null) {
     return c.json({ error: "ACCOUNT_NOT_FOUND" }, 404);
   }
+
+  const review = await c.env.DB.prepare(
+    `SELECT status,
+            assigned_to,
+            reason,
+            updated_at
+     FROM suspicious_player_reviews
+     WHERE account_id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminSuspiciousPlayerReviewRow>();
 
   const signals = await c.env.DB.prepare(
     `SELECT event.id AS id,
@@ -1009,39 +1038,27 @@ app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
     .all<AdminPlayerNoteRow>();
 
   const decisions = await c.env.DB.prepare(
-    `SELECT audit.id AS id,
+    `SELECT history.id AS id,
             principal.display_name AS display_name,
-            audit.role AS role,
-            audit.action AS action,
-            audit.resource_id AS resource_id,
-            audit.change_summary_json AS change_summary_json,
-            audit.result AS result,
-            audit.created_at AS created_at
-     FROM admin_audit_logs audit
-     LEFT JOIN admin_principals principal ON principal.id = audit.principal_id
-     WHERE audit.resource_id = ?
-       AND audit.action IN ('INTEGRITY_REVIEW_MARK', 'INTEGRITY_REVIEW_STATUS_CHANGE')
-     ORDER BY audit.created_at DESC
+            history.from_status AS from_status,
+            history.to_status AS to_status,
+            history.reason AS reason,
+            history.created_at AS created_at
+     FROM suspicious_player_review_history history
+     LEFT JOIN admin_principals principal ON principal.id = history.created_by
+     WHERE history.account_id = ?
+     ORDER BY history.created_at DESC
      LIMIT 25`,
   )
     .bind(accountId)
     .all<AdminSuspiciousPlayerDecisionRow>();
 
-  const enforcement = await c.env.DB.prepare(
-    `SELECT type
-     FROM account_enforcements
-     WHERE account_id = ?
-       AND status = 'ACTIVE'
-     ORDER BY created_at DESC
-     LIMIT 1`,
-  )
-    .bind(accountId)
-    .first<AdminActiveEnforcementRow>();
-
   const hardViolations = signals.results.filter((signal) => signal.classification === "HARD_VIOLATION").length;
-  const reviewOwner = signals.results.find((signal) => signal.assigned_to !== null)?.assigned_to ?? null;
+  const derivedReviewOwner = signals.results.find((signal) => signal.assigned_to !== null)?.assigned_to ?? null;
   const hasReviewingSignal = signals.results.some((signal) => suspiciousReviewStatus(signal.review_state) === "REVIEWING");
   const evidenceCodes = signals.results.map((signal) => signal.evidence_code);
+  const accountReviewStatus = review ? suspiciousReviewStatus(review.status) : null;
+  const derivedReviewStatus = hasReviewingSignal ? "REVIEWING" : "NEW";
 
   return c.json({
     account: {
@@ -1057,9 +1074,11 @@ app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
       suspiciousRuns: runIds.length,
       lastDetectionAt: signals.results[0] ? toIso(signals.results[0].created_at) : null,
       primaryReason: signals.results[0]?.evidence_code ?? null,
-      reviewStatus: hasReviewingSignal ? "REVIEWING" : "NEW",
-      currentEnforcement: currentEnforcementStatus(enforcement?.type ?? null),
-      reviewOwner,
+      reviewStatus: accountReviewStatus ?? derivedReviewStatus,
+      reviewReason: review?.reason ?? null,
+      reviewUpdatedAt: review ? toIso(review.updated_at) : null,
+      currentEnforcement: currentMarkOnlyStatus(accountReviewStatus),
+      reviewOwner: review?.assigned_to ?? derivedReviewOwner,
     },
     riskSignals: signals.results.map((signal) => ({
       id: signal.id,
@@ -1092,10 +1111,14 @@ app.get("/v1/admin/integrity/suspicious-players/:accountId", async (c) => {
     })),
     decisions: decisions.results.map((row) => ({
       id: row.id,
-      action: row.action,
-      result: row.result,
-      principalDisplayName: row.display_name ?? row.role,
-      changeSummary: parseJsonValue(row.change_summary_json),
+      action: "SUSPICIOUS_PLAYER_REVIEW_MARK",
+      result: "SUCCESS",
+      principalDisplayName: row.display_name ?? "Unknown Admin",
+      changeSummary: {
+        fromStatus: row.from_status,
+        toStatus: row.to_status,
+        reason: row.reason,
+      },
       createdAt: toIso(row.created_at),
     })),
   });

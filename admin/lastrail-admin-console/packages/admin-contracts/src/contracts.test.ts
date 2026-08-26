@@ -138,6 +138,8 @@ describe("admin contracts", () => {
         lastDetectionAt: "2026-08-26T04:00:00.000Z",
         primaryReason: "IMPOSSIBLE_DAMAGE",
         reviewStatus: "ESCALATED",
+        reviewReason: "mark-only escalation for owner review",
+        reviewUpdatedAt: "2026-08-26T04:02:00.000Z",
         currentEnforcement: "REWARD_HELD",
         reviewOwner: "operator-1"
       },
@@ -170,6 +172,7 @@ describe("admin contracts", () => {
     });
 
     expect(detail.summary.reviewStatus).toBe("ESCALATED");
+    expect(detail.summary.reviewReason).toBe("mark-only escalation for owner review");
     expect(detail.riskSignals[0]).not.toHaveProperty("banAction");
   });
 });

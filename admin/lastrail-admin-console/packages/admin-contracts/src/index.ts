@@ -251,6 +251,8 @@ export const SuspiciousPlayerDetailSchema = z.object({
     lastDetectionAt: z.string().datetime().nullable(),
     primaryReason: z.string().min(1).nullable(),
     reviewStatus: SuspiciousPlayerReviewStatusSchema,
+    reviewReason: z.string().min(1).nullable().optional(),
+    reviewUpdatedAt: z.string().datetime().nullable().optional(),
     currentEnforcement: z.string().min(1),
     reviewOwner: z.string().min(1).nullable()
   }),

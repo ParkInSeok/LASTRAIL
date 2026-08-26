@@ -84,6 +84,7 @@ function SuspiciousPlayerDetailContent({ detail }: { detail: SuspiciousPlayerDet
           <span>리뷰 상태</span>
           <strong>{reviewStatusLabel(detail.summary.reviewStatus)}</strong>
           <small>{detail.summary.reviewOwner ?? "미배정"}</small>
+          <small>{detail.summary.reviewReason ?? "판정 사유 없음"}</small>
         </div>
         <div>
           <span>운영 조치</span>
