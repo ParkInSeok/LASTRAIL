@@ -3,6 +3,7 @@ import { AdminProvider, useAdmin } from "../shared/auth/AdminContext";
 import { visibleNavigation } from "../shared/navigation/navigation";
 import { AuditPage } from "../pages/AuditPage";
 import { DashboardPage } from "../pages/DashboardPage";
+import { ErrorLogsPage } from "../pages/ErrorLogsPage";
 import { GachaPage } from "../pages/GachaPage";
 import { IntegrityPage } from "../pages/IntegrityPage";
 import { PlayerDetailPage } from "../pages/PlayerDetailPage";
@@ -46,6 +47,7 @@ function Shell() {
         <Route path="/players" element={<PlayersPage />} />
         <Route path="/players/:accountId" element={<PlayerDetailPage />} />
         <Route path="/gacha" element={<GachaPage />} />
+        <Route path="/ops/error-logs" element={<ErrorLogsPage />} />
         <Route path="/integrity" element={<IntegrityPage />} />
         <Route path="/integrity/suspicious-players" element={<SuspiciousPlayersPage />} />
         <Route path="/integrity/suspicious-players/:accountId" element={<SuspiciousPlayerDetailPage />} />

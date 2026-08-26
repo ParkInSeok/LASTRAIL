@@ -22,6 +22,7 @@ const navigation: NavigationGroup[] = [
       { label: "플레이어", path: "/players", permission: "ACCOUNT_READ" },
       { label: "출격", path: "/runs", permission: "RUN_READ" },
       { label: "요원 모집", path: "/gacha", permission: "ECONOMY_READ" },
+      { label: "시스템 에러 로그", path: "/ops/error-logs", permission: "AUDIT_READ" },
       { label: "무결성", path: "/integrity", permission: "INTEGRITY_READ" },
       { label: "의심 플레이어", path: "/integrity/suspicious-players", permission: "INTEGRITY_READ" },
       { label: "사건", path: "/incidents", permission: "INCIDENT_READ" },
