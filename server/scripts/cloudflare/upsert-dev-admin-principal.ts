@@ -1,4 +1,7 @@
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 const allowedRoles = new Set(["OWNER", "OPERATOR", "VIEWER"]);
 
@@ -62,24 +65,33 @@ ON CONFLICT(id) DO UPDATE SET
 `;
 
 const pnpmCommand = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-const result = spawnSync(
-  pnpmCommand,
-  [
-    "exec",
-    "wrangler",
-    "d1",
-    "execute",
-    "lastrail-core-dev",
-    "--remote",
-    "--command",
-    sql,
-    "--config",
-    "apps/admin-api/wrangler.jsonc",
-  ],
-  { stdio: "inherit" },
-);
+const sqlDir = mkdtempSync(join(tmpdir(), "lastrail-dev-admin-"));
+const sqlFile = join(sqlDir, "upsert-admin-principal.sql");
 
-if (result.error) throw result.error;
-if (result.status !== 0) process.exit(result.status ?? 1);
+try {
+  writeFileSync(sqlFile, sql, "utf8");
 
-console.log(`Upserted DEV admin principal ${id} for Access subject ${accessSubject}`);
+  const result = spawnSync(
+    pnpmCommand,
+    [
+      "exec",
+      "wrangler",
+      "d1",
+      "execute",
+      "lastrail-core-dev",
+      "--remote",
+      "--file",
+      sqlFile,
+      "--config",
+      "apps/admin-api/wrangler.jsonc",
+    ],
+    { stdio: "inherit", shell: process.platform === "win32" },
+  );
+
+  if (result.error) throw result.error;
+  if (result.status !== 0) process.exit(result.status ?? 1);
+
+  console.log(`Upserted DEV admin principal ${id} for Access subject ${accessSubject}`);
+} finally {
+  rmSync(sqlDir, { recursive: true, force: true });
+}
