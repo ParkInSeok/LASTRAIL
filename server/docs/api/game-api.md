@@ -11,6 +11,45 @@ Unversioned: `GET /status`.
 
 Versioned routes use `/v1/*`.
 
+## Account Identity
+
+Game API player writes use LAST RAIL account auth, not Cloudflare Access.
+Cloudflare Access is for Admin API only.
+
+Production and DEV remote Source of Truth:
+
+- The client sends `Authorization: Bearer <access-token>`.
+- The access token is issued by LAST RAIL auth, initially through
+  `POST /v1/auth/guest` and later refreshable through `POST /v1/auth/refresh`.
+- The server verifies token signature, expiry, token family/session status, and
+  account status before resolving `accountId`.
+- The resolved `accountId` from auth middleware is the only account identity
+  available to Game API write routes.
+- Request bodies must not include `accountId`.
+- Client-supplied account headers are not trusted.
+
+DEV/local policy:
+
+- Remote DEV must use the same account-auth path as PRD for economy-impacting
+  writes.
+- Until `POST /v1/auth/guest` / access-token verification exists, new
+  account-scoped commit routes remain placeholder-only and must not mutate D1.
+- Unit and integration tests may inject a test account context through test
+  harnesses/mocks only; that path must not be exposed by Wrangler DEV/PRD
+  config or public HTTP routes.
+- Do not add a remote DEV `X-Account-Id`, `X-Lastrail-Account-Id`, or similar
+  shortcut for gacha/economy writes.
+
+Idempotency linkage:
+
+- Idempotency lookup is scoped by the authenticated `accountId`.
+- Game API writes use `idempotency_records(account_id, operation,
+  idempotency_key)`.
+- For gacha pulls, replay lookup is:
+  `accountId + operation = 'gacha_pull' + Idempotency-Key`.
+- The `accountId` used for idempotency must match all written batch, result,
+  item ledger, progression ledger, and mutation rows in the same transaction.
+
 ## Client Config
 
 `GET /v1/client-config` returns public Unity client configuration:

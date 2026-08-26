@@ -305,6 +305,19 @@ cost spend and pity update.
 This section is the contract baseline for implementing the Game API route. The
 DB schema above remains the durable Source of Truth.
 
+Account identity boundary:
+
+- Gacha pull is an account-scoped economy write.
+- `account_id` comes from the verified Game API account auth context.
+- The auth context is produced from LAST RAIL `Authorization: Bearer` access
+  tokens, not Cloudflare Access.
+- Request body and client headers must not provide or override `account_id`.
+- Remote DEV follows the same auth path as PRD. Until that path exists, gacha
+  pull commit remains blocked behind the explicit placeholder route.
+- Tests may inject account context through mocks/harnesses only.
+- Idempotency replay lookup uses the authenticated `account_id` with
+  `operation = 'gacha_pull'` and `Idempotency-Key`.
+
 Endpoint:
 
 ```text
