@@ -4,9 +4,14 @@ import { createAccessToken } from "../../apps/game-api/src/auth";
 
 type GachaBannerRow = {
   id: string;
+  banner_type: "STANDARD" | "PICKUP";
   status: "DRAFT" | "ACTIVE" | "ENDED" | "DISABLED";
+  balance_config_version: number;
+  pickup_operator_id: string | null;
   starts_at: number;
   ends_at: number | null;
+  pity_config_json: string;
+  pool_snapshot_json: string;
 };
 
 type TestEnv = Env & {
@@ -46,6 +51,14 @@ function createEnv(row: GachaBannerRow | null): TestEnv {
                     session_expires_at: Date.now() + 900000,
                     account_status: "ACTIVE",
                   };
+                }
+                if (sql.includes("FROM idempotency_records")) {
+                  expect(values).toEqual(["account_1", "gacha-idem-1", "banner_pickup_1"]);
+                  return null;
+                }
+                if (sql.includes("FROM account_items")) {
+                  expect(values).toEqual(["account_1"]);
+                  return null;
                 }
                 expect(sql).toContain("gacha_banners");
                 expect(values).toEqual(["banner_pickup_1"]);
@@ -189,9 +202,14 @@ describe("game-api gacha pull contract", () => {
       },
       createEnv({
         id: "banner_pickup_1",
+        banner_type: "PICKUP",
         status: "ENDED",
+        balance_config_version: 1,
+        pickup_operator_id: "op_vex",
         starts_at: Date.parse("2026-08-01T00:00:00.000Z"),
         ends_at: Date.parse("2026-08-20T00:00:00.000Z"),
+        pity_config_json: "{}",
+        pool_snapshot_json: "{}",
       }),
     );
 
@@ -214,7 +232,7 @@ describe("game-api gacha pull contract", () => {
     });
   });
 
-  it("returns an explicit placeholder for active banners until commit transaction is implemented", async () => {
+  it("rejects active banner pulls when the account has insufficient command tickets", async () => {
     const response = await app.request(
       "/v1/gacha/banners/banner_pickup_1/pulls",
       {
@@ -227,13 +245,18 @@ describe("game-api gacha pull contract", () => {
       },
       createEnv({
         id: "banner_pickup_1",
+        banner_type: "PICKUP",
         status: "ACTIVE",
+        balance_config_version: 1,
+        pickup_operator_id: "op_vex",
         starts_at: Date.parse("2026-08-01T00:00:00.000Z"),
         ends_at: null,
+        pity_config_json: "{}",
+        pool_snapshot_json: "{}",
       }),
     );
 
-    expect(response.status).toBe(501);
+    expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({
       accepted: false,
       resultStatus: "REJECTED",
@@ -247,8 +270,8 @@ describe("game-api gacha pull contract", () => {
       results: [],
       postPityState: null,
       createdAt: null,
-      errorCode: "gacha_pull_not_implemented",
-      message: "Gacha pull commit transaction is not implemented yet.",
+      errorCode: "insufficient_command_ticket",
+      message: "Not enough command tickets.",
     });
   });
 });

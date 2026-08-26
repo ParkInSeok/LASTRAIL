@@ -63,9 +63,14 @@ type IdempotencyRecordRow = {
 
 type GachaBannerRow = {
   id: string;
+  banner_type: "STANDARD" | "PICKUP";
   status: "DRAFT" | "ACTIVE" | "ENDED" | "DISABLED";
+  balance_config_version: number;
+  pickup_operator_id: string | null;
   starts_at: number;
   ends_at: number | null;
+  pity_config_json: string;
+  pool_snapshot_json: string;
 };
 
 type AuthSessionAccountRow = {
@@ -85,6 +90,77 @@ type RefreshSessionAccountRow = AuthSessionAccountRow & {
 type AuthContext = {
   accountId: string;
   sessionId: string;
+};
+
+type GachaPityState = {
+  totalPullCount: number;
+  elitePityCount: number;
+  pickupElitePityCount: number;
+  rareOrHigherPityCount: number;
+  revision: number;
+};
+
+type GachaPityRow = {
+  total_pull_count: number;
+  elite_pity_count: number;
+  pickup_elite_pity_count: number;
+  rare_or_higher_pity_count: number;
+  revision: number;
+};
+
+type GachaPoolResult = {
+  resultRarity: "COMMON" | "RARE" | "ELITE";
+  resultType: "ELITE_OPERATOR" | "RARE_OPERATOR" | "ELITE_OPERATOR_SHARD" | "RARE_OPERATOR_SHARD" | "OPERATOR_TOKEN" | "TRAINING_MATERIAL" | "WORK_SKILL_MATERIAL";
+  resultId: string;
+  weight?: number;
+  isPickup?: boolean;
+  quantity?: number;
+};
+
+type GachaCommittedResult = {
+  id: string;
+  pullSequence: number;
+  resultRarity: GachaPoolResult["resultRarity"];
+  resultType: GachaPoolResult["resultType"];
+  resultId: string;
+  reward: Record<string, unknown>;
+  isPickup: boolean;
+  guaranteeType: "NONE" | "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60";
+  wasDuplicate: boolean;
+  duplicateConversion: Record<string, unknown> | null;
+  operatorId: string | null;
+  itemLedgerId: string | null;
+  progressionLedgerId: string | null;
+};
+
+type AccountItemRow = {
+  quantity: number;
+};
+
+type ExistingOperatorRow = {
+  operator_id: string;
+};
+
+type GachaReplayBatchRow = {
+  id: string;
+  banner_id: string;
+  balance_config_version: number;
+  pull_count: number;
+  cost_item_id: string;
+  cost_quantity: number;
+  post_pity_json: string;
+  created_at: number;
+};
+
+type GachaReplayResultRow = {
+  pull_sequence: number;
+  result_rarity: GachaPoolResult["resultRarity"];
+  result_type: GachaPoolResult["resultType"];
+  result_id: string;
+  is_pickup: number;
+  guarantee_type: GachaCommittedResult["guaranteeType"];
+  was_duplicate: number;
+  duplicate_conversion_json: string | null;
 };
 
 type AuthFailureStatus = 401 | 403 | 500;
@@ -170,8 +246,174 @@ function createGachaRejectedResponse(options: {
   };
 }
 
+function createGachaAcceptedResponse(options: {
+  batchId: string;
+  bannerId: string;
+  balanceVersion: string;
+  pullCount: 1 | 10;
+  results: Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">>;
+  postPityState: GachaPityState;
+  createdAt: number;
+}) {
+  return {
+    accepted: true,
+    resultStatus: "ACCEPTED",
+    batchId: options.batchId,
+    bannerId: options.bannerId,
+    balanceVersion: options.balanceVersion,
+    pullCount: options.pullCount,
+    cost: {
+      itemId: "cur_command_ticket",
+      quantity: options.pullCount,
+    },
+    results: options.results,
+    postPityState: options.postPityState,
+    createdAt: toIso(options.createdAt),
+    errorCode: null,
+    message: null,
+  };
+}
+
+function createGachaDuplicateReplayResponse(options: {
+  batchId: string;
+  bannerId: string;
+  balanceVersion: string;
+  pullCount: 1 | 10;
+  results: Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">>;
+  postPityState: GachaPityState;
+  createdAt: number;
+}) {
+  return {
+    accepted: false,
+    resultStatus: "DUPLICATE_REPLAY",
+    batchId: options.batchId,
+    bannerId: options.bannerId,
+    balanceVersion: options.balanceVersion,
+    pullCount: options.pullCount,
+    cost: {
+      itemId: "cur_command_ticket",
+      quantity: options.pullCount,
+    },
+    results: options.results,
+    postPityState: options.postPityState,
+    createdAt: toIso(options.createdAt),
+    errorCode: "duplicate_replay",
+    message: "Gacha pull was already committed.",
+  };
+}
+
 function isActiveGachaBanner(row: GachaBannerRow, now: number): boolean {
   return row.status === "ACTIVE" && row.starts_at <= now && (row.ends_at === null || row.ends_at > now);
+}
+
+function parseGachaPoolResults(poolSnapshotJson: string): GachaPoolResult[] {
+  const parsed = JSON.parse(poolSnapshotJson) as { results?: unknown };
+  if (!Array.isArray(parsed.results)) return [];
+
+  return parsed.results.filter((result): result is GachaPoolResult => {
+    if (typeof result !== "object" || result === null) return false;
+    const candidate = result as Record<string, unknown>;
+    return (candidate.resultRarity === "COMMON" || candidate.resultRarity === "RARE" || candidate.resultRarity === "ELITE")
+      && (candidate.resultType === "ELITE_OPERATOR"
+        || candidate.resultType === "RARE_OPERATOR"
+        || candidate.resultType === "ELITE_OPERATOR_SHARD"
+        || candidate.resultType === "RARE_OPERATOR_SHARD"
+        || candidate.resultType === "OPERATOR_TOKEN"
+        || candidate.resultType === "TRAINING_MATERIAL"
+        || candidate.resultType === "WORK_SKILL_MATERIAL")
+      && typeof candidate.resultId === "string";
+  });
+}
+
+function getInitialPityState(row: GachaPityRow | null): GachaPityState {
+  if (row === null) {
+    return {
+      totalPullCount: 0,
+      elitePityCount: 0,
+      pickupElitePityCount: 0,
+      rareOrHigherPityCount: 0,
+      revision: 0,
+    };
+  }
+
+  return {
+    totalPullCount: row.total_pull_count,
+    elitePityCount: row.elite_pity_count,
+    pickupElitePityCount: row.pickup_elite_pity_count,
+    rareOrHigherPityCount: row.rare_or_higher_pity_count,
+    revision: row.revision,
+  };
+}
+
+function applyGachaPityResult(state: GachaPityState, result: Pick<GachaCommittedResult, "resultRarity" | "isPickup">): GachaPityState {
+  const isElite = result.resultRarity === "ELITE";
+  const isRareOrHigher = result.resultRarity === "RARE" || isElite;
+  return {
+    totalPullCount: state.totalPullCount + 1,
+    elitePityCount: isElite ? 0 : state.elitePityCount + 1,
+    pickupElitePityCount: result.isPickup && isElite ? 0 : state.pickupElitePityCount + 1,
+    rareOrHigherPityCount: isRareOrHigher ? 0 : state.rareOrHigherPityCount + 1,
+    revision: state.revision,
+  };
+}
+
+function finalizeGachaPityState(state: GachaPityState): GachaPityState {
+  return {
+    ...state,
+    revision: state.revision + 1,
+  };
+}
+
+function getOperatorShardItemId(operatorId: string): string {
+  return `cur_operator_token:${operatorId}`;
+}
+
+function getDuplicateConversionQuantity(resultType: GachaPoolResult["resultType"]): number {
+  return resultType === "ELITE_OPERATOR" ? 50 : 30;
+}
+
+function toGachaResponseResult(result: GachaCommittedResult): Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId"> {
+  return {
+    pullSequence: result.pullSequence,
+    resultRarity: result.resultRarity,
+    resultType: result.resultType,
+    resultId: result.resultId,
+    reward: result.reward,
+    isPickup: result.isPickup,
+    guaranteeType: result.guaranteeType,
+    wasDuplicate: result.wasDuplicate,
+    duplicateConversion: result.duplicateConversion,
+  };
+}
+
+function toGachaReplayResult(row: GachaReplayResultRow): Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId"> {
+  const duplicateConversion = row.duplicate_conversion_json === null
+    ? null
+    : JSON.parse(row.duplicate_conversion_json) as Record<string, unknown>;
+  const reward = duplicateConversion === null
+    ? {
+      kind: row.result_type === "ELITE_OPERATOR" || row.result_type === "RARE_OPERATOR" ? "OPERATOR" : "ITEM",
+      id: row.result_id,
+      quantity: 1,
+    }
+    : {
+      kind: "ITEM",
+      id: duplicateConversion.itemId,
+      operatorId: duplicateConversion.operatorId,
+      quantity: duplicateConversion.quantity,
+    };
+
+  return {
+    pullSequence: row.pull_sequence,
+    resultRarity: row.result_rarity,
+    resultType: row.result_type,
+    resultId: row.result_id,
+    reward,
+    isPickup: row.is_pickup === 1,
+    guaranteeType: row.guarantee_type,
+    wasDuplicate: row.was_duplicate === 1,
+    duplicateConversion,
+  };
 }
 
 function getAuthSecret(env: Env): string | null {
@@ -493,8 +735,41 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     }), authContext.status);
   }
 
+  const replayBatch = await c.env.DB.prepare(
+    `SELECT batch.id, batch.banner_id, banner.balance_config_version, batch.pull_count, batch.cost_item_id, batch.cost_quantity,
+            batch.post_pity_json, batch.created_at
+     FROM idempotency_records idem
+     JOIN gacha_pull_batches batch ON batch.id = idem.result_ref
+     JOIN gacha_banners banner ON banner.id = batch.banner_id
+     WHERE idem.account_id = ? AND idem.operation = 'gacha_pull' AND idem.idempotency_key = ? AND batch.banner_id = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey, bannerId)
+    .first<GachaReplayBatchRow>();
+
+  if (replayBatch !== null) {
+    const replayResults = await c.env.DB.prepare(
+      `SELECT pull_sequence, result_rarity, result_type, result_id, is_pickup,
+              guarantee_type, was_duplicate, duplicate_conversion_json
+       FROM gacha_pull_results
+       WHERE batch_id = ? AND account_id = ?
+       ORDER BY pull_sequence`,
+    )
+      .bind(replayBatch.id, authContext.accountId)
+      .all<GachaReplayResultRow>();
+
+    return c.json(createGachaDuplicateReplayResponse({
+      batchId: replayBatch.id,
+      bannerId: replayBatch.banner_id,
+      balanceVersion: String(replayBatch.balance_config_version),
+      pullCount: replayBatch.pull_count as 1 | 10,
+      results: replayResults.results.map(toGachaReplayResult),
+      postPityState: JSON.parse(replayBatch.post_pity_json) as GachaPityState,
+      createdAt: replayBatch.created_at,
+    }));
+  }
+
   const row = await c.env.DB.prepare(
-    `SELECT id, status, starts_at, ends_at
+    `SELECT id, banner_type, status, balance_config_version, pickup_operator_id, starts_at, ends_at, pity_config_json, pool_snapshot_json
      FROM gacha_banners
      WHERE id = ?`,
   )
@@ -519,12 +794,294 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     }), 409);
   }
 
-  return c.json(createGachaRejectedResponse({
+  const ticketRow = await c.env.DB.prepare(
+    `SELECT quantity
+     FROM account_items
+     WHERE account_id = ? AND item_id = 'cur_command_ticket'`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountItemRow>();
+  const currentTickets = ticketRow?.quantity ?? 0;
+  if (currentTickets < pullCount) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "insufficient_command_ticket",
+      message: "Not enough command tickets.",
+    }), 409);
+  }
+
+  const poolResults = parseGachaPoolResults(row.pool_snapshot_json);
+  if (poolResults.length === 0) {
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "gacha_pool_unavailable",
+      message: "Gacha pool is unavailable.",
+    }), 503);
+  }
+
+  const pityRow = await c.env.DB.prepare(
+    `SELECT total_pull_count, elite_pity_count, pickup_elite_pity_count, rare_or_higher_pity_count, revision
+     FROM player_gacha_pity
+     WHERE account_id = ? AND banner_id = ?`,
+  )
+    .bind(authContext.accountId, bannerId)
+    .first<GachaPityRow>();
+  const prePityState = getInitialPityState(pityRow);
+  let nextPityState = prePityState;
+  const now = Date.now();
+  const batchId = createDomainId("gacha_batch");
+  const mutationId = createDomainId("mutation");
+  const costLedgerId = createDomainId("item_ledger");
+  const latestMutation = await c.env.DB.prepare(
+    `SELECT MAX(sequence) AS sequence
+     FROM account_mutations
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountMutationSequenceRow>();
+  const nextSequence = (latestMutation?.sequence ?? 0) + 1;
+  const statements = [
+    c.env.DB.prepare(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES (?, ?, ?, 'GACHA_PULL', ?, ?)`,
+    ).bind(mutationId, authContext.accountId, nextSequence, idempotencyKey, now),
+    c.env.DB.prepare(
+      `UPDATE account_items
+       SET quantity = ?, updated_at = ?
+       WHERE account_id = ? AND item_id = 'cur_command_ticket'`,
+    ).bind(currentTickets - pullCount, now, authContext.accountId),
+    c.env.DB.prepare(
+      `INSERT INTO item_ledger (id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at)
+       VALUES (?, ?, ?, 'cur_command_ticket', ?, ?, 'GACHA_PULL_COST', 'GACHA_PULL', ?, ?)`,
+    ).bind(costLedgerId, authContext.accountId, mutationId, -pullCount, currentTickets - pullCount, batchId, now),
+  ];
+  const committedResults: GachaCommittedResult[] = [];
+  const ownedOperatorIds = new Set<string>();
+  const existingOperators = await c.env.DB.prepare(
+    `SELECT operator_id
+     FROM account_operators
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .all<ExistingOperatorRow>();
+  for (const operator of existingOperators.results) {
+    ownedOperatorIds.add(operator.operator_id);
+  }
+
+  for (let index = 0; index < pullCount; index += 1) {
+    const poolResult = poolResults[index % poolResults.length] as GachaPoolResult;
+    const isOperator = poolResult.resultType === "ELITE_OPERATOR" || poolResult.resultType === "RARE_OPERATOR";
+    const isDuplicate = isOperator && ownedOperatorIds.has(poolResult.resultId);
+    const isPickup = Boolean(poolResult.isPickup) || poolResult.resultId === row.pickup_operator_id;
+    const resultId = createDomainId("gacha_result");
+    let itemLedgerId: string | null = null;
+    let progressionLedgerId: string | null = null;
+    let duplicateConversion: Record<string, unknown> | null = null;
+    let reward: Record<string, unknown>;
+
+    if (isOperator && isDuplicate) {
+      const conversionQuantity = getDuplicateConversionQuantity(poolResult.resultType);
+      const shardItemId = getOperatorShardItemId(poolResult.resultId);
+      const currentShardBalance = await c.env.DB.prepare(
+        `SELECT quantity
+         FROM account_items
+         WHERE account_id = ? AND item_id = ?`,
+      )
+        .bind(authContext.accountId, shardItemId)
+        .first<AccountItemRow>();
+      const shardBalanceAfter = (currentShardBalance?.quantity ?? 0) + conversionQuantity;
+      itemLedgerId = createDomainId("item_ledger");
+      duplicateConversion = {
+        sourceResultType: poolResult.resultType,
+        sourceResultId: poolResult.resultId,
+        itemId: "cur_operator_token",
+        operatorId: poolResult.resultId,
+        quantity: conversionQuantity,
+      };
+      reward = {
+        kind: "ITEM",
+        id: "cur_operator_token",
+        operatorId: poolResult.resultId,
+        quantity: conversionQuantity,
+      };
+      statements.push(
+        c.env.DB.prepare(
+          `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at`,
+        ).bind(authContext.accountId, shardItemId, shardBalanceAfter, now),
+        c.env.DB.prepare(
+          `INSERT INTO item_ledger (id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, 'GACHA_DUPLICATE_CONVERSION', 'GACHA_PULL', ?, ?)`,
+        ).bind(itemLedgerId, authContext.accountId, mutationId, shardItemId, conversionQuantity, shardBalanceAfter, batchId, now),
+      );
+    } else if (isOperator) {
+      progressionLedgerId = createDomainId("progression");
+      reward = {
+        kind: "OPERATOR",
+        id: poolResult.resultId,
+        quantity: 1,
+      };
+      statements.push(
+        c.env.DB.prepare(
+          `INSERT INTO account_operators (account_id, operator_id, skill_training, promotion, acquired_at, revision, last_mutation_id)
+           VALUES (?, ?, 1, 0, ?, 1, ?)`,
+        ).bind(authContext.accountId, poolResult.resultId, now, mutationId),
+        c.env.DB.prepare(
+          `INSERT INTO progression_ledger (id, account_id, mutation_id, progression_type, target_id, delta_json, created_at)
+           VALUES (?, ?, ?, 'OPERATOR_ACQUIRED', ?, ?, ?)`,
+        ).bind(progressionLedgerId, authContext.accountId, mutationId, poolResult.resultId, JSON.stringify({ acquired: true }), now),
+      );
+      ownedOperatorIds.add(poolResult.resultId);
+    } else {
+      const quantity = poolResult.quantity ?? 1;
+      const currentItemBalance = await c.env.DB.prepare(
+        `SELECT quantity
+         FROM account_items
+         WHERE account_id = ? AND item_id = ?`,
+      )
+        .bind(authContext.accountId, poolResult.resultId)
+        .first<AccountItemRow>();
+      const itemBalanceAfter = (currentItemBalance?.quantity ?? 0) + quantity;
+      itemLedgerId = createDomainId("item_ledger");
+      reward = {
+        kind: "ITEM",
+        id: poolResult.resultId,
+        quantity,
+      };
+      statements.push(
+        c.env.DB.prepare(
+          `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+           VALUES (?, ?, ?, ?)
+           ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at`,
+        ).bind(authContext.accountId, poolResult.resultId, itemBalanceAfter, now),
+        c.env.DB.prepare(
+          `INSERT INTO item_ledger (id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, 'GACHA_ITEM_GRANT', 'GACHA_PULL', ?, ?)`,
+        ).bind(itemLedgerId, authContext.accountId, mutationId, poolResult.resultId, quantity, itemBalanceAfter, batchId, now),
+      );
+    }
+
+    const committedResult: GachaCommittedResult = {
+      id: resultId,
+      pullSequence: index + 1,
+      resultRarity: poolResult.resultRarity,
+      resultType: poolResult.resultType,
+      resultId: poolResult.resultId,
+      reward,
+      isPickup,
+      guaranteeType: "NONE",
+      wasDuplicate: isDuplicate,
+      duplicateConversion,
+      operatorId: isOperator ? poolResult.resultId : null,
+      itemLedgerId,
+      progressionLedgerId,
+    };
+    nextPityState = applyGachaPityResult(nextPityState, committedResult);
+    committedResults.push(committedResult);
+  }
+
+  const postPityState = finalizeGachaPityState(nextPityState);
+  statements.push(
+    c.env.DB.prepare(
+      `INSERT INTO gacha_pull_batches (
+         id, account_id, banner_id, mutation_id, idempotency_key, pull_count, cost_item_id, cost_quantity,
+         cost_ledger_id, pre_pity_json, post_pity_json, rng_seed_hash, result_summary_json, created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, 'cur_command_ticket', ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(
+      batchId,
+      authContext.accountId,
+      bannerId,
+      mutationId,
+      idempotencyKey,
+      pullCount,
+      pullCount,
+      costLedgerId,
+      JSON.stringify(prePityState),
+      JSON.stringify(postPityState),
+      `rng_hash_${createRequestId().slice(4)}`,
+      JSON.stringify({
+        results: committedResults.map((result) => ({
+          resultRarity: result.resultRarity,
+          resultType: result.resultType,
+          resultId: result.resultId,
+          wasDuplicate: result.wasDuplicate,
+        })),
+      }),
+      now,
+    ),
+  );
+  for (const result of committedResults) {
+    statements.push(
+      c.env.DB.prepare(
+        `INSERT INTO gacha_pull_results (
+           id, batch_id, account_id, banner_id, pull_sequence, result_rarity, result_type, result_id, is_pickup,
+           guarantee_type, was_duplicate, duplicate_conversion_json, operator_id, item_ledger_id, progression_ledger_id, created_at
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).bind(
+        result.id,
+        batchId,
+        authContext.accountId,
+        bannerId,
+        result.pullSequence,
+        result.resultRarity,
+        result.resultType,
+        result.resultId,
+        result.isPickup ? 1 : 0,
+        result.guaranteeType,
+        result.wasDuplicate ? 1 : 0,
+        result.duplicateConversion === null ? null : JSON.stringify(result.duplicateConversion),
+        result.operatorId,
+        result.itemLedgerId,
+        result.progressionLedgerId,
+        now,
+      ),
+    );
+  }
+  statements.push(
+    c.env.DB.prepare(
+      `INSERT INTO player_gacha_pity (
+         account_id, banner_id, total_pull_count, elite_pity_count, pickup_elite_pity_count,
+         rare_or_higher_pity_count, revision, last_batch_id, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(account_id, banner_id) DO UPDATE SET
+         total_pull_count = excluded.total_pull_count,
+         elite_pity_count = excluded.elite_pity_count,
+         pickup_elite_pity_count = excluded.pickup_elite_pity_count,
+         rare_or_higher_pity_count = excluded.rare_or_higher_pity_count,
+         revision = excluded.revision,
+         last_batch_id = excluded.last_batch_id,
+         updated_at = excluded.updated_at`,
+    ).bind(
+      authContext.accountId,
+      bannerId,
+      postPityState.totalPullCount,
+      postPityState.elitePityCount,
+      postPityState.pickupElitePityCount,
+      postPityState.rareOrHigherPityCount,
+      postPityState.revision,
+      batchId,
+      now,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'gacha_pull', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, batchId, now),
+  );
+
+  await c.env.DB.batch(statements);
+
+  return c.json(createGachaAcceptedResponse({
+    batchId,
     bannerId,
+    balanceVersion: String(row.balance_config_version),
     pullCount,
-    errorCode: "gacha_pull_not_implemented",
-    message: "Gacha pull commit transaction is not implemented yet.",
-  }), 501);
+    results: committedResults.map(toGachaResponseResult),
+    postPityState,
+    createdAt: now,
+  }));
 });
 
 app.get("/v1/runs/:runId/reward-preview/:rewardPreviewId", async (c) => {

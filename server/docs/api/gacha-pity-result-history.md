@@ -276,6 +276,15 @@ Duplicate rare operator  -> 30 shards for that operator
 The converted shard grant is written to `item_ledger`; the pull result row keeps
 both the original duplicate and conversion metadata.
 
+Shard storage policy:
+
+- API/display payloads keep the stable item family as `cur_operator_token` and
+  include `operatorId` to identify the specific operator shard.
+- D1 `account_items.item_id` stores specific operator shard balances as
+  `cur_operator_token:<operatorId>`, for example `cur_operator_token:op_vex`.
+- `duplicate_conversion_json.itemId` remains `cur_operator_token` and
+  `duplicate_conversion_json.operatorId` carries the specific operator ID.
+
 ## Transaction Shape
 
 Gacha pull execution must be one account mutation transaction.
