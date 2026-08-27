@@ -595,6 +595,8 @@ Completed third local-only slice:
   or final grants.
 - Added unit contract coverage and local D1 smoke coverage for reward preview
   insert on accepted finish.
+- Added duplicate replay coverage so `run_finish` idempotency returns the stored
+  `rewardPreviewId` without recalculating rewards or inserting a second preview.
 - First-clear bonus is not applied in this route yet. The first-clear durable
   consumption policy remains open and must be added before enabling first-clear
   reward lines in run finish.
@@ -605,8 +607,8 @@ Next implementation candidates:
 
 1. Decide whether the DEV balance seed should include `runRewards` before run
    finish integration.
-2. Add run finish idempotency replay contract coverage that restores the stored
-   `rewardPreviewId` policy after final Unity mapping is approved.
+2. Share the stored `rewardPreviewId` duplicate replay policy with Unity and
+   align its `RecognizedDuplicate` state.
 3. Add first-clear guard tests against `account_first_clears`.
 4. Decide preview-time vs claim-time first-clear durable consumption.
 5. Add Admin read-only reward preview summary later.

@@ -147,9 +147,12 @@ Duplicate replay response:
 
 - `accepted: false`
 - `resultStatus: "DUPLICATE_REPLAY"`
-- `rewardPreviewId: null`
+- `rewardPreviewId: "<previous rewardPreviewId>"`
 - `rewardClaimId: null`
 - `errorCode: "duplicate_replay"`
+- no reward recalculation;
+- no second `run_final_results`;
+- no second `run_reward_previews` row.
 
 ## Server Source of Truth
 

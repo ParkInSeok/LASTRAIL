@@ -213,6 +213,40 @@ describe("game-api run finish local D1 smoke", () => {
     expect(db.exec("SELECT operation, result_ref FROM idempotency_records WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([
       ["run_finish", body.rewardPreviewId],
     ]);
+
+    const replayResponse = await app.request(
+      "/v1/runs/run-smoke-1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-smoke-idem-1",
+          Authorization: authorization,
+        },
+        body: JSON.stringify({
+          runId: "run-smoke-1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      createEnv(db),
+    );
+
+    expect(replayResponse.status).toBe(200);
+    await expect(replayResponse.json()).resolves.toMatchObject({
+      runId: "run-smoke-1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardPreviewId: body.rewardPreviewId,
+      balanceVersion: "1",
+      errorCode: "duplicate_replay",
+    });
+    expect(db.exec("SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
+    expect(db.exec("SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();

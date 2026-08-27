@@ -120,4 +120,82 @@ describe("game-api run finish contract", () => {
     expect(batchSql.join("\n")).toContain("INSERT INTO idempotency_records");
     expect(batchSql.join("\n")).not.toContain("reward amount");
   });
+
+  it("replays accepted run finish with the stored reward preview id", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    expect(values).toEqual(["session_1", "account_1"]);
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    expect(values).toEqual(["account_1", "run-finish-idem-1"]);
+                    return {
+                      result_ref: "reward_preview_1",
+                      created_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      reward_created_at: null,
+                      balance_config_version: 1,
+                    };
+                  }
+                  throw new Error(`duplicate replay must not query finishable run: ${sql}`);
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("duplicate replay must not write a second finish batch");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardClaimId: null,
+      rewardPreviewId: "reward_preview_1",
+      serverReceivedAt: "2026-08-27T00:00:00.000Z",
+      balanceVersion: "1",
+      message: "Run finish was already accepted.",
+      errorCode: "duplicate_replay",
+    });
+  });
 });

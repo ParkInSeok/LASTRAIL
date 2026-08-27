@@ -77,6 +77,7 @@ type IdempotencyRecordRow = {
   result_ref: string;
   created_at: number;
   reward_created_at: number | null;
+  balance_config_version?: number | null;
 };
 
 type RunFinishBody = {
@@ -315,6 +316,7 @@ function createRunFinishAcceptedResponse(options: {
 
 function createRunFinishDuplicateReplayResponse(options: {
   runId: string;
+  rewardPreviewId: string;
   balanceVersion?: string | null;
   serverReceivedAt: number;
 }) {
@@ -323,7 +325,7 @@ function createRunFinishDuplicateReplayResponse(options: {
     accepted: false,
     resultStatus: "DUPLICATE_REPLAY",
     rewardClaimId: null,
-    rewardPreviewId: null,
+    rewardPreviewId: options.rewardPreviewId,
     serverReceivedAt: toIso(options.serverReceivedAt),
     balanceVersion: options.balanceVersion ?? null,
     message: "Run finish was already accepted.",
@@ -1433,9 +1435,11 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   }
 
   const idempotencyRecord = await c.env.DB.prepare(
-    `SELECT result_ref, created_at, NULL AS reward_created_at
-     FROM idempotency_records
-     WHERE account_id = ? AND operation = 'run_finish' AND idempotency_key = ?`,
+    `SELECT idem.result_ref, idem.created_at, NULL AS reward_created_at,
+            preview.balance_config_version AS balance_config_version
+     FROM idempotency_records idem
+     LEFT JOIN run_reward_previews preview ON preview.id = idem.result_ref
+     WHERE idem.account_id = ? AND idem.operation = 'run_finish' AND idem.idempotency_key = ?`,
   )
     .bind(authContext.accountId, idempotencyKey)
     .first<IdempotencyRecordRow>();
@@ -1443,6 +1447,10 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   if (idempotencyRecord !== null) {
     return c.json(createRunFinishDuplicateReplayResponse({
       runId,
+      rewardPreviewId: idempotencyRecord.result_ref,
+      balanceVersion: idempotencyRecord.balance_config_version === null || idempotencyRecord.balance_config_version === undefined
+        ? null
+        : String(idempotencyRecord.balance_config_version),
       serverReceivedAt: idempotencyRecord.created_at,
     }));
   }
