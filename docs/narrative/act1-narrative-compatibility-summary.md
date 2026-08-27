@@ -29,6 +29,11 @@ Act 1 text currently exists as narrative candidates, not finalized localized str
 - `docs/narrative/opn_06_broken_line_dialogue.md`
 - `docs/narrative/raid_raider_king_engine_dialogue.md`
 
+## Related Policy Files
+
+- `docs/narrative/story-processing-architecture.md`
+- `docs/narrative/narrative-localization-versioning.md`
+
 ## Reward Framing Compatibility
 
 Narrative reward language must stay qualitative. It can describe trust, inherited supplies, route records, recovered support systems, stabilized infrastructure, and repeat patrol recovery, but it must not encode quantities, final economy values, ledger mutations, or claim eligibility.
@@ -114,4 +119,4 @@ Before promoting these drafts into implementation contracts, verify:
 1. Server: accepted run finish story progress update contract slice.
 2. Unity: Act 1 `MissionNarrativeCatalog` and fixtures for opn_02 through raid.
 3. Admin: Act 1 narrative coverage/read-only status skeleton.
-4. Planning: localization string id naming convention and narrative versioning policy.
+4. Planning: story progress read-only API/Admin query contract.
