@@ -163,6 +163,17 @@ claim/commit follow `docs/api/run-reward-preview-claim.md`.
 Launch risk/reward preview generation policy is drafted in
 `docs/api/run-risk-reward.md`.
 
+## Offline Rewards
+
+Offline reward progression is drafted in `docs/api/offline-rewards.md`.
+
+Baseline policy:
+
+- Offline rewards scale with story progression, not run risk.
+- Risk rewards remain active-run-only.
+- Unity must not calculate offline reward amounts, multipliers, storage caps, or
+  economy grants.
+
 ## Gacha
 
 Gacha pull history, banner pity state, duplicate conversion, and ticket/material

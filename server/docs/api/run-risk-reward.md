@@ -7,6 +7,9 @@ It is a design/contract draft only. It does not implement run finish, change
 migrations, change API routes, mutate economy data, deploy Workers, create
 Cloudflare resources, or change Unity reward calculation boundaries.
 
+Offline rewards are a separate story progression system drafted in
+`docs/api/offline-rewards.md`. Run risk does not multiply offline rewards.
+
 ## Goals
 
 - Make higher risk and harder operation progression produce higher rewards.
