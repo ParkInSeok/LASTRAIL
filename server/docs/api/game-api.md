@@ -160,6 +160,8 @@ Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.m
 
 Accepted run finish responses return `rewardPreviewId` first. Reward review and
 claim/commit follow `docs/api/run-reward-preview-claim.md`.
+Launch risk/reward preview generation policy is drafted in
+`docs/api/run-risk-reward.md`.
 
 ## Gacha
 

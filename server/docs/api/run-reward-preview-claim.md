@@ -7,6 +7,11 @@ It extends `docs/api/run-result-submit.md` without changing that contract:
 `POST /v1/runs/:runId/finish` returns `rewardPreviewId` first, and does not
 return reward amounts or final grants.
 
+Launch-scope risk/reward calculation policy is drafted in
+`docs/api/run-risk-reward.md`. This document defines the preview/claim flow;
+the risk/reward draft defines how reward lines should be calculated before the
+preview is stored.
+
 ## Ownership Boundary
 
 The server owns reward calculation, reward preview state, claim commitment,
