@@ -163,6 +163,19 @@ claim/commit follow `docs/api/run-reward-preview-claim.md`.
 Launch risk/reward preview generation policy is drafted in
 `docs/api/run-risk-reward.md`.
 
+## Story Progress
+
+Story progress Source of Truth and read model candidates are drafted in
+`docs/api/story-progress.md`.
+
+Baseline policy:
+
+- Server owns durable story progress and unlock truth.
+- Unity owns narrative presentation and localized text playback.
+- Accepted run finish is the future durable story progress update moment.
+- Client-supplied story progress, unlock state, and narrative flags are not
+  Source of Truth.
+
 ## Offline Rewards
 
 Offline reward progression is drafted in `docs/api/offline-rewards.md`.

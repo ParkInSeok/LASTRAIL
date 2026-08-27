@@ -337,6 +337,7 @@ Possible claim response:
 ## Story Progress Source of Truth
 
 Story progress should come from server durable progress, not Unity request data.
+The story progress read model is drafted in `docs/api/story-progress.md`.
 
 Candidate sources:
 
