@@ -1,11 +1,28 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { levelSourceLabel } from "../shared/labels/adminLabels";
+import { levelSourceLabel, storyProgressLabel } from "../shared/labels/adminLabels";
 
 type RunRiskRewardPlaceholder = {
   label: string;
   value: "연동 대기";
+  note: string;
+};
+
+type ActOneNarrativeCoverage = {
+  missionId: string;
+  displayName: string;
+  coverageState: "연동 대기";
+  localizationState: "연동 대기";
+  fixtureState: "연동 대기";
+  narrativeVersionState: "연동 대기";
+  statusHint: string;
+};
+
+type RaidNarrativeObjectivePlaceholder = {
+  objectiveId: string;
+  label: string;
+  state: "연동 대기";
   note: string;
 };
 
@@ -29,6 +46,37 @@ export const runStoryNarrativePlaceholders: RunRiskRewardPlaceholder[] = [
   { label: "현지화 데이터 상태", value: "연동 대기", note: "localization missing-state 후보" },
   { label: "누락 데이터 상태", value: "연동 대기", note: "narrative_content_missing 연계 후보" },
   { label: "플레이어 문의 지원 문맥", value: "연동 대기", note: "read-only support context 후보" }
+];
+
+export const actOneNarrativeCoverage: ActOneNarrativeCoverage[] = [
+  "opn_01_last_departure",
+  "opn_02_first_signal",
+  "opn_03_water_stop",
+  "opn_04_scrapstar_show",
+  "opn_05_night_boarders",
+  "opn_06_broken_line",
+  "raid_raider_king_engine"
+].map((missionId) => ({
+  missionId,
+  displayName: storyProgressLabel(missionId),
+  coverageState: "연동 대기",
+  localizationState: "연동 대기",
+  fixtureState: "연동 대기",
+  narrativeVersionState: "연동 대기",
+  statusHint: "초안 존재 / 현지화 대기 / fixture 대기 / 버전 대기 / 콘텐츠 누락 후보"
+}));
+
+export const raidNarrativeObjectivePlaceholders: RaidNarrativeObjectivePlaceholder[] = [
+  { objectiveId: "prisoner_car_preserved", label: "포로칸 보존", state: "연동 대기", note: "read-only raid scoring 후보" },
+  {
+    objectiveId: "broadcast_relay_captured",
+    label: "방송 중계차 확보",
+    state: "연동 대기",
+    note: "read-only raid scoring 후보"
+  },
+  { objectiveId: "supply_car_stabilized", label: "보급차 안정화", state: "연동 대기", note: "read-only raid scoring 후보" },
+  { objectiveId: "fuel_core_stable", label: "연료 코어 안정", state: "연동 대기", note: "read-only raid scoring 후보" },
+  { objectiveId: "engine_integrity", label: "엔진 무결성", state: "연동 대기", note: "read-only raid scoring 후보" }
 ];
 
 export function RunDetailPage() {
@@ -95,6 +143,45 @@ export function RunDetailPage() {
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>
               <small>{placeholder.note}</small>
+            </div>
+          ))}
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>미션 ID</th>
+                <th>표시명</th>
+                <th>coverage</th>
+                <th>localization</th>
+                <th>fixture</th>
+                <th>narrative version</th>
+                <th>상태 후보</th>
+              </tr>
+            </thead>
+            <tbody>
+              {actOneNarrativeCoverage.map((item) => (
+                <tr key={item.missionId}>
+                  <td>{item.missionId}</td>
+                  <td>{item.displayName}</td>
+                  <td>{item.coverageState}</td>
+                  <td>{item.localizationState}</td>
+                  <td>{item.fixtureState}</td>
+                  <td>{item.narrativeVersionState}</td>
+                  <td>{item.statusHint}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="metric-grid">
+          {raidNarrativeObjectivePlaceholders.map((objective) => (
+            <div key={objective.objectiveId} className="metric-card">
+              <span>{objective.label}</span>
+              <strong>{objective.state}</strong>
+              <small>
+                {objective.objectiveId} / {objective.note}
+              </small>
             </div>
           ))}
         </div>

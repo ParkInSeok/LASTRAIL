@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { runRiskRewardPlaceholders, runStoryNarrativePlaceholders } from "./RunDetailPage";
+import {
+  actOneNarrativeCoverage,
+  raidNarrativeObjectivePlaceholders,
+  runRiskRewardPlaceholders,
+  runStoryNarrativePlaceholders
+} from "./RunDetailPage";
 
 describe("RunDetailPage risk reward skeleton", () => {
   it("prepares run risk reward read-only placeholders without economy amounts", () => {
@@ -41,5 +46,42 @@ describe("RunDetailPage risk reward skeleton", () => {
     ]);
     expect(runStoryNarrativePlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
     expect(runStoryNarrativePlaceholders.map((placeholder) => placeholder.note).join(" ")).not.toContain("대사");
+  });
+
+  it("lists Act 1 narrative coverage by stable mission id with placeholder states", () => {
+    expect(actOneNarrativeCoverage.map((item) => item.missionId)).toEqual([
+      "opn_01_last_departure",
+      "opn_02_first_signal",
+      "opn_03_water_stop",
+      "opn_04_scrapstar_show",
+      "opn_05_night_boarders",
+      "opn_06_broken_line",
+      "raid_raider_king_engine"
+    ]);
+    expect(actOneNarrativeCoverage.map((item) => item.displayName)).toEqual([
+      "마지막 출발",
+      "첫 신호",
+      "급수 정차",
+      "스크랩스타 쇼",
+      "야간 승선전",
+      "끊어진 선로",
+      "약탈왕 기관차"
+    ]);
+    expect(actOneNarrativeCoverage.every((item) => item.coverageState === "연동 대기")).toBe(true);
+    expect(actOneNarrativeCoverage.every((item) => item.localizationState === "연동 대기")).toBe(true);
+    expect(actOneNarrativeCoverage.every((item) => item.narrativeVersionState === "연동 대기")).toBe(true);
+    expect(actOneNarrativeCoverage.map((item) => item.statusHint).join(" ")).not.toContain("보상량");
+  });
+
+  it("prepares raid optional objectives as read-only scoring candidates", () => {
+    expect(raidNarrativeObjectivePlaceholders.map((objective) => objective.objectiveId)).toEqual([
+      "prisoner_car_preserved",
+      "broadcast_relay_captured",
+      "supply_car_stabilized",
+      "fuel_core_stable",
+      "engine_integrity"
+    ]);
+    expect(raidNarrativeObjectivePlaceholders.every((objective) => objective.state === "연동 대기")).toBe(true);
+    expect(raidNarrativeObjectivePlaceholders.every((objective) => objective.note.includes("read-only"))).toBe(true);
   });
 });
