@@ -172,7 +172,8 @@ export function opsErrorCodeLabel(code: string): string {
       reward_plan_mismatch: "보상 계획 불일치",
       reward_multiplier_missing: "보상 배율 누락",
       reward_plan_unavailable: "보상 계획 사용 불가",
-      risk_reward_policy_missing: "위험도 보상 정책 누락"
+      risk_reward_policy_missing: "위험도 보상 정책 누락",
+      reward_integrity_restricted: "무결성 판정으로 보상 제한"
     },
     code
   );

@@ -35,5 +35,6 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("치명 오류 (fatal)");
     expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
     expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
+    expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
   });
 });

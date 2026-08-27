@@ -82,6 +82,7 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("reward_multiplier_missing")).toBe("보상 배율 누락");
     expect(opsErrorCodeLabel("reward_plan_unavailable")).toBe("보상 계획 사용 불가");
     expect(opsErrorCodeLabel("risk_reward_policy_missing")).toBe("위험도 보상 정책 누락");
+    expect(opsErrorCodeLabel("reward_integrity_restricted")).toBe("무결성 판정으로 보상 제한");
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
   });
 });

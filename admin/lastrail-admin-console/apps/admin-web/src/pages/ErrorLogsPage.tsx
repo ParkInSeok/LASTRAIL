@@ -47,7 +47,8 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
       "reward_plan_mismatch",
       "reward_multiplier_missing",
       "reward_plan_unavailable",
-      "risk_reward_policy_missing"
+      "risk_reward_policy_missing",
+      "reward_integrity_restricted"
     ].map((code) => labeledCode(opsErrorCodeLabel(code), code))
   },
   { label: "식별자", options: ["errorCode", "requestId", "accountId", "runId", "rewardPreviewId", "gachaBatchId"] },
