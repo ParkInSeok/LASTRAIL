@@ -30,6 +30,7 @@ type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" |
 type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
 type OpsSeverity = "warn" | "error" | "fatal";
+type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
 
 function labelFor<T extends string>(labels: Record<T, string>, value: T | string): string {
   return labels[value as T] ?? value;
@@ -162,6 +163,10 @@ export function gachaResultStatusLabel(status: GachaResultStatus | string): stri
   );
 }
 
+export function firstClearLabel(isFirstClear: boolean): string {
+  return isFirstClear ? "첫 클리어 보너스" : "첫 클리어 보너스 없음";
+}
+
 export function opsEnvironmentLabel(environment: OpsEnvironment | string): string {
   return labelFor({ DEV: "개발", PRD: "운영" }, environment);
 }
@@ -269,6 +274,31 @@ export function reviewStatusLabel(status: ReviewStatus): string {
     },
     status
   );
+}
+
+export function rewardCalculationSourceLabel(source: RewardCalculationSource | string): string {
+  return labelFor(
+    {
+      SERVER_REWARD_PREVIEW: "서버 보상 미리보기",
+      UNITY_DIAGNOSTIC_HINT: "Unity 진단 참고 신호"
+    },
+    source
+  );
+}
+
+export function riskLevelLabel(riskLevel: number | string): string {
+  const value = String(riskLevel);
+  const label = labelFor(
+    {
+      "1": "위험도 I",
+      "2": "위험도 II",
+      "3": "위험도 III",
+      "4": "위험도 IV",
+      "5": "위험도 V"
+    },
+    value
+  );
+  return label === value ? `위험도 ${value}` : label;
 }
 
 export function roleLabel(role: AdminRole): string {

@@ -18,4 +18,12 @@ describe("RunDetailPage risk reward skeleton", () => {
     ]);
     expect(runRiskRewardPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
   });
+
+  it("keeps risk and calculation placeholders aligned with display labels", () => {
+    const notes = runRiskRewardPlaceholders.map((placeholder) => placeholder.note);
+
+    expect(notes).toContain("위험도 I~V 표시 후보");
+    expect(notes).toContain("첫 클리어 보너스 표시 후보");
+    expect(notes).toContain("서버 보상 미리보기 / Unity 진단 참고 신호 분리");
+  });
 });

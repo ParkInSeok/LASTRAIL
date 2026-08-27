@@ -10,15 +10,15 @@ type RunRiskRewardPlaceholder = {
 };
 
 export const runRiskRewardPlaceholders: RunRiskRewardPlaceholder[] = [
-  { label: "위험도", value: "연동 대기", note: "서버 risk tier 기준" },
+  { label: "위험도", value: "연동 대기", note: "위험도 I~V 표시 후보" },
   { label: "작전 ID", value: "연동 대기", note: "operation progression 배율 후보" },
   { label: "결과", value: "연동 대기", note: "CLEARED/PARTIAL/ABANDONED 등 outcome" },
   { label: "클리어 공세", value: "연동 대기", note: "waveCompletionMultiplier 후보" },
   { label: "rewardPreviewId / rewardClaimId", value: "연동 대기", note: "보상 미리보기/수령 연결" },
   { label: "적용 배율", value: "연동 대기", note: "sanitized calculation metadata 후보" },
-  { label: "first clear", value: "연동 대기", note: "별도 rewardLine 지급 상태" },
+  { label: "first clear", value: "연동 대기", note: "첫 클리어 보너스 표시 후보" },
   { label: "무결성 판정", value: "연동 대기", note: "reward_integrity_restricted 연계 후보" },
-  { label: "계산 메타데이터 상태", value: "연동 대기", note: "reward_plan_json.calculation 후보" }
+  { label: "계산 메타데이터 상태", value: "연동 대기", note: "서버 보상 미리보기 / Unity 진단 참고 신호 분리" }
 ];
 
 export function RunDetailPage() {

@@ -10,6 +10,7 @@ import {
   gachaErrorCodeLabel,
   gachaGuaranteeTypeLabel,
   gachaResultStatusLabel,
+  firstClearLabel,
   levelSourceLabel,
   opsEnvironmentLabel,
   opsErrorCodeLabel,
@@ -20,6 +21,8 @@ import {
   resourceTypeLabel,
   reviewStateLabel,
   reviewStatusLabel,
+  rewardCalculationSourceLabel,
+  riskLevelLabel,
   roleLabel,
   runResultLabel
 } from "./adminLabels";
@@ -84,5 +87,16 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("risk_reward_policy_missing")).toBe("위험도 보상 정책 누락");
     expect(opsErrorCodeLabel("reward_integrity_restricted")).toBe("무결성 판정으로 보상 제한");
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
+  });
+
+  it("translates risk reward display labels without deriving calculation values", () => {
+    expect(riskLevelLabel(1)).toBe("위험도 I");
+    expect(riskLevelLabel(5)).toBe("위험도 V");
+    expect(riskLevelLabel(7)).toBe("위험도 7");
+    expect(firstClearLabel(true)).toBe("첫 클리어 보너스");
+    expect(firstClearLabel(false)).toBe("첫 클리어 보너스 없음");
+    expect(rewardCalculationSourceLabel("SERVER_REWARD_PREVIEW")).toBe("서버 보상 미리보기");
+    expect(rewardCalculationSourceLabel("UNITY_DIAGNOSTIC_HINT")).toBe("Unity 진단 참고 신호");
+    expect(rewardCalculationSourceLabel("UNKNOWN_SOURCE")).toBe("UNKNOWN_SOURCE");
   });
 });
