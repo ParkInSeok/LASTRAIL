@@ -78,6 +78,14 @@ export type CalculateRunRewardPreviewOptions = {
 
 const basisPoints = 10000;
 const maxRunWaves = 15;
+const supportedRunRewardsSchemaVersion = 1;
+const runRiskTiers: RunRiskTier[] = ["I", "II", "III", "IV", "V"];
+const rewardLineKinds: RewardLineKind[] = ["CURRENCY", "ITEM"];
+const integrityDispositions: IntegrityDisposition[] = [
+  "ALLOW",
+  "ALLOW_PREVIEW_WITH_FLAG",
+  "INVALIDATE_PREVIEW",
+];
 
 export const launchRunRewardsConfig: RunRewardsConfig = {
   schemaVersion: 1,
@@ -165,6 +173,28 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
     quarantinedRun: "INVALIDATE_PREVIEW",
   },
 };
+
+export function parseRunRewardsConfig(value: unknown): RunRewardsConfig {
+  const root = requireRecord(value, "risk_reward_policy_missing");
+  if (root.schemaVersion !== supportedRunRewardsSchemaVersion) {
+    throw new Error("risk_reward_policy_missing");
+  }
+
+  const riskMultipliersBps = parseRiskMultipliers(root.riskMultipliersBps);
+  const operationProgressionMultipliersBps = parseOperationProgressionMultipliers(
+    root.operationProgressionMultipliersBps,
+  );
+  const operations = parseRunRewardOperations(root.operations);
+
+  return {
+    schemaVersion: supportedRunRewardsSchemaVersion,
+    riskMultipliersBps,
+    operationProgressionMultipliersBps,
+    outcomePolicy: parseOutcomePolicy(root.outcomePolicy),
+    operations,
+    integrityPolicy: parseIntegrityPolicy(root.integrityPolicy),
+  };
+}
 
 export function calculateRunRewardPreview(
   options: CalculateRunRewardPreviewOptions,
@@ -288,5 +318,164 @@ function assertClearedWaves(clearedWaves: number): void {
 
 function isPositiveSafeInteger(value: number | undefined): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value > 0;
+}
+
+function parseRiskMultipliers(value: unknown): Record<RunRiskTier, number> {
+  const record = requireRecord(value, "reward_multiplier_missing");
+  return Object.fromEntries(
+    runRiskTiers.map((risk) => [
+      risk,
+      requirePositiveInteger(record[risk], "reward_multiplier_missing"),
+    ]),
+  ) as Record<RunRiskTier, number>;
+}
+
+function parseOperationProgressionMultipliers(value: unknown): Record<string, number> {
+  const record = requireRecord(value, "risk_reward_policy_missing");
+  const entries = Object.entries(record);
+  if (entries.length === 0) {
+    throw new Error("risk_reward_policy_missing");
+  }
+
+  return Object.fromEntries(
+    entries.map(([operationId, multiplier]) => [
+      requireNonEmptyString(operationId, "risk_reward_policy_missing"),
+      requirePositiveInteger(multiplier, "risk_reward_policy_missing"),
+    ]),
+  );
+}
+
+function parseOutcomePolicy(value: unknown): RunRewardsConfig["outcomePolicy"] {
+  const record = requireRecord(value, "risk_reward_policy_missing");
+  return {
+    victoryFullClearBps: requirePositiveInteger(
+      record.victoryFullClearBps,
+      "risk_reward_policy_missing",
+    ),
+    failureBaseBps: requireNonNegativeInteger(
+      record.failureBaseBps,
+      "risk_reward_policy_missing",
+    ),
+    failureWaveBps: requirePositiveInteger(
+      record.failureWaveBps,
+      "risk_reward_policy_missing",
+    ),
+    failureCapBps: requirePositiveInteger(
+      record.failureCapBps,
+      "risk_reward_policy_missing",
+    ),
+    abandonedBps: requireNonNegativeInteger(
+      record.abandonedBps,
+      "risk_reward_policy_missing",
+    ),
+  };
+}
+
+function parseRunRewardOperations(value: unknown): RunRewardsConfig["operations"] {
+  const record = requireRecord(value, "risk_reward_policy_missing");
+  const entries = Object.entries(record);
+  if (entries.length === 0) {
+    throw new Error("risk_reward_policy_missing");
+  }
+
+  return Object.fromEntries(
+    entries.map(([operationId, operationValue]) => {
+      const operation = requireRecord(operationValue, "risk_reward_policy_missing");
+      return [
+        requireNonEmptyString(operationId, "risk_reward_policy_missing"),
+        {
+          baseRewards: parseRewardLines(operation.baseRewards),
+          firstClearRewards: parseRewardLines(operation.firstClearRewards),
+        },
+      ];
+    }),
+  );
+}
+
+function parseRewardLines(value: unknown): RunRewardLineConfig[] {
+  if (!Array.isArray(value)) {
+    throw new Error("reward_plan_mismatch");
+  }
+
+  return value.map((lineValue) => {
+    const line = requireRecord(lineValue, "reward_plan_mismatch");
+    return {
+      kind: requireOneOf(line.kind, rewardLineKinds, "reward_plan_mismatch"),
+      id: requireNonEmptyString(line.id, "reward_plan_mismatch"),
+      quantity: requirePositiveInteger(line.quantity, "reward_plan_mismatch"),
+    };
+  });
+}
+
+function parseIntegrityPolicy(value: unknown): RunRewardsConfig["integrityPolicy"] {
+  const record = requireRecord(value, "risk_reward_policy_missing");
+  return {
+    softAnomaly: requireOneOf(
+      record.softAnomaly,
+      integrityDispositions,
+      "risk_reward_policy_missing",
+    ),
+    hardViolation: requireOneOf(
+      record.hardViolation,
+      integrityDispositions,
+      "risk_reward_policy_missing",
+    ),
+    quarantinedRun: requireOneOf(
+      record.quarantinedRun,
+      integrityDispositions,
+      "risk_reward_policy_missing",
+    ),
+  };
+}
+
+function requireRecord(
+  value: unknown,
+  errorCode: "risk_reward_policy_missing" | "reward_multiplier_missing" | "reward_plan_mismatch",
+): Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error(errorCode);
+  }
+  return value as Record<string, unknown>;
+}
+
+function requireNonEmptyString(
+  value: unknown,
+  errorCode: "risk_reward_policy_missing" | "reward_plan_mismatch",
+): string {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(errorCode);
+  }
+  return value;
+}
+
+function requirePositiveInteger(
+  value: unknown,
+  errorCode: "risk_reward_policy_missing" | "reward_multiplier_missing" | "reward_plan_mismatch",
+): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
+    throw new Error(errorCode);
+  }
+  return value;
+}
+
+function requireNonNegativeInteger(
+  value: unknown,
+  errorCode: "risk_reward_policy_missing",
+): number {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error(errorCode);
+  }
+  return value;
+}
+
+function requireOneOf<T extends string>(
+  value: unknown,
+  allowed: readonly T[],
+  errorCode: "risk_reward_policy_missing" | "reward_plan_mismatch",
+): T {
+  if (typeof value !== "string" || !allowed.includes(value as T)) {
+    throw new Error(errorCode);
+  }
+  return value as T;
 }
 

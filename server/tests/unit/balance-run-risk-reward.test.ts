@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   calculateRunRewardPreview,
   launchRunRewardsConfig,
+  parseRunRewardsConfig,
 } from "../../packages/balance/src/index";
 
 describe("run risk reward balance contract", () => {
@@ -120,6 +121,61 @@ describe("run risk reward balance contract", () => {
         integrityDisposition: "ALLOW",
       }),
     ).toThrow(/reward_multiplier_missing/u);
+  });
+
+  it("parses persisted runRewards config before reward calculation", () => {
+    const parsed = parseRunRewardsConfig(JSON.parse(JSON.stringify(launchRunRewardsConfig)));
+
+    const preview = calculateRunRewardPreview({
+      config: parsed,
+      operationId: "opn_06_broken_line",
+      actId: "act_01_wasteland_railway",
+      regionId: "region_wasteland_railway",
+      risk: "V",
+      outcome: "VICTORY",
+      clearedWaves: 15,
+      firstClearEligible: false,
+      integrityDisposition: "ALLOW",
+    });
+
+    expect(preview.calculation.riskMultiplierBps).toBe(17500);
+    expect(quantity(preview.rewardLines, "cur_credits")).toBeGreaterThan(0);
+  });
+
+  it("rejects malformed persisted runRewards config at the parser boundary", () => {
+    expect(() =>
+      parseRunRewardsConfig({
+        ...launchRunRewardsConfig,
+        schemaVersion: 2,
+      }),
+    ).toThrow(/risk_reward_policy_missing/u);
+
+    expect(() =>
+      parseRunRewardsConfig({
+        ...launchRunRewardsConfig,
+        riskMultipliersBps: {
+          I: 8000,
+          II: 10000,
+          III: 12000,
+          IV: 14500,
+        },
+      }),
+    ).toThrow(/reward_multiplier_missing/u);
+
+    expect(() =>
+      parseRunRewardsConfig({
+        ...launchRunRewardsConfig,
+        operations: {
+          ...launchRunRewardsConfig.operations,
+          opn_01_last_departure: {
+            baseRewards: [
+              { kind: "CURRENCY", id: "cur_credits", quantity: -1 },
+            ],
+            firstClearRewards: [],
+          },
+        },
+      }),
+    ).toThrow(/reward_plan_mismatch/u);
   });
 });
 

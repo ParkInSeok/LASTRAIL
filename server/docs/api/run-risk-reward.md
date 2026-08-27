@@ -563,16 +563,32 @@ Completed first local-only slice:
 - Did not change migrations, D1 seed data, run finish routes, economy mutation,
   or remote Cloudflare resources.
 
+Completed second local-only slice:
+
+- Added a persisted `runRewards` parser/validator in the balance package.
+- The parser accepts only `schemaVersion: 1`.
+- Risk multipliers must include Risk I through Risk V as positive integer bps.
+- Operation progression multipliers must be positive integer bps.
+- Outcome policy must be integer bps, with abandoned allowed to be zero.
+- Reward lines must have a supported `kind`, non-empty stable `id`, and positive
+  integer `quantity`.
+- Integrity policy values must use approved server dispositions.
+- Parser failures use existing contract error codes:
+  - `risk_reward_policy_missing`
+  - `reward_multiplier_missing`
+  - `reward_plan_mismatch`
+- Did not change migrations, D1 seed data, run finish routes, economy mutation,
+  or remote Cloudflare resources.
+
 Next implementation candidates:
 
-1. Add reward config parser/validator for persisted `runRewards`.
-2. Decide whether the DEV balance seed should include `runRewards` before run
+1. Decide whether the DEV balance seed should include `runRewards` before run
    finish integration.
-3. Add run finish contract tests for reward preview generation.
-4. Implement accepted run finish transaction with reward preview insert.
-5. Add first-clear guard tests against `account_first_clears`.
-6. Add Admin read-only reward preview summary later.
-7. Add Unity display metadata only after response contract is approved.
+2. Add run finish contract tests for reward preview generation.
+3. Implement accepted run finish transaction with reward preview insert.
+4. Add first-clear guard tests against `account_first_clears`.
+5. Add Admin read-only reward preview summary later.
+6. Add Unity display metadata only after response contract is approved.
 
 ## Open Decisions
 
