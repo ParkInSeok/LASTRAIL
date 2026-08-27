@@ -172,7 +172,8 @@ Baseline policy:
 
 - Server owns durable story progress and unlock truth.
 - Unity owns narrative presentation and localized text playback.
-- Accepted run finish is the future durable story progress update moment.
+- Accepted run finish is the durable story progress update moment for the
+  current local contract slice.
 - Client-supplied story progress, unlock state, and narrative flags are not
   Source of Truth.
 

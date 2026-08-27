@@ -54,6 +54,14 @@ describe("game-api run finish contract", () => {
                     expect(values).toEqual(["account_1", "opn_03_water_stop", "III"]);
                     return null;
                   }
+                  if (sql.includes("FROM account_story_progress")) {
+                    expect(values).toEqual(["account_1"]);
+                    return null;
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    expect(values).toEqual(["account_1"]);
+                    return { sequence: 1 };
+                  }
                   if (sql.includes("FROM runs")) {
                     expect(values).toEqual(["run_1"]);
                     return {
@@ -125,6 +133,9 @@ describe("game-api run finish contract", () => {
     expect(batchSql.join("\n")).toContain("INSERT INTO run_final_results");
     expect(batchSql.join("\n")).toContain("INSERT INTO run_reward_previews");
     expect(batchSql.join("\n")).toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).toContain("INSERT OR IGNORE INTO account_unlocks");
+    expect(batchSql.join("\n")).toContain("INSERT INTO progression_ledger");
     expect(batchSql.join("\n")).toContain("INSERT INTO idempotency_records");
     expect(batchSql.join("\n")).not.toContain("reward amount");
     const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
@@ -136,6 +147,19 @@ describe("game-api run finish contract", () => {
     expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
     expect(rewardPlan.calculation.firstClearEligible).toBe(true);
     expect(rewardPlan.calculation.firstClearApplied).toBe(true);
+    const storyProgressInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO account_story_progress"));
+    expect(storyProgressInsertIndex).toBeGreaterThanOrEqual(0);
+    expect(batchBinds[storyProgressInsertIndex]).toEqual([
+      "account_1",
+      "act_01_wasteland_railway",
+      "opn_03_water_stop",
+      "opn_03_water_stop",
+      JSON.stringify(["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"]),
+      JSON.stringify(["operation_cleared:opn_03_water_stop"]),
+      "act1-narrative-v1",
+      "run_1",
+      expect.any(Number),
+    ]);
   });
 
   it("replays accepted run finish with the stored reward preview id", async () => {
@@ -387,6 +411,112 @@ describe("game-api run finish contract", () => {
     expect(rewardPlan.calculation.firstClearApplied).toBe(false);
   });
 
+  it("does not regress higher stored story progress when finishing a lower operation", async () => {
+    const batchSql: string[] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    return null;
+                  }
+                  if (sql.includes("FROM account_first_clears")) {
+                    return { cleared_at: Date.parse("2026-08-26T00:00:00.000Z") };
+                  }
+                  if (sql.includes("FROM account_story_progress")) {
+                    expect(values).toEqual(["account_1"]);
+                    return {
+                      highest_story_progress_id: "opn_05_night_boarders",
+                      cleared_operations_json: JSON.stringify([
+                        "opn_01_last_departure",
+                        "opn_02_first_signal",
+                        "opn_03_water_stop",
+                        "opn_04_scrapstar_show",
+                        "opn_05_night_boarders",
+                      ]),
+                      story_flags_json: JSON.stringify(["operation_cleared:opn_05_night_boarders"]),
+                    };
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    throw new Error("lower operation must not allocate a story progress mutation");
+                  }
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_03_water_stop",
+                      risk: "III",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_03_water_stop",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                      }),
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-lower-story-progress",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).not.toContain("INSERT OR IGNORE INTO account_unlocks");
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO progression_ledger");
+    expect(batchSql.join("\n")).toContain("INSERT INTO run_reward_previews");
+  });
+
   it("rejects client-supplied reward fields before using them as source of truth", async () => {
     const env: TestEnv = {
       ENVIRONMENT: "DEV",
@@ -417,6 +547,51 @@ describe("game-api run finish contract", () => {
           tacticSelections: [],
           clientCompletedAt: "2026-08-27T00:00:00.000Z",
           rewardAmount: 999999,
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("rejects client-supplied story progress fields before using them as source of truth", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`story progress contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-client-story-field",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+          storyProgress: "opn_06_broken_line",
         }),
       },
       env,

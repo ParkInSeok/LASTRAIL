@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-3])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(13);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-4])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(14);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0013 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0014 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -284,6 +284,41 @@ describe("D1 migrations", () => {
          'gacha-result-1', 'gacha-batch-1', 'account-gacha-1', 'banner-gacha-1', 1, 'ELITE', 'ELITE_OPERATOR',
          'op_vex', 1, 'ELITE_30', 0, NULL, 'op_vex', NULL, NULL, 2
        );`
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates account story progress read model for durable story state", async () => {
+    const db = await createMigratedDb();
+
+    const columns = db.exec("PRAGMA table_info(account_story_progress);");
+    const indexes = db.exec("PRAGMA index_list(account_story_progress);");
+
+    expect(columns[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "act_id",
+      "highest_cleared_operation_id",
+      "highest_story_progress_id",
+      "cleared_operations_json",
+      "story_flags_json",
+      "narrative_version",
+      "last_progress_run_id",
+      "updated_at",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toContain("idx_account_story_progress_act_progress");
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-story-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO account_story_progress (
+         account_id, act_id, highest_cleared_operation_id, highest_story_progress_id,
+         cleared_operations_json, story_flags_json, narrative_version, last_progress_run_id, updated_at
+       ) VALUES (
+         'account-story-1', 'act_01_wasteland_railway', 'opn_02_first_signal', 'opn_02_first_signal',
+         '["opn_01_last_departure","opn_02_first_signal"]', '["first_signal_restored"]',
+         'act1-narrative-v1', NULL, 2
+       );`,
     );
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);

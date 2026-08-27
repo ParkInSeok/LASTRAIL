@@ -73,8 +73,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-3])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(13);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-4])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(14);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -221,6 +221,31 @@ describe("game-api run finish local D1 smoke", () => {
         "SELECT operation_key, risk, run_id FROM account_first_clears WHERE account_id = 'account-smoke-1';",
       )[0]?.values,
     ).toEqual([["opn_03_water_stop", "III", "run-smoke-1"]]);
+    expect(
+      db.exec(
+        `SELECT highest_story_progress_id, highest_cleared_operation_id, cleared_operations_json, story_flags_json, last_progress_run_id
+         FROM account_story_progress
+         WHERE account_id = 'account-smoke-1';`,
+      )[0]?.values,
+    ).toEqual([
+      [
+        "opn_03_water_stop",
+        "opn_03_water_stop",
+        JSON.stringify(["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"]),
+        JSON.stringify(["operation_cleared:opn_03_water_stop"]),
+        "run-smoke-1",
+      ],
+    ]);
+    expect(
+      db.exec(
+        "SELECT unlock_id FROM account_unlocks WHERE account_id = 'account-smoke-1' AND unlock_id = 'operation:opn_04_scrapstar_show';",
+      )[0]?.values,
+    ).toEqual([["operation:opn_04_scrapstar_show"]]);
+    expect(
+      db.exec(
+        "SELECT progression_type, target_id FROM progression_ledger WHERE account_id = 'account-smoke-1' AND progression_type = 'STORY_PROGRESS';",
+      )[0]?.values,
+    ).toEqual([["STORY_PROGRESS", "opn_03_water_stop"]]);
     expect(db.exec("SELECT operation, result_ref FROM idempotency_records WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([
       ["run_finish", body.rewardPreviewId],
     ]);
@@ -258,6 +283,7 @@ describe("game-api run finish local D1 smoke", () => {
     });
     expect(db.exec("SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
+    expect(db.exec("SELECT COUNT(*) FROM progression_ledger WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();

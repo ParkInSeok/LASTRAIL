@@ -95,9 +95,9 @@ Use stable ids as the ordered story progress keys:
 The raid milestone can be a story progress key, but the exact unlock/clear
 condition remains a future raid system decision.
 
-## Recommended Read Model
+## Read Model
 
-Add a dedicated table in a future migration:
+Migration `0014_story_progress.sql` adds the dedicated read model:
 
 ```sql
 CREATE TABLE account_story_progress (
@@ -131,7 +131,7 @@ Candidate field semantics:
 - `last_progress_run_id`: last accepted finish that advanced progress.
 - `updated_at`: server timestamp.
 
-Recommendation:
+Current recommendation:
 
 - Use this dedicated read model instead of overloading `account_runtime_state`.
 - Keep `account_unlocks` for granular unlock truth.
@@ -207,12 +207,12 @@ Notes:
 - `narrativeVersion` is metadata only. It must not gate economy rewards unless a
   future migration explicitly introduces such a dependency.
 
-## Accepted Run Finish Update Candidate
+## Accepted Run Finish Update
 
-Accepted `POST /v1/runs/:runId/finish` is the durable story progress update
-moment.
+The current local contract slice updates story progress during accepted
+`POST /v1/runs/:runId/finish`.
 
-Candidate rules:
+Rules:
 
 - Only accepted, validated, authenticated run finish can update story progress.
 - Story progress update uses the server-frozen run context:
@@ -230,7 +230,7 @@ Candidate rules:
   a future design explicitly allows skip progression. Launch recommendation is
   linear Act 1 progression only.
 
-Candidate D1 batch for a progress-advancing finish:
+Current D1 batch for a progress-advancing finish:
 
 1. Insert `run_final_results`.
 2. Update `runs`.
@@ -245,6 +245,21 @@ Candidate D1 batch for a progress-advancing finish:
 This must be one atomic committed operation for launch. If the story progress
 write fails, the accepted finish should fail or roll back rather than create a
 reward preview with missing story progress side effects.
+
+Implemented local slice:
+
+- `VICTORY` with `clearedWaves = 15` upserts `account_story_progress` when the
+  operation order is greater than the stored `highest_story_progress_id`.
+- New progress writes a `STORY_PROGRESS` `account_mutations` row and
+  `progression_ledger` row.
+- New progress inserts the next operation unlock with `INSERT OR IGNORE` into
+  `account_unlocks`.
+- Lower operation finishes do not allocate a story mutation and do not regress
+  stored progress.
+- Duplicate run finish replay returns the stored result and does not re-run
+  story progress logic.
+- Client-supplied story progress/unlock/narrative flag fields are rejected at
+  the run finish parser boundary.
 
 ## Duplicate Replay Policy
 
@@ -377,12 +392,10 @@ in ops error logs or integrity/progression events.
 
 ## Open Decisions
 
-- Whether to create `account_story_progress` in the next migration or first
-  derive a read model from `account_unlocks` and `progression_ledger`.
-- Whether story progress updates should be in the same run finish batch as
-  reward preview immediately, or introduced after full validator integration.
 - Exact unlock ids for train slot/car/feature unlocks.
 - Whether raid story progress requires clear, participation, or season claim.
 - Whether `narrativeVersion` is global, act-scoped, or operation-scoped.
 - Whether Admin needs a separate story progress history table beyond
   `progression_ledger`.
+- Whether future full validator integration can add extra story integrity gates
+  before the existing run finish story progress update.

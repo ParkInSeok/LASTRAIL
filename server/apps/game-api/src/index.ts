@@ -85,6 +85,12 @@ type FirstClearRow = {
   cleared_at: number;
 };
 
+type AccountStoryProgressRow = {
+  highest_story_progress_id: string;
+  cleared_operations_json: string;
+  story_flags_json: string;
+};
+
 type RunFinishBody = {
   runId: string;
   currentStage: "Complete";
@@ -235,7 +241,26 @@ const runFinishForbiddenRewardFields = new Set([
   "ledgerIds",
   "firstClearEligible",
   "firstClearApplied",
+  "storyProgress",
+  "highestStoryProgressId",
+  "unlockedOperations",
+  "narrativeFlags",
+  "storyFlags",
 ]);
+
+const actOneStoryProgressOrder = [
+  "none",
+  "opn_01_last_departure",
+  "opn_02_first_signal",
+  "opn_03_water_stop",
+  "opn_04_scrapstar_show",
+  "opn_05_night_boarders",
+  "opn_06_broken_line",
+  "raid_raider_king_engine",
+] as const;
+
+const actOneOperationIds = actOneStoryProgressOrder.filter((id) => id !== "none");
+type ActOneStoryProgressId = typeof actOneStoryProgressOrder[number];
 
 function parsePositiveInteger(value: string): number | null {
   if (!/^[1-9]\d*$/u.test(value)) return null;
@@ -401,6 +426,73 @@ function parseRunRisk(value: string): RunRiskTier | null {
     return value;
   }
   return null;
+}
+
+function getActOneStoryProgressOrder(operationId: string): number | null {
+  const index = actOneStoryProgressOrder.indexOf(operationId as ActOneStoryProgressId);
+  return index < 0 ? null : index;
+}
+
+function parseJsonStringArray(value: string): string[] {
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is string => typeof item === "string");
+  } catch {
+    return [];
+  }
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return [...new Set(values)];
+}
+
+function createStoryProgressPlan(options: {
+  accountId: string;
+  runId: string;
+  operationId: string;
+  actId: string;
+  existing: AccountStoryProgressRow | null;
+  now: number;
+}): null | {
+  highestStoryProgressId: string;
+  highestClearedOperationId: string;
+  clearedOperations: string[];
+  storyFlags: string[];
+  nextOperationUnlockId: string | null;
+} {
+  const newOrder = getActOneStoryProgressOrder(options.operationId);
+  if (newOrder === null || newOrder === 0) return null;
+  const existingOrder = options.existing === null
+    ? 0
+    : getActOneStoryProgressOrder(options.existing.highest_story_progress_id) ?? 0;
+  if (newOrder <= existingOrder) return null;
+
+  const previousCleared = options.existing === null
+    ? []
+    : parseJsonStringArray(options.existing.cleared_operations_json);
+  const previousFlags = options.existing === null
+    ? []
+    : parseJsonStringArray(options.existing.story_flags_json);
+  const clearedOperations = uniqueStrings([
+    ...previousCleared,
+    ...actOneOperationIds.slice(0, newOrder),
+  ]);
+  const storyFlags = uniqueStrings([
+    ...previousFlags,
+    `operation_cleared:${options.operationId}`,
+  ]);
+  const nextOperationId = actOneOperationIds[newOrder] ?? null;
+
+  return {
+    highestStoryProgressId: options.operationId,
+    highestClearedOperationId: options.operationId === "raid_raider_king_engine"
+      ? "opn_06_broken_line"
+      : options.operationId,
+    clearedOperations,
+    storyFlags,
+    nextOperationUnlockId: nextOperationId === null ? null : `operation:${nextOperationId}`,
+  };
 }
 
 function getFinishedRunStatus(outcome: RunOutcome): "COMPLETED" | "FAILED" | "ABANDONED" {
@@ -1541,6 +1633,15 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     firstClearRecord === null &&
     body.outcome === "VICTORY" &&
     body.completedWaveCount === 15;
+  const existingStoryProgress = body.outcome === "VICTORY" && body.completedWaveCount === 15
+    ? await c.env.DB.prepare(
+        `SELECT highest_story_progress_id, cleared_operations_json, story_flags_json
+         FROM account_story_progress
+         WHERE account_id = ?`,
+      )
+        .bind(authContext.accountId)
+        .first<AccountStoryProgressRow>()
+    : null;
   const rewardPreview = calculateRunRewardPreview({
     config: runRewardsConfig,
     operationId: previewMetadata.operationId,
@@ -1554,6 +1655,28 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   });
   const now = Date.now();
   const rewardPreviewId = createDomainId("reward_preview");
+  const storyProgressPlan = body.outcome === "VICTORY" && body.completedWaveCount === 15
+    ? createStoryProgressPlan({
+        accountId: authContext.accountId,
+        runId,
+        operationId: previewMetadata.operationId,
+        actId: previewMetadata.actId,
+        existing: existingStoryProgress,
+        now,
+      })
+    : null;
+  const storyProgressMutationId = storyProgressPlan === null ? null : createDomainId("mutation");
+  const storyProgressLedgerId = storyProgressPlan === null ? null : createDomainId("progression");
+  const latestMutation = storyProgressPlan === null
+    ? null
+    : await c.env.DB.prepare(
+        `SELECT MAX(sequence) AS sequence
+         FROM account_mutations
+         WHERE account_id = ?`,
+      )
+        .bind(authContext.accountId)
+        .first<AccountMutationSequenceRow>();
+  const nextMutationSequence = (latestMutation?.sequence ?? 0) + 1;
   const rewardPlanJson = JSON.stringify({
     rewardLines: rewardPreview.rewardLines,
     calculation: {
@@ -1593,6 +1716,64 @@ app.post("/v1/runs/:runId/finish", async (c) => {
           ).bind(authContext.accountId, previewMetadata.operationId, risk, now, runId),
         ]
       : []),
+    ...(storyProgressPlan === null || storyProgressMutationId === null || storyProgressLedgerId === null
+      ? []
+      : [
+          c.env.DB.prepare(
+            `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+             VALUES (?, ?, ?, 'STORY_PROGRESS', ?, ?)`,
+          ).bind(storyProgressMutationId, authContext.accountId, nextMutationSequence, `run_finish:${idempotencyKey}`, now),
+          c.env.DB.prepare(
+            `INSERT INTO account_story_progress (
+               account_id, act_id, highest_cleared_operation_id, highest_story_progress_id,
+               cleared_operations_json, story_flags_json, narrative_version, last_progress_run_id, updated_at
+             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(account_id) DO UPDATE SET
+               act_id = excluded.act_id,
+               highest_cleared_operation_id = excluded.highest_cleared_operation_id,
+               highest_story_progress_id = excluded.highest_story_progress_id,
+               cleared_operations_json = excluded.cleared_operations_json,
+               story_flags_json = excluded.story_flags_json,
+               narrative_version = excluded.narrative_version,
+               last_progress_run_id = excluded.last_progress_run_id,
+               updated_at = excluded.updated_at`,
+          ).bind(
+            authContext.accountId,
+            previewMetadata.actId,
+            storyProgressPlan.highestClearedOperationId,
+            storyProgressPlan.highestStoryProgressId,
+            JSON.stringify(storyProgressPlan.clearedOperations),
+            JSON.stringify(storyProgressPlan.storyFlags),
+            "act1-narrative-v1",
+            runId,
+            now,
+          ),
+          ...(storyProgressPlan.nextOperationUnlockId === null
+            ? []
+            : [
+                c.env.DB.prepare(
+                  `INSERT OR IGNORE INTO account_unlocks (account_id, unlock_id, unlocked_at)
+                   VALUES (?, ?, ?)`,
+                ).bind(authContext.accountId, storyProgressPlan.nextOperationUnlockId, now),
+              ]),
+          c.env.DB.prepare(
+            `INSERT INTO progression_ledger (id, account_id, mutation_id, progression_type, target_id, delta_json, created_at)
+             VALUES (?, ?, ?, 'STORY_PROGRESS', ?, ?, ?)`,
+          ).bind(
+            storyProgressLedgerId,
+            authContext.accountId,
+            storyProgressMutationId,
+            storyProgressPlan.highestStoryProgressId,
+            JSON.stringify({
+              runId,
+              actId: previewMetadata.actId,
+              highestStoryProgressId: storyProgressPlan.highestStoryProgressId,
+              highestClearedOperationId: storyProgressPlan.highestClearedOperationId,
+              unlockedOperation: storyProgressPlan.nextOperationUnlockId,
+            }),
+            now,
+          ),
+        ]),
     c.env.DB.prepare(
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
        VALUES (?, ?, ?, 'run_finish', ?, ?)`,
