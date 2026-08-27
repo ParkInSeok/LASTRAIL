@@ -14,6 +14,8 @@ type RewardPreviewRow = {
   reward_claim_id: string | null;
 };
 
+const ACTIVE_REWARD_PREVIEW_EXPIRES_AT = "2099-08-27T00:00:00.000Z";
+
 function createEnv(row: RewardPreviewRow | null): Env {
   return {
     ENVIRONMENT: "DEV",
@@ -57,7 +59,7 @@ describe("game-api reward preview and claim contract", () => {
             },
           ],
         }),
-        expires_at: Date.parse("2026-08-27T00:00:00.000Z"),
+        expires_at: Date.parse(ACTIVE_REWARD_PREVIEW_EXPIRES_AT),
         created_at: Date.parse("2026-08-26T00:00:00.000Z"),
         claimed_at: null,
         reward_claim_id: null,
@@ -71,7 +73,7 @@ describe("game-api reward preview and claim contract", () => {
       status: "ACTIVE",
       claimability: "CLAIMABLE",
       balanceVersion: "1",
-      expiresAt: "2026-08-27T00:00:00.000Z",
+      expiresAt: ACTIVE_REWARD_PREVIEW_EXPIRES_AT,
       serverCalculatedAt: "2026-08-26T00:00:00.000Z",
       rewardLines: [
         {
@@ -169,7 +171,7 @@ describe("game-api reward preview and claim contract", () => {
         status: "CLAIMED",
         balance_config_version: 1,
         reward_plan_json: JSON.stringify({ rewardLines: [] }),
-        expires_at: Date.parse("2026-08-27T00:00:00.000Z"),
+        expires_at: Date.parse(ACTIVE_REWARD_PREVIEW_EXPIRES_AT),
         created_at: Date.parse("2026-08-26T00:00:00.000Z"),
         claimed_at: Date.parse("2026-08-26T01:00:00.000Z"),
         reward_claim_id: "reward_claim_1",
@@ -208,7 +210,7 @@ describe("game-api reward preview and claim contract", () => {
                       status: "ACTIVE",
                       balance_config_version: 1,
                       reward_plan_json: JSON.stringify({ rewardLines: [] }),
-                      expires_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      expires_at: Date.parse(ACTIVE_REWARD_PREVIEW_EXPIRES_AT),
                       created_at: Date.parse("2026-08-26T00:00:00.000Z"),
                       claimed_at: null,
                       reward_claim_id: null,
@@ -287,7 +289,7 @@ describe("game-api reward preview and claim contract", () => {
                           },
                         ],
                       }),
-                      expires_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      expires_at: Date.parse(ACTIVE_REWARD_PREVIEW_EXPIRES_AT),
                       created_at: Date.parse("2026-08-26T00:00:00.000Z"),
                       claimed_at: null,
                       reward_claim_id: null,

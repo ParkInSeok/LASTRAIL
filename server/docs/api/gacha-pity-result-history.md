@@ -6,6 +6,10 @@ state, duplicate conversion, and economy/inventory ledger linkage.
 It is a design draft for the next migration/API phase. It does not implement
 pull probability logic, payment processing, or admin UI.
 
+Future pseudo-random distribution (PRD) rarity selection is drafted separately
+in `docs/api/gacha-prd-rarity-selection.md`. The PRD draft keeps hard
+`guaranteeType` semantics and the current response shape unchanged.
+
 ## Goals
 
 - Store gacha history in D1 as durable Source of Truth.
@@ -532,6 +536,10 @@ Guarantee enforcement order per pull:
 
 The selected result is applied immediately before evaluating the next pull in a
 10-pull batch, so later pulls use the updated pity counters.
+
+PRD rarity selection, if implemented later, must run only before ordinary
+weighted selection when `guaranteeType = 'NONE'`. Hard guarantee thresholds
+remain higher priority than PRD.
 
 Pull result shape:
 

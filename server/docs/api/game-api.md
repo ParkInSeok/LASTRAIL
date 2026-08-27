@@ -165,6 +165,9 @@ claim/commit follow `docs/api/run-reward-preview-claim.md`.
 
 Gacha pull history, banner pity state, duplicate conversion, and ticket/material
 ledger linkage are drafted in `docs/api/gacha-pity-result-history.md`.
+Future gacha PRD rarity selection is drafted in
+`docs/api/gacha-prd-rarity-selection.md`; it keeps the current response shape
+and hard `guaranteeType` semantics unchanged.
 
 Pull execution uses:
 
