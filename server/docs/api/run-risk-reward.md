@@ -553,11 +553,24 @@ Error paths:
 
 ## Implementation Candidate Order
 
-1. Add reward config parser/validator for `runRewards`.
-2. Add pure reward calculator tests for multipliers and rounding.
+Completed first local-only slice:
+
+- Added a code-level launch reward config fixture under the balance package.
+- Added a pure reward preview calculator for the documented formula.
+- Added contract tests for risk scaling, operation progression scaling,
+  full-clear vs partial/abandoned outcomes, first-clear separate reward lines,
+  and missing multiplier errors.
+- Did not change migrations, D1 seed data, run finish routes, economy mutation,
+  or remote Cloudflare resources.
+
+Next implementation candidates:
+
+1. Add reward config parser/validator for persisted `runRewards`.
+2. Decide whether the DEV balance seed should include `runRewards` before run
+   finish integration.
 3. Add run finish contract tests for reward preview generation.
 4. Implement accepted run finish transaction with reward preview insert.
-5. Add first-clear guard tests.
+5. Add first-clear guard tests against `account_first_clears`.
 6. Add Admin read-only reward preview summary later.
 7. Add Unity display metadata only after response contract is approved.
 
