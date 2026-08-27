@@ -166,6 +166,18 @@ export function opsEnvironmentLabel(environment: OpsEnvironment | string): strin
   return labelFor({ DEV: "개발", PRD: "운영" }, environment);
 }
 
+export function opsErrorCodeLabel(code: string): string {
+  return labelFor(
+    {
+      reward_plan_mismatch: "보상 계획 불일치",
+      reward_multiplier_missing: "보상 배율 누락",
+      reward_plan_unavailable: "보상 계획 사용 불가",
+      risk_reward_policy_missing: "위험도 보상 정책 누락"
+    },
+    code
+  );
+}
+
 export function opsServiceLabel(service: string): string {
   return labelFor(
     {

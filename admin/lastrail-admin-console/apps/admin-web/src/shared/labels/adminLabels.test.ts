@@ -12,6 +12,7 @@ import {
   gachaResultStatusLabel,
   levelSourceLabel,
   opsEnvironmentLabel,
+  opsErrorCodeLabel,
   opsServiceLabel,
   opsSeverityLabel,
   permissionLabel,
@@ -74,5 +75,13 @@ describe("adminLabels", () => {
     expect(opsSeverityLabel("warn")).toBe("경고");
     expect(opsSeverityLabel("error")).toBe("오류");
     expect(opsSeverityLabel("fatal")).toBe("치명 오류");
+  });
+
+  it("translates risk reward ops error codes while preserving unknown fallback", () => {
+    expect(opsErrorCodeLabel("reward_plan_mismatch")).toBe("보상 계획 불일치");
+    expect(opsErrorCodeLabel("reward_multiplier_missing")).toBe("보상 배율 누락");
+    expect(opsErrorCodeLabel("reward_plan_unavailable")).toBe("보상 계획 사용 불가");
+    expect(opsErrorCodeLabel("risk_reward_policy_missing")).toBe("위험도 보상 정책 누락");
+    expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
   });
 });

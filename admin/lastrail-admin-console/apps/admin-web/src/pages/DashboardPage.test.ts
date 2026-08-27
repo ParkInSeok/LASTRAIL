@@ -8,9 +8,25 @@ describe("DashboardPage configuration", () => {
     expect(sectionTitles).toContain("광고/보상형 광고");
     expect(sectionTitles).toContain("재화/보상");
     expect(sectionTitles).toContain("위험 신호");
+    expect(sectionTitles).toContain("위험도/보상 불균형");
     expect(dashboardSections.flatMap((section) => section.metrics.map((metric) => metric.label))).toContain(
       "광고 완료율"
     );
+  });
+
+  it("prepares risk reward imbalance metrics without hard-coded economy amounts", () => {
+    const riskRewardSection = dashboardSections.find((section) => section.title === "위험도/보상 불균형");
+    const labels = riskRewardSection?.metrics.map((metric) => metric.label) ?? [];
+
+    expect(labels).toEqual([
+      "위험도별 평균 보상",
+      "위험도별 클리어율",
+      "위험도별 평균 실패 공세",
+      "예상 보상 vs 실제 미리보기 불일치",
+      "Risk IV/V 보상 수령 실패율",
+      "first clear 보상 지급 상태"
+    ]);
+    expect(riskRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
   });
 
   it("keeps dashboard shortcuts pointed at existing read-only queues", () => {

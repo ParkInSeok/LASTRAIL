@@ -33,5 +33,7 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("운영 (PRD)");
     expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
     expect(options).toContain("치명 오류 (fatal)");
+    expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
+    expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
   });
 });

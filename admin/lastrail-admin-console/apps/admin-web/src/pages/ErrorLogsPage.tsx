@@ -1,5 +1,6 @@
 import {
   opsEnvironmentLabel,
+  opsErrorCodeLabel,
   opsServiceLabel,
   opsSeverityLabel
 } from "../shared/labels/adminLabels";
@@ -40,6 +41,15 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
     )
   },
   { label: "심각도", options: ["warn", "error", "fatal"].map((code) => labeledCode(opsSeverityLabel(code), code)) },
+  {
+    label: "보상/위험도 오류",
+    options: [
+      "reward_plan_mismatch",
+      "reward_multiplier_missing",
+      "reward_plan_unavailable",
+      "risk_reward_policy_missing"
+    ].map((code) => labeledCode(opsErrorCodeLabel(code), code))
+  },
   { label: "식별자", options: ["errorCode", "requestId", "accountId", "runId", "rewardPreviewId", "gachaBatchId"] },
   { label: "시간 범위", options: ["최근 1시간", "최근 24시간", "최근 7일", "사용자 지정"] }
 ];

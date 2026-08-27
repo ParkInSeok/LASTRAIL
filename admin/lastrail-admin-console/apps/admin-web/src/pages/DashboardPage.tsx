@@ -53,6 +53,18 @@ export const dashboardSections: DashboardSection[] = [
     ]
   },
   {
+    title: "위험도/보상 불균형",
+    description: "위험도와 작전 진행도 대비 보상 미리보기/수령 흐름을 보는 지표",
+    metrics: [
+      { label: "위험도별 평균 보상", value: "연동 대기", note: "reward preview value 비교 후보" },
+      { label: "위험도별 클리어율", value: "연동 대기", note: "riskTier별 완료/실패 비율" },
+      { label: "위험도별 평균 실패 공세", value: "연동 대기", note: "partial failure 공세 위치" },
+      { label: "예상 보상 vs 실제 미리보기 불일치", value: "연동 대기", note: "reward plan mismatch 후보" },
+      { label: "Risk IV/V 보상 수령 실패율", value: "연동 대기", note: "고위험도 claim 실패 관측" },
+      { label: "first clear 보상 지급 상태", value: "연동 대기", note: "별도 rewardLine 지급 후보" }
+    ]
+  },
+  {
     title: "위험 신호",
     description: "조사 우선순위가 높은 계정과 검증 실패 신호",
     metrics: [
