@@ -2,8 +2,8 @@
 
 This draft is the server-side contract for Unity run result submission. The
 first local-only route slice is implemented for accepted finish -> reward
-preview creation. Full validator integration, first-clear durable consumption,
-and final production balance rollout remain follow-up work.
+preview creation. Full validator integration and final production balance
+rollout remain follow-up work.
 
 Reward preview and claim/commit follow-up is defined in `docs/api/run-reward-preview-claim.md`.
 
@@ -33,6 +33,8 @@ Rules:
 - Successful accepted submissions write `idempotency_records` with operation `run_finish`.
 - Error responses are not stored as permanent idempotency results.
 - Duplicate idempotency replay returns `200` with `accepted: false` and `resultStatus: "DUPLICATE_REPLAY"`.
+- Reusing the same `Idempotency-Key` for a different run is a contract
+  violation and must not return another run's stored `rewardPreviewId`.
 
 ## Request Body
 
@@ -153,6 +155,23 @@ Duplicate replay response:
 - no reward recalculation;
 - no second `run_final_results`;
 - no second `run_reward_previews` row.
+- the stored reward preview must belong to the same path `:runId`.
+
+## First Clear Boundary
+
+The local contract slice consumes first clear at accepted finish preview
+creation time.
+
+Rules:
+
+- First clear scope is `accountId + operationId + risk`.
+- The durable guard is `account_first_clears(operation_key, risk)`.
+- First clear requires `VICTORY` and `completedWaveCount = 15`.
+- When the guard has no existing row, accepted finish creates the first-clear
+  reward line and inserts `account_first_clears` in the same D1 batch as
+  `run_final_results`, `run_reward_previews`, and `idempotency_records`.
+- Duplicate replay returns the stored `rewardPreviewId` and does not re-check or
+  re-consume first clear.
 
 ## Server Source of Truth
 

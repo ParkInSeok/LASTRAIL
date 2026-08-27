@@ -399,17 +399,20 @@ Rules:
 - First clear bonus is not multiplied by risk/outcome/wave multipliers unless a
   future balance policy explicitly opts in.
 - Commit first-clear state in the same accepted finish transaction that creates
-  the reward preview, or in a tightly coupled transaction that cannot produce a
-  duplicate first-clear reward.
+  the reward preview.
 - If first-clear insertion conflicts, the server must remove or not create the
   first-clear bonus line.
 
-Open implementation choice:
+Launch decision:
 
-- Whether first-clear state is inserted at preview creation time or only at
-  reward claim time. Launch recommendation is preview creation time only if the
-  preview itself is immutable and claimable; otherwise claim time avoids
-  consumed first-clear state for unclaimed/expired previews.
+- Consume first clear at accepted finish preview creation time.
+- Rationale: the preview is immutable, duplicate replay returns the stored
+  `rewardPreviewId`, and reward claim reuses the stored plan without
+  recalculating first-clear state.
+- Trade-off: an expired or abandoned unclaimed preview still consumes first
+  clear. This is acceptable for launch because a successful accepted finish is
+  the durable completion event; support recovery should restore or re-open the
+  stored preview rather than recalculate first-clear eligibility.
 
 ## Integrity Restriction Policy
 
@@ -600,9 +603,23 @@ Completed third local-only slice:
   insert on accepted finish.
 - Added duplicate replay coverage so `run_finish` idempotency returns the stored
   `rewardPreviewId` without recalculating rewards or inserting a second preview.
-- First-clear bonus is not applied in this route yet. The first-clear durable
-  consumption policy remains open and must be added before enabling first-clear
-  reward lines in run finish.
+- Did not change migrations, DEV seed data, reward claim/economy mutation, or
+  remote Cloudflare resources.
+
+Completed fourth local-only slice:
+
+- Added `account_first_clears` guard lookup to accepted run finish.
+- First clear is scoped by account, operation id, and risk.
+- Full `VICTORY` with 15 cleared waves and no existing guard row applies
+  separate `FIRST_CLEAR` reward lines.
+- The same accepted finish D1 batch inserts `run_final_results`, updates
+  `runs`, inserts `run_reward_previews`, inserts `account_first_clears`, and
+  records `idempotency_records.operation = 'run_finish'`.
+- Existing first clear omits the `FIRST_CLEAR` reward line and does not insert a
+  second guard row.
+- Duplicate replay still returns the stored `rewardPreviewId` and does not
+  recalculate first-clear state.
+- Added unit contract coverage and local D1 smoke coverage for the guard.
 - Did not change migrations, DEV seed data, reward claim/economy mutation, or
   remote Cloudflare resources.
 
@@ -610,17 +627,13 @@ Next implementation candidates:
 
 1. Decide whether the DEV balance seed should include `runRewards` before run
    finish integration.
-2. Share the stored `rewardPreviewId` duplicate replay policy with Unity and
-   align its `RecognizedDuplicate` state.
-3. Add first-clear guard tests against `account_first_clears`.
-4. Decide preview-time vs claim-time first-clear durable consumption.
-5. Add Admin read-only reward preview summary later.
-6. Add Unity display metadata only after response contract is approved.
+2. Add Admin read-only reward preview summary later.
+3. Add Unity display metadata only after response contract is approved.
+4. Add full validator integration for runtime export integrity.
 
 ## Open Decisions
 
 - Exact base reward quantities per operation.
-- Whether first-clear state is consumed at preview creation or claim time.
 - Whether `cur_command_ticket_fragment` is allowed in launch run rewards.
 - Whether any full `cur_command_ticket` can be granted outside pass/event/shop.
 - Whether `SPECIAL_CORE` is repeatable at Risk IV/V or first-clear only.

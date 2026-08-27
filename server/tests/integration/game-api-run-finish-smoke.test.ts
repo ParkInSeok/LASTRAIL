@@ -207,9 +207,20 @@ describe("game-api run finish local D1 smoke", () => {
     );
     expect(previewRows[0]?.values.length).toBe(1);
     const rewardPlanJson = String(previewRows[0]?.values[0]?.[2]);
-    const rewardPlan = JSON.parse(rewardPlanJson) as { rewardLines: unknown[]; calculation: { risk: string } };
+    const rewardPlan = JSON.parse(rewardPlanJson) as {
+      rewardLines: Array<{ source?: string }>;
+      calculation: { risk: string; firstClearEligible: boolean; firstClearApplied: boolean };
+    };
     expect(rewardPlan.rewardLines.length).toBeGreaterThan(0);
+    expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
     expect(rewardPlan.calculation.risk).toBe("III");
+    expect(rewardPlan.calculation.firstClearEligible).toBe(true);
+    expect(rewardPlan.calculation.firstClearApplied).toBe(true);
+    expect(
+      db.exec(
+        "SELECT operation_key, risk, run_id FROM account_first_clears WHERE account_id = 'account-smoke-1';",
+      )[0]?.values,
+    ).toEqual([["opn_03_water_stop", "III", "run-smoke-1"]]);
     expect(db.exec("SELECT operation, result_ref FROM idempotency_records WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([
       ["run_finish", body.rewardPreviewId],
     ]);

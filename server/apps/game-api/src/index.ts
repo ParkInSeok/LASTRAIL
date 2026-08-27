@@ -78,6 +78,11 @@ type IdempotencyRecordRow = {
   created_at: number;
   reward_created_at: number | null;
   balance_config_version?: number | null;
+  preview_run_id?: string | null;
+};
+
+type FirstClearRow = {
+  cleared_at: number;
 };
 
 type RunFinishBody = {
@@ -1436,7 +1441,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
 
   const idempotencyRecord = await c.env.DB.prepare(
     `SELECT idem.result_ref, idem.created_at, NULL AS reward_created_at,
-            preview.balance_config_version AS balance_config_version
+            preview.balance_config_version AS balance_config_version,
+            preview.run_id AS preview_run_id
      FROM idempotency_records idem
      LEFT JOIN run_reward_previews preview ON preview.id = idem.result_ref
      WHERE idem.account_id = ? AND idem.operation = 'run_finish' AND idem.idempotency_key = ?`,
@@ -1445,6 +1451,13 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     .first<IdempotencyRecordRow>();
 
   if (idempotencyRecord !== null) {
+    if (idempotencyRecord.preview_run_id !== runId) {
+      return c.json(createRunFinishRejectedResponse({
+        runId,
+        errorCode: "contract_violation",
+        message: "Idempotency-Key was already used for another run finish.",
+      }), 400);
+    }
     return c.json(createRunFinishDuplicateReplayResponse({
       runId,
       rewardPreviewId: idempotencyRecord.result_ref,
@@ -1517,6 +1530,17 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   }
 
   const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  const firstClearRecord = await c.env.DB.prepare(
+    `SELECT cleared_at
+     FROM account_first_clears
+     WHERE account_id = ? AND operation_key = ? AND risk = ?`,
+  )
+    .bind(authContext.accountId, previewMetadata.operationId, risk)
+    .first<FirstClearRow>();
+  const firstClearEligible =
+    firstClearRecord === null &&
+    body.outcome === "VICTORY" &&
+    body.completedWaveCount === 15;
   const rewardPreview = calculateRunRewardPreview({
     config: runRewardsConfig,
     operationId: previewMetadata.operationId,
@@ -1525,7 +1549,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     risk,
     outcome: body.outcome,
     clearedWaves: body.completedWaveCount,
-    firstClearEligible: false,
+    firstClearEligible,
     integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
   });
   const now = Date.now();
@@ -1561,6 +1585,14 @@ app.post("/v1/runs/:runId/finish", async (c) => {
       now + runRewardPreviewTtlMs,
       now,
     ),
+    ...(rewardPreview.calculation.firstClearApplied
+      ? [
+          c.env.DB.prepare(
+            `INSERT INTO account_first_clears (account_id, operation_key, risk, cleared_at, run_id)
+             VALUES (?, ?, ?, ?, ?)`,
+          ).bind(authContext.accountId, previewMetadata.operationId, risk, now, runId),
+        ]
+      : []),
     c.env.DB.prepare(
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
        VALUES (?, ?, ?, 'run_finish', ?, ?)`,
