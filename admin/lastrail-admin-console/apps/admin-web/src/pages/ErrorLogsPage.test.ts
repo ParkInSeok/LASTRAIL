@@ -38,5 +38,7 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
     expect(options).toContain("오프라인 보상 정책 누락 (offline_reward_policy_missing)");
     expect(options).toContain("오프라인 보상 상태 충돌 (offline_reward_state_conflict)");
+    expect(options).toContain("스토리 진행 정책 누락 (story_progress_policy_missing)");
+    expect(options).toContain("내러티브 콘텐츠 누락 (narrative_content_missing)");
   });
 });

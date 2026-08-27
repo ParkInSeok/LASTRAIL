@@ -21,6 +21,16 @@ export const runRiskRewardPlaceholders: RunRiskRewardPlaceholder[] = [
   { label: "계산 메타데이터 상태", value: "연동 대기", note: "서버 보상 미리보기 / Unity 진단 참고 신호 분리" }
 ];
 
+export const runStoryNarrativePlaceholders: RunRiskRewardPlaceholder[] = [
+  { label: "작전 ID", value: "연동 대기", note: "stable operation id 표시 후보" },
+  { label: "스토리 진행도", value: "연동 대기", note: "최고 클리어 진행도 표시 후보" },
+  { label: "첫 클리어 상태", value: "연동 대기", note: "first clear visibility 후보" },
+  { label: "미션 내러티브 상태", value: "연동 대기", note: "브리핑/콜아웃 데이터 상태 후보" },
+  { label: "현지화 데이터 상태", value: "연동 대기", note: "localization missing-state 후보" },
+  { label: "누락 데이터 상태", value: "연동 대기", note: "narrative_content_missing 연계 후보" },
+  { label: "플레이어 문의 지원 문맥", value: "연동 대기", note: "read-only support context 후보" }
+];
+
 export function RunDetailPage() {
   const { runId = "" } = useParams();
   const query = useQuery({
@@ -66,6 +76,21 @@ export function RunDetailPage() {
         </header>
         <div className="metric-grid">
           {runRiskRewardPlaceholders.map((placeholder) => (
+            <div key={placeholder.label} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>{placeholder.note}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>스토리 진행도/내러티브 상태</h2>
+          <p>스토리 진행과 현지화/내러티브 데이터 상태를 읽기 전용으로 볼 준비만 합니다</p>
+        </header>
+        <div className="metric-grid">
+          {runStoryNarrativePlaceholders.map((placeholder) => (
             <div key={placeholder.label} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

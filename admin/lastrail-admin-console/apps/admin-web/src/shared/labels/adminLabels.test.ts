@@ -93,6 +93,10 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("offline_reward_integrity_restricted")).toBe(
       "무결성 판정으로 오프라인 보상 제한"
     );
+    expect(opsErrorCodeLabel("story_progress_policy_missing")).toBe("스토리 진행 정책 누락");
+    expect(opsErrorCodeLabel("story_progress_state_conflict")).toBe("스토리 진행 상태 충돌");
+    expect(opsErrorCodeLabel("narrative_content_missing")).toBe("내러티브 콘텐츠 누락");
+    expect(opsErrorCodeLabel("narrative_version_mismatch")).toBe("내러티브 버전 불일치");
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
   });
 

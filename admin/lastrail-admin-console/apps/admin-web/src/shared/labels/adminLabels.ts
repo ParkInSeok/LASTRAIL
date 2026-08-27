@@ -191,7 +191,11 @@ export function opsErrorCodeLabel(code: string): string {
       offline_reward_policy_missing: "오프라인 보상 정책 누락",
       offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
       offline_reward_state_conflict: "오프라인 보상 상태 충돌",
-      offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한"
+      offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한",
+      story_progress_policy_missing: "스토리 진행 정책 누락",
+      story_progress_state_conflict: "스토리 진행 상태 충돌",
+      narrative_content_missing: "내러티브 콘텐츠 누락",
+      narrative_version_mismatch: "내러티브 버전 불일치"
     },
     code
   );

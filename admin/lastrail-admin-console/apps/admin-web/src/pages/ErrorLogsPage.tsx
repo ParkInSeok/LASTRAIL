@@ -52,7 +52,11 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
       "offline_reward_policy_missing",
       "offline_reward_claim_unavailable",
       "offline_reward_state_conflict",
-      "offline_reward_integrity_restricted"
+      "offline_reward_integrity_restricted",
+      "story_progress_policy_missing",
+      "story_progress_state_conflict",
+      "narrative_content_missing",
+      "narrative_version_mismatch"
     ].map((code) => labeledCode(opsErrorCodeLabel(code), code))
   },
   { label: "식별자", options: ["errorCode", "requestId", "accountId", "runId", "rewardPreviewId", "gachaBatchId"] },
