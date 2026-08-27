@@ -165,8 +165,15 @@ Launch risk/reward preview generation policy is drafted in
 
 ## Story Progress
 
-Story progress Source of Truth and read model candidates are drafted in
+Story progress Source of Truth and read model policy is drafted in
 `docs/api/story-progress.md`.
+
+Current local Game API read endpoint:
+
+```text
+GET /v1/story-progress
+Authorization: Bearer <access-token>
+```
 
 Baseline policy:
 
@@ -176,6 +183,10 @@ Baseline policy:
   current local contract slice.
 - Client-supplied story progress, unlock state, and narrative flags are not
   Source of Truth.
+- Account id is resolved only from the authenticated player session.
+- Query/body account id is rejected with `contract_violation`.
+- Empty accounts return accepted Act 1 `none` progress and default
+  `opn_01_last_departure` unlock.
 
 ## Offline Rewards
 

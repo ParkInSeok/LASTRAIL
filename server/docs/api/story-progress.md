@@ -160,18 +160,72 @@ Future run finish story progress update can insert:
 - narrative flags for durable milestones;
 - progression ledger rows that describe the server-side delta.
 
-## Response Shape Candidate
+## Game API Read Endpoint
 
-Future read-only endpoint candidate:
+Current local Game API read endpoint:
 
 ```text
 GET /v1/story-progress
+Authorization: Bearer <access-token>
 ```
 
-Response:
+Rules:
+
+- Player Bearer auth is required.
+- The account id is resolved only from the authenticated session context.
+- Request body is not accepted.
+- `accountId` / `account_id` query parameters are rejected with
+  `contract_violation`.
+- Missing `account_story_progress` rows return an accepted default `none`
+  progress response for Act 1.
+- Existing rows are read from `account_story_progress`, with operation unlocks
+  derived from `account_unlocks`.
+- Full localized dialogue text, tokens, secrets, raw request bodies, raw RNG
+  material, reward calculation internals, and account shortcut data are never
+  returned.
+- `narrativeVersion` is read-only diagnostic metadata. It does not drive reward
+  eligibility, first clear eligibility, unlock truth, or offline reward
+  multipliers.
+
+Empty account response:
 
 ```json
 {
+  "accepted": true,
+  "actId": "act_01_wasteland_railway",
+  "operationId": null,
+  "storyProgress": {
+    "highestStoryProgressId": "none",
+    "highestClearedOperationId": null,
+    "order": 0
+  },
+  "firstClear": null,
+  "clearedOperationIds": [],
+  "narrativeFlags": [],
+  "storyFlags": [],
+  "unlockedOperations": [
+    "opn_01_last_departure"
+  ],
+  "narrativeVersion": "act1.2026-08-27.001",
+  "narrative": {
+    "narrativeVersion": "act1.2026-08-27.001",
+    "contentStatus": "CANDIDATE",
+    "localizationStatus": "PENDING",
+    "fixtureStatus": "PARTIAL",
+    "missingContentStatus": "UNKNOWN"
+  },
+  "lastProgressRunId": null,
+  "updatedAt": null,
+  "errorCode": null,
+  "message": null
+}
+```
+
+Stored progress response:
+
+```json
+{
+  "accepted": true,
   "actId": "act_01_wasteland_railway",
   "operationId": "opn_03_water_stop",
   "storyProgress": {
@@ -179,22 +233,34 @@ Response:
     "highestClearedOperationId": "opn_03_water_stop",
     "order": 3
   },
-  "firstClear": {
-    "operationId": "opn_03_water_stop",
-    "risk": "III",
-    "cleared": true
-  },
+  "firstClear": null,
+  "clearedOperationIds": [
+    "opn_01_last_departure",
+    "opn_02_first_signal",
+    "opn_03_water_stop"
+  ],
   "narrativeFlags": [
-    "first_signal_restored",
-    "water_stop_secured"
+    "operation_cleared:opn_03_water_stop"
+  ],
+  "storyFlags": [
+    "operation_cleared:opn_03_water_stop"
   ],
   "unlockedOperations": [
     "opn_01_last_departure",
-    "opn_02_first_signal",
-    "opn_03_water_stop",
     "opn_04_scrapstar_show"
   ],
-  "narrativeVersion": "act1-narrative-v1"
+  "narrativeVersion": "act1.2026-08-27.001",
+  "narrative": {
+    "narrativeVersion": "act1.2026-08-27.001",
+    "contentStatus": "CANDIDATE",
+    "localizationStatus": "PENDING",
+    "fixtureStatus": "PARTIAL",
+    "missingContentStatus": "UNKNOWN"
+  },
+  "lastProgressRunId": "run_01...",
+  "updatedAt": "2026-08-27T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
 }
 ```
 
@@ -202,10 +268,10 @@ Notes:
 
 - `firstClear` is optional detail and remains risk-scoped.
 - `storyProgress` is not risk-scoped.
-- `unlockedOperations` is server-derived from `account_unlocks` or story
-  progress policy.
-- `narrativeVersion` is metadata only. It must not gate economy rewards unless a
-  future migration explicitly introduces such a dependency.
+- `unlockedOperations` is server-derived from `account_unlocks`, with
+  `opn_01_last_departure` kept as the default Act 1 operation.
+- The current endpoint returns `firstClear: null`; richer risk-scoped first
+  clear detail remains a future read model candidate.
 
 ## Accepted Run Finish Update
 

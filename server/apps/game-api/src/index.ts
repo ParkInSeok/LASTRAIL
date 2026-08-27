@@ -86,9 +86,18 @@ type FirstClearRow = {
 };
 
 type AccountStoryProgressRow = {
+  act_id?: string;
+  highest_cleared_operation_id?: string;
   highest_story_progress_id: string;
   cleared_operations_json: string;
   story_flags_json: string;
+  narrative_version?: string | null;
+  last_progress_run_id?: string | null;
+  updated_at?: number;
+};
+
+type AccountUnlockRow = {
+  unlock_id: string;
 };
 
 type RunFinishBody = {
@@ -261,6 +270,7 @@ const actOneStoryProgressOrder = [
 
 const actOneOperationIds = actOneStoryProgressOrder.filter((id) => id !== "none");
 type ActOneStoryProgressId = typeof actOneStoryProgressOrder[number];
+const actOneNarrativeVersion = "act1.2026-08-27.001";
 
 function parsePositiveInteger(value: string): number | null {
   if (!/^[1-9]\d*$/u.test(value)) return null;
@@ -445,6 +455,111 @@ function parseJsonStringArray(value: string): string[] {
 
 function uniqueStrings(values: string[]): string[] {
   return [...new Set(values)];
+}
+
+function sortActOneOperationIds(values: string[]): string[] {
+  return uniqueStrings(values)
+    .filter((value) => actOneOperationIds.includes(value as typeof actOneOperationIds[number]))
+    .sort((left, right) => (getActOneStoryProgressOrder(left) ?? 999) - (getActOneStoryProgressOrder(right) ?? 999));
+}
+
+function createStoryProgressRejectedResponse(options: {
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    accepted: false,
+    actId: "act_01_wasteland_railway",
+    operationId: null,
+    storyProgress: null,
+    firstClear: null,
+    clearedOperationIds: [],
+    narrativeFlags: [],
+    storyFlags: [],
+    unlockedOperations: [],
+    narrativeVersion: actOneNarrativeVersion,
+    narrative: null,
+    lastProgressRunId: null,
+    updatedAt: null,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createStoryProgressAcceptedResponse(options: {
+  row: (AccountStoryProgressRow & {
+    act_id: string;
+    highest_cleared_operation_id: string;
+    narrative_version: string | null;
+    last_progress_run_id: string | null;
+    updated_at: number;
+  }) | null;
+  unlockedOperationIds: string[];
+}) {
+  const narrativeVersion = options.row?.narrative_version ?? actOneNarrativeVersion;
+  if (options.row === null) {
+    return {
+      accepted: true,
+      actId: "act_01_wasteland_railway",
+      operationId: null,
+      storyProgress: {
+        highestStoryProgressId: "none",
+        highestClearedOperationId: null,
+        order: 0,
+      },
+      firstClear: null,
+      clearedOperationIds: [],
+      narrativeFlags: [],
+      storyFlags: [],
+      unlockedOperations: ["opn_01_last_departure"],
+      narrativeVersion,
+      narrative: {
+        narrativeVersion,
+        contentStatus: "CANDIDATE",
+        localizationStatus: "PENDING",
+        fixtureStatus: "PARTIAL",
+        missingContentStatus: "UNKNOWN",
+      },
+      lastProgressRunId: null,
+      updatedAt: null,
+      errorCode: null,
+      message: null,
+    };
+  }
+
+  const storyFlags = parseJsonStringArray(options.row.story_flags_json);
+  const unlockedOperations = sortActOneOperationIds([
+    "opn_01_last_departure",
+    ...options.unlockedOperationIds,
+  ]);
+
+  return {
+    accepted: true,
+    actId: options.row.act_id,
+    operationId: options.row.highest_story_progress_id,
+    storyProgress: {
+      highestStoryProgressId: options.row.highest_story_progress_id,
+      highestClearedOperationId: options.row.highest_cleared_operation_id,
+      order: getActOneStoryProgressOrder(options.row.highest_story_progress_id) ?? 0,
+    },
+    firstClear: null,
+    clearedOperationIds: sortActOneOperationIds(parseJsonStringArray(options.row.cleared_operations_json)),
+    narrativeFlags: storyFlags,
+    storyFlags,
+    unlockedOperations,
+    narrativeVersion,
+    narrative: {
+      narrativeVersion,
+      contentStatus: "CANDIDATE",
+      localizationStatus: "PENDING",
+      fixtureStatus: "PARTIAL",
+      missingContentStatus: "UNKNOWN",
+    },
+    lastProgressRunId: options.row.last_progress_run_id,
+    updatedAt: toIso(options.row.updated_at),
+    errorCode: null,
+    message: null,
+  };
 }
 
 function createStoryProgressPlan(options: {
@@ -1029,6 +1144,64 @@ app.get("/v1/client-config", (c) =>
     maintenance: { enabled: false },
   }),
 );
+app.get("/v1/story-progress", async (c) => {
+  const hasForbiddenAccountQuery = c.req.query("accountId") !== undefined || c.req.query("account_id") !== undefined;
+  const contentLength = c.req.header("content-length");
+  if (hasForbiddenAccountQuery || (contentLength !== undefined && contentLength !== "0")) {
+    return c.json(createStoryProgressRejectedResponse({
+      errorCode: "contract_violation",
+      message: "GET /v1/story-progress must not include account id query parameters or a request body.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createStoryProgressRejectedResponse({
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const storyProgress = await c.env.DB.prepare(
+    `SELECT act_id, highest_cleared_operation_id, highest_story_progress_id,
+            cleared_operations_json, story_flags_json, narrative_version,
+            last_progress_run_id, updated_at
+     FROM account_story_progress
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountStoryProgressRow & {
+      act_id: string;
+      highest_cleared_operation_id: string;
+      narrative_version: string | null;
+      last_progress_run_id: string | null;
+      updated_at: number;
+    }>();
+
+  if (storyProgress === null) {
+    return c.json(createStoryProgressAcceptedResponse({
+      row: null,
+      unlockedOperationIds: [],
+    }));
+  }
+
+  const unlockRows = await c.env.DB.prepare(
+    `SELECT unlock_id
+     FROM account_unlocks
+     WHERE account_id = ? AND unlock_id LIKE 'operation:%'
+     ORDER BY unlocked_at, unlock_id`,
+  )
+    .bind(authContext.accountId)
+    .all<AccountUnlockRow>();
+  const unlockedOperationIds = unlockRows.results
+    .map((row) => row.unlock_id.startsWith("operation:") ? row.unlock_id.slice("operation:".length) : null)
+    .filter((value): value is string => value !== null);
+
+  return c.json(createStoryProgressAcceptedResponse({
+    row: storyProgress,
+    unlockedOperationIds,
+  }));
+});
 app.get("/v1/balance-config/:version", async (c) => {
   const rawVersion = c.req.param("version");
   const version = parsePositiveInteger(rawVersion);
