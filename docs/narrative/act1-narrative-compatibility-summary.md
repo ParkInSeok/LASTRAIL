@@ -34,6 +34,7 @@ Act 1 text currently exists as narrative candidates, not finalized localized str
 - `docs/narrative/story-processing-architecture.md`
 - `docs/narrative/narrative-localization-versioning.md`
 - `docs/narrative/story-progress-readonly-api-admin-query.md`
+- `docs/narrative/story-progress-readonly-rollout-checklist.md`
 
 ## Reward Framing Compatibility
 
