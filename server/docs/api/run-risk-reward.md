@@ -580,13 +580,35 @@ Completed second local-only slice:
 - Did not change migrations, D1 seed data, run finish routes, economy mutation,
   or remote Cloudflare resources.
 
+Completed third local-only slice:
+
+- Added `POST /v1/runs/:runId/finish` contract route.
+- The route requires `Idempotency-Key` and Game API bearer account auth.
+- The route rejects client reward amount/grant/ledger/first-clear fields at the
+  request parser boundary.
+- The route reads the run's frozen `balance_config_version`, linked
+  `operation_previews`, and immutable balance config `runRewards`.
+- Accepted finish writes `run_final_results`, updates `runs.status`, inserts one
+  `run_reward_previews` row, and records `idempotency_records.operation =
+  'run_finish'` in one D1 batch.
+- Accepted response returns `rewardPreviewId` and does not return reward amounts
+  or final grants.
+- Added unit contract coverage and local D1 smoke coverage for reward preview
+  insert on accepted finish.
+- First-clear bonus is not applied in this route yet. The first-clear durable
+  consumption policy remains open and must be added before enabling first-clear
+  reward lines in run finish.
+- Did not change migrations, DEV seed data, reward claim/economy mutation, or
+  remote Cloudflare resources.
+
 Next implementation candidates:
 
 1. Decide whether the DEV balance seed should include `runRewards` before run
    finish integration.
-2. Add run finish contract tests for reward preview generation.
-3. Implement accepted run finish transaction with reward preview insert.
-4. Add first-clear guard tests against `account_first_clears`.
+2. Add run finish idempotency replay contract coverage that restores the stored
+   `rewardPreviewId` policy after final Unity mapping is approved.
+3. Add first-clear guard tests against `account_first_clears`.
+4. Decide preview-time vs claim-time first-clear durable consumption.
 5. Add Admin read-only reward preview summary later.
 6. Add Unity display metadata only after response contract is approved.
 

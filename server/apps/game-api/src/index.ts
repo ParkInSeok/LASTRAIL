@@ -1,6 +1,13 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
 import { createRequestId } from "@lastrail/common";
+import {
+  calculateRunRewardPreview,
+  parseRunRewardsConfig,
+  type IntegrityDisposition,
+  type RunOutcome,
+  type RunRiskTier,
+} from "../../../packages/balance/src/index";
 import { createAccessToken, hashRefreshToken, verifyAccessToken } from "./auth";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -39,6 +46,17 @@ type RewardPreviewRow = {
   reward_claim_id: string | null;
 };
 
+type RunFinishRow = {
+  id: string;
+  account_id: string;
+  status: "ACTIVE" | "FINISH_PENDING" | "COMPLETED" | "FAILED" | "QUARANTINED" | "EXPIRED" | "ABANDONED";
+  balance_config_version: number;
+  objective: string;
+  risk: string;
+  preview_json: string;
+  config_json: string;
+};
+
 type CurrencyRewardLine = {
   kind: "CURRENCY";
   id: string;
@@ -59,6 +77,17 @@ type IdempotencyRecordRow = {
   result_ref: string;
   created_at: number;
   reward_created_at: number | null;
+};
+
+type RunFinishBody = {
+  runId: string;
+  currentStage: "Complete";
+  currentWaveNumber: number;
+  completedWaveCount: number;
+  outcome: RunOutcome;
+  runtimeStateJson: string;
+  tacticSelections: unknown[];
+  clientCompletedAt: string;
 };
 
 type GachaBannerRow = {
@@ -188,6 +217,20 @@ const currencyIdToD1Currency = {
   cur_operator_exp: "OPERATOR_EXP",
 } as const;
 
+const runRewardPreviewTtlMs = 24 * 60 * 60 * 1000;
+const runFinishForbiddenRewardFields = new Set([
+  "rewardAmount",
+  "rewardAmounts",
+  "rewardLines",
+  "rewardClaimId",
+  "rewardPreviewId",
+  "currencyGrants",
+  "itemGrants",
+  "ledgerIds",
+  "firstClearEligible",
+  "firstClearApplied",
+]);
+
 function parsePositiveInteger(value: string): number | null {
   if (!/^[1-9]\d*$/u.test(value)) return null;
   const parsed = Number(value);
@@ -230,6 +273,133 @@ function getClaimability(row: RewardPreviewRow): "CLAIMABLE" | "ALREADY_CLAIMED"
   if (row.status === "INVALIDATED") return "INVALIDATED";
   if (row.expires_at <= Date.now()) return "EXPIRED";
   return "CLAIMABLE";
+}
+
+function createRunFinishRejectedResponse(options: {
+  runId: string;
+  balanceVersion?: string | null;
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    runId: options.runId,
+    accepted: false,
+    resultStatus: "REJECTED",
+    rewardClaimId: null,
+    rewardPreviewId: null,
+    serverReceivedAt: null,
+    balanceVersion: options.balanceVersion ?? null,
+    message: options.message,
+    errorCode: options.errorCode,
+  };
+}
+
+function createRunFinishAcceptedResponse(options: {
+  runId: string;
+  rewardPreviewId: string;
+  balanceVersion: string;
+  serverReceivedAt: number;
+}) {
+  return {
+    runId: options.runId,
+    accepted: true,
+    resultStatus: "ACCEPTED",
+    rewardClaimId: null,
+    rewardPreviewId: options.rewardPreviewId,
+    serverReceivedAt: toIso(options.serverReceivedAt),
+    balanceVersion: options.balanceVersion,
+    message: null,
+    errorCode: null,
+  };
+}
+
+function createRunFinishDuplicateReplayResponse(options: {
+  runId: string;
+  balanceVersion?: string | null;
+  serverReceivedAt: number;
+}) {
+  return {
+    runId: options.runId,
+    accepted: false,
+    resultStatus: "DUPLICATE_REPLAY",
+    rewardClaimId: null,
+    rewardPreviewId: null,
+    serverReceivedAt: toIso(options.serverReceivedAt),
+    balanceVersion: options.balanceVersion ?? null,
+    message: "Run finish was already accepted.",
+    errorCode: "duplicate_replay",
+  };
+}
+
+function parseRunFinishBody(value: unknown, pathRunId: string): RunFinishBody | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const body = value as Record<string, unknown>;
+  for (const forbiddenField of runFinishForbiddenRewardFields) {
+    if (Object.hasOwn(body, forbiddenField)) return null;
+  }
+  if (body.runId !== pathRunId) return null;
+  const completedWaveCount = body.completedWaveCount;
+  if (body.currentStage !== "Complete") return null;
+  if (body.currentWaveNumber !== 0) return null;
+  if (
+    typeof completedWaveCount !== "number" ||
+    !Number.isInteger(completedWaveCount) ||
+    completedWaveCount < 0 ||
+    completedWaveCount > 15
+  ) {
+    return null;
+  }
+  if (body.outcome !== "VICTORY" && body.outcome !== "FAILURE" && body.outcome !== "ABANDONED") {
+    return null;
+  }
+  if (typeof body.runtimeStateJson !== "string" || typeof body.clientCompletedAt !== "string") {
+    return null;
+  }
+  if (!Array.isArray(body.tacticSelections)) return null;
+  return {
+    runId: body.runId,
+    currentStage: body.currentStage,
+    currentWaveNumber: body.currentWaveNumber,
+    completedWaveCount,
+    outcome: body.outcome,
+    runtimeStateJson: body.runtimeStateJson,
+    tacticSelections: body.tacticSelections,
+    clientCompletedAt: body.clientCompletedAt,
+  };
+}
+
+function parseRunPreviewMetadata(previewJson: string, objective: string): {
+  operationId: string;
+  actId: string;
+  regionId: string;
+} {
+  try {
+    const parsed = JSON.parse(previewJson) as Record<string, unknown>;
+    return {
+      operationId: typeof parsed.operationId === "string" ? parsed.operationId : objective,
+      actId: typeof parsed.actId === "string" ? parsed.actId : "act_01_wasteland_railway",
+      regionId: typeof parsed.regionId === "string" ? parsed.regionId : "region_wasteland_railway",
+    };
+  } catch {
+    return {
+      operationId: objective,
+      actId: "act_01_wasteland_railway",
+      regionId: "region_wasteland_railway",
+    };
+  }
+}
+
+function parseRunRisk(value: string): RunRiskTier | null {
+  if (value === "I" || value === "II" || value === "III" || value === "IV" || value === "V") {
+    return value;
+  }
+  return null;
+}
+
+function getFinishedRunStatus(outcome: RunOutcome): "COMPLETED" | "FAILED" | "ABANDONED" {
+  if (outcome === "VICTORY") return "COMPLETED";
+  if (outcome === "ABANDONED") return "ABANDONED";
+  return "FAILED";
 }
 
 function createGachaRejectedResponse(options: {
@@ -1222,6 +1392,178 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     results: responseResults,
     postPityState,
     createdAt: now,
+  }));
+});
+
+app.post("/v1/runs/:runId/finish", async (c) => {
+  const runId = c.req.param("runId");
+  const idempotencyKey = c.req.header("Idempotency-Key");
+
+  if (idempotencyKey === undefined || idempotencyKey.trim() === "") {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    }), 400);
+  }
+
+  let requestJson: unknown;
+  try {
+    requestJson = await c.req.json();
+  } catch {
+    requestJson = null;
+  }
+
+  const body = parseRunFinishBody(requestJson, runId);
+  if (body === null) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      errorCode: "contract_violation",
+      message: "Run finish request body is invalid.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const idempotencyRecord = await c.env.DB.prepare(
+    `SELECT result_ref, created_at, NULL AS reward_created_at
+     FROM idempotency_records
+     WHERE account_id = ? AND operation = 'run_finish' AND idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<IdempotencyRecordRow>();
+
+  if (idempotencyRecord !== null) {
+    return c.json(createRunFinishDuplicateReplayResponse({
+      runId,
+      serverReceivedAt: idempotencyRecord.created_at,
+    }));
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT runs.id, runs.account_id, runs.status, runs.balance_config_version,
+            preview.objective, preview.risk, preview.preview_json,
+            balance.config_json
+     FROM runs
+     JOIN operation_previews preview ON preview.id = runs.preview_id
+     JOIN balance_config_versions balance ON balance.version = runs.balance_config_version
+     WHERE runs.id = ?`,
+  )
+    .bind(runId)
+    .first<RunFinishRow>();
+
+  if (row === null) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      errorCode: "run_not_found",
+      message: "Run was not found.",
+    }));
+  }
+
+  if (row.account_id !== authContext.accountId) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "run_account_mismatch",
+      message: "Run does not belong to the authenticated account.",
+    }));
+  }
+
+  if (row.status !== "ACTIVE" && row.status !== "FINISH_PENDING") {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "run_state_conflict",
+      message: "Run is not finishable.",
+    }));
+  }
+
+  const risk = parseRunRisk(row.risk);
+  if (risk === null) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "risk_reward_policy_missing",
+      message: "Run risk policy is invalid.",
+    }));
+  }
+
+  let runRewardsConfig;
+  try {
+    const balanceConfig = JSON.parse(row.config_json) as { runRewards?: unknown };
+    runRewardsConfig = parseRunRewardsConfig(balanceConfig.runRewards);
+  } catch (error) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: error instanceof Error ? error.message : "reward_plan_unavailable",
+      message: "Run reward policy is unavailable.",
+    }));
+  }
+
+  const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  const rewardPreview = calculateRunRewardPreview({
+    config: runRewardsConfig,
+    operationId: previewMetadata.operationId,
+    actId: previewMetadata.actId,
+    regionId: previewMetadata.regionId,
+    risk,
+    outcome: body.outcome,
+    clearedWaves: body.completedWaveCount,
+    firstClearEligible: false,
+    integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
+  });
+  const now = Date.now();
+  const rewardPreviewId = createDomainId("reward_preview");
+  const rewardPlanJson = JSON.stringify({
+    rewardLines: rewardPreview.rewardLines,
+    calculation: {
+      ...rewardPreview.calculation,
+      balanceVersion: String(row.balance_config_version),
+    },
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO run_final_results (run_id, outcome, cleared_waves, payload_json, submitted_at)
+       VALUES (?, ?, ?, ?, ?)`,
+    ).bind(runId, body.outcome, body.completedWaveCount, JSON.stringify(body), now),
+    c.env.DB.prepare(
+      `UPDATE runs
+       SET status = ?, finished_at = ?
+       WHERE id = ? AND account_id = ?`,
+    ).bind(getFinishedRunStatus(body.outcome), now, runId, authContext.accountId),
+    c.env.DB.prepare(
+      `INSERT INTO run_reward_previews (
+         id, account_id, run_id, status, balance_config_version, reward_plan_json, expires_at, created_at, claimed_at, reward_claim_id
+       ) VALUES (?, ?, ?, 'ACTIVE', ?, ?, ?, ?, NULL, NULL)`,
+    ).bind(
+      rewardPreviewId,
+      authContext.accountId,
+      runId,
+      row.balance_config_version,
+      rewardPlanJson,
+      now + runRewardPreviewTtlMs,
+      now,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'run_finish', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, rewardPreviewId, now),
+  ]);
+
+  return c.json(createRunFinishAcceptedResponse({
+    runId,
+    rewardPreviewId,
+    balanceVersion: String(row.balance_config_version),
+    serverReceivedAt: now,
   }));
 });
 

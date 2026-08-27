@@ -1,6 +1,9 @@
 # Run Result Submit Contract Draft
 
-This draft is the server-side contract for Unity run result submission. It is not an implementation plan for reward calculation details.
+This draft is the server-side contract for Unity run result submission. The
+first local-only route slice is implemented for accepted finish -> reward
+preview creation. Full validator integration, first-clear durable consumption,
+and final production balance rollout remain follow-up work.
 
 Reward preview and claim/commit follow-up is defined in `docs/api/run-reward-preview-claim.md`.
 
