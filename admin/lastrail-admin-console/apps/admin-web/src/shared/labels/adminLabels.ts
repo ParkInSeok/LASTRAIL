@@ -31,6 +31,14 @@ type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
 type OpsSeverity = "warn" | "error" | "fatal";
 type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
+type StoryProgressStatus =
+  | "draft_exists"
+  | "localization_pending"
+  | "fixture_pending"
+  | "version_pending"
+  | "content_missing"
+  | "version_mismatch"
+  | "ready";
 type StoryProgressId =
   | "none"
   | "opn_01_last_departure"
@@ -238,7 +246,8 @@ export function permissionLabel(permission: string): string {
       BALANCE_ROLLBACK: "밸런스 롤백",
       BALANCE_SIMULATION_READ: "밸런스 시뮬레이션 조회",
       BALANCE_SIMULATION_RUN: "밸런스 시뮬레이션 실행",
-      BALANCE_SIMULATION_CANCEL: "밸런스 시뮬레이션 취소"
+      BALANCE_SIMULATION_CANCEL: "밸런스 시뮬레이션 취소",
+      STORY_PROGRESS_READ: "스토리 진행 조회"
     },
     permission
   );
@@ -317,6 +326,22 @@ export function storyProgressLabel(progressId: StoryProgressId | string | null):
       raid_raider_king_engine: "약탈왕 기관차"
     },
     progressId
+  );
+}
+
+export function storyProgressStatusLabel(status: StoryProgressStatus | string | null): string {
+  if (!status) return "상태 없음";
+  return labelFor(
+    {
+      draft_exists: "초안 존재",
+      localization_pending: "현지화 대기",
+      fixture_pending: "fixture 대기",
+      version_pending: "버전 대기",
+      content_missing: "콘텐츠 누락",
+      version_mismatch: "버전 불일치",
+      ready: "준비 완료"
+    },
+    status
   );
 }
 

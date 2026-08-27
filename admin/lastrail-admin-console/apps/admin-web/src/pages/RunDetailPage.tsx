@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { levelSourceLabel, storyProgressLabel } from "../shared/labels/adminLabels";
+import { levelSourceLabel, permissionLabel, storyProgressLabel } from "../shared/labels/adminLabels";
 
 type RunRiskRewardPlaceholder = {
   label: string;
@@ -23,6 +23,13 @@ type RaidNarrativeObjectivePlaceholder = {
   objectiveId: string;
   label: string;
   state: "연동 대기";
+  note: string;
+};
+
+type StoryProgressReadContractPlaceholder = {
+  label: string;
+  field: string;
+  value: "연동 대기";
   note: string;
 };
 
@@ -77,6 +84,32 @@ export const raidNarrativeObjectivePlaceholders: RaidNarrativeObjectivePlacehold
   { objectiveId: "supply_car_stabilized", label: "보급차 안정화", state: "연동 대기", note: "read-only raid scoring 후보" },
   { objectiveId: "fuel_core_stable", label: "연료 코어 안정", state: "연동 대기", note: "read-only raid scoring 후보" },
   { objectiveId: "engine_integrity", label: "엔진 무결성", state: "연동 대기", note: "read-only raid scoring 후보" }
+];
+
+export const storyProgressReadContractPlaceholders: StoryProgressReadContractPlaceholder[] = [
+  { label: "최고 스토리 진행도", field: "highestStoryProgressId", value: "연동 대기", note: "Run detail story progress 연결 후보" },
+  { label: "내러티브 콘텐츠 상태", field: "contentStatus", value: "연동 대기", note: "coverage status 연결 후보" },
+  { label: "현지화 상태", field: "localizationStatus", value: "연동 대기", note: "localization status 연결 후보" },
+  { label: "fixture 상태", field: "fixtureStatus", value: "연동 대기", note: "Unity fixture status 연결 후보" },
+  { label: "내러티브 버전", field: "narrativeVersion", value: "연동 대기", note: "예: act1.2026-08-27.001 후보" },
+  { label: "누락 콘텐츠 상태", field: "missingContentStatus", value: "연동 대기", note: "missing-state 연결 후보" },
+  { label: "마지막 진행 출격", field: "lastProgressRunId", value: "연동 대기", note: "플레이어 문의 지원 문맥 후보" },
+  { label: "진행 갱신 시각", field: "updatedAt", value: "연동 대기", note: "read-only updatedAt 후보" },
+  {
+    label: "조회 권한 후보",
+    field: "permission",
+    value: "연동 대기",
+    note: `${permissionLabel("STORY_PROGRESS_READ")} / STORY_PROGRESS_READ`
+  }
+];
+
+export const storyProgressReadContractFilters = [
+  "highestStoryProgressId",
+  "narrativeVersion",
+  "contentStatus",
+  "localizationStatus",
+  "fixtureStatus",
+  "missingContentStatus"
 ];
 
 export function RunDetailPage() {
@@ -145,6 +178,22 @@ export function RunDetailPage() {
               <small>{placeholder.note}</small>
             </div>
           ))}
+        </div>
+        <div className="metric-grid">
+          {storyProgressReadContractPlaceholders.map((placeholder) => (
+            <div key={placeholder.field} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>
+                {placeholder.field} / {placeholder.note}
+              </small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-card">
+          <span>필터 후보</span>
+          <strong>연동 대기</strong>
+          <small>{storyProgressReadContractFilters.join(" / ")}</small>
         </div>
         <div className="table-wrap">
           <table>

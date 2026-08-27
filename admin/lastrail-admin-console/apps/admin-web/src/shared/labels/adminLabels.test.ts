@@ -25,6 +25,7 @@ import {
   riskLevelLabel,
   roleLabel,
   runResultLabel,
+  storyProgressStatusLabel,
   storyProgressLabel
 } from "./adminLabels";
 
@@ -45,6 +46,7 @@ describe("adminLabels", () => {
     expect(auditActionLabel("PLAYER_NOTE_CREATE")).toBe("플레이어 노트 작성");
     expect(resourceTypeLabel("account")).toBe("계정");
     expect(permissionLabel("BALANCE_PUBLISH")).toBe("밸런스 게시");
+    expect(permissionLabel("STORY_PROGRESS_READ")).toBe("스토리 진행 조회");
   });
 
   it("keeps unknown backend codes readable instead of hiding them", () => {
@@ -111,6 +113,17 @@ describe("adminLabels", () => {
     expect(storyProgressLabel("raid_raider_king_engine")).toBe("약탈왕 기관차");
     expect(storyProgressLabel(null)).toBe("스토리 진행 없음");
     expect(storyProgressLabel("future_story_id")).toBe("future_story_id");
+  });
+
+  it("translates story progress and narrative status codes while preserving unknown fallback", () => {
+    expect(storyProgressStatusLabel("draft_exists")).toBe("초안 존재");
+    expect(storyProgressStatusLabel("localization_pending")).toBe("현지화 대기");
+    expect(storyProgressStatusLabel("fixture_pending")).toBe("fixture 대기");
+    expect(storyProgressStatusLabel("version_pending")).toBe("버전 대기");
+    expect(storyProgressStatusLabel("content_missing")).toBe("콘텐츠 누락");
+    expect(storyProgressStatusLabel("version_mismatch")).toBe("버전 불일치");
+    expect(storyProgressStatusLabel("ready")).toBe("준비 완료");
+    expect(storyProgressStatusLabel("future_status")).toBe("future_status");
   });
 
   it("translates risk reward display labels without deriving calculation values", () => {

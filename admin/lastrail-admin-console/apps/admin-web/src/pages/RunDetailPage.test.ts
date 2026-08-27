@@ -3,7 +3,9 @@ import {
   actOneNarrativeCoverage,
   raidNarrativeObjectivePlaceholders,
   runRiskRewardPlaceholders,
-  runStoryNarrativePlaceholders
+  runStoryNarrativePlaceholders,
+  storyProgressReadContractFilters,
+  storyProgressReadContractPlaceholders
 } from "./RunDetailPage";
 
 describe("RunDetailPage risk reward skeleton", () => {
@@ -46,6 +48,35 @@ describe("RunDetailPage risk reward skeleton", () => {
     ]);
     expect(runStoryNarrativePlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
     expect(runStoryNarrativePlaceholders.map((placeholder) => placeholder.note).join(" ")).not.toContain("대사");
+  });
+
+  it("aligns story progress placeholders with read-only admin query contract fields", () => {
+    expect(storyProgressReadContractPlaceholders.map((placeholder) => placeholder.field)).toEqual([
+      "highestStoryProgressId",
+      "contentStatus",
+      "localizationStatus",
+      "fixtureStatus",
+      "narrativeVersion",
+      "missingContentStatus",
+      "lastProgressRunId",
+      "updatedAt",
+      "permission"
+    ]);
+    expect(storyProgressReadContractPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
+    expect(storyProgressReadContractPlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
+      "STORY_PROGRESS_READ"
+    );
+  });
+
+  it("prepares story progress read-only filter skeleton fields", () => {
+    expect(storyProgressReadContractFilters).toEqual([
+      "highestStoryProgressId",
+      "narrativeVersion",
+      "contentStatus",
+      "localizationStatus",
+      "fixtureStatus",
+      "missingContentStatus"
+    ]);
   });
 
   it("lists Act 1 narrative coverage by stable mission id with placeholder states", () => {
