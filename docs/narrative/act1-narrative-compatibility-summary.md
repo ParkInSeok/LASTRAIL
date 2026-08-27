@@ -33,6 +33,7 @@ Act 1 text currently exists as narrative candidates, not finalized localized str
 
 - `docs/narrative/story-processing-architecture.md`
 - `docs/narrative/narrative-localization-versioning.md`
+- `docs/narrative/story-progress-readonly-api-admin-query.md`
 
 ## Reward Framing Compatibility
 
@@ -119,4 +120,4 @@ Before promoting these drafts into implementation contracts, verify:
 1. Server: accepted run finish story progress update contract slice.
 2. Unity: Act 1 `MissionNarrativeCatalog` and fixtures for opn_02 through raid.
 3. Admin: Act 1 narrative coverage/read-only status skeleton.
-4. Planning: story progress read-only API/Admin query contract.
+4. Server/Admin/Unity: story progress read-only API/Admin query implementation slices after contract approval.
