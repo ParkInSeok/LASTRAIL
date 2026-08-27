@@ -24,7 +24,8 @@ import {
   rewardCalculationSourceLabel,
   riskLevelLabel,
   roleLabel,
-  runResultLabel
+  runResultLabel,
+  storyProgressLabel
 } from "./adminLabels";
 
 describe("adminLabels", () => {
@@ -86,7 +87,26 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("reward_plan_unavailable")).toBe("보상 계획 사용 불가");
     expect(opsErrorCodeLabel("risk_reward_policy_missing")).toBe("위험도 보상 정책 누락");
     expect(opsErrorCodeLabel("reward_integrity_restricted")).toBe("무결성 판정으로 보상 제한");
+    expect(opsErrorCodeLabel("offline_reward_policy_missing")).toBe("오프라인 보상 정책 누락");
+    expect(opsErrorCodeLabel("offline_reward_claim_unavailable")).toBe("오프라인 보상 수령 불가");
+    expect(opsErrorCodeLabel("offline_reward_state_conflict")).toBe("오프라인 보상 상태 충돌");
+    expect(opsErrorCodeLabel("offline_reward_integrity_restricted")).toBe(
+      "무결성 판정으로 오프라인 보상 제한"
+    );
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
+  });
+
+  it("translates story progress stable ids while preserving unknown fallback", () => {
+    expect(storyProgressLabel("none")).toBe("스토리 진행 없음");
+    expect(storyProgressLabel("opn_01_last_departure")).toBe("마지막 출발");
+    expect(storyProgressLabel("opn_02_first_signal")).toBe("첫 신호");
+    expect(storyProgressLabel("opn_03_water_stop")).toBe("급수 정차");
+    expect(storyProgressLabel("opn_04_scrapstar_show")).toBe("스크랩스타 쇼");
+    expect(storyProgressLabel("opn_05_night_boarders")).toBe("야간 승선전");
+    expect(storyProgressLabel("opn_06_broken_line")).toBe("끊어진 선로");
+    expect(storyProgressLabel("raid_raider_king_engine")).toBe("약탈왕 기관차");
+    expect(storyProgressLabel(null)).toBe("스토리 진행 없음");
+    expect(storyProgressLabel("future_story_id")).toBe("future_story_id");
   });
 
   it("translates risk reward display labels without deriving calculation values", () => {

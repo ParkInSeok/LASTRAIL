@@ -29,6 +29,22 @@ describe("DashboardPage configuration", () => {
     expect(riskRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
   });
 
+  it("prepares offline reward progression metrics without hard-coded reward amounts", () => {
+    const offlineRewardSection = dashboardSections.find((section) => section.title === "오프라인 보상 진행도");
+    const labels = offlineRewardSection?.metrics.map((metric) => metric.label) ?? [];
+
+    expect(labels).toEqual([
+      "최고 스토리 진행도",
+      "기본 생산력 증가",
+      "보관 한도",
+      "자원 비중",
+      "제외 반복 보상",
+      "오프라인 수령 상태"
+    ]);
+    expect(offlineRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
+    expect(offlineRewardSection?.metrics.map((metric) => metric.note).join(" ")).not.toContain("지휘권");
+  });
+
   it("keeps dashboard shortcuts pointed at existing read-only queues", () => {
     expect(
       dashboardShortcuts.some(

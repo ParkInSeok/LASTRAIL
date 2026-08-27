@@ -65,6 +65,18 @@ export const dashboardSections: DashboardSection[] = [
     ]
   },
   {
+    title: "오프라인 보상 진행도",
+    description: "최고 스토리 클리어 진행도에 따른 기본 생산력과 보관 한도 관측 후보",
+    metrics: [
+      { label: "최고 스토리 진행도", value: "연동 대기", note: "Act 1 stable story progress 기준" },
+      { label: "기본 생산력 증가", value: "연동 대기", note: "Risk 난이도 직접 배율 제외" },
+      { label: "보관 한도", value: "연동 대기", note: "회복된 역/설비 기반 cap 후보" },
+      { label: "자원 비중", value: "연동 대기", note: "일반 생산 자원 중심 분배 후보" },
+      { label: "제외 반복 보상", value: "연동 대기", note: "고가치 자원 반복 지급 제외 후보" },
+      { label: "오프라인 수령 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" }
+    ]
+  },
+  {
     title: "위험 신호",
     description: "조사 우선순위가 높은 계정과 검증 실패 신호",
     metrics: [

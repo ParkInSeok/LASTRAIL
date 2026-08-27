@@ -31,6 +31,15 @@ type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
 type OpsSeverity = "warn" | "error" | "fatal";
 type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
+type StoryProgressId =
+  | "none"
+  | "opn_01_last_departure"
+  | "opn_02_first_signal"
+  | "opn_03_water_stop"
+  | "opn_04_scrapstar_show"
+  | "opn_05_night_boarders"
+  | "opn_06_broken_line"
+  | "raid_raider_king_engine";
 
 function labelFor<T extends string>(labels: Record<T, string>, value: T | string): string {
   return labels[value as T] ?? value;
@@ -178,7 +187,11 @@ export function opsErrorCodeLabel(code: string): string {
       reward_multiplier_missing: "보상 배율 누락",
       reward_plan_unavailable: "보상 계획 사용 불가",
       risk_reward_policy_missing: "위험도 보상 정책 누락",
-      reward_integrity_restricted: "무결성 판정으로 보상 제한"
+      reward_integrity_restricted: "무결성 판정으로 보상 제한",
+      offline_reward_policy_missing: "오프라인 보상 정책 누락",
+      offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
+      offline_reward_state_conflict: "오프라인 보상 상태 충돌",
+      offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한"
     },
     code
   );
@@ -283,6 +296,23 @@ export function rewardCalculationSourceLabel(source: RewardCalculationSource | s
       UNITY_DIAGNOSTIC_HINT: "Unity 진단 참고 신호"
     },
     source
+  );
+}
+
+export function storyProgressLabel(progressId: StoryProgressId | string | null): string {
+  if (!progressId) return "스토리 진행 없음";
+  return labelFor(
+    {
+      none: "스토리 진행 없음",
+      opn_01_last_departure: "마지막 출발",
+      opn_02_first_signal: "첫 신호",
+      opn_03_water_stop: "급수 정차",
+      opn_04_scrapstar_show: "스크랩스타 쇼",
+      opn_05_night_boarders: "야간 승선전",
+      opn_06_broken_line: "끊어진 선로",
+      raid_raider_king_engine: "약탈왕 기관차"
+    },
+    progressId
   );
 }
 
