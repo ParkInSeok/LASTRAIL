@@ -100,6 +100,39 @@ export type OfflineRewardsConfig = {
   };
 };
 
+export type LaunchEconomyBalanceDraft = {
+  status: "TESTING_TUNING_DRAFT";
+  productionFinal: false;
+  seedPromotionApproved: false;
+  activeRunBaseRepeatRewards: Record<
+    string,
+    {
+      cur_credits: number;
+      cur_machine_parts: number;
+      cur_tactical_data: number;
+      cur_operator_exp: number;
+    }
+  >;
+  activeRunFirstClearRewards: Record<
+    string,
+    {
+      cur_credits: number;
+      cur_machine_parts: number;
+      cur_tactical_data: number;
+      candidateRewards: Array<{ id: string; quantity: number }>;
+    }
+  >;
+  offlineBaseHourlyRewards: {
+    cur_credits: number;
+    cur_machine_parts: number;
+    cur_tactical_data: number;
+    cur_operator_exp: number;
+  };
+  offlineRepeatBlockedRewardIds: string[];
+  normalActOneRunBlockedRewardIds: string[];
+  candidateOnlyRewardIds: string[];
+};
+
 export type OfflineRewardPreviewCalculation = {
   storyProgressKey: OfflineStoryProgressKey;
   storyProgressMultiplierBps: number;
@@ -269,6 +302,113 @@ export const launchOfflineRewardsConfig: OfflineRewardsConfig = {
     staleClientState: "RECALCULATE_SERVER_SIDE",
     maintenanceMode: "DEFER_CLAIM",
   },
+};
+
+export const launchEconomyBalanceDraft: LaunchEconomyBalanceDraft = {
+  status: "TESTING_TUNING_DRAFT",
+  productionFinal: false,
+  seedPromotionApproved: false,
+  activeRunBaseRepeatRewards: {
+    opn_01_last_departure: {
+      cur_credits: 120,
+      cur_machine_parts: 8,
+      cur_tactical_data: 4,
+      cur_operator_exp: 700,
+    },
+    opn_02_first_signal: {
+      cur_credits: 135,
+      cur_machine_parts: 9,
+      cur_tactical_data: 5,
+      cur_operator_exp: 780,
+    },
+    opn_03_water_stop: {
+      cur_credits: 150,
+      cur_machine_parts: 11,
+      cur_tactical_data: 6,
+      cur_operator_exp: 860,
+    },
+    opn_04_scrapstar_show: {
+      cur_credits: 170,
+      cur_machine_parts: 13,
+      cur_tactical_data: 7,
+      cur_operator_exp: 950,
+    },
+    opn_05_night_boarders: {
+      cur_credits: 195,
+      cur_machine_parts: 15,
+      cur_tactical_data: 8,
+      cur_operator_exp: 1050,
+    },
+    opn_06_broken_line: {
+      cur_credits: 225,
+      cur_machine_parts: 18,
+      cur_tactical_data: 10,
+      cur_operator_exp: 1180,
+    },
+    raid_raider_king_engine: {
+      cur_credits: 360,
+      cur_machine_parts: 28,
+      cur_tactical_data: 16,
+      cur_operator_exp: 1600,
+    },
+  },
+  activeRunFirstClearRewards: {
+    opn_01_last_departure: {
+      cur_credits: 250,
+      cur_machine_parts: 15,
+      cur_tactical_data: 8,
+      candidateRewards: [],
+    },
+    opn_02_first_signal: {
+      cur_credits: 300,
+      cur_machine_parts: 18,
+      cur_tactical_data: 12,
+      candidateRewards: [],
+    },
+    opn_03_water_stop: {
+      cur_credits: 360,
+      cur_machine_parts: 24,
+      cur_tactical_data: 14,
+      candidateRewards: [],
+    },
+    opn_04_scrapstar_show: {
+      cur_credits: 430,
+      cur_machine_parts: 30,
+      cur_tactical_data: 18,
+      candidateRewards: [{ id: "cur_command_ticket_fragment", quantity: 1 }],
+    },
+    opn_05_night_boarders: {
+      cur_credits: 520,
+      cur_machine_parts: 38,
+      cur_tactical_data: 22,
+      candidateRewards: [],
+    },
+    opn_06_broken_line: {
+      cur_credits: 650,
+      cur_machine_parts: 48,
+      cur_tactical_data: 28,
+      candidateRewards: [{ id: "cur_special_core", quantity: 1 }],
+    },
+    raid_raider_king_engine: {
+      cur_credits: 1000,
+      cur_machine_parts: 75,
+      cur_tactical_data: 45,
+      candidateRewards: [{ id: "cur_special_core", quantity: 2 }],
+    },
+  },
+  offlineBaseHourlyRewards: {
+    cur_credits: 24,
+    cur_machine_parts: 2,
+    cur_tactical_data: 1,
+    cur_operator_exp: 80,
+  },
+  offlineRepeatBlockedRewardIds: [
+    "cur_special_core",
+    "cur_command_ticket",
+    "cur_command_ticket_fragment",
+  ],
+  normalActOneRunBlockedRewardIds: ["cur_command_ticket"],
+  candidateOnlyRewardIds: ["cur_command_ticket_fragment", "cur_special_core"],
 };
 
 export function parseRunRewardsConfig(value: unknown): RunRewardsConfig {

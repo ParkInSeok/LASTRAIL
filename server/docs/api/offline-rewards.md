@@ -168,6 +168,32 @@ Recommendation:
 - Keep `resourceWeightsBps` as an optional Admin balancing aid, not a server
   Source of Truth requirement for the first implementation.
 
+### Launch Economy Draft Fixture
+
+The balance package exposes `launchEconomyBalanceDraft` as a testing/tuning
+reference for the current launch economy draft. It records the draft offline
+hourly quantities without promoting them into `launchOfflineRewardsConfig`, D1
+seed data, DEV balance config, or production economy values.
+
+Draft offline base hourly rewards:
+
+```text
+cur_credits          24/hour
+cur_machine_parts     2/hour
+cur_tactical_data     1/hour
+cur_operator_exp     80/hour
+```
+
+Draft blocked repeat offline reward IDs remain:
+
+- `cur_special_core`
+- `cur_command_ticket`
+- `cur_command_ticket_fragment`
+
+These values are not final production economy values. Promotion into server
+seed/config requires explicit approval, representative active/offline tests,
+and compatibility checks with Unity/Admin display-only boundaries.
+
 ## Balance Config Schema Candidate
 
 Store offline reward policy in immutable `balance_config_versions.config_json`

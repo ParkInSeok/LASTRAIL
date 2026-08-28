@@ -308,6 +308,37 @@ Claim implementation note:
 - Current reward claim implementation processes currency reward lines.
 - Item reward lines will require item-ledger claim support before launch use.
 
+## Launch Economy Draft Fixture
+
+The balance package also exposes `launchEconomyBalanceDraft` as a
+testing/tuning reference for the launch economy draft. This fixture preserves
+the latest planning numbers without promoting them into the live
+`launchRunRewardsConfig`, D1 seed data, DEV balance config, or production
+economy values.
+
+Draft repeat active-run base rewards:
+
+```text
+operation id                 credits  machine parts  tactical data  operator exp
+opn_01_last_departure            120              8              4           700
+opn_02_first_signal              135              9              5           780
+opn_03_water_stop                150             11              6           860
+opn_04_scrapstar_show            170             13              7           950
+opn_05_night_boarders            195             15              8          1050
+opn_06_broken_line               225             18             10          1180
+raid_raider_king_engine          360             28             16          1600
+```
+
+Draft first-clear candidate rewards keep controlled items separate:
+
+- `opn_04_scrapstar_show`: `cur_command_ticket_fragment x1` candidate only.
+- `opn_06_broken_line`: `cur_special_core x1` candidate only.
+- `raid_raider_king_engine`: `cur_special_core x2` candidate only.
+
+These values are not final production economy values. Promoting them into
+server seed/config requires a separate explicit approval and compatibility
+smoke with Unity/Admin no-calculation boundaries.
+
 ## Run Finish Reward Preview Generation Contract
 
 `POST /v1/runs/:runId/finish` should create the reward preview inside the
