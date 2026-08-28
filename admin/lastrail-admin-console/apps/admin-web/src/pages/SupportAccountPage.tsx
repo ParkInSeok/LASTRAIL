@@ -16,6 +16,9 @@ import {
   customerSupportEscalationSeverityLabel,
   customerSupportEscalationSeverities,
   customerSupportMutationControlsOutOfScope,
+  customerSupportRepairAuditFields,
+  customerSupportRepairCategories,
+  customerSupportRepairCategoryLabel,
   customerSupportSafeSnippetPlaceholders,
   customerSupportSummarySectionCodes,
   customerSupportSummarySectionLabel,
@@ -27,7 +30,7 @@ type SupportCard = {
   code: string;
   field?: string;
   label: string;
-  value: "연동 대기";
+  value: "연동 대기" | "비활성";
   note: string;
 };
 
@@ -116,6 +119,30 @@ export const supportEscalationEvidenceCards: SupportCard[] = customerSupportEsca
     }[field] ?? field,
   value: "연동 대기",
   note: `${field} evidence package 후보`
+}));
+
+export const supportRepairPolicyCards: SupportCard[] = customerSupportRepairCategories.map((category) => ({
+  code: category,
+  label: customerSupportRepairCategoryLabel(category),
+  value: "비활성",
+  note: `${category} repair/compensation launch disabled`
+}));
+
+export const supportRepairAuditCards: SupportCard[] = customerSupportRepairAuditFields.map((field) => ({
+  code: field,
+  label:
+    {
+      supportTicketId: "지원 티켓 ID",
+      accountId: "계정 ID",
+      operatorId: "처리자 ID",
+      approverId: "승인자 ID",
+      permissionUsed: "사용 권한",
+      reasonCode: "사유 코드",
+      affectedIds: "영향 ID",
+      beforeAfterSanitizedSummary: "전후 sanitized 요약"
+    }[field] ?? field,
+  value: "연동 대기",
+  note: `${field} future repair audit 후보`
 }));
 
 export function SupportAccountPage() {
@@ -270,6 +297,36 @@ export function SupportAccountPage() {
         </div>
         <div className="metric-grid">
           {supportEscalationEvidenceCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>Repair/Compensation 정책</h2>
+          <p>launch에서는 수동 복구와 보상 처리를 제공하지 않는 read-only 정책 상태입니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportRepairPolicyCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>Repair audit 후보</h2>
+          <p>future repair 승인 흐름이 열릴 때 필요한 sanitized audit 필드 후보입니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportRepairAuditCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

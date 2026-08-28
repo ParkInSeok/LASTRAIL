@@ -12,6 +12,11 @@ import {
   customerSupportEscalationFuturePermissions,
   customerSupportEscalationSeverityLabel,
   customerSupportEscalationSeverities,
+  customerSupportRepairAuditFields,
+  customerSupportRepairCategories,
+  customerSupportRepairCategoryLabel,
+  customerSupportRepairFuturePermissions,
+  customerSupportRepairLaunchStatusLabel,
   emptySupportAccountSummary,
   mapSupportAccountSummaryResponse,
   customerSupportMutationControlsOutOfScope,
@@ -157,10 +162,48 @@ describe("supportContract", () => {
     expect(customerSupportEscalationFuturePermissions).toEqual([
       "SUPPORT_ESCALATION_READ",
       "SUPPORT_ESCALATION_WRITE",
-      "SUPPORT_REPAIR_APPROVE"
+      "SUPPORT_REPAIR_PREVIEW",
+      "SUPPORT_REPAIR_APPROVE",
+      "SUPPORT_REPAIR_EXECUTE"
     ]);
     expect(customerSupportContractPreview.escalation.readOnly).toBe(true);
     expect(customerSupportContractPreview.escalation.writeEnabled).toBe(false);
+  });
+
+  it("prepares repair compensation policy as disabled read-only placeholders", () => {
+    expect(customerSupportRepairCategories).toEqual([
+      "manual_currency_item_grant",
+      "offline_reward_timestamp_reset",
+      "story_progress_unlock_mutation",
+      "gacha_result_reroll",
+      "reward_economy_ledger_edit",
+      "localization_narrative_publish"
+    ]);
+    expect(customerSupportRepairCategoryLabel("reward_economy_ledger_edit")).toBe("보상/경제 장부 편집");
+    expect(customerSupportRepairCategoryLabel("future_repair")).toBe("future_repair");
+    expect(customerSupportRepairLaunchStatusLabel("Disabled")).toBe("비활성");
+    expect(customerSupportRepairFuturePermissions).toEqual([
+      "SUPPORT_ESCALATION_READ",
+      "SUPPORT_ESCALATION_WRITE",
+      "SUPPORT_REPAIR_PREVIEW",
+      "SUPPORT_REPAIR_APPROVE",
+      "SUPPORT_REPAIR_EXECUTE"
+    ]);
+    expect(customerSupportRepairAuditFields).toEqual([
+      "supportTicketId",
+      "accountId",
+      "operatorId",
+      "approverId",
+      "permissionUsed",
+      "reasonCode",
+      "affectedIds",
+      "beforeAfterSanitizedSummary"
+    ]);
+    expect(customerSupportContractPreview.repairCompensation.readOnly).toBe(true);
+    expect(customerSupportContractPreview.repairCompensation.launchStatus).toBe("Disabled");
+    expect(
+      customerSupportContractPreview.repairCompensation.categories.every((category) => category.status === "Disabled")
+    ).toBe(true);
   });
 
   it("maps Admin API support account summary response into sanitized read-only sections", () => {

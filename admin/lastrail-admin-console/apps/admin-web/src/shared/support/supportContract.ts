@@ -47,6 +47,16 @@ export type CustomerSupportEscalationAction =
   | "mark_as_known_issue_candidate"
   | "attach_read_only_evidence";
 
+export type CustomerSupportRepairCategory =
+  | "manual_currency_item_grant"
+  | "offline_reward_timestamp_reset"
+  | "story_progress_unlock_mutation"
+  | "gacha_result_reroll"
+  | "reward_economy_ledger_edit"
+  | "localization_narrative_publish";
+
+export type CustomerSupportRepairLaunchStatus = "Disabled";
+
 export type SupportSummarySectionCode =
   | "account"
   | "auth"
@@ -100,6 +110,17 @@ export type CustomerSupportContractPreview = {
     recommendedActions: readonly CustomerSupportEscalationAction[];
     evidenceFields: readonly string[];
     futurePermissions: readonly string[];
+  };
+  repairCompensation: {
+    readOnly: true;
+    launchStatus: CustomerSupportRepairLaunchStatus;
+    futurePermissions: readonly string[];
+    auditFields: readonly string[];
+    categories: Array<{
+      code: CustomerSupportRepairCategory;
+      label: string;
+      status: CustomerSupportRepairLaunchStatus;
+    }>;
   };
   context: CustomerSupportContextItem[];
   supportContext: {
@@ -232,7 +253,37 @@ export const customerSupportEscalationEvidenceFields = [
 export const customerSupportEscalationFuturePermissions = [
   "SUPPORT_ESCALATION_READ",
   "SUPPORT_ESCALATION_WRITE",
-  "SUPPORT_REPAIR_APPROVE"
+  "SUPPORT_REPAIR_PREVIEW",
+  "SUPPORT_REPAIR_APPROVE",
+  "SUPPORT_REPAIR_EXECUTE"
+] as const;
+
+export const customerSupportRepairCategories: CustomerSupportRepairCategory[] = [
+  "manual_currency_item_grant",
+  "offline_reward_timestamp_reset",
+  "story_progress_unlock_mutation",
+  "gacha_result_reroll",
+  "reward_economy_ledger_edit",
+  "localization_narrative_publish"
+];
+
+export const customerSupportRepairFuturePermissions = [
+  "SUPPORT_ESCALATION_READ",
+  "SUPPORT_ESCALATION_WRITE",
+  "SUPPORT_REPAIR_PREVIEW",
+  "SUPPORT_REPAIR_APPROVE",
+  "SUPPORT_REPAIR_EXECUTE"
+] as const;
+
+export const customerSupportRepairAuditFields = [
+  "supportTicketId",
+  "accountId",
+  "operatorId",
+  "approverId",
+  "permissionUsed",
+  "reasonCode",
+  "affectedIds",
+  "beforeAfterSanitizedSummary"
 ] as const;
 
 const contextLabels: Record<CustomerSupportContextField, string> = {
@@ -324,6 +375,27 @@ export function customerSupportEscalationActionLabel(action: CustomerSupportEsca
   );
 }
 
+export function customerSupportRepairCategoryLabel(category: CustomerSupportRepairCategory | string): string {
+  return (
+    {
+      manual_currency_item_grant: "재화/아이템 수동 지급",
+      offline_reward_timestamp_reset: "오프라인 보상 시각 초기화",
+      story_progress_unlock_mutation: "스토리 진행/해금 변경",
+      gacha_result_reroll: "모집 결과 재추첨",
+      reward_economy_ledger_edit: "보상/경제 장부 편집",
+      localization_narrative_publish: "현지화/내러티브 게시"
+    }[category] ?? category
+  );
+}
+
+export function customerSupportRepairLaunchStatusLabel(status: CustomerSupportRepairLaunchStatus | string): string {
+  return (
+    {
+      Disabled: "비활성"
+    }[status] ?? status
+  );
+}
+
 export const customerSupportContractPreview: CustomerSupportContractPreview = {
   accountId: "연동 대기",
   status: "연동 대기",
@@ -341,6 +413,17 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
     recommendedActions: customerSupportEscalationActions,
     evidenceFields: customerSupportEscalationEvidenceFields,
     futurePermissions: customerSupportEscalationFuturePermissions
+  },
+  repairCompensation: {
+    readOnly: true,
+    launchStatus: "Disabled",
+    futurePermissions: customerSupportRepairFuturePermissions,
+    auditFields: customerSupportRepairAuditFields,
+    categories: customerSupportRepairCategories.map((category) => ({
+      code: category,
+      label: customerSupportRepairCategoryLabel(category),
+      status: "Disabled"
+    }))
   },
   context: customerSupportContextFields.map((field) => ({
     field,

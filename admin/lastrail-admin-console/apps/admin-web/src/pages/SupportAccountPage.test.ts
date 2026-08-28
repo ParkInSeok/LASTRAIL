@@ -6,6 +6,8 @@ import {
   supportEscalationCategoryCards,
   supportEscalationEvidenceCards,
   supportEscalationSeverityCards,
+  supportRepairAuditCards,
+  supportRepairPolicyCards,
   supportSummarySectionCards,
   supportOutOfScopeControls,
   supportResponseTemplateCards,
@@ -130,5 +132,28 @@ describe("SupportAccountPage configuration", () => {
         ...supportEscalationEvidenceCards
       ].every((card) => card.value === "연동 대기")
     ).toBe(true);
+  });
+
+  it("prepares repair compensation placeholders as disabled launch policy", () => {
+    expect(supportRepairPolicyCards.map((card) => card.code)).toEqual([
+      "manual_currency_item_grant",
+      "offline_reward_timestamp_reset",
+      "story_progress_unlock_mutation",
+      "gacha_result_reroll",
+      "reward_economy_ledger_edit",
+      "localization_narrative_publish"
+    ]);
+    expect(supportRepairPolicyCards.every((card) => card.value === "비활성")).toBe(true);
+    expect(supportRepairAuditCards.map((card) => card.code)).toEqual([
+      "supportTicketId",
+      "accountId",
+      "operatorId",
+      "approverId",
+      "permissionUsed",
+      "reasonCode",
+      "affectedIds",
+      "beforeAfterSanitizedSummary"
+    ]);
+    expect(supportRepairAuditCards.every((card) => card.value === "연동 대기")).toBe(true);
   });
 });
