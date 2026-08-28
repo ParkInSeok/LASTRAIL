@@ -29,6 +29,16 @@ export type OfflineRewardPreviewContract = {
   message: string;
 };
 
+export type OfflineRewardStateContract = {
+  last_offline_reward_claim_at: string;
+  last_story_progress_id: string;
+  last_balance_config_version: string;
+  last_narrative_version: string;
+  last_previewed_at: string;
+  revision: string;
+  updated_at: string;
+};
+
 export const offlineRewardPreviewContractFields = [
   "previewStatus",
   "storyProgressId",
@@ -50,6 +60,18 @@ export const offlineRewardPreviewContractFields = [
 
 export type OfflineRewardPreviewContractField = (typeof offlineRewardPreviewContractFields)[number];
 
+export const offlineRewardStateContractFields = [
+  "last_offline_reward_claim_at",
+  "last_story_progress_id",
+  "last_balance_config_version",
+  "last_narrative_version",
+  "last_previewed_at",
+  "revision",
+  "updated_at"
+] as const;
+
+export type OfflineRewardStateContractField = (typeof offlineRewardStateContractFields)[number];
+
 export function offlineRewardPreviewContractFieldLabel(field: OfflineRewardPreviewContractField | string): string {
   return (
     {
@@ -69,6 +91,20 @@ export function offlineRewardPreviewContractFieldLabel(field: OfflineRewardPrevi
       serverCalculatedAt: "서버 계산 시각",
       errorCode: "오류 코드",
       message: "메시지"
+    }[field] ?? field
+  );
+}
+
+export function offlineRewardStateContractFieldLabel(field: OfflineRewardStateContractField | string): string {
+  return (
+    {
+      last_offline_reward_claim_at: "마지막 오프라인 보상 수령 시각",
+      last_story_progress_id: "마지막 스토리 진행도",
+      last_balance_config_version: "마지막 밸런스 설정 버전",
+      last_narrative_version: "마지막 내러티브 버전",
+      last_previewed_at: "마지막 미리보기 시각",
+      revision: "리비전",
+      updated_at: "갱신 시각"
     }[field] ?? field
   );
 }
@@ -98,4 +134,14 @@ export const offlineRewardPreviewContractPreview: OfflineRewardPreviewContract =
   serverCalculatedAt: "연동 대기",
   errorCode: null,
   message: "연동 대기"
+};
+
+export const offlineRewardStateContractPreview: OfflineRewardStateContract = {
+  last_offline_reward_claim_at: "연동 대기",
+  last_story_progress_id: "연동 대기",
+  last_balance_config_version: "연동 대기",
+  last_narrative_version: "연동 대기",
+  last_previewed_at: "연동 대기",
+  revision: "연동 대기",
+  updated_at: "연동 대기"
 };

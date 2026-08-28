@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { storyProgressLabel } from "../shared/labels/adminLabels";
-import { offlineRewardPreviewContractFields } from "../shared/offlineRewards/offlineRewardContract";
+import {
+  offlineRewardPreviewContractFields,
+  offlineRewardStateContractFields
+} from "../shared/offlineRewards/offlineRewardContract";
 
 type DashboardMetric = {
   label: string;
@@ -64,6 +67,8 @@ export const offlineRewardBlockedDefaultRewards = [
 ];
 
 export const offlineRewardDashboardContractFields = [...offlineRewardPreviewContractFields];
+
+export const offlineRewardStateDashboardFields = [...offlineRewardStateContractFields];
 
 export const dashboardSections: DashboardSection[] = [
   {
@@ -129,6 +134,13 @@ export const dashboardSections: DashboardSection[] = [
       },
       { label: "허용 반복 보상", value: "연동 대기", note: offlineRewardSourceCandidates.join(" / ") },
       { label: "기본 제외 보상", value: "연동 대기", note: offlineRewardBlockedDefaultRewards.join(" / ") },
+      {
+        label: "상태 row 관측 후보",
+        value: "연동 대기",
+        note: `${offlineRewardStateDashboardFields.join(
+          " / "
+        )} | accounts.created_at lazy fallback | last_previewed_at route 미갱신 | preview read-only, claimable duration 미소비`
+      },
       { label: "오프라인 수령 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" }
     ]
   },

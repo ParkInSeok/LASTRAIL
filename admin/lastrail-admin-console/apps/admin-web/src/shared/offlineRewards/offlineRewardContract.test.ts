@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   offlineRewardPreviewContractFieldLabel,
   offlineRewardPreviewContractFields,
-  offlineRewardPreviewContractPreview
+  offlineRewardPreviewContractPreview,
+  offlineRewardStateContractFieldLabel,
+  offlineRewardStateContractFields,
+  offlineRewardStateContractPreview
 } from "./offlineRewardContract";
 
 describe("offlineRewardContract", () => {
@@ -70,5 +73,52 @@ describe("offlineRewardContract", () => {
     expect(serialized).not.toContain("raw body");
     expect(serialized).not.toContain("rawRng");
     expect(serialized).not.toContain("storyProgressMultiplierBps");
+  });
+
+  it("prepares offline reward state visibility fields from the server migration", () => {
+    expect(offlineRewardStateContractFields).toEqual([
+      "last_offline_reward_claim_at",
+      "last_story_progress_id",
+      "last_balance_config_version",
+      "last_narrative_version",
+      "last_previewed_at",
+      "revision",
+      "updated_at"
+    ]);
+    expect(offlineRewardStateContractPreview).toEqual({
+      last_offline_reward_claim_at: "연동 대기",
+      last_story_progress_id: "연동 대기",
+      last_balance_config_version: "연동 대기",
+      last_narrative_version: "연동 대기",
+      last_previewed_at: "연동 대기",
+      revision: "연동 대기",
+      updated_at: "연동 대기"
+    });
+  });
+
+  it("labels offline reward state fields while preserving unknown fallback", () => {
+    expect(offlineRewardStateContractFieldLabel("last_offline_reward_claim_at")).toBe(
+      "마지막 오프라인 보상 수령 시각"
+    );
+    expect(offlineRewardStateContractFieldLabel("last_story_progress_id")).toBe("마지막 스토리 진행도");
+    expect(offlineRewardStateContractFieldLabel("last_balance_config_version")).toBe("마지막 밸런스 설정 버전");
+    expect(offlineRewardStateContractFieldLabel("last_narrative_version")).toBe("마지막 내러티브 버전");
+    expect(offlineRewardStateContractFieldLabel("last_previewed_at")).toBe("마지막 미리보기 시각");
+    expect(offlineRewardStateContractFieldLabel("revision")).toBe("리비전");
+    expect(offlineRewardStateContractFieldLabel("updated_at")).toBe("갱신 시각");
+    expect(offlineRewardStateContractFieldLabel("future_state_field")).toBe("future_state_field");
+  });
+
+  it("keeps offline reward state preview read-only and free of sensitive examples", () => {
+    const serialized = JSON.stringify(offlineRewardStateContractPreview);
+
+    expect(serialized).not.toContain("claim repair");
+    expect(serialized).not.toContain("reward repair");
+    expect(serialized).not.toContain("economy correction");
+    expect(serialized).not.toContain("state mutation");
+    expect(serialized).not.toContain("manual reset");
+    expect(serialized).not.toContain("token");
+    expect(serialized).not.toContain("raw body");
+    expect(serialized).not.toContain("rawRng");
   });
 });

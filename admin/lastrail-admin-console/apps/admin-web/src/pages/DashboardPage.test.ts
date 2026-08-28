@@ -5,6 +5,7 @@ import {
   offlineRewardDashboardContractFields,
   offlineRewardBlockedDefaultRewards,
   offlineRewardFormulaPlaceholders,
+  offlineRewardStateDashboardFields,
   offlineRewardSourceCandidates,
   offlineRewardStoryProgressPolicy
 } from "./DashboardPage";
@@ -50,6 +51,7 @@ describe("DashboardPage configuration", () => {
       "스토리 배율/보관 한도",
       "허용 반복 보상",
       "기본 제외 보상",
+      "상태 row 관측 후보",
       "오프라인 수령 상태"
     ]);
     expect(offlineRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
@@ -107,6 +109,27 @@ describe("DashboardPage configuration", () => {
       "errorCode",
       "message"
     ]);
+  });
+
+  it("maps offline reward state fields without opening mutation controls", () => {
+    const offlineRewardSection = dashboardSections.find((section) => section.title === "오프라인 보상 진행도");
+    const stateMetric = offlineRewardSection?.metrics.find((metric) => metric.label === "상태 row 관측 후보");
+
+    expect(offlineRewardStateDashboardFields).toEqual([
+      "last_offline_reward_claim_at",
+      "last_story_progress_id",
+      "last_balance_config_version",
+      "last_narrative_version",
+      "last_previewed_at",
+      "revision",
+      "updated_at"
+    ]);
+    expect(stateMetric?.value).toBe("연동 대기");
+    expect(stateMetric?.note).toContain("accounts.created_at lazy fallback");
+    expect(stateMetric?.note).toContain("last_previewed_at route 미갱신");
+    expect(stateMetric?.note).toContain("preview read-only");
+    expect(stateMetric?.note).not.toContain("manual reset");
+    expect(stateMetric?.note).not.toContain("state mutation");
   });
 
   it("keeps dashboard shortcuts pointed at existing read-only queues", () => {
