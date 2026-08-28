@@ -147,8 +147,10 @@ data. Request bodies are rejected with `contract_violation`.
 
 ## Session Metrics
 
-Future login/session/dashboard metrics are drafted in
-`docs/api/admin-session-metrics.md`.
+Login/session/dashboard metrics are defined in
+`docs/api/admin-session-metrics.md`. The current local implementation exposes
+account-level fields through `GET /v1/admin/support/accounts/:accountId`;
+dashboard aggregate routes remain candidates.
 
 Candidate metrics include:
 

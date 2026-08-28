@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import app from "../../apps/admin-api/src/index";
 
 type QueryResult = Record<string, unknown> | Record<string, unknown>[] | null;
@@ -106,157 +106,185 @@ describe("admin-api support account summary contract", () => {
   });
 
   it("returns compact support sections with stable references and fallback read models", async () => {
-    const response = await app.request(
-      "/v1/admin/support/accounts/account-1",
-      { headers: { "Cf-Access-Subject": "access|viewer-1" } },
-      createEnv([
-        principal,
-        accountRow,
-        [{ provider: "GUEST" }, { provider: "GOOGLE" }],
-        { active_session_count: 2, latest_session_created_at: 1787651000000, latest_session_expires_at: 1788255800000 },
-        [
+    vi.useFakeTimers();
+    vi.setSystemTime(1787651120000);
+    try {
+      const response = await app.request(
+        "/v1/admin/support/accounts/account-1",
+        { headers: { "Cf-Access-Subject": "access|viewer-1" } },
+        createEnv([
+          principal,
+          accountRow,
+          [{ provider: "GUEST" }, { provider: "GOOGLE" }],
           {
-            run_id: "run-1",
-            status: "COMPLETED",
-            started_at: 1787652000000,
-            finished_at: 1787653000000,
-            risk: "V",
-            balance_config_version: 1,
-            preview_json: JSON.stringify({ operationId: "opn_03_water_stop", actId: "act_01_wasteland_railway" }),
-            outcome: "VICTORY",
-            cleared_waves: 15,
-            reward_preview_id: "reward_preview_1",
+            active_session_count: 1,
+            latest_session_created_at: 1787651000000,
+            latest_session_expires_at: 1788255800000,
+            last_login_at: 1787651000000,
           },
-        ],
-        [
+          [
+            {
+              run_id: "run-1",
+              status: "COMPLETED",
+              started_at: 1787652000000,
+              finished_at: 1787653000000,
+              risk: "V",
+              balance_config_version: 1,
+              preview_json: JSON.stringify({ operationId: "opn_03_water_stop", actId: "act_01_wasteland_railway" }),
+              outcome: "VICTORY",
+              cleared_waves: 15,
+              reward_preview_id: "reward_preview_1",
+            },
+          ],
+          [
+            {
+              reward_preview_id: "reward_preview_1",
+              run_id: "run-1",
+              preview_status: "CLAIMED",
+              reward_claim_id: "reward_claim_1",
+              claimed_at: 1787654000000,
+              balance_config_version: 1,
+              expires_at: 1787740000000,
+              reward_plan_json: JSON.stringify({
+                rewardLines: [{ kind: "CURRENCY", id: "cur_credits", quantity: 100, source: "RUN_REWARD" }],
+              }),
+            },
+          ],
           {
-            reward_preview_id: "reward_preview_1",
-            run_id: "run-1",
-            preview_status: "CLAIMED",
-            reward_claim_id: "reward_claim_1",
-            claimed_at: 1787654000000,
-            balance_config_version: 1,
-            expires_at: 1787740000000,
-            reward_plan_json: JSON.stringify({
-              rewardLines: [{ kind: "CURRENCY", id: "cur_credits", quantity: 100, source: "RUN_REWARD" }],
-            }),
+            account_id: "account-1",
+            display_name: "Conductor",
+            account_status: "ACTIVE",
+            account_created_at: 1787650000000,
+            highest_story_progress_id: "opn_03_water_stop",
+            narrative_version: "act1.2026-08-27.001",
+            last_offline_reward_claim_at: 1787655600000,
+            last_story_progress_id: "opn_03_water_stop",
+            last_balance_config_version: null,
+            last_narrative_version: "act1.2026-08-27.001",
+            last_previewed_at: null,
+            revision: 2,
+            state_updated_at: 1787655600000,
+            last_claim_id: "offline_claim_1",
+            last_claim_created_at: 1787655600000,
           },
-        ],
-        {
-          account_id: "account-1",
-          display_name: "Conductor",
-          account_status: "ACTIVE",
-          account_created_at: 1787650000000,
-          highest_story_progress_id: "opn_03_water_stop",
-          narrative_version: "act1.2026-08-27.001",
-          last_offline_reward_claim_at: 1787655600000,
-          last_story_progress_id: "opn_03_water_stop",
-          last_balance_config_version: null,
-          last_narrative_version: "act1.2026-08-27.001",
-          last_previewed_at: null,
-          revision: 2,
-          state_updated_at: 1787655600000,
-          last_claim_id: "offline_claim_1",
-          last_claim_created_at: 1787655600000,
-        },
-        {
-          account_id: "account-1",
-          act_id: "act_01_wasteland_railway",
-          highest_cleared_operation_id: "opn_03_water_stop",
-          highest_story_progress_id: "opn_03_water_stop",
-          cleared_operations_json: JSON.stringify(["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"]),
-          story_flags_json: JSON.stringify(["operation_cleared:opn_03_water_stop"]),
-          narrative_version: null,
-          last_progress_run_id: "run-1",
-          updated_at: 1787655600000,
-        },
-        [{ unlock_id: "operation:opn_04_scrapstar_show" }],
-        [
           {
-            batch_id: "gacha_batch_1",
-            banner_id: "banner-1",
-            pull_count: 10,
-            cost_item_id: "cur_command_ticket",
-            cost_quantity: 10,
-            result_summary_json: JSON.stringify({
-              responseResults: [{ resultId: "operator_elite_1", pullIndex: 1, guaranteeType: "ELITE_30" }],
-              postPityState: { bannerId: "banner-1", totalPullCount: 10 },
-            }),
-            created_at: 1787657000000,
+            account_id: "account-1",
+            act_id: "act_01_wasteland_railway",
+            highest_cleared_operation_id: "opn_03_water_stop",
+            highest_story_progress_id: "opn_03_water_stop",
+            cleared_operations_json: JSON.stringify(["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"]),
+            story_flags_json: JSON.stringify(["operation_cleared:opn_03_water_stop"]),
+            narrative_version: null,
+            last_progress_run_id: "run-1",
+            updated_at: 1787655600000,
           },
-        ],
-        [
-          { operation: "run_finish", result_ref: "reward_preview_1", created_at: 1787653000000 },
-          { operation: "gacha_pull", result_ref: "gacha_batch_1", created_at: 1787657000000 },
-        ],
-        { open_signals: 1, hard_violations: 0, latest_detection_at: 1787658000000, primary_reason: "ABNORMAL_CLEAR_TIME" },
-        { status: "REVIEWING", reason: "manual review", updated_at: 1787658100000 },
-      ]),
-    );
+          [{ unlock_id: "operation:opn_04_scrapstar_show" }],
+          [
+            {
+              batch_id: "gacha_batch_1",
+              banner_id: "banner-1",
+              pull_count: 10,
+              cost_item_id: "cur_command_ticket",
+              cost_quantity: 10,
+              result_summary_json: JSON.stringify({
+                responseResults: [{ resultId: "operator_elite_1", pullIndex: 1, guaranteeType: "ELITE_30" }],
+                postPityState: { bannerId: "banner-1", totalPullCount: 10 },
+              }),
+              created_at: 1787657000000,
+            },
+          ],
+          [
+            { operation: "run_finish", result_ref: "reward_preview_1", created_at: 1787653000000 },
+            { operation: "gacha_pull", result_ref: "gacha_batch_1", created_at: 1787657000000 },
+          ],
+          { open_signals: 1, hard_violations: 0, latest_detection_at: 1787658000000, primary_reason: "ABNORMAL_CLEAR_TIME" },
+          { status: "REVIEWING", reason: "manual review", updated_at: 1787658100000 },
+        ]),
+      );
 
-    expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body).toMatchObject({
-      accountId: "account-1",
-      recentRuns: [
-        {
-          runId: "run-1",
-          status: "COMPLETED",
-          operationId: "opn_03_water_stop",
-          actId: "act_01_wasteland_railway",
-          outcome: "VICTORY",
-          clearedWaves: 15,
-          rewardPreviewId: "reward_preview_1",
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body).toMatchObject({
+        accountId: "account-1",
+        auth: {
+          identityProviders: ["GUEST", "GOOGLE"],
+          providerNames: ["GUEST", "GOOGLE"],
+          linkedProviders: ["GUEST", "GOOGLE"],
+          primaryProvider: "GOOGLE",
+          hasGoogleLink: true,
+          activeSessionCount: 1,
+          latestSessionCreatedAt: "2026-08-25T09:43:20.000Z",
+          latestSessionAt: "2026-08-25T09:43:20.000Z",
+          latestAuthAt: "2026-08-25T09:43:20.000Z",
+          lastLoginAt: "2026-08-25T09:43:20.000Z",
+          lastLoginAgeSeconds: 120,
+          lastSeenAt: null,
+          lastSeenSource: "not_available_without_activity_source",
+          concurrentUsers: null,
+          concurrentUsersPrecision: "UNAVAILABLE",
         },
-      ],
-      runRewards: [
-        {
-          rewardPreviewId: "reward_preview_1",
-          previewStatus: "CLAIMED",
-          rewardClaimId: "reward_claim_1",
-          rewardLineSummary: [{ kind: "CURRENCY", id: "cur_credits", quantity: 100, source: "RUN_REWARD" }],
-        },
-      ],
-      offlineRewards: {
-        offlineRewardState: {
-          source: "account_offline_reward_state",
-          revision: 2,
-        },
-        lastClaim: {
-          offlineRewardClaimId: "offline_claim_1",
-        },
-      },
-      storyProgress: {
-        storyProgress: {
-          highestStoryProgressId: "opn_03_water_stop",
-          order: 3,
-        },
-        unlockedOperations: ["opn_01_last_departure", "opn_04_scrapstar_show"],
-      },
-      gacha: {
-        recentBatches: [
+        recentRuns: [
           {
-            batchId: "gacha_batch_1",
-            guaranteeTypes: ["ELITE_30"],
+            runId: "run-1",
+            status: "COMPLETED",
+            operationId: "opn_03_water_stop",
+            actId: "act_01_wasteland_railway",
+            outcome: "VICTORY",
+            clearedWaves: 15,
+            rewardPreviewId: "reward_preview_1",
           },
         ],
-      },
-      integrity: {
-        openSignals: 1,
-        hardViolations: 0,
-        accountReviewStatus: "REVIEWING",
-      },
-      opsErrors: [],
-    });
-    expect(body.idempotency).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          operation: "run_finish",
-          resultRef: "reward_preview_1",
-          replaySafe: true,
-        }),
-      ]),
-    );
+        runRewards: [
+          {
+            rewardPreviewId: "reward_preview_1",
+            previewStatus: "CLAIMED",
+            rewardClaimId: "reward_claim_1",
+            rewardLineSummary: [{ kind: "CURRENCY", id: "cur_credits", quantity: 100, source: "RUN_REWARD" }],
+          },
+        ],
+        offlineRewards: {
+          offlineRewardState: {
+            source: "account_offline_reward_state",
+            revision: 2,
+          },
+          lastClaim: {
+            offlineRewardClaimId: "offline_claim_1",
+          },
+        },
+        storyProgress: {
+          storyProgress: {
+            highestStoryProgressId: "opn_03_water_stop",
+            order: 3,
+          },
+          unlockedOperations: ["opn_01_last_departure", "opn_04_scrapstar_show"],
+        },
+        gacha: {
+          recentBatches: [
+            {
+              batchId: "gacha_batch_1",
+              guaranteeTypes: ["ELITE_30"],
+            },
+          ],
+        },
+        integrity: {
+          openSignals: 1,
+          hardViolations: 0,
+          accountReviewStatus: "REVIEWING",
+        },
+        opsErrors: [],
+      });
+      expect(body.idempotency).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            operation: "run_finish",
+            resultRef: "reward_preview_1",
+            replaySafe: true,
+          }),
+        ]),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("rejects mutation-like request bodies", async () => {

@@ -211,6 +211,7 @@ type AdminSupportAuthRow = {
   active_session_count: number | null;
   latest_session_created_at: number | null;
   latest_session_expires_at: number | null;
+  last_login_at: number | null;
 };
 
 type AdminSupportRunRow = {
@@ -885,6 +886,21 @@ function supportExplanationTemplates() {
   ];
 }
 
+function getSupportPrimaryProvider(providers: string[]): string | null {
+  if (providers.includes("GOOGLE")) return "GOOGLE";
+  if (providers.includes("GUEST")) return "GUEST";
+  return providers[0] ?? null;
+}
+
+function toNullableIso(ms: number | null | undefined): string | null {
+  return ms === null || ms === undefined ? null : toIso(ms);
+}
+
+function getLastLoginAgeSeconds(lastLoginAt: number | null | undefined, now: number): number | null {
+  if (lastLoginAt === null || lastLoginAt === undefined) return null;
+  return Math.max(0, Math.floor((now - lastLoginAt) / 1000));
+}
+
 function parseOptionalJsonObject(json: string): JsonValue {
   try {
     const parsed = parseJsonValue(json);
@@ -1269,13 +1285,14 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
     .all<AdminSupportIdentityRow>();
   const authStatus = await c.env.DB.prepare(
     `SELECT
-       COALESCE(SUM(CASE WHEN status = 'ACTIVE' THEN 1 ELSE 0 END), 0) AS active_session_count,
+       COALESCE(SUM(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN 1 ELSE 0 END), 0) AS active_session_count,
        MAX(created_at) AS latest_session_created_at,
-       MAX(expires_at) AS latest_session_expires_at
+       MAX(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN expires_at ELSE NULL END) AS latest_session_expires_at,
+       MAX(created_at) AS last_login_at
      FROM auth_sessions
      WHERE account_id = ?`,
   )
-    .bind(accountId)
+    .bind(Date.now(), Date.now(), accountId)
     .first<AdminSupportAuthRow>();
   const recentRuns = await c.env.DB.prepare(
     `SELECT
@@ -1419,6 +1436,9 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
     .bind(accountId)
     .first<AdminSupportReviewRow>();
 
+  const providers = identities.results.map((row) => row.provider);
+  const lastLoginAt = authStatus?.last_login_at ?? null;
+
   return c.json({
     accountId: account.account_id,
     generatedAt: new Date().toISOString(),
@@ -1432,14 +1452,22 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
       updatedAt: toIso(account.account_updated_at),
     },
     auth: {
-      identityProviders: identities.results.map((row) => row.provider),
+      identityProviders: providers,
+      providerNames: providers,
+      linkedProviders: providers,
+      primaryProvider: getSupportPrimaryProvider(providers),
+      hasGoogleLink: providers.includes("GOOGLE"),
       activeSessionCount: authStatus?.active_session_count ?? 0,
-      latestSessionCreatedAt: authStatus?.latest_session_created_at === null || authStatus?.latest_session_created_at === undefined
-        ? null
-        : toIso(authStatus.latest_session_created_at),
-      latestSessionExpiresAt: authStatus?.latest_session_expires_at === null || authStatus?.latest_session_expires_at === undefined
-        ? null
-        : toIso(authStatus.latest_session_expires_at),
+      latestSessionCreatedAt: toNullableIso(authStatus?.latest_session_created_at),
+      latestSessionAt: toNullableIso(authStatus?.latest_session_created_at),
+      latestSessionExpiresAt: toNullableIso(authStatus?.latest_session_expires_at),
+      latestAuthAt: toNullableIso(lastLoginAt),
+      lastLoginAt: toNullableIso(lastLoginAt),
+      lastLoginAgeSeconds: getLastLoginAgeSeconds(lastLoginAt, Date.now()),
+      lastSeenAt: null,
+      lastSeenSource: "not_available_without_activity_source",
+      concurrentUsers: null,
+      concurrentUsersPrecision: "UNAVAILABLE",
     },
     recentRuns: recentRuns.results.map((run) => {
       const previewIds = parseRunPreviewIds(run.preview_json);

@@ -122,9 +122,25 @@ function seedSupportAccount(db: initSqlJs.Database): void {
     [now],
   );
   db.run(
+    `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
+     VALUES ('identity-support-google-1', 'account-support-1', 'GOOGLE', 'google-subject-support-1', ?);`,
+    [now + 1],
+  );
+  db.run(
     `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
-     VALUES ('session-support-1', 'account-support-1', 'hash-support-1', 'family-support-1', 0, 'ACTIVE', ?, ?, NULL);`,
-    [now, now + 7 * 24 * 60 * 60 * 1000],
+     VALUES
+       ('session-support-1', 'account-support-1', 'hash-support-1', 'family-support-1', 0, 'ACTIVE', ?, ?, NULL),
+       ('session-support-expired-1', 'account-support-1', 'hash-support-expired-1', 'family-support-expired-1', 0, 'ACTIVE', ?, ?, NULL),
+       ('session-support-rotated-1', 'account-support-1', 'hash-support-rotated-1', 'family-support-rotated-1', 0, 'ROTATED', ?, ?, ?);`,
+    [
+      now,
+      now + 7 * 24 * 60 * 60 * 1000,
+      now - 2 * 24 * 60 * 60 * 1000,
+      now - 24 * 60 * 60 * 1000,
+      now + 30 * 60 * 1000,
+      now + 7 * 24 * 60 * 60 * 1000,
+      now + 45 * 60 * 1000,
+    ],
   );
   db.run(
     `INSERT INTO balance_config_versions (
@@ -288,8 +304,21 @@ describe("admin-api support account summary local D1 smoke", () => {
         displayName: "Conductor",
       },
       auth: {
-        identityProviders: ["GUEST"],
+        identityProviders: ["GOOGLE", "GUEST"],
+        providerNames: ["GOOGLE", "GUEST"],
+        linkedProviders: ["GOOGLE", "GUEST"],
+        primaryProvider: "GOOGLE",
+        hasGoogleLink: true,
         activeSessionCount: 1,
+        latestSessionCreatedAt: "2026-08-27T00:30:00.000Z",
+        latestSessionAt: "2026-08-27T00:30:00.000Z",
+        latestAuthAt: "2026-08-27T00:30:00.000Z",
+        lastLoginAt: "2026-08-27T00:30:00.000Z",
+        latestSessionExpiresAt: "2026-09-03T00:00:00.000Z",
+        lastSeenAt: null,
+        lastSeenSource: "not_available_without_activity_source",
+        concurrentUsers: null,
+        concurrentUsersPrecision: "UNAVAILABLE",
       },
       recentRuns: [
         {
@@ -331,6 +360,7 @@ describe("admin-api support account summary local D1 smoke", () => {
         repairEndpointsEnabled: false,
       },
     });
+    expect(body.auth.lastLoginAgeSeconds).toBeGreaterThan(0);
     expect(body.idempotency).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ operation: "run_finish", resultRef: "reward_preview_support_1" }),

@@ -140,13 +140,23 @@ Fields:
 - `displayName`
 - `createdAt`
 - `updatedAt`
-- `identityProviders`: provider names only, such as `GUEST`
+- `identityProviders`: provider names only, such as `GUEST` and `GOOGLE`
+- `providerNames`
+- `linkedProviders`
+- `primaryProvider`: `GOOGLE` when linked, otherwise `GUEST` or the first
+  server-owned provider
+- `hasGoogleLink`
 - `activeSessionCount`
 - `latestSessionCreatedAt`
+- `latestSessionAt`
 - `latestSessionExpiresAt`
-- future `lastLoginAt`
-- future `lastLoginAgeSeconds`
-- future `lastSeenAt` only after a server-owned activity source exists
+- `latestAuthAt`
+- `lastLoginAt`
+- `lastLoginAgeSeconds`
+- `lastSeenAt`: null until a server-owned activity source exists
+- `lastSeenSource`: `not_available_without_activity_source`
+- `concurrentUsers`: null until a server-owned activity/heartbeat source exists
+- `concurrentUsersPrecision`: `UNAVAILABLE`
 
 Do not return:
 

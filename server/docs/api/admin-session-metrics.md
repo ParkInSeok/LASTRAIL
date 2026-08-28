@@ -1,11 +1,12 @@
 # Admin Session Metrics Contract Draft
 
-This document defines a future read-only Admin metrics contract for login,
-session, concurrent-user, and last-login visibility.
+This document defines the read-only Admin metrics contract for login, session,
+concurrent-user, and last-login visibility.
 
-It is a design draft only. It does not implement API routes, migrations,
-session heartbeats, Cloudflare resources, DEV deploys, remote smoke tests, or
-PRD/STAGING resources.
+Current local implementation composes account-level support metrics into
+`GET /v1/admin/support/accounts/:accountId`. Dashboard aggregate/session-summary
+routes, migrations, session heartbeats, Cloudflare resources, DEV deploys,
+remote smoke tests, and PRD/STAGING resources are not implemented.
 
 ## Goals
 
@@ -34,11 +35,22 @@ Existing tables:
 - `auth_sessions`
 - `player_profiles`
 
-Existing support read model already exposes:
+Existing support read model exposes:
 
 - `activeSessionCount`
 - `latestSessionCreatedAt`
 - `latestSessionExpiresAt`
+- `latestSessionAt`
+- `latestAuthAt`
+- `lastLoginAt`
+- `lastLoginAgeSeconds`
+- `identityProviders`
+- `providerNames`
+- `linkedProviders`
+- `primaryProvider`
+- `hasGoogleLink`
+- nullable `lastSeenAt`, `concurrentUsers`, and precision/source markers until
+  a server-owned activity source exists
 
 Current limitation:
 
@@ -260,13 +272,22 @@ Account-level fields:
 ```json
 {
   "auth": {
+    "identityProviders": ["GUEST", "GOOGLE"],
+    "providerNames": ["GUEST", "GOOGLE"],
+    "linkedProviders": ["GUEST", "GOOGLE"],
+    "primaryProvider": "GOOGLE",
+    "hasGoogleLink": true,
     "activeSessionCount": 1,
     "latestSessionCreatedAt": "2026-08-29T00:00:00.000Z",
+    "latestSessionAt": "2026-08-29T00:00:00.000Z",
     "latestSessionExpiresAt": "2026-09-28T00:00:00.000Z",
+    "latestAuthAt": "2026-08-29T00:00:00.000Z",
     "lastLoginAt": "2026-08-29T00:00:00.000Z",
     "lastLoginAgeSeconds": 120,
     "lastSeenAt": null,
-    "lastSeenSource": "not_available_without_activity_source"
+    "lastSeenSource": "not_available_without_activity_source",
+    "concurrentUsers": null,
+    "concurrentUsersPrecision": "UNAVAILABLE"
   }
 }
 ```
