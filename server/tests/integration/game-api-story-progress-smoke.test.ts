@@ -85,8 +85,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-5])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(15);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-6])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(16);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));

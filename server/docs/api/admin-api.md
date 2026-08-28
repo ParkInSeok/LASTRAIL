@@ -180,11 +180,25 @@ preimages, per-candidate probabilities, full gacha weight lists, localized
 dialogue text, raw reward multiplier bps, reward calculation internals, and
 account shortcut data.
 
-System/runtime error log design is drafted in `docs/api/ops-error-logs.md`.
-Future read-only candidates are `GET /v1/admin/ops/error-logs` and
-`GET /v1/admin/ops/error-logs/:errorLogId`. The draft keeps runtime error
-observability separate from `admin_audit_logs`, and does not create D1 tables,
-Queues, R2 buckets, Workers Logs exports, or deployed routes yet.
+System/runtime error log contract is defined in `docs/api/ops-error-logs.md`.
+Read-only endpoints are:
+
+```text
+GET /v1/admin/ops/error-logs
+GET /v1/admin/ops/error-logs/:errorLogId
+```
+
+Permission:
+
+- `OPS_ERROR_LOG_READ`
+- Current implementation: `ROLE_PERMISSION`; OWNER / OPERATOR allowed, VIEWER
+  denied by default.
+
+Runtime error observability remains separate from `admin_audit_logs`. The local
+slice creates only the D1 searchable summary table and read-only Admin API
+routes. It does not create Queues, R2 buckets, Workers Logs exports, repair
+mutations, resolution workflow mutations, Cloudflare resources, DEV deploys, or
+PRD/STAGING resources.
 
 ## Balance Config Drafts
 

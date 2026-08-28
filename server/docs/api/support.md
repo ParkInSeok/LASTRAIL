@@ -3,9 +3,9 @@
 This document defines the first read-only customer support account summary
 contract for LAST RAIL launch operations.
 
-It is a design/contract draft only. It does not create Admin API routes, D1
-tables, migrations, repair endpoints, reward grants, Cloudflare resources, DEV
-deploys, remote smoke tests, or PRD/STAGING resources.
+The read-only Admin API summary route is implemented. This contract does not
+create repair endpoints, reward grants, Cloudflare resources, DEV deploys,
+remote smoke tests, or PRD/STAGING resources.
 
 ## Goals
 
@@ -109,7 +109,7 @@ Relationship to existing read permissions:
 - `STORY_PROGRESS_READ`: durable story progress and unlock truth.
 - `OFFLINE_REWARD_READ`: offline reward state and latest claim references.
 - Future `GACHA_READ`: gacha batches, pity state, and guarantee visibility.
-- Future `OPS_ERROR_LOG_READ`: runtime/system error correlation.
+- `OPS_ERROR_LOG_READ`: runtime/system error correlation.
 
 Launch implements `SUPPORT_READ` as a coarse support permission that implies
 the read-only sections above. It does not require all underlying read
@@ -386,7 +386,7 @@ Do not expose detector internals that would help bypass validation.
 
 Source candidates:
 
-- future `ops_error_logs` D1 summary read model;
+- `ops_error_logs` D1 summary read model;
 - Workers Logs as troubleshooting companion;
 - sanitized Unity client diagnostic summaries if enabled later.
 
@@ -407,6 +407,14 @@ Support usage:
 
 - Correlate support tickets with backend/runtime failures.
 - Link to `/ops/error-logs` once implemented.
+
+Current support route status:
+
+- `GET /v1/admin/support/accounts/:accountId` keeps `opsErrors: []` until a
+  separate support-summary integration slice explicitly composes account-scoped
+  ops error rows.
+- Operators can use `GET /v1/admin/ops/error-logs?accountId=...` for the
+  dedicated ops log read model.
 
 Do not return raw payloads, raw request bodies, tokens, secrets, or unsanitized
 stack traces in launch support summary.

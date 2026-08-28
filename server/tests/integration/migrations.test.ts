@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-5])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(15);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-6])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(16);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0015 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0016 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -370,6 +370,73 @@ describe("D1 migrations", () => {
        ) VALUES (
          'account-offline-1', 1000, 'opn_03_water_stop',
          301, 'act1.2026-08-27.001', NULL, 0, 1000
+       );`,
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates ops error logs summary table for read-only operations evidence", async () => {
+    const db = await createMigratedDb();
+
+    const columns = db.exec("PRAGMA table_info(ops_error_logs);");
+    const indexes = db.exec("PRAGMA index_list(ops_error_logs);");
+
+    expect(columns[0]?.values.map((row) => row[1])).toEqual([
+      "id",
+      "occurred_at",
+      "environment",
+      "service",
+      "severity",
+      "error_code",
+      "message_summary",
+      "status",
+      "source",
+      "request_id",
+      "account_id",
+      "run_id",
+      "reward_preview_id",
+      "reward_claim_id",
+      "offline_reward_claim_id",
+      "gacha_batch_id",
+      "gacha_banner_id",
+      "story_progress_id",
+      "integrity_event_id",
+      "support_ticket_id",
+      "idempotency_operation",
+      "idempotency_key_hash",
+      "correlation_json",
+      "sanitized_context_json",
+      "retryable",
+      "masked",
+      "payload_ref",
+      "trace_ref",
+      "resolved_at",
+      "resolved_by",
+      "resolution_note",
+      "created_at",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining([
+        "idx_ops_error_logs_status_severity_created",
+        "idx_ops_error_logs_account_status_created",
+        "idx_ops_error_logs_request_id",
+        "idx_ops_error_logs_run_id",
+        "idx_ops_error_logs_gacha_batch_id",
+      ]),
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-ops-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO ops_error_logs (
+         id, occurred_at, environment, service, severity, error_code, message_summary,
+         status, source, request_id, account_id, correlation_json, sanitized_context_json,
+         retryable, masked, created_at
+       ) VALUES (
+         'ops_error_1', 2, 'DEV', 'game_api', 'error', 'reward_plan_mismatch',
+         'Reward plan mismatch.', 'open', 'game_api', 'req_ops_1', 'account-ops-1',
+         '{"accountId":"account-ops-1"}', '{"safe":true}', 1, 1, 2
        );`,
     );
 

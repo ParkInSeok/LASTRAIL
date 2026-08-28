@@ -266,6 +266,41 @@ type AdminSupportReviewRow = {
   updated_at: number;
 };
 
+type AdminOpsErrorLogRow = {
+  id: string;
+  occurred_at: number;
+  environment: "DEV" | "PRD";
+  service: string;
+  severity: "info" | "warning" | "error" | "critical";
+  error_code: string;
+  message_summary: string;
+  status: "open" | "acknowledged" | "resolved" | "ignored";
+  source: string;
+  request_id: string | null;
+  account_id: string | null;
+  run_id: string | null;
+  reward_preview_id: string | null;
+  reward_claim_id: string | null;
+  offline_reward_claim_id: string | null;
+  gacha_batch_id: string | null;
+  gacha_banner_id: string | null;
+  story_progress_id: string | null;
+  integrity_event_id: string | null;
+  support_ticket_id: string | null;
+  idempotency_operation: string | null;
+  idempotency_key_hash: string | null;
+  correlation_json: string;
+  sanitized_context_json: string;
+  retryable: number;
+  masked: number;
+  payload_ref: string | null;
+  trace_ref: string | null;
+  resolved_at: number | null;
+  resolved_by: string | null;
+  resolution_note: string | null;
+  created_at: number;
+};
+
 type NextVersionRow = {
   next_version: number;
 };
@@ -282,6 +317,7 @@ const ACCOUNT_NOTE_WRITE_PERMISSION = "ACCOUNT_NOTE_WRITE";
 const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
 const OFFLINE_REWARD_READ_PERMISSION = "OFFLINE_REWARD_READ";
 const SUPPORT_READ_PERMISSION = "SUPPORT_READ";
+const OPS_ERROR_LOG_READ_PERMISSION = "OPS_ERROR_LOG_READ";
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
 const ACT_ONE_STORY_PROGRESS_ORDER = [
@@ -849,6 +885,73 @@ function supportExplanationTemplates() {
   ];
 }
 
+function parseOptionalJsonObject(json: string): JsonValue {
+  try {
+    const parsed = parseJsonValue(json);
+    return isJsonObject(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function opsErrorLogLinks(row: AdminOpsErrorLogRow) {
+  return {
+    accountId: row.account_id,
+    runId: row.run_id,
+    rewardPreviewId: row.reward_preview_id,
+    rewardClaimId: row.reward_claim_id,
+    offlineRewardClaimId: row.offline_reward_claim_id,
+    gachaBatchId: row.gacha_batch_id,
+    gachaBannerId: row.gacha_banner_id,
+    integrityEventId: row.integrity_event_id,
+    supportTicketId: row.support_ticket_id,
+  };
+}
+
+function opsErrorLogSummary(row: AdminOpsErrorLogRow) {
+  return {
+    id: row.id,
+    occurredAt: toIso(row.occurred_at),
+    environment: row.environment,
+    service: row.service,
+    severity: row.severity,
+    errorCode: row.error_code,
+    messageSummary: row.message_summary,
+    status: row.status,
+    source: row.source,
+    requestId: row.request_id,
+    accountId: row.account_id,
+    runId: row.run_id,
+    rewardPreviewId: row.reward_preview_id,
+    rewardClaimId: row.reward_claim_id,
+    offlineRewardClaimId: row.offline_reward_claim_id,
+    gachaBatchId: row.gacha_batch_id,
+    gachaBannerId: row.gacha_banner_id,
+    storyProgressId: row.story_progress_id,
+    integrityEventId: row.integrity_event_id,
+    supportTicketId: row.support_ticket_id,
+    idempotencyOperation: row.idempotency_operation,
+    idempotencyKeyHash: row.idempotency_key_hash,
+    retryable: row.retryable === 1,
+    masked: row.masked === 1,
+    payloadRef: row.payload_ref,
+    traceRef: row.trace_ref,
+    resolvedAt: row.resolved_at === null ? null : toIso(row.resolved_at),
+    resolvedBy: row.resolved_by,
+    resolutionNote: row.resolution_note,
+    createdAt: toIso(row.created_at),
+    links: opsErrorLogLinks(row),
+  };
+}
+
+function opsErrorLogDetail(row: AdminOpsErrorLogRow) {
+  return {
+    ...opsErrorLogSummary(row),
+    correlation: parseOptionalJsonObject(row.correlation_json),
+    sanitizedContext: parseOptionalJsonObject(row.sanitized_context_json),
+  };
+}
+
 function hasRequestBody(c: AppContext): boolean {
   const contentLength = c.req.header("content-length");
   return contentLength !== undefined && contentLength !== "0";
@@ -875,7 +978,17 @@ function rejectAdminSupportBody(c: AppContext): Response {
   }, 400);
 }
 
+function rejectAdminOpsErrorLogBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin ops error log read endpoints do not accept request bodies.",
+  }, 400);
+}
+
 function hasAdminPermission(principal: AdminPrincipalRow, permission: string): boolean {
+  if (permission === OPS_ERROR_LOG_READ_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR";
+  }
   if (permission === SUPPORT_READ_PERMISSION) {
     return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
   }
@@ -996,6 +1109,129 @@ app.get("/v1/admin/me", async (c) => {
       role: principal.role,
       displayName: principal.display_name,
     },
+  });
+});
+app.get("/v1/admin/ops/error-logs", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, OPS_ERROR_LOG_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminOpsErrorLogBody(c);
+
+  const whereClauses: string[] = [];
+  const values: Array<string | number> = [];
+  const filters = [
+    ["environment", "environment"],
+    ["service", "service"],
+    ["severity", "severity"],
+    ["status", "status"],
+    ["source", "source"],
+    ["errorCode", "error_code"],
+    ["requestId", "request_id"],
+    ["accountId", "account_id"],
+    ["runId", "run_id"],
+    ["rewardPreviewId", "reward_preview_id"],
+    ["rewardClaimId", "reward_claim_id"],
+    ["offlineRewardClaimId", "offline_reward_claim_id"],
+    ["gachaBatchId", "gacha_batch_id"],
+    ["gachaBannerId", "gacha_banner_id"],
+    ["storyProgressId", "story_progress_id"],
+    ["integrityEventId", "integrity_event_id"],
+    ["supportTicketId", "support_ticket_id"],
+  ] as const;
+  for (const [queryName, columnName] of filters) {
+    const value = c.req.query(queryName)?.trim();
+    if (value !== undefined && value !== "") {
+      whereClauses.push(`${columnName} = ?`);
+      values.push(value);
+    }
+  }
+
+  const occurredFrom = c.req.query("occurredFrom");
+  if (occurredFrom !== undefined) {
+    const parsed = Date.parse(occurredFrom);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("occurred_at >= ?");
+      values.push(parsed);
+    }
+  }
+  const occurredTo = c.req.query("occurredTo");
+  if (occurredTo !== undefined) {
+    const parsed = Date.parse(occurredTo);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("occurred_at <= ?");
+      values.push(parsed);
+    }
+  }
+
+  const limitQuery = c.req.query("limit");
+  const parsedLimit = limitQuery === undefined ? 50 : Number(limitQuery);
+  const limit = Number.isSafeInteger(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, 50) : 50;
+  const cursorQuery = c.req.query("cursor");
+  const parsedCursor = cursorQuery === undefined ? 0 : Number(cursorQuery);
+  const offset = Number.isSafeInteger(parsedCursor) && parsedCursor >= 0 ? parsedCursor : 0;
+  values.push(limit + 1, offset);
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       id, occurred_at, environment, service, severity, error_code, message_summary,
+       status, source, request_id, account_id, run_id, reward_preview_id,
+       reward_claim_id, offline_reward_claim_id, gacha_batch_id, gacha_banner_id,
+       story_progress_id, integrity_event_id, support_ticket_id,
+       idempotency_operation, idempotency_key_hash, correlation_json,
+       sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+       resolved_at, resolved_by, resolution_note, created_at
+     FROM ops_error_logs
+     ${whereClauses.length === 0 ? "" : `WHERE ${whereClauses.join(" AND ")}`}
+     ORDER BY
+       CASE severity
+         WHEN 'critical' THEN 0
+         WHEN 'error' THEN 1
+         WHEN 'warning' THEN 2
+         ELSE 3
+       END,
+       occurred_at DESC,
+       id
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(...values)
+    .all<AdminOpsErrorLogRow>();
+
+  const visibleRows = rows.results.slice(0, limit);
+  return c.json({
+    permission: OPS_ERROR_LOG_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    items: visibleRows.map(opsErrorLogSummary),
+    nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+  });
+});
+app.get("/v1/admin/ops/error-logs/:errorLogId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, OPS_ERROR_LOG_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminOpsErrorLogBody(c);
+
+  const row = await c.env.DB.prepare(
+    `SELECT
+       id, occurred_at, environment, service, severity, error_code, message_summary,
+       status, source, request_id, account_id, run_id, reward_preview_id,
+       reward_claim_id, offline_reward_claim_id, gacha_batch_id, gacha_banner_id,
+       story_progress_id, integrity_event_id, support_ticket_id,
+       idempotency_operation, idempotency_key_hash, correlation_json,
+       sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+       resolved_at, resolved_by, resolution_note, created_at
+     FROM ops_error_logs
+     WHERE id = ?`,
+  )
+    .bind(c.req.param("errorLogId"))
+    .first<AdminOpsErrorLogRow>();
+
+  if (row === null) {
+    return c.json({ error: "ops_error_log_not_found", message: "Ops error log was not found." }, 404);
+  }
+
+  return c.json({
+    item: opsErrorLogDetail(row),
+    detail: null,
   });
 });
 app.get("/v1/admin/support/accounts/:accountId", async (c) => {

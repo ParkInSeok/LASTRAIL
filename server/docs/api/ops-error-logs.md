@@ -1,11 +1,13 @@
-# Ops Error Logs Design Draft
+# Ops Error Logs Contract
 
-This draft defines the first server-side design for runtime/system error
+This document defines the first server-side contract for runtime/system error
 observability in LAST RAIL. It is separate from `admin_audit_logs`, which
 records operator actions and permissioned admin mutations.
 
-This document is a contract/design draft only. It does not create D1 tables,
-Queues, R2 buckets, Workers Logs exports, API routes, or Cloudflare resources.
+Current local implementation creates the D1 searchable summary table and
+read-only Admin API list/detail routes. It does not create Queues, R2 buckets,
+Workers Logs exports, Cloudflare resources, remote DEV deploys, PRD/STAGING
+resources, repair mutations, or resolution workflows.
 
 ## Goals
 
@@ -151,7 +153,7 @@ fixtures, but the production-shaped path should be asynchronous.
 
 ## Stable Event Fields
 
-Candidate D1 searchable summary row:
+D1 searchable summary row:
 
 ```text
 id
@@ -175,7 +177,7 @@ trace_ref
 created_at
 ```
 
-Recommended API field names:
+API field names:
 
 ```json
 {
@@ -200,16 +202,19 @@ Recommended API field names:
 }
 ```
 
-Stable enum candidates:
+Stable enum values:
 
 - `environment`: `DEV`, `PRD`
-- `service`: `Admin API`, `Game API`, `Async Worker`, `Pages Function`,
-  `Unity Client Diagnostic`
-- `severity`: `warn`, `error`, `fatal`
+- `service`: `admin_api`, `game_api`, `worker_cron`, `migration_verify`,
+  `support_read_model`, `integrity_pipeline`
+- `source`: `admin_api`, `game_api`, `worker_cron`, `migration_verify`,
+  `support_read_model`, `integrity_pipeline`
+- `severity`: `info`, `warning`, `error`, `critical`
+- `status`: `open`, `acknowledged`, `resolved`, `ignored`
 
-`Unity Client Diagnostic` is a source label for fail-soft client diagnostic
-events if a remote diagnostic transport is added later. It is not proof that
-the Unity client caused a server fault.
+Unity client diagnostic events remain client-side correlation hints. They are
+not authoritative server-side error Source of Truth unless a later sanitized
+ingestion path explicitly writes a server-owned `ops_error_logs` summary row.
 
 ## Masking Policy
 
@@ -272,26 +277,25 @@ Open decision:
 
 ## Access Control
 
-Permission candidate:
+Permission:
 
 ```text
 OPS_ERROR_LOG_READ
 ```
 
-Recommended initial read policy:
+Current read policy:
 
-- OWNER: list + detail, including sanitized stack/metadata when available.
-- OPERATOR: list + detail summary, no raw/sanitized deep payload by default.
-- VIEWER: list summary may be allowed if operational read scope permits; if in
-  doubt, gate `/ops/error-logs` to OWNER/OPERATOR first.
+- OWNER: list + detail.
+- OPERATOR: list + detail.
+- VIEWER: denied by default for launch ops error logs.
 
-Admin Web currently uses an interim permission. Server contract should introduce
-`OPS_ERROR_LOG_READ` before real API wiring.
+The current implementation uses `ROLE_PERMISSION`; `admin_principals.role`
+maps to `OPS_ERROR_LOG_READ`.
 
 Do not use this log model for operator action auditing. Keep admin actions in
 `admin_audit_logs`.
 
-## Admin API Endpoint Candidates
+## Admin API Endpoints
 
 List:
 
@@ -303,26 +307,34 @@ Filters:
 
 ```text
 environment=DEV|PRD
-service=Admin%20API|Game%20API|Async%20Worker|Pages%20Function|Unity%20Client%20Diagnostic
-severity=warn|error|fatal
+service=admin_api|game_api|worker_cron|migration_verify|support_read_model|integrity_pipeline
+source=admin_api|game_api|worker_cron|migration_verify|support_read_model|integrity_pipeline
+severity=info|warning|error|critical
+status=open|acknowledged|resolved|ignored
 errorCode=<stable-code>
 requestId=req_...
 accountId=account_...
 runId=run_...
 rewardPreviewId=reward_preview_...
 rewardClaimId=reward_claim_...
+offlineRewardClaimId=offline_claim_...
 gachaBatchId=gacha_batch_...
 gachaBannerId=banner_...
+storyProgressId=opn_...
+integrityEventId=integrity_...
+supportTicketId=ticket_...
 occurredFrom=<ISO UTC>
 occurredTo=<ISO UTC>
 limit=50
-cursor=<opaque-cursor>
+cursor=<offset-cursor>
 ```
 
 List response:
 
 ```json
 {
+  "permission": "OPS_ERROR_LOG_READ",
+  "permissionMode": "ROLE_PERMISSION",
   "items": [],
   "nextCursor": null
 }
@@ -342,33 +354,55 @@ Detail response:
     "id": "ops_error_...",
     "occurredAt": "2026-08-27T00:00:00.000Z",
     "environment": "DEV",
-    "service": "Game API",
+    "service": "game_api",
     "severity": "error",
     "errorCode": "gacha_result_persist_failed",
     "messageSummary": "Gacha result persistence failed.",
+    "status": "open",
+    "source": "game_api",
     "requestId": "req_...",
     "accountId": "account_...",
     "runId": null,
     "rewardPreviewId": null,
     "rewardClaimId": null,
+    "offlineRewardClaimId": null,
     "gachaBatchId": "gacha_batch_...",
     "gachaBannerId": "banner_...",
+    "storyProgressId": null,
+    "integrityEventId": null,
+    "supportTicketId": null,
+    "idempotencyOperation": "gacha_pull",
+    "idempotencyKeyHash": "sha256:...",
     "retryable": true,
     "masked": true,
     "payloadRef": null,
     "traceRef": null,
+    "resolvedAt": null,
+    "resolvedBy": null,
+    "resolutionNote": null,
+    "createdAt": "2026-08-27T00:00:00.000Z",
     "links": {
-      "auditLogId": null,
+      "accountId": "account_...",
+      "runId": null,
       "rewardClaimId": null,
-      "gachaBatchId": "gacha_batch_..."
-    }
+      "offlineRewardClaimId": null,
+      "gachaBatchId": "gacha_batch_...",
+      "gachaBannerId": "banner_...",
+      "integrityEventId": null,
+      "supportTicketId": null
+    },
+    "correlation": {},
+    "sanitizedContext": {}
   },
   "detail": null
 }
 ```
 
-`detail` should remain `null` unless a later R2/trace detail source is approved
-and permission-gated.
+`detail` remains `null` unless a later R2/trace detail source is approved and
+permission-gated.
+
+Request bodies on list/detail routes are rejected with `contract_violation`.
+Missing details return `ops_error_log_not_found`.
 
 ## Correlation
 
@@ -424,16 +458,17 @@ Recommendation:
 - Do not treat client diagnostics as authoritative server error Source of
   Truth. They are correlation hints.
 
-## First Implementation Slice Candidate
+## Current Implementation Slice
 
-When implementation is approved:
+Completed locally:
 
-1. Add migration for `ops_error_logs` D1 summary table only.
-2. Add read-only Admin API list/detail contract with fixture-backed or D1-backed
-   tests.
-3. Add permission candidate `OPS_ERROR_LOG_READ`.
-4. Add a local-only sanitized event insert helper for unit/integration tests.
-5. Defer Queue/R2/Workers Logs bindings until explicit remote resource approval.
+1. Added migration `0016_ops_error_logs.sql` for the D1 summary table only.
+2. Added read-only Admin API list/detail contract with unit and local D1 smoke
+   coverage.
+3. Added permission `OPS_ERROR_LOG_READ`.
+4. Added a local sanitized event insert envelope helper.
+5. Deferred Queue/R2/Workers Logs bindings until explicit remote resource
+   approval.
 
 Remote DEV and PRD resource creation remain approval-gated.
 
