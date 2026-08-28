@@ -387,6 +387,8 @@ async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
   messageSummary: string;
   requestId?: string | null;
   accountId?: string | null;
+  runId?: string | null;
+  gachaBatchId?: string | null;
   gachaBannerId?: string | null;
   storyProgressId?: string | null;
   idempotencyOperation?: string | null;
@@ -408,6 +410,8 @@ async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
       source: "game_api",
       requestId: input.requestId ?? c.req.header("X-Request-Id") ?? null,
       accountId: input.accountId ?? null,
+      runId: input.runId ?? null,
+      gachaBatchId: input.gachaBatchId ?? null,
       gachaBannerId: input.gachaBannerId ?? null,
       storyProgressId: input.storyProgressId ?? null,
       idempotencyOperation: input.idempotencyOperation ?? null,
@@ -425,7 +429,7 @@ async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
          integrity_event_id, support_ticket_id, idempotency_operation, idempotency_key_hash,
          correlation_json, sanitized_context_json, retryable, masked, payload_ref, trace_ref,
          resolved_at, resolved_by, resolution_note, created_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?)`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, ?, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?)`,
     ).bind(
       envelope.id,
       envelope.occurredAt,
@@ -438,6 +442,8 @@ async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
       envelope.source,
       envelope.requestId,
       envelope.accountId,
+      envelope.runId,
+      envelope.gachaBatchId,
       envelope.gachaBannerId,
       envelope.storyProgressId,
       envelope.idempotencyOperation,
@@ -2621,7 +2627,35 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, batchId, now),
   );
 
-  await c.env.DB.batch(statements);
+  try {
+    await c.env.DB.batch(statements);
+  } catch {
+    await writeGameApiOpsErrorLog(c, {
+      severity: "error",
+      errorCode: "gacha_state_conflict",
+      messageSummary: "Gacha pull commit transaction failed.",
+      accountId: authContext.accountId,
+      gachaBannerId: bannerId,
+      idempotencyOperation: "gacha_pull",
+      idempotencyKey,
+      correlation: {
+        bannerId,
+        batchId,
+        pullCount,
+      },
+      context: {
+        phase: "gacha_pull_commit",
+        responseShape: "gacha_rejected",
+      },
+      retryable: true,
+    });
+    return c.json(createGachaRejectedResponse({
+      bannerId,
+      pullCount,
+      errorCode: "gacha_state_conflict",
+      message: "Gacha pull could not be committed safely.",
+    }), 409);
+  }
 
   return c.json(createGachaAcceptedResponse({
     batchId,
@@ -2860,7 +2894,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     },
   });
 
-  await c.env.DB.batch([
+  const finishStatements = [
     c.env.DB.prepare(
       `INSERT INTO run_final_results (run_id, outcome, cleared_waves, payload_json, submitted_at)
        VALUES (?, ?, ?, ?, ?)`,
@@ -2953,7 +2987,46 @@ app.post("/v1/runs/:runId/finish", async (c) => {
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
        VALUES (?, ?, ?, 'run_finish', ?, ?)`,
     ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, rewardPreviewId, now),
-  ]);
+  ];
+
+  try {
+    await c.env.DB.batch(finishStatements);
+  } catch {
+    if (storyProgressPlan !== null) {
+      await writeGameApiOpsErrorLog(c, {
+        severity: "error",
+        errorCode: "story_progress_state_conflict",
+        messageSummary: "Run finish story progress commit transaction failed.",
+        accountId: authContext.accountId,
+        runId,
+        storyProgressId: storyProgressPlan.highestStoryProgressId,
+        idempotencyOperation: "run_finish",
+        idempotencyKey,
+        correlation: {
+          runId,
+          operationId: previewMetadata.operationId,
+          storyProgressId: storyProgressPlan.highestStoryProgressId,
+        },
+        context: {
+          phase: "run_finish_story_progress_commit",
+          responseShape: "run_finish_rejected",
+        },
+        retryable: true,
+      });
+      return c.json(createRunFinishRejectedResponse({
+        runId,
+        balanceVersion: String(row.balance_config_version),
+        errorCode: "story_progress_state_conflict",
+        message: "Story progress could not be committed safely.",
+      }), 409);
+    }
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "run_state_conflict",
+      message: "Run finish could not be committed safely.",
+    }), 409);
+  }
 
   return c.json(createRunFinishAcceptedResponse({
     runId,

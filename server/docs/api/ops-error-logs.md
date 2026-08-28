@@ -66,6 +66,15 @@ Current direct-write scope:
 - `offline_reward_state_conflict`: `error`, `game_api`, open. Written when
   server-owned offline reward state is ahead of server time during
   `POST /v1/offline-rewards/claim`.
+- `gacha_state_conflict`: `error`, `game_api`, open. Written when the gacha
+  pull commit batch fails after validation and before a successful
+  `gacha_pull` idempotency record exists. It is reserved for server-side
+  state/ledger/idempotency conflict investigation, not normal validation
+  rejects.
+- `story_progress_state_conflict`: `error`, `game_api`, open. Written when an
+  accepted full-clear run finish cannot safely commit the story progress
+  update batch. It is reserved for server-owned story/unlock/progression state
+  conflicts, not player-supplied story progress values.
 
 Both writes are fail-soft. If the ops log insert fails, the original player API
 response is preserved. Request bodies, raw Google tokens, Authorization headers,
@@ -74,9 +83,10 @@ multiplier bps, and unrestricted stack traces are still not stored.
 
 Backlog / decision queue:
 
-- Gacha ledger/economy mutation conflict write integration.
-- Story progress state conflict write integration.
 - Queue-based async sink and optional R2 sanitized detail payloads.
+- Wider automatic write integration for non-critical validation rejects,
+  support notes, Admin API read model composition failures, and client
+  diagnostics.
 
 ### Queues + D1 Sink
 

@@ -61,6 +61,16 @@ Minimal ops error write integration:
   `google_auth_config_missing` ops error with `severity = critical`.
 - The response remains `google_auth_not_configured`; raw Google ID tokens and
   full claims are not stored.
+- Offline reward state conflicts write scrubbed
+  `offline_reward_state_conflict` ops errors.
+- Gacha pull commit batch conflicts write scrubbed `gacha_state_conflict` ops
+  errors.
+- Accepted full-clear run finish story progress commit conflicts write scrubbed
+  `story_progress_state_conflict` ops errors.
+- Normal validation rejects, insufficient resources, inactive banners, and
+  duplicate replay outcomes are not ops error writes.
+- Ops error writes are fail-soft and must not worsen the player-facing API
+  response.
 
 Response:
 

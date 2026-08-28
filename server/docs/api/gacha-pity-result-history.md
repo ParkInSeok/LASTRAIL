@@ -630,6 +630,11 @@ gacha_state_conflict
 gacha_temporarily_unavailable
 ```
 
+`gacha_state_conflict` is also a minimal ops error write candidate only when a
+server-side commit batch fails after validation. It is not written for normal
+validation rejects such as invalid pull count, inactive banners, missing
+banners, insufficient command tickets, or duplicate replay.
+
 Fatal:
 
 ```text

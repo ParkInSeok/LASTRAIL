@@ -3,6 +3,7 @@ import initSqlJs from "sql.js";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import app from "../../apps/game-api/src/index";
+import { launchRunRewardsConfig } from "../../packages/balance/src/index";
 
 type SqlValue = string | number | Uint8Array | null;
 
@@ -53,9 +54,11 @@ class SqlJsD1Statement {
 
 class SqlJsD1Database {
   private readonly database: initSqlJs.Database;
+  private readonly failBatchSqlIncludes: string | null;
 
-  constructor(database: initSqlJs.Database) {
+  constructor(database: initSqlJs.Database, options: { failBatchSqlIncludes?: string } = {}) {
     this.database = database;
+    this.failBatchSqlIncludes = options.failBatchSqlIncludes ?? null;
   }
 
   prepare(sql: string): SqlJsD1Statement {
@@ -66,6 +69,9 @@ class SqlJsD1Database {
     this.database.run("BEGIN;");
     try {
       for (const statement of statements) {
+        if (this.failBatchSqlIncludes !== null && statement.sql.includes(this.failBatchSqlIncludes)) {
+          throw new Error(`simulated batch conflict: ${this.failBatchSqlIncludes}`);
+        }
         statement.run();
       }
       this.database.run("COMMIT;");
@@ -96,12 +102,15 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   return db;
 }
 
-function createEnv(db: initSqlJs.Database): Env & { AUTH_SIGNING_KEY_CURRENT: string } {
+function createEnv(
+  db: initSqlJs.Database,
+  options: { failBatchSqlIncludes?: string } = {},
+): Env & { AUTH_SIGNING_KEY_CURRENT: string } {
   return {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     AUTH_SIGNING_KEY_CURRENT: authSecret,
-    DB: new SqlJsD1Database(db) as unknown as D1Database,
+    DB: new SqlJsD1Database(db, options) as unknown as D1Database,
   };
 }
 
@@ -115,6 +124,98 @@ function firstRow<T extends Record<string, unknown>>(db: initSqlJs.Database, sql
   const columns = result[0]?.columns ?? [];
   const values = result[0]?.values[0] ?? [];
   return Object.fromEntries(columns.map((column, index) => [column, values[index]])) as T;
+}
+
+async function createGuest(env: Env): Promise<{ accountId: string; accessToken: string }> {
+  const response = await app.request("/v1/auth/guest", { method: "POST" }, env);
+  const body = await response.json() as {
+    account: { id: string };
+    accessToken: string;
+  };
+  return { accountId: body.account.id, accessToken: body.accessToken };
+}
+
+function seedGachaBanner(db: initSqlJs.Database, accountId: string): void {
+  db.run(
+    `INSERT INTO balance_config_drafts (
+       id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+     ) VALUES (
+       'draft-ops-gacha-1', NULL, 1, 1, '{}', 'checksum-ops-gacha-1', 1, 'PUBLISHED', 'test', ?, ?
+     );`,
+    [fixedNow, fixedNow],
+  );
+  db.run(
+    `INSERT INTO balance_config_versions (
+       version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+     ) VALUES (
+       401, 1, 1, 'checksum-ops-gacha-1', '{}', ?, 'test', 'draft-ops-gacha-1'
+     );`,
+    [fixedNow],
+  );
+  db.run(
+    `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+     VALUES (?, 'cur_command_ticket', 1, ?);`,
+    [accountId, fixedNow],
+  );
+  db.run(
+    `INSERT INTO gacha_banners (
+       id, banner_type, status, balance_config_version, pickup_operator_id, starts_at, ends_at,
+       pity_config_json, pool_snapshot_json, created_at, updated_at
+     ) VALUES (
+       'banner-ops-gacha-1', 'PICKUP', 'ACTIVE', 401, 'op_vex', 1, NULL,
+       '{"elite":30,"pickup":60,"rare":10}',
+       '{"results":[{"resultRarity":"ELITE","resultType":"ELITE_OPERATOR","resultId":"op_vex","weight":1,"isPickup":true}]}',
+       ?, ?
+     );`,
+    [fixedNow, fixedNow],
+  );
+}
+
+function seedFinishableRun(db: initSqlJs.Database, accountId: string): void {
+  db.run(
+    `INSERT INTO balance_config_drafts (
+       id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+     ) VALUES (
+       'draft-ops-run-1', NULL, 1, 1, '{}', 'checksum-ops-run-1', 1, 'PUBLISHED', 'test', ?, ?
+     );`,
+    [fixedNow, fixedNow],
+  );
+  db.run(
+    `INSERT INTO balance_config_versions (
+       version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+     ) VALUES (?, 1, 1, 'checksum-ops-run-1', ?, ?, 'test', 'draft-ops-run-1');`,
+    [402, JSON.stringify({ runRewards: launchRunRewardsConfig }), fixedNow],
+  );
+  db.run(
+    `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+     VALUES ('mutation-ops-run-start-1', ?, 2, 'RUN_START', 'idem-ops-run-start-1', ?);`,
+    [accountId, fixedNow],
+  );
+  db.run(
+    `INSERT INTO operation_previews (
+       id, account_id, mutation_id, objective, risk, balance_config_version, preview_json, status, expires_at, created_at
+     ) VALUES (?, ?, ?, ?, ?, 402, ?, 'CONSUMED', ?, ?);`,
+    [
+      "preview-ops-run-1",
+      accountId,
+      "mutation-ops-run-start-1",
+      "opn_03_water_stop",
+      "III",
+      JSON.stringify({
+        operationId: "opn_03_water_stop",
+        actId: "act_01_wasteland_railway",
+        regionId: "region_wasteland_railway",
+      }),
+      fixedNow + 900000,
+      fixedNow,
+    ],
+  );
+  db.run(
+    `INSERT INTO runs (
+       id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id
+     ) VALUES ('run-ops-story-1', ?, 'preview-ops-run-1', 'mutation-ops-run-start-1', 402, 'ACTIVE', ?, NULL, NULL);`,
+    [accountId, fixedNow],
+  );
 }
 
 describe("game-api minimal ops error write integration", () => {
@@ -212,6 +313,118 @@ describe("game-api minimal ops error write integration", () => {
       });
       expect(String(log.idempotency_key_hash)).toMatch(/^sha256:/u);
       expect(String(log.idempotency_key_hash)).not.toContain("offline-conflict-idem-1");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("writes a fail-soft ops error for gacha commit state conflicts without granting rewards", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const setupEnv = createEnv(db);
+      const guest = await createGuest(setupEnv);
+      seedGachaBanner(db, guest.accountId);
+
+      const response = await app.request(
+        "/v1/gacha/banners/banner-ops-gacha-1/pulls",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guest.accessToken}`,
+            "Idempotency-Key": "gacha-conflict-idem-1",
+            "X-Request-Id": "req_gacha_conflict_1",
+          },
+          body: JSON.stringify({ pullCount: 1 }),
+        },
+        createEnv(db, { failBatchSqlIncludes: "INSERT INTO gacha_pull_batches" }),
+      );
+
+      expect(response.status).toBe(409);
+      await expect(response.json()).resolves.toMatchObject({
+        accepted: false,
+        resultStatus: "REJECTED",
+        batchId: null,
+        errorCode: "gacha_state_conflict",
+      });
+      expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id LIKE 'account_%' AND item_id = 'cur_command_ticket';")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_batches;")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results;")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'gacha_pull';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM ops_error_logs WHERE error_code = 'gacha_state_conflict';")).toBe(1);
+
+      const log = firstRow(db, "SELECT account_id, gacha_banner_id, idempotency_operation, idempotency_key_hash, retryable, masked FROM ops_error_logs WHERE error_code = 'gacha_state_conflict';");
+      expect(log).toMatchObject({
+        account_id: guest.accountId,
+        gacha_banner_id: "banner-ops-gacha-1",
+        idempotency_operation: "gacha_pull",
+        retryable: 1,
+        masked: 1,
+      });
+      expect(String(log.idempotency_key_hash)).toMatch(/^sha256:/u);
+      expect(String(log.idempotency_key_hash)).not.toContain("gacha-conflict-idem-1");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("writes a fail-soft ops error for story progress commit conflicts without finishing the run", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const setupEnv = createEnv(db);
+      const guest = await createGuest(setupEnv);
+      seedFinishableRun(db, guest.accountId);
+
+      const response = await app.request(
+        "/v1/runs/run-ops-story-1/finish",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guest.accessToken}`,
+            "Idempotency-Key": "story-conflict-idem-1",
+            "X-Request-Id": "req_story_conflict_1",
+          },
+          body: JSON.stringify({
+            runId: "run-ops-story-1",
+            currentStage: "Complete",
+            currentWaveNumber: 0,
+            completedWaveCount: 15,
+            outcome: "VICTORY",
+            runtimeStateJson: "{}",
+            tacticSelections: [],
+            clientCompletedAt: "2026-08-28T00:00:00.000Z",
+          }),
+        },
+        createEnv(db, { failBatchSqlIncludes: "INSERT INTO account_story_progress" }),
+      );
+
+      expect(response.status).toBe(409);
+      await expect(response.json()).resolves.toMatchObject({
+        runId: "run-ops-story-1",
+        accepted: false,
+        resultStatus: "REJECTED",
+        rewardPreviewId: null,
+        errorCode: "story_progress_state_conflict",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-ops-story-1';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-ops-story-1';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'run_finish';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM ops_error_logs WHERE error_code = 'story_progress_state_conflict';")).toBe(1);
+
+      const log = firstRow(db, "SELECT account_id, run_id, story_progress_id, idempotency_operation, idempotency_key_hash, retryable, masked FROM ops_error_logs WHERE error_code = 'story_progress_state_conflict';");
+      expect(log).toMatchObject({
+        account_id: guest.accountId,
+        run_id: "run-ops-story-1",
+        story_progress_id: "opn_03_water_stop",
+        idempotency_operation: "run_finish",
+        retryable: 1,
+        masked: 1,
+      });
+      expect(String(log.idempotency_key_hash)).toMatch(/^sha256:/u);
+      expect(String(log.idempotency_key_hash)).not.toContain("story-conflict-idem-1");
     } finally {
       vi.useRealTimers();
     }

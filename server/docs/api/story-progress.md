@@ -480,6 +480,11 @@ story_unlock_policy_missing
 
 Admin audit remains for operator actions. Runtime story progress failures belong
 in ops error logs or integrity/progression events.
+The launch minimal ops error write integration records
+`story_progress_state_conflict` only when an accepted full-clear run finish
+cannot safely commit the server-owned story progress update batch. Duplicate
+finish replay, lower-operation non-regression, and client-supplied story
+progress rejection do not create ops error rows by default.
 
 ## Open Decisions
 
