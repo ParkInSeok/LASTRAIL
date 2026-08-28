@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { levelSourceLabel, permissionLabel, storyProgressLabel } from "../shared/labels/adminLabels";
+import { storyProgressReadContractFilterFields } from "../shared/storyProgress/storyProgressContract";
 
 type RunRiskRewardPlaceholder = {
   label: string;
@@ -103,14 +104,7 @@ export const storyProgressReadContractPlaceholders: StoryProgressReadContractPla
   }
 ];
 
-export const storyProgressReadContractFilters = [
-  "highestStoryProgressId",
-  "narrativeVersion",
-  "contentStatus",
-  "localizationStatus",
-  "fixtureStatus",
-  "missingContentStatus"
-];
+export const storyProgressReadContractFilters = [...storyProgressReadContractFilterFields];
 
 export function RunDetailPage() {
   const { runId = "" } = useParams();

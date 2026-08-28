@@ -70,12 +70,19 @@ describe("RunDetailPage risk reward skeleton", () => {
 
   it("prepares story progress read-only filter skeleton fields", () => {
     expect(storyProgressReadContractFilters).toEqual([
+      "accountId",
+      "actId",
       "highestStoryProgressId",
+      "highestClearedOperationId",
       "narrativeVersion",
       "contentStatus",
       "localizationStatus",
       "fixtureStatus",
-      "missingContentStatus"
+      "missingContentStatus",
+      "updatedFrom",
+      "updatedTo",
+      "limit",
+      "cursor"
     ]);
   });
 
