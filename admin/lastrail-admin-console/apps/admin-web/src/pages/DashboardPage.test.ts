@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   dashboardSections,
   dashboardShortcuts,
+  offlineRewardDashboardContractFields,
   offlineRewardBlockedDefaultRewards,
   offlineRewardFormulaPlaceholders,
   offlineRewardSourceCandidates,
@@ -84,6 +85,27 @@ describe("DashboardPage configuration", () => {
       "cur_special_core",
       "cur_command_ticket",
       "cur_command_ticket_fragment"
+    ]);
+  });
+
+  it("maps offline reward preview response fields to dashboard skeleton candidates", () => {
+    expect(offlineRewardDashboardContractFields).toEqual([
+      "previewStatus",
+      "storyProgressId",
+      "claimableSeconds",
+      "claimableHours",
+      "offlineStorageCapHours",
+      "minimumClaimSeconds",
+      "maxClaimableHours",
+      "rewardLines.source",
+      "calculation.storyProgressId",
+      "calculation.storyProgressMultiplierLabel",
+      "calculation.cappedOfflineSeconds",
+      "calculation.capSource",
+      "narrativeVersion",
+      "serverCalculatedAt",
+      "errorCode",
+      "message"
     ]);
   });
 

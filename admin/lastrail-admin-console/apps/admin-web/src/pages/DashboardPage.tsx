@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { storyProgressLabel } from "../shared/labels/adminLabels";
+import { offlineRewardPreviewContractFields } from "../shared/offlineRewards/offlineRewardContract";
 
 type DashboardMetric = {
   label: string;
@@ -61,6 +62,8 @@ export const offlineRewardBlockedDefaultRewards = [
   "cur_command_ticket",
   "cur_command_ticket_fragment"
 ];
+
+export const offlineRewardDashboardContractFields = [...offlineRewardPreviewContractFields];
 
 export const dashboardSections: DashboardSection[] = [
   {

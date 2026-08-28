@@ -16,6 +16,7 @@ import {
   opsErrorCodeLabel,
   opsServiceLabel,
   opsSeverityLabel,
+  offlineRewardPreviewStatusLabel,
   permissionLabel,
   priorityLabel,
   resourceTypeLabel,
@@ -100,7 +101,15 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("story_progress_state_conflict")).toBe("스토리 진행 상태 충돌");
     expect(opsErrorCodeLabel("narrative_content_missing")).toBe("내러티브 콘텐츠 누락");
     expect(opsErrorCodeLabel("narrative_version_mismatch")).toBe("내러티브 버전 불일치");
+    expect(opsErrorCodeLabel("contract_violation")).toBe("계약 위반");
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
+  });
+
+  it("translates offline reward preview status while preserving unknown fallback", () => {
+    expect(offlineRewardPreviewStatusLabel("AVAILABLE")).toBe("수령 가능");
+    expect(offlineRewardPreviewStatusLabel("EMPTY")).toBe("수령 없음");
+    expect(offlineRewardPreviewStatusLabel("REJECTED")).toBe("거절");
+    expect(offlineRewardPreviewStatusLabel("FUTURE_STATUS")).toBe("FUTURE_STATUS");
   });
 
   it("translates story progress stable ids while preserving unknown fallback", () => {

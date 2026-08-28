@@ -30,6 +30,7 @@ type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" |
 type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
 type OpsSeverity = "warn" | "error" | "fatal";
+type OfflineRewardPreviewStatus = "AVAILABLE" | "EMPTY" | "REJECTED";
 type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
 type StoryProgressStatus =
   | "draft_exists"
@@ -204,9 +205,21 @@ export function opsErrorCodeLabel(code: string): string {
       story_progress_policy_missing: "스토리 진행 정책 누락",
       story_progress_state_conflict: "스토리 진행 상태 충돌",
       narrative_content_missing: "내러티브 콘텐츠 누락",
-      narrative_version_mismatch: "내러티브 버전 불일치"
+      narrative_version_mismatch: "내러티브 버전 불일치",
+      contract_violation: "계약 위반"
     },
     code
+  );
+}
+
+export function offlineRewardPreviewStatusLabel(status: OfflineRewardPreviewStatus | string): string {
+  return labelFor(
+    {
+      AVAILABLE: "수령 가능",
+      EMPTY: "수령 없음",
+      REJECTED: "거절"
+    },
+    status
   );
 }
 
