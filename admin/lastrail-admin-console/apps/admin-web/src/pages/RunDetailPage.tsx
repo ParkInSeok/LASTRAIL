@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import {
+  encounterTypeLabel,
   levelSourceLabel,
   permissionLabel,
   storyProgressLabel,
@@ -39,6 +40,20 @@ type StoryProgressReadContractPlaceholder = {
   label: string;
   field: string;
   value: string;
+  note: string;
+};
+
+type RunEncounterPlaceholder = {
+  code: "ORDINARY_15_WAVE" | "RAID_BOSS";
+  label: string;
+  value: "연동 대기";
+  note: string;
+};
+
+type RunCombatEvidencePlaceholder = {
+  field: string;
+  label: string;
+  value: "연동 대기" | "run_start";
   note: string;
 };
 
@@ -94,6 +109,72 @@ export const raidNarrativeObjectivePlaceholders: RaidNarrativeObjectivePlacehold
   { objectiveId: "fuel_core_stable", label: "연료 코어 안정", state: "연동 대기", note: "read-only raid scoring 후보" },
   { objectiveId: "engine_integrity", label: "엔진 무결성", state: "연동 대기", note: "read-only raid scoring 후보" }
 ];
+
+export const encounterTypePlaceholders: RunEncounterPlaceholder[] = [
+  {
+    code: "ORDINARY_15_WAVE",
+    label: encounterTypeLabel("ORDINARY_15_WAVE"),
+    value: "연동 대기",
+    note: "일반 Act 1 작전은 15공세 기준으로 판정합니다"
+  },
+  {
+    code: "RAID_BOSS",
+    label: encounterTypeLabel("RAID_BOSS"),
+    value: "연동 대기",
+    note: "레이드는 15공세가 아닌 boss-only encounter로 분리합니다"
+  }
+];
+
+export const raidBossResultPlaceholders: RunCombatEvidencePlaceholder[] = [
+  { field: "raidId", label: "레이드 ID", value: "연동 대기", note: "raid boss result reference 후보" },
+  { field: "bossId", label: "보스 ID", value: "연동 대기", note: "boss-only encounter reference 후보" },
+  { field: "bossDefeated", label: "보스 격파 여부", value: "연동 대기", note: "15공세 클리어와 분리 표시" },
+  { field: "completedPhaseCount", label: "완료 페이즈 수", value: "연동 대기", note: "boss phase progression 후보" },
+  { field: "encounterDurationSeconds", label: "전투 소요 시간", value: "연동 대기", note: "sanitized duration 후보" }
+];
+
+export const runStartPackageEvidencePlaceholders: RunCombatEvidencePlaceholder[] = [
+  {
+    field: "startAugmentPackageRef",
+    label: "시작 증강 패키지 ref",
+    value: "연동 대기",
+    note: "run start 시점에 확정된 증강 묶음 reference 후보"
+  },
+  {
+    field: "startTacticPackageRef",
+    label: "시작 전술 패키지 ref",
+    value: "연동 대기",
+    note: "run start 시점에 확정된 지휘전술 묶음 reference 후보"
+  },
+  {
+    field: "selectedAugmentIds",
+    label: "선택 증강 ID",
+    value: "연동 대기",
+    note: "selected augment stable ids 후보"
+  },
+  {
+    field: "selectedTacticIds",
+    label: "선택 전술 ID",
+    value: "연동 대기",
+    note: "selected tactic stable ids 후보"
+  },
+  {
+    field: "source",
+    label: "근거 소스",
+    value: "run_start",
+    note: "source=run_start read-only evidence"
+  }
+];
+
+export const forbiddenRunCombatEvidenceExamplesOutOfScope = [
+  "raw combat timeline",
+  "animation frame",
+  "VFX",
+  "SFX",
+  "camera",
+  "hit-stop",
+  "debug payload"
+] as const;
 
 export const storyProgressReadContractPlaceholders: StoryProgressReadContractPlaceholder[] = [
   { label: "계정 ID", field: "accountId", value: "연동 대기", note: "story progress detail 조회 기준" },
@@ -369,6 +450,39 @@ export function RunDetailPage() {
               <strong>{objective.state}</strong>
               <small>
                 {objective.objectiveId} / {objective.note}
+              </small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {encounterTypePlaceholders.map((placeholder) => (
+            <div key={placeholder.code} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>
+                {placeholder.code} / {placeholder.note}
+              </small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {raidBossResultPlaceholders.map((placeholder) => (
+            <div key={placeholder.field} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>
+                {placeholder.field} / {placeholder.note}
+              </small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {runStartPackageEvidencePlaceholders.map((placeholder) => (
+            <div key={placeholder.field} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>
+                {placeholder.field} / {placeholder.note}
               </small>
             </div>
           ))}

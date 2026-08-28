@@ -3,6 +3,7 @@ import {
   supportAccountAuthEvidenceCards,
   supportAccountContextCards,
   supportCaseTypeCards,
+  supportCombatEvidenceCards,
   supportEscalationActionCards,
   supportEscalationCategoryCards,
   supportEscalationEvidenceCards,
@@ -75,6 +76,29 @@ describe("SupportAccountPage configuration", () => {
     expect(supportAccountAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("Google ID token");
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("raw auth header");
+  });
+
+  it("prepares run and raid support evidence placeholders without combat internals", () => {
+    expect(supportCombatEvidenceCards.map((card) => card.code)).toEqual([
+      "encounterType",
+      "raidId",
+      "bossId",
+      "bossDefeated",
+      "completedPhaseCount",
+      "encounterDurationSeconds",
+      "startAugmentPackageRef",
+      "startTacticPackageRef",
+      "selectedAugmentIds",
+      "selectedTacticIds",
+      "source"
+    ]);
+    expect(supportCombatEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportCombatEvidenceCards.find((card) => card.code === "source")?.note).toContain("run_start");
+
+    const serialized = JSON.stringify(supportCombatEvidenceCards);
+    expect(serialized).not.toContain("raw combat timeline");
+    expect(serialized).not.toContain("animation frame");
+    expect(serialized).not.toContain("debug payload");
   });
 
   it("does not expose mutation controls in the support skeleton", () => {

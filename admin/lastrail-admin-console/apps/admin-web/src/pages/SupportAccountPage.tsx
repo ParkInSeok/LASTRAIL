@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { permissionLabel } from "../shared/labels/adminLabels";
+import { encounterTypeLabel, permissionLabel } from "../shared/labels/adminLabels";
 import {
   accountAuthVisibilityFields,
+  customerSupportCombatEvidenceFields,
   customerSupportCaseTypeLabel,
   customerSupportCaseTypes,
   customerSupportContractPreview,
@@ -76,6 +77,31 @@ export const supportAccountAuthEvidenceCards: SupportCard[] = [
     note: `${field} read-only auth evidence 후보`
   }))
 ];
+
+export const supportCombatEvidenceCards: SupportCard[] = customerSupportCombatEvidenceFields.map((field) => ({
+  code: field,
+  label:
+    {
+      encounterType: "Encounter 유형",
+      raidId: "레이드 ID",
+      bossId: "보스 ID",
+      bossDefeated: "보스 격파 여부",
+      completedPhaseCount: "완료 페이즈 수",
+      encounterDurationSeconds: "전투 소요 시간",
+      startAugmentPackageRef: "시작 증강 패키지 ref",
+      startTacticPackageRef: "시작 전술 패키지 ref",
+      selectedAugmentIds: "선택 증강 ID",
+      selectedTacticIds: "선택 전술 ID",
+      source: "근거 소스"
+    }[field] ?? field,
+  value: "연동 대기",
+  note:
+    field === "encounterType"
+      ? `${encounterTypeLabel("ORDINARY_15_WAVE")} / ${encounterTypeLabel("RAID_BOSS")}`
+      : field === "source"
+        ? "source=run_start read-only evidence 후보"
+        : `${field} sanitized run/raid reference 후보`
+}));
 
 export const supportOutOfScopeControls = [...customerSupportMutationControlsOutOfScope];
 
@@ -255,6 +281,21 @@ export function SupportAccountPage() {
         </header>
         <div className="metric-grid">
           {supportAccountContextCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>출격/레이드 전투 근거</h2>
+          <p>일반 15공세와 보스 전용 레이드를 분리하고 run start 패키지 근거만 읽기 전용으로 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportCombatEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

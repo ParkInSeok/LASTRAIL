@@ -7,6 +7,7 @@ import {
   classificationLabel,
   enforcementLabel,
   evidenceCodeLabel,
+  encounterTypeLabel,
   gachaErrorCodeLabel,
   gachaGuaranteeTypeLabel,
   gachaResultStatusLabel,
@@ -70,6 +71,12 @@ describe("adminLabels", () => {
     expect(gachaResultStatusLabel("ACCEPTED")).toBe("처리 완료");
     expect(gachaResultStatusLabel("DUPLICATE_REPLAY")).toBe("이전 결과 재조회");
     expect(gachaResultStatusLabel("REJECTED")).toBe("거절");
+  });
+
+  it("translates run encounter type labels while preserving unknown fallback", () => {
+    expect(encounterTypeLabel("ORDINARY_15_WAVE")).toBe("일반 15공세 작전");
+    expect(encounterTypeLabel("RAID_BOSS")).toBe("보스 전용 레이드");
+    expect(encounterTypeLabel("FUTURE_ENCOUNTER")).toBe("FUTURE_ENCOUNTER");
   });
 
   it("translates gacha error codes while preserving unknown fallback", () => {

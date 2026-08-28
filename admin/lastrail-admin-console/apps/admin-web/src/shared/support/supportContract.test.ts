@@ -5,6 +5,8 @@ import {
   accountAuthProviderLabel,
   accountAuthStateLabel,
   accountAuthVisibilityFields,
+  customerSupportCombatEvidenceFields,
+  customerSupportCombatForbiddenExamplesOutOfScope,
   customerSupportCaseTypes,
   customerSupportCaseTypeLabel,
   customerSupportContractPreview,
@@ -94,6 +96,32 @@ describe("supportContract", () => {
     expect(accountAuthErrorCodeLabel("google_auth_config_missing")).toBe("Google 인증 설정 누락");
     expect(accountAuthProviderLabel("future_provider")).toBe("future_provider");
     expect(accountAuthStateLabel("future_state")).toBe("future_state");
+  });
+
+  it("prepares boss raid and run-start package support evidence without raw combat internals", () => {
+    expect(customerSupportCombatEvidenceFields).toEqual([
+      "encounterType",
+      "raidId",
+      "bossId",
+      "bossDefeated",
+      "completedPhaseCount",
+      "encounterDurationSeconds",
+      "startAugmentPackageRef",
+      "startTacticPackageRef",
+      "selectedAugmentIds",
+      "selectedTacticIds",
+      "source"
+    ]);
+    expect(customerSupportContractPreview.runCombat.readOnly).toBe(true);
+    expect(customerSupportContractPreview.runCombat.encounterTypes).toEqual(["ORDINARY_15_WAVE", "RAID_BOSS"]);
+    expect(customerSupportContractPreview.runCombat.startPackageSource).toBe("run_start");
+
+    const serialized = JSON.stringify(customerSupportContractPreview);
+    expect(serialized).toContain("RAID_BOSS");
+    expect(serialized).toContain("run_start");
+    for (const forbidden of customerSupportCombatForbiddenExamplesOutOfScope) {
+      expect(serialized).not.toContain(forbidden);
+    }
   });
 
   it("keeps support workflow launch scope read-only and free of sensitive examples", () => {

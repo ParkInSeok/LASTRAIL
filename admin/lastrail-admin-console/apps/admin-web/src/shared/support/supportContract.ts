@@ -73,6 +73,21 @@ export type AccountAuthErrorCode =
   | "google_token_invalid"
   | "google_auth_config_missing";
 
+export type SupportRunCombatEvidenceField =
+  | "encounterType"
+  | "raidId"
+  | "bossId"
+  | "bossDefeated"
+  | "completedPhaseCount"
+  | "encounterDurationSeconds"
+  | "startAugmentPackageRef"
+  | "startTacticPackageRef"
+  | "selectedAugmentIds"
+  | "selectedTacticIds"
+  | "source";
+
+export type SupportRunEncounterType = "ORDINARY_15_WAVE" | "RAID_BOSS";
+
 export type SupportSummarySectionCode =
   | "account"
   | "auth"
@@ -145,6 +160,13 @@ export type CustomerSupportContractPreview = {
     linkStatuses: readonly AccountAuthLinkStatus[];
     errorCodes: readonly AccountAuthErrorCode[];
     visibilityFields: readonly string[];
+  };
+  runCombat: {
+    readOnly: true;
+    encounterTypes: readonly SupportRunEncounterType[];
+    evidenceFields: readonly SupportRunCombatEvidenceField[];
+    startPackageSource: "run_start";
+    mutationControlsEnabled: false;
   };
   context: CustomerSupportContextItem[];
   supportContext: {
@@ -221,6 +243,32 @@ export const accountAuthErrorCodes: AccountAuthErrorCode[] = [
   "google_token_invalid",
   "google_auth_config_missing"
 ];
+
+export const customerSupportCombatEvidenceFields: SupportRunCombatEvidenceField[] = [
+  "encounterType",
+  "raidId",
+  "bossId",
+  "bossDefeated",
+  "completedPhaseCount",
+  "encounterDurationSeconds",
+  "startAugmentPackageRef",
+  "startTacticPackageRef",
+  "selectedAugmentIds",
+  "selectedTacticIds",
+  "source"
+];
+
+export const customerSupportRunEncounterTypes: SupportRunEncounterType[] = ["ORDINARY_15_WAVE", "RAID_BOSS"];
+
+export const customerSupportCombatForbiddenExamplesOutOfScope = [
+  "raw combat timeline",
+  "animation frame",
+  "VFX",
+  "SFX",
+  "camera",
+  "hit-stop",
+  "debug payload"
+] as const;
 
 export const customerSupportOpsErrorsEvidencePolicy = {
   field: "opsErrors",
@@ -540,6 +588,13 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
     linkStatuses: accountAuthLinkStatuses,
     errorCodes: accountAuthErrorCodes.filter((code) => code !== "google_token_invalid"),
     visibilityFields: accountAuthVisibilityFields
+  },
+  runCombat: {
+    readOnly: true,
+    encounterTypes: customerSupportRunEncounterTypes,
+    evidenceFields: customerSupportCombatEvidenceFields,
+    startPackageSource: "run_start",
+    mutationControlsEnabled: false
   },
   context: customerSupportContextFields.map((field) => ({
     field,

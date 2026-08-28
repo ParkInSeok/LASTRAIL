@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   actOneNarrativeCoverage,
+  encounterTypePlaceholders,
+  forbiddenRunCombatEvidenceExamplesOutOfScope,
+  raidBossResultPlaceholders,
   storyProgressDetailToReadContractPlaceholders,
   raidNarrativeObjectivePlaceholders,
+  runStartPackageEvidencePlaceholders,
   runRiskRewardPlaceholders,
   runStoryNarrativePlaceholders,
   storyProgressReadContractFilters,
@@ -174,5 +178,50 @@ describe("RunDetailPage risk reward skeleton", () => {
     ]);
     expect(raidNarrativeObjectivePlaceholders.every((objective) => objective.state === "연동 대기")).toBe(true);
     expect(raidNarrativeObjectivePlaceholders.every((objective) => objective.note.includes("read-only"))).toBe(true);
+  });
+
+  it("separates ordinary 15-wave runs from boss-only raid encounter evidence", () => {
+    expect(encounterTypePlaceholders.map((placeholder) => placeholder.code)).toEqual([
+      "ORDINARY_15_WAVE",
+      "RAID_BOSS"
+    ]);
+    expect(encounterTypePlaceholders.map((placeholder) => placeholder.label)).toEqual([
+      "일반 15공세 작전",
+      "보스 전용 레이드"
+    ]);
+    expect(encounterTypePlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
+    expect(raidBossResultPlaceholders.map((placeholder) => placeholder.field)).toEqual([
+      "raidId",
+      "bossId",
+      "bossDefeated",
+      "completedPhaseCount",
+      "encounterDurationSeconds"
+    ]);
+    expect(raidBossResultPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
+  });
+
+  it("prepares augment-at-start evidence without exposing combat internals", () => {
+    expect(runStartPackageEvidencePlaceholders.map((placeholder) => placeholder.field)).toEqual([
+      "startAugmentPackageRef",
+      "startTacticPackageRef",
+      "selectedAugmentIds",
+      "selectedTacticIds",
+      "source"
+    ]);
+    expect(runStartPackageEvidencePlaceholders.find((placeholder) => placeholder.field === "source")?.value).toBe(
+      "run_start"
+    );
+
+    const serialized = JSON.stringify({
+      encounterTypePlaceholders,
+      raidBossResultPlaceholders,
+      runStartPackageEvidencePlaceholders
+    });
+    for (const forbidden of forbiddenRunCombatEvidenceExamplesOutOfScope) {
+      expect(serialized).not.toContain(forbidden);
+    }
+    expect(serialized).not.toContain("reprocess");
+    expect(serialized).not.toContain("result edit");
+    expect(serialized).not.toContain("reward correction");
   });
 });

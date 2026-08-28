@@ -26,6 +26,7 @@ type ReviewStatus =
 type RunResult =
   | RunSearchResponse["items"][number]["result"]
   | SuspiciousPlayerDetail["suspiciousRuns"][number]["result"];
+type EncounterType = "ORDINARY_15_WAVE" | "RAID_BOSS";
 type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" | "NONE";
 type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
@@ -131,6 +132,16 @@ export function evidenceCodeLabel(code: string | null): string {
       DAMAGE_SPIKE: "피해량 급증"
     },
     code
+  );
+}
+
+export function encounterTypeLabel(encounterType: EncounterType | string): string {
+  return labelFor(
+    {
+      ORDINARY_15_WAVE: "일반 15공세 작전",
+      RAID_BOSS: "보스 전용 레이드"
+    },
+    encounterType
   );
 }
 
