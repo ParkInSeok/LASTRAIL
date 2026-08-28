@@ -22,17 +22,23 @@ const labeledCode = (label: string, code: string) => `${label} (${code})`;
 
 export const gachaSupportPullCountVisibility = ["1-pull", "10-pull"] as const;
 
+export const actOneEliteOperatorDraftBoundary = {
+  scopeStatus: "TESTING_TUNING_DRAFT",
+  productionFinal: false,
+  seedPromotionApproved: false
+} as const;
+
 export const actOneEliteOperatorIdsDraft = [
-  "op_kyle",
-  "op_reina",
-  "op_eve",
-  "op_sera",
-  "op_mira",
   "op_vex",
-  "op_rin",
   "op_nyx",
-  "op_cipher",
-  "op_iris"
+  "op_sable",
+  "op_marrow",
+  "op_iris",
+  "op_rail",
+  "op_anchor",
+  "op_lumen",
+  "op_cinder",
+  "op_warden"
 ] as const;
 
 export const gachaDuplicateConversionSupportFields = [
@@ -86,7 +92,11 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
     code: "actOneEliteVisualScope",
     label: "Act 1 정예 요원 10인",
     value: "TESTING_TUNING_DRAFT",
-    note: actOneEliteOperatorIdsDraft.join(" / ")
+    note: [
+      `productionFinal=${actOneEliteOperatorDraftBoundary.productionFinal}`,
+      `seedPromotionApproved=${actOneEliteOperatorDraftBoundary.seedPromotionApproved}`,
+      ...actOneEliteOperatorIdsDraft
+    ].join(" / ")
   }
 ];
 

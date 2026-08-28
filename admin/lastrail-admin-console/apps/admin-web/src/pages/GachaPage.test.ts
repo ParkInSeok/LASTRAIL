@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  actOneEliteOperatorDraftBoundary,
   actOneEliteOperatorIdsDraft,
   gachaDuplicateConversionSupportFields,
   gachaLaunchResultFields,
@@ -55,21 +56,35 @@ describe("GachaPage configuration", () => {
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "actOneEliteVisualScope")?.value).toBe(
       "TESTING_TUNING_DRAFT"
     );
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "productionFinal=false"
+    );
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "seedPromotionApproved=false"
+    );
   });
 
-  it("lists Act 1 elite operator ids as a testing tuning draft", () => {
+  it("lists Act 1 elite operator ids from the server launch gacha draft only", () => {
     expect(actOneEliteOperatorIdsDraft).toEqual([
-      "op_kyle",
-      "op_reina",
-      "op_eve",
-      "op_sera",
-      "op_mira",
       "op_vex",
-      "op_rin",
       "op_nyx",
-      "op_cipher",
-      "op_iris"
+      "op_sable",
+      "op_marrow",
+      "op_iris",
+      "op_rail",
+      "op_anchor",
+      "op_lumen",
+      "op_cinder",
+      "op_warden"
     ]);
+    expect(actOneEliteOperatorDraftBoundary).toEqual({
+      scopeStatus: "TESTING_TUNING_DRAFT",
+      productionFinal: false,
+      seedPromotionApproved: false
+    });
+    for (const initialOperatorId of ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira", "op_rin", "op_cipher"]) {
+      expect(actOneEliteOperatorIdsDraft).not.toContain(initialOperatorId);
+    }
   });
 
   it("prepares duplicate conversion and result fields without sensitive gacha internals", () => {

@@ -185,6 +185,8 @@ export type CustomerSupportContractPreview = {
   gachaLaunch: {
     readOnly: true;
     scopeStatus: "TESTING_TUNING_DRAFT";
+    productionFinal: false;
+    seedPromotionApproved: false;
     evidenceFields: readonly SupportGachaLaunchEvidenceField[];
     pullCounts: readonly string[];
     pityThresholds: {
@@ -305,6 +307,8 @@ export const customerSupportGachaLaunchEvidenceFields: SupportGachaLaunchEvidenc
 export const customerSupportGachaLaunchPolicy = {
   readOnly: true,
   scopeStatus: "TESTING_TUNING_DRAFT",
+  productionFinal: false,
+  seedPromotionApproved: false,
   evidenceFields: customerSupportGachaLaunchEvidenceFields,
   pullCounts: ["1-pull", "10-pull"],
   pityThresholds: {
@@ -330,16 +334,16 @@ export const customerSupportGachaLaunchPolicy = {
     "duplicateConversion"
   ],
   actOneEliteOperatorIds: [
-    "op_kyle",
-    "op_reina",
-    "op_eve",
-    "op_sera",
-    "op_mira",
     "op_vex",
-    "op_rin",
     "op_nyx",
-    "op_cipher",
-    "op_iris"
+    "op_sable",
+    "op_marrow",
+    "op_iris",
+    "op_rail",
+    "op_anchor",
+    "op_lumen",
+    "op_cinder",
+    "op_warden"
   ],
   mutationControlsEnabled: false
 } as const;

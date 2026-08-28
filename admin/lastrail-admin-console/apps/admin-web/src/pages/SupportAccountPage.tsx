@@ -125,7 +125,12 @@ export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGac
     field === "pityThresholds"
       ? "rare 10 / elite 30 / pickup 60 draft/contract candidate"
       : field === "actOneEliteVisualScope"
-        ? `TESTING_TUNING_DRAFT / ${customerSupportGachaLaunchPolicy.actOneEliteOperatorIds.join(" / ")}`
+        ? [
+            customerSupportGachaLaunchPolicy.scopeStatus,
+            `productionFinal=${customerSupportGachaLaunchPolicy.productionFinal}`,
+            `seedPromotionApproved=${customerSupportGachaLaunchPolicy.seedPromotionApproved}`,
+            ...customerSupportGachaLaunchPolicy.actOneEliteOperatorIds
+          ].join(" / ")
         : `${field} gacha launch read-only support evidence 후보`
 }));
 

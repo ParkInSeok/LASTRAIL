@@ -131,6 +131,18 @@ describe("SupportAccountPage configuration", () => {
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "TESTING_TUNING_DRAFT"
     );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "productionFinal=false"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "seedPromotionApproved=false"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "op_sable"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).not.toContain(
+      "op_kyle"
+    );
 
     const serialized = JSON.stringify(supportGachaLaunchEvidenceCards);
     expect(serialized).not.toContain("raw RNG");

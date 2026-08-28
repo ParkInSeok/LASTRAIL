@@ -150,6 +150,8 @@ describe("supportContract", () => {
     ]);
     expect(customerSupportGachaLaunchPolicy.readOnly).toBe(true);
     expect(customerSupportGachaLaunchPolicy.scopeStatus).toBe("TESTING_TUNING_DRAFT");
+    expect(customerSupportGachaLaunchPolicy.productionFinal).toBe(false);
+    expect(customerSupportGachaLaunchPolicy.seedPromotionApproved).toBe(false);
     expect(customerSupportGachaLaunchPolicy.pullCounts).toEqual(["1-pull", "10-pull"]);
     expect(customerSupportGachaLaunchPolicy.pityThresholds).toEqual({
       rare: "10",
@@ -166,7 +168,21 @@ describe("supportContract", () => {
       "wasDuplicate",
       "duplicateConversion"
     ]);
-    expect(customerSupportGachaLaunchPolicy.actOneEliteOperatorIds).toHaveLength(10);
+    expect(customerSupportGachaLaunchPolicy.actOneEliteOperatorIds).toEqual([
+      "op_vex",
+      "op_nyx",
+      "op_sable",
+      "op_marrow",
+      "op_iris",
+      "op_rail",
+      "op_anchor",
+      "op_lumen",
+      "op_cinder",
+      "op_warden"
+    ]);
+    for (const initialOperatorId of ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira", "op_rin", "op_cipher"]) {
+      expect(customerSupportGachaLaunchPolicy.actOneEliteOperatorIds).not.toContain(initialOperatorId);
+    }
 
     const serialized = JSON.stringify(customerSupportGachaLaunchPolicy);
     expect(serialized).not.toContain("raw RNG");
