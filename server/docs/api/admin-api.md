@@ -98,6 +98,53 @@ These endpoints do not return full localized dialogue text, tokens, secrets, raw
 request bodies, raw RNG material, reward calculation internals, or account
 shortcut data. Request bodies are rejected with `contract_violation`.
 
+## Offline Rewards
+
+Current local read-only endpoints:
+
+```text
+GET /v1/admin/offline-rewards
+GET /v1/admin/offline-rewards/:accountId
+```
+
+Permission target:
+
+- Stable permission id: `OFFLINE_REWARD_READ`.
+- Current implementation: `ROLE_PERMISSION`; `admin_principals.role` maps to
+  permission grants because there is no separate admin permission grant table.
+- OWNER / OPERATOR / VIEWER all receive `OFFLINE_REWARD_READ`.
+- Offline reward repair, manual grant, claim mutation, and economy correction
+  endpoints are not enabled.
+
+VIEWER access remains allowed because these endpoints expose read-only support
+state, not mutation controls. Operators can use it for player support and
+offline reward troubleshooting without changing balances.
+
+List filters:
+
+- `accountId`
+- `accountStatus`
+- `storyProgressId`
+- `lastStoryProgressId`
+- `narrativeVersion`
+- `updatedFrom`
+- `updatedTo`
+- `limit`
+- `cursor`
+
+The list endpoint returns compact rows based on `accounts`,
+`player_profiles`, `account_story_progress`, `account_offline_reward_state`,
+and the latest offline reward `reward_transactions` row where `run_id IS
+NULL`. The detail endpoint returns a single account read model.
+
+Accounts without an `account_offline_reward_state` row use the same read-only
+fallback context as Game API preview: `accounts.created_at` is displayed as the
+baseline source. The Admin endpoint does not create the missing row.
+
+These endpoints do not return tokens, secrets, raw request bodies, raw RNG
+material, raw multiplier bps, reward calculation internals, or account shortcut
+data. Request bodies are rejected with `contract_violation`.
+
 System/runtime error log design is drafted in `docs/api/ops-error-logs.md`.
 Future read-only candidates are `GET /v1/admin/ops/error-logs` and
 `GET /v1/admin/ops/error-logs/:errorLogId`. The draft keeps runtime error

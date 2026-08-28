@@ -828,11 +828,25 @@ Unity must keep:
 
 ## Admin / Operations Impact
 
-Future Admin read-only candidates:
+Current Admin read-only endpoints:
+
+```text
+GET /v1/admin/offline-rewards
+GET /v1/admin/offline-rewards/:accountId
+```
+
+They require `OFFLINE_REWARD_READ` through the current `ROLE_PERMISSION`
+mapping and expose:
 
 - offline reward claim history;
 - current story progress key;
 - last offline reward claim timestamp;
+- offline reward state source, including legacy `accounts.created_at` fallback;
+- latest offline reward claim id and claim timestamp;
+- read-only support context.
+
+Future Admin read-only candidates:
+
 - reward lines by resource;
 - claimable hours vs capped hours;
 - rejected claims due to minimum duration or clock tamper;

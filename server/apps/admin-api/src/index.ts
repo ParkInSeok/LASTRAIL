@@ -177,6 +177,24 @@ type AdminStoryProgressUnlockRow = {
   unlock_id: string;
 };
 
+type AdminOfflineRewardRow = {
+  account_id: string;
+  display_name: string | null;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  account_created_at: number;
+  highest_story_progress_id: string | null;
+  narrative_version: string | null;
+  last_offline_reward_claim_at: number | null;
+  last_story_progress_id: string | null;
+  last_balance_config_version: number | null;
+  last_narrative_version: string | null;
+  last_previewed_at: number | null;
+  revision: number | null;
+  state_updated_at: number | null;
+  last_claim_id: string | null;
+  last_claim_created_at: number | null;
+};
+
 type NextVersionRow = {
   next_version: number;
 };
@@ -191,6 +209,7 @@ type AppContext = Context<{ Bindings: Env }>;
 const BALANCE_PUBLISH_PERMISSION = "BALANCE_PUBLISH";
 const ACCOUNT_NOTE_WRITE_PERMISSION = "ACCOUNT_NOTE_WRITE";
 const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
+const OFFLINE_REWARD_READ_PERMISSION = "OFFLINE_REWARD_READ";
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
 const ACT_ONE_STORY_PROGRESS_ORDER = [
@@ -630,6 +649,40 @@ function storyProgressDetail(row: AdminStoryProgressRow, unlockRows: AdminStoryP
   };
 }
 
+function offlineRewardSummary(row: AdminOfflineRewardRow) {
+  const storyProgressId = row.highest_story_progress_id ?? row.last_story_progress_id ?? "none";
+  const narrativeVersion = row.narrative_version ?? row.last_narrative_version ?? ACT_ONE_NARRATIVE_VERSION;
+  const hasOfflineState = row.last_offline_reward_claim_at !== null;
+  return {
+    accountId: row.account_id,
+    displayName: row.display_name,
+    accountStatus: row.account_status,
+    storyProgressId,
+    narrativeVersion,
+    offlineRewardState: {
+      source: hasOfflineState ? "account_offline_reward_state" : "accounts.created_at_fallback",
+      lastOfflineRewardClaimAt: toIso(row.last_offline_reward_claim_at ?? row.account_created_at),
+      lastStoryProgressId: row.last_story_progress_id ?? "none",
+      lastBalanceConfigVersion: row.last_balance_config_version,
+      lastNarrativeVersion: row.last_narrative_version ?? ACT_ONE_NARRATIVE_VERSION,
+      lastPreviewedAt: row.last_previewed_at === null ? null : toIso(row.last_previewed_at),
+      revision: row.revision ?? 0,
+      updatedAt: row.state_updated_at === null ? null : toIso(row.state_updated_at),
+    },
+    lastClaim: row.last_claim_id === null
+      ? null
+      : {
+          offlineRewardClaimId: row.last_claim_id,
+          claimedAt: row.last_claim_created_at === null ? null : toIso(row.last_claim_created_at),
+        },
+    supportContext: {
+      readOnly: true,
+      claimMutationEnabled: false,
+      mutationEndpointsEnabled: false,
+    },
+  };
+}
+
 function hasRequestBody(c: AppContext): boolean {
   const contentLength = c.req.header("content-length");
   return contentLength !== undefined && contentLength !== "0";
@@ -642,7 +695,17 @@ function rejectAdminStoryProgressBody(c: AppContext): Response {
   }, 400);
 }
 
+function rejectAdminOfflineRewardBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin offline reward read endpoints do not accept request bodies.",
+  }, 400);
+}
+
 function hasAdminPermission(principal: AdminPrincipalRow, permission: string): boolean {
+  if (permission === OFFLINE_REWARD_READ_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
+  }
   if (permission === STORY_PROGRESS_READ_PERMISSION) {
     return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
   }
@@ -758,6 +821,146 @@ app.get("/v1/admin/me", async (c) => {
       displayName: principal.display_name,
     },
   });
+});
+app.get("/v1/admin/offline-rewards", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, OFFLINE_REWARD_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminOfflineRewardBody(c);
+
+  const whereClauses: string[] = [];
+  const values: Array<string | number> = [];
+  const filters = [
+    ["accountId", "a.id"],
+    ["accountStatus", "a.status"],
+    ["storyProgressId", "COALESCE(sp.highest_story_progress_id, ors.last_story_progress_id, 'none')"],
+    ["lastStoryProgressId", "COALESCE(ors.last_story_progress_id, 'none')"],
+    ["narrativeVersion", "COALESCE(sp.narrative_version, ors.last_narrative_version, ?)"],
+  ] as const;
+  for (const [queryName, columnName] of filters) {
+    const value = c.req.query(queryName)?.trim();
+    if (value !== undefined && value !== "") {
+      whereClauses.push(`${columnName} = ?`);
+      if (queryName === "narrativeVersion") values.push(ACT_ONE_NARRATIVE_VERSION);
+      values.push(value);
+    }
+  }
+
+  const updatedFrom = c.req.query("updatedFrom");
+  if (updatedFrom !== undefined) {
+    const parsed = Date.parse(updatedFrom);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("COALESCE(ors.updated_at, a.updated_at) >= ?");
+      values.push(parsed);
+    }
+  }
+  const updatedTo = c.req.query("updatedTo");
+  if (updatedTo !== undefined) {
+    const parsed = Date.parse(updatedTo);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("COALESCE(ors.updated_at, a.updated_at) <= ?");
+      values.push(parsed);
+    }
+  }
+
+  const limitQuery = c.req.query("limit");
+  const parsedLimit = limitQuery === undefined ? 50 : Number(limitQuery);
+  const limit = Number.isSafeInteger(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, 50) : 50;
+  const cursorQuery = c.req.query("cursor");
+  const parsedCursor = cursorQuery === undefined ? 0 : Number(cursorQuery);
+  const offset = Number.isSafeInteger(parsedCursor) && parsedCursor >= 0 ? parsedCursor : 0;
+  values.push(limit + 1, offset);
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       pp.display_name AS display_name,
+       a.status AS account_status,
+       a.created_at AS account_created_at,
+       sp.highest_story_progress_id AS highest_story_progress_id,
+       sp.narrative_version AS narrative_version,
+       ors.last_offline_reward_claim_at AS last_offline_reward_claim_at,
+       ors.last_story_progress_id AS last_story_progress_id,
+       ors.last_balance_config_version AS last_balance_config_version,
+       ors.last_narrative_version AS last_narrative_version,
+       ors.last_previewed_at AS last_previewed_at,
+       ors.revision AS revision,
+       ors.updated_at AS state_updated_at,
+       last_claim.id AS last_claim_id,
+       last_claim.created_at AS last_claim_created_at
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     LEFT JOIN account_story_progress sp ON sp.account_id = a.id
+     LEFT JOIN account_offline_reward_state ors ON ors.account_id = a.id
+     LEFT JOIN reward_transactions last_claim
+       ON last_claim.id = (
+         SELECT rt.id
+         FROM reward_transactions rt
+         WHERE rt.account_id = a.id AND rt.run_id IS NULL
+         ORDER BY rt.created_at DESC, rt.id DESC
+         LIMIT 1
+       )
+     ${whereClauses.length === 0 ? "" : `WHERE ${whereClauses.join(" AND ")}`}
+     ORDER BY COALESCE(ors.updated_at, a.updated_at) DESC, a.id
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(...values)
+    .all<AdminOfflineRewardRow>();
+
+  const visibleRows = rows.results.slice(0, limit);
+  return c.json({
+    permission: OFFLINE_REWARD_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    items: visibleRows.map(offlineRewardSummary),
+    nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+  });
+});
+app.get("/v1/admin/offline-rewards/:accountId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, OFFLINE_REWARD_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminOfflineRewardBody(c);
+
+  const accountId = c.req.param("accountId");
+  const row = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       pp.display_name AS display_name,
+       a.status AS account_status,
+       a.created_at AS account_created_at,
+       sp.highest_story_progress_id AS highest_story_progress_id,
+       sp.narrative_version AS narrative_version,
+       ors.last_offline_reward_claim_at AS last_offline_reward_claim_at,
+       ors.last_story_progress_id AS last_story_progress_id,
+       ors.last_balance_config_version AS last_balance_config_version,
+       ors.last_narrative_version AS last_narrative_version,
+       ors.last_previewed_at AS last_previewed_at,
+       ors.revision AS revision,
+       ors.updated_at AS state_updated_at,
+       last_claim.id AS last_claim_id,
+       last_claim.created_at AS last_claim_created_at
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     LEFT JOIN account_story_progress sp ON sp.account_id = a.id
+     LEFT JOIN account_offline_reward_state ors ON ors.account_id = a.id
+     LEFT JOIN reward_transactions last_claim
+       ON last_claim.id = (
+         SELECT rt.id
+         FROM reward_transactions rt
+         WHERE rt.account_id = a.id AND rt.run_id IS NULL
+         ORDER BY rt.created_at DESC, rt.id DESC
+         LIMIT 1
+       )
+     WHERE a.id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminOfflineRewardRow>();
+
+  if (row === null) {
+    return c.json({ error: "account_not_found", message: "Account was not found." }, 404);
+  }
+
+  return c.json(offlineRewardSummary(row));
 });
 app.get("/v1/admin/story-progress", async (c) => {
   const principal = await authenticateAdmin(c);
