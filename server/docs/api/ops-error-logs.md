@@ -5,9 +5,11 @@ observability in LAST RAIL. It is separate from `admin_audit_logs`, which
 records operator actions and permissioned admin mutations.
 
 Current local implementation creates the D1 searchable summary table and
-read-only Admin API list/detail routes. It does not create Queues, R2 buckets,
-Workers Logs exports, Cloudflare resources, remote DEV deploys, PRD/STAGING
-resources, repair mutations, or resolution workflows.
+read-only Admin API list/detail routes. Game API also writes a minimal subset of
+launch-critical server failures directly to D1 as a local/initial integration.
+It does not create Queues, R2 buckets, Workers Logs exports, Cloudflare
+resources, remote DEV deploys, PRD/STAGING resources, repair mutations, or
+resolution workflows.
 
 ## Goals
 
@@ -55,6 +57,26 @@ Use:
 
 - Acceptable as a local-only or very early DEV prototype.
 - Not recommended as the primary long-term write path for runtime errors.
+
+Current direct-write scope:
+
+- `google_auth_config_missing`: `critical`, `game_api`, open. Written when the
+  Google identity verifier or audience config is missing for
+  `POST /v1/auth/google`.
+- `offline_reward_state_conflict`: `error`, `game_api`, open. Written when
+  server-owned offline reward state is ahead of server time during
+  `POST /v1/offline-rewards/claim`.
+
+Both writes are fail-soft. If the ops log insert fails, the original player API
+response is preserved. Request bodies, raw Google tokens, Authorization headers,
+raw idempotency keys, RNG material, probability data, full weight tables, raw
+multiplier bps, and unrestricted stack traces are still not stored.
+
+Backlog / decision queue:
+
+- Gacha ledger/economy mutation conflict write integration.
+- Story progress state conflict write integration.
+- Queue-based async sink and optional R2 sanitized detail payloads.
 
 ### Queues + D1 Sink
 

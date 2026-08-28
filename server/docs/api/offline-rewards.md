@@ -640,6 +640,12 @@ Reject before transaction when:
   future beyond allowed clock skew: `offline_reward_state_conflict` or
   `offline_reward_clock_tamper`.
 
+The current minimal ops error write integration records
+`offline_reward_state_conflict` as an open `game_api` error with account,
+story progress, and hashed idempotency correlation. This write is fail-soft and
+must not advance `last_offline_reward_claim_at`, insert claim idempotency
+records, or write reward/economy ledgers.
+
 Commit transaction order:
 
 1. Insert `account_mutations` with mutation type `OFFLINE_REWARD_CLAIM`.

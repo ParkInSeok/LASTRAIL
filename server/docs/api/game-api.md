@@ -55,6 +55,13 @@ Idempotency linkage:
 `POST /v1/auth/guest` creates a guest account and returns the initial token
 pair.
 
+Minimal ops error write integration:
+
+- Missing Google verifier/audience config writes a scrubbed
+  `google_auth_config_missing` ops error with `severity = critical`.
+- The response remains `google_auth_not_configured`; raw Google ID tokens and
+  full claims are not stored.
+
 Response:
 
 ```json

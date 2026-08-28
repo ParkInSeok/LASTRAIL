@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { createRequestId } from "@lastrail/common";
+import { buildOpsErrorLogInsertEnvelope, createRequestId } from "@lastrail/common";
 import {
   calculateOfflineRewardPreview,
   calculateRunRewardPreview,
@@ -375,6 +375,82 @@ function createDomainId(prefix: string): string {
 
 function createRefreshToken(): string {
   return `refresh_${createRequestId().slice(4)}${createRequestId().slice(4)}`;
+}
+
+function getOpsLogEnvironment(env: Env): "DEV" | "PRD" {
+  return env.ENVIRONMENT === "PRD" ? "PRD" : "DEV";
+}
+
+async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
+  severity: "error" | "critical";
+  errorCode: string;
+  messageSummary: string;
+  requestId?: string | null;
+  accountId?: string | null;
+  gachaBannerId?: string | null;
+  storyProgressId?: string | null;
+  idempotencyOperation?: string | null;
+  idempotencyKey?: string | null;
+  correlation?: Record<string, string | number | boolean | null>;
+  context?: Record<string, string | number | boolean | null>;
+  retryable?: boolean;
+}): Promise<void> {
+  try {
+    const now = Date.now();
+    const envelope = await buildOpsErrorLogInsertEnvelope({
+      id: createDomainId("ops_error"),
+      occurredAtMs: now,
+      environment: getOpsLogEnvironment(c.env),
+      service: "game_api",
+      severity: input.severity,
+      errorCode: input.errorCode,
+      messageSummary: input.messageSummary,
+      source: "game_api",
+      requestId: input.requestId ?? c.req.header("X-Request-Id") ?? null,
+      accountId: input.accountId ?? null,
+      gachaBannerId: input.gachaBannerId ?? null,
+      storyProgressId: input.storyProgressId ?? null,
+      idempotencyOperation: input.idempotencyOperation ?? null,
+      idempotencyKey: input.idempotencyKey ?? null,
+      correlation: input.correlation ?? {},
+      context: input.context ?? {},
+      retryable: input.retryable ?? false,
+      createdAtMs: now,
+    });
+    await c.env.DB.prepare(
+      `INSERT INTO ops_error_logs (
+         id, occurred_at, environment, service, severity, error_code, message_summary,
+         status, source, request_id, account_id, run_id, reward_preview_id, reward_claim_id,
+         offline_reward_claim_id, gacha_batch_id, gacha_banner_id, story_progress_id,
+         integrity_event_id, support_ticket_id, idempotency_operation, idempotency_key_hash,
+         correlation_json, sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+         resolved_at, resolved_by, resolution_note, created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?)`,
+    ).bind(
+      envelope.id,
+      envelope.occurredAt,
+      envelope.environment,
+      envelope.service,
+      envelope.severity,
+      envelope.errorCode,
+      envelope.messageSummary,
+      envelope.status,
+      envelope.source,
+      envelope.requestId,
+      envelope.accountId,
+      envelope.gachaBannerId,
+      envelope.storyProgressId,
+      envelope.idempotencyOperation,
+      envelope.idempotencyKeyHash,
+      envelope.correlationJson,
+      envelope.sanitizedContextJson,
+      envelope.retryable ? 1 : 0,
+      envelope.masked ? 1 : 0,
+      envelope.createdAt,
+    ).run();
+  } catch {
+    // Ops logging is observational only; never worsen the player-facing API path.
+  }
 }
 
 function getRewardLines(rewardPlanJson: string): unknown[] {
@@ -1340,6 +1416,16 @@ async function verifyGoogleIdentity(c: GameApiContext, idToken: string): Promise
   const audiences = getGoogleAudiences(c.env);
   const verifier = getGoogleVerifier(c.env);
   if (audiences.length === 0 || verifier === null) {
+    await writeGameApiOpsErrorLog(c, {
+      severity: "critical",
+      errorCode: "google_auth_config_missing",
+      messageSummary: "Google auth verifier or audience configuration is missing.",
+      context: {
+        hasAudiences: audiences.length > 0,
+        hasVerifier: verifier !== null,
+      },
+      retryable: false,
+    });
     return createAuthFailure(500, "google_auth_not_configured", "Google auth verifier is not configured.");
   }
 
@@ -1902,6 +1988,25 @@ app.post("/v1/offline-rewards/claim", async (c) => {
   const now = Date.now();
   const baselineMs = offlineState?.last_offline_reward_claim_at ?? authContext.accountCreatedAt;
   if (baselineMs > now) {
+    await writeGameApiOpsErrorLog(c, {
+      severity: "error",
+      errorCode: "offline_reward_state_conflict",
+      messageSummary: "Offline reward state is ahead of server time.",
+      accountId: authContext.accountId,
+      storyProgressId: storyProgress?.highest_story_progress_id ?? "none",
+      idempotencyOperation: "offline_reward_claim",
+      idempotencyKey,
+      correlation: {
+        accountId: authContext.accountId,
+        storyProgressId: storyProgress?.highest_story_progress_id ?? "none",
+      },
+      context: {
+        component: "offline_rewards",
+        stateAheadOfServerTime: true,
+        hasOfflineRewardState: offlineState !== null,
+      },
+      retryable: false,
+    });
     return c.json(createOfflineRewardClaimRejectedResponse({
       storyProgressId: storyProgress?.highest_story_progress_id ?? "none",
       errorCode: "offline_reward_state_conflict",
