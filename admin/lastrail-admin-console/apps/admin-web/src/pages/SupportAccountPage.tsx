@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { adminApi } from "../shared/api/client";
 import { permissionLabel } from "../shared/labels/adminLabels";
 import {
   customerSupportCaseTypeLabel,
@@ -6,8 +8,18 @@ import {
   customerSupportContractPreview,
   customerSupportContextFieldLabel,
   customerSupportContextFields,
+  customerSupportEscalationActionLabel,
+  customerSupportEscalationActions,
+  customerSupportEscalationCategories,
+  customerSupportEscalationCategoryLabel,
+  customerSupportEscalationEvidenceFields,
+  customerSupportEscalationSeverityLabel,
+  customerSupportEscalationSeverities,
   customerSupportMutationControlsOutOfScope,
   customerSupportSafeSnippetPlaceholders,
+  customerSupportSummarySectionCodes,
+  customerSupportSummarySectionLabel,
+  emptySupportAccountSummary,
   customerSupportTemplateStatuses
 } from "../shared/support/supportContract";
 
@@ -32,6 +44,13 @@ export const supportAccountContextCards: SupportCard[] = customerSupportContextF
   label: customerSupportContextFieldLabel(field),
   value: "연동 대기",
   note: `${field} sanitized reference 후보`
+}));
+
+export const supportSummarySectionCards: SupportCard[] = customerSupportSummarySectionCodes.map((section) => ({
+  code: section,
+  label: customerSupportSummarySectionLabel(section),
+  value: "연동 대기",
+  note: `${section} sanitized read-only section`
 }));
 
 export const supportOutOfScopeControls = [...customerSupportMutationControlsOutOfScope];
@@ -64,35 +83,91 @@ export const supportSafeSnippetCards: SupportCard[] = customerSupportSafeSnippet
   note: `${snippet} safe explanation 후보`
 }));
 
+export const supportEscalationSeverityCards: SupportCard[] = customerSupportEscalationSeverities.map((severity) => ({
+  code: severity,
+  label: customerSupportEscalationSeverityLabel(severity),
+  value: "연동 대기",
+  note: `${severity} escalation severity 후보`
+}));
+
+export const supportEscalationCategoryCards: SupportCard[] = customerSupportEscalationCategories.map((category) => ({
+  code: category,
+  label: customerSupportEscalationCategoryLabel(category),
+  value: "연동 대기",
+  note: `${category} escalation category 후보`
+}));
+
+export const supportEscalationActionCards: SupportCard[] = customerSupportEscalationActions.map((action) => ({
+  code: action,
+  label: customerSupportEscalationActionLabel(action),
+  value: "연동 대기",
+  note: `${action} recommended action 후보`
+}));
+
+export const supportEscalationEvidenceCards: SupportCard[] = customerSupportEscalationEvidenceFields.map((field) => ({
+  code: field,
+  label:
+    {
+      severity: "심각도",
+      category: "분류",
+      recommendedAction: "권장 처리",
+      primaryReferenceId: "주요 참조 ID",
+      readOnlyEvidencePackage: "읽기 전용 근거 묶음"
+    }[field] ?? field,
+  value: "연동 대기",
+  note: `${field} evidence package 후보`
+}));
+
 export function SupportAccountPage() {
   const { accountId = "연동 대기" } = useParams();
+  const query = useQuery({
+    queryKey: ["support-account", accountId],
+    queryFn: () => adminApi.supportAccountSummary(accountId),
+    retry: false
+  });
+  const summary = query.data ?? emptySupportAccountSummary(accountId);
 
   return (
     <main className="content">
       <header>
         <h1>CS 지원</h1>
-        <p>{accountId}</p>
+        <p>{summary.account.displayName === "연동 대기" ? accountId : summary.account.displayName}</p>
       </header>
       <section className="summary-grid" aria-label="CS 지원 요약">
         <div>
-          <span>권한 후보</span>
-          <strong>{permissionLabel(customerSupportContractPreview.permission)}</strong>
-          <small>{customerSupportContractPreview.permission}</small>
+          <span>권한</span>
+          <strong>{permissionLabel(summary.permission)}</strong>
+          <small>{summary.permission}</small>
         </div>
         <div>
-          <span>권한 모드 후보</span>
-          <strong>{customerSupportContractPreview.permissionMode}</strong>
-          <small>서버 route 구현 전 contract preview</small>
+          <span>권한 모드</span>
+          <strong>{summary.permissionMode}</strong>
+          <small>ROLE_PERMISSION</small>
         </div>
         <div>
-          <span>endpoint 후보</span>
-          <strong>연동 대기</strong>
+          <span>연동 상태</span>
+          <strong>{query.isError ? "연동 대기" : "연동 대기"}</strong>
           <small>{customerSupportContractPreview.endpointCandidate}</small>
         </div>
         <div>
           <span>mutation</span>
           <strong>비활성</strong>
           <small>launch 1차 read-only</small>
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>지원 요약 섹션</h2>
+          <p>Admin API support summary section을 sanitized read-only로 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {summary.sections.map((section) => (
+            <div key={section.code} className="metric-card">
+              <span>{section.label}</span>
+              <strong>{section.value}</strong>
+              <small>{section.code} / {section.referenceCount}</small>
+            </div>
+          ))}
         </div>
       </section>
       <section className="admin-panel">
@@ -147,6 +222,54 @@ export function SupportAccountPage() {
         </header>
         <div className="metric-grid">
           {supportSafeSnippetCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>Escalation 분류</h2>
+          <p>launch 범위에서는 SUPPORT_READ 기반의 읽기 전용 판단 후보만 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportEscalationSeverityCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {supportEscalationCategoryCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>권장 처리와 근거 묶음</h2>
+          <p>write/ticket/repair 없이 추천 action과 evidence package 필드만 준비합니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportEscalationActionCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {supportEscalationEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

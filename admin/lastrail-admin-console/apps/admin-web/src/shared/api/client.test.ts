@@ -361,4 +361,45 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads support account summary by account id as read-only Admin API data", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        account: {
+          accountId: "account-1",
+          displayName: "Kyle Account",
+          accountStatus: "ACTIVE"
+        },
+        auth: { providerNames: ["guest"], activeSessionCount: 1 },
+        recentRuns: [],
+        runRewards: [],
+        offlineReward: null,
+        storyProgress: null,
+        gacha: null,
+        idempotency: null,
+        integrity: null,
+        opsErrors: [],
+        supportNotes: { safeTemplateHints: ["server_record_checked"] },
+        supportContext: {
+          readOnly: true,
+          repairEnabled: false,
+          mutationEndpointsEnabled: false
+        }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.supportAccountSummary("account-1");
+
+    expect(result.permission).toBe("SUPPORT_READ");
+    expect(result.account.accountId).toBe("account-1");
+    expect(result.supportContext.mutationEndpointsEnabled).toBe(false);
+    expect(fetchSpy).toHaveBeenCalledWith("/api/support/accounts/account-1", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });

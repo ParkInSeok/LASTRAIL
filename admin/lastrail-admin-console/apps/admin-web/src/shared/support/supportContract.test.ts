@@ -4,6 +4,16 @@ import {
   customerSupportCaseTypeLabel,
   customerSupportContractPreview,
   customerSupportContextFields,
+  customerSupportEscalationActionLabel,
+  customerSupportEscalationActions,
+  customerSupportEscalationCategories,
+  customerSupportEscalationCategoryLabel,
+  customerSupportEscalationEvidenceFields,
+  customerSupportEscalationFuturePermissions,
+  customerSupportEscalationSeverityLabel,
+  customerSupportEscalationSeverities,
+  emptySupportAccountSummary,
+  mapSupportAccountSummaryResponse,
   customerSupportMutationControlsOutOfScope,
   customerSupportNoteFormatFields,
   customerSupportSafeSnippetPlaceholders,
@@ -104,5 +114,114 @@ describe("supportContract", () => {
     expect(serialized).not.toContain("copy action");
     expect(serialized).not.toContain("ticket creation");
     expect(serialized).not.toContain("send template");
+  });
+
+  it("prepares escalation workflow placeholders as read-only support evidence", () => {
+    expect(customerSupportEscalationSeverities).toEqual([
+      "info",
+      "needs_review",
+      "high_risk",
+      "blocked"
+    ]);
+    expect(customerSupportEscalationSeverityLabel("needs_review")).toBe("검토 필요");
+    expect(customerSupportEscalationSeverityLabel("future_severity")).toBe("future_severity");
+    expect(customerSupportEscalationCategories).toEqual([
+      "reward_claim_missing_ledger",
+      "reward_preview_without_claim",
+      "offline_state_conflict",
+      "offline_claim_duplicate_mismatch",
+      "story_unlock_missing",
+      "gacha_guarantee_conflict",
+      "integrity_restricted_reward",
+      "account_identity_conflict",
+      "narrative_content_missing",
+      "expected_behavior"
+    ]);
+    expect(customerSupportEscalationCategoryLabel("gacha_guarantee_conflict")).toBe("모집 보장 상태 충돌");
+    expect(customerSupportEscalationActions).toEqual([
+      "respond_with_template",
+      "request_more_player_context",
+      "escalate_to_operator_review",
+      "escalate_to_owner_review",
+      "mark_as_known_issue_candidate",
+      "attach_read_only_evidence"
+    ]);
+    expect(customerSupportEscalationActionLabel("attach_read_only_evidence")).toBe("읽기 전용 근거 첨부");
+    expect(customerSupportEscalationEvidenceFields).toEqual([
+      "severity",
+      "category",
+      "recommendedAction",
+      "primaryReferenceId",
+      "readOnlyEvidencePackage"
+    ]);
+    expect(customerSupportEscalationFuturePermissions).toEqual([
+      "SUPPORT_ESCALATION_READ",
+      "SUPPORT_ESCALATION_WRITE",
+      "SUPPORT_REPAIR_APPROVE"
+    ]);
+    expect(customerSupportContractPreview.escalation.readOnly).toBe(true);
+    expect(customerSupportContractPreview.escalation.writeEnabled).toBe(false);
+  });
+
+  it("maps Admin API support account summary response into sanitized read-only sections", () => {
+    const result = mapSupportAccountSummaryResponse({
+      permission: "SUPPORT_READ",
+      permissionMode: "ROLE_PERMISSION",
+      account: {
+        accountId: "account-1",
+        displayName: "Kyle Account",
+        accountStatus: "ACTIVE"
+      },
+      auth: {
+        providerNames: ["guest"],
+        activeSessionCount: 1,
+        latestSessionAt: "2026-08-29T00:00:00.000Z"
+      },
+      recentRuns: [{ runId: "run-1", operationId: "opn_01_last_departure", risk: "I", outcome: "VICTORY" }],
+      runRewards: [{ rewardPreviewId: "reward-preview-1", rewardClaimId: "reward-claim-1", status: "CLAIMED" }],
+      offlineReward: { stateSource: "account_offline_reward_state", latestClaimId: "offline-claim-1" },
+      storyProgress: { highestStoryProgressId: "opn_01_last_departure", unlockedOperations: ["opn_02_first_signal"] },
+      gacha: { recentBatchIds: ["batch-1"], guaranteeTypes: ["ELITE_30"] },
+      idempotency: { operationTypes: ["run_finish", "offline_reward_claim"], duplicateReplayCount: 1 },
+      integrity: { openSignals: 0, reviewStatus: "CLEARED" },
+      opsErrors: [],
+      supportNotes: { safeTemplateHints: ["server_record_checked"] },
+      supportContext: {
+        readOnly: true,
+        repairEnabled: false,
+        mutationEndpointsEnabled: false
+      }
+    });
+
+    expect(result.permission).toBe("SUPPORT_READ");
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
+    expect(result.account.accountId).toBe("account-1");
+    expect(result.sections.map((section) => section.code)).toEqual([
+      "account",
+      "auth",
+      "recentRuns",
+      "runRewards",
+      "offlineReward",
+      "storyProgress",
+      "gacha",
+      "idempotency",
+      "integrity",
+      "opsErrors",
+      "supportNotes"
+    ]);
+    expect(result.supportContext).toEqual({
+      readOnly: true,
+      repairEnabled: false,
+      mutationEndpointsEnabled: false
+    });
+    expect(JSON.stringify(result)).not.toContain("refreshToken");
+    expect(JSON.stringify(result)).not.toContain("raw body");
+  });
+
+  it("maps null support summary response to placeholder fallback", () => {
+    const result = mapSupportAccountSummaryResponse(null, "account-missing");
+
+    expect(result).toEqual(emptySupportAccountSummary("account-missing"));
+    expect(result.sections.every((section) => section.value === "연동 대기")).toBe(true);
   });
 });

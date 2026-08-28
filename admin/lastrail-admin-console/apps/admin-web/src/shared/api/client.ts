@@ -10,6 +10,8 @@ import {
   type StoryProgressFiltersPreview
 } from "../storyProgress/storyProgressContract";
 
+import { mapSupportAccountSummaryResponse } from "../support/supportContract";
+
 import {
   AuditLogsResponseSchema,
   BootstrapResponseSchema,
@@ -162,6 +164,12 @@ export const adminApi = {
   async offlineRewardDetail(accountId: string) {
     return mapOfflineRewardDetailResponse(
       await readJson(`/api/offline-rewards/${encodeURIComponent(accountId)}`),
+      accountId
+    );
+  },
+  async supportAccountSummary(accountId: string) {
+    return mapSupportAccountSummaryResponse(
+      await readJson(`/api/support/accounts/${encodeURIComponent(accountId)}`),
       accountId
     );
   }

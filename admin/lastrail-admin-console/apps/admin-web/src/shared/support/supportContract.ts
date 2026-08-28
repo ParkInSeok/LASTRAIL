@@ -25,6 +25,64 @@ export type CustomerSupportContextItem = {
   note: string;
 };
 
+export type CustomerSupportEscalationSeverity = "info" | "needs_review" | "high_risk" | "blocked";
+
+export type CustomerSupportEscalationCategory =
+  | "reward_claim_missing_ledger"
+  | "reward_preview_without_claim"
+  | "offline_state_conflict"
+  | "offline_claim_duplicate_mismatch"
+  | "story_unlock_missing"
+  | "gacha_guarantee_conflict"
+  | "integrity_restricted_reward"
+  | "account_identity_conflict"
+  | "narrative_content_missing"
+  | "expected_behavior";
+
+export type CustomerSupportEscalationAction =
+  | "respond_with_template"
+  | "request_more_player_context"
+  | "escalate_to_operator_review"
+  | "escalate_to_owner_review"
+  | "mark_as_known_issue_candidate"
+  | "attach_read_only_evidence";
+
+export type SupportSummarySectionCode =
+  | "account"
+  | "auth"
+  | "recentRuns"
+  | "runRewards"
+  | "offlineReward"
+  | "storyProgress"
+  | "gacha"
+  | "idempotency"
+  | "integrity"
+  | "opsErrors"
+  | "supportNotes";
+
+export type SupportSummarySection = {
+  code: SupportSummarySectionCode;
+  label: string;
+  value: "연동 대기" | "연결됨";
+  referenceCount: number | "연동 대기";
+};
+
+export type SupportAccountSummary = {
+  permission: "SUPPORT_READ";
+  permissionMode: "ROLE_PERMISSION";
+  account: {
+    accountId: string;
+    displayName: string;
+    accountStatus: string;
+  };
+  sections: SupportSummarySection[];
+  supportContext: {
+    readOnly: true;
+    repairEnabled: false;
+    mutationEndpointsEnabled: false;
+  };
+};
+
 export type CustomerSupportContractPreview = {
   accountId: "연동 대기";
   status: "연동 대기";
@@ -34,6 +92,15 @@ export type CustomerSupportContractPreview = {
   noteFormatFields: readonly string[];
   responseTemplateStatuses: readonly string[];
   safeSnippetPlaceholders: readonly string[];
+  escalation: {
+    readOnly: true;
+    writeEnabled: false;
+    severities: readonly CustomerSupportEscalationSeverity[];
+    categories: readonly CustomerSupportEscalationCategory[];
+    recommendedActions: readonly CustomerSupportEscalationAction[];
+    evidenceFields: readonly string[];
+    futurePermissions: readonly string[];
+  };
   context: CustomerSupportContextItem[];
   supportContext: {
     readOnly: true;
@@ -61,6 +128,20 @@ export const customerSupportContextFields: CustomerSupportContextField[] = [
   "idempotencyReplayStatus",
   "integrityDisposition",
   "recentOpsErrorLogs"
+];
+
+export const customerSupportSummarySectionCodes: SupportSummarySectionCode[] = [
+  "account",
+  "auth",
+  "recentRuns",
+  "runRewards",
+  "offlineReward",
+  "storyProgress",
+  "gacha",
+  "idempotency",
+  "integrity",
+  "opsErrors",
+  "supportNotes"
 ];
 
 export const customerSupportMutationControlsOutOfScope = [
@@ -111,6 +192,49 @@ export const customerSupportSafeSnippetPlaceholders = [
   "escalated_for_ops_review"
 ] as const;
 
+export const customerSupportEscalationSeverities: CustomerSupportEscalationSeverity[] = [
+  "info",
+  "needs_review",
+  "high_risk",
+  "blocked"
+];
+
+export const customerSupportEscalationCategories: CustomerSupportEscalationCategory[] = [
+  "reward_claim_missing_ledger",
+  "reward_preview_without_claim",
+  "offline_state_conflict",
+  "offline_claim_duplicate_mismatch",
+  "story_unlock_missing",
+  "gacha_guarantee_conflict",
+  "integrity_restricted_reward",
+  "account_identity_conflict",
+  "narrative_content_missing",
+  "expected_behavior"
+];
+
+export const customerSupportEscalationActions: CustomerSupportEscalationAction[] = [
+  "respond_with_template",
+  "request_more_player_context",
+  "escalate_to_operator_review",
+  "escalate_to_owner_review",
+  "mark_as_known_issue_candidate",
+  "attach_read_only_evidence"
+];
+
+export const customerSupportEscalationEvidenceFields = [
+  "severity",
+  "category",
+  "recommendedAction",
+  "primaryReferenceId",
+  "readOnlyEvidencePackage"
+] as const;
+
+export const customerSupportEscalationFuturePermissions = [
+  "SUPPORT_ESCALATION_READ",
+  "SUPPORT_ESCALATION_WRITE",
+  "SUPPORT_REPAIR_APPROVE"
+] as const;
+
 const contextLabels: Record<CustomerSupportContextField, string> = {
   accountStatus: "계정/인증 상태",
   recentRuns: "최근 출격",
@@ -121,6 +245,20 @@ const contextLabels: Record<CustomerSupportContextField, string> = {
   idempotencyReplayStatus: "Idempotency replay 상태",
   integrityDisposition: "무결성 판정",
   recentOpsErrorLogs: "최근 시스템 에러 로그"
+};
+
+const summarySectionLabels: Record<SupportSummarySectionCode, string> = {
+  account: "계정 상태/프로필",
+  auth: "인증 제공자/세션",
+  recentRuns: "최근 출격",
+  runRewards: "출격 보상 미리보기/수령",
+  offlineReward: "오프라인 보상 상태/수령",
+  storyProgress: "스토리 진행/해금",
+  gacha: "최근 모집 batch/보장",
+  idempotency: "Idempotency replay 기록",
+  integrity: "무결성 신호/리뷰",
+  opsErrors: "시스템 에러 로그",
+  supportNotes: "안전 템플릿 힌트"
 };
 
 export function customerSupportCaseTypeLabel(caseType: CustomerSupportCaseType | string): string {
@@ -141,6 +279,51 @@ export function customerSupportContextFieldLabel(field: CustomerSupportContextFi
   return contextLabels[field as CustomerSupportContextField] ?? field;
 }
 
+export function customerSupportSummarySectionLabel(section: SupportSummarySectionCode | string): string {
+  return summarySectionLabels[section as SupportSummarySectionCode] ?? section;
+}
+
+export function customerSupportEscalationSeverityLabel(severity: CustomerSupportEscalationSeverity | string): string {
+  return (
+    {
+      info: "안내",
+      needs_review: "검토 필요",
+      high_risk: "고위험",
+      blocked: "처리 보류"
+    }[severity] ?? severity
+  );
+}
+
+export function customerSupportEscalationCategoryLabel(category: CustomerSupportEscalationCategory | string): string {
+  return (
+    {
+      reward_claim_missing_ledger: "보상 수령 장부 누락",
+      reward_preview_without_claim: "보상 미리보기 후 수령 누락",
+      offline_state_conflict: "오프라인 보상 상태 충돌",
+      offline_claim_duplicate_mismatch: "오프라인 중복 수령 불일치",
+      story_unlock_missing: "스토리 해금 누락",
+      gacha_guarantee_conflict: "모집 보장 상태 충돌",
+      integrity_restricted_reward: "무결성 보상 제한",
+      account_identity_conflict: "계정 식별 충돌",
+      narrative_content_missing: "내러티브 콘텐츠 누락",
+      expected_behavior: "정상 동작 안내"
+    }[category] ?? category
+  );
+}
+
+export function customerSupportEscalationActionLabel(action: CustomerSupportEscalationAction | string): string {
+  return (
+    {
+      respond_with_template: "템플릿으로 응답",
+      request_more_player_context: "플레이어 추가 정보 요청",
+      escalate_to_operator_review: "운영자 검토 전달",
+      escalate_to_owner_review: "OWNER 검토 전달",
+      mark_as_known_issue_candidate: "알려진 이슈 후보 표시",
+      attach_read_only_evidence: "읽기 전용 근거 첨부"
+    }[action] ?? action
+  );
+}
+
 export const customerSupportContractPreview: CustomerSupportContractPreview = {
   accountId: "연동 대기",
   status: "연동 대기",
@@ -150,6 +333,15 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
   noteFormatFields: customerSupportNoteFormatFields,
   responseTemplateStatuses: customerSupportTemplateStatuses,
   safeSnippetPlaceholders: customerSupportSafeSnippetPlaceholders,
+  escalation: {
+    readOnly: true,
+    writeEnabled: false,
+    severities: customerSupportEscalationSeverities,
+    categories: customerSupportEscalationCategories,
+    recommendedActions: customerSupportEscalationActions,
+    evidenceFields: customerSupportEscalationEvidenceFields,
+    futurePermissions: customerSupportEscalationFuturePermissions
+  },
   context: customerSupportContextFields.map((field) => ({
     field,
     label: customerSupportContextFieldLabel(field),
@@ -161,3 +353,81 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
     mutationEndpointsEnabled: false
   }
 };
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function stringValue(value: unknown, fallback = "연동 대기"): string {
+  return typeof value === "string" && value ? value : fallback;
+}
+
+function countReferences(value: unknown): number {
+  if (Array.isArray(value)) return value.length;
+  const record = asRecord(value);
+  if (!record) return 0;
+  return Object.values(record).filter((entry) => {
+    if (Array.isArray(entry)) return entry.length > 0;
+    return entry !== null && entry !== undefined;
+  }).length;
+}
+
+function sectionFrom(code: SupportSummarySectionCode, value: unknown): SupportSummarySection {
+  const referenceCount = code === "account" ? 1 : countReferences(value);
+  return {
+    code,
+    label: customerSupportSummarySectionLabel(code),
+    value: referenceCount > 0 ? "연결됨" : "연동 대기",
+    referenceCount
+  };
+}
+
+export function emptySupportAccountSummary(accountId = "연동 대기"): SupportAccountSummary {
+  return {
+    permission: "SUPPORT_READ",
+    permissionMode: "ROLE_PERMISSION",
+    account: {
+      accountId,
+      displayName: "연동 대기",
+      accountStatus: "연동 대기"
+    },
+    sections: customerSupportSummarySectionCodes.map((code) => ({
+      code,
+      label: customerSupportSummarySectionLabel(code),
+      value: "연동 대기",
+      referenceCount: "연동 대기"
+    })),
+    supportContext: {
+      readOnly: true,
+      repairEnabled: false,
+      mutationEndpointsEnabled: false
+    }
+  };
+}
+
+export function mapSupportAccountSummaryResponse(response: unknown, fallbackAccountId = "연동 대기"): SupportAccountSummary {
+  const record = asRecord(response);
+  if (!record) return emptySupportAccountSummary(fallbackAccountId);
+
+  const account = asRecord(record.account);
+  const supportContext = asRecord(record.supportContext);
+
+  return {
+    permission: "SUPPORT_READ",
+    permissionMode: "ROLE_PERMISSION",
+    account: {
+      accountId: stringValue(account?.accountId, fallbackAccountId),
+      displayName: stringValue(account?.displayName),
+      accountStatus: stringValue(account?.accountStatus)
+    },
+    sections: customerSupportSummarySectionCodes.map((code) => {
+      if (code === "account") return sectionFrom(code, account);
+      return sectionFrom(code, record[code]);
+    }),
+    supportContext: {
+      readOnly: true,
+      repairEnabled: supportContext?.repairEnabled === true ? false : false,
+      mutationEndpointsEnabled: supportContext?.mutationEndpointsEnabled === true ? false : false
+    }
+  };
+}
