@@ -144,6 +144,9 @@ Fields:
 - `activeSessionCount`
 - `latestSessionCreatedAt`
 - `latestSessionExpiresAt`
+- future `lastLoginAt`
+- future `lastLoginAgeSeconds`
+- future `lastSeenAt` only after a server-owned activity source exists
 
 Do not return:
 
@@ -154,6 +157,10 @@ Do not return:
 - Cloudflare Access JWTs;
 - service token ids/secrets;
 - session family raw diagnostics beyond sanitized counts/statuses.
+
+Login/session metrics are drafted in `docs/api/admin-session-metrics.md`.
+Support should treat `auth_sessions.created_at` as last session creation or
+refresh rotation time, not precise gameplay last-seen time.
 
 ### Recent Runs
 

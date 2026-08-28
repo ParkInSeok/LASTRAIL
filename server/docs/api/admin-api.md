@@ -145,6 +145,27 @@ These endpoints do not return tokens, secrets, raw request bodies, raw RNG
 material, raw multiplier bps, reward calculation internals, or account shortcut
 data. Request bodies are rejected with `contract_violation`.
 
+## Session Metrics
+
+Future login/session/dashboard metrics are drafted in
+`docs/api/admin-session-metrics.md`.
+
+Candidate metrics include:
+
+- `activeSessions`
+- `concurrentUsers`
+- `recentActiveAccounts5m`
+- `recentActiveAccounts30m`
+- `lastLoginAt`
+- `lastLoginAgeSeconds`
+- `lastLoginAgeBuckets`
+
+Server auth/session/account records are the Source of Truth. Client-supplied
+session/login data is not trusted. Exact concurrency should not be claimed from
+refresh session TTL alone; use `activeSessions` for unexpired ACTIVE sessions
+and reserve `concurrentUsers` for a future server-owned activity/heartbeat
+source.
+
 ## Customer Support
 
 Customer support account summary is defined in `docs/api/support.md`.
