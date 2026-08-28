@@ -24,6 +24,13 @@ type DashboardShortcut = {
   description: string;
 };
 
+type LaunchDetailSupportCandidate = {
+  label: string;
+  target: string;
+  status: "연동 대기";
+  note: string;
+};
+
 type OfflineRewardStoryProgressPolicy = {
   progressId: string;
   label: string;
@@ -84,17 +91,56 @@ export const offlineRewardClaimDashboardFields = [
 
 export const offlineRewardClaimDashboardContractFields = [...offlineRewardClaimContractFields];
 
-export const dashboardSections: DashboardSection[] = [
+export const launchDashboardSections: DashboardSection[] = [
   {
-    title: "오늘 운영 요약",
-    description: "일일 운영 흐름을 빠르게 확인하는 핵심 지표",
+    title: "인증/세션",
+    description: "Google 로그인과 활성 세션 상태를 보는 launch 핵심 요약",
     metrics: [
-      { label: "DAU", value: "연동 대기", note: "일일 활성 계정" },
-      { label: "신규 계정", value: "연동 대기", note: "오늘 생성된 계정" },
-      { label: "출격 수", value: "연동 대기", note: "일반 출격/레이드 합산" },
-      { label: "이상 로그", value: "연동 대기", note: "무결성 이벤트 기준" }
+      { label: "현재 동접자", value: "연동 대기", note: "concurrentUsers 후보" },
+      { label: "활성 세션", value: "연동 대기", note: "activeSessions 후보" },
+      { label: "최근 5분 접속", value: "연동 대기", note: "recentActiveAccounts5m 후보" },
+      { label: "마지막 로그인 경과", value: "연동 대기", note: "lastLoginAgeBuckets 후보" }
     ]
   },
+  {
+    title: "CS/계정 이슈",
+    description: "지원 문의와 계정 복구 확인이 필요한 항목",
+    metrics: [
+      { label: "지원 확인 필요 계정", value: "연동 대기", note: "support account summary 기준" },
+      { label: "계정 복구 후보", value: "연동 대기", note: "guest to Google recovery evidence 후보" },
+      { label: "Google 연동 계정", value: "연동 대기", note: "provider/link read-only 상태 후보" }
+    ]
+  },
+  {
+    title: "무결성 리스크",
+    description: "launch 운영자가 먼저 봐야 하는 계정/출격 위험 신호",
+    metrics: [
+      { label: "긴급/높음 의심 계정", value: "연동 대기", note: "계정 단위 검토 큐" },
+      { label: "체크섬 불일치", value: "연동 대기", note: "필수 콘텐츠 버전 검증" },
+      { label: "불가능한 피해량/점수", value: "연동 대기", note: "보스 레이드/출격 검증" }
+    ]
+  },
+  {
+    title: "보상/모집 이슈",
+    description: "보상 수령, 오프라인 보상, 모집 문의 대응 요약",
+    metrics: [
+      { label: "보상 수령 실패", value: "연동 대기", note: "claim 실패 이벤트" },
+      { label: "오프라인 보상 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" },
+      { label: "모집 문의 후보", value: "연동 대기", note: "pity/batch/result read-only 후보" },
+      { label: "중복 재생 확인", value: "연동 대기", note: "duplicate replay는 이전 결과 재조회" }
+    ]
+  },
+  {
+    title: "치명 시스템 오류",
+    description: "핵심 서버 실패와 운영 확인이 필요한 런타임 오류",
+    metrics: [
+      { label: "치명 오류", value: "연동 대기", note: "ops error logs critical" },
+      { label: "미확인 핵심 실패", value: "연동 대기", note: "open/acknowledged latest critical 후보" }
+    ]
+  }
+];
+
+export const dashboardDetailSections: DashboardSection[] = [
   {
     title: "광고/보상형 광고",
     description: "광고 시청과 보상 지급 흐름을 보는 운영 지표",
@@ -177,6 +223,41 @@ export const dashboardSections: DashboardSection[] = [
   }
 ];
 
+export const dashboardSections: DashboardSection[] = [...launchDashboardSections, ...dashboardDetailSections];
+
+export const launchDetailSupportCandidates: LaunchDetailSupportCandidate[] = [
+  {
+    label: "Google provider/link visibility",
+    target: "Support/Player detail",
+    status: "연동 대기",
+    note: "guest/google provider, linked state, recovery evidence read-only 후보"
+  },
+  {
+    label: "Gacha support visibility",
+    target: "Support/Gacha detail",
+    status: "연동 대기",
+    note: "pity, batch, resultStatus, guaranteeType, duplicate replay refs 후보"
+  },
+  {
+    label: "Boss-only raid label/status",
+    target: "Run/Raid detail",
+    status: "연동 대기",
+    note: "raid는 15-wave가 아닌 boss-only encounter로 분리 표시"
+  },
+  {
+    label: "Augment-at-start visibility",
+    target: "Run detail",
+    status: "연동 대기",
+    note: "일반 Act 1 작전 증강은 시작 시점 획득 상태로 표시"
+  },
+  {
+    label: "Player/support login session detail",
+    target: "Support/Player detail",
+    status: "연동 대기",
+    note: "lastLoginAt, lastLoginAge, activeSessionCount, latestSessionAt 후보"
+  }
+];
+
 export const dashboardShortcuts: DashboardShortcut[] = [
   {
     label: "의심 플레이어",
@@ -205,10 +286,10 @@ export function DashboardPage() {
     <main className="content">
       <header>
         <h1>운영 현황</h1>
-        <p>광고, 보상, 위험 신호를 한눈에 보는 읽기 전용 대시보드</p>
+        <p>출시 운영 판단에 필요한 핵심 신호를 먼저 보는 읽기 전용 대시보드</p>
       </header>
       <div className="dashboard-sections">
-        {dashboardSections.map((section) => (
+        {launchDashboardSections.map((section) => (
           <section key={section.title} className="admin-panel">
             <header>
               <h2>{section.title}</h2>
@@ -226,6 +307,38 @@ export function DashboardPage() {
           </section>
         ))}
       </div>
+      <section className="admin-panel">
+        <header>
+          <h2>상세 지표 후보</h2>
+          <p>긴 정책 설명과 서버 API 대기 항목은 첫 화면 아래에서만 확인합니다</p>
+        </header>
+        <div className="dashboard-sections">
+          {dashboardDetailSections.map((section) => (
+            <section key={section.title} className="metric-card">
+              <span>{section.title}</span>
+              <strong>연동 대기</strong>
+              <small>{section.description}</small>
+            </section>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>상세/지원 화면 연결 후보</h2>
+          <p>Dashboard가 아니라 Run, Player, Support 상세에서 볼 launch read-only 후보입니다</p>
+        </header>
+        <div className="metric-grid">
+          {launchDetailSupportCandidates.map((candidate) => (
+            <div key={candidate.label} className="metric-card">
+              <span>{candidate.target}</span>
+              <strong>{candidate.status}</strong>
+              <small>
+                {candidate.label}: {candidate.note}
+              </small>
+            </div>
+          ))}
+        </div>
+      </section>
       <section className="admin-panel">
         <header>
           <h2>운영 큐 바로가기</h2>

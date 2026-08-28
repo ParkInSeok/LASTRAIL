@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   dashboardSections,
   dashboardShortcuts,
+  dashboardDetailSections,
+  launchDetailSupportCandidates,
+  launchDashboardSections,
   offlineRewardClaimDashboardFields,
   offlineRewardDashboardContractFields,
   offlineRewardBlockedDefaultRewards,
@@ -12,6 +15,59 @@ import {
 } from "./DashboardPage";
 
 describe("DashboardPage configuration", () => {
+  it("keeps the first dashboard screen focused on launch operations summary", () => {
+    expect(launchDashboardSections.map((section) => section.title)).toEqual([
+      "인증/세션",
+      "CS/계정 이슈",
+      "무결성 리스크",
+      "보상/모집 이슈",
+      "치명 시스템 오류"
+    ]);
+    expect(launchDashboardSections.flatMap((section) => section.metrics.map((metric) => metric.label))).toEqual([
+      "현재 동접자",
+      "활성 세션",
+      "최근 5분 접속",
+      "마지막 로그인 경과",
+      "지원 확인 필요 계정",
+      "계정 복구 후보",
+      "Google 연동 계정",
+      "긴급/높음 의심 계정",
+      "체크섬 불일치",
+      "불가능한 피해량/점수",
+      "보상 수령 실패",
+      "오프라인 보상 상태",
+      "모집 문의 후보",
+      "중복 재생 확인",
+      "치명 오류",
+      "미확인 핵심 실패"
+    ]);
+    expect(launchDashboardSections.flatMap((section) => section.metrics).every((metric) => metric.value === "연동 대기")).toBe(
+      true
+    );
+  });
+
+  it("moves long policy and placeholder-heavy metrics into detail candidates", () => {
+    const launchTitles = launchDashboardSections.map((section) => section.title);
+    const detailTitles = dashboardDetailSections.map((section) => section.title);
+
+    expect(launchTitles).not.toContain("오프라인 보상 진행도");
+    expect(launchTitles).not.toContain("위험도/보상 불균형");
+    expect(detailTitles).toContain("오프라인 보상 진행도");
+    expect(detailTitles).toContain("위험도/보상 불균형");
+  });
+
+  it("keeps detail-specific launch candidates out of the top dashboard metrics", () => {
+    expect(launchDetailSupportCandidates.map((candidate) => candidate.label)).toEqual([
+      "Google provider/link visibility",
+      "Gacha support visibility",
+      "Boss-only raid label/status",
+      "Augment-at-start visibility",
+      "Player/support login session detail"
+    ]);
+    expect(JSON.stringify(launchDashboardSections)).not.toContain("Boss-only raid label/status");
+    expect(JSON.stringify(launchDashboardSections)).not.toContain("Augment-at-start visibility");
+  });
+
   it("includes ad, reward, and risk operations sections in Korean", () => {
     const sectionTitles = dashboardSections.map((section) => section.title);
 
