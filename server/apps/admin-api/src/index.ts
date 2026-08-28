@@ -195,6 +195,77 @@ type AdminOfflineRewardRow = {
   last_claim_created_at: number | null;
 };
 
+type AdminSupportAccountRow = {
+  account_id: string;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  account_created_at: number;
+  account_updated_at: number;
+  display_name: string | null;
+};
+
+type AdminSupportIdentityRow = {
+  provider: string;
+};
+
+type AdminSupportAuthRow = {
+  active_session_count: number | null;
+  latest_session_created_at: number | null;
+  latest_session_expires_at: number | null;
+};
+
+type AdminSupportRunRow = {
+  run_id: string;
+  status: string;
+  started_at: number;
+  finished_at: number | null;
+  risk: string | null;
+  balance_config_version: number;
+  preview_json: string | null;
+  outcome: string | null;
+  cleared_waves: number | null;
+  reward_preview_id: string | null;
+};
+
+type AdminSupportRunRewardRow = {
+  reward_preview_id: string;
+  run_id: string;
+  preview_status: string;
+  reward_claim_id: string | null;
+  claimed_at: number | null;
+  balance_config_version: number;
+  expires_at: number;
+  reward_plan_json: string;
+};
+
+type AdminSupportGachaBatchRow = {
+  batch_id: string;
+  banner_id: string;
+  pull_count: number;
+  cost_item_id: string;
+  cost_quantity: number;
+  result_summary_json: string;
+  created_at: number;
+};
+
+type AdminSupportIdempotencyRow = {
+  operation: string;
+  result_ref: string;
+  created_at: number;
+};
+
+type AdminSupportIntegrityRow = {
+  open_signals: number;
+  hard_violations: number;
+  latest_detection_at: number | null;
+  primary_reason: string | null;
+};
+
+type AdminSupportReviewRow = {
+  status: string;
+  reason: string | null;
+  updated_at: number;
+};
+
 type NextVersionRow = {
   next_version: number;
 };
@@ -210,6 +281,7 @@ const BALANCE_PUBLISH_PERMISSION = "BALANCE_PUBLISH";
 const ACCOUNT_NOTE_WRITE_PERMISSION = "ACCOUNT_NOTE_WRITE";
 const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
 const OFFLINE_REWARD_READ_PERMISSION = "OFFLINE_REWARD_READ";
+const SUPPORT_READ_PERMISSION = "SUPPORT_READ";
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
 const ACT_ONE_STORY_PROGRESS_ORDER = [
@@ -683,6 +755,100 @@ function offlineRewardSummary(row: AdminOfflineRewardRow) {
   };
 }
 
+function supportOfflineRewardFallback(account: AdminSupportAccountRow): AdminOfflineRewardRow {
+  return {
+    account_id: account.account_id,
+    display_name: account.display_name,
+    account_status: account.account_status,
+    account_created_at: account.account_created_at,
+    highest_story_progress_id: null,
+    narrative_version: null,
+    last_offline_reward_claim_at: null,
+    last_story_progress_id: null,
+    last_balance_config_version: null,
+    last_narrative_version: null,
+    last_previewed_at: null,
+    revision: null,
+    state_updated_at: null,
+    last_claim_id: null,
+    last_claim_created_at: null,
+  };
+}
+
+function jsonObjectString(value: JsonValue, key: string): string | null {
+  if (!isJsonObject(value)) return null;
+  const field = value[key];
+  return typeof field === "string" && field.length > 0 ? field : null;
+}
+
+function parseRunPreviewIds(previewJson: string | null): { operationId: string | null; actId: string | null } {
+  if (previewJson === null) return { operationId: null, actId: null };
+  try {
+    const parsed = parseJsonValue(previewJson);
+    return {
+      operationId: jsonObjectString(parsed, "operationId"),
+      actId: jsonObjectString(parsed, "actId"),
+    };
+  } catch {
+    return { operationId: null, actId: null };
+  }
+}
+
+function parseRewardLineSummary(rewardPlanJson: string): JsonValue[] {
+  try {
+    const parsed = parseJsonValue(rewardPlanJson);
+    if (!isJsonObject(parsed) || !Array.isArray(parsed.rewardLines)) return [];
+    return parsed.rewardLines.filter((line) => {
+      if (!isJsonObject(line)) return false;
+      return typeof line.kind === "string" && typeof line.id === "string" && typeof line.quantity === "number";
+    });
+  } catch {
+    return [];
+  }
+}
+
+function parseGachaPostPityState(resultSummaryJson: string): JsonValue | null {
+  try {
+    const parsed = parseJsonValue(resultSummaryJson);
+    if (!isJsonObject(parsed)) return null;
+    return isJsonValue(parsed.postPityState) ? parsed.postPityState : null;
+  } catch {
+    return null;
+  }
+}
+
+function parseGachaGuaranteeTypes(resultSummaryJson: string): string[] {
+  try {
+    const parsed = parseJsonValue(resultSummaryJson);
+    if (!isJsonObject(parsed) || !Array.isArray(parsed.responseResults)) return [];
+    return [...new Set(parsed.responseResults
+      .map((result) => isJsonObject(result) && typeof result.guaranteeType === "string" ? result.guaranteeType : null)
+      .filter((value): value is string => value !== null))];
+  } catch {
+    return [];
+  }
+}
+
+function supportExplanationTemplates() {
+  return [
+    {
+      caseType: "offline_reward",
+      playerFacingSummary: "오프라인 보상은 최소 누적 시간이 지나야 수령할 수 있습니다. 서버 기록 기준으로 수령 가능 상태를 확인해 주세요.",
+      escalationNeeded: false,
+    },
+    {
+      caseType: "duplicate_replay",
+      playerFacingSummary: "서버가 이전 요청을 이미 처리한 기록이 있습니다. 앱을 새로고침하거나 계정 상태 동기화를 시도해 주세요.",
+      escalationNeeded: false,
+    },
+    {
+      caseType: "integrity_restriction",
+      playerFacingSummary: "해당 기록은 운영 검토가 필요한 상태입니다. 상세 확인 후 별도로 안내드리겠습니다.",
+      escalationNeeded: true,
+    },
+  ];
+}
+
 function hasRequestBody(c: AppContext): boolean {
   const contentLength = c.req.header("content-length");
   return contentLength !== undefined && contentLength !== "0";
@@ -702,7 +868,17 @@ function rejectAdminOfflineRewardBody(c: AppContext): Response {
   }, 400);
 }
 
+function rejectAdminSupportBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin support account summary endpoints do not accept request bodies.",
+  }, 400);
+}
+
 function hasAdminPermission(principal: AdminPrincipalRow, permission: string): boolean {
+  if (permission === SUPPORT_READ_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
+  }
   if (permission === OFFLINE_REWARD_READ_PERMISSION) {
     return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
   }
@@ -820,6 +996,289 @@ app.get("/v1/admin/me", async (c) => {
       role: principal.role,
       displayName: principal.display_name,
     },
+  });
+});
+app.get("/v1/admin/support/accounts/:accountId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminSupportBody(c);
+
+  const accountId = c.req.param("accountId");
+  const account = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       a.status AS account_status,
+       a.created_at AS account_created_at,
+       a.updated_at AS account_updated_at,
+       pp.display_name AS display_name
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     WHERE a.id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminSupportAccountRow>();
+
+  if (account === null) {
+    return c.json({ error: "account_not_found", message: "Account was not found." }, 404);
+  }
+
+  const identities = await c.env.DB.prepare(
+    `SELECT provider
+     FROM auth_identities
+     WHERE account_id = ?
+     ORDER BY provider`,
+  )
+    .bind(accountId)
+    .all<AdminSupportIdentityRow>();
+  const authStatus = await c.env.DB.prepare(
+    `SELECT
+       COALESCE(SUM(CASE WHEN status = 'ACTIVE' THEN 1 ELSE 0 END), 0) AS active_session_count,
+       MAX(created_at) AS latest_session_created_at,
+       MAX(expires_at) AS latest_session_expires_at
+     FROM auth_sessions
+     WHERE account_id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminSupportAuthRow>();
+  const recentRuns = await c.env.DB.prepare(
+    `SELECT
+       r.id AS run_id,
+       r.status AS status,
+       r.started_at AS started_at,
+       r.finished_at AS finished_at,
+       op.risk AS risk,
+       r.balance_config_version AS balance_config_version,
+       op.preview_json AS preview_json,
+       final.outcome AS outcome,
+       final.cleared_waves AS cleared_waves,
+       preview.id AS reward_preview_id
+     FROM runs r
+     LEFT JOIN operation_previews op ON op.id = r.preview_id
+     LEFT JOIN run_final_results final ON final.run_id = r.id
+     LEFT JOIN run_reward_previews preview ON preview.run_id = r.id
+     WHERE r.account_id = ?
+     ORDER BY r.started_at DESC, r.id
+     LIMIT 10`,
+  )
+    .bind(accountId)
+    .all<AdminSupportRunRow>();
+  const runRewards = await c.env.DB.prepare(
+    `SELECT
+       preview.id AS reward_preview_id,
+       preview.run_id AS run_id,
+       preview.status AS preview_status,
+       preview.reward_claim_id AS reward_claim_id,
+       preview.claimed_at AS claimed_at,
+       preview.balance_config_version AS balance_config_version,
+       preview.expires_at AS expires_at,
+       preview.reward_plan_json AS reward_plan_json
+     FROM run_reward_previews preview
+     WHERE preview.account_id = ?
+     ORDER BY preview.created_at DESC, preview.id
+     LIMIT 10`,
+  )
+    .bind(accountId)
+    .all<AdminSupportRunRewardRow>();
+  const offlineRewardRow = await c.env.DB.prepare(
+    `SELECT
+       a.id AS account_id,
+       pp.display_name AS display_name,
+       a.status AS account_status,
+       a.created_at AS account_created_at,
+       sp.highest_story_progress_id AS highest_story_progress_id,
+       sp.narrative_version AS narrative_version,
+       ors.last_offline_reward_claim_at AS last_offline_reward_claim_at,
+       ors.last_story_progress_id AS last_story_progress_id,
+       ors.last_balance_config_version AS last_balance_config_version,
+       ors.last_narrative_version AS last_narrative_version,
+       ors.last_previewed_at AS last_previewed_at,
+       ors.revision AS revision,
+       ors.updated_at AS state_updated_at,
+       last_claim.id AS last_claim_id,
+       last_claim.created_at AS last_claim_created_at
+     FROM accounts a
+     LEFT JOIN player_profiles pp ON pp.account_id = a.id
+     LEFT JOIN account_story_progress sp ON sp.account_id = a.id
+     LEFT JOIN account_offline_reward_state ors ON ors.account_id = a.id
+     LEFT JOIN reward_transactions last_claim
+       ON last_claim.id = (
+         SELECT rt.id
+         FROM reward_transactions rt
+         WHERE rt.account_id = a.id AND rt.run_id IS NULL
+         ORDER BY rt.created_at DESC, rt.id DESC
+         LIMIT 1
+       )
+     WHERE a.id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminOfflineRewardRow>();
+  const storyRow = await c.env.DB.prepare(
+    `SELECT account_id, act_id, highest_cleared_operation_id, highest_story_progress_id,
+            cleared_operations_json, story_flags_json, narrative_version,
+            last_progress_run_id, updated_at
+     FROM account_story_progress
+     WHERE account_id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminStoryProgressRow>();
+  const unlockRows = await c.env.DB.prepare(
+    `SELECT unlock_id
+     FROM account_unlocks
+     WHERE account_id = ? AND unlock_id LIKE 'operation:%'
+     ORDER BY unlocked_at, unlock_id`,
+  )
+    .bind(accountId)
+    .all<AdminStoryProgressUnlockRow>();
+  const gachaBatches = await c.env.DB.prepare(
+    `SELECT
+       id AS batch_id,
+       banner_id AS banner_id,
+       pull_count AS pull_count,
+       cost_item_id AS cost_item_id,
+       cost_quantity AS cost_quantity,
+       result_summary_json AS result_summary_json,
+       created_at AS created_at
+     FROM gacha_pull_batches
+     WHERE account_id = ?
+     ORDER BY created_at DESC, id
+     LIMIT 10`,
+  )
+    .bind(accountId)
+    .all<AdminSupportGachaBatchRow>();
+  const idempotencyRows = await c.env.DB.prepare(
+    `SELECT operation, result_ref, created_at
+     FROM idempotency_records
+     WHERE account_id = ?
+       AND operation IN ('run_finish','run_reward_claim','offline_reward_claim','gacha_pull')
+     ORDER BY created_at DESC, id
+     LIMIT 20`,
+  )
+    .bind(accountId)
+    .all<AdminSupportIdempotencyRow>();
+  const integrity = await c.env.DB.prepare(
+    `SELECT
+       COUNT(event.id) AS open_signals,
+       COALESCE(SUM(CASE WHEN event.classification = 'HARD_VIOLATION' THEN 1 ELSE 0 END), 0) AS hard_violations,
+       MAX(event.created_at) AS latest_detection_at,
+       (
+         SELECT latest.evidence_code
+         FROM integrity_events latest
+         WHERE latest.account_id = ?
+         ORDER BY latest.created_at DESC, latest.id DESC
+         LIMIT 1
+       ) AS primary_reason
+     FROM integrity_events event
+     LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     WHERE event.account_id = ?
+       AND COALESCE(review.state, 'OPEN') != 'RESOLVED'`,
+  )
+    .bind(accountId, accountId)
+    .first<AdminSupportIntegrityRow>();
+  const suspiciousReview = await c.env.DB.prepare(
+    `SELECT status, reason, updated_at
+     FROM suspicious_player_reviews
+     WHERE account_id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminSupportReviewRow>();
+
+  return c.json({
+    accountId: account.account_id,
+    generatedAt: new Date().toISOString(),
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    account: {
+      accountId: account.account_id,
+      accountStatus: account.account_status,
+      displayName: account.display_name,
+      createdAt: toIso(account.account_created_at),
+      updatedAt: toIso(account.account_updated_at),
+    },
+    auth: {
+      identityProviders: identities.results.map((row) => row.provider),
+      activeSessionCount: authStatus?.active_session_count ?? 0,
+      latestSessionCreatedAt: authStatus?.latest_session_created_at === null || authStatus?.latest_session_created_at === undefined
+        ? null
+        : toIso(authStatus.latest_session_created_at),
+      latestSessionExpiresAt: authStatus?.latest_session_expires_at === null || authStatus?.latest_session_expires_at === undefined
+        ? null
+        : toIso(authStatus.latest_session_expires_at),
+    },
+    recentRuns: recentRuns.results.map((run) => {
+      const previewIds = parseRunPreviewIds(run.preview_json);
+      return {
+        runId: run.run_id,
+        status: run.status,
+        operationId: previewIds.operationId,
+        actId: previewIds.actId,
+        risk: normalizeRiskTier(run.risk),
+        balanceVersion: String(run.balance_config_version),
+        startedAt: toIso(run.started_at),
+        finishedAt: run.finished_at === null ? null : toIso(run.finished_at),
+        outcome: run.outcome,
+        clearedWaves: run.cleared_waves,
+        rewardPreviewId: run.reward_preview_id,
+      };
+    }),
+    runRewards: runRewards.results.map((reward) => ({
+      rewardPreviewId: reward.reward_preview_id,
+      runId: reward.run_id,
+      previewStatus: reward.preview_status,
+      claimability: reward.preview_status === "CLAIMED" ? "ALREADY_CLAIMED" : reward.preview_status,
+      rewardClaimId: reward.reward_claim_id,
+      claimedAt: reward.claimed_at === null ? null : toIso(reward.claimed_at),
+      balanceVersion: String(reward.balance_config_version),
+      expiresAt: toIso(reward.expires_at),
+      rewardLineSummary: parseRewardLineSummary(reward.reward_plan_json),
+      idempotencyReplayKnown: idempotencyRows.results.some((row) => row.operation === "run_reward_claim" && row.result_ref === reward.reward_claim_id),
+    })),
+    offlineRewards: offlineRewardSummary(offlineRewardRow ?? supportOfflineRewardFallback(account)),
+    storyProgress: storyRow === null ? defaultStoryProgressDetail(accountId) : storyProgressDetail(storyRow, unlockRows.results),
+    gacha: {
+      recentBatches: gachaBatches.results.map((batch) => ({
+        batchId: batch.batch_id,
+        bannerId: batch.banner_id,
+        pullCount: batch.pull_count,
+        cost: {
+          itemId: batch.cost_item_id,
+          quantity: batch.cost_quantity,
+        },
+        guaranteeTypes: parseGachaGuaranteeTypes(batch.result_summary_json),
+        postPityState: parseGachaPostPityState(batch.result_summary_json),
+        createdAt: toIso(batch.created_at),
+      })),
+    },
+    idempotency: idempotencyRows.results.map((row) => ({
+      operation: row.operation,
+      resultRef: row.result_ref,
+      createdAt: toIso(row.created_at),
+      replaySafe: true,
+      linkedResourceType: row.operation === "gacha_pull"
+        ? "gacha_batch"
+        : row.operation === "offline_reward_claim" || row.operation === "run_reward_claim"
+          ? "reward_transaction"
+          : "reward_preview",
+    })),
+    integrity: {
+      openSignals: integrity?.open_signals ?? 0,
+      hardViolations: integrity?.hard_violations ?? 0,
+      latestDetectionAt: integrity?.latest_detection_at === null || integrity?.latest_detection_at === undefined ? null : toIso(integrity.latest_detection_at),
+      accountReviewStatus: suspiciousReview === null ? "NEW" : suspiciousReviewStatus(suspiciousReview.status),
+      reviewReason: suspiciousReview?.reason ?? null,
+      reviewUpdatedAt: suspiciousReview === null ? null : toIso(suspiciousReview.updated_at),
+      primaryReason: integrity?.primary_reason ?? null,
+    },
+    opsErrors: [],
+    supportNotes: supportExplanationTemplates(),
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      repairEndpointsEnabled: false,
+      source: "support_account_summary",
+    },
+    errorCode: null,
+    message: null,
   });
 });
 app.get("/v1/admin/offline-rewards", async (c) => {

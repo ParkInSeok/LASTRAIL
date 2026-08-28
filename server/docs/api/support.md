@@ -26,14 +26,14 @@ deploys, remote smoke tests, or PRD/STAGING resources.
 - No localized dialogue text payloads.
 - No token/session secret inspection.
 
-## Endpoint Candidate
+## Endpoint
 
 ```text
 GET /v1/admin/support/accounts/:accountId
 ```
 
-The endpoint should be Admin API only. It must use the Admin principal auth
-boundary, not Game API player bearer auth.
+The endpoint is implemented as an Admin API read-only route. It uses the Admin
+principal auth boundary, not Game API player bearer auth.
 
 Request:
 
@@ -92,7 +92,7 @@ Candidate stable permission id:
 SUPPORT_READ
 ```
 
-Current implementation recommendation:
+Current implementation:
 
 - Use the existing role-string `ROLE_PERMISSION` mapping until the Admin
   permission grant table exists.
@@ -111,9 +111,9 @@ Relationship to existing read permissions:
 - Future `GACHA_READ`: gacha batches, pity state, and guarantee visibility.
 - Future `OPS_ERROR_LOG_READ`: runtime/system error correlation.
 
-Launch can implement `SUPPORT_READ` as a coarse support permission that implies
-the read-only sections above, or require all underlying read permissions. The
-first implementation should choose one policy and test it explicitly.
+Launch implements `SUPPORT_READ` as a coarse support permission that implies
+the read-only sections above. It does not require all underlying read
+permissions separately.
 
 Recommendation:
 
@@ -411,6 +411,35 @@ Support usage:
 Do not return raw payloads, raw request bodies, tokens, secrets, or unsanitized
 stack traces in launch support summary.
 
+### Escalation Hints
+
+Source candidates:
+
+- `docs/ops/customer-support-response-templates.md`;
+- `docs/ops/customer-support-escalation-workflow.md`;
+- future support escalation read model if one is explicitly approved later.
+
+Launch status:
+
+- The support summary may include safe support note/template hints.
+- It does not create or update escalation state.
+- `severity`, `category`, `recommendedAction`, and evidence package
+  availability remain future read-only fields.
+
+Allowed launch action labels remain operational guidance only:
+
+- `respond_with_template`
+- `request_more_player_context`
+- `escalate_to_operator_review`
+- `escalate_to_owner_review`
+- `mark_as_known_issue_candidate`
+- `attach_read_only_evidence`
+
+The endpoint must not perform manual reward grants, currency correction,
+offline timestamp reset, story progress mutation, unlock mutation, gacha
+reroll, reward repair, economy repair, narrative editing, or localization
+publishing.
+
 ## Player-facing Explanation Templates
 
 Support responses should be safe, brief, and avoid exploit-sensitive details.
@@ -484,12 +513,12 @@ Future local D1 smoke should seed:
 
 ## Rollout Order
 
-1. Keep this contract as documentation only.
-2. Align Admin Web support placeholder/contract types with this shape.
-3. Add Admin API unit contract tests for `SUPPORT_READ`.
-4. Add local D1 smoke with seeded account support data.
-5. Implement `GET /v1/admin/support/accounts/:accountId` read-only route.
-6. Add Admin Web read-only integration.
+1. Contract draft completed.
+2. Admin Web support placeholder/contract types aligned by the Admin session.
+3. Admin API unit contract tests for `SUPPORT_READ` added.
+4. Local D1 smoke with seeded account support data added.
+5. `GET /v1/admin/support/accounts/:accountId` read-only route implemented.
+6. Add Admin Web read-only integration against the implemented route.
 7. Consider separate read models only if direct joins become too expensive.
 
 Remote DEV secret setup, DEV deploy, remote smoke, PRD resources, and
@@ -497,11 +526,11 @@ STAGING/PRD deploys remain approval-gated.
 
 ## Open Decisions
 
-- Whether `SUPPORT_READ` is standalone or requires all underlying read
-  permissions.
 - Whether VIEWER can see every section or whether OWNER-only details are needed
   for stack/ops metadata later.
 - Whether to add a separate `support_case_notes` table after launch.
 - Whether to add an `offline_reward_claims` read model or rely on
   `reward_transactions` for launch.
 - Exact section limits for recent runs, gacha batches, and ops errors.
+- Whether to expose future support escalation `severity`, `category`,
+  `recommendedAction`, and evidence package availability as read-only fields.
