@@ -380,3 +380,6 @@ Contract baseline:
   `pullCount`.
 - Pull probability, pity, duplicate conversion, ticket spend, grants, and ledger
   writes are server Source of Truth.
+- Launch data has a `TESTING_TUNING_DRAFT` fixture in
+  `launchGachaDataDraft`. It is used for local response stability smoke only and
+  is not a production seed/config promotion.

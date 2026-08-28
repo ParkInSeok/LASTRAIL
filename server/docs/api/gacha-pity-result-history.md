@@ -709,3 +709,46 @@ Open design choice for implementation:
 - Whether to keep command tickets in `account_items` permanently, or later move
   them into a generalized resource ledger. The current draft favors
   `account_items` to avoid a risky rebuild of existing currency tables.
+
+## Launch Data Fixture
+
+`launchGachaDataDraft` in `@lastrail/balance` is a
+`TESTING_TUNING_DRAFT` fixture for local contract and response stability smoke.
+It is not a production balance seed, not a DEV remote seed, and not a final
+economy approval.
+
+Current launch visual scope:
+
+```text
+op_vex
+op_nyx
+op_sable
+op_marrow
+op_iris
+op_rail
+op_anchor
+op_lumen
+op_cinder
+op_warden
+```
+
+The draft pickup banner keeps:
+
+- `bannerType = PICKUP`
+- `pickupOperatorId = op_vex`
+- `pityConfig = { rare: 10, elite: 30, pickup: 60 }`
+- `cost.itemId = cur_command_ticket`
+- `allowedPullCounts = [1, 10]`
+- all 10 Act 1 elite operator IDs in the elite operator pool
+
+Local smoke uses this fixture as `gacha_banners.pool_snapshot_json` input and
+asserts the response keeps Unity-visible fields stable while not returning raw
+RNG material, seed preimages, per-candidate probabilities, full weight tables,
+tokens, secrets, or account shortcut data.
+
+Decision queue:
+
+- Final launch banner IDs, pickup rotation, and exact weight tuning.
+- Command ticket acquisition path before production gacha can be enabled.
+- Whether candidate-only economy draft values should ever be promoted to a
+  versioned balance config.

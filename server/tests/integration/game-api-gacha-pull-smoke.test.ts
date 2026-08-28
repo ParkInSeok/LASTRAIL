@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import app from "../../apps/game-api/src/index";
 import { createAccessToken } from "../../apps/game-api/src/auth";
+import { launchGachaDataDraft } from "../../packages/balance/src/index";
 
 type SqlValue = string | number | Uint8Array | null;
 
@@ -243,6 +244,20 @@ function expectGachaResponseTopLevelShape(body: Record<string, unknown>): void {
     "createdAt",
     "errorCode",
     "message",
+  ]);
+}
+
+function expectGachaResultShape(result: Record<string, unknown>): void {
+  expect(Object.keys(result)).toEqual([
+    "pullSequence",
+    "resultRarity",
+    "resultType",
+    "resultId",
+    "reward",
+    "isPickup",
+    "guaranteeType",
+    "wasDuplicate",
+    "duplicateConversion",
   ]);
 }
 
@@ -624,6 +639,60 @@ describe("game-api gacha pull local D1 smoke", () => {
     expect(scalar(db, "SELECT COUNT(*) FROM item_ledger WHERE account_id = 'account-gacha-smoke-1';")).toBe(2);
     expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_batches WHERE account_id = 'account-gacha-smoke-1';")).toBe(1);
     expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results WHERE account_id = 'account-gacha-smoke-1';")).toBe(1);
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+    db.close();
+  });
+
+  it("accepts the launch draft gacha pool without leaking internal selection data", async () => {
+    const db = await createMigratedDb();
+    const launchBanner = launchGachaDataDraft.banners[0];
+    seedBaseGachaState(db, {
+      alreadyOwnsPickup: false,
+      tickets: 10,
+      poolSnapshotJson: JSON.stringify(launchBanner.pool),
+    });
+
+    const response = await app.request(
+      "/v1/gacha/banners/banner-gacha-smoke-1/pulls",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "gacha-smoke-idem-launch-draft-10-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({ pullCount: 10 }),
+      },
+      createEnv(db),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      bannerId: "banner-gacha-smoke-1",
+      balanceVersion: "301",
+      pullCount: 10,
+      cost: { itemId: "cur_command_ticket", quantity: 10 },
+      errorCode: null,
+      message: null,
+    });
+    expectGachaResponseTopLevelShape(body);
+    expect(body.results).toHaveLength(10);
+
+    const launchPoolResultIds = new Set(launchBanner.pool.results.map((result) => result.resultId));
+    for (const result of body.results as Array<Record<string, unknown>>) {
+      expectGachaResultShape(result);
+      expect(launchPoolResultIds.has(String(result.resultId))).toBe(true);
+      expect(launchGachaDataDraft.supportedGuaranteeTypes).toContain(result.guaranteeType);
+    }
+
+    expectNoForbiddenDebugFields(body);
+    expect(JSON.stringify(body)).not.toContain("weight");
+    expect(JSON.stringify(body)).not.toContain("pool");
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id = 'account-gacha-smoke-1' AND item_id = 'cur_command_ticket';")).toBe(0);
+    expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results WHERE account_id = 'account-gacha-smoke-1';")).toBe(10);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();

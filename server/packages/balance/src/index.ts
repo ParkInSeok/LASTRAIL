@@ -133,6 +133,65 @@ export type LaunchEconomyBalanceDraft = {
   candidateOnlyRewardIds: string[];
 };
 
+export type GachaResultRarity = "COMMON" | "RARE" | "ELITE";
+export type GachaResultType =
+  | "ELITE_OPERATOR"
+  | "RARE_OPERATOR"
+  | "ELITE_OPERATOR_TOKEN"
+  | "RARE_OPERATOR_TOKEN"
+  | "TRAINING_MATERIAL"
+  | "WORK_SKILL_MATERIAL"
+  | "TACTICAL_MATERIAL"
+  | "COMMAND_TICKET_FRAGMENT";
+export type GachaGuaranteeType =
+  | "NONE"
+  | "RARE_OR_HIGHER_10"
+  | "ELITE_30"
+  | "PICKUP_ELITE_60";
+
+export type LaunchGachaPoolResultDraft = {
+  resultRarity: GachaResultRarity;
+  resultType: GachaResultType;
+  resultId: string;
+  weight: number;
+  quantity?: number;
+  isPickup?: boolean;
+};
+
+export type LaunchGachaDataDraft = {
+  status: "TESTING_TUNING_DRAFT";
+  productionFinal: false;
+  seedPromotionApproved: false;
+  actOneEliteOperatorIds: string[];
+  banners: Array<{
+    bannerId: string;
+    bannerType: "PICKUP";
+    pickupOperatorId: string;
+    balanceConfigVersionRef: "TESTING_TUNING_DRAFT";
+    pityConfig: {
+      rare: 10;
+      elite: 30;
+      pickup: 60;
+    };
+    cost: {
+      itemId: "cur_command_ticket";
+      quantityPerPull: 1;
+    };
+    allowedPullCounts: [1, 10];
+    pool: {
+      results: LaunchGachaPoolResultDraft[];
+    };
+  }>;
+  supportedGuaranteeTypes: GachaGuaranteeType[];
+  clientVisibleResultFields: string[];
+  duplicateConversion: {
+    eliteOperatorTokenQuantity: 50;
+    rareOperatorTokenQuantity: 30;
+    displayItemId: "cur_operator_token";
+    persistedItemIdPattern: "cur_operator_token:<operatorId>";
+  };
+};
+
 export type OfflineRewardPreviewCalculation = {
   storyProgressKey: OfflineStoryProgressKey;
   storyProgressMultiplierBps: number;
@@ -419,6 +478,166 @@ export const launchEconomyBalanceDraft: LaunchEconomyBalanceDraft = {
   ],
   normalActOneRunBlockedRewardIds: ["cur_command_ticket"],
   candidateOnlyRewardIds: ["cur_command_ticket_fragment", "cur_special_core"],
+};
+
+export const launchGachaDataDraft: LaunchGachaDataDraft = {
+  status: "TESTING_TUNING_DRAFT",
+  productionFinal: false,
+  seedPromotionApproved: false,
+  actOneEliteOperatorIds: [
+    "op_vex",
+    "op_nyx",
+    "op_sable",
+    "op_marrow",
+    "op_iris",
+    "op_rail",
+    "op_anchor",
+    "op_lumen",
+    "op_cinder",
+    "op_warden",
+  ],
+  banners: [
+    {
+      bannerId: "banner_act1_pickup_vex_testing",
+      bannerType: "PICKUP",
+      pickupOperatorId: "op_vex",
+      balanceConfigVersionRef: "TESTING_TUNING_DRAFT",
+      pityConfig: {
+        rare: 10,
+        elite: 30,
+        pickup: 60,
+      },
+      cost: {
+        itemId: "cur_command_ticket",
+        quantityPerPull: 1,
+      },
+      allowedPullCounts: [1, 10],
+      pool: {
+        results: [
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_vex",
+            weight: 120,
+            isPickup: true,
+          },
+          { resultRarity: "ELITE", resultType: "ELITE_OPERATOR", resultId: "op_nyx", weight: 80 },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_sable",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_marrow",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_iris",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_rail",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_anchor",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_lumen",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_cinder",
+            weight: 80,
+          },
+          {
+            resultRarity: "ELITE",
+            resultType: "ELITE_OPERATOR",
+            resultId: "op_warden",
+            weight: 80,
+          },
+          {
+            resultRarity: "RARE",
+            resultType: "RARE_OPERATOR",
+            resultId: "op_signal_runner",
+            weight: 500,
+          },
+          {
+            resultRarity: "RARE",
+            resultType: "RARE_OPERATOR_TOKEN",
+            resultId: "cur_operator_token",
+            weight: 800,
+            quantity: 10,
+          },
+          {
+            resultRarity: "RARE",
+            resultType: "TRAINING_MATERIAL",
+            resultId: "mat_rare_manual",
+            weight: 1200,
+            quantity: 1,
+          },
+          {
+            resultRarity: "COMMON",
+            resultType: "TRAINING_MATERIAL",
+            resultId: "mat_scrap",
+            weight: 4200,
+            quantity: 1,
+          },
+          {
+            resultRarity: "COMMON",
+            resultType: "WORK_SKILL_MATERIAL",
+            resultId: "mat_work_skill_basic",
+            weight: 2500,
+            quantity: 1,
+          },
+          {
+            resultRarity: "COMMON",
+            resultType: "TACTICAL_MATERIAL",
+            resultId: "mat_tactical_data_pack",
+            weight: 1100,
+            quantity: 1,
+          },
+        ],
+      },
+    },
+  ],
+  supportedGuaranteeTypes: [
+    "NONE",
+    "RARE_OR_HIGHER_10",
+    "ELITE_30",
+    "PICKUP_ELITE_60",
+  ],
+  clientVisibleResultFields: [
+    "pullSequence",
+    "resultRarity",
+    "resultType",
+    "resultId",
+    "reward",
+    "isPickup",
+    "guaranteeType",
+    "wasDuplicate",
+    "duplicateConversion",
+  ],
+  duplicateConversion: {
+    eliteOperatorTokenQuantity: 50,
+    rareOperatorTokenQuantity: 30,
+    displayItemId: "cur_operator_token",
+    persistedItemIdPattern: "cur_operator_token:<operatorId>",
+  },
 };
 
 export function parseRunRewardsConfig(value: unknown): RunRewardsConfig {
