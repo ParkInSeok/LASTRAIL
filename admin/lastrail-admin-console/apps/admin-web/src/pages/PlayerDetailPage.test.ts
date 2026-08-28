@@ -4,18 +4,29 @@ import { playerAuthEvidenceCards } from "./PlayerDetailPage";
 describe("PlayerDetailPage configuration", () => {
   it("prepares read-only login provider evidence without account mutation controls", () => {
     expect(playerAuthEvidenceCards.map((card) => card.code)).toEqual([
+      "identityProviders",
       "providerNames",
       "linkedProviders",
-      "accountState",
-      "linkStatus",
-      "lastLoginAt",
-      "lastLoginAge",
+      "primaryProvider",
+      "hasGoogleLink",
       "activeSessionCount",
+      "latestSessionCreatedAt",
       "latestSessionAt",
-      "sanitizedIdentityRef"
+      "latestSessionExpiresAt",
+      "latestAuthAt",
+      "lastLoginAt",
+      "lastLoginAgeSeconds",
+      "lastSeenAt",
+      "lastSeenSource",
+      "concurrentUsers",
+      "concurrentUsersPrecision"
     ]);
-    expect(playerAuthEvidenceCards.map((card) => card.label)).toContain("게스트");
-    expect(playerAuthEvidenceCards.map((card) => card.label)).toContain("Google");
+    expect(playerAuthEvidenceCards.map((card) => card.label).join(" ")).toContain("게스트");
+    expect(playerAuthEvidenceCards.map((card) => card.label).join(" ")).toContain("Google");
+    expect(playerAuthEvidenceCards.map((card) => card.label)).toContain("주 제공자");
+    expect(playerAuthEvidenceCards.find((card) => card.code === "concurrentUsers")?.note).toContain(
+      "UNAVAILABLE/null은 확정 동접자 수 아님"
+    );
     expect(playerAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
 
     const serialized = JSON.stringify(playerAuthEvidenceCards);
@@ -25,5 +36,6 @@ describe("PlayerDetailPage configuration", () => {
     expect(serialized).not.toContain("revoke");
     expect(serialized).not.toContain("Google ID token");
     expect(serialized).not.toContain("session secret");
+    expect(serialized).not.toContain("refresh token hash");
   });
 });

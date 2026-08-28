@@ -4,6 +4,7 @@ import { adminApi } from "../shared/api/client";
 import { encounterTypeLabel, permissionLabel } from "../shared/labels/adminLabels";
 import {
   accountAuthVisibilityFields,
+  accountAuthSessionFieldLabel,
   customerSupportCombatEvidenceFields,
   customerSupportGachaLaunchPolicy,
   customerSupportCaseTypeLabel,
@@ -62,20 +63,12 @@ export const supportSummarySectionCards: SupportCard[] = customerSupportSummaryS
 export const supportAccountAuthEvidenceCards: SupportCard[] = [
   ...accountAuthVisibilityFields.map((field) => ({
     code: field,
-    label:
-      {
-        providerNames: "게스트",
-        linkedProviders: "Google",
-        accountState: "계정 식별 충돌",
-        linkStatus: "연동 결과 상태",
-        lastLoginAt: "마지막 로그인 시각",
-        lastLoginAge: "마지막 로그인 경과",
-        activeSessionCount: "활성 세션 수",
-        latestSessionAt: "최신 세션 시각",
-        sanitizedIdentityRef: "sanitized identity ref"
-      }[field] ?? field,
+    label: accountAuthSessionFieldLabel(field),
     value: "연동 대기" as const,
-    note: `${field} read-only auth evidence 후보`
+    note:
+      field === "concurrentUsers"
+        ? "UNAVAILABLE/null은 확정 동접자 수 아님"
+        : `${field} read-only auth/session evidence 후보`
   }))
 ];
 
@@ -281,11 +274,11 @@ export function SupportAccountPage() {
           <p>provider/link/account recovery 상태를 token 없이 읽기 전용으로 확인하는 후보입니다</p>
         </header>
         <div className="metric-grid">
-          {supportAccountAuthEvidenceCards.map((card) => (
-            <div key={card.code} className="metric-card">
-              <span>{card.label}</span>
-              <strong>{card.value}</strong>
-              <small>{card.note}</small>
+          {summary.authSession.items.map((item) => (
+            <div key={item.field} className="metric-card">
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+              <small>{item.note}</small>
             </div>
           ))}
         </div>

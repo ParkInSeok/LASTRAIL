@@ -73,6 +73,24 @@ export type AccountAuthErrorCode =
   | "google_token_invalid"
   | "google_auth_config_missing";
 
+export type AccountAuthSessionField =
+  | "identityProviders"
+  | "providerNames"
+  | "linkedProviders"
+  | "primaryProvider"
+  | "hasGoogleLink"
+  | "activeSessionCount"
+  | "latestSessionCreatedAt"
+  | "latestSessionAt"
+  | "latestSessionExpiresAt"
+  | "latestAuthAt"
+  | "lastLoginAt"
+  | "lastLoginAgeSeconds"
+  | "lastSeenAt"
+  | "lastSeenSource"
+  | "concurrentUsers"
+  | "concurrentUsersPrecision";
+
 export type SupportRunCombatEvidenceField =
   | "encounterType"
   | "raidId"
@@ -119,6 +137,13 @@ export type SupportSummarySection = {
   referenceCount: number | "연동 대기";
 };
 
+export type SupportAuthSessionItem = {
+  field: AccountAuthSessionField;
+  label: string;
+  value: string;
+  note: string;
+};
+
 export type SupportAccountSummary = {
   permission: "SUPPORT_READ";
   permissionMode: "ROLE_PERMISSION";
@@ -126,6 +151,10 @@ export type SupportAccountSummary = {
     accountId: string;
     displayName: string;
     accountStatus: string;
+  };
+  authSession: {
+    providerOrder: readonly ["GOOGLE", "GUEST"];
+    items: SupportAuthSessionItem[];
   };
   sections: SupportSummarySection[];
   supportContext: {
@@ -244,16 +273,25 @@ export const customerSupportSummarySectionCodes: SupportSummarySectionCode[] = [
 ];
 
 export const accountAuthVisibilityFields = [
+  "identityProviders",
   "providerNames",
   "linkedProviders",
-  "accountState",
-  "linkStatus",
-  "lastLoginAt",
-  "lastLoginAge",
+  "primaryProvider",
+  "hasGoogleLink",
   "activeSessionCount",
+  "latestSessionCreatedAt",
   "latestSessionAt",
-  "sanitizedIdentityRef"
+  "latestSessionExpiresAt",
+  "latestAuthAt",
+  "lastLoginAt",
+  "lastLoginAgeSeconds",
+  "lastSeenAt",
+  "lastSeenSource",
+  "concurrentUsers",
+  "concurrentUsersPrecision"
 ] as const;
+
+export const accountAuthProviderDisplayOrder = ["GOOGLE", "GUEST"] as const;
 
 export const accountAuthProviders: AccountAuthProvider[] = ["guest", "google"];
 
@@ -601,9 +639,57 @@ export function accountAuthProviderLabel(provider: AccountAuthProvider | string)
   return (
     {
       guest: "게스트",
-      google: "Google"
+      google: "Google",
+      GUEST: "게스트",
+      GOOGLE: "Google"
     }[provider] ?? provider
   );
+}
+
+export function accountAuthSessionFieldLabel(field: AccountAuthSessionField | string): string {
+  return (
+    {
+      identityProviders: "식별 제공자",
+      providerNames: "Google/게스트 제공자",
+      linkedProviders: "Google 연동 제공자",
+      primaryProvider: "주 제공자",
+      hasGoogleLink: "Google 연동 여부",
+      activeSessionCount: "활성 세션 수",
+      latestSessionCreatedAt: "최신 세션 생성 시각",
+      latestSessionAt: "최신 세션 시각",
+      latestSessionExpiresAt: "최신 세션 만료 시각",
+      latestAuthAt: "최신 인증 시각",
+      lastLoginAt: "마지막 로그인 시각",
+      lastLoginAgeSeconds: "마지막 로그인 경과 초",
+      lastSeenAt: "마지막 활동 시각",
+      lastSeenSource: "마지막 활동 소스",
+      concurrentUsers: "현재 동접자",
+      concurrentUsersPrecision: "동접자 정밀도"
+    }[field] ?? field
+  );
+}
+
+function normalizeProvider(provider: string): "GOOGLE" | "GUEST" | string {
+  const normalized = provider.toUpperCase();
+  if (normalized === "GOOGLE") return "GOOGLE";
+  if (normalized === "GUEST") return "GUEST";
+  return provider;
+}
+
+function providerListValue(value: unknown): string {
+  if (!Array.isArray(value)) return "연동 대기";
+  const normalized = value.filter((provider): provider is string => typeof provider === "string").map(normalizeProvider);
+  const ordered = [
+    ...accountAuthProviderDisplayOrder.filter((provider) => normalized.includes(provider)),
+    ...normalized.filter((provider) => !accountAuthProviderDisplayOrder.includes(provider as "GOOGLE" | "GUEST"))
+  ];
+  return ordered.length > 0 ? ordered.map(accountAuthProviderLabel).join(" / ") : "연동 대기";
+}
+
+export function formatConcurrentUsersDisplay(value: unknown, precision: unknown): string {
+  if (precision === "UNAVAILABLE" && (value === null || value === undefined)) return "집계 불가 (UNAVAILABLE)";
+  if (typeof value !== "number") return "연동 대기";
+  return precision === "ESTIMATED" ? `약 ${value}` : `${value}`;
 }
 
 export function accountAuthStateLabel(state: AccountAuthState | string): string {
@@ -718,6 +804,47 @@ function countReferences(value: unknown): number {
   }).length;
 }
 
+function authSessionValue(field: AccountAuthSessionField, auth: Record<string, unknown> | null): string {
+  if (!auth) return "연동 대기";
+  const value = auth[field];
+  if (field === "identityProviders" || field === "providerNames" || field === "linkedProviders") {
+    return providerListValue(value);
+  }
+  if (field === "primaryProvider") {
+    return typeof value === "string" ? accountAuthProviderLabel(value) : "연동 대기";
+  }
+  if (field === "hasGoogleLink") {
+    if (value === true) return "연동됨";
+    if (value === false) return "미연동";
+    return "연동 대기";
+  }
+  if (field === "lastLoginAgeSeconds") {
+    return typeof value === "number" ? `${value}초` : "연동 대기";
+  }
+  if (field === "activeSessionCount") {
+    return typeof value === "number" ? `${value}` : "연동 대기";
+  }
+  if (field === "concurrentUsers") {
+    return formatConcurrentUsersDisplay(value, auth.concurrentUsersPrecision);
+  }
+  if (field === "concurrentUsersPrecision") {
+    return typeof value === "string" && value ? value : "연동 대기";
+  }
+  return typeof value === "string" && value ? value : "연동 대기";
+}
+
+function authSessionItems(auth: Record<string, unknown> | null): SupportAuthSessionItem[] {
+  return accountAuthVisibilityFields.map((field) => ({
+    field,
+    label: accountAuthSessionFieldLabel(field),
+    value: authSessionValue(field, auth),
+    note:
+      field === "concurrentUsers"
+        ? "UNAVAILABLE/null은 확정 동접자 수 아님"
+        : `${field} read-only auth/session evidence`
+  }));
+}
+
 function sectionFrom(code: SupportSummarySectionCode, value: unknown): SupportSummarySection {
   const referenceCount = code === "account" ? 1 : countReferences(value);
   return {
@@ -736,6 +863,10 @@ export function emptySupportAccountSummary(accountId = "연동 대기"): Support
       accountId,
       displayName: "연동 대기",
       accountStatus: "연동 대기"
+    },
+    authSession: {
+      providerOrder: accountAuthProviderDisplayOrder,
+      items: authSessionItems(null)
     },
     sections: customerSupportSummarySectionCodes.map((code) => ({
       code,
@@ -756,6 +887,7 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
   if (!record) return emptySupportAccountSummary(fallbackAccountId);
 
   const account = asRecord(record.account);
+  const auth = asRecord(record.auth);
   const supportContext = asRecord(record.supportContext);
 
   return {
@@ -765,6 +897,10 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
       accountId: stringValue(account?.accountId, fallbackAccountId),
       displayName: stringValue(account?.displayName),
       accountStatus: stringValue(account?.accountStatus)
+    },
+    authSession: {
+      providerOrder: accountAuthProviderDisplayOrder,
+      items: authSessionItems(auth)
     },
     sections: customerSupportSummarySectionCodes.map((code) => {
       if (code === "account") return sectionFrom(code, account);

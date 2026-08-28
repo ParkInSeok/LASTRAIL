@@ -3,6 +3,7 @@ import {
   accountAuthErrorCodeLabel,
   accountAuthLinkStatusLabel,
   accountAuthProviderLabel,
+  accountAuthSessionFieldLabel,
   accountAuthStateLabel,
   accountAuthVisibilityFields,
   customerSupportCombatEvidenceFields,
@@ -27,6 +28,7 @@ import {
   customerSupportRepairFuturePermissions,
   customerSupportRepairLaunchStatusLabel,
   emptySupportAccountSummary,
+  formatConcurrentUsersDisplay,
   mapSupportAccountSummaryResponse,
   customerSupportMutationControlsOutOfScope,
   customerSupportNoteFormatFields,
@@ -71,18 +73,29 @@ describe("supportContract", () => {
 
   it("prepares Google provider and account link read-only visibility candidates", () => {
     expect(accountAuthVisibilityFields).toEqual([
+      "identityProviders",
       "providerNames",
       "linkedProviders",
-      "accountState",
-      "linkStatus",
-      "lastLoginAt",
-      "lastLoginAge",
+      "primaryProvider",
+      "hasGoogleLink",
       "activeSessionCount",
+      "latestSessionCreatedAt",
       "latestSessionAt",
-      "sanitizedIdentityRef"
+      "latestSessionExpiresAt",
+      "latestAuthAt",
+      "lastLoginAt",
+      "lastLoginAgeSeconds",
+      "lastSeenAt",
+      "lastSeenSource",
+      "concurrentUsers",
+      "concurrentUsersPrecision"
     ]);
+    expect(accountAuthSessionFieldLabel("lastLoginAgeSeconds")).toBe("마지막 로그인 경과 초");
+    expect(accountAuthSessionFieldLabel("concurrentUsersPrecision")).toBe("동접자 정밀도");
     expect(accountAuthProviderLabel("guest")).toBe("게스트");
     expect(accountAuthProviderLabel("google")).toBe("Google");
+    expect(accountAuthProviderLabel("GUEST")).toBe("게스트");
+    expect(accountAuthProviderLabel("GOOGLE")).toBe("Google");
     expect(accountAuthStateLabel("guest_only")).toBe("게스트 전용");
     expect(accountAuthStateLabel("google_linked")).toBe("Google 연동");
     expect(accountAuthStateLabel("restore_candidate")).toBe("복구 후보");
@@ -98,6 +111,13 @@ describe("supportContract", () => {
     expect(accountAuthErrorCodeLabel("google_auth_config_missing")).toBe("Google 인증 설정 누락");
     expect(accountAuthProviderLabel("future_provider")).toBe("future_provider");
     expect(accountAuthStateLabel("future_state")).toBe("future_state");
+  });
+
+  it("formats unavailable concurrent user metrics without presenting them as exact counts", () => {
+    expect(formatConcurrentUsersDisplay(null, "UNAVAILABLE")).toBe("집계 불가 (UNAVAILABLE)");
+    expect(formatConcurrentUsersDisplay(undefined, null)).toBe("연동 대기");
+    expect(formatConcurrentUsersDisplay(42, "EXACT")).toBe("42");
+    expect(formatConcurrentUsersDisplay(42, "ESTIMATED")).toBe("약 42");
   });
 
   it("prepares boss raid and run-start package support evidence without raw combat internals", () => {
@@ -359,14 +379,23 @@ describe("supportContract", () => {
       },
       auth: {
         providerNames: ["guest", "google"],
+        identityProviders: ["google", "guest"],
         linkedProviders: ["google"],
+        primaryProvider: "google",
+        hasGoogleLink: true,
         accountState: "google_linked",
         linkStatus: "LINKED",
         lastLoginAt: "2026-08-29T00:00:00.000Z",
-        lastLoginAge: "연동 대기",
+        lastLoginAgeSeconds: 300,
         activeSessionCount: 1,
         latestSessionAt: "2026-08-29T00:00:00.000Z",
-        sanitizedIdentityRef: "identity-google-1"
+        latestSessionCreatedAt: "2026-08-28T23:55:00.000Z",
+        latestSessionExpiresAt: "2026-08-30T00:00:00.000Z",
+        latestAuthAt: "2026-08-29T00:00:00.000Z",
+        lastSeenAt: "2026-08-29T00:04:00.000Z",
+        lastSeenSource: "game_api",
+        concurrentUsers: null,
+        concurrentUsersPrecision: "UNAVAILABLE"
       },
       recentRuns: [{ runId: "run-1", operationId: "opn_01_last_departure", risk: "I", outcome: "VICTORY" }],
       runRewards: [{ rewardPreviewId: "reward-preview-1", rewardClaimId: "reward-claim-1", status: "CLAIMED" }],
@@ -387,6 +416,16 @@ describe("supportContract", () => {
     expect(result.permission).toBe("SUPPORT_READ");
     expect(result.permissionMode).toBe("ROLE_PERMISSION");
     expect(result.account.accountId).toBe("account-1");
+    expect(result.authSession.providerOrder).toEqual(["GOOGLE", "GUEST"]);
+    expect(result.authSession.items.find((item) => item.field === "primaryProvider")?.value).toBe("Google");
+    expect(result.authSession.items.find((item) => item.field === "hasGoogleLink")?.value).toBe("연동됨");
+    expect(result.authSession.items.find((item) => item.field === "lastLoginAgeSeconds")?.value).toBe("300초");
+    expect(result.authSession.items.find((item) => item.field === "concurrentUsers")?.value).toBe(
+      "집계 불가 (UNAVAILABLE)"
+    );
+    expect(result.authSession.items.find((item) => item.field === "concurrentUsersPrecision")?.value).toBe(
+      "UNAVAILABLE"
+    );
     expect(result.sections.map((section) => section.code)).toEqual([
       "account",
       "auth",
@@ -406,6 +445,7 @@ describe("supportContract", () => {
       mutationEndpointsEnabled: false
     });
     expect(JSON.stringify(result)).not.toContain("refreshToken");
+    expect(JSON.stringify(result)).not.toContain("refresh token hash");
     expect(JSON.stringify(result)).not.toContain("googleIdToken");
     expect(JSON.stringify(result)).not.toContain("sessionSecret");
     expect(JSON.stringify(result)).not.toContain("raw body");

@@ -62,18 +62,28 @@ describe("SupportAccountPage configuration", () => {
 
   it("prepares Google provider and account recovery evidence placeholders", () => {
     expect(supportAccountAuthEvidenceCards.map((card) => card.code)).toEqual([
+      "identityProviders",
       "providerNames",
       "linkedProviders",
-      "accountState",
-      "linkStatus",
-      "lastLoginAt",
-      "lastLoginAge",
+      "primaryProvider",
+      "hasGoogleLink",
       "activeSessionCount",
+      "latestSessionCreatedAt",
       "latestSessionAt",
-      "sanitizedIdentityRef"
+      "latestSessionExpiresAt",
+      "latestAuthAt",
+      "lastLoginAt",
+      "lastLoginAgeSeconds",
+      "lastSeenAt",
+      "lastSeenSource",
+      "concurrentUsers",
+      "concurrentUsersPrecision"
     ]);
-    expect(supportAccountAuthEvidenceCards.map((card) => card.label)).toContain("Google");
-    expect(supportAccountAuthEvidenceCards.map((card) => card.label)).toContain("계정 식별 충돌");
+    expect(supportAccountAuthEvidenceCards.map((card) => card.label).join(" ")).toContain("Google");
+    expect(supportAccountAuthEvidenceCards.map((card) => card.label)).toContain("주 제공자");
+    expect(supportAccountAuthEvidenceCards.find((card) => card.code === "concurrentUsers")?.note).toContain(
+      "UNAVAILABLE/null은 확정 동접자 수 아님"
+    );
     expect(supportAccountAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("Google ID token");
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("raw auth header");
