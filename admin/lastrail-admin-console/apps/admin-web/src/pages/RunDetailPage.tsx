@@ -138,25 +138,27 @@ export const runStartPackageEvidencePlaceholders: RunCombatEvidencePlaceholder[]
     field: "startAugmentPackageRef",
     label: "시작 증강 패키지 ref",
     value: "연동 대기",
-    note: "run start 시점에 확정된 증강 묶음 reference 후보"
+    note:
+      "server-authored run start package / ORDINARY_15_WAVE / RAID_BOSS 공통 후보 / reward/economy/story/offline/gacha Source of Truth 아님"
   },
   {
     field: "startTacticPackageRef",
     label: "시작 전술 패키지 ref",
     value: "연동 대기",
-    note: "run start 시점에 확정된 지휘전술 묶음 reference 후보"
+    note:
+      "server-authored run start package / ORDINARY_15_WAVE / RAID_BOSS 공통 후보 / reward/economy/story/offline/gacha Source of Truth 아님"
   },
   {
     field: "selectedAugmentIds",
     label: "선택 증강 ID",
     value: "연동 대기",
-    note: "selected augment stable ids 후보"
+    note: "run start 시점에 확정된 selected augment stable ids 후보"
   },
   {
     field: "selectedTacticIds",
     label: "선택 전술 ID",
     value: "연동 대기",
-    note: "selected tactic stable ids 후보"
+    note: "run start 시점에 확정된 selected tactic stable ids 후보"
   },
   {
     field: "source",

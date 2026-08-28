@@ -227,6 +227,7 @@ export function opsErrorCodeLabel(code: string): string {
       offline_reward_plan_mismatch: "오프라인 보상 계획 불일치",
       economy_mutation_conflict: "경제 변경 충돌",
       offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한",
+      package_ref_mismatch: "시작 패키지 ref 불일치",
       story_progress_policy_missing: "스토리 진행 정책 누락",
       story_progress_state_conflict: "스토리 진행 상태 충돌",
       narrative_content_missing: "내러티브 콘텐츠 누락",

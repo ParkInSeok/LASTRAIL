@@ -97,9 +97,11 @@ export const supportCombatEvidenceCards: SupportCard[] = customerSupportCombatEv
   value: "연동 대기",
   note:
     field === "encounterType"
-      ? `${encounterTypeLabel("ORDINARY_15_WAVE")} / ${encounterTypeLabel("RAID_BOSS")}`
+      ? `${encounterTypeLabel("ORDINARY_15_WAVE")} / ${encounterTypeLabel("RAID_BOSS")} / ORDINARY_15_WAVE / RAID_BOSS`
       : field === "source"
         ? "source=run_start read-only evidence 후보"
+        : field === "startAugmentPackageRef" || field === "startTacticPackageRef"
+          ? "server-authored run start package / reward/economy/story/offline/gacha Source of Truth 아님"
         : `${field} sanitized run/raid reference 후보`
 }));
 

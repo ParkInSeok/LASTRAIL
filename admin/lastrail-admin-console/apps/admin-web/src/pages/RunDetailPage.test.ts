@@ -211,6 +211,18 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(runStartPackageEvidencePlaceholders.find((placeholder) => placeholder.field === "source")?.value).toBe(
       "run_start"
     );
+    expect(runStartPackageEvidencePlaceholders.find((placeholder) => placeholder.field === "startAugmentPackageRef")?.note).toContain(
+      "server-authored run start package"
+    );
+    expect(runStartPackageEvidencePlaceholders.find((placeholder) => placeholder.field === "startTacticPackageRef")?.note).toContain(
+      "server-authored run start package"
+    );
+    expect(runStartPackageEvidencePlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
+      "ORDINARY_15_WAVE / RAID_BOSS"
+    );
+    expect(runStartPackageEvidencePlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
+      "reward/economy/story/offline/gacha Source of Truth 아님"
+    );
 
     const serialized = JSON.stringify({
       encounterTypePlaceholders,
@@ -220,6 +232,8 @@ describe("RunDetailPage risk reward skeleton", () => {
     for (const forbidden of forbiddenRunCombatEvidenceExamplesOutOfScope) {
       expect(serialized).not.toContain(forbidden);
     }
+    expect(serialized).not.toContain("mid-wave");
+    expect(serialized).not.toContain("중간 공세 선택");
     expect(serialized).not.toContain("reprocess");
     expect(serialized).not.toContain("result edit");
     expect(serialized).not.toContain("reward correction");

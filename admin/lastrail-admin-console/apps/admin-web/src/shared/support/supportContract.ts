@@ -166,6 +166,9 @@ export type CustomerSupportContractPreview = {
     encounterTypes: readonly SupportRunEncounterType[];
     evidenceFields: readonly SupportRunCombatEvidenceField[];
     startPackageSource: "run_start";
+    packageRefPolicy: "server-authored run start package";
+    sourceOfTruthExclusion: "reward/economy/story/offline/gacha Source of Truth 아님";
+    supportFacingErrorCodes: readonly string[];
     mutationControlsEnabled: false;
   };
   context: CustomerSupportContextItem[];
@@ -594,6 +597,9 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
     encounterTypes: customerSupportRunEncounterTypes,
     evidenceFields: customerSupportCombatEvidenceFields,
     startPackageSource: "run_start",
+    packageRefPolicy: "server-authored run start package",
+    sourceOfTruthExclusion: "reward/economy/story/offline/gacha Source of Truth 아님",
+    supportFacingErrorCodes: ["package_ref_mismatch", "contract_violation"],
     mutationControlsEnabled: false
   },
   context: customerSupportContextFields.map((field) => ({

@@ -115,13 +115,23 @@ describe("supportContract", () => {
     expect(customerSupportContractPreview.runCombat.readOnly).toBe(true);
     expect(customerSupportContractPreview.runCombat.encounterTypes).toEqual(["ORDINARY_15_WAVE", "RAID_BOSS"]);
     expect(customerSupportContractPreview.runCombat.startPackageSource).toBe("run_start");
+    expect(customerSupportContractPreview.runCombat.packageRefPolicy).toBe("server-authored run start package");
+    expect(customerSupportContractPreview.runCombat.sourceOfTruthExclusion).toBe(
+      "reward/economy/story/offline/gacha Source of Truth 아님"
+    );
+    expect(customerSupportContractPreview.runCombat.supportFacingErrorCodes).toEqual([
+      "package_ref_mismatch",
+      "contract_violation"
+    ]);
 
     const serialized = JSON.stringify(customerSupportContractPreview);
     expect(serialized).toContain("RAID_BOSS");
     expect(serialized).toContain("run_start");
+    expect(serialized).toContain("ORDINARY_15_WAVE");
     for (const forbidden of customerSupportCombatForbiddenExamplesOutOfScope) {
       expect(serialized).not.toContain(forbidden);
     }
+    expect(serialized).not.toContain("mid-wave");
   });
 
   it("keeps support workflow launch scope read-only and free of sensitive examples", () => {

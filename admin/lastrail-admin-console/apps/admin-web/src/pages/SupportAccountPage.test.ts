@@ -94,11 +94,21 @@ describe("SupportAccountPage configuration", () => {
     ]);
     expect(supportCombatEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
     expect(supportCombatEvidenceCards.find((card) => card.code === "source")?.note).toContain("run_start");
+    expect(supportCombatEvidenceCards.find((card) => card.code === "startAugmentPackageRef")?.note).toContain(
+      "server-authored run start package"
+    );
+    expect(supportCombatEvidenceCards.find((card) => card.code === "encounterType")?.note).toContain(
+      "ORDINARY_15_WAVE / RAID_BOSS"
+    );
+    expect(supportCombatEvidenceCards.map((card) => card.note).join(" ")).toContain(
+      "reward/economy/story/offline/gacha Source of Truth 아님"
+    );
 
     const serialized = JSON.stringify(supportCombatEvidenceCards);
     expect(serialized).not.toContain("raw combat timeline");
     expect(serialized).not.toContain("animation frame");
     expect(serialized).not.toContain("debug payload");
+    expect(serialized).not.toContain("mid-wave");
   });
 
   it("does not expose mutation controls in the support skeleton", () => {
