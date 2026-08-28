@@ -3,10 +3,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 const migrationDir = join(process.cwd(), "packages/db/migrations");
-const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-4])_.+\.sql$/u.test(file)).sort();
+const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-5])_.+\.sql$/u.test(file)).sort();
 
-if (migrations.length !== 14) {
-  throw new Error(`Expected 14 migrations, found ${migrations.length}`);
+if (migrations.length !== 15) {
+  throw new Error(`Expected 15 migrations, found ${migrations.length}`);
 }
 
 const SQL = await initSqlJs();

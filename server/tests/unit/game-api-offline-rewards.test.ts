@@ -24,6 +24,15 @@ function createEnv(options: {
   accountId?: string;
   sessionId?: string;
   accountCreatedAt?: number;
+  offlineRewardState?: {
+    last_offline_reward_claim_at: number;
+    last_story_progress_id: string;
+    last_balance_config_version: number | null;
+    last_narrative_version: string | null;
+    last_previewed_at: number | null;
+    revision: number;
+    updated_at: number;
+  } | null;
   storyProgress?: {
     highest_story_progress_id: string;
     narrative_version: string | null;
@@ -32,6 +41,7 @@ function createEnv(options: {
   const accountId = options.accountId ?? "account_1";
   const sessionId = options.sessionId ?? "session_1";
   const accountCreatedAt = options.accountCreatedAt ?? fixedNow - 4 * 60 * 60 * 1000;
+  const offlineRewardState = options.offlineRewardState ?? null;
   const storyProgress = options.storyProgress ?? null;
 
   return {
@@ -60,6 +70,10 @@ function createEnv(options: {
                 if (sql.includes("FROM account_story_progress")) {
                   expect(values).toEqual([accountId]);
                   return storyProgress;
+                }
+                if (sql.includes("FROM account_offline_reward_state")) {
+                  expect(values).toEqual([accountId]);
+                  return offlineRewardState;
                 }
                 return null;
               },
@@ -174,6 +188,60 @@ describe("game-api offline reward preview contract", () => {
         },
       });
       expect(JSON.stringify(body)).not.toContain("risk");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("uses offline reward state last claim time before account creation bootstrap baseline", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const response = await app.request(
+        "/v1/offline-rewards/preview",
+        {
+          method: "GET",
+          headers: { Authorization: await createAuthorizationHeader() },
+        },
+        createEnv({
+          accountCreatedAt: fixedNow - 20 * 60 * 60 * 1000,
+          offlineRewardState: {
+            last_offline_reward_claim_at: fixedNow - 2 * 60 * 60 * 1000,
+            last_story_progress_id: "opn_03_water_stop",
+            last_balance_config_version: null,
+            last_narrative_version: "act1.2026-08-27.001",
+            last_previewed_at: fixedNow - 60 * 60 * 1000,
+            revision: 1,
+            updated_at: fixedNow - 2 * 60 * 60 * 1000,
+          },
+          storyProgress: {
+            highest_story_progress_id: "opn_03_water_stop",
+            narrative_version: "act1.2026-08-27.001",
+          },
+        }),
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toMatchObject({
+        accepted: true,
+        previewStatus: "AVAILABLE",
+        storyProgressId: "opn_03_water_stop",
+        claimableSeconds: 7200,
+        claimableHours: 2,
+        offlineStorageCapHours: 7,
+        rewardLines: [
+          { kind: "CURRENCY", id: "cur_credits", quantity: 304, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_machine_parts", quantity: 152, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_tactical_data", quantity: 91, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_operator_exp", quantity: 60, source: "OFFLINE_REWARD" },
+        ],
+        calculation: {
+          storyProgressId: "opn_03_water_stop",
+          storyProgressMultiplierLabel: "1.52x",
+          cappedOfflineSeconds: 7200,
+          capSource: "ACTUAL_OFFLINE_DURATION",
+        },
+      });
     } finally {
       vi.useRealTimers();
     }

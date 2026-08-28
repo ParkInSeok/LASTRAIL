@@ -3,10 +3,12 @@
 This draft defines the launch-scope story progression policy for offline
 rewards, the preview route contract, and the claim transaction design.
 
-It implements the first Game API preview route skeleton:
-`GET /v1/offline-rewards/preview`.
+It implements:
 
-It does not implement migrations, claim API, economy mutation, Unity
+- `GET /v1/offline-rewards/preview`.
+- Migration `0015_account_offline_reward_state.sql`.
+
+It does not implement claim API, economy mutation, Unity
 calculation, Cloudflare DEV deploy, Cloudflare secrets, remote smoke, or PRD
 resources.
 
@@ -21,7 +23,8 @@ resources.
 
 ## Non-Goals
 
-- No migration in this design slice.
+- Migration `0015_account_offline_reward_state.sql` adds the durable preview
+  baseline table.
 - `GET /v1/offline-rewards/preview` is read-only.
 - `POST /v1/offline-rewards/claim` is designed but not implemented in this
   slice.
@@ -236,12 +239,13 @@ Notes:
 ## Server State Candidate
 
 The server needs durable account state before implementing offline claims.
+Migration `0015_account_offline_reward_state.sql` adds that state table.
 
 Existing candidate:
 
 - `account_runtime_state` can hold account-level runtime flags today.
 
-Required claim implementation state:
+Offline reward state:
 
 - `last_offline_reward_claim_at`: the only time boundary used to calculate
   `actualOfflineSeconds`.
@@ -256,21 +260,12 @@ Required claim implementation state:
 - `revision`: optimistic support counter for conflict/debug visibility.
 - `updated_at`: last state update time.
 
-Implementation options:
-
-1. Add columns to `account_runtime_state`.
-2. Add a separate `account_offline_reward_state` table.
-
-Recommendation:
-
-- Use a separate `account_offline_reward_state` table when implementation
-  begins.
 - Offline reward state has its own lifecycle, claim idempotency, and support
-  needs. Keeping it separate avoids overloading `account_runtime_state`.
+  needs, so it is kept separate from `account_runtime_state`.
 - Do not store reward amounts as mutable state in this table. Reward amounts
   belong in the claim transaction result and ledger rows.
 
-Possible table shape:
+Implemented table shape:
 
 ```sql
 CREATE TABLE account_offline_reward_state (
@@ -298,14 +293,17 @@ CREATE INDEX idx_account_offline_reward_state_story_progress
 Initial row policy:
 
 - `POST /v1/auth/guest` should create an initial row when the migration is
-  implemented.
+  wired into auth initialization.
 - `last_offline_reward_claim_at` should start at account creation time.
 - Existing accounts without a row should be lazily initialized inside the first
   preview/claim read path using `accounts.created_at`, but claim should create
   the row in the same transaction before committing rewards.
-- The current preview skeleton already uses `accounts.created_at` as a
-  bootstrap baseline. Claim implementation should replace this read source
-  with `account_offline_reward_state.last_offline_reward_claim_at`.
+- The current preview route reads `account_offline_reward_state` first. If no
+  row exists for an older account, it falls back to `accounts.created_at`
+  without writing. This keeps preview read-only and preserves backward
+  compatibility.
+- `last_previewed_at` is not updated by the current preview route, so preview
+  reads cannot consume claimable duration.
 
 Claim history/ledger can be handled through:
 
@@ -338,9 +336,11 @@ Rules:
   `contract_violation`.
 - The preview is read-only. It does not write ledger rows and does not consume
   offline claim state.
-- Until `account_offline_reward_state` exists, the skeleton uses
-  `accounts.created_at` as the read-only bootstrap offline baseline. Claim
-  implementation should replace that with `lastOfflineRewardClaimAt`.
+- `account_offline_reward_state.last_offline_reward_claim_at` is the preferred
+  baseline.
+- Existing accounts without an offline state row fall back to
+  `accounts.created_at`.
+- The endpoint does not update `last_previewed_at`; preview remains read-only.
 
 Response:
 
@@ -581,7 +581,7 @@ Pre-transaction reads:
    `offline_reward_claim`.
 5. Read or lazily prepare `account_offline_reward_state`.
 6. Read `account_story_progress.highest_story_progress_id`.
-7. Select active balance config/offline reward policy. Launch local code uses
+7. Select active balance config/offline reward policy. Current local code uses
    `launchOfflineRewardsConfig`; future D1 integration should read the active
    immutable balance version.
 8. Calculate preview using server state only.
@@ -748,11 +748,17 @@ Current Game API preview contract tests cover:
 - No story progress row returns `none` preview.
 - Stored `account_story_progress.highest_story_progress_id` drives cap and
   multiplier.
+- Stored `account_offline_reward_state.last_offline_reward_claim_at` is used as
+  the preferred duration baseline.
+- Older accounts without an offline reward state row fall back to
+  `accounts.created_at`.
 - Under 10 minutes returns `previewStatus = EMPTY` and no reward lines.
 - Query/body Source of Truth fields return `contract_violation`.
 - Response does not include blocked reward IDs, token/secret/raw RNG/account
   shortcut data, raw multiplier bps, or reward calculation internals.
-- Local D1 smoke verifies guest auth plus migrated 0001-0014 schema.
+- Local D1 smoke verifies guest auth plus migrated 0001-0015 schema.
+- Local D1 smoke verifies migration 0001-0015 and an actual
+  `account_offline_reward_state` row.
 
 Duplicate replay:
 
@@ -832,7 +838,6 @@ Audit boundary:
 ## Open Decisions
 
 - Exact base hourly reward quantities.
-- Exact migration number for `account_offline_reward_state`.
 - Whether to add a separate `offline_reward_claims` read model for Admin
   support, or rely on `reward_transactions` + ledger for launch.
 - Whether offline rewards should use current active balance version or an

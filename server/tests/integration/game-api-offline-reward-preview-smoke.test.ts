@@ -86,8 +86,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-4])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(14);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-5])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(15);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -145,6 +145,13 @@ describe("game-api offline reward preview local D1 smoke", () => {
           fixedNow,
         ],
       );
+      db.run(
+        `INSERT INTO account_offline_reward_state (
+           account_id, last_offline_reward_claim_at, last_story_progress_id,
+           last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+         ) VALUES (?, ?, 'opn_06_broken_line', NULL, 'act1.2026-08-27.001', NULL, 1, ?);`,
+        [guestBody.account.id, fixedNow - 3 * 60 * 60 * 1000, fixedNow - 3 * 60 * 60 * 1000],
+      );
 
       const response = await app.request(
         "/v1/offline-rewards/preview",
@@ -157,22 +164,22 @@ describe("game-api offline reward preview local D1 smoke", () => {
         accepted: true,
         previewStatus: "AVAILABLE",
         storyProgressId: "opn_06_broken_line",
-        claimableSeconds: 36000,
-        claimableHours: 10,
+        claimableSeconds: 10800,
+        claimableHours: 3,
         offlineStorageCapHours: 10,
         minimumClaimSeconds: 600,
         maxClaimableHours: 12,
         rewardLines: [
-          { kind: "CURRENCY", id: "cur_credits", quantity: 2400, source: "OFFLINE_REWARD" },
-          { kind: "CURRENCY", id: "cur_machine_parts", quantity: 1200, source: "OFFLINE_REWARD" },
-          { kind: "CURRENCY", id: "cur_tactical_data", quantity: 720, source: "OFFLINE_REWARD" },
-          { kind: "CURRENCY", id: "cur_operator_exp", quantity: 480, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_credits", quantity: 720, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_machine_parts", quantity: 360, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_tactical_data", quantity: 216, source: "OFFLINE_REWARD" },
+          { kind: "CURRENCY", id: "cur_operator_exp", quantity: 144, source: "OFFLINE_REWARD" },
         ],
         calculation: {
           storyProgressId: "opn_06_broken_line",
           storyProgressMultiplierLabel: "2.40x",
-          cappedOfflineSeconds: 36000,
-          capSource: "STORY_PROGRESS_STORAGE_CAP",
+          cappedOfflineSeconds: 10800,
+          capSource: "ACTUAL_OFFLINE_DURATION",
         },
         narrativeVersion: "act1.2026-08-27.001",
         serverCalculatedAt: "2026-08-28T00:00:00.000Z",

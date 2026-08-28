@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-4])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(14);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-5])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(15);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0014 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0015 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -318,6 +318,58 @@ describe("D1 migrations", () => {
          'account-story-1', 'act_01_wasteland_railway', 'opn_02_first_signal', 'opn_02_first_signal',
          '["opn_01_last_departure","opn_02_first_signal"]', '["first_signal_restored"]',
          'act1-narrative-v1', NULL, 2
+       );`,
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates account offline reward state for claim baselines", async () => {
+    const db = await createMigratedDb();
+
+    const columns = db.exec("PRAGMA table_info(account_offline_reward_state);");
+    const indexes = db.exec("PRAGMA index_list(account_offline_reward_state);");
+
+    expect(columns[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "last_offline_reward_claim_at",
+      "last_story_progress_id",
+      "last_balance_config_version",
+      "last_narrative_version",
+      "last_previewed_at",
+      "revision",
+      "updated_at",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining([
+        "idx_account_offline_reward_state_last_claimed",
+        "idx_account_offline_reward_state_story_progress",
+      ]),
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-offline-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO balance_config_drafts (
+         id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+       ) VALUES (
+         'draft-offline-1', NULL, 1, 1, '{}', 'checksum-offline-1', 1, 'PUBLISHED', 'test', 1, 1
+       );`,
+    );
+    db.run(
+      `INSERT INTO balance_config_versions (
+         version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+       ) VALUES (
+         301, 1, 1, 'checksum-offline-1', '{}', 1, 'test', 'draft-offline-1'
+       );`,
+    );
+    db.run(
+      `INSERT INTO account_offline_reward_state (
+         account_id, last_offline_reward_claim_at, last_story_progress_id,
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+       ) VALUES (
+         'account-offline-1', 1000, 'opn_03_water_stop',
+         301, 'act1.2026-08-27.001', NULL, 0, 1000
        );`,
     );
 

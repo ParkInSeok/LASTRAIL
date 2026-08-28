@@ -98,6 +98,16 @@ type AccountStoryProgressRow = {
   updated_at?: number;
 };
 
+type AccountOfflineRewardStateRow = {
+  last_offline_reward_claim_at: number;
+  last_story_progress_id: string;
+  last_balance_config_version: number | null;
+  last_narrative_version: string | null;
+  last_previewed_at: number | null;
+  revision: number;
+  updated_at: number;
+};
+
 type AccountUnlockRow = {
   unlock_id: string;
 };
@@ -1312,10 +1322,19 @@ app.get("/v1/offline-rewards/preview", async (c) => {
   )
     .bind(authContext.accountId)
     .first<Pick<AccountStoryProgressRow, "highest_story_progress_id" | "narrative_version">>();
+  const offlineState = await c.env.DB.prepare(
+    `SELECT last_offline_reward_claim_at, last_story_progress_id, last_balance_config_version,
+            last_narrative_version, last_previewed_at, revision, updated_at
+     FROM account_offline_reward_state
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountOfflineRewardStateRow>();
 
   const now = Date.now();
   const storyProgressId = storyProgress?.highest_story_progress_id ?? "none";
-  const actualOfflineSeconds = Math.floor((now - authContext.accountCreatedAt) / 1000);
+  const baselineMs = offlineState?.last_offline_reward_claim_at ?? authContext.accountCreatedAt;
+  const actualOfflineSeconds = Math.floor((now - baselineMs) / 1000);
 
   try {
     const preview = calculateOfflineRewardPreview({

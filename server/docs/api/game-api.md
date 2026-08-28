@@ -202,10 +202,16 @@ Authorization: Bearer <access-token>
 The preview endpoint resolves account id from the authenticated player session
 only. It rejects query/body Source of Truth fields with `contract_violation`,
 returns server-calculated display `rewardLines`, and does not write ledger rows,
-grant rewards, or consume offline claim state. `POST /v1/offline-rewards/claim`
-remains a documented future API candidate; its `account_offline_reward_state`
-migration, idempotency policy, and economy ledger transaction are designed in
-the offline rewards document but not implemented.
+grant rewards, or consume offline claim state.
+
+Migration `0015_account_offline_reward_state.sql` adds the durable offline
+reward baseline table. Preview reads
+`account_offline_reward_state.last_offline_reward_claim_at` first and falls
+back to `accounts.created_at` for older accounts without a row.
+
+`POST /v1/offline-rewards/claim` remains a documented future API candidate; its
+idempotency policy and economy ledger transaction are designed in the offline
+rewards document but not implemented.
 
 Baseline policy:
 
