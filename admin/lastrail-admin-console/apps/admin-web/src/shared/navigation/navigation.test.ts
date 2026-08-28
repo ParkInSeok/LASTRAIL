@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { visibleNavigation } from "./navigation";
+import { navigationItemUsesExactActiveMatch, visibleNavigation } from "./navigation";
 
 describe("admin navigation", () => {
   it("shows read-only player and run routes when the admin has read permissions", () => {
@@ -34,5 +34,13 @@ describe("admin navigation", () => {
       path: "/offline-rewards",
       permission: "OFFLINE_REWARD_READ"
     });
+  });
+
+  it("uses exact active matching for parent routes that also have child navigation entries", () => {
+    const nav = visibleNavigation(["INTEGRITY_READ"]);
+    const items = nav.flatMap((group) => group.items);
+
+    expect(navigationItemUsesExactActiveMatch("/integrity", items)).toBe(true);
+    expect(navigationItemUsesExactActiveMatch("/integrity/suspicious-players", items)).toBe(false);
   });
 });

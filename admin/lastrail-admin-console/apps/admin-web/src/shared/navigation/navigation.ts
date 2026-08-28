@@ -56,3 +56,10 @@ export function visibleNavigation(
     }))
     .filter((group) => group.items.length > 0);
 }
+
+export function navigationItemUsesExactActiveMatch(
+  path: string,
+  items: readonly NavigationItem[]
+): boolean {
+  return items.some((item) => item.path !== path && item.path.startsWith(`${path}/`));
+}

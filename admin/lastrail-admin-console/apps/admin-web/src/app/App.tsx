@@ -1,6 +1,6 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import { AdminProvider, useAdmin } from "../shared/auth/AdminContext";
-import { visibleNavigation } from "../shared/navigation/navigation";
+import { navigationItemUsesExactActiveMatch, visibleNavigation } from "../shared/navigation/navigation";
 import { AuditPage } from "../pages/AuditPage";
 import { DashboardPage } from "../pages/DashboardPage";
 import { ErrorLogsPage } from "../pages/ErrorLogsPage";
@@ -19,6 +19,7 @@ function Shell() {
   const { bootstrap, isLoading, error } = useAdmin();
   const permissions = bootstrap?.admin.permissions ?? [];
   const groups = visibleNavigation(permissions);
+  const navigationItems = groups.flatMap((group) => group.items);
 
   if (isLoading) return <main className="center">운영 콘솔 초기 정보를 불러오는 중</main>;
   if (error) return <main className="center error">운영 콘솔 초기화 실패</main>;
@@ -36,7 +37,11 @@ function Shell() {
             <section key={group.label} className="nav-group">
               <h2>{group.label}</h2>
               {group.items.map((item) => (
-                <NavLink key={item.path} to={item.path}>
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={navigationItemUsesExactActiveMatch(item.path, navigationItems)}
+                >
                   {item.label}
                 </NavLink>
               ))}
