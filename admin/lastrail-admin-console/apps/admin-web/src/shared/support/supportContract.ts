@@ -1,11 +1,11 @@
 export type CustomerSupportCaseType =
-  | "Account/Auth"
-  | "Run Completion"
-  | "Run Reward"
-  | "Offline Reward"
-  | "Story Progress/Unlock"
-  | "Gacha/Recruitment"
-  | "Integrity-restricted Reward";
+  | "account_auth"
+  | "run_completion"
+  | "run_reward"
+  | "offline_reward"
+  | "story_progress"
+  | "gacha_recruitment"
+  | "integrity_restriction";
 
 export type CustomerSupportContextField =
   | "accountStatus"
@@ -31,6 +31,9 @@ export type CustomerSupportContractPreview = {
   permission: "SUPPORT_READ";
   permissionMode: "ROLE_PERMISSION";
   endpointCandidate: "/v1/admin/support/accounts/:accountId";
+  noteFormatFields: readonly string[];
+  responseTemplateStatuses: readonly string[];
+  safeSnippetPlaceholders: readonly string[];
   context: CustomerSupportContextItem[];
   supportContext: {
     readOnly: true;
@@ -39,13 +42,13 @@ export type CustomerSupportContractPreview = {
 };
 
 export const customerSupportCaseTypes: CustomerSupportCaseType[] = [
-  "Account/Auth",
-  "Run Completion",
-  "Run Reward",
-  "Offline Reward",
-  "Story Progress/Unlock",
-  "Gacha/Recruitment",
-  "Integrity-restricted Reward"
+  "account_auth",
+  "run_completion",
+  "run_reward",
+  "offline_reward",
+  "story_progress",
+  "gacha_recruitment",
+  "integrity_restriction"
 ];
 
 export const customerSupportContextFields: CustomerSupportContextField[] = [
@@ -82,6 +85,32 @@ export const customerSupportSensitiveExamplesOutOfScope = [
   "full weight list"
 ] as const;
 
+export const customerSupportNoteFormatFields = [
+  "caseType",
+  "accountId",
+  "primaryReferenceId",
+  "observedStatus",
+  "serverEvidence",
+  "playerFacingSummary",
+  "escalationNeeded"
+] as const;
+
+export const customerSupportTemplateStatuses = [
+  "internalChecks",
+  "playerFacingTemplate",
+  "escalateWhen"
+] as const;
+
+export const customerSupportSafeSnippetPlaceholders = [
+  "server_record_checked",
+  "duplicate_replay_existing_result",
+  "offline_claimable_cap_applied",
+  "first_clear_finish_time_basis",
+  "progress_and_text_are_separate",
+  "rng_probability_not_disclosed",
+  "escalated_for_ops_review"
+] as const;
+
 const contextLabels: Record<CustomerSupportContextField, string> = {
   accountStatus: "계정/인증 상태",
   recentRuns: "최근 출격",
@@ -97,13 +126,13 @@ const contextLabels: Record<CustomerSupportContextField, string> = {
 export function customerSupportCaseTypeLabel(caseType: CustomerSupportCaseType | string): string {
   return (
     {
-      "Account/Auth": "계정/인증",
-      "Run Completion": "출격 완료",
-      "Run Reward": "출격 보상",
-      "Offline Reward": "오프라인 보상",
-      "Story Progress/Unlock": "스토리 진행/해금",
-      "Gacha/Recruitment": "요원 모집",
-      "Integrity-restricted Reward": "무결성 제한 보상"
+      account_auth: "계정·인증",
+      run_completion: "출격 완료",
+      run_reward: "출격 보상",
+      offline_reward: "오프라인 보상",
+      story_progress: "스토리 진행",
+      gacha_recruitment: "모집·합류",
+      integrity_restriction: "무결성 제한"
     }[caseType] ?? caseType
   );
 }
@@ -118,6 +147,9 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
   permission: "SUPPORT_READ",
   permissionMode: "ROLE_PERMISSION",
   endpointCandidate: "/v1/admin/support/accounts/:accountId",
+  noteFormatFields: customerSupportNoteFormatFields,
+  responseTemplateStatuses: customerSupportTemplateStatuses,
+  safeSnippetPlaceholders: customerSupportSafeSnippetPlaceholders,
   context: customerSupportContextFields.map((field) => ({
     field,
     label: customerSupportContextFieldLabel(field),

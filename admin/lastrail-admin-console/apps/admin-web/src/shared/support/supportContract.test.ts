@@ -1,23 +1,30 @@
 import { describe, expect, it } from "vitest";
 import {
   customerSupportCaseTypes,
+  customerSupportCaseTypeLabel,
   customerSupportContractPreview,
   customerSupportContextFields,
   customerSupportMutationControlsOutOfScope,
-  customerSupportSensitiveExamplesOutOfScope
+  customerSupportNoteFormatFields,
+  customerSupportSafeSnippetPlaceholders,
+  customerSupportSensitiveExamplesOutOfScope,
+  customerSupportTemplateStatuses
 } from "./supportContract";
 
 describe("supportContract", () => {
   it("prepares launch customer support case types as stable read-only candidates", () => {
     expect(customerSupportCaseTypes).toEqual([
-      "Account/Auth",
-      "Run Completion",
-      "Run Reward",
-      "Offline Reward",
-      "Story Progress/Unlock",
-      "Gacha/Recruitment",
-      "Integrity-restricted Reward"
+      "account_auth",
+      "run_completion",
+      "run_reward",
+      "offline_reward",
+      "story_progress",
+      "gacha_recruitment",
+      "integrity_restriction"
     ]);
+    expect(customerSupportCaseTypeLabel("account_auth")).toBe("계정·인증");
+    expect(customerSupportCaseTypeLabel("gacha_recruitment")).toBe("모집·합류");
+    expect(customerSupportCaseTypeLabel("future_case")).toBe("future_case");
   });
 
   it("prepares account support context fields without server integration", () => {
@@ -66,5 +73,36 @@ describe("supportContract", () => {
     for (const forbidden of customerSupportSensitiveExamplesOutOfScope) {
       expect(serialized).not.toContain(forbidden);
     }
+  });
+
+  it("prepares response template placeholders without copy or send actions", () => {
+    expect(customerSupportNoteFormatFields).toEqual([
+      "caseType",
+      "accountId",
+      "primaryReferenceId",
+      "observedStatus",
+      "serverEvidence",
+      "playerFacingSummary",
+      "escalationNeeded"
+    ]);
+    expect(customerSupportTemplateStatuses).toEqual([
+      "internalChecks",
+      "playerFacingTemplate",
+      "escalateWhen"
+    ]);
+    expect(customerSupportSafeSnippetPlaceholders).toEqual([
+      "server_record_checked",
+      "duplicate_replay_existing_result",
+      "offline_claimable_cap_applied",
+      "first_clear_finish_time_basis",
+      "progress_and_text_are_separate",
+      "rng_probability_not_disclosed",
+      "escalated_for_ops_review"
+    ]);
+
+    const serialized = JSON.stringify(customerSupportContractPreview);
+    expect(serialized).not.toContain("copy action");
+    expect(serialized).not.toContain("ticket creation");
+    expect(serialized).not.toContain("send template");
   });
 });

@@ -2,19 +2,21 @@ import { describe, expect, it } from "vitest";
 import {
   supportAccountContextCards,
   supportCaseTypeCards,
-  supportOutOfScopeControls
+  supportOutOfScopeControls,
+  supportResponseTemplateCards,
+  supportSafeSnippetCards
 } from "./SupportAccountPage";
 
 describe("SupportAccountPage configuration", () => {
   it("prepares launch customer support case cards", () => {
     expect(supportCaseTypeCards.map((card) => card.code)).toEqual([
-      "Account/Auth",
-      "Run Completion",
-      "Run Reward",
-      "Offline Reward",
-      "Story Progress/Unlock",
-      "Gacha/Recruitment",
-      "Integrity-restricted Reward"
+      "account_auth",
+      "run_completion",
+      "run_reward",
+      "offline_reward",
+      "story_progress",
+      "gacha_recruitment",
+      "integrity_restriction"
     ]);
     expect(supportCaseTypeCards.every((card) => card.value === "연동 대기")).toBe(true);
   });
@@ -46,5 +48,24 @@ describe("SupportAccountPage configuration", () => {
       "narrative editing",
       "economy correction"
     ]);
+  });
+
+  it("prepares response template availability without exposing long template text", () => {
+    expect(supportResponseTemplateCards.map((card) => card.code)).toEqual([
+      "internalChecks",
+      "playerFacingTemplate",
+      "escalateWhen"
+    ]);
+    expect(supportResponseTemplateCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportSafeSnippetCards.map((card) => card.code)).toEqual([
+      "server_record_checked",
+      "duplicate_replay_existing_result",
+      "offline_claimable_cap_applied",
+      "first_clear_finish_time_basis",
+      "progress_and_text_are_separate",
+      "rng_probability_not_disclosed",
+      "escalated_for_ops_review"
+    ]);
+    expect(supportSafeSnippetCards.every((card) => card.value === "연동 대기")).toBe(true);
   });
 });
