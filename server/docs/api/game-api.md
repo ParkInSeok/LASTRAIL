@@ -203,7 +203,9 @@ The preview endpoint resolves account id from the authenticated player session
 only. It rejects query/body Source of Truth fields with `contract_violation`,
 returns server-calculated display `rewardLines`, and does not write ledger rows,
 grant rewards, or consume offline claim state. `POST /v1/offline-rewards/claim`
-remains a documented future API candidate.
+remains a documented future API candidate; its `account_offline_reward_state`
+migration, idempotency policy, and economy ledger transaction are designed in
+the offline rewards document but not implemented.
 
 Baseline policy:
 

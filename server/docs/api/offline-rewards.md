@@ -1,7 +1,7 @@
 # Offline Rewards Design Draft
 
 This draft defines the launch-scope story progression policy for offline
-rewards and the first local contract slice for server-owned calculation.
+rewards, the preview route contract, and the claim transaction design.
 
 It implements the first Game API preview route skeleton:
 `GET /v1/offline-rewards/preview`.
@@ -21,9 +21,12 @@ resources.
 
 ## Non-Goals
 
-- No migration in this slice.
+- No migration in this design slice.
 - `GET /v1/offline-rewards/preview` is read-only.
-- No claim API in this slice.
+- `POST /v1/offline-rewards/claim` is designed but not implemented in this
+  slice.
+- No economy mutation in this slice.
+- No idempotency write in this slice.
 - No remote DEV secret, deploy, or smoke.
 - No PRD/STAGING resource creation or deployment.
 - No Unity-side offline reward amount or multiplier calculation.
@@ -238,12 +241,20 @@ Existing candidate:
 
 - `account_runtime_state` can hold account-level runtime flags today.
 
-Likely future additions:
+Required claim implementation state:
 
-- `last_offline_reward_claim_at`
-- `offline_story_progress_key`
-- `offline_reward_revision`
-- `offline_reward_last_balance_version`
+- `last_offline_reward_claim_at`: the only time boundary used to calculate
+  `actualOfflineSeconds`.
+- `last_story_progress_id`: support/debug snapshot of the story progress key
+  used for the last successful claim.
+- `last_balance_config_version`: support/debug snapshot of the balance version
+  used for the last successful claim.
+- `last_narrative_version`: optional read-only diagnostic metadata. It must not
+  affect reward eligibility, unlock truth, or calculation.
+- `last_previewed_at`: optional. Useful for Admin/support, but must not change
+  claimable duration or consume rewards.
+- `revision`: optimistic support counter for conflict/debug visibility.
+- `updated_at`: last state update time.
 
 Implementation options:
 
@@ -256,18 +267,45 @@ Recommendation:
   begins.
 - Offline reward state has its own lifecycle, claim idempotency, and support
   needs. Keeping it separate avoids overloading `account_runtime_state`.
+- Do not store reward amounts as mutable state in this table. Reward amounts
+  belong in the claim transaction result and ledger rows.
 
 Possible table shape:
 
 ```sql
 CREATE TABLE account_offline_reward_state (
   account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
-  story_progress_key TEXT NOT NULL,
-  last_claimed_at INTEGER NOT NULL,
-  revision INTEGER NOT NULL CHECK (revision > 0),
+  last_offline_reward_claim_at INTEGER NOT NULL,
+  last_story_progress_id TEXT NOT NULL,
+  last_balance_config_version INTEGER,
+  last_narrative_version TEXT,
+  last_previewed_at INTEGER,
+  revision INTEGER NOT NULL CHECK (revision >= 0),
   updated_at INTEGER NOT NULL
 );
 ```
+
+Recommended indexes:
+
+```sql
+CREATE INDEX idx_account_offline_reward_state_last_claimed
+  ON account_offline_reward_state(last_offline_reward_claim_at);
+
+CREATE INDEX idx_account_offline_reward_state_story_progress
+  ON account_offline_reward_state(last_story_progress_id);
+```
+
+Initial row policy:
+
+- `POST /v1/auth/guest` should create an initial row when the migration is
+  implemented.
+- `last_offline_reward_claim_at` should start at account creation time.
+- Existing accounts without a row should be lazily initialized inside the first
+  preview/claim read path using `accounts.created_at`, but claim should create
+  the row in the same transaction before committing rewards.
+- The current preview skeleton already uses `accounts.created_at` as a
+  bootstrap baseline. Claim implementation should replace this read source
+  with `account_offline_reward_state.last_offline_reward_claim_at`.
 
 Claim history/ledger can be handled through:
 
@@ -394,14 +432,29 @@ Idempotency-Key: <client-generated-key>
 
 Rules:
 
+- `Idempotency-Key` is required.
 - Client does not send reward amounts.
 - Client does not send story progress multiplier.
 - Client does not send risk.
 - Client does not send story progress as Source of Truth.
-- Server resolves account and story progress.
-- Server calculates claimable seconds and reward lines.
+- Request body should be empty for launch, or omitted entirely.
+- Any body field that looks like account id, story progress, risk, offline
+  duration, reward amount, reward lines, currency grants, item grants, economy
+  grants, ledger ids, or multiplier metadata is `contract_violation`.
+- Server resolves account and story progress from durable state.
+- Server calculates claimable seconds and reward lines from
+  `account_offline_reward_state.last_offline_reward_claim_at`.
 - Server writes economy ledger only inside claim transaction.
 - Duplicate replay must not grant again.
+- Error responses are not stored as permanent idempotency results.
+
+Recommended EMPTY claim policy:
+
+- Reject EMPTY claims with `409 offline_reward_not_claimable`.
+- Rationale: accepting no-op claims would move `last_offline_reward_claim_at`
+  forward and punish accidental taps under the 10-minute minimum.
+- The client should keep showing the preview countdown or no-reward state and
+  retry later with a new claim attempt.
 
 Possible claim response:
 
@@ -410,13 +463,217 @@ Possible claim response:
   "accepted": true,
   "resultStatus": "CLAIMED",
   "offlineRewardClaimId": "offline_claim_...",
-  "storyProgressKey": "opn_03_water_stop",
-  "rewardLines": [],
+  "storyProgressId": "opn_03_water_stop",
+  "claimableSeconds": 25200,
+  "offlineStorageCapHours": 7,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
+  "rewardLines": [
+    {
+      "kind": "CURRENCY",
+      "id": "cur_credits",
+      "quantity": 1064,
+      "source": "OFFLINE_REWARD",
+      "balanceAfter": 9320
+    }
+  ],
   "serverClaimedAt": "2026-08-27T00:00:00.000Z",
+  "narrativeVersion": "act1.2026-08-27.001",
   "errorCode": null,
   "message": null
 }
 ```
+
+Duplicate replay:
+
+```json
+{
+  "accepted": false,
+  "resultStatus": "DUPLICATE_REPLAY",
+  "offlineRewardClaimId": "offline_claim_...",
+  "storyProgressId": "opn_03_water_stop",
+  "claimableSeconds": null,
+  "offlineStorageCapHours": null,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
+  "rewardLines": [],
+  "serverClaimedAt": "2026-08-27T00:00:00.000Z",
+  "narrativeVersion": "act1.2026-08-27.001",
+  "errorCode": "duplicate_replay",
+  "message": "Offline reward claim was already committed."
+}
+```
+
+Rejected claim:
+
+```json
+{
+  "accepted": false,
+  "resultStatus": "REJECTED",
+  "offlineRewardClaimId": null,
+  "storyProgressId": null,
+  "claimableSeconds": 0,
+  "offlineStorageCapHours": null,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
+  "rewardLines": [],
+  "serverClaimedAt": null,
+  "narrativeVersion": "act1.2026-08-27.001",
+  "errorCode": "offline_reward_not_claimable",
+  "message": "Offline reward is not claimable yet."
+}
+```
+
+## Claim Idempotency Policy
+
+Claim idempotency should follow the established account-scoped write pattern:
+
+```text
+accountId + operation = 'offline_reward_claim' + Idempotency-Key
+```
+
+Successful committed claims write `idempotency_records` with:
+
+- `account_id`: authenticated account id;
+- `operation`: `offline_reward_claim`;
+- `idempotency_key`: client-generated `Idempotency-Key`;
+- `result_ref`: committed `offlineRewardClaimId`;
+- `created_at`: server commit timestamp.
+
+Duplicate replay:
+
+- Lookup occurs before calculating a fresh claim.
+- If the same authenticated account and key already has a successful
+  `offline_reward_claim`, return `DUPLICATE_REPLAY`.
+- Do not recalculate reward amounts.
+- Do not update `account_offline_reward_state`.
+- Do not write `account_mutations`, `economy_transactions`, or
+  `currency_ledger`.
+- Return the recognized `offlineRewardClaimId`.
+- `rewardLines` may be empty on replay; the client can refresh economy state
+  through bootstrap/economy sync later.
+
+Cross-account behavior:
+
+- Because `idempotency_records` is scoped by `account_id`, the same key used by
+  a different authenticated account is not a replay.
+- Request body should not include account id. If it does, return
+  `contract_violation`.
+
+Same key, different body:
+
+- Launch recommendation: request body is empty, so body mismatch cannot become
+  a Source of Truth issue.
+- If a future optional field is added, store a scrubbed request hash in a
+  future claim read model or `result_ref` side table before allowing bodyful
+  idempotency. Until then, any body content is `contract_violation`.
+
+## Claim Transaction Boundary
+
+The claim transaction must be a single D1 batch/transaction-equivalent unit.
+
+Pre-transaction reads:
+
+1. Resolve authenticated `accountId` through Player Bearer auth.
+2. Validate `Idempotency-Key`.
+3. Reject request bodies/query Source of Truth fields.
+4. Lookup successful `idempotency_records` replay for
+   `offline_reward_claim`.
+5. Read or lazily prepare `account_offline_reward_state`.
+6. Read `account_story_progress.highest_story_progress_id`.
+7. Select active balance config/offline reward policy. Launch local code uses
+   `launchOfflineRewardsConfig`; future D1 integration should read the active
+   immutable balance version.
+8. Calculate preview using server state only.
+
+Reject before transaction when:
+
+- `actualOfflineSeconds` is below the 10-minute minimum or rewardLines are
+  empty: `offline_reward_not_claimable`.
+- stored story progress is unknown: `offline_story_progress_missing`.
+- offline reward policy cannot be parsed: `offline_reward_policy_missing`.
+- persisted state is impossible, such as `last_offline_reward_claim_at` in the
+  future beyond allowed clock skew: `offline_reward_state_conflict` or
+  `offline_reward_clock_tamper`.
+
+Commit transaction order:
+
+1. Insert `account_mutations` with mutation type `OFFLINE_REWARD_CLAIM`.
+2. Insert `reward_transactions` with `run_id = NULL`,
+   `balance_config_version`, and sanitized `reward_json`.
+3. Insert `economy_transactions` with reason `OFFLINE_REWARD_CLAIM` and
+   `source_type = 'OFFLINE_REWARD_CLAIM'`.
+4. Upsert `account_currencies` for each currency reward line.
+5. Insert `currency_ledger` rows with source reward line quantities and
+   `balance_after`.
+6. Upsert/update `account_offline_reward_state`:
+   - `last_offline_reward_claim_at = serverClaimedAt`;
+   - `last_story_progress_id = storyProgressId`;
+   - `last_balance_config_version = balanceVersion`;
+   - `last_narrative_version = narrativeVersion`;
+   - `revision = revision + 1`;
+   - `updated_at = serverClaimedAt`.
+7. Insert `idempotency_records` with operation `offline_reward_claim` and
+   `result_ref = offlineRewardClaimId`.
+
+Partial-write prevention:
+
+- If any insert/update fails, no ledger, state, or idempotency side effect may
+  remain.
+- `currency_ledger.balance_after` must match the post-upsert
+  `account_currencies.balance`.
+- `reward_transactions.reward_json` should store the same display reward line
+  quantities used for ledger deltas, plus sanitized calculation metadata.
+
+## Error Codes
+
+Preview uses:
+
+```text
+auth_required
+access_token_invalid
+auth_session_invalid
+account_not_active
+contract_violation
+offline_story_progress_missing
+offline_reward_policy_missing
+offline_reward_policy_invalid
+```
+
+Claim should add:
+
+```text
+duplicate_replay
+offline_reward_not_claimable
+offline_reward_state_missing
+offline_reward_state_conflict
+offline_reward_clock_tamper
+offline_reward_claim_conflict
+offline_reward_plan_mismatch
+economy_mutation_conflict
+```
+
+Recoverable/display candidates:
+
+- `offline_reward_not_claimable`
+- `offline_reward_claim_conflict`
+- `economy_mutation_conflict`
+
+Auth/session candidates:
+
+- `auth_required`
+- `access_token_invalid`
+- `auth_session_invalid`
+
+Fatal/support candidates:
+
+- `contract_violation`
+- `offline_story_progress_missing`
+- `offline_reward_policy_missing`
+- `offline_reward_policy_invalid`
+- `offline_reward_state_conflict`
+- `offline_reward_clock_tamper`
+- `offline_reward_plan_mismatch`
 
 ## Story Progress Source of Truth
 
@@ -430,7 +687,7 @@ Candidate sources:
 - explicit account unlock/progression table if introduced later.
 
 The client may display its local story state, but cannot choose the
-`storyProgressKey` for reward calculation.
+`storyProgressId` for reward calculation.
 
 If the server cannot determine story progress:
 
@@ -503,18 +760,39 @@ Duplicate replay:
 - No second `currency_ledger` write.
 - No second `account_mutations` write.
 
+Future claim contract tests should cover:
+
+- Missing `Idempotency-Key` returns `contract_violation`.
+- Request body with account/story/risk/reward fields returns
+  `contract_violation`.
+- Under 10 minutes returns `offline_reward_not_claimable` and does not advance
+  `last_offline_reward_claim_at`.
+- Successful claim inserts one account mutation, reward transaction, economy
+  transaction, currency ledger row per reward line, state update, and
+  idempotency record.
+- Duplicate replay returns the original `offlineRewardClaimId` without ledger
+  or state writes.
+- Unknown persisted story progress returns `offline_story_progress_missing`.
+- Future `last_offline_reward_claim_at` returns
+  `offline_reward_state_conflict` or `offline_reward_clock_tamper`.
+
 ## Unity Impact
 
 No current Unity behavior change is required by this design draft.
 
-Future Unity DTO/UX candidates:
+Current Unity preview DTO/display/debug can use:
 
 - story progress label;
 - storage cap label;
 - claimable offline time;
 - server-calculated reward lines;
 - minimum duration no-reward message;
+
+Future Unity claim DTO/UX candidates:
+
+- claimed state;
 - duplicate replay recognized claim state.
+- not-claimable recoverable state.
 
 Unity must keep:
 
@@ -541,6 +819,7 @@ Ops error candidates:
 offline_reward_policy_missing
 offline_story_progress_missing
 offline_reward_clock_tamper
+offline_reward_state_conflict
 offline_reward_claim_conflict
 offline_reward_plan_mismatch
 ```
@@ -553,9 +832,9 @@ Audit boundary:
 ## Open Decisions
 
 - Exact base hourly reward quantities.
-- Whether to use a separate `account_offline_reward_state` table or extend
-  `account_runtime_state`.
-- Whether preview endpoint is needed before claim endpoint.
+- Exact migration number for `account_offline_reward_state`.
+- Whether to add a separate `offline_reward_claims` read model for Admin
+  support, or rely on `reward_transactions` + ledger for launch.
 - Whether offline rewards should use current active balance version or an
   account-stored offline reward balance version. Recommendation: current active
   version at claim time unless live migration support demands freezing.
