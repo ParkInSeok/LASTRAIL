@@ -57,6 +57,22 @@ export type CustomerSupportRepairCategory =
 
 export type CustomerSupportRepairLaunchStatus = "Disabled";
 
+export type AccountAuthProvider = "guest" | "google";
+export type AccountAuthState =
+  | "guest_only"
+  | "google_linked"
+  | "restore_candidate"
+  | "identity_conflict"
+  | "provider_unlinked"
+  | "session_active"
+  | "session_expired";
+export type AccountAuthLinkStatus = "LINKED" | "ALREADY_LINKED";
+export type AccountAuthErrorCode =
+  | "google_identity_already_linked"
+  | "provider_identity_conflict"
+  | "google_token_invalid"
+  | "google_auth_config_missing";
+
 export type SupportSummarySectionCode =
   | "account"
   | "auth"
@@ -122,6 +138,14 @@ export type CustomerSupportContractPreview = {
       status: CustomerSupportRepairLaunchStatus;
     }>;
   };
+  accountAuth: {
+    readOnly: true;
+    providers: readonly AccountAuthProvider[];
+    states: readonly AccountAuthState[];
+    linkStatuses: readonly AccountAuthLinkStatus[];
+    errorCodes: readonly AccountAuthErrorCode[];
+    visibilityFields: readonly string[];
+  };
   context: CustomerSupportContextItem[];
   supportContext: {
     readOnly: true;
@@ -163,6 +187,39 @@ export const customerSupportSummarySectionCodes: SupportSummarySectionCode[] = [
   "integrity",
   "opsErrors",
   "supportNotes"
+];
+
+export const accountAuthVisibilityFields = [
+  "providerNames",
+  "linkedProviders",
+  "accountState",
+  "linkStatus",
+  "lastLoginAt",
+  "lastLoginAge",
+  "activeSessionCount",
+  "latestSessionAt",
+  "sanitizedIdentityRef"
+] as const;
+
+export const accountAuthProviders: AccountAuthProvider[] = ["guest", "google"];
+
+export const accountAuthStates: AccountAuthState[] = [
+  "guest_only",
+  "google_linked",
+  "restore_candidate",
+  "identity_conflict",
+  "provider_unlinked",
+  "session_active",
+  "session_expired"
+];
+
+export const accountAuthLinkStatuses: AccountAuthLinkStatus[] = ["LINKED", "ALREADY_LINKED"];
+
+export const accountAuthErrorCodes: AccountAuthErrorCode[] = [
+  "google_identity_already_linked",
+  "provider_identity_conflict",
+  "google_token_invalid",
+  "google_auth_config_missing"
 ];
 
 export const customerSupportOpsErrorsEvidencePolicy = {
@@ -404,6 +461,49 @@ export function customerSupportRepairLaunchStatusLabel(status: CustomerSupportRe
   );
 }
 
+export function accountAuthProviderLabel(provider: AccountAuthProvider | string): string {
+  return (
+    {
+      guest: "게스트",
+      google: "Google"
+    }[provider] ?? provider
+  );
+}
+
+export function accountAuthStateLabel(state: AccountAuthState | string): string {
+  return (
+    {
+      guest_only: "게스트 전용",
+      google_linked: "Google 연동",
+      restore_candidate: "복구 후보",
+      identity_conflict: "계정 식별 충돌",
+      provider_unlinked: "제공자 연결 해제",
+      session_active: "세션 활성",
+      session_expired: "세션 만료"
+    }[state] ?? state
+  );
+}
+
+export function accountAuthLinkStatusLabel(status: AccountAuthLinkStatus | string): string {
+  return (
+    {
+      LINKED: "연동됨",
+      ALREADY_LINKED: "이미 연동됨"
+    }[status] ?? status
+  );
+}
+
+export function accountAuthErrorCodeLabel(code: AccountAuthErrorCode | string): string {
+  return (
+    {
+      google_identity_already_linked: "Google 계정 이미 연동됨",
+      provider_identity_conflict: "제공자 계정 식별 충돌",
+      google_token_invalid: "Google 토큰 유효하지 않음",
+      google_auth_config_missing: "Google 인증 설정 누락"
+    }[code] ?? code
+  );
+}
+
 export const customerSupportContractPreview: CustomerSupportContractPreview = {
   accountId: "연동 대기",
   status: "연동 대기",
@@ -432,6 +532,14 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
       label: customerSupportRepairCategoryLabel(category),
       status: "Disabled"
     }))
+  },
+  accountAuth: {
+    readOnly: true,
+    providers: accountAuthProviders,
+    states: accountAuthStates,
+    linkStatuses: accountAuthLinkStatuses,
+    errorCodes: accountAuthErrorCodes.filter((code) => code !== "google_token_invalid"),
+    visibilityFields: accountAuthVisibilityFields
   },
   context: customerSupportContextFields.map((field) => ({
     field,

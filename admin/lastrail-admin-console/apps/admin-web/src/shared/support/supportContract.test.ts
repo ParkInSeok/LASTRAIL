@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  accountAuthErrorCodeLabel,
+  accountAuthLinkStatusLabel,
+  accountAuthProviderLabel,
+  accountAuthStateLabel,
+  accountAuthVisibilityFields,
   customerSupportCaseTypes,
   customerSupportCaseTypeLabel,
   customerSupportContractPreview,
@@ -60,6 +65,37 @@ describe("supportContract", () => {
     expect(customerSupportContractPreview.context.every((item) => item.value === "연동 대기")).toBe(true);
   });
 
+  it("prepares Google provider and account link read-only visibility candidates", () => {
+    expect(accountAuthVisibilityFields).toEqual([
+      "providerNames",
+      "linkedProviders",
+      "accountState",
+      "linkStatus",
+      "lastLoginAt",
+      "lastLoginAge",
+      "activeSessionCount",
+      "latestSessionAt",
+      "sanitizedIdentityRef"
+    ]);
+    expect(accountAuthProviderLabel("guest")).toBe("게스트");
+    expect(accountAuthProviderLabel("google")).toBe("Google");
+    expect(accountAuthStateLabel("guest_only")).toBe("게스트 전용");
+    expect(accountAuthStateLabel("google_linked")).toBe("Google 연동");
+    expect(accountAuthStateLabel("restore_candidate")).toBe("복구 후보");
+    expect(accountAuthStateLabel("identity_conflict")).toBe("계정 식별 충돌");
+    expect(accountAuthStateLabel("provider_unlinked")).toBe("제공자 연결 해제");
+    expect(accountAuthStateLabel("session_active")).toBe("세션 활성");
+    expect(accountAuthStateLabel("session_expired")).toBe("세션 만료");
+    expect(accountAuthLinkStatusLabel("LINKED")).toBe("연동됨");
+    expect(accountAuthLinkStatusLabel("ALREADY_LINKED")).toBe("이미 연동됨");
+    expect(accountAuthErrorCodeLabel("google_identity_already_linked")).toBe("Google 계정 이미 연동됨");
+    expect(accountAuthErrorCodeLabel("provider_identity_conflict")).toBe("제공자 계정 식별 충돌");
+    expect(accountAuthErrorCodeLabel("google_token_invalid")).toBe("Google 토큰 유효하지 않음");
+    expect(accountAuthErrorCodeLabel("google_auth_config_missing")).toBe("Google 인증 설정 누락");
+    expect(accountAuthProviderLabel("future_provider")).toBe("future_provider");
+    expect(accountAuthStateLabel("future_state")).toBe("future_state");
+  });
+
   it("keeps support workflow launch scope read-only and free of sensitive examples", () => {
     expect(customerSupportMutationControlsOutOfScope).toEqual([
       "manual currency grants",
@@ -83,12 +119,19 @@ describe("supportContract", () => {
     ]);
 
     const serialized = JSON.stringify(customerSupportContractPreview);
+    expect(serialized).toContain("google");
+    expect(serialized).toContain("guest");
+    expect(serialized).toContain("identity_conflict");
     for (const forbidden of customerSupportMutationControlsOutOfScope) {
       expect(serialized).not.toContain(forbidden);
     }
     for (const forbidden of customerSupportSensitiveExamplesOutOfScope) {
       expect(serialized).not.toContain(forbidden);
     }
+    expect(serialized).not.toContain("Google ID token");
+    expect(serialized).not.toContain("OAuth token");
+    expect(serialized).not.toContain("session secret");
+    expect(serialized).not.toContain("refresh token");
   });
 
   it("prepares response template placeholders without copy or send actions", () => {
@@ -217,9 +260,15 @@ describe("supportContract", () => {
         accountStatus: "ACTIVE"
       },
       auth: {
-        providerNames: ["guest"],
+        providerNames: ["guest", "google"],
+        linkedProviders: ["google"],
+        accountState: "google_linked",
+        linkStatus: "LINKED",
+        lastLoginAt: "2026-08-29T00:00:00.000Z",
+        lastLoginAge: "연동 대기",
         activeSessionCount: 1,
-        latestSessionAt: "2026-08-29T00:00:00.000Z"
+        latestSessionAt: "2026-08-29T00:00:00.000Z",
+        sanitizedIdentityRef: "identity-google-1"
       },
       recentRuns: [{ runId: "run-1", operationId: "opn_01_last_departure", risk: "I", outcome: "VICTORY" }],
       runRewards: [{ rewardPreviewId: "reward-preview-1", rewardClaimId: "reward-claim-1", status: "CLAIMED" }],
@@ -259,6 +308,8 @@ describe("supportContract", () => {
       mutationEndpointsEnabled: false
     });
     expect(JSON.stringify(result)).not.toContain("refreshToken");
+    expect(JSON.stringify(result)).not.toContain("googleIdToken");
+    expect(JSON.stringify(result)).not.toContain("sessionSecret");
     expect(JSON.stringify(result)).not.toContain("raw body");
   });
 

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { permissionLabel } from "../shared/labels/adminLabels";
 import {
+  accountAuthVisibilityFields,
   customerSupportCaseTypeLabel,
   customerSupportCaseTypes,
   customerSupportContractPreview,
@@ -55,6 +56,26 @@ export const supportSummarySectionCards: SupportCard[] = customerSupportSummaryS
   value: "연동 대기",
   note: `${section} sanitized read-only section`
 }));
+
+export const supportAccountAuthEvidenceCards: SupportCard[] = [
+  ...accountAuthVisibilityFields.map((field) => ({
+    code: field,
+    label:
+      {
+        providerNames: "게스트",
+        linkedProviders: "Google",
+        accountState: "계정 식별 충돌",
+        linkStatus: "연동 결과 상태",
+        lastLoginAt: "마지막 로그인 시각",
+        lastLoginAge: "마지막 로그인 경과",
+        activeSessionCount: "활성 세션 수",
+        latestSessionAt: "최신 세션 시각",
+        sanitizedIdentityRef: "sanitized identity ref"
+      }[field] ?? field,
+    value: "연동 대기" as const,
+    note: `${field} read-only auth evidence 후보`
+  }))
+];
 
 export const supportOutOfScopeControls = [...customerSupportMutationControlsOutOfScope];
 
@@ -193,6 +214,21 @@ export function SupportAccountPage() {
               <span>{section.label}</span>
               <strong>{section.value}</strong>
               <small>{section.code} / {section.referenceCount}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>Google 연동 근거</h2>
+          <p>provider/link/account recovery 상태를 token 없이 읽기 전용으로 확인하는 후보입니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportAccountAuthEvidenceCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
             </div>
           ))}
         </div>

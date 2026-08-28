@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  supportAccountAuthEvidenceCards,
   supportAccountContextCards,
   supportCaseTypeCards,
   supportEscalationActionCards,
@@ -55,6 +56,25 @@ describe("SupportAccountPage configuration", () => {
       "recentOpsErrorLogs"
     ]);
     expect(supportAccountContextCards.every((card) => card.value === "연동 대기")).toBe(true);
+  });
+
+  it("prepares Google provider and account recovery evidence placeholders", () => {
+    expect(supportAccountAuthEvidenceCards.map((card) => card.code)).toEqual([
+      "providerNames",
+      "linkedProviders",
+      "accountState",
+      "linkStatus",
+      "lastLoginAt",
+      "lastLoginAge",
+      "activeSessionCount",
+      "latestSessionAt",
+      "sanitizedIdentityRef"
+    ]);
+    expect(supportAccountAuthEvidenceCards.map((card) => card.label)).toContain("Google");
+    expect(supportAccountAuthEvidenceCards.map((card) => card.label)).toContain("계정 식별 충돌");
+    expect(supportAccountAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("Google ID token");
+    expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("raw auth header");
   });
 
   it("does not expose mutation controls in the support skeleton", () => {

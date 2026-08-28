@@ -5,6 +5,34 @@ import { hasPermission } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 import { useAdmin } from "../shared/auth/AdminContext";
 import { accountStatusLabel, levelSourceLabel } from "../shared/labels/adminLabels";
+import { accountAuthVisibilityFields } from "../shared/support/supportContract";
+
+type PlayerAuthEvidenceCard = {
+  code: string;
+  label: string;
+  value: "연동 대기";
+  note: string;
+};
+
+export const playerAuthEvidenceCards: PlayerAuthEvidenceCard[] = [
+  ...accountAuthVisibilityFields.map((field) => ({
+    code: field,
+    label:
+      {
+        providerNames: "게스트",
+        linkedProviders: "Google",
+        accountState: "계정 연동 상태",
+        linkStatus: "연동 결과 상태",
+        lastLoginAt: "마지막 로그인 시각",
+        lastLoginAge: "마지막 로그인 경과",
+        activeSessionCount: "활성 세션 수",
+        latestSessionAt: "최신 세션 시각",
+        sanitizedIdentityRef: "sanitized identity ref"
+      }[field] ?? field,
+    value: "연동 대기" as const,
+    note: `${field} read-only auth evidence 후보`
+  }))
+];
 
 export function PlayerDetailPage() {
   const { accountId = "" } = useParams();
@@ -66,6 +94,21 @@ export function PlayerDetailPage() {
         <div>
           <span>코어 레벨 편차</span>
           <strong>{player.progression.coreLevelSpread}</strong>
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>로그인/연동 근거</h2>
+          <p>Google provider/link/account recovery 상태를 token 없이 읽기 전용으로 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {playerAuthEvidenceCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
+            </div>
+          ))}
         </div>
       </section>
       <section className="admin-panel">
