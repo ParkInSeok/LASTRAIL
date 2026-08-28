@@ -68,6 +68,9 @@ Rules:
 - Raid/ordinary impact details are in `docs/api/raid-boss-run-contract.md`.
 - `outcome` is `VICTORY`, `FAILURE`, or `ABANDONED`.
 - Request must not include reward amounts, currency grants, or final reward decisions.
+- Rail Choice Events are backlog for Act 1 launch. Request bodies must not
+  include `railChoiceResults`, `railChoices`, `choiceResults`, or
+  `optionalFlags`.
 - `runtimeStateJson` is a stringified JSON payload produced by Unity. The server parses it as validation input only. It is not a reward source of truth.
 - `tacticSelections` are client-selected tactical references, not reward
   claims. Launch selections come from server-authored start package refs; see
