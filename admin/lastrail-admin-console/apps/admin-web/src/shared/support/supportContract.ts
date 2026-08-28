@@ -165,6 +165,14 @@ export const customerSupportSummarySectionCodes: SupportSummarySectionCode[] = [
   "supportNotes"
 ];
 
+export const customerSupportOpsErrorsEvidencePolicy = {
+  field: "opsErrors",
+  launchRole: "read-only evidence",
+  repairMechanism: false,
+  futureLimit: 5,
+  ordering: "critical first, latest first"
+} as const;
+
 export const customerSupportMutationControlsOutOfScope = [
   "manual currency grants",
   "reward repair buttons",

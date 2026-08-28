@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   errorLogDetailPlaceholders,
+  errorLogEndpointCandidates,
   errorLogFilterGroups,
   errorLogListColumns,
   errorLogSummaryCards
@@ -31,6 +32,11 @@ describe("ErrorLogsPage configuration", () => {
 
     expect(options).toContain("개발 (DEV)");
     expect(options).toContain("운영 (PRD)");
+    expect(options).toContain("게임 API (game_api)");
+    expect(options).toContain("고객지원 조회 모델 (support_read_model)");
+    expect(options).toContain("열림 (open)");
+    expect(options).toContain("확인됨 (acknowledged)");
+    expect(options).toContain("치명 (critical)");
     expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
     expect(options).toContain("치명 오류 (fatal)");
     expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
@@ -40,5 +46,15 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("오프라인 보상 상태 충돌 (offline_reward_state_conflict)");
     expect(options).toContain("스토리 진행 정책 누락 (story_progress_policy_missing)");
     expect(options).toContain("내러티브 콘텐츠 누락 (narrative_content_missing)");
+  });
+
+  it("keeps ops error logs as read-only support evidence before endpoints are implemented", () => {
+    expect(errorLogEndpointCandidates).toEqual([
+      "GET /v1/admin/ops/error-logs",
+      "GET /v1/admin/ops/error-logs/:id"
+    ]);
+    expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("지원 근거");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("resolve button");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("repair action");
   });
 });

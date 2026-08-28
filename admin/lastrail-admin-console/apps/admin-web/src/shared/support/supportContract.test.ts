@@ -21,6 +21,7 @@ import {
   mapSupportAccountSummaryResponse,
   customerSupportMutationControlsOutOfScope,
   customerSupportNoteFormatFields,
+  customerSupportOpsErrorsEvidencePolicy,
   customerSupportSafeSnippetPlaceholders,
   customerSupportSensitiveExamplesOutOfScope,
   customerSupportTemplateStatuses
@@ -266,5 +267,15 @@ describe("supportContract", () => {
 
     expect(result).toEqual(emptySupportAccountSummary("account-missing"));
     expect(result.sections.every((section) => section.value === "연동 대기")).toBe(true);
+  });
+
+  it("keeps support opsErrors as read-only evidence and not a repair mechanism", () => {
+    expect(customerSupportOpsErrorsEvidencePolicy).toEqual({
+      field: "opsErrors",
+      launchRole: "read-only evidence",
+      repairMechanism: false,
+      futureLimit: 5,
+      ordering: "critical first, latest first"
+    });
   });
 });

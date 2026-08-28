@@ -29,7 +29,15 @@ type RunResult =
 type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" | "NONE";
 type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
-type OpsSeverity = "warn" | "error" | "fatal";
+type OpsSeverity = "info" | "warning" | "warn" | "error" | "critical" | "fatal";
+type OpsErrorLogStatus = "open" | "acknowledged" | "resolved" | "ignored";
+type OpsErrorLogSource =
+  | "game_api"
+  | "admin_api"
+  | "worker_cron"
+  | "migration_verify"
+  | "support_read_model"
+  | "integrity_pipeline";
 type OfflineRewardClaimStatus = "CLAIMED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OfflineRewardPreviewStatus = "AVAILABLE" | "EMPTY" | "REJECTED";
 type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
@@ -264,7 +272,43 @@ export function opsServiceLabel(service: string): string {
 }
 
 export function opsSeverityLabel(severity: OpsSeverity | string): string {
-  return labelFor({ warn: "경고", error: "오류", fatal: "치명 오류" }, severity);
+  return labelFor(
+    {
+      info: "안내",
+      warning: "주의",
+      warn: "경고",
+      error: "오류",
+      critical: "치명",
+      fatal: "치명 오류"
+    },
+    severity
+  );
+}
+
+export function opsErrorLogStatusLabel(status: OpsErrorLogStatus | string): string {
+  return labelFor(
+    {
+      open: "열림",
+      acknowledged: "확인됨",
+      resolved: "해결됨",
+      ignored: "무시됨"
+    },
+    status
+  );
+}
+
+export function opsErrorLogSourceLabel(source: OpsErrorLogSource | string): string {
+  return labelFor(
+    {
+      game_api: "게임 API",
+      admin_api: "어드민 API",
+      worker_cron: "예약 작업",
+      migration_verify: "마이그레이션 검증",
+      support_read_model: "고객지원 조회 모델",
+      integrity_pipeline: "무결성 파이프라인"
+    },
+    source
+  );
 }
 
 export function permissionLabel(permission: string): string {

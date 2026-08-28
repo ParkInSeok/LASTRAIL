@@ -14,6 +14,8 @@ import {
   levelSourceLabel,
   opsEnvironmentLabel,
   opsErrorCodeLabel,
+  opsErrorLogSourceLabel,
+  opsErrorLogStatusLabel,
   opsServiceLabel,
   opsSeverityLabel,
   offlineRewardClaimStatusLabel,
@@ -83,9 +85,20 @@ describe("adminLabels", () => {
     expect(opsEnvironmentLabel("PRD")).toBe("운영");
     expect(opsServiceLabel("Pages Function")).toBe("Pages Function");
     expect(opsServiceLabel("Unity Client Diagnostic")).toBe("Unity 클라이언트 진단");
+    expect(opsErrorLogSourceLabel("game_api")).toBe("게임 API");
+    expect(opsErrorLogSourceLabel("support_read_model")).toBe("고객지원 조회 모델");
+    expect(opsErrorLogSourceLabel("future_source")).toBe("future_source");
     expect(opsSeverityLabel("warn")).toBe("경고");
+    expect(opsSeverityLabel("info")).toBe("안내");
+    expect(opsSeverityLabel("warning")).toBe("주의");
     expect(opsSeverityLabel("error")).toBe("오류");
     expect(opsSeverityLabel("fatal")).toBe("치명 오류");
+    expect(opsSeverityLabel("critical")).toBe("치명");
+    expect(opsErrorLogStatusLabel("open")).toBe("열림");
+    expect(opsErrorLogStatusLabel("acknowledged")).toBe("확인됨");
+    expect(opsErrorLogStatusLabel("resolved")).toBe("해결됨");
+    expect(opsErrorLogStatusLabel("ignored")).toBe("무시됨");
+    expect(opsErrorLogStatusLabel("future_status")).toBe("future_status");
   });
 
   it("translates risk reward ops error codes while preserving unknown fallback", () => {

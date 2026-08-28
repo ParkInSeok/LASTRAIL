@@ -1,6 +1,8 @@
 import {
   opsEnvironmentLabel,
   opsErrorCodeLabel,
+  opsErrorLogSourceLabel,
+  opsErrorLogStatusLabel,
   opsServiceLabel,
   opsSeverityLabel
 } from "../shared/labels/adminLabels";
@@ -24,6 +26,11 @@ type ErrorLogDetailPlaceholder = {
 
 const labeledCode = (label: string, code: string) => `${label} (${code})`;
 
+export const errorLogEndpointCandidates = [
+  "GET /v1/admin/ops/error-logs",
+  "GET /v1/admin/ops/error-logs/:id"
+];
+
 export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
   { label: "최근 오류", value: "연동 대기", note: "최근 런타임 error 이벤트" },
   { label: "경고", value: "연동 대기", note: "warn 심각도 이벤트" },
@@ -35,12 +42,34 @@ export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
 export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
   { label: "환경", options: ["DEV", "PRD"].map((code) => labeledCode(opsEnvironmentLabel(code), code)) },
   {
+    label: "소스",
+    options: [
+      "game_api",
+      "admin_api",
+      "worker_cron",
+      "migration_verify",
+      "support_read_model",
+      "integrity_pipeline"
+    ].map((code) => labeledCode(opsErrorLogSourceLabel(code), code))
+  },
+  {
     label: "서비스",
     options: ["Admin API", "Game API", "Async Worker", "Pages Function", "Unity Client Diagnostic"].map((code) =>
       labeledCode(opsServiceLabel(code), code)
     )
   },
-  { label: "심각도", options: ["warn", "error", "fatal"].map((code) => labeledCode(opsSeverityLabel(code), code)) },
+  {
+    label: "심각도",
+    options: ["info", "warning", "warn", "error", "critical", "fatal"].map((code) =>
+      labeledCode(opsSeverityLabel(code), code)
+    )
+  },
+  {
+    label: "상태",
+    options: ["open", "acknowledged", "resolved", "ignored"].map((code) =>
+      labeledCode(opsErrorLogStatusLabel(code), code)
+    )
+  },
   {
     label: "보상/위험도 오류",
     options: [
@@ -98,6 +127,11 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
     title: "클라이언트 진단 payload",
     status: "연동 대기",
     description: "Unity diagnostic snapshot은 fail-soft/non-blocking 별도 소스 후보로만 취급합니다."
+  },
+  {
+    title: "지원 근거",
+    status: "연동 대기",
+    description: "support summary opsErrors는 최근 open/acknowledged latest 5, critical first 후보이며 복구 수단이 아닙니다."
   }
 ];
 
@@ -160,6 +194,13 @@ export function ErrorLogsPage() {
           <p>D1/R2/remote log transport 연결 없이 표시 구조만 준비합니다</p>
         </header>
         <div className="metric-grid">
+          {errorLogEndpointCandidates.map((endpoint) => (
+            <div key={endpoint} className="metric-card">
+              <span>endpoint 후보</span>
+              <strong>연동 대기</strong>
+              <small>{endpoint}</small>
+            </div>
+          ))}
           {errorLogDetailPlaceholders.map((placeholder) => (
             <div key={placeholder.title} className="metric-card">
               <span>{placeholder.title}</span>
