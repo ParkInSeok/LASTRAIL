@@ -51,6 +51,47 @@ Response includes run balance version, result, risk tier, and validator version 
 
 `GET /v1/admin/runs/:runId` returns run detail with frozen `run_snapshots.snapshot_json`, run balance version, current active balance version, client build, content version, validator version, and validator runtime revision.
 
+## Story Progress
+
+Current local read-only endpoints:
+
+```text
+GET /v1/admin/story-progress
+GET /v1/admin/story-progress/:accountId
+```
+
+Permission target:
+
+- Future split permission: `STORY_PROGRESS_READ`.
+- Current implementation: `ROLE_READ_ONLY_INTERIM`; any active
+  `admin_principals` OWNER / OPERATOR / VIEWER role can read these endpoints.
+- Mutation endpoints are not enabled.
+
+List filters:
+
+- `accountId`
+- `actId`
+- `highestStoryProgressId`
+- `highestClearedOperationId`
+- `narrativeVersion`
+- `contentStatus`
+- `localizationStatus`
+- `fixtureStatus`
+- `missingContentStatus`
+- `updatedFrom`
+- `updatedTo`
+- `limit`
+- `cursor`
+
+The list endpoint returns compact `account_story_progress` summaries. The
+detail endpoint returns a single account read model using `account_story_progress`
+and operation unlocks from `account_unlocks`. Accounts without a progress row
+return a stable Act 1 `none` default with `opn_01_last_departure` unlocked.
+
+These endpoints do not return full localized dialogue text, tokens, secrets, raw
+request bodies, raw RNG material, reward calculation internals, or account
+shortcut data. Request bodies are rejected with `contract_violation`.
+
 System/runtime error log design is drafted in `docs/api/ops-error-logs.md`.
 Future read-only candidates are `GET /v1/admin/ops/error-logs` and
 `GET /v1/admin/ops/error-logs/:errorLogId`. The draft keeps runtime error

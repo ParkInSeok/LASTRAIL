@@ -161,6 +161,22 @@ type AdminRunDetailRow = AdminRunSearchRow & {
   snapshot_json: string;
 };
 
+type AdminStoryProgressRow = {
+  account_id: string;
+  act_id: string;
+  highest_cleared_operation_id: string;
+  highest_story_progress_id: string;
+  cleared_operations_json: string;
+  story_flags_json: string;
+  narrative_version: string | null;
+  last_progress_run_id: string | null;
+  updated_at: number;
+};
+
+type AdminStoryProgressUnlockRow = {
+  unlock_id: string;
+};
+
 type NextVersionRow = {
   next_version: number;
 };
@@ -174,7 +190,20 @@ type AppContext = Context<{ Bindings: Env }>;
 
 const BALANCE_PUBLISH_PERMISSION = "BALANCE_PUBLISH";
 const ACCOUNT_NOTE_WRITE_PERMISSION = "ACCOUNT_NOTE_WRITE";
+const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
+const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
+const ACT_ONE_STORY_PROGRESS_ORDER = [
+  "none",
+  "opn_01_last_departure",
+  "opn_02_first_signal",
+  "opn_03_water_stop",
+  "opn_04_scrapstar_show",
+  "opn_05_night_boarders",
+  "opn_06_broken_line",
+  "raid_raider_king_engine",
+] as const;
+const ACT_ONE_OPERATION_IDS = ACT_ONE_STORY_PROGRESS_ORDER.filter((id) => id !== "none");
 
 type AccessJwtPayload = {
   iss?: unknown;
@@ -500,6 +529,119 @@ function parseJsonValue(json: string): JsonValue {
   return parsed;
 }
 
+function parseJsonStringArray(value: string): string[] {
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is string => typeof item === "string");
+  } catch {
+    return [];
+  }
+}
+
+function storyProgressOrder(storyProgressId: string): number {
+  const index = ACT_ONE_STORY_PROGRESS_ORDER.indexOf(storyProgressId as typeof ACT_ONE_STORY_PROGRESS_ORDER[number]);
+  return index < 0 ? 0 : index;
+}
+
+function sortActOneOperationIds(values: string[]): string[] {
+  return [...new Set(values)]
+    .filter((value) => ACT_ONE_OPERATION_IDS.includes(value as typeof ACT_ONE_OPERATION_IDS[number]))
+    .sort((left, right) => storyProgressOrder(left) - storyProgressOrder(right));
+}
+
+function narrativeMetadata(narrativeVersion: string) {
+  return {
+    narrativeVersion,
+    contentStatus: "CANDIDATE",
+    localizationStatus: "PENDING",
+    fixtureStatus: "PARTIAL",
+    missingContentStatus: "UNKNOWN",
+  };
+}
+
+function storyProgressSummary(row: AdminStoryProgressRow) {
+  const narrativeVersion = row.narrative_version ?? ACT_ONE_NARRATIVE_VERSION;
+  const storyFlags = parseJsonStringArray(row.story_flags_json);
+
+  return {
+    accountId: row.account_id,
+    actId: row.act_id,
+    operationId: row.highest_story_progress_id,
+    storyProgress: {
+      highestStoryProgressId: row.highest_story_progress_id,
+      highestClearedOperationId: row.highest_cleared_operation_id,
+      order: storyProgressOrder(row.highest_story_progress_id),
+    },
+    firstClear: null,
+    clearedOperationIds: sortActOneOperationIds(parseJsonStringArray(row.cleared_operations_json)),
+    narrativeFlags: storyFlags,
+    storyFlags,
+    narrativeVersion,
+    narrative: narrativeMetadata(narrativeVersion),
+    lastProgressRunId: row.last_progress_run_id,
+    updatedAt: toIso(row.updated_at),
+    supportContext: {
+      source: "account_story_progress",
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+    },
+  };
+}
+
+function defaultStoryProgressDetail(accountId: string) {
+  return {
+    accountId,
+    actId: "act_01_wasteland_railway",
+    operationId: null,
+    storyProgress: {
+      highestStoryProgressId: "none",
+      highestClearedOperationId: null,
+      order: 0,
+    },
+    firstClear: null,
+    clearedOperationIds: [],
+    narrativeFlags: [],
+    storyFlags: [],
+    unlockedOperations: ["opn_01_last_departure"],
+    narrativeVersion: ACT_ONE_NARRATIVE_VERSION,
+    narrative: narrativeMetadata(ACT_ONE_NARRATIVE_VERSION),
+    lastProgressRunId: null,
+    updatedAt: null,
+    supportContext: {
+      source: "default_none_progress",
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+    },
+  };
+}
+
+function storyProgressDetail(row: AdminStoryProgressRow, unlockRows: AdminStoryProgressUnlockRow[]) {
+  const unlockedOperations = sortActOneOperationIds([
+    "opn_01_last_departure",
+    ...unlockRows
+      .map((unlockRow) => unlockRow.unlock_id.startsWith("operation:") ? unlockRow.unlock_id.slice("operation:".length) : null)
+      .filter((value): value is string => value !== null),
+  ]);
+
+  return {
+    ...storyProgressSummary(row),
+    unlockedOperations,
+  };
+}
+
+function hasRequestBody(c: AppContext): boolean {
+  const contentLength = c.req.header("content-length");
+  return contentLength !== undefined && contentLength !== "0";
+}
+
+function rejectAdminStoryProgressBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin story progress read endpoints do not accept request bodies.",
+  }, 400);
+}
+
 function parsePlayerNoteSummary(summaryJson: string): string {
   const parsed = parseJsonValue(summaryJson);
   if (!isJsonObject(parsed) || typeof parsed.note !== "string" || parsed.note.length === 0) {
@@ -596,6 +738,122 @@ app.get("/v1/admin/me", async (c) => {
       displayName: principal.display_name,
     },
   });
+});
+app.get("/v1/admin/story-progress", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (hasRequestBody(c)) return rejectAdminStoryProgressBody(c);
+
+  const constantFilters = [
+    ["contentStatus", "CANDIDATE"],
+    ["localizationStatus", "PENDING"],
+    ["fixtureStatus", "PARTIAL"],
+    ["missingContentStatus", "UNKNOWN"],
+  ] as const;
+  if (constantFilters.some(([queryName, expected]) => {
+    const actual = c.req.query(queryName);
+    return actual !== undefined && actual !== expected;
+  })) {
+    return c.json({
+      permission: STORY_PROGRESS_READ_PERMISSION,
+      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      items: [],
+      nextCursor: null,
+    });
+  }
+
+  const whereClauses: string[] = [];
+  const values: Array<string | number> = [];
+  const filters = [
+    ["accountId", "account_id"],
+    ["actId", "act_id"],
+    ["highestStoryProgressId", "highest_story_progress_id"],
+    ["highestClearedOperationId", "highest_cleared_operation_id"],
+    ["narrativeVersion", "narrative_version"],
+  ] as const;
+  for (const [queryName, columnName] of filters) {
+    const value = c.req.query(queryName)?.trim();
+    if (value !== undefined && value !== "") {
+      whereClauses.push(`${columnName} = ?`);
+      values.push(value);
+    }
+  }
+
+  const updatedFrom = c.req.query("updatedFrom");
+  if (updatedFrom !== undefined) {
+    const parsed = Date.parse(updatedFrom);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("updated_at >= ?");
+      values.push(parsed);
+    }
+  }
+  const updatedTo = c.req.query("updatedTo");
+  if (updatedTo !== undefined) {
+    const parsed = Date.parse(updatedTo);
+    if (Number.isFinite(parsed)) {
+      whereClauses.push("updated_at <= ?");
+      values.push(parsed);
+    }
+  }
+
+  const limitQuery = c.req.query("limit");
+  const parsedLimit = limitQuery === undefined ? 50 : Number(limitQuery);
+  const limit = Number.isSafeInteger(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, 50) : 50;
+  const cursorQuery = c.req.query("cursor");
+  const parsedCursor = cursorQuery === undefined ? 0 : Number(cursorQuery);
+  const offset = Number.isSafeInteger(parsedCursor) && parsedCursor >= 0 ? parsedCursor : 0;
+  values.push(limit + 1, offset);
+
+  const rows = await c.env.DB.prepare(
+    `SELECT account_id, act_id, highest_cleared_operation_id, highest_story_progress_id,
+            cleared_operations_json, story_flags_json, narrative_version,
+            last_progress_run_id, updated_at
+     FROM account_story_progress
+     ${whereClauses.length === 0 ? "" : `WHERE ${whereClauses.join(" AND ")}`}
+     ORDER BY updated_at DESC, account_id
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(...values)
+    .all<AdminStoryProgressRow>();
+
+  const visibleRows = rows.results.slice(0, limit);
+  return c.json({
+    permission: STORY_PROGRESS_READ_PERMISSION,
+    permissionMode: "ROLE_READ_ONLY_INTERIM",
+    items: visibleRows.map(storyProgressSummary),
+    nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+  });
+});
+app.get("/v1/admin/story-progress/:accountId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (hasRequestBody(c)) return rejectAdminStoryProgressBody(c);
+
+  const accountId = c.req.param("accountId");
+  const row = await c.env.DB.prepare(
+    `SELECT account_id, act_id, highest_cleared_operation_id, highest_story_progress_id,
+            cleared_operations_json, story_flags_json, narrative_version,
+            last_progress_run_id, updated_at
+     FROM account_story_progress
+     WHERE account_id = ?`,
+  )
+    .bind(accountId)
+    .first<AdminStoryProgressRow>();
+
+  if (row === null) {
+    return c.json(defaultStoryProgressDetail(accountId));
+  }
+
+  const unlockRows = await c.env.DB.prepare(
+    `SELECT unlock_id
+     FROM account_unlocks
+     WHERE account_id = ? AND unlock_id LIKE 'operation:%'
+     ORDER BY unlocked_at, unlock_id`,
+  )
+    .bind(accountId)
+    .all<AdminStoryProgressUnlockRow>();
+
+  return c.json(storyProgressDetail(row, unlockRows.results));
 });
 app.get("/v1/admin/players", async (c) => {
   const principal = await authenticateAdmin(c);
