@@ -3,6 +3,9 @@ import {
   offlineRewardPreviewContractFieldLabel,
   offlineRewardPreviewContractFields,
   offlineRewardPreviewContractPreview,
+  offlineRewardClaimContractFieldLabel,
+  offlineRewardClaimContractFields,
+  offlineRewardClaimContractPreview,
   offlineRewardStateContractFieldLabel,
   offlineRewardStateContractFields,
   offlineRewardStateContractPreview
@@ -117,6 +120,76 @@ describe("offlineRewardContract", () => {
     expect(serialized).not.toContain("economy correction");
     expect(serialized).not.toContain("state mutation");
     expect(serialized).not.toContain("manual reset");
+    expect(serialized).not.toContain("token");
+    expect(serialized).not.toContain("raw body");
+    expect(serialized).not.toContain("rawRng");
+  });
+
+  it("prepares offline reward claim response fields without executing claim mutations", () => {
+    expect(offlineRewardClaimContractFields).toEqual([
+      "accepted",
+      "claimStatus",
+      "offlineRewardClaimId",
+      "rewardTransactionId",
+      "economyTransactionId",
+      "accountMutationId",
+      "storyProgressId",
+      "claimableSeconds",
+      "claimableHours",
+      "offlineStorageCapHours",
+      "minimumClaimSeconds",
+      "maxClaimableHours",
+      "rewardLines.source",
+      "rewardLines.balanceAfter",
+      "calculation.storyProgressId",
+      "calculation.storyProgressMultiplierLabel",
+      "calculation.cappedOfflineSeconds",
+      "calculation.capSource",
+      "serverClaimedAt",
+      "narrativeVersion",
+      "errorCode",
+      "message"
+    ]);
+    expect(offlineRewardClaimContractPreview).toMatchObject({
+      accepted: "연동 대기",
+      claimStatus: "연동 대기",
+      offlineRewardClaimId: "연동 대기",
+      rewardTransactionId: "연동 대기",
+      economyTransactionId: "연동 대기",
+      accountMutationId: "연동 대기",
+      storyProgressId: "연동 대기",
+      serverClaimedAt: "연동 대기",
+      narrativeVersion: "연동 대기",
+      errorCode: null,
+      message: "연동 대기"
+    });
+    expect(offlineRewardClaimContractPreview.rewardLines[0]).toEqual({
+      source: "OFFLINE_REWARD",
+      rewardId: "연동 대기",
+      quantity: "연동 대기",
+      balanceAfter: "연동 대기"
+    });
+  });
+
+  it("labels offline reward claim fields while preserving unknown fallback", () => {
+    expect(offlineRewardClaimContractFieldLabel("claimStatus")).toBe("수령 상태");
+    expect(offlineRewardClaimContractFieldLabel("offlineRewardClaimId")).toBe("오프라인 보상 수령 ID");
+    expect(offlineRewardClaimContractFieldLabel("rewardTransactionId")).toBe("보상 트랜잭션 ID");
+    expect(offlineRewardClaimContractFieldLabel("economyTransactionId")).toBe("경제 트랜잭션 ID");
+    expect(offlineRewardClaimContractFieldLabel("accountMutationId")).toBe("계정 변경 ID");
+    expect(offlineRewardClaimContractFieldLabel("rewardLines.balanceAfter")).toBe("수령 후 잔액");
+    expect(offlineRewardClaimContractFieldLabel("serverClaimedAt")).toBe("서버 수령 시각");
+    expect(offlineRewardClaimContractFieldLabel("futureClaimField")).toBe("futureClaimField");
+  });
+
+  it("keeps offline reward claim preview read-only and free of sensitive examples", () => {
+    const serialized = JSON.stringify(offlineRewardClaimContractPreview);
+
+    expect(serialized).not.toContain("claim button");
+    expect(serialized).not.toContain("manual reset");
+    expect(serialized).not.toContain("reward repair");
+    expect(serialized).not.toContain("economy correction");
+    expect(serialized).not.toContain("state mutation");
     expect(serialized).not.toContain("token");
     expect(serialized).not.toContain("raw body");
     expect(serialized).not.toContain("rawRng");

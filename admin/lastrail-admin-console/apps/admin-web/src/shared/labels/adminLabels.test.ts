@@ -16,6 +16,7 @@ import {
   opsErrorCodeLabel,
   opsServiceLabel,
   opsSeverityLabel,
+  offlineRewardClaimStatusLabel,
   offlineRewardPreviewStatusLabel,
   permissionLabel,
   priorityLabel,
@@ -94,6 +95,11 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("offline_reward_policy_missing")).toBe("오프라인 보상 정책 누락");
     expect(opsErrorCodeLabel("offline_reward_claim_unavailable")).toBe("오프라인 보상 수령 불가");
     expect(opsErrorCodeLabel("offline_reward_state_conflict")).toBe("오프라인 보상 상태 충돌");
+    expect(opsErrorCodeLabel("duplicate_replay")).toBe("중복 재생");
+    expect(opsErrorCodeLabel("offline_reward_not_claimable")).toBe("오프라인 보상 수령 대상 없음");
+    expect(opsErrorCodeLabel("offline_reward_claim_conflict")).toBe("오프라인 보상 수령 충돌");
+    expect(opsErrorCodeLabel("offline_reward_plan_mismatch")).toBe("오프라인 보상 계획 불일치");
+    expect(opsErrorCodeLabel("economy_mutation_conflict")).toBe("경제 변경 충돌");
     expect(opsErrorCodeLabel("offline_reward_integrity_restricted")).toBe(
       "무결성 판정으로 오프라인 보상 제한"
     );
@@ -110,6 +116,13 @@ describe("adminLabels", () => {
     expect(offlineRewardPreviewStatusLabel("EMPTY")).toBe("수령 없음");
     expect(offlineRewardPreviewStatusLabel("REJECTED")).toBe("거절");
     expect(offlineRewardPreviewStatusLabel("FUTURE_STATUS")).toBe("FUTURE_STATUS");
+  });
+
+  it("translates offline reward claim status while preserving unknown fallback", () => {
+    expect(offlineRewardClaimStatusLabel("CLAIMED")).toBe("수령 완료");
+    expect(offlineRewardClaimStatusLabel("DUPLICATE_REPLAY")).toBe("중복 재생");
+    expect(offlineRewardClaimStatusLabel("REJECTED")).toBe("거절");
+    expect(offlineRewardClaimStatusLabel("FUTURE_CLAIM_STATUS")).toBe("FUTURE_CLAIM_STATUS");
   });
 
   it("translates story progress stable ids while preserving unknown fallback", () => {

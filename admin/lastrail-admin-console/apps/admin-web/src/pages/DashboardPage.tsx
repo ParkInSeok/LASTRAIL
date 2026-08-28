@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { storyProgressLabel } from "../shared/labels/adminLabels";
 import {
+  offlineRewardClaimContractFields,
   offlineRewardPreviewContractFields,
   offlineRewardStateContractFields
 } from "../shared/offlineRewards/offlineRewardContract";
@@ -69,6 +70,19 @@ export const offlineRewardBlockedDefaultRewards = [
 export const offlineRewardDashboardContractFields = [...offlineRewardPreviewContractFields];
 
 export const offlineRewardStateDashboardFields = [...offlineRewardStateContractFields];
+
+export const offlineRewardClaimDashboardFields = [
+  "claimStatus",
+  "offlineRewardClaimId",
+  "rewardTransactionId",
+  "economyTransactionId",
+  "accountMutationId",
+  "serverClaimedAt",
+  "revision",
+  "last_offline_reward_claim_at"
+] as const;
+
+export const offlineRewardClaimDashboardContractFields = [...offlineRewardClaimContractFields];
 
 export const dashboardSections: DashboardSection[] = [
   {
@@ -140,6 +154,13 @@ export const dashboardSections: DashboardSection[] = [
         note: `${offlineRewardStateDashboardFields.join(
           " / "
         )} | accounts.created_at lazy fallback | last_previewed_at route 미갱신 | preview read-only, claimable duration 미소비`
+      },
+      {
+        label: "수령 응답 관측 후보",
+        value: "연동 대기",
+        note: `${offlineRewardClaimDashboardFields.join(
+          " / "
+        )} | offlineRewardClaimId/rewardTransactionId/economyTransactionId/accountMutationId | last claim baseline`
       },
       { label: "오프라인 수령 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" }
     ]

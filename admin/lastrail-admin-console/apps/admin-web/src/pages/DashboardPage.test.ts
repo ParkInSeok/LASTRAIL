@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   dashboardSections,
   dashboardShortcuts,
+  offlineRewardClaimDashboardFields,
   offlineRewardDashboardContractFields,
   offlineRewardBlockedDefaultRewards,
   offlineRewardFormulaPlaceholders,
@@ -52,6 +53,7 @@ describe("DashboardPage configuration", () => {
       "허용 반복 보상",
       "기본 제외 보상",
       "상태 row 관측 후보",
+      "수령 응답 관측 후보",
       "오프라인 수령 상태"
     ]);
     expect(offlineRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
@@ -130,6 +132,28 @@ describe("DashboardPage configuration", () => {
     expect(stateMetric?.note).toContain("preview read-only");
     expect(stateMetric?.note).not.toContain("manual reset");
     expect(stateMetric?.note).not.toContain("state mutation");
+  });
+
+  it("maps offline reward claim response references without opening claim controls", () => {
+    const offlineRewardSection = dashboardSections.find((section) => section.title === "오프라인 보상 진행도");
+    const claimMetric = offlineRewardSection?.metrics.find((metric) => metric.label === "수령 응답 관측 후보");
+
+    expect(offlineRewardClaimDashboardFields).toEqual([
+      "claimStatus",
+      "offlineRewardClaimId",
+      "rewardTransactionId",
+      "economyTransactionId",
+      "accountMutationId",
+      "serverClaimedAt",
+      "revision",
+      "last_offline_reward_claim_at"
+    ]);
+    expect(claimMetric?.value).toBe("연동 대기");
+    expect(claimMetric?.note).toContain("offlineRewardClaimId");
+    expect(claimMetric?.note).toContain("last claim baseline");
+    expect(claimMetric?.note).not.toContain("claim button");
+    expect(claimMetric?.note).not.toContain("manual reset");
+    expect(claimMetric?.note).not.toContain("reward repair");
   });
 
   it("keeps dashboard shortcuts pointed at existing read-only queues", () => {

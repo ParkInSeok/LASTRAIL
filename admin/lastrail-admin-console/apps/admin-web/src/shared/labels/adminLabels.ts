@@ -30,6 +30,7 @@ type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" |
 type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OpsEnvironment = "DEV" | "PRD";
 type OpsSeverity = "warn" | "error" | "fatal";
+type OfflineRewardClaimStatus = "CLAIMED" | "DUPLICATE_REPLAY" | "REJECTED";
 type OfflineRewardPreviewStatus = "AVAILABLE" | "EMPTY" | "REJECTED";
 type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
 type StoryProgressStatus =
@@ -201,6 +202,11 @@ export function opsErrorCodeLabel(code: string): string {
       offline_reward_policy_missing: "오프라인 보상 정책 누락",
       offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
       offline_reward_state_conflict: "오프라인 보상 상태 충돌",
+      duplicate_replay: "중복 재생",
+      offline_reward_not_claimable: "오프라인 보상 수령 대상 없음",
+      offline_reward_claim_conflict: "오프라인 보상 수령 충돌",
+      offline_reward_plan_mismatch: "오프라인 보상 계획 불일치",
+      economy_mutation_conflict: "경제 변경 충돌",
       offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한",
       story_progress_policy_missing: "스토리 진행 정책 누락",
       story_progress_state_conflict: "스토리 진행 상태 충돌",
@@ -209,6 +215,17 @@ export function opsErrorCodeLabel(code: string): string {
       contract_violation: "계약 위반"
     },
     code
+  );
+}
+
+export function offlineRewardClaimStatusLabel(status: OfflineRewardClaimStatus | string): string {
+  return labelFor(
+    {
+      CLAIMED: "수령 완료",
+      DUPLICATE_REPLAY: "중복 재생",
+      REJECTED: "거절"
+    },
+    status
   );
 }
 
