@@ -191,6 +191,9 @@ Baseline policy:
 ## Offline Rewards
 
 Offline reward progression is drafted in `docs/api/offline-rewards.md`.
+The current local contract slice adds server-side balance schema parsing and a
+pure preview calculator only. `GET /v1/offline-rewards/preview` and
+`POST /v1/offline-rewards/claim` remain documented future API candidates.
 
 Baseline policy:
 

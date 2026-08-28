@@ -1,7 +1,7 @@
 # Offline Rewards Design Draft
 
 This draft defines the launch-scope story progression policy for offline
-rewards. It is a design/contract draft only.
+rewards and the first local contract slice for server-owned calculation.
 
 It does not implement migrations, API routes, economy mutation, Unity
 calculation, Cloudflare DEV deploy, Cloudflare secrets, remote smoke, or PRD
@@ -18,7 +18,6 @@ resources.
 
 ## Non-Goals
 
-- No implementation in this slice.
 - No migration in this slice.
 - No new API route in this slice.
 - No remote DEV secret, deploy, or smoke.
@@ -164,6 +163,9 @@ Recommendation:
 Store offline reward policy in immutable `balance_config_versions.config_json`
 beside `runRewards`.
 
+The current local contract slice adds a pure `offlineRewards` parser and
+calculator in the balance package. It does not read or write D1 yet.
+
 Candidate shape:
 
 ```json
@@ -271,7 +273,8 @@ Claim history/ledger can be handled through:
 
 ## API Contract Candidates
 
-No API route is implemented in this slice.
+No API route is implemented in this slice. The current contract boundary is the
+pure server calculator plus documented request/response shape candidates below.
 
 Future preview endpoint:
 
@@ -314,6 +317,7 @@ Rules:
 - Client does not send reward amounts.
 - Client does not send story progress multiplier.
 - Client does not send risk.
+- Client does not send story progress as Source of Truth.
 - Server resolves account and story progress.
 - Server calculates claimable seconds and reward lines.
 - Server writes economy ledger only inside claim transaction.
@@ -357,13 +361,13 @@ If the server cannot determine story progress:
 
 ## Contract / Smoke Test Candidates
 
-Add tests before implementation.
+Current local contract tests cover the pure calculation boundary:
 
 Progress scaling:
 
-- `raid_raider_king_engine` multiplier > `opn_06_broken_line`.
-- `opn_06_broken_line` multiplier > `opn_01_last_departure`.
-- `opn_01_last_departure` multiplier > `none`.
+- `raid_raider_king_engine` multiplier > `none`.
+- cap hours follow the story progress key.
+- offline reward calculation metadata does not include risk.
 
 Cap behavior:
 
@@ -388,6 +392,12 @@ Resource safety:
 - Default offline reward lines exclude `cur_special_core`.
 - Default offline reward lines exclude `cur_command_ticket`.
 - Default offline reward lines exclude `cur_command_ticket_fragment` for launch.
+
+Parser safety:
+
+- `offlineRewards` must not include `riskMultipliersBps`.
+- blocked default reward ids must not appear in `baseHourlyRewards`.
+- unknown story progress keys fail with `offline_story_progress_missing`.
 
 Client trust boundary:
 

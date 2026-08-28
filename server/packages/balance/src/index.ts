@@ -7,6 +7,15 @@ export type IntegrityDisposition =
   | "ALLOW_PREVIEW_WITH_FLAG"
   | "INVALIDATE_PREVIEW";
 export type RewardLineKind = "CURRENCY" | "ITEM";
+export type OfflineStoryProgressKey =
+  | "none"
+  | "opn_01_last_departure"
+  | "opn_02_first_signal"
+  | "opn_03_water_stop"
+  | "opn_04_scrapstar_show"
+  | "opn_05_night_boarders"
+  | "opn_06_broken_line"
+  | "raid_raider_king_engine";
 
 export type RunRewardLineConfig = {
   kind: RewardLineKind;
@@ -76,11 +85,57 @@ export type CalculateRunRewardPreviewOptions = {
   integrityDisposition: IntegrityDisposition;
 };
 
+export type OfflineRewardsConfig = {
+  schemaVersion: number;
+  minimumOfflineMinutes: number;
+  storyProgressMultipliersBps: Record<OfflineStoryProgressKey, number>;
+  storageCapHours: Record<OfflineStoryProgressKey, number>;
+  baseHourlyRewards: RunRewardLineConfig[];
+  blockedDefaultRewardIds: string[];
+  maxClaimableHours: number;
+  integrityPolicy: {
+    clockTamper: "REJECT_CLAIM";
+    staleClientState: "RECALCULATE_SERVER_SIDE";
+    maintenanceMode: "DEFER_CLAIM";
+  };
+};
+
+export type OfflineRewardPreviewCalculation = {
+  storyProgressKey: OfflineStoryProgressKey;
+  storyProgressMultiplierBps: number;
+  offlineStorageCapHours: number;
+  actualOfflineSeconds: number;
+  claimableSeconds: number;
+  minimumOfflineMinutes: number;
+};
+
+export type OfflineRewardPreviewPlan = {
+  rewardLines: Array<RunRewardLineConfig & { source: "OFFLINE_REWARD" }>;
+  calculation: OfflineRewardPreviewCalculation;
+};
+
+export type CalculateOfflineRewardPreviewOptions = {
+  config: OfflineRewardsConfig;
+  storyProgressKey: string;
+  actualOfflineSeconds: number;
+};
+
 const basisPoints = 10000;
 const maxRunWaves = 15;
 const supportedRunRewardsSchemaVersion = 1;
+const supportedOfflineRewardsSchemaVersion = 1;
 const runRiskTiers: RunRiskTier[] = ["I", "II", "III", "IV", "V"];
 const rewardLineKinds: RewardLineKind[] = ["CURRENCY", "ITEM"];
+const offlineStoryProgressKeys: OfflineStoryProgressKey[] = [
+  "none",
+  "opn_01_last_departure",
+  "opn_02_first_signal",
+  "opn_03_water_stop",
+  "opn_04_scrapstar_show",
+  "opn_05_night_boarders",
+  "opn_06_broken_line",
+  "raid_raider_king_engine",
+];
 const integrityDispositions: IntegrityDisposition[] = [
   "ALLOW",
   "ALLOW_PREVIEW_WITH_FLAG",
@@ -174,6 +229,48 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
   },
 };
 
+export const launchOfflineRewardsConfig: OfflineRewardsConfig = {
+  schemaVersion: 1,
+  minimumOfflineMinutes: 10,
+  storyProgressMultipliersBps: {
+    none: 10000,
+    opn_01_last_departure: 11500,
+    opn_02_first_signal: 13200,
+    opn_03_water_stop: 15200,
+    opn_04_scrapstar_show: 17500,
+    opn_05_night_boarders: 20500,
+    opn_06_broken_line: 24000,
+    raid_raider_king_engine: 30000,
+  },
+  storageCapHours: {
+    none: 4,
+    opn_01_last_departure: 5,
+    opn_02_first_signal: 6,
+    opn_03_water_stop: 7,
+    opn_04_scrapstar_show: 8,
+    opn_05_night_boarders: 9,
+    opn_06_broken_line: 10,
+    raid_raider_king_engine: 12,
+  },
+  baseHourlyRewards: [
+    { kind: "CURRENCY", id: "cur_credits", quantity: 100 },
+    { kind: "CURRENCY", id: "cur_machine_parts", quantity: 50 },
+    { kind: "CURRENCY", id: "cur_tactical_data", quantity: 30 },
+    { kind: "CURRENCY", id: "cur_operator_exp", quantity: 20 },
+  ],
+  blockedDefaultRewardIds: [
+    "cur_special_core",
+    "cur_command_ticket",
+    "cur_command_ticket_fragment",
+  ],
+  maxClaimableHours: 12,
+  integrityPolicy: {
+    clockTamper: "REJECT_CLAIM",
+    staleClientState: "RECALCULATE_SERVER_SIDE",
+    maintenanceMode: "DEFER_CLAIM",
+  },
+};
+
 export function parseRunRewardsConfig(value: unknown): RunRewardsConfig {
   const root = requireRecord(value, "risk_reward_policy_missing");
   if (root.schemaVersion !== supportedRunRewardsSchemaVersion) {
@@ -193,6 +290,30 @@ export function parseRunRewardsConfig(value: unknown): RunRewardsConfig {
     outcomePolicy: parseOutcomePolicy(root.outcomePolicy),
     operations,
     integrityPolicy: parseIntegrityPolicy(root.integrityPolicy),
+  };
+}
+
+export function parseOfflineRewardsConfig(value: unknown): OfflineRewardsConfig {
+  const root = requireRecord(value, "offline_reward_policy_invalid");
+  if (root.schemaVersion !== supportedOfflineRewardsSchemaVersion || "riskMultipliersBps" in root) {
+    throw new Error("offline_reward_policy_invalid");
+  }
+
+  const blockedDefaultRewardIds = parseStringArray(root.blockedDefaultRewardIds, "offline_reward_policy_invalid");
+  const baseHourlyRewards = parseRewardLines(root.baseHourlyRewards);
+  if (baseHourlyRewards.some((line) => blockedDefaultRewardIds.includes(line.id))) {
+    throw new Error("offline_reward_policy_invalid");
+  }
+
+  return {
+    schemaVersion: supportedOfflineRewardsSchemaVersion,
+    minimumOfflineMinutes: requirePositiveInteger(root.minimumOfflineMinutes, "offline_reward_policy_invalid"),
+    storyProgressMultipliersBps: parseOfflineStoryProgressNumbers(root.storyProgressMultipliersBps),
+    storageCapHours: parseOfflineStoryProgressNumbers(root.storageCapHours),
+    baseHourlyRewards,
+    blockedDefaultRewardIds,
+    maxClaimableHours: requirePositiveInteger(root.maxClaimableHours, "offline_reward_policy_invalid"),
+    integrityPolicy: parseOfflineIntegrityPolicy(root.integrityPolicy),
   };
 }
 
@@ -261,6 +382,54 @@ export function calculateRunRewardPreview(
       firstClearEligible: options.firstClearEligible,
       firstClearApplied,
       integrityDisposition: options.integrityDisposition,
+    },
+  };
+}
+
+export function calculateOfflineRewardPreview(
+  options: CalculateOfflineRewardPreviewOptions,
+): OfflineRewardPreviewPlan {
+  if (
+    !Number.isFinite(options.actualOfflineSeconds) ||
+    options.actualOfflineSeconds < 0
+  ) {
+    throw new Error("contract_violation");
+  }
+  const config = parseOfflineRewardsConfig(options.config);
+  const storyProgressKey = requireOfflineStoryProgressKey(options.storyProgressKey);
+  const storyProgressMultiplierBps = config.storyProgressMultipliersBps[storyProgressKey];
+  const offlineStorageCapHours = config.storageCapHours[storyProgressKey];
+  const actualOfflineSeconds = Math.floor(options.actualOfflineSeconds);
+  const minimumOfflineSeconds = config.minimumOfflineMinutes * 60;
+  const claimableSeconds = actualOfflineSeconds < minimumOfflineSeconds
+    ? 0
+    : Math.min(
+        actualOfflineSeconds,
+        offlineStorageCapHours * 60 * 60,
+        config.maxClaimableHours * 60 * 60,
+      );
+
+  return {
+    rewardLines: claimableSeconds === 0
+      ? []
+      : config.baseHourlyRewards
+          .map((line) => ({
+            ...line,
+            quantity: Math.floor(
+              (line.quantity * storyProgressMultiplierBps * claimableSeconds) /
+                basisPoints /
+                3600,
+            ),
+            source: "OFFLINE_REWARD" as const,
+          }))
+          .filter((line) => line.quantity > 0),
+    calculation: {
+      storyProgressKey,
+      storyProgressMultiplierBps,
+      offlineStorageCapHours,
+      actualOfflineSeconds,
+      claimableSeconds,
+      minimumOfflineMinutes: config.minimumOfflineMinutes,
     },
   };
 }
@@ -428,9 +597,53 @@ function parseIntegrityPolicy(value: unknown): RunRewardsConfig["integrityPolicy
   };
 }
 
+function parseOfflineIntegrityPolicy(value: unknown): OfflineRewardsConfig["integrityPolicy"] {
+  const record = requireRecord(value, "offline_reward_policy_invalid");
+  if (
+    record.clockTamper !== "REJECT_CLAIM" ||
+    record.staleClientState !== "RECALCULATE_SERVER_SIDE" ||
+    record.maintenanceMode !== "DEFER_CLAIM"
+  ) {
+    throw new Error("offline_reward_policy_invalid");
+  }
+  return {
+    clockTamper: "REJECT_CLAIM",
+    staleClientState: "RECALCULATE_SERVER_SIDE",
+    maintenanceMode: "DEFER_CLAIM",
+  };
+}
+
+function parseOfflineStoryProgressNumbers(value: unknown): Record<OfflineStoryProgressKey, number> {
+  const record = requireRecord(value, "offline_reward_policy_invalid");
+  return Object.fromEntries(
+    offlineStoryProgressKeys.map((key) => [
+      key,
+      requirePositiveInteger(record[key], "offline_reward_policy_invalid"),
+    ]),
+  ) as Record<OfflineStoryProgressKey, number>;
+}
+
+function parseStringArray(value: unknown, errorCode: "offline_reward_policy_invalid"): string[] {
+  if (!Array.isArray(value) || value.some((item) => typeof item !== "string" || item.length === 0)) {
+    throw new Error(errorCode);
+  }
+  return value;
+}
+
+function requireOfflineStoryProgressKey(value: string): OfflineStoryProgressKey {
+  if (!offlineStoryProgressKeys.includes(value as OfflineStoryProgressKey)) {
+    throw new Error("offline_story_progress_missing");
+  }
+  return value as OfflineStoryProgressKey;
+}
+
 function requireRecord(
   value: unknown,
-  errorCode: "risk_reward_policy_missing" | "reward_multiplier_missing" | "reward_plan_mismatch",
+  errorCode:
+    | "risk_reward_policy_missing"
+    | "reward_multiplier_missing"
+    | "reward_plan_mismatch"
+    | "offline_reward_policy_invalid",
 ): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
     throw new Error(errorCode);
@@ -450,7 +663,11 @@ function requireNonEmptyString(
 
 function requirePositiveInteger(
   value: unknown,
-  errorCode: "risk_reward_policy_missing" | "reward_multiplier_missing" | "reward_plan_mismatch",
+  errorCode:
+    | "risk_reward_policy_missing"
+    | "reward_multiplier_missing"
+    | "reward_plan_mismatch"
+    | "offline_reward_policy_invalid",
 ): number {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value <= 0) {
     throw new Error(errorCode);
