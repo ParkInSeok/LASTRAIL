@@ -191,9 +191,19 @@ Baseline policy:
 ## Offline Rewards
 
 Offline reward progression is drafted in `docs/api/offline-rewards.md`.
-The current local contract slice adds server-side balance schema parsing and a
-pure preview calculator only. `GET /v1/offline-rewards/preview` and
-`POST /v1/offline-rewards/claim` remain documented future API candidates.
+The current local contract slices add server-side balance schema parsing, a
+pure preview calculator, and a read-only preview endpoint:
+
+```text
+GET /v1/offline-rewards/preview
+Authorization: Bearer <access-token>
+```
+
+The preview endpoint resolves account id from the authenticated player session
+only. It rejects query/body Source of Truth fields with `contract_violation`,
+returns server-calculated display `rewardLines`, and does not write ledger rows,
+grant rewards, or consume offline claim state. `POST /v1/offline-rewards/claim`
+remains a documented future API candidate.
 
 Baseline policy:
 

@@ -3,7 +3,10 @@
 This draft defines the launch-scope story progression policy for offline
 rewards and the first local contract slice for server-owned calculation.
 
-It does not implement migrations, API routes, economy mutation, Unity
+It implements the first Game API preview route skeleton:
+`GET /v1/offline-rewards/preview`.
+
+It does not implement migrations, claim API, economy mutation, Unity
 calculation, Cloudflare DEV deploy, Cloudflare secrets, remote smoke, or PRD
 resources.
 
@@ -19,7 +22,8 @@ resources.
 ## Non-Goals
 
 - No migration in this slice.
-- No new API route in this slice.
+- `GET /v1/offline-rewards/preview` is read-only.
+- No claim API in this slice.
 - No remote DEV secret, deploy, or smoke.
 - No PRD/STAGING resource creation or deployment.
 - No Unity-side offline reward amount or multiplier calculation.
@@ -163,8 +167,10 @@ Recommendation:
 Store offline reward policy in immutable `balance_config_versions.config_json`
 beside `runRewards`.
 
-The current local contract slice adds a pure `offlineRewards` parser and
-calculator in the balance package. It does not read or write D1 yet.
+The first local contract slice added a pure `offlineRewards` parser and
+calculator in the balance package. The second local contract slice exposes that
+calculator through `GET /v1/offline-rewards/preview` with a read-only Game API
+route.
 
 Candidate shape:
 
@@ -271,36 +277,110 @@ Claim history/ledger can be handled through:
 - optional future `offline_reward_claims` read model if Admin/support needs
   queryable claim history beyond the economy ledger.
 
-## API Contract Candidates
+## API Contract
 
-No API route is implemented in this slice. The current contract boundary is the
-pure server calculator plus documented request/response shape candidates below.
+The current implemented API boundary is preview-only. Claim/commit remains a
+future candidate.
 
-Future preview endpoint:
+Preview endpoint:
 
 ```text
 GET /v1/offline-rewards/preview
 Authorization: Bearer <access-token>
 ```
 
-Response candidate:
+Rules:
+
+- Player Bearer auth is required.
+- Account id comes only from the authenticated session context.
+- Request body is not accepted.
+- Query parameters are not accepted in the launch skeleton.
+- Client-supplied account id, story progress, risk, offline duration, reward
+  amount, reward lines, currency grants, item grants, or economy grants return
+  `contract_violation`.
+- The preview is read-only. It does not write ledger rows and does not consume
+  offline claim state.
+- Until `account_offline_reward_state` exists, the skeleton uses
+  `accounts.created_at` as the read-only bootstrap offline baseline. Claim
+  implementation should replace that with `lastOfflineRewardClaimAt`.
+
+Response:
 
 ```json
 {
-  "claimable": true,
-  "storyProgressKey": "opn_03_water_stop",
-  "storyProgressMultiplierBps": 15200,
-  "offlineStorageCapHours": 7,
-  "actualOfflineSeconds": 25200,
+  "accepted": true,
+  "previewStatus": "AVAILABLE",
+  "storyProgressId": "opn_03_water_stop",
   "claimableSeconds": 25200,
-  "minimumOfflineMinutes": 10,
-  "balanceVersion": "1",
+  "claimableHours": 7,
+  "offlineStorageCapHours": 7,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
   "rewardLines": [
-    { "kind": "CURRENCY", "id": "cur_credits", "quantity": 1064 }
+    {
+      "kind": "CURRENCY",
+      "id": "cur_credits",
+      "quantity": 1064,
+      "source": "OFFLINE_REWARD"
+    }
   ],
+  "calculation": {
+    "storyProgressId": "opn_03_water_stop",
+    "storyProgressMultiplierLabel": "1.52x",
+    "cappedOfflineSeconds": 25200,
+    "capSource": "STORY_PROGRESS_STORAGE_CAP"
+  },
+  "narrativeVersion": "act1.2026-08-27.001",
   "serverCalculatedAt": "2026-08-27T00:00:00.000Z",
   "errorCode": null,
   "message": null
+}
+```
+
+Empty preview:
+
+```json
+{
+  "accepted": true,
+  "previewStatus": "EMPTY",
+  "storyProgressId": "none",
+  "claimableSeconds": 0,
+  "claimableHours": 0,
+  "offlineStorageCapHours": 4,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
+  "rewardLines": [],
+  "calculation": {
+    "storyProgressId": "none",
+    "storyProgressMultiplierLabel": "1.00x",
+    "cappedOfflineSeconds": 0,
+    "capSource": "ACTUAL_OFFLINE_DURATION"
+  },
+  "narrativeVersion": "act1.2026-08-27.001",
+  "serverCalculatedAt": "2026-08-27T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
+}
+```
+
+Rejected preview:
+
+```json
+{
+  "accepted": false,
+  "previewStatus": "REJECTED",
+  "storyProgressId": null,
+  "claimableSeconds": 0,
+  "claimableHours": 0,
+  "offlineStorageCapHours": null,
+  "minimumClaimSeconds": 600,
+  "maxClaimableHours": 12,
+  "rewardLines": [],
+  "calculation": null,
+  "narrativeVersion": "act1.2026-08-27.001",
+  "serverCalculatedAt": null,
+  "errorCode": "contract_violation",
+  "message": "GET /v1/offline-rewards/preview must not include query parameters or a request body."
 }
 ```
 
@@ -404,6 +484,18 @@ Client trust boundary:
 - Unity-supplied offline reward amount returns `contract_violation`.
 - Unity-supplied offline multiplier returns `contract_violation`.
 - Unity-supplied story progress is not Source of Truth.
+
+Current Game API preview contract tests cover:
+
+- Missing Bearer auth returns `auth_required`.
+- No story progress row returns `none` preview.
+- Stored `account_story_progress.highest_story_progress_id` drives cap and
+  multiplier.
+- Under 10 minutes returns `previewStatus = EMPTY` and no reward lines.
+- Query/body Source of Truth fields return `contract_violation`.
+- Response does not include blocked reward IDs, token/secret/raw RNG/account
+  shortcut data, raw multiplier bps, or reward calculation internals.
+- Local D1 smoke verifies guest auth plus migrated 0001-0014 schema.
 
 Duplicate replay:
 

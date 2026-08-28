@@ -2,7 +2,9 @@ import { Hono } from "hono";
 import type { Context } from "hono";
 import { createRequestId } from "@lastrail/common";
 import {
+  calculateOfflineRewardPreview,
   calculateRunRewardPreview,
+  launchOfflineRewardsConfig,
   parseRunRewardsConfig,
   type IntegrityDisposition,
   type RunOutcome,
@@ -129,6 +131,7 @@ type AuthSessionAccountRow = {
   session_status: "ACTIVE" | "ROTATED" | "REUSED" | "REVOKED" | "EXPIRED";
   session_expires_at: number;
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  account_created_at?: number;
 };
 
 type RefreshSessionAccountRow = AuthSessionAccountRow & {
@@ -140,6 +143,7 @@ type RefreshSessionAccountRow = AuthSessionAccountRow & {
 type AuthContext = {
   accountId: string;
   sessionId: string;
+  accountCreatedAt: number;
 };
 
 type GachaPityState = {
@@ -271,6 +275,25 @@ const actOneStoryProgressOrder = [
 const actOneOperationIds = actOneStoryProgressOrder.filter((id) => id !== "none");
 type ActOneStoryProgressId = typeof actOneStoryProgressOrder[number];
 const actOneNarrativeVersion = "act1.2026-08-27.001";
+const offlineRewardForbiddenQueryKeys = [
+  "accountId",
+  "account_id",
+  "storyProgress",
+  "story_progress",
+  "storyProgressId",
+  "story_progress_id",
+  "highestStoryProgressId",
+  "risk",
+  "offlineSeconds",
+  "offline_seconds",
+  "actualOfflineSeconds",
+  "rewardAmount",
+  "rewardAmounts",
+  "rewardLines",
+  "currencyGrants",
+  "itemGrants",
+  "economyGrants",
+];
 
 function parsePositiveInteger(value: string): number | null {
   if (!/^[1-9]\d*$/u.test(value)) return null;
@@ -557,6 +580,64 @@ function createStoryProgressAcceptedResponse(options: {
     },
     lastProgressRunId: options.row.last_progress_run_id,
     updatedAt: toIso(options.row.updated_at),
+    errorCode: null,
+    message: null,
+  };
+}
+
+function createOfflineRewardRejectedResponse(options: {
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    accepted: false,
+    previewStatus: "REJECTED",
+    storyProgressId: null,
+    claimableSeconds: 0,
+    claimableHours: 0,
+    offlineStorageCapHours: null,
+    minimumClaimSeconds: launchOfflineRewardsConfig.minimumOfflineMinutes * 60,
+    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    rewardLines: [],
+    calculation: null,
+    narrativeVersion: actOneNarrativeVersion,
+    serverCalculatedAt: null,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createOfflineRewardAcceptedResponse(options: {
+  storyProgressId: string;
+  rewardLines: ReturnType<typeof calculateOfflineRewardPreview>["rewardLines"];
+  claimableSeconds: number;
+  offlineStorageCapHours: number;
+  minimumOfflineMinutes: number;
+  maxClaimableHours: number;
+  storyProgressMultiplierBps: number;
+  narrativeVersion: string;
+  serverCalculatedAt: number;
+}) {
+  return {
+    accepted: true,
+    previewStatus: options.rewardLines.length === 0 ? "EMPTY" : "AVAILABLE",
+    storyProgressId: options.storyProgressId,
+    claimableSeconds: options.claimableSeconds,
+    claimableHours: options.claimableSeconds / 3600,
+    offlineStorageCapHours: options.offlineStorageCapHours,
+    minimumClaimSeconds: options.minimumOfflineMinutes * 60,
+    maxClaimableHours: options.maxClaimableHours,
+    rewardLines: options.rewardLines,
+    calculation: {
+      storyProgressId: options.storyProgressId,
+      storyProgressMultiplierLabel: `${(options.storyProgressMultiplierBps / 10000).toFixed(2)}x`,
+      cappedOfflineSeconds: options.claimableSeconds,
+      capSource: options.claimableSeconds >= options.offlineStorageCapHours * 3600
+        ? "STORY_PROGRESS_STORAGE_CAP"
+        : "ACTUAL_OFFLINE_DURATION",
+    },
+    narrativeVersion: options.narrativeVersion,
+    serverCalculatedAt: toIso(options.serverCalculatedAt),
     errorCode: null,
     message: null,
   };
@@ -955,7 +1036,8 @@ async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | Auth
 
   const row = await c.env.DB.prepare(
     `SELECT sessions.account_id, sessions.id AS session_id, sessions.status AS session_status,
-            sessions.expires_at AS session_expires_at, accounts.status AS account_status
+            sessions.expires_at AS session_expires_at, accounts.status AS account_status,
+            accounts.created_at AS account_created_at
      FROM auth_sessions sessions
      JOIN accounts ON accounts.id = sessions.account_id
      WHERE sessions.id = ? AND sessions.account_id = ?`,
@@ -974,6 +1056,7 @@ async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | Auth
   return {
     accountId: row.account_id,
     sessionId: row.session_id,
+    accountCreatedAt: typeof row.account_created_at === "number" ? row.account_created_at : Date.now(),
   };
 }
 
@@ -1201,6 +1284,64 @@ app.get("/v1/story-progress", async (c) => {
     row: storyProgress,
     unlockedOperationIds,
   }));
+});
+app.get("/v1/offline-rewards/preview", async (c) => {
+  const requestUrl = new URL(c.req.url);
+  const hasForbiddenQuery = offlineRewardForbiddenQueryKeys.some((key) => requestUrl.searchParams.has(key));
+  const hasAnyQuery = [...requestUrl.searchParams.keys()].length > 0;
+  const contentLength = c.req.header("content-length");
+  if (hasForbiddenQuery || hasAnyQuery || (contentLength !== undefined && contentLength !== "0")) {
+    return c.json(createOfflineRewardRejectedResponse({
+      errorCode: "contract_violation",
+      message: "GET /v1/offline-rewards/preview must not include query parameters or a request body.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createOfflineRewardRejectedResponse({
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const storyProgress = await c.env.DB.prepare(
+    `SELECT highest_story_progress_id, narrative_version
+     FROM account_story_progress
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<Pick<AccountStoryProgressRow, "highest_story_progress_id" | "narrative_version">>();
+
+  const now = Date.now();
+  const storyProgressId = storyProgress?.highest_story_progress_id ?? "none";
+  const actualOfflineSeconds = Math.floor((now - authContext.accountCreatedAt) / 1000);
+
+  try {
+    const preview = calculateOfflineRewardPreview({
+      config: launchOfflineRewardsConfig,
+      storyProgressKey: storyProgressId,
+      actualOfflineSeconds,
+    });
+    return c.json(createOfflineRewardAcceptedResponse({
+      storyProgressId: preview.calculation.storyProgressKey,
+      rewardLines: preview.rewardLines,
+      claimableSeconds: preview.calculation.claimableSeconds,
+      offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
+      minimumOfflineMinutes: preview.calculation.minimumOfflineMinutes,
+      maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+      storyProgressMultiplierBps: preview.calculation.storyProgressMultiplierBps,
+      narrativeVersion: storyProgress?.narrative_version ?? actOneNarrativeVersion,
+      serverCalculatedAt: now,
+    }));
+  } catch (error) {
+    const errorCode = error instanceof Error && error.message !== "" ? error.message : "offline_reward_policy_missing";
+    const status = errorCode === "contract_violation" ? 400 : 409;
+    return c.json(createOfflineRewardRejectedResponse({
+      errorCode,
+      message: "Offline reward preview is unavailable.",
+    }), status);
+  }
 });
 app.get("/v1/balance-config/:version", async (c) => {
   const rawVersion = c.req.param("version");
