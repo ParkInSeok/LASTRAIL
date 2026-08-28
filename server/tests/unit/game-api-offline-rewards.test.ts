@@ -352,4 +352,65 @@ describe("game-api offline reward preview contract", () => {
       vi.useRealTimers();
     }
   });
+
+  it("requires Idempotency-Key for offline reward claim", async () => {
+    const response = await app.request(
+      "/v1/offline-rewards/claim",
+      {
+        method: "POST",
+        headers: { Authorization: await createAuthorizationHeader() },
+      },
+      createEnv(),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      claimStatus: "REJECTED",
+      offlineRewardClaimId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("rejects caller-supplied offline claim query or body fields", async () => {
+    const queryResponse = await app.request(
+      "/v1/offline-rewards/claim?storyProgress=opn_06_broken_line",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "offline-claim-key-1",
+        },
+      },
+      createEnv(),
+    );
+
+    expect(queryResponse.status).toBe(400);
+    await expect(queryResponse.json()).resolves.toMatchObject({
+      accepted: false,
+      claimStatus: "REJECTED",
+      errorCode: "contract_violation",
+    });
+
+    const bodyResponse = await app.request(
+      "/v1/offline-rewards/claim",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "offline-claim-key-2",
+          "content-length": "28",
+        },
+        body: JSON.stringify({ rewardAmount: 9999 }),
+      },
+      createEnv(),
+    );
+
+    expect(bodyResponse.status).toBe(400);
+    await expect(bodyResponse.json()).resolves.toMatchObject({
+      accepted: false,
+      claimStatus: "REJECTED",
+      errorCode: "contract_violation",
+    });
+  });
 });

@@ -83,6 +83,13 @@ type IdempotencyRecordRow = {
   preview_run_id?: string | null;
 };
 
+type OfflineRewardReplayRow = {
+  result_ref: string;
+  created_at: number;
+  reward_created_at: number | null;
+  reward_json: string | null;
+};
+
 type FirstClearRow = {
   cleared_at: number;
 };
@@ -650,6 +657,73 @@ function createOfflineRewardAcceptedResponse(options: {
     serverCalculatedAt: toIso(options.serverCalculatedAt),
     errorCode: null,
     message: null,
+  };
+}
+
+function createOfflineRewardClaimRejectedResponse(options: {
+  storyProgressId?: string | null;
+  claimableSeconds?: number;
+  offlineStorageCapHours?: number | null;
+  serverClaimedAt?: number | null;
+  errorCode: string;
+  message: string;
+}) {
+  const claimableSeconds = options.claimableSeconds ?? 0;
+  return {
+    accepted: false,
+    claimStatus: "REJECTED",
+    offlineRewardClaimId: null,
+    rewardTransactionId: null,
+    economyTransactionId: null,
+    accountMutationId: null,
+    storyProgressId: options.storyProgressId ?? null,
+    claimableSeconds,
+    claimableHours: claimableSeconds / 3600,
+    offlineStorageCapHours: options.offlineStorageCapHours ?? null,
+    minimumClaimSeconds: launchOfflineRewardsConfig.minimumOfflineMinutes * 60,
+    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    rewardLines: [],
+    calculation: null,
+    serverClaimedAt: options.serverClaimedAt === null || options.serverClaimedAt === undefined
+      ? null
+      : toIso(options.serverClaimedAt),
+    narrativeVersion: actOneNarrativeVersion,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createOfflineRewardClaimDuplicateReplayResponse(options: {
+  offlineRewardClaimId: string;
+  rewardJson: string | null;
+  serverClaimedAt: number;
+}) {
+  let parsed: Record<string, unknown> = {};
+  try {
+    parsed = options.rewardJson === null ? {} : JSON.parse(options.rewardJson) as Record<string, unknown>;
+  } catch {
+    parsed = {};
+  }
+
+  return {
+    accepted: false,
+    claimStatus: "DUPLICATE_REPLAY",
+    offlineRewardClaimId: options.offlineRewardClaimId,
+    rewardTransactionId: parsed.rewardTransactionId ?? options.offlineRewardClaimId,
+    economyTransactionId: parsed.economyTransactionId ?? null,
+    accountMutationId: parsed.accountMutationId ?? null,
+    storyProgressId: parsed.storyProgressId ?? null,
+    claimableSeconds: null,
+    claimableHours: null,
+    offlineStorageCapHours: parsed.offlineStorageCapHours ?? null,
+    minimumClaimSeconds: launchOfflineRewardsConfig.minimumOfflineMinutes * 60,
+    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    rewardLines: [],
+    calculation: null,
+    serverClaimedAt: toIso(options.serverClaimedAt),
+    narrativeVersion: parsed.narrativeVersion ?? actOneNarrativeVersion,
+    errorCode: "duplicate_replay",
+    message: "Offline reward claim was already committed.",
   };
 }
 
@@ -1367,6 +1441,234 @@ app.get("/v1/offline-rewards/preview", async (c) => {
       message: "Offline reward preview is unavailable.",
     }), status);
   }
+});
+
+app.post("/v1/offline-rewards/claim", async (c) => {
+  const requestUrl = new URL(c.req.url);
+  const hasAnyQuery = [...requestUrl.searchParams.keys()].length > 0;
+  const contentLength = c.req.header("content-length");
+  const idempotencyKey = c.req.header("Idempotency-Key");
+
+  if (idempotencyKey === undefined || idempotencyKey.trim() === "") {
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    }), 400);
+  }
+
+  if (hasAnyQuery || (contentLength !== undefined && contentLength !== "0")) {
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      errorCode: "contract_violation",
+      message: "POST /v1/offline-rewards/claim must not include query parameters or a request body.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const replay = await c.env.DB.prepare(
+    `SELECT idem.result_ref, idem.created_at, reward.created_at AS reward_created_at,
+            reward.reward_json AS reward_json
+     FROM idempotency_records idem
+     LEFT JOIN reward_transactions reward ON reward.id = idem.result_ref
+     WHERE idem.account_id = ? AND idem.operation = 'offline_reward_claim' AND idem.idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<OfflineRewardReplayRow>();
+
+  if (replay !== null) {
+    return c.json(createOfflineRewardClaimDuplicateReplayResponse({
+      offlineRewardClaimId: replay.result_ref,
+      rewardJson: replay.reward_json,
+      serverClaimedAt: replay.reward_created_at ?? replay.created_at,
+    }));
+  }
+
+  const storyProgress = await c.env.DB.prepare(
+    `SELECT highest_story_progress_id, narrative_version
+     FROM account_story_progress
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<Pick<AccountStoryProgressRow, "highest_story_progress_id" | "narrative_version">>();
+  const offlineState = await c.env.DB.prepare(
+    `SELECT last_offline_reward_claim_at, last_story_progress_id, last_balance_config_version,
+            last_narrative_version, last_previewed_at, revision, updated_at
+     FROM account_offline_reward_state
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountOfflineRewardStateRow>();
+
+  const now = Date.now();
+  const baselineMs = offlineState?.last_offline_reward_claim_at ?? authContext.accountCreatedAt;
+  if (baselineMs > now) {
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      storyProgressId: storyProgress?.highest_story_progress_id ?? "none",
+      errorCode: "offline_reward_state_conflict",
+      message: "Offline reward state is ahead of server time.",
+    }), 409);
+  }
+
+  const storyProgressId = storyProgress?.highest_story_progress_id ?? "none";
+  const narrativeVersion = storyProgress?.narrative_version ?? actOneNarrativeVersion;
+  const actualOfflineSeconds = Math.floor((now - baselineMs) / 1000);
+  let preview;
+  try {
+    preview = calculateOfflineRewardPreview({
+      config: launchOfflineRewardsConfig,
+      storyProgressKey: storyProgressId,
+      actualOfflineSeconds,
+    });
+  } catch (error) {
+    const errorCode = error instanceof Error && error.message !== "" ? error.message : "offline_reward_policy_missing";
+    const status = errorCode === "contract_violation" ? 400 : 409;
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      storyProgressId,
+      errorCode,
+      message: "Offline reward claim is unavailable.",
+    }), status);
+  }
+
+  if (preview.calculation.claimableSeconds === 0 || preview.rewardLines.length === 0) {
+    return c.json(createOfflineRewardClaimRejectedResponse({
+      storyProgressId: preview.calculation.storyProgressKey,
+      claimableSeconds: preview.calculation.claimableSeconds,
+      offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
+      errorCode: "offline_reward_not_claimable",
+      message: "Offline reward is not claimable yet.",
+    }), 409);
+  }
+
+  const offlineRewardClaimId = createDomainId("offline_claim");
+  const mutationId = createDomainId("mutation");
+  const economyTransactionId = createDomainId("economy");
+  const latestMutation = await c.env.DB.prepare(
+    `SELECT MAX(sequence) AS sequence
+     FROM account_mutations
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountMutationSequenceRow>();
+  const nextSequence = (latestMutation?.sequence ?? 0) + 1;
+  const claimRewardLines = [];
+  const statements = [
+    c.env.DB.prepare(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES (?, ?, ?, 'OFFLINE_REWARD_CLAIM', ?, ?)`,
+    ).bind(mutationId, authContext.accountId, nextSequence, idempotencyKey, now),
+    c.env.DB.prepare(
+      `INSERT INTO economy_transactions (id, account_id, mutation_id, reason, source_type, source_id, created_at)
+       VALUES (?, ?, ?, 'OFFLINE_REWARD_CLAIM', 'OFFLINE_REWARD_CLAIM', ?, ?)`,
+    ).bind(economyTransactionId, authContext.accountId, mutationId, offlineRewardClaimId, now),
+  ];
+
+  for (const rewardLine of preview.rewardLines) {
+    const currency = currencyIdToD1Currency[rewardLine.id as keyof typeof currencyIdToD1Currency];
+    const current = await c.env.DB.prepare(
+      `SELECT balance
+       FROM account_currencies
+       WHERE account_id = ? AND currency = ?`,
+    )
+      .bind(authContext.accountId, currency)
+      .first<AccountCurrencyRow>();
+    const balanceAfter = (current?.balance ?? 0) + rewardLine.quantity;
+    const ledgerId = createDomainId("ledger");
+    statements.push(
+      c.env.DB.prepare(
+        `INSERT INTO account_currencies (account_id, currency, balance, updated_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(account_id, currency) DO UPDATE SET balance = excluded.balance, updated_at = excluded.updated_at`,
+      ).bind(authContext.accountId, currency, balanceAfter, now),
+      c.env.DB.prepare(
+        `INSERT INTO currency_ledger (id, account_id, transaction_id, currency, delta, balance_after, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      ).bind(ledgerId, authContext.accountId, economyTransactionId, currency, rewardLine.quantity, balanceAfter, now),
+    );
+    claimRewardLines.push({
+      kind: rewardLine.kind,
+      id: rewardLine.id,
+      quantity: rewardLine.quantity,
+      source: rewardLine.source,
+      balanceAfter,
+    });
+  }
+
+  const calculation = {
+    storyProgressId: preview.calculation.storyProgressKey,
+    storyProgressMultiplierLabel: `${(preview.calculation.storyProgressMultiplierBps / 10000).toFixed(2)}x`,
+    cappedOfflineSeconds: preview.calculation.claimableSeconds,
+    capSource: preview.calculation.claimableSeconds >= preview.calculation.offlineStorageCapHours * 3600
+      ? "STORY_PROGRESS_STORAGE_CAP"
+      : "ACTUAL_OFFLINE_DURATION",
+  };
+  const responsePayload = {
+    accepted: true,
+    claimStatus: "CLAIMED",
+    offlineRewardClaimId,
+    rewardTransactionId: offlineRewardClaimId,
+    economyTransactionId,
+    accountMutationId: mutationId,
+    storyProgressId: preview.calculation.storyProgressKey,
+    claimableSeconds: preview.calculation.claimableSeconds,
+    claimableHours: preview.calculation.claimableSeconds / 3600,
+    offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
+    minimumClaimSeconds: preview.calculation.minimumOfflineMinutes * 60,
+    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    rewardLines: claimRewardLines,
+    calculation,
+    serverClaimedAt: toIso(now),
+    narrativeVersion,
+    errorCode: null,
+    message: null,
+  };
+  const rewardJson = JSON.stringify({
+    rewardLines: claimRewardLines,
+    calculation,
+    storyProgressId: preview.calculation.storyProgressKey,
+    claimableSeconds: preview.calculation.claimableSeconds,
+    claimableHours: preview.calculation.claimableSeconds / 3600,
+    offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
+    minimumClaimSeconds: preview.calculation.minimumOfflineMinutes * 60,
+    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    narrativeVersion,
+    rewardTransactionId: offlineRewardClaimId,
+    economyTransactionId,
+    accountMutationId: mutationId,
+  });
+
+  statements.push(
+    c.env.DB.prepare(
+      `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
+       VALUES (?, ?, NULL, ?, NULL, ?, ?)`,
+    ).bind(offlineRewardClaimId, authContext.accountId, mutationId, rewardJson, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_offline_reward_state (
+         account_id, last_offline_reward_claim_at, last_story_progress_id,
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+       ) VALUES (?, ?, ?, NULL, ?, NULL, 1, ?)
+       ON CONFLICT(account_id) DO UPDATE SET
+         last_offline_reward_claim_at = excluded.last_offline_reward_claim_at,
+         last_story_progress_id = excluded.last_story_progress_id,
+         last_balance_config_version = excluded.last_balance_config_version,
+         last_narrative_version = excluded.last_narrative_version,
+         revision = account_offline_reward_state.revision + 1,
+         updated_at = excluded.updated_at`,
+    ).bind(authContext.accountId, now, preview.calculation.storyProgressKey, narrativeVersion, now),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'offline_reward_claim', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, offlineRewardClaimId, now),
+  );
+
+  await c.env.DB.batch(statements);
+
+  return c.json(responsePayload);
 });
 app.get("/v1/balance-config/:version", async (c) => {
   const rawVersion = c.req.param("version");

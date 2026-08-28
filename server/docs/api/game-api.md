@@ -197,13 +197,20 @@ Baseline policy:
 
 ## Offline Rewards
 
-Offline reward progression is drafted in `docs/api/offline-rewards.md`.
+Offline reward progression is defined in `docs/api/offline-rewards.md`.
 The current local contract slices add server-side balance schema parsing, a
-pure preview calculator, and a read-only preview endpoint:
+pure preview calculator, a read-only preview endpoint, and a claim endpoint for
+launch currency reward lines:
 
 ```text
 GET /v1/offline-rewards/preview
 Authorization: Bearer <access-token>
+```
+
+```text
+POST /v1/offline-rewards/claim
+Authorization: Bearer <access-token>
+Idempotency-Key: <client-generated-key>
 ```
 
 The preview endpoint resolves account id from the authenticated player session
@@ -216,9 +223,15 @@ reward baseline table. Preview reads
 `account_offline_reward_state.last_offline_reward_claim_at` first and falls
 back to `accounts.created_at` for older accounts without a row.
 
-`POST /v1/offline-rewards/claim` remains a documented future API candidate; its
-idempotency policy and economy ledger transaction are designed in the offline
-rewards document but not implemented.
+The claim endpoint rejects query/body Source of Truth fields, requires
+`Idempotency-Key`, calculates rewards from server-stored story/offline state,
+writes account/economy/currency ledger rows atomically, and stores successful
+`idempotency_records.operation = 'offline_reward_claim'`. Duplicate replay
+returns the stored claim id without advancing state or granting again.
+
+Launch offline claim only grants currency reward lines supported by
+`account_currencies`/`currency_ledger`. Item grants and full command-ticket,
+command-ticket-fragment, or special-core offline loops remain closed.
 
 Baseline policy:
 

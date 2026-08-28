@@ -1,16 +1,17 @@
 # Offline Rewards Design Draft
 
-This draft defines the launch-scope story progression policy for offline
-rewards, the preview route contract, and the claim transaction design.
+This document defines the launch-scope story progression policy for offline
+rewards, the preview route contract, and the first claim transaction slice.
 
 It implements:
 
 - `GET /v1/offline-rewards/preview`.
+- `POST /v1/offline-rewards/claim`.
 - Migration `0015_account_offline_reward_state.sql`.
 
-It does not implement claim API, economy mutation, Unity
-calculation, Cloudflare DEV deploy, Cloudflare secrets, remote smoke, or PRD
-resources.
+It does not implement item grants, offline reward claim state consumption
+outside the claim route, Unity calculation, Cloudflare DEV deploy, Cloudflare
+secrets, remote smoke, or PRD resources.
 
 ## Goals
 
@@ -26,10 +27,9 @@ resources.
 - Migration `0015_account_offline_reward_state.sql` adds the durable preview
   baseline table.
 - `GET /v1/offline-rewards/preview` is read-only.
-- `POST /v1/offline-rewards/claim` is designed but not implemented in this
-  slice.
-- No economy mutation in this slice.
-- No idempotency write in this slice.
+- `POST /v1/offline-rewards/claim` is limited to launch currency reward lines.
+- No item grants in this slice.
+- No separate `offline_reward_claims` read model in this slice.
 - No remote DEV secret, deploy, or smoke.
 - No PRD/STAGING resource creation or deployment.
 - No Unity-side offline reward amount or multiplier calculation.
@@ -428,7 +428,7 @@ Rejected preview:
 }
 ```
 
-Future claim endpoint:
+Claim endpoint:
 
 ```text
 POST /v1/offline-rewards/claim
@@ -462,15 +462,19 @@ Recommended EMPTY claim policy:
 - The client should keep showing the preview countdown or no-reward state and
   retry later with a new claim attempt.
 
-Possible claim response:
+Claim response:
 
 ```json
 {
   "accepted": true,
-  "resultStatus": "CLAIMED",
+  "claimStatus": "CLAIMED",
   "offlineRewardClaimId": "offline_claim_...",
+  "rewardTransactionId": "offline_claim_...",
+  "economyTransactionId": "economy_...",
+  "accountMutationId": "mutation_...",
   "storyProgressId": "opn_03_water_stop",
   "claimableSeconds": 25200,
+  "claimableHours": 7,
   "offlineStorageCapHours": 7,
   "minimumClaimSeconds": 600,
   "maxClaimableHours": 12,
@@ -495,10 +499,14 @@ Duplicate replay:
 ```json
 {
   "accepted": false,
-  "resultStatus": "DUPLICATE_REPLAY",
+  "claimStatus": "DUPLICATE_REPLAY",
   "offlineRewardClaimId": "offline_claim_...",
+  "rewardTransactionId": "offline_claim_...",
+  "economyTransactionId": "economy_...",
+  "accountMutationId": "mutation_...",
   "storyProgressId": "opn_03_water_stop",
   "claimableSeconds": null,
+  "claimableHours": null,
   "offlineStorageCapHours": null,
   "minimumClaimSeconds": 600,
   "maxClaimableHours": 12,
@@ -515,10 +523,14 @@ Rejected claim:
 ```json
 {
   "accepted": false,
-  "resultStatus": "REJECTED",
+  "claimStatus": "REJECTED",
   "offlineRewardClaimId": null,
+  "rewardTransactionId": null,
+  "economyTransactionId": null,
+  "accountMutationId": null,
   "storyProgressId": null,
   "claimableSeconds": 0,
+  "claimableHours": 0,
   "offlineStorageCapHours": null,
   "minimumClaimSeconds": 600,
   "maxClaimableHours": 12,
@@ -766,24 +778,25 @@ Current Game API preview contract tests cover:
 - Local D1 smoke verifies migration 0001-0015 and an actual
   `account_offline_reward_state` row.
 
-Duplicate replay:
-
-- Same offline claim `Idempotency-Key` returns previous claim result.
-- No second `currency_ledger` write.
-- No second `account_mutations` write.
-
-Future claim contract tests should cover:
+Current Game API claim contract tests cover:
 
 - Missing `Idempotency-Key` returns `contract_violation`.
-- Request body with account/story/risk/reward fields returns
-  `contract_violation`.
+- Request query/body Source of Truth fields return `contract_violation`.
 - Under 10 minutes returns `offline_reward_not_claimable` and does not advance
   `last_offline_reward_claim_at`.
 - Successful claim inserts one account mutation, reward transaction, economy
-  transaction, currency ledger row per reward line, state update, and
+  transaction, currency ledger row per reward line, offline state update, and
   idempotency record.
-- Duplicate replay returns the original `offlineRewardClaimId` without ledger
-  or state writes.
+- Same offline claim `Idempotency-Key` returns previous claim result.
+- No second `currency_ledger` write.
+- No second `account_mutations` write.
+- The same key used by another authenticated account is an independent claim.
+- Claim response does not include blocked reward IDs, token/secret/raw
+  RNG/account shortcut data, raw multiplier bps, or reward calculation
+  internals.
+
+Future claim hardening tests should cover:
+
 - Unknown persisted story progress returns `offline_story_progress_missing`.
 - Future `last_offline_reward_claim_at` returns
   `offline_reward_state_conflict` or `offline_reward_clock_tamper`.
