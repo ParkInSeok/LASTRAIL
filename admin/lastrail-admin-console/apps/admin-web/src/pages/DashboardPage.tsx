@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { storyProgressLabel } from "../shared/labels/adminLabels";
 
 type DashboardMetric = {
   label: string;
@@ -17,6 +18,49 @@ type DashboardShortcut = {
   href: string;
   description: string;
 };
+
+type OfflineRewardStoryProgressPolicy = {
+  progressId: string;
+  label: string;
+  multiplier: string;
+  capHours: string;
+};
+
+export const offlineRewardFormulaPlaceholders = [
+  "baseHourlyReward × storyProgressMultiplier × cappedOfflineHours",
+  "claimableHours = min(actualOfflineHours, offlineStorageCapHours, maxClaimableHours)",
+  "10분 미만 launch 기본 0 reward",
+  "Risk I~V는 오프라인 보상에 직접 곱하지 않음"
+];
+
+export const offlineRewardStoryProgressPolicy: OfflineRewardStoryProgressPolicy[] = [
+  ["none", "1.00x", "4h"],
+  ["opn_01_last_departure", "1.15x", "5h"],
+  ["opn_02_first_signal", "1.32x", "6h"],
+  ["opn_03_water_stop", "1.52x", "7h"],
+  ["opn_04_scrapstar_show", "1.75x", "8h"],
+  ["opn_05_night_boarders", "2.05x", "9h"],
+  ["opn_06_broken_line", "2.40x", "10h"],
+  ["raid_raider_king_engine", "3.00x", "12h"]
+].map(([progressId, multiplier, capHours]) => ({
+  progressId,
+  label: storyProgressLabel(progressId),
+  multiplier,
+  capHours
+}));
+
+export const offlineRewardSourceCandidates = [
+  "cur_credits",
+  "cur_machine_parts",
+  "cur_tactical_data",
+  "cur_operator_exp"
+];
+
+export const offlineRewardBlockedDefaultRewards = [
+  "cur_special_core",
+  "cur_command_ticket",
+  "cur_command_ticket_fragment"
+];
 
 export const dashboardSections: DashboardSection[] = [
   {
@@ -69,10 +113,19 @@ export const dashboardSections: DashboardSection[] = [
     description: "최고 스토리 클리어 진행도에 따른 기본 생산력과 보관 한도 관측 후보",
     metrics: [
       { label: "최고 스토리 진행도", value: "연동 대기", note: "Act 1 stable story progress 기준" },
-      { label: "기본 생산력 증가", value: "연동 대기", note: "Risk 난이도 직접 배율 제외" },
-      { label: "보관 한도", value: "연동 대기", note: "회복된 역/설비 기반 cap 후보" },
-      { label: "자원 비중", value: "연동 대기", note: "일반 생산 자원 중심 분배 후보" },
-      { label: "제외 반복 보상", value: "연동 대기", note: "고가치 자원 반복 지급 제외 후보" },
+      { label: "공식 계산식", value: "연동 대기", note: offlineRewardFormulaPlaceholders[0] },
+      { label: "수령 가능 시간", value: "연동 대기", note: offlineRewardFormulaPlaceholders[1] },
+      { label: "최소 누적 시간", value: "연동 대기", note: offlineRewardFormulaPlaceholders[2] },
+      { label: "Risk 직접 배율", value: "연동 대기", note: offlineRewardFormulaPlaceholders[3] },
+      {
+        label: "스토리 배율/보관 한도",
+        value: "연동 대기",
+        note: offlineRewardStoryProgressPolicy
+          .map((policy) => `${policy.label}/${policy.progressId} ${policy.multiplier}/${policy.capHours}`)
+          .join(" | ")
+      },
+      { label: "허용 반복 보상", value: "연동 대기", note: offlineRewardSourceCandidates.join(" / ") },
+      { label: "기본 제외 보상", value: "연동 대기", note: offlineRewardBlockedDefaultRewards.join(" / ") },
       { label: "오프라인 수령 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" }
     ]
   },

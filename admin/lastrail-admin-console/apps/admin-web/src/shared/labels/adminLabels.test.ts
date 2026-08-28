@@ -89,6 +89,7 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("reward_plan_unavailable")).toBe("보상 계획 사용 불가");
     expect(opsErrorCodeLabel("risk_reward_policy_missing")).toBe("위험도 보상 정책 누락");
     expect(opsErrorCodeLabel("reward_integrity_restricted")).toBe("무결성 판정으로 보상 제한");
+    expect(opsErrorCodeLabel("offline_story_progress_missing")).toBe("오프라인 보상 스토리 진행도 누락");
     expect(opsErrorCodeLabel("offline_reward_policy_missing")).toBe("오프라인 보상 정책 누락");
     expect(opsErrorCodeLabel("offline_reward_claim_unavailable")).toBe("오프라인 보상 수령 불가");
     expect(opsErrorCodeLabel("offline_reward_state_conflict")).toBe("오프라인 보상 상태 충돌");

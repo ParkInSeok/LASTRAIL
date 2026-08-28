@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { dashboardSections, dashboardShortcuts } from "./DashboardPage";
+import {
+  dashboardSections,
+  dashboardShortcuts,
+  offlineRewardBlockedDefaultRewards,
+  offlineRewardFormulaPlaceholders,
+  offlineRewardSourceCandidates,
+  offlineRewardStoryProgressPolicy
+} from "./DashboardPage";
 
 describe("DashboardPage configuration", () => {
   it("includes ad, reward, and risk operations sections in Korean", () => {
@@ -35,14 +42,49 @@ describe("DashboardPage configuration", () => {
 
     expect(labels).toEqual([
       "최고 스토리 진행도",
-      "기본 생산력 증가",
-      "보관 한도",
-      "자원 비중",
-      "제외 반복 보상",
+      "공식 계산식",
+      "수령 가능 시간",
+      "최소 누적 시간",
+      "Risk 직접 배율",
+      "스토리 배율/보관 한도",
+      "허용 반복 보상",
+      "기본 제외 보상",
       "오프라인 수령 상태"
     ]);
     expect(offlineRewardSection?.metrics.every((metric) => metric.value === "연동 대기")).toBe(true);
     expect(offlineRewardSection?.metrics.map((metric) => metric.note).join(" ")).not.toContain("지휘권");
+  });
+
+  it("aligns offline reward contract placeholders with server calculator labels", () => {
+    expect(offlineRewardFormulaPlaceholders).toEqual([
+      "baseHourlyReward × storyProgressMultiplier × cappedOfflineHours",
+      "claimableHours = min(actualOfflineHours, offlineStorageCapHours, maxClaimableHours)",
+      "10분 미만 launch 기본 0 reward",
+      "Risk I~V는 오프라인 보상에 직접 곱하지 않음"
+    ]);
+    expect(offlineRewardStoryProgressPolicy[0]).toEqual({
+      progressId: "none",
+      label: "스토리 진행 없음",
+      multiplier: "1.00x",
+      capHours: "4h"
+    });
+    expect(offlineRewardStoryProgressPolicy.at(-1)).toEqual({
+      progressId: "raid_raider_king_engine",
+      label: "약탈왕 기관차",
+      multiplier: "3.00x",
+      capHours: "12h"
+    });
+    expect(offlineRewardSourceCandidates).toEqual([
+      "cur_credits",
+      "cur_machine_parts",
+      "cur_tactical_data",
+      "cur_operator_exp"
+    ]);
+    expect(offlineRewardBlockedDefaultRewards).toEqual([
+      "cur_special_core",
+      "cur_command_ticket",
+      "cur_command_ticket_fragment"
+    ]);
   });
 
   it("keeps dashboard shortcuts pointed at existing read-only queues", () => {

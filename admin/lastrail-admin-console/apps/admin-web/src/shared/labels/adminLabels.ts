@@ -196,6 +196,7 @@ export function opsErrorCodeLabel(code: string): string {
       reward_plan_unavailable: "보상 계획 사용 불가",
       risk_reward_policy_missing: "위험도 보상 정책 누락",
       reward_integrity_restricted: "무결성 판정으로 보상 제한",
+      offline_story_progress_missing: "오프라인 보상 스토리 진행도 누락",
       offline_reward_policy_missing: "오프라인 보상 정책 누락",
       offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
       offline_reward_state_conflict: "오프라인 보상 상태 충돌",
