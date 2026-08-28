@@ -62,10 +62,16 @@ GET /v1/admin/story-progress/:accountId
 
 Permission target:
 
-- Future split permission: `STORY_PROGRESS_READ`.
-- Current implementation: `ROLE_READ_ONLY_INTERIM`; any active
-  `admin_principals` OWNER / OPERATOR / VIEWER role can read these endpoints.
+- Stable permission id: `STORY_PROGRESS_READ`.
+- Current implementation: `ROLE_PERMISSION`; `admin_principals.role` maps to
+  permission grants because there is no separate admin permission grant table.
+- OWNER / OPERATOR / VIEWER all receive `STORY_PROGRESS_READ`.
 - Mutation endpoints are not enabled.
+
+VIEWER access remains allowed because these endpoints are read-only support
+views, do not expose economy repair or mutation controls, and match the current
+Admin API pattern where player/run read-only views are available to active
+VIEWER principals.
 
 List filters:
 

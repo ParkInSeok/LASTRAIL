@@ -450,9 +450,9 @@ GET /v1/admin/story-progress/:accountId
 ```
 
 The endpoint pair is read-only and uses Admin principal authentication, not Game
-API player bearer auth. It advertises the future permission target
-`STORY_PROGRESS_READ` while using the current role-based read-only interim
-policy for active OWNER / OPERATOR / VIEWER principals. Detail reads include
+API player bearer auth. It requires stable permission id `STORY_PROGRESS_READ`.
+Because the current Admin API permission model is role-string based, OWNER /
+OPERATOR / VIEWER all map to this read-only permission. Detail reads include
 operation unlocks from `account_unlocks`; list reads stay compact.
 
 Ops error code candidates:

@@ -90,7 +90,7 @@ describe("admin-api story progress read-only contract", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({
       permission: "STORY_PROGRESS_READ",
-      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      permissionMode: "ROLE_PERMISSION",
       items: [
         {
           accountId: "account-1",
@@ -124,6 +124,21 @@ describe("admin-api story progress read-only contract", () => {
         },
       ],
       nextCursor: null,
+    });
+  });
+
+  it.each(["OWNER", "OPERATOR", "VIEWER"] as const)("allows %s to read story progress through STORY_PROGRESS_READ", async (role) => {
+    const response = await app.request(
+      "/v1/admin/story-progress",
+      { headers: { "Cf-Access-Subject": "access|viewer-1" } },
+      createEnv([[]], { role }),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      permission: "STORY_PROGRESS_READ",
+      permissionMode: "ROLE_PERMISSION",
+      items: [],
     });
   });
 

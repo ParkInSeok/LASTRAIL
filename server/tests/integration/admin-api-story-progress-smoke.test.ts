@@ -141,7 +141,7 @@ describe("admin-api story progress local D1 smoke", () => {
     expect(listResponse.status).toBe(200);
     await expect(listResponse.json()).resolves.toMatchObject({
       permission: "STORY_PROGRESS_READ",
-      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      permissionMode: "ROLE_PERMISSION",
       items: [
         {
           accountId: "account-story-admin-1",

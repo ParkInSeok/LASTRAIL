@@ -642,6 +642,26 @@ function rejectAdminStoryProgressBody(c: AppContext): Response {
   }, 400);
 }
 
+function hasAdminPermission(principal: AdminPrincipalRow, permission: string): boolean {
+  if (permission === STORY_PROGRESS_READ_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
+  }
+  if (permission === ACCOUNT_NOTE_WRITE_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR";
+  }
+  if (permission === BALANCE_PUBLISH_PERMISSION) {
+    return principal.role === "OWNER";
+  }
+  return false;
+}
+
+function adminPermissionDenied(): Response {
+  return new Response(JSON.stringify({ error: "ADMIN_PERMISSION_DENIED" }), {
+    status: 403,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
 function parsePlayerNoteSummary(summaryJson: string): string {
   const parsed = parseJsonValue(summaryJson);
   if (!isJsonObject(parsed) || typeof parsed.note !== "string" || parsed.note.length === 0) {
@@ -742,6 +762,7 @@ app.get("/v1/admin/me", async (c) => {
 app.get("/v1/admin/story-progress", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, STORY_PROGRESS_READ_PERMISSION)) return adminPermissionDenied();
   if (hasRequestBody(c)) return rejectAdminStoryProgressBody(c);
 
   const constantFilters = [
@@ -756,7 +777,7 @@ app.get("/v1/admin/story-progress", async (c) => {
   })) {
     return c.json({
       permission: STORY_PROGRESS_READ_PERMISSION,
-      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      permissionMode: "ROLE_PERMISSION",
       items: [],
       nextCursor: null,
     });
@@ -819,7 +840,7 @@ app.get("/v1/admin/story-progress", async (c) => {
   const visibleRows = rows.results.slice(0, limit);
   return c.json({
     permission: STORY_PROGRESS_READ_PERMISSION,
-    permissionMode: "ROLE_READ_ONLY_INTERIM",
+    permissionMode: "ROLE_PERMISSION",
     items: visibleRows.map(storyProgressSummary),
     nextCursor: rows.results.length > limit ? String(offset + limit) : null,
   });
@@ -827,6 +848,7 @@ app.get("/v1/admin/story-progress", async (c) => {
 app.get("/v1/admin/story-progress/:accountId", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, STORY_PROGRESS_READ_PERMISSION)) return adminPermissionDenied();
   if (hasRequestBody(c)) return rejectAdminStoryProgressBody(c);
 
   const accountId = c.req.param("accountId");
