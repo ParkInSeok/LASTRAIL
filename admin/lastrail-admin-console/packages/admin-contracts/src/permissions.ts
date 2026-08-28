@@ -21,6 +21,8 @@ export const permissions = [
   "COMPENSATION_WRITE",
   "ANALYTICS_READ",
   "AUDIT_READ",
+  "OFFLINE_REWARD_READ",
+  "SUPPORT_READ",
   "BALANCE_READ",
   "BALANCE_DRAFT_CREATE",
   "BALANCE_DRAFT_EDIT",
@@ -59,6 +61,8 @@ export const rolePermissions: Record<AdminRole, AdminPermission[]> = {
     "INCIDENT_WRITE",
     "ANALYTICS_READ",
     "AUDIT_READ",
+    "OFFLINE_REWARD_READ",
+    "SUPPORT_READ",
     "BALANCE_READ",
     "BALANCE_SIMULATION_READ",
     "BALANCE_SIMULATION_RUN",
@@ -74,6 +78,8 @@ export const rolePermissions: Record<AdminRole, AdminPermission[]> = {
     "INCIDENT_READ",
     "ANALYTICS_READ",
     "AUDIT_READ",
+    "OFFLINE_REWARD_READ",
+    "SUPPORT_READ",
     "BALANCE_READ",
     "BALANCE_SIMULATION_READ"
   ]

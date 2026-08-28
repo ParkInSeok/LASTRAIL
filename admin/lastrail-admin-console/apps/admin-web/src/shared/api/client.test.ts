@@ -293,4 +293,72 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads offline reward list with optional read-only filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "OFFLINE_REWARD_READ",
+        permissionMode: "ROLE_PERMISSION",
+        items: [],
+        nextCursor: "cursor-2"
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.offlineRewardList({
+      accountId: "account-1",
+      storyProgressId: "none",
+      limit: "25"
+    });
+
+    expect(result.permission).toBe("OFFLINE_REWARD_READ");
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/offline-rewards?accountId=account-1&storyProgressId=none&limit=25",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
+
+  it("reads offline reward detail by account id and preserves read-only support flags", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        accountId: "account-1",
+        displayName: "Kyle Account",
+        accountStatus: "ACTIVE",
+        storyProgressId: "none",
+        narrativeVersion: "act1.2026-08-27.001",
+        offlineRewardState: {
+          source: "account_offline_reward_state",
+          lastOfflineRewardClaimAt: "2026-08-28T00:00:00.000Z",
+          lastStoryProgressId: "none",
+          lastBalanceConfigVersion: null,
+          lastNarrativeVersion: "act1.2026-08-27.001",
+          lastPreviewedAt: null,
+          revision: 0,
+          updatedAt: "2026-08-28T00:00:00.000Z"
+        },
+        lastClaim: null,
+        supportContext: {
+          readOnly: true,
+          claimMutationEnabled: false,
+          mutationEndpointsEnabled: false
+        }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.offlineRewardDetail("account-1");
+
+    expect(result.accountId).toBe("account-1");
+    expect(result.supportContext.claimMutationEnabled).toBe(false);
+    expect(fetchSpy).toHaveBeenCalledWith("/api/offline-rewards/account-1", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });

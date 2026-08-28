@@ -17,17 +17,31 @@ describe("admin contracts", () => {
         id: "admin-1",
         displayName: "Operator One",
         role: "OPERATOR",
-        permissions: ["ACCOUNT_READ", "RUN_READ"]
+        permissions: ["ACCOUNT_READ", "RUN_READ", "OFFLINE_REWARD_READ", "SUPPORT_READ"]
       }
     });
 
     expect(hasPermission(bootstrap.admin, "ACCOUNT_READ")).toBe(true);
+    expect(hasPermission(bootstrap.admin, "OFFLINE_REWARD_READ")).toBe(true);
+    expect(hasPermission(bootstrap.admin, "SUPPORT_READ")).toBe(true);
     expect(hasPermission(bootstrap.admin, "BALANCE_PUBLISH")).toBe(false);
   });
 
   it("allows operators to create player notes while keeping viewers read-only", () => {
     expect(hasPermission({ permissions: rolePermissions.OPERATOR }, "ACCOUNT_NOTE_WRITE")).toBe(true);
     expect(hasPermission({ permissions: rolePermissions.VIEWER }, "ACCOUNT_NOTE_WRITE")).toBe(false);
+  });
+
+  it("allows all launch admin roles to read offline reward support state", () => {
+    expect(hasPermission({ permissions: rolePermissions.OWNER }, "OFFLINE_REWARD_READ")).toBe(true);
+    expect(hasPermission({ permissions: rolePermissions.OPERATOR }, "OFFLINE_REWARD_READ")).toBe(true);
+    expect(hasPermission({ permissions: rolePermissions.VIEWER }, "OFFLINE_REWARD_READ")).toBe(true);
+  });
+
+  it("allows all launch admin roles to read customer support summaries", () => {
+    expect(hasPermission({ permissions: rolePermissions.OWNER }, "SUPPORT_READ")).toBe(true);
+    expect(hasPermission({ permissions: rolePermissions.OPERATOR }, "SUPPORT_READ")).toBe(true);
+    expect(hasPermission({ permissions: rolePermissions.VIEWER }, "SUPPORT_READ")).toBe(true);
   });
 
   it("requires Training Core and Sync fields for player progression", () => {

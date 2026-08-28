@@ -18,6 +18,7 @@ import {
   opsSeverityLabel,
   offlineRewardClaimStatusLabel,
   offlineRewardPreviewStatusLabel,
+  offlineRewardStateSourceLabel,
   permissionLabel,
   priorityLabel,
   resourceTypeLabel,
@@ -49,6 +50,8 @@ describe("adminLabels", () => {
     expect(resourceTypeLabel("account")).toBe("계정");
     expect(permissionLabel("BALANCE_PUBLISH")).toBe("밸런스 게시");
     expect(permissionLabel("STORY_PROGRESS_READ")).toBe("스토리 진행 조회");
+    expect(permissionLabel("OFFLINE_REWARD_READ")).toBe("오프라인 보상 조회");
+    expect(permissionLabel("SUPPORT_READ")).toBe("CS 지원 조회");
   });
 
   it("keeps unknown backend codes readable instead of hiding them", () => {
@@ -123,6 +126,12 @@ describe("adminLabels", () => {
     expect(offlineRewardClaimStatusLabel("DUPLICATE_REPLAY")).toBe("중복 재생");
     expect(offlineRewardClaimStatusLabel("REJECTED")).toBe("거절");
     expect(offlineRewardClaimStatusLabel("FUTURE_CLAIM_STATUS")).toBe("FUTURE_CLAIM_STATUS");
+  });
+
+  it("translates offline reward state source while preserving unknown fallback", () => {
+    expect(offlineRewardStateSourceLabel("account_offline_reward_state")).toBe("오프라인 보상 상태 row");
+    expect(offlineRewardStateSourceLabel("accounts.created_at_fallback")).toBe("계정 생성 시각 fallback");
+    expect(offlineRewardStateSourceLabel("future_source")).toBe("future_source");
   });
 
   it("translates story progress stable ids while preserving unknown fallback", () => {

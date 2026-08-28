@@ -63,6 +63,57 @@ export type OfflineRewardClaimContract = {
   message: string | null;
 };
 
+export type OfflineRewardSupportContext = {
+  readOnly: true;
+  claimMutationEnabled: false;
+  mutationEndpointsEnabled: false;
+};
+
+export type OfflineRewardStateSource = "account_offline_reward_state" | "accounts.created_at_fallback" | string;
+
+export type OfflineRewardReadModelState = {
+  source: OfflineRewardStateSource;
+  lastOfflineRewardClaimAt: string;
+  lastStoryProgressId: string;
+  lastBalanceConfigVersion: string | null;
+  lastNarrativeVersion: string;
+  lastPreviewedAt: string | null;
+  revision: number | string;
+  updatedAt: string;
+};
+
+export type OfflineRewardReadModelLastClaim = {
+  offlineRewardClaimId: string;
+  claimedAt: string;
+};
+
+export type OfflineRewardReadModelItem = {
+  accountId: string;
+  displayName: string;
+  accountStatus: string;
+  storyProgressId: string;
+  narrativeVersion: string;
+  offlineRewardState: OfflineRewardReadModelState;
+  lastClaim: OfflineRewardReadModelLastClaim;
+  supportContext: OfflineRewardSupportContext;
+};
+
+export type OfflineRewardReadModelResponse = {
+  permission: "OFFLINE_REWARD_READ" | string;
+  permissionMode: "ROLE_PERMISSION" | string;
+  items: OfflineRewardReadModelItem[];
+  nextCursor: string | null;
+};
+
+export type OfflineRewardReadFiltersPreview = {
+  accountId: string;
+  storyProgressId: string;
+  narrativeVersion: string;
+  source: string;
+  limit: string;
+  cursor: string;
+};
+
 export const offlineRewardPreviewContractFields = [
   "previewStatus",
   "storyProgressId",
@@ -119,6 +170,15 @@ export const offlineRewardStateContractFields = [
   "last_previewed_at",
   "revision",
   "updated_at"
+] as const;
+
+export const offlineRewardReadFilterFields = [
+  "accountId",
+  "storyProgressId",
+  "narrativeVersion",
+  "source",
+  "limit",
+  "cursor"
 ] as const;
 
 export type OfflineRewardStateContractField = (typeof offlineRewardStateContractFields)[number];
@@ -257,4 +317,118 @@ export const offlineRewardClaimContractPreview: OfflineRewardClaimContract = {
   narrativeVersion: "연동 대기",
   errorCode: null,
   message: "연동 대기"
+};
+
+const pendingSupportContext: OfflineRewardSupportContext = {
+  readOnly: true,
+  claimMutationEnabled: false,
+  mutationEndpointsEnabled: false
+};
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function stringValue(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.length > 0 ? value : fallback;
+}
+
+function numberOrPending(value: unknown): number | string {
+  return typeof value === "number" && Number.isFinite(value) ? value : "연동 대기";
+}
+
+function nullableStringValue(value: unknown): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
+}
+
+function mapOfflineRewardState(value: unknown): OfflineRewardReadModelState {
+  const record = asRecord(value);
+  return {
+    source: stringValue(record?.source, "연동 대기"),
+    lastOfflineRewardClaimAt: stringValue(record?.lastOfflineRewardClaimAt, "연동 대기"),
+    lastStoryProgressId: stringValue(record?.lastStoryProgressId, "연동 대기"),
+    lastBalanceConfigVersion: nullableStringValue(record?.lastBalanceConfigVersion),
+    lastNarrativeVersion: stringValue(record?.lastNarrativeVersion, "연동 대기"),
+    lastPreviewedAt: nullableStringValue(record?.lastPreviewedAt),
+    revision: numberOrPending(record?.revision),
+    updatedAt: stringValue(record?.updatedAt, "연동 대기")
+  };
+}
+
+function mapLastClaim(value: unknown): OfflineRewardReadModelLastClaim {
+  const record = asRecord(value);
+  return {
+    offlineRewardClaimId: stringValue(record?.offlineRewardClaimId, "연동 대기"),
+    claimedAt: stringValue(record?.claimedAt, "연동 대기")
+  };
+}
+
+function mapSupportContext(value: unknown): OfflineRewardSupportContext {
+  const record = asRecord(value);
+  return {
+    readOnly: record?.readOnly === false ? true : true,
+    claimMutationEnabled: false,
+    mutationEndpointsEnabled: false
+  };
+}
+
+function mapOfflineRewardItem(value: unknown, fallbackAccountId = "연동 대기"): OfflineRewardReadModelItem {
+  const record = asRecord(value);
+  if (!record) return emptyOfflineRewardDetail(fallbackAccountId);
+
+  return {
+    accountId: stringValue(record.accountId, fallbackAccountId),
+    displayName: stringValue(record.displayName, "연동 대기"),
+    accountStatus: stringValue(record.accountStatus, "연동 대기"),
+    storyProgressId: stringValue(record.storyProgressId, "연동 대기"),
+    narrativeVersion: stringValue(record.narrativeVersion, "연동 대기"),
+    offlineRewardState: mapOfflineRewardState(record.offlineRewardState),
+    lastClaim: mapLastClaim(record.lastClaim),
+    supportContext: mapSupportContext(record.supportContext)
+  };
+}
+
+export function emptyOfflineRewardDetail(accountId = "연동 대기"): OfflineRewardReadModelItem {
+  return {
+    accountId,
+    displayName: "연동 대기",
+    accountStatus: "연동 대기",
+    storyProgressId: "연동 대기",
+    narrativeVersion: "연동 대기",
+    offlineRewardState: {
+      source: "연동 대기",
+      lastOfflineRewardClaimAt: "연동 대기",
+      lastStoryProgressId: "연동 대기",
+      lastBalanceConfigVersion: null,
+      lastNarrativeVersion: "연동 대기",
+      lastPreviewedAt: null,
+      revision: "연동 대기",
+      updatedAt: "연동 대기"
+    },
+    lastClaim: {
+      offlineRewardClaimId: "연동 대기",
+      claimedAt: "연동 대기"
+    },
+    supportContext: pendingSupportContext
+  };
+}
+
+export function mapOfflineRewardListResponse(response: unknown): OfflineRewardReadModelResponse {
+  const record = asRecord(response);
+  return {
+    permission: stringValue(record?.permission, "OFFLINE_REWARD_READ"),
+    permissionMode: stringValue(record?.permissionMode, "ROLE_PERMISSION"),
+    items: Array.isArray(record?.items) ? record.items.map((item) => mapOfflineRewardItem(item)) : [],
+    nextCursor: typeof record?.nextCursor === "string" ? record.nextCursor : null
+  };
+}
+
+export function mapOfflineRewardDetailResponse(response: unknown, accountId: string): OfflineRewardReadModelItem {
+  return response === null || response === undefined ? emptyOfflineRewardDetail(accountId) : mapOfflineRewardItem(response, accountId);
+}
+
+export const offlineRewardReadContractPreview = {
+  listItem: emptyOfflineRewardDetail(),
+  detail: emptyOfflineRewardDetail(),
+  filters: Object.fromEntries(offlineRewardReadFilterFields.map((field) => [field, ""])) as OfflineRewardReadFiltersPreview
 };

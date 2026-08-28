@@ -1,4 +1,10 @@
 import {
+  mapOfflineRewardDetailResponse,
+  mapOfflineRewardListResponse,
+  type OfflineRewardReadFiltersPreview
+} from "../offlineRewards/offlineRewardContract";
+
+import {
   mapStoryProgressDetailResponse,
   mapStoryProgressListResponse,
   type StoryProgressFiltersPreview
@@ -51,6 +57,14 @@ async function writeJson(path: string, body: unknown): Promise<unknown> {
 }
 
 function storyProgressQuery(filters: Partial<StoryProgressFiltersPreview>): string {
+  return queryString(filters);
+}
+
+function offlineRewardQuery(filters: Partial<OfflineRewardReadFiltersPreview>): string {
+  return queryString(filters);
+}
+
+function queryString(filters: Record<string, string | undefined>): string {
   const params = new URLSearchParams();
   Object.entries(filters).forEach(([key, value]) => {
     if (value) params.set(key, value);
@@ -139,6 +153,15 @@ export const adminApi = {
   async storyProgressDetail(accountId: string) {
     return mapStoryProgressDetailResponse(
       await readJson(`/api/story-progress/${encodeURIComponent(accountId)}`),
+      accountId
+    );
+  },
+  async offlineRewardList(filters: Partial<OfflineRewardReadFiltersPreview>) {
+    return mapOfflineRewardListResponse(await readJson(`/api/offline-rewards${offlineRewardQuery(filters)}`));
+  },
+  async offlineRewardDetail(accountId: string) {
+    return mapOfflineRewardDetailResponse(
+      await readJson(`/api/offline-rewards/${encodeURIComponent(accountId)}`),
       accountId
     );
   }

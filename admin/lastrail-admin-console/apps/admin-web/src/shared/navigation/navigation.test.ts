@@ -9,6 +9,7 @@ describe("admin navigation", () => {
     expect(labels).toContain("플레이어");
     expect(labels).toContain("출격");
     expect(labels).toContain("요원 모집");
+    expect(labels).toContain("CS 지원");
     expect(labels).not.toContain("시스템 에러 로그");
     expect(labels).not.toContain("밸런스 게시");
   });
@@ -21,6 +22,17 @@ describe("admin navigation", () => {
       label: "시스템 에러 로그",
       path: "/ops/error-logs",
       permission: "AUDIT_READ"
+    });
+  });
+
+  it("shows offline reward support view for admins with offline reward read permission", () => {
+    const nav = visibleNavigation(["OFFLINE_REWARD_READ"]);
+    const items = nav.flatMap((group) => group.items);
+
+    expect(items).toContainEqual({
+      label: "오프라인 보상",
+      path: "/offline-rewards",
+      permission: "OFFLINE_REWARD_READ"
     });
   });
 });

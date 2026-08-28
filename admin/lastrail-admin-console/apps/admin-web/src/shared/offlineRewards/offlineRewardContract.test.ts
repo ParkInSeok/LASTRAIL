@@ -6,6 +6,8 @@ import {
   offlineRewardClaimContractFieldLabel,
   offlineRewardClaimContractFields,
   offlineRewardClaimContractPreview,
+  mapOfflineRewardDetailResponse,
+  mapOfflineRewardListResponse,
   offlineRewardStateContractFieldLabel,
   offlineRewardStateContractFields,
   offlineRewardStateContractPreview
@@ -193,5 +195,65 @@ describe("offlineRewardContract", () => {
     expect(serialized).not.toContain("token");
     expect(serialized).not.toContain("raw body");
     expect(serialized).not.toContain("rawRng");
+  });
+
+  it("maps Admin API offline reward list response into read-only display state", () => {
+    const result = mapOfflineRewardListResponse({
+      permission: "OFFLINE_REWARD_READ",
+      permissionMode: "ROLE_PERMISSION",
+      items: [
+        {
+          accountId: "account-1",
+          displayName: "Kyle Account",
+          accountStatus: "ACTIVE",
+          storyProgressId: "opn_02_first_signal",
+          narrativeVersion: "act1.2026-08-27.001",
+          offlineRewardState: {
+            source: "accounts.created_at_fallback",
+            lastOfflineRewardClaimAt: "2026-08-28T00:00:00.000Z",
+            lastStoryProgressId: "none",
+            lastBalanceConfigVersion: null,
+            lastNarrativeVersion: "act1.2026-08-27.001",
+            lastPreviewedAt: null,
+            revision: 0,
+            updatedAt: "2026-08-28T00:00:00.000Z"
+          },
+          lastClaim: {
+            offlineRewardClaimId: "offline-claim-1",
+            claimedAt: "2026-08-28T04:00:00.000Z"
+          },
+          supportContext: {
+            readOnly: true,
+            claimMutationEnabled: false,
+            mutationEndpointsEnabled: false
+          }
+        }
+      ],
+      nextCursor: "cursor-2"
+    });
+
+    expect(result.permission).toBe("OFFLINE_REWARD_READ");
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
+    expect(result.items[0]?.offlineRewardState.source).toBe("accounts.created_at_fallback");
+    expect(result.items[0]?.supportContext).toEqual({
+      readOnly: true,
+      claimMutationEnabled: false,
+      mutationEndpointsEnabled: false
+    });
+    expect(JSON.stringify(result)).not.toContain("raw body");
+  });
+
+  it("maps null Admin API offline reward detail to read-only placeholders", () => {
+    const result = mapOfflineRewardDetailResponse(null, "account-no-row");
+
+    expect(result.accountId).toBe("account-no-row");
+    expect(result.displayName).toBe("연동 대기");
+    expect(result.offlineRewardState.source).toBe("연동 대기");
+    expect(result.lastClaim.offlineRewardClaimId).toBe("연동 대기");
+    expect(result.supportContext).toEqual({
+      readOnly: true,
+      claimMutationEnabled: false,
+      mutationEndpointsEnabled: false
+    });
   });
 });
