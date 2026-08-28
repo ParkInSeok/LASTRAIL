@@ -292,9 +292,15 @@ CREATE INDEX idx_account_offline_reward_state_story_progress
 
 Initial row policy:
 
-- `POST /v1/auth/guest` should create an initial row when the migration is
-  wired into auth initialization.
-- `last_offline_reward_claim_at` should start at account creation time.
+- `POST /v1/auth/guest` creates an initial row in the same account creation
+  batch.
+- `last_offline_reward_claim_at` starts at account creation time.
+- `last_story_progress_id = 'none'`.
+- `last_balance_config_version = NULL`.
+- `last_narrative_version = 'act1.2026-08-27.001'`.
+- `last_previewed_at = NULL`.
+- `revision = 0`.
+- `updated_at = account.created_at`.
 - Existing accounts without a row should be lazily initialized inside the first
   preview/claim read path using `accounts.created_at`, but claim should create
   the row in the same transaction before committing rewards.

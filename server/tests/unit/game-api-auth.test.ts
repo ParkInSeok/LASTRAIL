@@ -140,6 +140,18 @@ describe("game-api auth", () => {
     expect(sql).toContain("INSERT INTO player_profiles");
     expect(sql).toContain("INSERT INTO account_runtime_state");
     expect(sql).toContain("INSERT INTO account_tutorial_state");
+    expect(sql).toContain("INSERT INTO account_offline_reward_state");
+
+    const accountStatement = db.__statements.find((statement) => statement.sql.includes("INSERT INTO accounts"));
+    const offlineStateStatement = db.__statements.find((statement) => statement.sql.includes("INSERT INTO account_offline_reward_state"));
+    expect(offlineStateStatement?.values[0]).toBe(accountStatement?.values[0]);
+    expect(offlineStateStatement?.values[1]).toBe(accountStatement?.values[1]);
+    expect(offlineStateStatement?.values[2]).toBe("none");
+    expect(offlineStateStatement?.sql).toContain("last_balance_config_version");
+    expect(offlineStateStatement?.sql).toContain("last_previewed_at");
+    expect(offlineStateStatement?.sql).toContain("NULL, ?, NULL, 0");
+    expect(offlineStateStatement?.values[3]).toBe("act1.2026-08-27.001");
+    expect(offlineStateStatement?.values[4]).toBe(accountStatement?.values[1]);
 
     const authSessionStatement = db.__statements.find((statement) => statement.sql.includes("INSERT INTO auth_sessions"));
     expect(authSessionStatement?.values.some((value) => typeof value === "string" && value.startsWith("refresh_"))).toBe(false);

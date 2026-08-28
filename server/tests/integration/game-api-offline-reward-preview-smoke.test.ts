@@ -120,6 +120,15 @@ describe("game-api offline reward preview local D1 smoke", () => {
         accessToken: string;
       };
       const authorization = `Bearer ${guestBody.accessToken}`;
+      const initialOfflineState = db.exec(
+        `SELECT last_story_progress_id, last_balance_config_version, last_narrative_version,
+                last_previewed_at, revision
+         FROM account_offline_reward_state
+         WHERE account_id = '${guestBody.account.id}'`,
+      );
+      expect(initialOfflineState[0]?.values).toEqual([
+        ["none", null, "act1.2026-08-27.001", null, 0],
+      ]);
 
       db.run(
         "UPDATE accounts SET created_at = ?, updated_at = ? WHERE id = ?;",
@@ -146,11 +155,14 @@ describe("game-api offline reward preview local D1 smoke", () => {
         ],
       );
       db.run(
-        `INSERT INTO account_offline_reward_state (
-           account_id, last_offline_reward_claim_at, last_story_progress_id,
-           last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
-         ) VALUES (?, ?, 'opn_06_broken_line', NULL, 'act1.2026-08-27.001', NULL, 1, ?);`,
-        [guestBody.account.id, fixedNow - 3 * 60 * 60 * 1000, fixedNow - 3 * 60 * 60 * 1000],
+        `UPDATE account_offline_reward_state
+         SET last_offline_reward_claim_at = ?,
+             last_story_progress_id = 'opn_06_broken_line',
+             last_narrative_version = 'act1.2026-08-27.001',
+             revision = 1,
+             updated_at = ?
+         WHERE account_id = ?;`,
+        [fixedNow - 3 * 60 * 60 * 1000, fixedNow - 3 * 60 * 60 * 1000, guestBody.account.id],
       );
 
       const response = await app.request(

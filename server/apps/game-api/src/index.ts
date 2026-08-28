@@ -1122,6 +1122,12 @@ app.post("/v1/auth/guest", async (c) => {
       `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
        VALUES (?, 'NOT_STARTED', NULL, ?)`,
     ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_offline_reward_state (
+         account_id, last_offline_reward_claim_at, last_story_progress_id,
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+       ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
+    ).bind(accountId, now, "none", actOneNarrativeVersion, now),
   ]);
 
   return c.json({

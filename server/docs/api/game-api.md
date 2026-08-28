@@ -79,6 +79,13 @@ Server writes:
 - `player_profiles`
 - `account_runtime_state`
 - `account_tutorial_state`
+- `account_offline_reward_state` with:
+  - `last_offline_reward_claim_at = account.created_at`
+  - `last_story_progress_id = 'none'`
+  - `last_balance_config_version = NULL`
+  - `last_narrative_version = 'act1.2026-08-27.001'`
+  - `last_previewed_at = NULL`
+  - `revision = 0`
 
 Security notes:
 
