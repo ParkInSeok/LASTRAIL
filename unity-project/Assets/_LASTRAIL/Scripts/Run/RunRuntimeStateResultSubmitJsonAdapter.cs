@@ -69,6 +69,8 @@ namespace LastRail.Run
             builder.Append("\"completedWaveCount\":").Append(export.CompletedWaveCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             AppendString(builder, "outcome", OutcomeToServerValue(outcome)).Append(',');
             AppendRaidResult(builder, raidResult).Append(',');
+            AppendOptionalString(builder, "startAugmentPackageRef", export.StartAugmentPackageRef).Append(',');
+            AppendOptionalString(builder, "startTacticPackageRef", export.StartTacticPackageRef).Append(',');
             AppendString(builder, "runtimeStateJson", ToRuntimeStateJson(export)).Append(',');
             AppendTacticSelections(builder, export);
             builder.Append(',');
@@ -93,6 +95,8 @@ namespace LastRail.Run
             AppendString(builder, "wavePlanId", export.WavePlanId).Append(',');
             builder.Append("\"seed\":").Append(export.Seed.ToString(CultureInfo.InvariantCulture)).Append(',');
             AppendString(builder, "rewardTableId", export.RewardTableId).Append(',');
+            AppendOptionalString(builder, "startAugmentPackageRef", export.StartAugmentPackageRef).Append(',');
+            AppendOptionalString(builder, "startTacticPackageRef", export.StartTacticPackageRef).Append(',');
             AppendString(builder, "serverStartedAt", export.ServerStartedAt.ToUniversalTime().ToString(UtcRoundTripFormat, CultureInfo.InvariantCulture)).Append(',');
             AppendString(builder, "currentStage", export.CurrentStage.ToString()).Append(',');
             builder.Append("\"currentWaveNumber\":").Append(export.CurrentWaveNumber.ToString(CultureInfo.InvariantCulture)).Append(',');
@@ -162,7 +166,8 @@ namespace LastRail.Run
                 builder.Append("\"waveNumber\":").Append(selection.WaveNumber.ToString(CultureInfo.InvariantCulture)).Append(',');
                 AppendString(builder, "tacticId", selection.TacticId).Append(',');
                 AppendString(builder, "tacticKind", selection.TacticKind.ToString()).Append(',');
-                builder.Append("\"draftContainedUltimateTactic\":").Append(selection.DraftContainedUltimateTactic ? "true" : "false");
+                builder.Append("\"draftContainedUltimateTactic\":").Append(selection.DraftContainedUltimateTactic ? "true" : "false").Append(',');
+                AppendOptionalString(builder, "packageRef", export.StartTacticPackageRef);
                 builder.Append('}');
             }
 
@@ -195,6 +200,16 @@ namespace LastRail.Run
                 .Append("\":\"")
                 .Append(Escape(value))
                 .Append('"');
+        }
+
+        private static StringBuilder AppendOptionalString(StringBuilder builder, string fieldName, string value)
+        {
+            if (value == null)
+            {
+                return builder.Append('"').Append(fieldName).Append("\":null");
+            }
+
+            return AppendString(builder, fieldName, value);
         }
 
         private static string Escape(string value)
