@@ -97,6 +97,109 @@ Security notes:
 - Access token TTL is currently 15 minutes.
 - Guest refresh token/session TTL is currently 30 days.
 
+### Google Sign-In / Guest Link
+
+Launch includes Google Sign-In for Unity. The server verifies Google ID tokens
+and then issues the normal LAST RAIL `Bearer` access/refresh token pair. The
+token bundle shape intentionally stays compatible with `POST /v1/auth/guest`
+and `POST /v1/auth/refresh`.
+
+Implementation note: production verification must follow the current Google
+Identity / OpenID Connect guidance at implementation/deploy time:
+
+- Verify the ID token signature against Google public keys.
+- Verify `aud` against the configured Google OAuth client id allow-list.
+- Verify `iss` is `accounts.google.com` or `https://accounts.google.com`.
+- Verify the token has not expired.
+- Use the Google `sub` claim as the provider subject. Do not key identity by
+  email.
+
+The actual Google OAuth client id / audience values are decision-queue items
+and must not be hardcoded into source. Local tests use a verifier abstraction
+with a fake verifier.
+
+`POST /v1/auth/google` signs in or restores an account through a verified
+Google identity.
+
+Request:
+
+```json
+{
+  "idToken": "google-id-token"
+}
+```
+
+Response:
+
+```json
+{
+  "tokenType": "Bearer",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:15:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z"
+}
+```
+
+`POST /v1/auth/google/link` links the authenticated guest/current account to a
+verified Google identity.
+
+Headers:
+
+```text
+Authorization: Bearer <access-token>
+```
+
+Request:
+
+```json
+{
+  "idToken": "google-id-token"
+}
+```
+
+Response:
+
+```json
+{
+  "tokenType": "Bearer",
+  "linkStatus": "LINKED",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:15:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z"
+}
+```
+
+Link status:
+
+- `LINKED`: this account is newly linked to the Google provider subject.
+- `ALREADY_LINKED`: the same account already owns that provider subject; the
+  response is replay-safe/idempotent success.
+
+Conflict and boundary rules:
+
+- `auth_identities(provider, provider_subject)` remains the unique identity
+  boundary. For Google, `provider = 'GOOGLE'` and `provider_subject = sub`.
+- Automatic account merge is not available at launch.
+- A Google identity already linked to another account returns
+  `google_identity_already_linked`.
+- Request body/query/header `accountId`, `account_id`, `X-Account-Id`, or
+  `X-Lastrail-Account-Id` style shortcuts are not accepted as Source of Truth.
+- Raw Google ID tokens are never stored in D1, logs, or responses.
+- Raw Google claims/full claim dumps are not stored or returned. If future
+  support visibility needs provider context, use scrubbed metadata only.
+- Refresh token plaintext storage remains forbidden; only
+  `auth_sessions.refresh_token_hash` is persisted.
+
 `POST /v1/auth/refresh` rotates a refresh token and returns a new token pair.
 
 Request:

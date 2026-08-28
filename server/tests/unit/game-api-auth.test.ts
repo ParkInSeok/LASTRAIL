@@ -9,6 +9,14 @@ type BoundStatement = {
 
 type TestEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT: string;
+  GOOGLE_AUTH_AUDIENCES?: string;
+  GOOGLE_ID_TOKEN_VERIFIER?: {
+    verifyIdToken: (idToken: string, audiences: string[]) => Promise<{
+      subject: string;
+      email?: string;
+      emailVerified?: boolean;
+    }>;
+  };
 };
 
 function createEnv(): TestEnv {
@@ -79,6 +87,66 @@ function createRefreshEnv(row: Record<string, unknown> | null): TestEnv {
       __statements: statements,
     } as unknown as D1Database,
   };
+}
+
+function createGoogleEnv(options: {
+  linkedAccountId?: string | null;
+  linkedAccountStatus?: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  verifierSubject?: string;
+} = {}): TestEnv {
+  const env = createEnv();
+  env.GOOGLE_AUTH_AUDIENCES = "unit-google-client.apps.googleusercontent.com";
+  env.GOOGLE_ID_TOKEN_VERIFIER = {
+    verifyIdToken: async (idToken, audiences) => {
+      expect(idToken).toBe("google.id.token");
+      expect(audiences).toEqual(["unit-google-client.apps.googleusercontent.com"]);
+      return {
+        subject: options.verifierSubject ?? "google-sub-1",
+        email: "commander@example.com",
+        emailVerified: true,
+      };
+    },
+  };
+
+  const statements: BoundStatement[] = [];
+  env.DB = {
+    prepare(sql: string) {
+      return {
+        bind(...values: unknown[]) {
+          return {
+            sql,
+            values,
+            first: async () => {
+              if (sql.includes("FROM auth_sessions")) {
+                return {
+                  account_id: "account_guest_1",
+                  session_id: "session_guest_1",
+                  session_status: "ACTIVE",
+                  session_expires_at: Date.parse("2026-09-25T00:00:00.000Z"),
+                  account_status: "ACTIVE",
+                  account_created_at: Date.parse("2026-08-26T00:00:00.000Z"),
+                };
+              }
+              if (sql.includes("FROM auth_identities") && sql.includes("provider = 'GOOGLE'")) {
+                if (options.linkedAccountId === null) return null;
+                return {
+                  account_id: options.linkedAccountId ?? "account_google_1",
+                  account_status: options.linkedAccountStatus ?? "ACTIVE",
+                };
+              }
+              return null;
+            },
+          };
+        },
+      };
+    },
+    async batch(batchStatements: BoundStatement[]) {
+      statements.push(...batchStatements);
+      return batchStatements.map(() => ({ success: true }));
+    },
+    __statements: statements,
+  } as unknown as D1Database;
+  return env;
 }
 
 describe("game-api auth", () => {
@@ -155,6 +223,153 @@ describe("game-api auth", () => {
 
     const authSessionStatement = db.__statements.find((statement) => statement.sql.includes("INSERT INTO auth_sessions"));
     expect(authSessionStatement?.values.some((value) => typeof value === "string" && value.startsWith("refresh_"))).toBe(false);
+  });
+
+  it("signs in with a verified Google identity and does not persist raw Google token data", async () => {
+    const env = createGoogleEnv({ linkedAccountId: "account_google_1" });
+    const response = await app.request(
+      "/v1/auth/google",
+      {
+        method: "POST",
+        body: JSON.stringify({ idToken: "google.id.token" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      tokenType: "Bearer",
+      account: {
+        id: "account_google_1",
+        status: "ACTIVE",
+      },
+    });
+    expect(body.accessToken).toEqual(expect.any(String));
+    expect(body.refreshToken).toMatch(/^refresh_/u);
+
+    const db = env.DB as unknown as { __statements: BoundStatement[] };
+    const serializedValues = JSON.stringify(db.__statements.flatMap((statement) => statement.values));
+    expect(serializedValues).not.toContain("google.id.token");
+    expect(serializedValues).not.toContain("commander@example.com");
+    expect(db.__statements.map((statement) => statement.sql).join("\n")).toContain("INSERT INTO auth_sessions");
+  });
+
+  it("links a guest account to a Google identity through bearer auth", async () => {
+    const env = createGoogleEnv({ linkedAccountId: null });
+    const accessToken = await createAccessToken({
+      secret: env.AUTH_SIGNING_KEY_CURRENT,
+      accountId: "account_guest_1",
+      sessionId: "session_guest_1",
+      nowMs: Date.now(),
+      ttlMs: 15 * 60 * 1000,
+    });
+
+    const response = await app.request(
+      "/v1/auth/google/link",
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ idToken: "google.id.token" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      tokenType: "Bearer",
+      linkStatus: "LINKED",
+      account: {
+        id: "account_guest_1",
+        status: "ACTIVE",
+      },
+    });
+
+    const db = env.DB as unknown as { __statements: BoundStatement[] };
+    const googleIdentityInsert = db.__statements.find((statement) => statement.sql.includes("INSERT INTO auth_identities"));
+    expect(googleIdentityInsert?.values).toContain("account_guest_1");
+    expect(googleIdentityInsert?.values).toContain("google-sub-1");
+    expect(JSON.stringify(db.__statements.flatMap((statement) => statement.values))).not.toContain("google.id.token");
+  });
+
+  it("treats same-account Google link as idempotent already-linked success", async () => {
+    const env = createGoogleEnv({ linkedAccountId: "account_guest_1" });
+    const accessToken = await createAccessToken({
+      secret: env.AUTH_SIGNING_KEY_CURRENT,
+      accountId: "account_guest_1",
+      sessionId: "session_guest_1",
+      nowMs: Date.now(),
+      ttlMs: 15 * 60 * 1000,
+    });
+
+    const response = await app.request(
+      "/v1/auth/google/link",
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ idToken: "google.id.token" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      tokenType: "Bearer",
+      linkStatus: "ALREADY_LINKED",
+      account: {
+        id: "account_guest_1",
+        status: "ACTIVE",
+      },
+    });
+
+    const db = env.DB as unknown as { __statements: BoundStatement[] };
+    const sql = db.__statements.map((statement) => statement.sql).join("\n");
+    expect(sql).not.toContain("INSERT INTO auth_identities");
+    expect(sql).toContain("INSERT INTO auth_sessions");
+  });
+
+  it("rejects Google link when the provider identity belongs to another account", async () => {
+    const env = createGoogleEnv({ linkedAccountId: "account_other_1" });
+    const accessToken = await createAccessToken({
+      secret: env.AUTH_SIGNING_KEY_CURRENT,
+      accountId: "account_guest_1",
+      sessionId: "session_guest_1",
+      nowMs: Date.now(),
+      ttlMs: 15 * 60 * 1000,
+    });
+
+    const response = await app.request(
+      "/v1/auth/google/link",
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ idToken: "google.id.token", accountId: "account_guest_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      errorCode: "contract_violation",
+      message: "accountId must not be supplied by the client.",
+    });
+
+    const conflictResponse = await app.request(
+      "/v1/auth/google/link",
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ idToken: "google.id.token" }),
+      },
+      env,
+    );
+
+    expect(conflictResponse.status).toBe(409);
+    await expect(conflictResponse.json()).resolves.toEqual({
+      errorCode: "google_identity_already_linked",
+      message: "Google identity is already linked to another account.",
+    });
   });
 
   it("rejects gacha pull account scope when Authorization is missing", async () => {

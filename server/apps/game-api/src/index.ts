@@ -18,6 +18,18 @@ type GameApiContext = Context<{ Bindings: Env }>;
 
 type GameApiEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT?: string;
+  GOOGLE_AUTH_AUDIENCES?: string;
+  GOOGLE_ID_TOKEN_VERIFIER?: GoogleIdTokenVerifier;
+};
+
+type GoogleIdTokenVerifier = {
+  verifyIdToken: (idToken: string, audiences: string[]) => Promise<GoogleIdentityClaims>;
+};
+
+type GoogleIdentityClaims = {
+  subject: string;
+  email?: string;
+  emailVerified?: boolean;
 };
 
 const apiBaseUrls = {
@@ -157,6 +169,11 @@ type RefreshSessionAccountRow = AuthSessionAccountRow & {
   generation: number;
 };
 
+type AuthIdentityAccountRow = {
+  account_id: string;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+};
+
 type AuthContext = {
   accountId: string;
   sessionId: string;
@@ -243,7 +260,7 @@ type GachaReplayResultRow = {
   duplicate_conversion_json: string | null;
 };
 
-type AuthFailureStatus = 401 | 403 | 500;
+type AuthFailureStatus = 400 | 401 | 403 | 409 | 500;
 
 type AuthFailure = {
   status: AuthFailureStatus;
@@ -1082,6 +1099,17 @@ function getAuthSecret(env: Env): string | null {
   return (env as GameApiEnv).AUTH_SIGNING_KEY_CURRENT ?? null;
 }
 
+function getGoogleAudiences(env: Env): string[] {
+  return ((env as GameApiEnv).GOOGLE_AUTH_AUDIENCES ?? "")
+    .split(",")
+    .map((audience) => audience.trim())
+    .filter((audience) => audience.length > 0);
+}
+
+function getGoogleVerifier(env: Env): GoogleIdTokenVerifier | null {
+  return (env as GameApiEnv).GOOGLE_ID_TOKEN_VERIFIER ?? null;
+}
+
 function createAuthError(errorCode: string, message: string) {
   return {
     errorCode,
@@ -1097,8 +1125,8 @@ function createAuthFailure(status: AuthFailureStatus, errorCode: string, message
   };
 }
 
-function isAuthFailure(value: AuthContext | AuthFailure): value is AuthFailure {
-  return "errorCode" in value;
+function isAuthFailure(value: unknown): value is AuthFailure {
+  return typeof value === "object" && value !== null && "errorCode" in value;
 }
 
 async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | AuthFailure> {
@@ -1142,6 +1170,93 @@ async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | Auth
     sessionId: row.session_id,
     accountCreatedAt: typeof row.account_created_at === "number" ? row.account_created_at : Date.now(),
   };
+}
+
+async function createAuthTokenBundle(options: {
+  env: Env;
+  secret: string;
+  accountId: string;
+  now: number;
+}) {
+  const sessionId = createDomainId("session");
+  const familyId = createDomainId("family");
+  const refreshToken = createRefreshToken();
+  const refreshTokenHash = await hashRefreshToken(refreshToken);
+  const accessTokenTtlMs = 15 * 60 * 1000;
+  const refreshTokenTtlMs = 30 * 24 * 60 * 60 * 1000;
+  const accessTokenExpiresAt = options.now + accessTokenTtlMs;
+  const refreshTokenExpiresAt = options.now + refreshTokenTtlMs;
+  const accessToken = await createAccessToken({
+    secret: options.secret,
+    accountId: options.accountId,
+    sessionId,
+    nowMs: options.now,
+    ttlMs: accessTokenTtlMs,
+  });
+
+  return {
+    sessionId,
+    familyId,
+    refreshToken,
+    refreshTokenHash,
+    refreshTokenExpiresAt,
+    response: {
+      tokenType: "Bearer",
+      account: {
+        id: options.accountId,
+        status: "ACTIVE",
+      },
+      accessToken,
+      accessTokenExpiresAt: toIso(accessTokenExpiresAt),
+      refreshToken,
+      refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
+    },
+  };
+}
+
+async function verifyGoogleIdentity(c: GameApiContext, idToken: string): Promise<{ subject: string } | AuthFailure> {
+  const audiences = getGoogleAudiences(c.env);
+  const verifier = getGoogleVerifier(c.env);
+  if (audiences.length === 0 || verifier === null) {
+    return createAuthFailure(500, "google_auth_not_configured", "Google auth verifier is not configured.");
+  }
+
+  let claims: GoogleIdentityClaims;
+  try {
+    claims = await verifier.verifyIdToken(idToken, audiences);
+  } catch {
+    return createAuthFailure(401, "google_id_token_invalid", "Google ID token is invalid.");
+  }
+
+  if (typeof claims.subject !== "string" || claims.subject.trim() === "") {
+    return createAuthFailure(401, "google_id_token_invalid", "Google ID token subject is invalid.");
+  }
+
+  return { subject: claims.subject };
+}
+
+async function parseGoogleAuthBody(c: GameApiContext): Promise<{ idToken: string } | AuthFailure> {
+  if (Object.keys(c.req.query()).length > 0) {
+    return createAuthFailure(400, "contract_violation", "Query parameters are not accepted.");
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    const parsed = await c.req.json();
+    body = typeof parsed === "object" && parsed !== null ? parsed as Record<string, unknown> : {};
+  } catch {
+    body = {};
+  }
+
+  if (Object.hasOwn(body, "accountId") || Object.hasOwn(body, "account_id")) {
+    return createAuthFailure(400, "contract_violation", "accountId must not be supplied by the client.");
+  }
+
+  if (typeof body.idToken !== "string" || body.idToken.trim() === "") {
+    return createAuthFailure(400, "contract_violation", "idToken is required.");
+  }
+
+  return { idToken: body.idToken };
 }
 
 app.get("/status", (c) => c.json({ ok: true, service: "game-api", requestId: createRequestId() }));
@@ -1214,6 +1329,163 @@ app.post("/v1/auth/guest", async (c) => {
     accessTokenExpiresAt: toIso(accessTokenExpiresAt),
     refreshToken,
     refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
+  });
+});
+app.post("/v1/auth/google", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const body = await parseGoogleAuthBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createAuthError(body.errorCode, body.message), body.status);
+  }
+
+  const identity = await verifyGoogleIdentity(c, body.idToken);
+  if (isAuthFailure(identity)) {
+    return c.json(createAuthError(identity.errorCode, identity.message), identity.status);
+  }
+
+  const identityRow = await c.env.DB.prepare(
+    `SELECT identities.account_id, accounts.status AS account_status
+     FROM auth_identities identities
+     JOIN accounts ON accounts.id = identities.account_id
+     WHERE identities.provider = 'GOOGLE' AND identities.provider_subject = ?`,
+  )
+    .bind(identity.subject)
+    .first<AuthIdentityAccountRow>();
+
+  const now = Date.now();
+  if (identityRow !== null) {
+    if (identityRow.account_status !== "ACTIVE") {
+      return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+    }
+
+    const bundle = await createAuthTokenBundle({
+      env: c.env,
+      secret,
+      accountId: identityRow.account_id,
+      now,
+    });
+
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+         VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+      ).bind(bundle.sessionId, identityRow.account_id, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+    ]);
+
+    return c.json(bundle.response);
+  }
+
+  const accountId = createDomainId("account");
+  const identityId = createDomainId("identity");
+  const bundle = await createAuthTokenBundle({
+    env: c.env,
+    secret,
+    accountId,
+    now,
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO accounts (id, status, created_at, updated_at)
+       VALUES (?, 'ACTIVE', ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
+       VALUES (?, ?, 'GOOGLE', ?, ?)`,
+    ).bind(identityId, accountId, identity.subject, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(bundle.sessionId, accountId, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+    c.env.DB.prepare(
+      `INSERT INTO player_profiles (account_id, display_name, commander_xp, created_at, updated_at)
+       VALUES (?, NULL, 0, ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_runtime_state (account_id, protection_mode, maintenance_until, updated_at)
+       VALUES (?, 'NORMAL', NULL, ?)`,
+    ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
+       VALUES (?, 'NOT_STARTED', NULL, ?)`,
+    ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_offline_reward_state (
+         account_id, last_offline_reward_claim_at, last_story_progress_id,
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+       ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
+    ).bind(accountId, now, "none", actOneNarrativeVersion, now),
+  ]);
+
+  return c.json(bundle.response);
+});
+app.post("/v1/auth/google/link", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const body = await parseGoogleAuthBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createAuthError(body.errorCode, body.message), body.status);
+  }
+
+  const auth = await resolveAuthContext(c);
+  if (isAuthFailure(auth)) {
+    return c.json(createAuthError(auth.errorCode, auth.message), auth.status);
+  }
+
+  const identity = await verifyGoogleIdentity(c, body.idToken);
+  if (isAuthFailure(identity)) {
+    return c.json(createAuthError(identity.errorCode, identity.message), identity.status);
+  }
+
+  const identityRow = await c.env.DB.prepare(
+    `SELECT identities.account_id, accounts.status AS account_status
+     FROM auth_identities identities
+     JOIN accounts ON accounts.id = identities.account_id
+     WHERE identities.provider = 'GOOGLE' AND identities.provider_subject = ?`,
+  )
+    .bind(identity.subject)
+    .first<AuthIdentityAccountRow>();
+
+  if (identityRow !== null && identityRow.account_id !== auth.accountId) {
+    return c.json(createAuthError("google_identity_already_linked", "Google identity is already linked to another account."), 409);
+  }
+
+  const now = Date.now();
+  const bundle = await createAuthTokenBundle({
+    env: c.env,
+    secret,
+    accountId: auth.accountId,
+    now,
+  });
+  const linkStatus = identityRow === null ? "LINKED" : "ALREADY_LINKED";
+  const statements = [
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(bundle.sessionId, auth.accountId, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+  ];
+
+  if (identityRow === null) {
+    statements.unshift(
+      c.env.DB.prepare(
+        `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
+         VALUES (?, ?, 'GOOGLE', ?, ?)`,
+      ).bind(createDomainId("identity"), auth.accountId, identity.subject, now),
+    );
+  }
+
+  await c.env.DB.batch(statements);
+
+  return c.json({
+    ...bundle.response,
+    linkStatus,
   });
 });
 app.post("/v1/auth/refresh", async (c) => {
