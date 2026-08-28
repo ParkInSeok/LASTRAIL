@@ -11,7 +11,84 @@ type GachaReadOnlySection = {
   fields: string[];
 };
 
+type GachaLaunchSupportCard = {
+  code: string;
+  label: string;
+  value: "연동 대기" | "TESTING_TUNING_DRAFT";
+  note: string;
+};
+
 const labeledCode = (label: string, code: string) => `${label} (${code})`;
+
+export const gachaSupportPullCountVisibility = ["1-pull", "10-pull"] as const;
+
+export const actOneEliteOperatorIdsDraft = [
+  "op_kyle",
+  "op_reina",
+  "op_eve",
+  "op_sera",
+  "op_mira",
+  "op_vex",
+  "op_rin",
+  "op_nyx",
+  "op_cipher",
+  "op_iris"
+] as const;
+
+export const gachaDuplicateConversionSupportFields = [
+  "displayItemId",
+  "persistedTokenPattern",
+  "rareConversionQuantityCandidate",
+  "eliteConversionQuantityCandidate"
+] as const;
+
+export const gachaLaunchResultFields = [
+  "pullSequence",
+  "resultRarity",
+  "resultType",
+  "resultId",
+  "reward",
+  "isPickup",
+  "wasDuplicate",
+  "duplicateConversion"
+] as const;
+
+export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
+  { code: "activeBannerId", label: "활성 배너 ID", value: "연동 대기", note: "active banner id read-only 후보" },
+  { code: "bannerType", label: "배너 유형", value: "연동 대기", note: "PICKUP/non-PICKUP banner type 후보" },
+  { code: "pickupOperatorId", label: "픽업 요원 ID", value: "연동 대기", note: "pickup operator stable id 후보" },
+  {
+    code: "pullCountVisibility",
+    label: "모집 횟수",
+    value: "연동 대기",
+    note: gachaSupportPullCountVisibility.join(" / ")
+  },
+  {
+    code: "pityThresholds",
+    label: "천장 기준",
+    value: "연동 대기",
+    note: "rare 10 / elite 30 / pickup 60 draft/contract candidate, live economy truth 아님"
+  },
+  {
+    code: "guaranteeType",
+    label: "보장 발동",
+    value: "연동 대기",
+    note: ["NONE", "RARE_OR_HIGHER_10", "ELITE_30", "PICKUP_ELITE_60"].join(" / ")
+  },
+  {
+    code: "duplicateConversion",
+    label: "중복 변환",
+    value: "연동 대기",
+    note: gachaDuplicateConversionSupportFields.join(" / ")
+  },
+  { code: "resultFields", label: "결과 필드", value: "연동 대기", note: gachaLaunchResultFields.join(" / ") },
+  {
+    code: "actOneEliteVisualScope",
+    label: "Act 1 정예 요원 10인",
+    value: "TESTING_TUNING_DRAFT",
+    note: actOneEliteOperatorIdsDraft.join(" / ")
+  }
+];
 
 export const gachaReadOnlySections: GachaReadOnlySection[] = [
   {
@@ -107,6 +184,23 @@ export function GachaPage() {
           <span>상태</span>
           <strong>연동 대기</strong>
           <small>서버 조회 API 계약 대기</small>
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>Launch CS 가시성</h2>
+          <p>Gacha launch 문의 대응에 필요한 read-only 후보만 표시하고 수동 복구/재추첨은 제공하지 않습니다</p>
+        </header>
+        <div className="metric-grid">
+          {gachaLaunchSupportVisibilityCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>
+                {card.code} / {card.note}
+              </small>
+            </div>
+          ))}
         </div>
       </section>
       <div className="dashboard-sections">

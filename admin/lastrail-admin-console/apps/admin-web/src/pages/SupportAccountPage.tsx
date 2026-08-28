@@ -5,6 +5,7 @@ import { encounterTypeLabel, permissionLabel } from "../shared/labels/adminLabel
 import {
   accountAuthVisibilityFields,
   customerSupportCombatEvidenceFields,
+  customerSupportGachaLaunchPolicy,
   customerSupportCaseTypeLabel,
   customerSupportCaseTypes,
   customerSupportContractPreview,
@@ -103,6 +104,29 @@ export const supportCombatEvidenceCards: SupportCard[] = customerSupportCombatEv
         : field === "startAugmentPackageRef" || field === "startTacticPackageRef"
           ? "server-authored run start package / reward/economy/story/offline/gacha Source of Truth 아님"
         : `${field} sanitized run/raid reference 후보`
+}));
+
+export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGachaLaunchPolicy.evidenceFields.map((field) => ({
+  code: field,
+  label:
+    {
+      activeBannerId: "활성 배너 ID",
+      bannerType: "배너 유형",
+      pickupOperatorId: "픽업 요원 ID",
+      pullCountVisibility: "1회/10회 모집",
+      pityThresholds: "천장 기준",
+      guaranteeType: "보장 발동",
+      duplicateConversion: "중복 변환",
+      resultFields: "결과 필드",
+      actOneEliteVisualScope: "Act 1 정예 요원 10인"
+    }[field] ?? field,
+  value: "연동 대기",
+  note:
+    field === "pityThresholds"
+      ? "rare 10 / elite 30 / pickup 60 draft/contract candidate"
+      : field === "actOneEliteVisualScope"
+        ? `TESTING_TUNING_DRAFT / ${customerSupportGachaLaunchPolicy.actOneEliteOperatorIds.join(" / ")}`
+        : `${field} gacha launch read-only support evidence 후보`
 }));
 
 export const supportOutOfScopeControls = [...customerSupportMutationControlsOutOfScope];
@@ -298,6 +322,21 @@ export function SupportAccountPage() {
         </header>
         <div className="metric-grid">
           {supportCombatEvidenceCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>모집 문의 근거</h2>
+          <p>launch 포함 gacha 흐름을 batch/result/보장/중복 변환 기준으로 읽기 전용 확인하는 후보입니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportGachaLaunchEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

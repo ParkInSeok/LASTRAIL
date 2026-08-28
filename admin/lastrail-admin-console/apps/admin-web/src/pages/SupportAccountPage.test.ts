@@ -4,6 +4,7 @@ import {
   supportAccountContextCards,
   supportCaseTypeCards,
   supportCombatEvidenceCards,
+  supportGachaLaunchEvidenceCards,
   supportEscalationActionCards,
   supportEscalationCategoryCards,
   supportEscalationEvidenceCards,
@@ -109,6 +110,35 @@ describe("SupportAccountPage configuration", () => {
     expect(serialized).not.toContain("animation frame");
     expect(serialized).not.toContain("debug payload");
     expect(serialized).not.toContain("mid-wave");
+  });
+
+  it("prepares gacha launch support evidence placeholders", () => {
+    expect(supportGachaLaunchEvidenceCards.map((card) => card.code)).toEqual([
+      "activeBannerId",
+      "bannerType",
+      "pickupOperatorId",
+      "pullCountVisibility",
+      "pityThresholds",
+      "guaranteeType",
+      "duplicateConversion",
+      "resultFields",
+      "actOneEliteVisualScope"
+    ]);
+    expect(supportGachaLaunchEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "pityThresholds")?.note).toContain(
+      "draft/contract candidate"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
+      "TESTING_TUNING_DRAFT"
+    );
+
+    const serialized = JSON.stringify(supportGachaLaunchEvidenceCards);
+    expect(serialized).not.toContain("raw RNG");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("seed preimage");
+    expect(serialized).not.toContain("manual grant");
+    expect(serialized).not.toContain("reroll");
   });
 
   it("does not expose mutation controls in the support skeleton", () => {

@@ -88,6 +88,17 @@ export type SupportRunCombatEvidenceField =
 
 export type SupportRunEncounterType = "ORDINARY_15_WAVE" | "RAID_BOSS";
 
+export type SupportGachaLaunchEvidenceField =
+  | "activeBannerId"
+  | "bannerType"
+  | "pickupOperatorId"
+  | "pullCountVisibility"
+  | "pityThresholds"
+  | "guaranteeType"
+  | "duplicateConversion"
+  | "resultFields"
+  | "actOneEliteVisualScope";
+
 export type SupportSummarySectionCode =
   | "account"
   | "auth"
@@ -169,6 +180,22 @@ export type CustomerSupportContractPreview = {
     packageRefPolicy: "server-authored run start package";
     sourceOfTruthExclusion: "reward/economy/story/offline/gacha Source of Truth 아님";
     supportFacingErrorCodes: readonly string[];
+    mutationControlsEnabled: false;
+  };
+  gachaLaunch: {
+    readOnly: true;
+    scopeStatus: "TESTING_TUNING_DRAFT";
+    evidenceFields: readonly SupportGachaLaunchEvidenceField[];
+    pullCounts: readonly string[];
+    pityThresholds: {
+      rare: "10";
+      elite: "30";
+      pickup: "60";
+    };
+    guaranteeTypes: readonly string[];
+    duplicateConversionFields: readonly string[];
+    resultFields: readonly string[];
+    actOneEliteOperatorIds: readonly string[];
     mutationControlsEnabled: false;
   };
   context: CustomerSupportContextItem[];
@@ -262,6 +289,60 @@ export const customerSupportCombatEvidenceFields: SupportRunCombatEvidenceField[
 ];
 
 export const customerSupportRunEncounterTypes: SupportRunEncounterType[] = ["ORDINARY_15_WAVE", "RAID_BOSS"];
+
+export const customerSupportGachaLaunchEvidenceFields: SupportGachaLaunchEvidenceField[] = [
+  "activeBannerId",
+  "bannerType",
+  "pickupOperatorId",
+  "pullCountVisibility",
+  "pityThresholds",
+  "guaranteeType",
+  "duplicateConversion",
+  "resultFields",
+  "actOneEliteVisualScope"
+];
+
+export const customerSupportGachaLaunchPolicy = {
+  readOnly: true,
+  scopeStatus: "TESTING_TUNING_DRAFT",
+  evidenceFields: customerSupportGachaLaunchEvidenceFields,
+  pullCounts: ["1-pull", "10-pull"],
+  pityThresholds: {
+    rare: "10",
+    elite: "30",
+    pickup: "60"
+  },
+  guaranteeTypes: ["NONE", "RARE_OR_HIGHER_10", "ELITE_30", "PICKUP_ELITE_60"],
+  duplicateConversionFields: [
+    "displayItemId",
+    "persistedTokenPattern",
+    "rareConversionQuantityCandidate",
+    "eliteConversionQuantityCandidate"
+  ],
+  resultFields: [
+    "pullSequence",
+    "resultRarity",
+    "resultType",
+    "resultId",
+    "reward",
+    "isPickup",
+    "wasDuplicate",
+    "duplicateConversion"
+  ],
+  actOneEliteOperatorIds: [
+    "op_kyle",
+    "op_reina",
+    "op_eve",
+    "op_sera",
+    "op_mira",
+    "op_vex",
+    "op_rin",
+    "op_nyx",
+    "op_cipher",
+    "op_iris"
+  ],
+  mutationControlsEnabled: false
+} as const;
 
 export const customerSupportCombatForbiddenExamplesOutOfScope = [
   "raw combat timeline",
@@ -602,6 +683,7 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
     supportFacingErrorCodes: ["package_ref_mismatch", "contract_violation"],
     mutationControlsEnabled: false
   },
+  gachaLaunch: customerSupportGachaLaunchPolicy,
   context: customerSupportContextFields.map((field) => ({
     field,
     label: customerSupportContextFieldLabel(field),

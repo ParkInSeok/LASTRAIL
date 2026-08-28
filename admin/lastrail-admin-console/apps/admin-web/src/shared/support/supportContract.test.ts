@@ -7,6 +7,8 @@ import {
   accountAuthVisibilityFields,
   customerSupportCombatEvidenceFields,
   customerSupportCombatForbiddenExamplesOutOfScope,
+  customerSupportGachaLaunchEvidenceFields,
+  customerSupportGachaLaunchPolicy,
   customerSupportCaseTypes,
   customerSupportCaseTypeLabel,
   customerSupportContractPreview,
@@ -132,6 +134,48 @@ describe("supportContract", () => {
       expect(serialized).not.toContain(forbidden);
     }
     expect(serialized).not.toContain("mid-wave");
+  });
+
+  it("prepares launch gacha support visibility as read-only evidence", () => {
+    expect(customerSupportGachaLaunchEvidenceFields).toEqual([
+      "activeBannerId",
+      "bannerType",
+      "pickupOperatorId",
+      "pullCountVisibility",
+      "pityThresholds",
+      "guaranteeType",
+      "duplicateConversion",
+      "resultFields",
+      "actOneEliteVisualScope"
+    ]);
+    expect(customerSupportGachaLaunchPolicy.readOnly).toBe(true);
+    expect(customerSupportGachaLaunchPolicy.scopeStatus).toBe("TESTING_TUNING_DRAFT");
+    expect(customerSupportGachaLaunchPolicy.pullCounts).toEqual(["1-pull", "10-pull"]);
+    expect(customerSupportGachaLaunchPolicy.pityThresholds).toEqual({
+      rare: "10",
+      elite: "30",
+      pickup: "60"
+    });
+    expect(customerSupportGachaLaunchPolicy.resultFields).toEqual([
+      "pullSequence",
+      "resultRarity",
+      "resultType",
+      "resultId",
+      "reward",
+      "isPickup",
+      "wasDuplicate",
+      "duplicateConversion"
+    ]);
+    expect(customerSupportGachaLaunchPolicy.actOneEliteOperatorIds).toHaveLength(10);
+
+    const serialized = JSON.stringify(customerSupportGachaLaunchPolicy);
+    expect(serialized).not.toContain("raw RNG");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("seed preimage");
+    expect(serialized).not.toContain("manual grant");
+    expect(serialized).not.toContain("repair");
+    expect(serialized).not.toContain("reroll");
   });
 
   it("keeps support workflow launch scope read-only and free of sensitive examples", () => {
