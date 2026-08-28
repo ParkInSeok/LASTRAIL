@@ -50,7 +50,10 @@ export const supportAccountContextCards: SupportCard[] = customerSupportContextF
   field,
   label: customerSupportContextFieldLabel(field),
   value: "연동 대기",
-  note: `${field} sanitized reference 후보`
+  note:
+    field === "recentOpsErrorLogs"
+      ? "recent open/acknowledged latest 5, critical first, source/correlation ids read-only compose 후보"
+      : `${field} sanitized reference 후보`
 }));
 
 export const supportSummarySectionCards: SupportCard[] = customerSupportSummarySectionCodes.map((section) => ({

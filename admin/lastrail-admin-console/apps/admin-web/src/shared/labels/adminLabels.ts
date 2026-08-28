@@ -221,6 +221,8 @@ export function opsErrorCodeLabel(code: string): string {
       offline_reward_policy_missing: "오프라인 보상 정책 누락",
       offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
       offline_reward_state_conflict: "오프라인 보상 상태 충돌",
+      google_auth_config_missing: "Google 인증 설정 누락",
+      gacha_state_conflict: "모집 상태 충돌",
       duplicate_replay: "중복 재생",
       offline_reward_not_claimable: "오프라인 보상 수령 대상 없음",
       offline_reward_claim_conflict: "오프라인 보상 수령 충돌",

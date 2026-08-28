@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { playerAuthEvidenceCards } from "./PlayerDetailPage";
+import { playerAuthEvidenceCards, playerRecentOpsErrorEvidenceCards } from "./PlayerDetailPage";
 
 describe("PlayerDetailPage configuration", () => {
   it("prepares read-only login provider evidence without account mutation controls", () => {
@@ -37,5 +37,27 @@ describe("PlayerDetailPage configuration", () => {
     expect(serialized).not.toContain("Google ID token");
     expect(serialized).not.toContain("session secret");
     expect(serialized).not.toContain("refresh token hash");
+  });
+
+  it("prepares recent ops error evidence placeholders without resolution actions", () => {
+    expect(playerRecentOpsErrorEvidenceCards.map((card) => card.code)).toEqual([
+      "recentOpsErrorLogs",
+      "opsErrorSeverity",
+      "opsErrorStatus",
+      "opsErrorSource",
+      "opsErrorCorrelationIds"
+    ]);
+    expect(playerRecentOpsErrorEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(playerRecentOpsErrorEvidenceCards.find((card) => card.code === "recentOpsErrorLogs")?.note).toContain(
+      "latest 5"
+    );
+    expect(playerRecentOpsErrorEvidenceCards.find((card) => card.code === "opsErrorCorrelationIds")?.note).toContain(
+      "accountId / runId / gachaBannerId"
+    );
+
+    const serialized = JSON.stringify(playerRecentOpsErrorEvidenceCards);
+    expect(serialized).not.toContain("resolve button");
+    expect(serialized).not.toContain("acknowledge button");
+    expect(serialized).not.toContain("stack dump");
   });
 });

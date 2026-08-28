@@ -79,8 +79,9 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
     )
   },
   {
-    label: "보상/위험도 오류",
+    label: "인증/보상/모집/스토리 오류",
     options: [
+      "google_auth_config_missing",
       "reward_plan_mismatch",
       "reward_multiplier_missing",
       "reward_plan_unavailable",
@@ -90,13 +91,30 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
       "offline_reward_claim_unavailable",
       "offline_reward_state_conflict",
       "offline_reward_integrity_restricted",
+      "gacha_state_conflict",
       "story_progress_policy_missing",
       "story_progress_state_conflict",
       "narrative_content_missing",
       "narrative_version_mismatch"
     ].map((code) => labeledCode(opsErrorCodeLabel(code), code))
   },
-  { label: "식별자", options: ["errorCode", "requestId", "accountId", "runId", "rewardPreviewId", "gachaBatchId"] },
+  {
+    label: "식별자",
+    options: [
+      "errorCode",
+      "requestId",
+      "accountId",
+      "runId",
+      "rewardPreviewId",
+      "rewardClaimId",
+      "offlineRewardClaimId",
+      "gachaBatchId",
+      "gachaBannerId",
+      "storyProgressId",
+      "integrityEventId",
+      "supportTicketId"
+    ]
+  },
   { label: "시간 범위", options: ["최근 1시간", "최근 24시간", "최근 7일", "사용자 지정"] }
 ];
 
@@ -154,6 +172,7 @@ function relatedResources(item: OpsErrorLogListItem): string {
     item.rewardClaimId,
     item.offlineRewardClaimId,
     item.gachaBatchId,
+    item.gachaBannerId,
     item.storyProgressId,
     item.integrityEventId,
     item.supportTicketId

@@ -40,13 +40,17 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("치명 (critical)");
     expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
     expect(options).toContain("치명 오류 (fatal)");
+    expect(options).toContain("Google 인증 설정 누락 (google_auth_config_missing)");
     expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
     expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
     expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
     expect(options).toContain("오프라인 보상 정책 누락 (offline_reward_policy_missing)");
     expect(options).toContain("오프라인 보상 상태 충돌 (offline_reward_state_conflict)");
+    expect(options).toContain("모집 상태 충돌 (gacha_state_conflict)");
     expect(options).toContain("스토리 진행 정책 누락 (story_progress_policy_missing)");
+    expect(options).toContain("스토리 진행 상태 충돌 (story_progress_state_conflict)");
     expect(options).toContain("내러티브 콘텐츠 누락 (narrative_content_missing)");
+    expect(options).toContain("gachaBannerId");
   });
 
   it("keeps ops error logs as read-only support evidence before endpoints are implemented", () => {
@@ -74,6 +78,7 @@ describe("ErrorLogsPage configuration", () => {
       "rewardClaimId",
       "offlineRewardClaimId",
       "gachaBatchId",
+      "gachaBannerId",
       "storyProgressId",
       "integrityEventId",
       "supportTicketId",

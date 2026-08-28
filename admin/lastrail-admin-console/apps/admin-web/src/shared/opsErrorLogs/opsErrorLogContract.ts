@@ -12,6 +12,7 @@ export type OpsErrorLogReadFiltersPreview = {
   rewardClaimId: string;
   offlineRewardClaimId: string;
   gachaBatchId: string;
+  gachaBannerId: string;
   storyProgressId: string;
   integrityEventId: string;
   supportTicketId: string;
@@ -36,6 +37,7 @@ export type OpsErrorLogListItem = {
   rewardClaimId: string | null;
   offlineRewardClaimId: string | null;
   gachaBatchId: string | null;
+  gachaBannerId: string | null;
   storyProgressId: string | null;
   integrityEventId: string | null;
   supportTicketId: string | null;
@@ -73,6 +75,7 @@ export const opsErrorLogReadFilterFields = [
   "rewardClaimId",
   "offlineRewardClaimId",
   "gachaBatchId",
+  "gachaBannerId",
   "storyProgressId",
   "integrityEventId",
   "supportTicketId",
@@ -129,6 +132,7 @@ function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsEr
     rewardClaimId: correlationString(record, "rewardClaimId"),
     offlineRewardClaimId: correlationString(record, "offlineRewardClaimId"),
     gachaBatchId: correlationString(record, "gachaBatchId"),
+    gachaBannerId: correlationString(record, "gachaBannerId"),
     storyProgressId: correlationString(record, "storyProgressId"),
     integrityEventId: correlationString(record, "integrityEventId"),
     supportTicketId: correlationString(record, "supportTicketId"),

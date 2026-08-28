@@ -14,6 +14,13 @@ type PlayerAuthEvidenceCard = {
   note: string;
 };
 
+type PlayerRecentOpsErrorEvidenceCard = {
+  code: string;
+  label: string;
+  value: "연동 대기";
+  note: string;
+};
+
 export const playerAuthEvidenceCards: PlayerAuthEvidenceCard[] = [
   ...accountAuthVisibilityFields.map((field) => ({
     code: field,
@@ -25,6 +32,39 @@ export const playerAuthEvidenceCards: PlayerAuthEvidenceCard[] = [
         : `${field} read-only auth/session evidence 후보`
   }))
 ];
+
+export const playerRecentOpsErrorEvidenceCards: PlayerRecentOpsErrorEvidenceCard[] = [
+  {
+    code: "recentOpsErrorLogs",
+    label: "최근 시스템 에러 로그",
+    value: "연동 대기",
+    note: "recent open/acknowledged latest 5, critical first read-only compose 후보"
+  },
+  {
+    code: "opsErrorSeverity",
+    label: "심각도",
+    value: "연동 대기",
+    note: "info / warning / error / critical"
+  },
+  {
+    code: "opsErrorStatus",
+    label: "상태",
+    value: "연동 대기",
+    note: "open / acknowledged / resolved / ignored"
+  },
+  {
+    code: "opsErrorSource",
+    label: "소스",
+    value: "연동 대기",
+    note: "game_api / admin_api / support_read_model / integrity_pipeline"
+  },
+  {
+    code: "opsErrorCorrelationIds",
+    label: "관련 식별자",
+    value: "연동 대기",
+    note: "accountId / runId / gachaBannerId / rewardPreviewId / supportTicketId"
+  }
+] as const;
 
 export function PlayerDetailPage() {
   const { accountId = "" } = useParams();
@@ -86,6 +126,21 @@ export function PlayerDetailPage() {
         <div>
           <span>코어 레벨 편차</span>
           <strong>{player.progression.coreLevelSpread}</strong>
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>최근 시스템 에러 로그</h2>
+          <p>계정 문의와 연결 가능한 ops error evidence 후보를 읽기 전용으로 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {playerRecentOpsErrorEvidenceCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
+            </div>
+          ))}
         </div>
       </section>
       <section className="admin-panel">

@@ -57,6 +57,15 @@ describe("SupportAccountPage configuration", () => {
       "integrityDisposition",
       "recentOpsErrorLogs"
     ]);
+    expect(supportAccountContextCards.find((card) => card.field === "recentOpsErrorLogs")?.note).toContain(
+      "latest 5"
+    );
+    expect(supportAccountContextCards.find((card) => card.field === "recentOpsErrorLogs")?.note).toContain(
+      "critical first"
+    );
+    expect(supportAccountContextCards.find((card) => card.field === "recentOpsErrorLogs")?.note).toContain(
+      "source/correlation ids"
+    );
     expect(supportAccountContextCards.every((card) => card.value === "연동 대기")).toBe(true);
   });
 

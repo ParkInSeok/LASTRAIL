@@ -29,6 +29,7 @@ describe("opsErrorLogContract", () => {
           rewardClaimId: null,
           offlineRewardClaimId: "offline-claim-1",
           gachaBatchId: null,
+          gachaBannerId: "banner-launch-1",
           storyProgressId: "opn_01_last_departure",
           integrityEventId: null,
           supportTicketId: null,
@@ -49,6 +50,7 @@ describe("opsErrorLogContract", () => {
       status: "open",
       source: "game_api",
       accountId: "account-1",
+      gachaBannerId: "banner-launch-1",
       idempotencyKeyHash: "sha256:abc",
       masked: true
     });
@@ -101,6 +103,7 @@ describe("opsErrorLogContract", () => {
       "rewardClaimId",
       "offlineRewardClaimId",
       "gachaBatchId",
+      "gachaBannerId",
       "storyProgressId",
       "integrityEventId",
       "supportTicketId",
