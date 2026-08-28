@@ -5,6 +5,12 @@ import {
 } from "../offlineRewards/offlineRewardContract";
 
 import {
+  mapOpsErrorLogDetailResponse,
+  mapOpsErrorLogListResponse,
+  type OpsErrorLogReadFiltersPreview
+} from "../opsErrorLogs/opsErrorLogContract";
+
+import {
   mapStoryProgressDetailResponse,
   mapStoryProgressListResponse,
   type StoryProgressFiltersPreview
@@ -63,6 +69,10 @@ function storyProgressQuery(filters: Partial<StoryProgressFiltersPreview>): stri
 }
 
 function offlineRewardQuery(filters: Partial<OfflineRewardReadFiltersPreview>): string {
+  return queryString(filters);
+}
+
+function opsErrorLogQuery(filters: Partial<OpsErrorLogReadFiltersPreview>): string {
   return queryString(filters);
 }
 
@@ -171,6 +181,15 @@ export const adminApi = {
     return mapSupportAccountSummaryResponse(
       await readJson(`/api/support/accounts/${encodeURIComponent(accountId)}`),
       accountId
+    );
+  },
+  async opsErrorLogs(filters: Partial<OpsErrorLogReadFiltersPreview>) {
+    return mapOpsErrorLogListResponse(await readJson(`/api/ops/error-logs${opsErrorLogQuery(filters)}`));
+  },
+  async opsErrorLogDetail(errorLogId: string) {
+    return mapOpsErrorLogDetailResponse(
+      await readJson(`/api/ops/error-logs/${encodeURIComponent(errorLogId)}`),
+      errorLogId
     );
   }
 };

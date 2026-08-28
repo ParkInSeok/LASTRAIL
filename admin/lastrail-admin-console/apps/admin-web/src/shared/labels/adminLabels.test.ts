@@ -54,6 +54,7 @@ describe("adminLabels", () => {
     expect(permissionLabel("STORY_PROGRESS_READ")).toBe("스토리 진행 조회");
     expect(permissionLabel("OFFLINE_REWARD_READ")).toBe("오프라인 보상 조회");
     expect(permissionLabel("SUPPORT_READ")).toBe("CS 지원 조회");
+    expect(permissionLabel("OPS_ERROR_LOG_READ")).toBe("시스템 에러 로그 조회");
   });
 
   it("keeps unknown backend codes readable instead of hiding them", () => {

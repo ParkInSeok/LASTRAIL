@@ -6,6 +6,8 @@ import {
   offlineRewardClaimContractFieldLabel,
   offlineRewardClaimContractFields,
   offlineRewardClaimContractPreview,
+  offlineRewardOperationsPolicy,
+  offlineRewardOperationsSeverityMappings,
   mapOfflineRewardDetailResponse,
   mapOfflineRewardListResponse,
   offlineRewardStateContractFieldLabel,
@@ -255,5 +257,36 @@ describe("offlineRewardContract", () => {
       claimMutationEnabled: false,
       mutationEndpointsEnabled: false
     });
+  });
+
+  it("prepares offline reward operations policy without trusting client state", () => {
+    expect(offlineRewardOperationsPolicy.map((item) => item.code)).toEqual([
+      "server_records_authoritative",
+      "unity_client_state_not_source_of_truth",
+      "risk_not_direct_multiplier",
+      "long_absence_cap_overflow_not_claimable",
+      "minimum_claim_time_not_claimable",
+      "empty_claim_does_not_advance_baseline",
+      "duplicate_replay_no_revision",
+      "no_row_fallback_expected_before_first_claim"
+    ]);
+    expect(offlineRewardOperationsPolicy.every((item) => item.value === "연동 대기")).toBe(true);
+    expect(JSON.stringify(offlineRewardOperationsPolicy)).not.toContain("raw body");
+    expect(JSON.stringify(offlineRewardOperationsPolicy)).not.toContain("reward amount");
+  });
+
+  it("maps offline reward operations error codes to support severity buckets", () => {
+    expect(offlineRewardOperationsSeverityMappings).toEqual([
+      { errorCode: "offline_reward_not_claimable", severity: "info", category: "expected_behavior" },
+      { errorCode: "duplicate_replay", severity: "info", category: "expected_behavior" },
+      { errorCode: "offline_story_progress_missing", severity: "needs_review", category: "offline_policy_review" },
+      { errorCode: "offline_reward_policy_missing", severity: "needs_review", category: "offline_policy_review" },
+      { errorCode: "offline_reward_policy_invalid", severity: "needs_review", category: "offline_policy_review" },
+      { errorCode: "offline_reward_state_conflict", severity: "high_risk", category: "offline_state_integrity" },
+      { errorCode: "offline_reward_clock_tamper", severity: "high_risk", category: "offline_state_integrity" },
+      { errorCode: "offline_reward_claim_conflict", severity: "high_risk", category: "offline_state_integrity" },
+      { errorCode: "offline_reward_plan_mismatch", severity: "high_risk", category: "offline_state_integrity" },
+      { errorCode: "economy_mutation_conflict", severity: "high_risk", category: "offline_state_integrity" }
+    ]);
   });
 });

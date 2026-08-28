@@ -324,6 +324,7 @@ export function permissionLabel(permission: string): string {
       AUDIT_READ: "감사 로그 조회",
       OFFLINE_REWARD_READ: "오프라인 보상 조회",
       SUPPORT_READ: "CS 지원 조회",
+      OPS_ERROR_LOG_READ: "시스템 에러 로그 조회",
       BALANCE_READ: "밸런스 조회",
       BALANCE_DRAFT_CREATE: "밸런스 초안 생성",
       BALANCE_DRAFT_EDIT: "밸런스 초안 수정",

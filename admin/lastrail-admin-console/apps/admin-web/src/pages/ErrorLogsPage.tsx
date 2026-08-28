@@ -3,9 +3,17 @@ import {
   opsErrorCodeLabel,
   opsErrorLogSourceLabel,
   opsErrorLogStatusLabel,
+  permissionLabel,
   opsServiceLabel,
   opsSeverityLabel
 } from "../shared/labels/adminLabels";
+import { useQuery } from "@tanstack/react-query";
+import { adminApi } from "../shared/api/client";
+import {
+  emptyOpsErrorLogListItem,
+  opsErrorLogReadFilterFields,
+  type OpsErrorLogListItem
+} from "../shared/opsErrorLogs/opsErrorLogContract";
 
 type ErrorLogSummaryCard = {
   label: string;
@@ -92,14 +100,17 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
   { label: "시간 범위", options: ["최근 1시간", "최근 24시간", "최근 7일", "사용자 지정"] }
 ];
 
+export const errorLogReadOnlyFilters = [...opsErrorLogReadFilterFields];
+
 export const errorLogListColumns = [
   "발생 시각",
-  "서비스/환경",
+  "소스/서비스",
   "심각도",
+  "상태",
   "errorCode/message 요약",
   "requestId",
   "관련 리소스",
-  "재시도 가능 여부"
+  "masked"
 ];
 
 export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
@@ -135,7 +146,36 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
   }
 ];
 
+function relatedResources(item: OpsErrorLogListItem): string {
+  return [
+    item.accountId,
+    item.runId,
+    item.rewardPreviewId,
+    item.rewardClaimId,
+    item.offlineRewardClaimId,
+    item.gachaBatchId,
+    item.storyProgressId,
+    item.integrityEventId,
+    item.supportTicketId
+  ]
+    .filter(Boolean)
+    .join(" / ") || "연동 대기";
+}
+
+function maskedLabel(masked: OpsErrorLogListItem["masked"]): string {
+  if (masked === true) return "마스킹됨";
+  if (masked === false) return "확인 필요";
+  return "연동 대기";
+}
+
 export function ErrorLogsPage() {
+  const { data } = useQuery({
+    queryKey: ["ops-error-logs"],
+    queryFn: () => adminApi.opsErrorLogs({}),
+    retry: false
+  });
+  const rows = data?.items.length ? data.items : [emptyOpsErrorLogListItem()];
+
   return (
     <main className="content">
       <header>
@@ -150,6 +190,16 @@ export function ErrorLogsPage() {
             <small>{card.note}</small>
           </div>
         ))}
+        <div>
+          <span>권한</span>
+          <strong>{permissionLabel(data?.permission ?? "OPS_ERROR_LOG_READ")}</strong>
+          <small>OWNER/OPERATOR 읽기 전용, VIEWER 거절 가능</small>
+        </div>
+        <div>
+          <span>권한 모드</span>
+          <strong>{data?.permissionMode ?? "ROLE_PERMISSION"}</strong>
+          <small>mutation 없이 조회만 허용합니다</small>
+        </div>
       </section>
       <section className="admin-panel">
         <header>
@@ -181,9 +231,26 @@ export function ErrorLogsPage() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td colSpan={errorLogListColumns.length}>로그 조회 API 연동 대기</td>
-              </tr>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.occurredAt}</td>
+                  <td>
+                    {opsErrorLogSourceLabel(row.source)} ({row.source}) / {opsServiceLabel(row.service)} ({row.service})
+                  </td>
+                  <td>
+                    {opsSeverityLabel(row.severity)} ({row.severity})
+                  </td>
+                  <td>
+                    {opsErrorLogStatusLabel(row.status)} ({row.status})
+                  </td>
+                  <td>
+                    {opsErrorCodeLabel(row.errorCode)} ({row.errorCode}) / {row.messageSummary}
+                  </td>
+                  <td>{row.requestId}</td>
+                  <td>{relatedResources(row)}</td>
+                  <td>{maskedLabel(row.masked)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

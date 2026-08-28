@@ -4,11 +4,14 @@ import { adminApi } from "../shared/api/client";
 import {
   accountStatusLabel,
   offlineRewardStateSourceLabel,
+  opsErrorCodeLabel,
   permissionLabel,
   storyProgressLabel
 } from "../shared/labels/adminLabels";
 import {
   emptyOfflineRewardDetail,
+  offlineRewardOperationsPolicy,
+  offlineRewardOperationsSeverityMappings,
   offlineRewardReadFilterFields,
   type OfflineRewardReadModelItem
 } from "../shared/offlineRewards/offlineRewardContract";
@@ -50,6 +53,14 @@ export const offlineRewardSupportFlags = [
   "supportContext.claimMutationEnabled=false",
   "supportContext.mutationEndpointsEnabled=false"
 ];
+
+export const offlineRewardOperationsPolicyCards = [...offlineRewardOperationsPolicy];
+
+export const offlineRewardOperationsSeverityCards = offlineRewardOperationsSeverityMappings.map((mapping) => ({
+  ...mapping,
+  label: opsErrorCodeLabel(mapping.errorCode),
+  value: "연동 대기" as const
+}));
 
 function nullableDisplay(value: string | null): string {
   return value ?? "연동 대기";
@@ -168,6 +179,36 @@ export function OfflineRewardsPage() {
             <strong>{nullableDisplay(items[0]?.offlineRewardState.lastPreviewedAt ?? null)}</strong>
             <small>현재 route 갱신 없음</small>
           </div>
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>운영 정책</h2>
+          <p>서버 기록 기준의 오프라인 보상 운영 정책을 read-only로 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {offlineRewardOperationsPolicyCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>운영 분류 후보</h2>
+          <p>expected/info, needs review, high risk로 분리되는 support/ops 판단 placeholder입니다</p>
+        </header>
+        <div className="metric-grid">
+          {offlineRewardOperationsSeverityCards.map((card) => (
+            <div key={card.errorCode} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.errorCode} / {card.severity} / {card.category}</small>
+            </div>
+          ))}
         </div>
       </section>
     </main>

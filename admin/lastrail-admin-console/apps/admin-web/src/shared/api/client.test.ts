@@ -402,4 +402,67 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads ops error logs with read-only filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "OPS_ERROR_LOG_READ",
+        permissionMode: "ROLE_PERMISSION",
+        items: [],
+        nextCursor: null
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.opsErrorLogs({
+      accountId: "account-1",
+      severity: "critical",
+      status: "open",
+      limit: "25"
+    });
+
+    expect(result.permission).toBe("OPS_ERROR_LOG_READ");
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/ops/error-logs?accountId=account-1&severity=critical&status=open&limit=25",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
+
+  it("reads ops error log detail by id with null detail support", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "OPS_ERROR_LOG_READ",
+        permissionMode: "ROLE_PERMISSION",
+        item: {
+          id: "ops-error-1",
+          occurredAt: "2026-08-29T01:00:00.000Z",
+          severity: "error",
+          status: "open",
+          source: "admin_api",
+          service: "admin_api",
+          errorCode: "contract_violation",
+          messageSummary: "sanitized summary",
+          masked: true
+        },
+        detail: null
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.opsErrorLogDetail("ops-error-1");
+
+    expect(result.permission).toBe("OPS_ERROR_LOG_READ");
+    expect(result.item.id).toBe("ops-error-1");
+    expect(result.detail).toBeNull();
+    expect(fetchSpy).toHaveBeenCalledWith("/api/ops/error-logs/ops-error-1", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });

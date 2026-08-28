@@ -4,6 +4,7 @@ import {
   errorLogEndpointCandidates,
   errorLogFilterGroups,
   errorLogListColumns,
+  errorLogReadOnlyFilters,
   errorLogSummaryCards
 } from "./ErrorLogsPage";
 
@@ -56,5 +57,38 @@ describe("ErrorLogsPage configuration", () => {
     expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("지원 근거");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("resolve button");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("repair action");
+  });
+
+  it("prepares actual read-only Admin API filters and list columns", () => {
+    expect(errorLogReadOnlyFilters).toEqual([
+      "environment",
+      "severity",
+      "status",
+      "source",
+      "service",
+      "errorCode",
+      "requestId",
+      "accountId",
+      "runId",
+      "rewardPreviewId",
+      "rewardClaimId",
+      "offlineRewardClaimId",
+      "gachaBatchId",
+      "storyProgressId",
+      "integrityEventId",
+      "supportTicketId",
+      "limit",
+      "cursor"
+    ]);
+    expect(errorLogListColumns).toEqual([
+      "발생 시각",
+      "소스/서비스",
+      "심각도",
+      "상태",
+      "errorCode/message 요약",
+      "requestId",
+      "관련 리소스",
+      "masked"
+    ]);
   });
 });

@@ -114,6 +114,19 @@ export type OfflineRewardReadFiltersPreview = {
   cursor: string;
 };
 
+export type OfflineRewardOperationsPolicyItem = {
+  code: string;
+  label: string;
+  value: "연동 대기";
+  note: string;
+};
+
+export type OfflineRewardOperationsSeverityMapping = {
+  errorCode: string;
+  severity: "info" | "needs_review" | "high_risk";
+  category: "expected_behavior" | "offline_policy_review" | "offline_state_integrity";
+};
+
 export const offlineRewardPreviewContractFields = [
   "previewStatus",
   "storyProgressId",
@@ -180,6 +193,70 @@ export const offlineRewardReadFilterFields = [
   "limit",
   "cursor"
 ] as const;
+
+export const offlineRewardOperationsPolicy: OfflineRewardOperationsPolicyItem[] = [
+  {
+    code: "server_records_authoritative",
+    label: "서버 기록 기준",
+    value: "연동 대기",
+    note: "서버 소유 기록이 오프라인 보상 Source of Truth입니다."
+  },
+  {
+    code: "unity_client_state_not_source_of_truth",
+    label: "클라이언트 상태 불신",
+    value: "연동 대기",
+    note: "Unity local state, screenshots, timers, client-supplied values는 판정 기준이 아닙니다."
+  },
+  {
+    code: "risk_not_direct_multiplier",
+    label: "위험도 직접 배율 제외",
+    value: "연동 대기",
+    note: "Risk I-V는 offline reward에 직접 곱하지 않습니다."
+  },
+  {
+    code: "long_absence_cap_overflow_not_claimable",
+    label: "장기 미접속 한도 초과",
+    value: "연동 대기",
+    note: "cap overflow는 기본 claim 대상이 아닙니다."
+  },
+  {
+    code: "minimum_claim_time_not_claimable",
+    label: "최소 수령 시간 미만",
+    value: "연동 대기",
+    note: "minimum claim time 미만은 expected behavior로 볼 수 있습니다."
+  },
+  {
+    code: "empty_claim_does_not_advance_baseline",
+    label: "빈 수령 기준 시각 유지",
+    value: "연동 대기",
+    note: "empty/not-claimable claim은 last_offline_reward_claim_at을 앞당기면 안 됩니다."
+  },
+  {
+    code: "duplicate_replay_no_revision",
+    label: "중복 재생 상태 유지",
+    value: "연동 대기",
+    note: "duplicate replay는 재지급이나 state revision 증가가 없습니다."
+  },
+  {
+    code: "no_row_fallback_expected_before_first_claim",
+    label: "no-row fallback",
+    value: "연동 대기",
+    note: "legacy account first claim 전 fallback은 expected behavior입니다."
+  }
+];
+
+export const offlineRewardOperationsSeverityMappings: OfflineRewardOperationsSeverityMapping[] = [
+  { errorCode: "offline_reward_not_claimable", severity: "info", category: "expected_behavior" },
+  { errorCode: "duplicate_replay", severity: "info", category: "expected_behavior" },
+  { errorCode: "offline_story_progress_missing", severity: "needs_review", category: "offline_policy_review" },
+  { errorCode: "offline_reward_policy_missing", severity: "needs_review", category: "offline_policy_review" },
+  { errorCode: "offline_reward_policy_invalid", severity: "needs_review", category: "offline_policy_review" },
+  { errorCode: "offline_reward_state_conflict", severity: "high_risk", category: "offline_state_integrity" },
+  { errorCode: "offline_reward_clock_tamper", severity: "high_risk", category: "offline_state_integrity" },
+  { errorCode: "offline_reward_claim_conflict", severity: "high_risk", category: "offline_state_integrity" },
+  { errorCode: "offline_reward_plan_mismatch", severity: "high_risk", category: "offline_state_integrity" },
+  { errorCode: "economy_mutation_conflict", severity: "high_risk", category: "offline_state_integrity" }
+];
 
 export type OfflineRewardStateContractField = (typeof offlineRewardStateContractFields)[number];
 
