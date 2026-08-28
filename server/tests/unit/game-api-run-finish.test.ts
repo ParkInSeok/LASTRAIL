@@ -297,6 +297,146 @@ describe("game-api run finish contract", () => {
     expect(rewardPlan.calculation.firstClearApplied).toBe(true);
   });
 
+  it("rejects tactic selections that do not reference the server-authored start package", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind() {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_01_last_departure",
+                      risk: "II",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_01_last_departure",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "ORDINARY_15_WAVE",
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                      }),
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("invalid tactic package refs must not commit.");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-bad-package-ref",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          encounterType: "ORDINARY_15_WAVE",
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [
+            {
+              source: "START_PACKAGE",
+              packageRef: "client_forged_mid_wave_package",
+              selectedTacticId: "tactic_cover_fire",
+            },
+          ],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      resultStatus: "REJECTED",
+      errorCode: "contract_violation",
+      message: "Tactic selections must reference the server-authored start package.",
+    });
+  });
+
+  it("rejects raw rng or reward fields nested inside tactic selections", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`nested tactic contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-tactic-raw-rng",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [
+            {
+              packageRef: "act1_full_start_package_v1",
+              selectedTacticId: "tactic_cover_fire",
+              rawRngMaterial: "do-not-store",
+            },
+          ],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      resultStatus: "REJECTED",
+      errorCode: "contract_violation",
+    });
+  });
+
   it("replays accepted run finish with the stored reward preview id", async () => {
     const env: TestEnv = {
       ENVIRONMENT: "DEV",

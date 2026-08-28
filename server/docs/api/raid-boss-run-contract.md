@@ -56,8 +56,8 @@ route:
   "bossId": "boss_raider_king_engine",
   "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
   "allowedOperatorSlots": 4,
-  "startAugmentPackageRef": "act1_raid_full_start_package",
-  "startTacticPackageRef": "act1_raid_full_start_package"
+  "startAugmentPackageRef": "act1_full_start_package_v1",
+  "startTacticPackageRef": "act1_full_start_package_v1"
 }
 ```
 

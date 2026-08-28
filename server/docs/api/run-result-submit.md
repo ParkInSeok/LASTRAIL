@@ -69,6 +69,14 @@ Rules:
 - `outcome` is `VICTORY`, `FAILURE`, or `ABANDONED`.
 - Request must not include reward amounts, currency grants, or final reward decisions.
 - `runtimeStateJson` is a stringified JSON payload produced by Unity. The server parses it as validation input only. It is not a reward source of truth.
+- `tacticSelections` are client-selected tactical references, not reward
+  claims. Launch selections come from server-authored start package refs; see
+  `docs/api/run-start-augment-package.md`.
+- Submitted `tacticSelections[].packageRef` must match the server-authored
+  `startAugmentPackageRef` or `startTacticPackageRef` stored on the operation
+  preview.
+- Nested raw RNG, probability, reward, economy, ledger, or animation timeline
+  data inside `tacticSelections` is a `contract_violation`.
 
 ## Response Body
 

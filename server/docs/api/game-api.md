@@ -278,6 +278,9 @@ Raid boss-only run lifecycle impact is captured in
 distinguishes ordinary 15-wave operations from boss-only raids with
 `encounterType`.
 
+Act 1 launch starts ordinary and raid encounters with server-authored full
+augment/tactic package refs. See `docs/api/run-start-augment-package.md`.
+
 ## Story Progress
 
 Story progress Source of Truth and read model policy is drafted in

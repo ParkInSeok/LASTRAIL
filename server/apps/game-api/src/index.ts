@@ -301,6 +301,8 @@ const runFinishForbiddenRewardFields = new Set([
   "unlockedOperations",
   "narrativeFlags",
   "storyFlags",
+  "startAugmentPackageRef",
+  "startTacticPackageRef",
   "rawAnimationTimeline",
   "animationTimeline",
   "frameData",
@@ -312,6 +314,15 @@ const runFinishForbiddenRewardFields = new Set([
   "rawRngMaterial",
   "probability",
   "validatorDetails",
+]);
+const runFinishNestedForbiddenFields = new Set([
+  ...runFinishForbiddenRewardFields,
+  "rewardAmount",
+  "rewardAmounts",
+  "currencyGrants",
+  "itemGrants",
+  "economyGrants",
+  "ledgerIds",
 ]);
 
 const actOneStoryProgressOrder = [
@@ -474,6 +485,7 @@ function parseRunFinishBody(value: unknown, pathRunId: string): RunFinishBody | 
     return null;
   }
   if (!Array.isArray(body.tacticSelections)) return null;
+  if (containsForbiddenRunFinishField(body.tacticSelections, runFinishNestedForbiddenFields)) return null;
   let encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS" | undefined;
   if (body.encounterType !== undefined) {
     if (body.encounterType !== "ORDINARY_15_WAVE" && body.encounterType !== "RAID_BOSS") return null;
@@ -530,6 +542,30 @@ function parseRunFinishBody(value: unknown, pathRunId: string): RunFinishBody | 
   };
 }
 
+function containsForbiddenRunFinishField(value: unknown, forbiddenFields: Set<string>): boolean {
+  if (Array.isArray(value)) {
+    return value.some((item) => containsForbiddenRunFinishField(item, forbiddenFields));
+  }
+  if (typeof value !== "object" || value === null) return false;
+  for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+    if (forbiddenFields.has(key)) return true;
+    if (containsForbiddenRunFinishField(nestedValue, forbiddenFields)) return true;
+  }
+  return false;
+}
+
+function getTacticSelectionPackageRefs(tacticSelections: unknown[]): string[] {
+  const packageRefs: string[] = [];
+  for (const selection of tacticSelections) {
+    if (typeof selection !== "object" || selection === null || Array.isArray(selection)) continue;
+    const candidate = selection as Record<string, unknown>;
+    if (typeof candidate.packageRef === "string" && candidate.packageRef.trim() !== "") {
+      packageRefs.push(candidate.packageRef);
+    }
+  }
+  return packageRefs;
+}
+
 function parseRunPreviewMetadata(previewJson: string, objective: string): {
   operationId: string;
   actId: string;
@@ -537,6 +573,8 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
   encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS";
   raidId: string | null;
   bossId: string | null;
+  startAugmentPackageRef: string | null;
+  startTacticPackageRef: string | null;
 } {
   try {
     const parsed = JSON.parse(previewJson) as Record<string, unknown>;
@@ -547,6 +585,8 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
       encounterType: parsed.encounterType === "RAID_BOSS" ? "RAID_BOSS" : "ORDINARY_15_WAVE",
       raidId: typeof parsed.raidId === "string" ? parsed.raidId : null,
       bossId: typeof parsed.bossId === "string" ? parsed.bossId : null,
+      startAugmentPackageRef: typeof parsed.startAugmentPackageRef === "string" ? parsed.startAugmentPackageRef : null,
+      startTacticPackageRef: typeof parsed.startTacticPackageRef === "string" ? parsed.startTacticPackageRef : null,
     };
   } catch {
     return {
@@ -556,6 +596,8 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
       encounterType: "ORDINARY_15_WAVE",
       raidId: null,
       bossId: null,
+      startAugmentPackageRef: null,
+      startTacticPackageRef: null,
     };
   }
 }
@@ -2615,6 +2657,22 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   }
 
   const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  const allowedStartPackageRefs = [
+    previewMetadata.startAugmentPackageRef,
+    previewMetadata.startTacticPackageRef,
+  ].filter((value): value is string => value !== null && value.trim() !== "");
+  const submittedPackageRefs = getTacticSelectionPackageRefs(body.tacticSelections);
+  if (
+    submittedPackageRefs.length > 0 &&
+    submittedPackageRefs.some((packageRef) => !allowedStartPackageRefs.includes(packageRef))
+  ) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "contract_violation",
+      message: "Tactic selections must reference the server-authored start package.",
+    }), 400);
+  }
   if (previewMetadata.encounterType === "RAID_BOSS" && body.encounterType !== "RAID_BOSS") {
     return c.json(createRunFinishRejectedResponse({
       runId,
