@@ -41,9 +41,14 @@ Risk and run context:
 - `runs.preview_id -> operation_previews.id` links a run back to its selected
   risk and objective preview.
 - `runs.balance_config_version` freezes the balance version for the run.
-- `run_wave_plans.wave_plan_json` stores the server generated 15-wave plan.
+- `run_wave_plans.wave_plan_json` stores the server generated 15-wave plan for
+  ordinary operations.
+- `raid_raider_king_engine` is a boss-only encounter and uses raid metadata
+  instead of a 15-wave plan for completion validation.
 - `run_final_results.outcome` stores `VICTORY`, `FAILURE`, or `ABANDONED`.
-- `run_final_results.cleared_waves` stores `0..15`.
+- `run_final_results.cleared_waves` stores `0..15`; raid boss-only completion
+  may store `0` while the server maps verified boss defeat to full completion
+  for reward calculation.
 
 Reward context:
 
@@ -424,7 +429,8 @@ Use `account_first_clears(operation_key, risk)` as the durable guard.
 
 Rules:
 
-- First clear requires `VICTORY` and `clearedWaves = 15`.
+- Ordinary first clear requires `VICTORY` and `clearedWaves = 15`.
+- Raid first clear requires `VICTORY` and verified boss defeat metadata.
 - First clear bonus is a separate reward line with source such as
   `FIRST_CLEAR`.
 - First clear bonus is not multiplied by risk/outcome/wave multipliers unless a

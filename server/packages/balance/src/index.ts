@@ -191,6 +191,7 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
     opn_04_scrapstar_show: 13000,
     opn_05_night_boarders: 14000,
     opn_06_broken_line: 15500,
+    raid_raider_king_engine: 18000,
   },
   outcomePolicy: {
     victoryFullClearBps: 10000,
@@ -252,6 +253,15 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
       ],
       firstClearRewards: [
         { kind: "CURRENCY", id: "cur_special_core", quantity: 1 },
+      ],
+    },
+    raid_raider_king_engine: {
+      baseRewards: [
+        { kind: "CURRENCY", id: "cur_credits", quantity: 720 },
+        { kind: "CURRENCY", id: "cur_operator_exp", quantity: 1600 },
+      ],
+      firstClearRewards: [
+        { kind: "CURRENCY", id: "cur_special_core", quantity: 2 },
       ],
     },
   },

@@ -273,6 +273,11 @@ claim/commit follow `docs/api/run-reward-preview-claim.md`.
 Launch risk/reward preview generation policy is drafted in
 `docs/api/run-risk-reward.md`.
 
+Raid boss-only run lifecycle impact is captured in
+`docs/api/raid-boss-run-contract.md`. Launch keeps one run finish route and
+distinguishes ordinary 15-wave operations from boss-only raids with
+`encounterType`.
+
 ## Story Progress
 
 Story progress Source of Truth and read model policy is drafted in

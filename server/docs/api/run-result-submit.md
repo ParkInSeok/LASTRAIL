@@ -59,6 +59,13 @@ Rules:
 - `currentStage` must be `Complete`.
 - `completedWaveCount` may be `0..15`.
 - `currentWaveNumber=0` with `completedWaveCount=15` is allowed as Unity's terminal completed-run representation.
+- Ordinary Act 1 operations use `encounterType=ORDINARY_15_WAVE` and require
+  `VICTORY + completedWaveCount=15` for full completion effects.
+- `raid_raider_king_engine` uses `encounterType=RAID_BOSS`; `VICTORY +
+  raidResult.bossDefeated=true` is treated as full completion for first clear,
+  story progress, and reward preview generation even when
+  `completedWaveCount=0`.
+- Raid/ordinary impact details are in `docs/api/raid-boss-run-contract.md`.
 - `outcome` is `VICTORY`, `FAILURE`, or `ABANDONED`.
 - Request must not include reward amounts, currency grants, or final reward decisions.
 - `runtimeStateJson` is a stringified JSON payload produced by Unity. The server parses it as validation input only. It is not a reward source of truth.
@@ -166,7 +173,8 @@ Rules:
 
 - First clear scope is `accountId + operationId + risk`.
 - The durable guard is `account_first_clears(operation_key, risk)`.
-- First clear requires `VICTORY` and `completedWaveCount = 15`.
+- Ordinary first clear requires `VICTORY` and `completedWaveCount = 15`.
+- Raid first clear requires `VICTORY` and verified boss defeat metadata.
 - When the guard has no existing row, accepted finish creates the first-clear
   reward line and inserts `account_first_clears` in the same D1 batch as
   `run_final_results`, `run_reward_previews`, and `idempotency_records`.

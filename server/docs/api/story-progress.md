@@ -288,7 +288,11 @@ Rules:
   - `operation_previews.preview_json.operationId`;
   - `run_final_results.outcome`;
   - `run_final_results.cleared_waves`.
-- `VICTORY` with `clearedWaves = 15` advances operation story progress.
+- Ordinary `VICTORY` with `clearedWaves = 15` advances operation story
+  progress.
+- `raid_raider_king_engine` advances story progress after `VICTORY` with
+  verified boss defeat metadata. It does not require 15 cleared waves because
+  the raid is a boss-only encounter.
 - `FAILURE` and `ABANDONED` do not advance ordinary story progress.
 - Duplicate run finish replay must not recalculate or reapply story progress.
 - Lower operation clears must not regress higher stored progress.
@@ -314,8 +318,11 @@ reward preview with missing story progress side effects.
 
 Implemented local slice:
 
-- `VICTORY` with `clearedWaves = 15` upserts `account_story_progress` when the
-  operation order is greater than the stored `highest_story_progress_id`.
+- Ordinary `VICTORY` with `clearedWaves = 15` upserts
+  `account_story_progress` when the operation order is greater than the stored
+  `highest_story_progress_id`.
+- Raid boss `VICTORY` with verified boss defeat metadata uses the same
+  idempotent story progress upsert path.
 - New progress writes a `STORY_PROGRESS` `account_mutations` row and
   `progression_ledger` row.
 - New progress inserts the next operation unlock with `INSERT OR IGNORE` into

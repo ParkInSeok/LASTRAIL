@@ -136,6 +136,14 @@ type RunFinishBody = {
   currentStage: "Complete";
   currentWaveNumber: number;
   completedWaveCount: number;
+  encounterType?: "ORDINARY_15_WAVE" | "RAID_BOSS";
+  raidResult?: {
+    raidId?: string;
+    bossId?: string;
+    bossDefeated: boolean;
+    completedPhaseCount?: number;
+    encounterDurationSeconds?: number;
+  };
   outcome: RunOutcome;
   runtimeStateJson: string;
   tacticSelections: unknown[];
@@ -293,6 +301,17 @@ const runFinishForbiddenRewardFields = new Set([
   "unlockedOperations",
   "narrativeFlags",
   "storyFlags",
+  "rawAnimationTimeline",
+  "animationTimeline",
+  "frameData",
+  "vfxEvents",
+  "sfxEvents",
+  "cameraEvents",
+  "hitStopEvents",
+  "rawRng",
+  "rawRngMaterial",
+  "probability",
+  "validatorDetails",
 ]);
 
 const actOneStoryProgressOrder = [
@@ -455,11 +474,55 @@ function parseRunFinishBody(value: unknown, pathRunId: string): RunFinishBody | 
     return null;
   }
   if (!Array.isArray(body.tacticSelections)) return null;
+  let encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS" | undefined;
+  if (body.encounterType !== undefined) {
+    if (body.encounterType !== "ORDINARY_15_WAVE" && body.encounterType !== "RAID_BOSS") return null;
+    encounterType = body.encounterType;
+  }
+  let raidResult: RunFinishBody["raidResult"];
+  if (body.raidResult !== undefined) {
+    if (typeof body.raidResult !== "object" || body.raidResult === null || Array.isArray(body.raidResult)) return null;
+    const candidate = body.raidResult as Record<string, unknown>;
+    if (typeof candidate.bossDefeated !== "boolean") return null;
+    if (candidate.raidId !== undefined && typeof candidate.raidId !== "string") return null;
+    if (candidate.bossId !== undefined && typeof candidate.bossId !== "string") return null;
+    if (
+      candidate.completedPhaseCount !== undefined &&
+      (
+        typeof candidate.completedPhaseCount !== "number" ||
+        !Number.isInteger(candidate.completedPhaseCount) ||
+        candidate.completedPhaseCount < 0
+      )
+    ) {
+      return null;
+    }
+    if (
+      candidate.encounterDurationSeconds !== undefined &&
+      (
+        typeof candidate.encounterDurationSeconds !== "number" ||
+        !Number.isFinite(candidate.encounterDurationSeconds) ||
+        candidate.encounterDurationSeconds < 0
+      )
+    ) {
+      return null;
+    }
+    raidResult = {
+      bossDefeated: candidate.bossDefeated,
+      ...(typeof candidate.raidId === "string" ? { raidId: candidate.raidId } : {}),
+      ...(typeof candidate.bossId === "string" ? { bossId: candidate.bossId } : {}),
+      ...(typeof candidate.completedPhaseCount === "number" ? { completedPhaseCount: candidate.completedPhaseCount } : {}),
+      ...(typeof candidate.encounterDurationSeconds === "number" ? { encounterDurationSeconds: candidate.encounterDurationSeconds } : {}),
+    };
+  }
+  if (encounterType === "RAID_BOSS" && raidResult === undefined) return null;
+  if (encounterType !== "RAID_BOSS" && raidResult !== undefined) return null;
   return {
     runId: body.runId,
     currentStage: body.currentStage,
     currentWaveNumber: body.currentWaveNumber,
     completedWaveCount,
+    ...(encounterType === undefined ? {} : { encounterType }),
+    ...(raidResult === undefined ? {} : { raidResult }),
     outcome: body.outcome,
     runtimeStateJson: body.runtimeStateJson,
     tacticSelections: body.tacticSelections,
@@ -471,6 +534,9 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
   operationId: string;
   actId: string;
   regionId: string;
+  encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS";
+  raidId: string | null;
+  bossId: string | null;
 } {
   try {
     const parsed = JSON.parse(previewJson) as Record<string, unknown>;
@@ -478,14 +544,28 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
       operationId: typeof parsed.operationId === "string" ? parsed.operationId : objective,
       actId: typeof parsed.actId === "string" ? parsed.actId : "act_01_wasteland_railway",
       regionId: typeof parsed.regionId === "string" ? parsed.regionId : "region_wasteland_railway",
+      encounterType: parsed.encounterType === "RAID_BOSS" ? "RAID_BOSS" : "ORDINARY_15_WAVE",
+      raidId: typeof parsed.raidId === "string" ? parsed.raidId : null,
+      bossId: typeof parsed.bossId === "string" ? parsed.bossId : null,
     };
   } catch {
     return {
       operationId: objective,
       actId: "act_01_wasteland_railway",
       regionId: "region_wasteland_railway",
+      encounterType: "ORDINARY_15_WAVE",
+      raidId: null,
+      bossId: null,
     };
   }
+}
+
+function isRunFullCompletion(body: RunFinishBody, previewMetadata: { encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS" }): boolean {
+  if (body.outcome !== "VICTORY") return false;
+  if (previewMetadata.encounterType === "RAID_BOSS") {
+    return body.encounterType === "RAID_BOSS" && body.raidResult?.bossDefeated === true;
+  }
+  return body.completedWaveCount === 15;
 }
 
 function parseRunRisk(value: string): RunRiskTier | null {
@@ -2535,6 +2615,26 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   }
 
   const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  if (previewMetadata.encounterType === "RAID_BOSS" && body.encounterType !== "RAID_BOSS") {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "contract_violation",
+      message: "Raid boss run finish requires raid encounter metadata.",
+    }), 400);
+  }
+  if (previewMetadata.encounterType === "ORDINARY_15_WAVE" && body.encounterType === "RAID_BOSS") {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "contract_violation",
+      message: "Ordinary run finish must not submit raid encounter metadata.",
+    }), 400);
+  }
+  const fullCompletion = isRunFullCompletion(body, previewMetadata);
+  const rewardClearedWaves = previewMetadata.encounterType === "RAID_BOSS" && fullCompletion
+    ? 15
+    : body.completedWaveCount;
   const firstClearRecord = await c.env.DB.prepare(
     `SELECT cleared_at
      FROM account_first_clears
@@ -2544,9 +2644,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     .first<FirstClearRow>();
   const firstClearEligible =
     firstClearRecord === null &&
-    body.outcome === "VICTORY" &&
-    body.completedWaveCount === 15;
-  const existingStoryProgress = body.outcome === "VICTORY" && body.completedWaveCount === 15
+    fullCompletion;
+  const existingStoryProgress = fullCompletion
     ? await c.env.DB.prepare(
         `SELECT highest_story_progress_id, cleared_operations_json, story_flags_json
          FROM account_story_progress
@@ -2562,13 +2661,13 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     regionId: previewMetadata.regionId,
     risk,
     outcome: body.outcome,
-    clearedWaves: body.completedWaveCount,
+    clearedWaves: rewardClearedWaves,
     firstClearEligible,
     integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
   });
   const now = Date.now();
   const rewardPreviewId = createDomainId("reward_preview");
-  const storyProgressPlan = body.outcome === "VICTORY" && body.completedWaveCount === 15
+  const storyProgressPlan = fullCompletion
     ? createStoryProgressPlan({
         accountId: authContext.accountId,
         runId,

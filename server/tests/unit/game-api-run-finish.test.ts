@@ -162,6 +162,141 @@ describe("game-api run finish contract", () => {
     ]);
   });
 
+  it("treats raid boss defeat as full completion without requiring 15 cleared waves", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM account_first_clears")) {
+                    expect(values).toEqual(["account_1", "raid_raider_king_engine", "V"]);
+                    return null;
+                  }
+                  if (sql.includes("FROM account_story_progress")) return null;
+                  if (sql.includes("MAX(sequence)")) return { sequence: 1 };
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_raid_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "raid_raider_king_engine",
+                      risk: "V",
+                      preview_json: JSON.stringify({
+                        operationId: "raid_raider_king_engine",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "RAID_BOSS",
+                        raidId: "raid_raider_king_engine",
+                        bossId: "boss_raider_king_engine",
+                        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+                      }),
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: true,
+            completedPhaseCount: 3,
+            encounterDurationSeconds: 420,
+          },
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run_raid_1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      rewardClaimId: null,
+      balanceVersion: "1",
+      message: null,
+      errorCode: null,
+    });
+    expect(body.rewardPreviewId).toMatch(/^reward_preview_/u);
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_story_progress");
+
+    const finalResultInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_final_results"));
+    expect(batchBinds[finalResultInsertIndex]?.[2]).toBe(0);
+    const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
+      encounterType?: string;
+      raidResult?: { bossDefeated?: boolean; completedPhaseCount?: number };
+    };
+    expect(storedPayload.encounterType).toBe("RAID_BOSS");
+    expect(storedPayload.raidResult).toMatchObject({
+      bossDefeated: true,
+      completedPhaseCount: 3,
+    });
+
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      rewardLines: Array<{ source?: string }>;
+      calculation: { clearedWaves: number; firstClearEligible: boolean; firstClearApplied: boolean };
+    };
+    expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
+    expect(rewardPlan.calculation.clearedWaves).toBe(15);
+    expect(rewardPlan.calculation.firstClearEligible).toBe(true);
+    expect(rewardPlan.calculation.firstClearApplied).toBe(true);
+  });
+
   it("replays accepted run finish with the stored reward preview id", async () => {
     const env: TestEnv = {
       ENVIRONMENT: "DEV",
@@ -547,6 +682,51 @@ describe("game-api run finish contract", () => {
           tacticSelections: [],
           clientCompletedAt: "2026-08-27T00:00:00.000Z",
           rewardAmount: 999999,
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("rejects raw animation timeline fields before storing run finish payload", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`raw animation contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-raw-animation",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+          rawAnimationTimeline: [{ frame: 1, event: "hit_stop" }],
         }),
       },
       env,
