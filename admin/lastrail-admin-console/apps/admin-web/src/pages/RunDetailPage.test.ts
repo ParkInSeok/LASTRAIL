@@ -68,6 +68,7 @@ describe("RunDetailPage risk reward skeleton", () => {
       "lastProgressRunId",
       "updatedAt",
       "permission",
+      "permissionMode",
       "readOnly"
     ]);
     expect(storyProgressReadContractPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
@@ -93,7 +94,8 @@ describe("RunDetailPage risk reward skeleton", () => {
       supportContext: {
         lastProgressRunId: "run-5",
         updatedAt: "2026-08-28T06:00:00.000Z",
-        permission: "ROLE_READ_ONLY_INTERIM",
+        permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_PERMISSION",
         readOnly: true
       }
     });
@@ -113,7 +115,8 @@ describe("RunDetailPage risk reward skeleton", () => {
       ["missingContentStatus", "콘텐츠 누락 / content_missing"],
       ["lastProgressRunId", "run-5"],
       ["updatedAt", "2026-08-28T06:00:00.000Z"],
-      ["permission", "ROLE_READ_ONLY_INTERIM"],
+      ["permission", "스토리 진행 조회 / STORY_PROGRESS_READ"],
+      ["permissionMode", "ROLE_PERMISSION"],
       ["readOnly", "읽기 전용"]
     ]);
   });

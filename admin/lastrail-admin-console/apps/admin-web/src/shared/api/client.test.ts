@@ -251,7 +251,7 @@ describe("admin web API client", () => {
           }
         ],
         permission: "STORY_PROGRESS_READ",
-        permissionMode: "ROLE_READ_ONLY_INTERIM",
+        permissionMode: "ROLE_PERMISSION",
         nextCursor: "cursor-2"
       })
     );
@@ -266,6 +266,8 @@ describe("admin web API client", () => {
 
     expect(result.items[0]?.highestStoryProgressId).toBe("opn_02_first_signal");
     expect(result.items[0]?.missingContentStatus).toBe("UNKNOWN");
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
+    expect(result.items[0]?.supportContext.permissionMode).toBe("ROLE_PERMISSION");
     expect(fetchSpy).toHaveBeenCalledWith(
       "/api/story-progress?accountId=account-1&actId=act_01_wasteland_railway&highestStoryProgressId=opn_02_first_signal&limit=25",
       {

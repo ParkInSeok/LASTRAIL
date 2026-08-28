@@ -43,6 +43,7 @@ describe("storyProgressContract", () => {
       lastProgressRunId: "연동 대기",
       updatedAt: "연동 대기",
       permission: "STORY_PROGRESS_READ",
+      permissionMode: "ROLE_PERMISSION",
       readOnly: true
     });
   });
@@ -112,7 +113,7 @@ describe("storyProgressContract", () => {
         }
       ],
       permission: "STORY_PROGRESS_READ",
-      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      permissionMode: "ROLE_PERMISSION",
       nextCursor: "cursor-2"
     });
 
@@ -133,10 +134,23 @@ describe("storyProgressContract", () => {
         lastProgressRunId: "연동 대기",
         updatedAt: "2026-08-28T03:00:00.000Z",
         permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_PERMISSION",
         readOnly: true
       }
     });
+    expect(result.permissionMode).toBe("ROLE_PERMISSION");
     expect(result.nextCursor).toBe("cursor-2");
+  });
+
+  it("keeps legacy read-only interim permission mode as a fallback", () => {
+    const result = mapStoryProgressListResponse({
+      items: [],
+      permission: "STORY_PROGRESS_READ",
+      permissionMode: "ROLE_READ_ONLY_INTERIM",
+      nextCursor: null
+    });
+
+    expect(result.permissionMode).toBe("ROLE_READ_ONLY_INTERIM");
   });
 
   it("maps no-row story progress detail to a safe none default", () => {
@@ -159,6 +173,7 @@ describe("storyProgressContract", () => {
         lastProgressRunId: "연동 대기",
         updatedAt: "연동 대기",
         permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_PERMISSION",
         readOnly: true
       }
     });

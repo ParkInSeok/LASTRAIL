@@ -117,6 +117,12 @@ export const storyProgressReadContractPlaceholders: StoryProgressReadContractPla
     note: `${permissionLabel("STORY_PROGRESS_READ")} / STORY_PROGRESS_READ`
   },
   {
+    label: "권한 판정 모드",
+    field: "permissionMode",
+    value: "연동 대기",
+    note: "ROLE_PERMISSION primary / ROLE_READ_ONLY_INTERIM legacy fallback"
+  },
+  {
     label: "읽기 전용",
     field: "readOnly",
     value: "연동 대기",
@@ -218,8 +224,14 @@ export function storyProgressDetailToReadContractPlaceholders(
     {
       label: "조회 권한 후보",
       field: "permission",
-      value: permissionLabel(detail.supportContext.permission),
+      value: labelWithCode(permissionLabel(detail.supportContext.permission), detail.supportContext.permission),
       note: `${permissionLabel("STORY_PROGRESS_READ")} / STORY_PROGRESS_READ`
+    },
+    {
+      label: "권한 판정 모드",
+      field: "permissionMode",
+      value: detail.supportContext.permissionMode,
+      note: "ROLE_PERMISSION primary / ROLE_READ_ONLY_INTERIM legacy fallback"
     },
     {
       label: "읽기 전용",

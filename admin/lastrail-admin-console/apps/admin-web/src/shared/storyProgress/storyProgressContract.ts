@@ -11,6 +11,7 @@ export type StoryProgressSupportContext = {
   lastProgressRunId: string;
   updatedAt: string;
   permission: "STORY_PROGRESS_READ" | "ROLE_READ_ONLY_INTERIM" | string;
+  permissionMode: "ROLE_PERMISSION" | "ROLE_READ_ONLY_INTERIM" | string;
   readOnly: true;
 };
 
@@ -37,6 +38,8 @@ export type StoryProgressDetail = StoryProgressListItem;
 export type StoryProgressDetailPreview = StoryProgressDetail;
 
 export type StoryProgressListResponse = {
+  permission: "STORY_PROGRESS_READ" | string;
+  permissionMode: "ROLE_PERMISSION" | "ROLE_READ_ONLY_INTERIM" | string;
   items: StoryProgressListItem[];
   nextCursor: string | null;
 };
@@ -99,6 +102,7 @@ const pendingSupportContext: StoryProgressSupportContext = {
   lastProgressRunId: "연동 대기",
   updatedAt: "연동 대기",
   permission: "STORY_PROGRESS_READ",
+  permissionMode: "ROLE_PERMISSION",
   readOnly: true
 };
 
@@ -154,13 +158,14 @@ function stringArrayValue(value: unknown): string[] {
 
 function mapSupportContext(
   value: unknown,
-  fallback: { lastProgressRunId?: unknown; updatedAt?: unknown; permission?: unknown } = {}
+  fallback: { lastProgressRunId?: unknown; updatedAt?: unknown; permission?: unknown; permissionMode?: unknown } = {}
 ): StoryProgressSupportContext {
   const record = asRecord(value);
   return {
     lastProgressRunId: stringValue(record?.lastProgressRunId ?? fallback.lastProgressRunId, "연동 대기"),
     updatedAt: stringValue(record?.updatedAt ?? fallback.updatedAt, "연동 대기"),
     permission: stringValue(record?.permission ?? fallback.permission, "STORY_PROGRESS_READ"),
+    permissionMode: stringValue(record?.permissionMode ?? fallback.permissionMode, "ROLE_PERMISSION"),
     readOnly: true
   };
 }
@@ -168,7 +173,8 @@ function mapSupportContext(
 function mapStoryProgressItem(
   value: unknown,
   fallbackAccountId = "연동 대기",
-  fallbackPermission: unknown = "STORY_PROGRESS_READ"
+  fallbackPermission: unknown = "STORY_PROGRESS_READ",
+  fallbackPermissionMode: unknown = "ROLE_PERMISSION"
 ): StoryProgressListItem {
   const record = asRecord(value);
   if (!record) return emptyStoryProgressDetail(fallbackAccountId);
@@ -194,7 +200,8 @@ function mapStoryProgressItem(
     supportContext: mapSupportContext(record.supportContext, {
       lastProgressRunId: record.lastProgressRunId,
       updatedAt: record.updatedAt,
-      permission: fallbackPermission
+      permission: fallbackPermission,
+      permissionMode: fallbackPermissionMode
     })
   };
 }
@@ -202,10 +209,12 @@ function mapStoryProgressItem(
 export function mapStoryProgressListResponse(response: unknown): StoryProgressListResponse {
   const record = asRecord(response);
   const items = Array.isArray(record?.items)
-    ? record.items.map((item) => mapStoryProgressItem(item, "연동 대기", record?.permission))
+    ? record.items.map((item) => mapStoryProgressItem(item, "연동 대기", record?.permission, record?.permissionMode))
     : [];
 
   return {
+    permission: stringValue(record?.permission, "STORY_PROGRESS_READ"),
+    permissionMode: stringValue(record?.permissionMode, "ROLE_PERMISSION"),
     items,
     nextCursor: typeof record?.nextCursor === "string" ? record.nextCursor : null
   };
