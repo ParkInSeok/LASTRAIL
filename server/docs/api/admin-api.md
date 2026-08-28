@@ -145,6 +145,30 @@ These endpoints do not return tokens, secrets, raw request bodies, raw RNG
 material, raw multiplier bps, reward calculation internals, or account shortcut
 data. Request bodies are rejected with `contract_violation`.
 
+## Customer Support
+
+Customer support account summary is drafted in `docs/api/support.md`.
+
+Candidate endpoint:
+
+```text
+GET /v1/admin/support/accounts/:accountId
+```
+
+Candidate permission:
+
+- `SUPPORT_READ`
+
+The support summary is planned as a read-only account-centered investigation
+view that composes existing read models such as account/auth status, recent
+runs, run reward previews/claims, offline reward state/claims, story
+progress/unlocks, gacha batches, idempotency replay records, integrity status,
+and future ops error logs.
+
+This route is not implemented yet. It must not open account mutation, reward
+repair, manual grant, offline timestamp reset, story/unlock mutation, gacha
+repair, or economy correction controls.
+
 System/runtime error log design is drafted in `docs/api/ops-error-logs.md`.
 Future read-only candidates are `GET /v1/admin/ops/error-logs` and
 `GET /v1/admin/ops/error-logs/:errorLogId`. The draft keeps runtime error

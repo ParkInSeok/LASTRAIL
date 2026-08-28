@@ -845,6 +845,10 @@ mapping and expose:
 - latest offline reward claim id and claim timestamp;
 - read-only support context.
 
+The customer support account summary draft in `docs/api/support.md` can compose
+this same offline reward state as one read-only section. It must not add offline
+timestamp reset, reward repair, or manual grant controls.
+
 Future Admin read-only candidates:
 
 - reward lines by resource;

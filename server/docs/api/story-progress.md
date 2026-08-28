@@ -455,6 +455,11 @@ Because the current Admin API permission model is role-string based, OWNER /
 OPERATOR / VIEWER all map to this read-only permission. Detail reads include
 operation unlocks from `account_unlocks`; list reads stay compact.
 
+The customer support account summary draft in `docs/api/support.md` can compose
+this story progress read model as one read-only section. It must not add story
+progress mutation, unlock mutation, narrative editing, or localized dialogue
+payloads.
+
 Ops error code candidates:
 
 ```text
