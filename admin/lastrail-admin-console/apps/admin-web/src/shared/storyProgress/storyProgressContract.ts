@@ -10,26 +10,35 @@ export type StoryProgressStatus =
 export type StoryProgressSupportContext = {
   lastProgressRunId: string;
   updatedAt: string;
-  permission: "STORY_PROGRESS_READ";
+  permission: "STORY_PROGRESS_READ" | "ROLE_READ_ONLY_INTERIM" | string;
   readOnly: true;
 };
 
-export type StoryProgressListItemPreview = {
+export type StoryProgressListItem = {
   accountId: string;
   actId: string;
   highestClearedOperationId: string;
   highestStoryProgressId: string;
+  order: number;
+  clearedOperationIds: string[];
+  unlockedOperations: string[];
   narrativeVersion: string;
-  contentStatus: StoryProgressStatus | "연동 대기";
-  localizationStatus: StoryProgressStatus | "연동 대기";
-  fixtureStatus: StoryProgressStatus | "연동 대기";
-  missingContentStatus: StoryProgressStatus | "연동 대기";
+  contentStatus: StoryProgressStatus | "연동 대기" | string;
+  localizationStatus: StoryProgressStatus | "연동 대기" | string;
+  fixtureStatus: StoryProgressStatus | "연동 대기" | string;
+  missingContentStatus: StoryProgressStatus | "연동 대기" | string;
   supportContext: StoryProgressSupportContext;
 };
 
-export type StoryProgressDetailPreview = StoryProgressListItemPreview & {
-  clearedOperations: string[];
-  storyFlags: Record<string, string>;
+export type StoryProgressListItemPreview = StoryProgressListItem;
+
+export type StoryProgressDetail = StoryProgressListItem;
+
+export type StoryProgressDetailPreview = StoryProgressDetail;
+
+export type StoryProgressListResponse = {
+  items: StoryProgressListItem[];
+  nextCursor: string | null;
 };
 
 export type StoryProgressFiltersPreview = {
@@ -93,11 +102,32 @@ const pendingSupportContext: StoryProgressSupportContext = {
   readOnly: true
 };
 
+export function emptyStoryProgressDetail(accountId = "연동 대기"): StoryProgressDetail {
+  return {
+    accountId,
+    actId: "act_01_wasteland_railway",
+    highestClearedOperationId: "none",
+    highestStoryProgressId: "none",
+    order: 0,
+    clearedOperationIds: [],
+    unlockedOperations: [],
+    narrativeVersion: "연동 대기",
+    contentStatus: "content_missing",
+    localizationStatus: "localization_pending",
+    fixtureStatus: "fixture_pending",
+    missingContentStatus: "content_missing",
+    supportContext: pendingSupportContext
+  };
+}
+
 const listItem: StoryProgressListItemPreview = {
   accountId: "연동 대기",
   actId: "act_01_wasteland_railway",
   highestClearedOperationId: "연동 대기",
   highestStoryProgressId: "연동 대기",
+  order: 0,
+  clearedOperationIds: [],
+  unlockedOperations: [],
   narrativeVersion: "연동 대기",
   contentStatus: "연동 대기",
   localizationStatus: "연동 대기",
@@ -106,6 +136,87 @@ const listItem: StoryProgressListItemPreview = {
   supportContext: pendingSupportContext
 };
 
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function stringValue(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.length > 0 ? value : fallback;
+}
+
+function numberValue(value: unknown, fallback: number): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function stringArrayValue(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function mapSupportContext(
+  value: unknown,
+  fallback: { lastProgressRunId?: unknown; updatedAt?: unknown; permission?: unknown } = {}
+): StoryProgressSupportContext {
+  const record = asRecord(value);
+  return {
+    lastProgressRunId: stringValue(record?.lastProgressRunId ?? fallback.lastProgressRunId, "연동 대기"),
+    updatedAt: stringValue(record?.updatedAt ?? fallback.updatedAt, "연동 대기"),
+    permission: stringValue(record?.permission ?? fallback.permission, "STORY_PROGRESS_READ"),
+    readOnly: true
+  };
+}
+
+function mapStoryProgressItem(
+  value: unknown,
+  fallbackAccountId = "연동 대기",
+  fallbackPermission: unknown = "STORY_PROGRESS_READ"
+): StoryProgressListItem {
+  const record = asRecord(value);
+  if (!record) return emptyStoryProgressDetail(fallbackAccountId);
+  const storyProgress = asRecord(record.storyProgress);
+  const narrative = asRecord(record.narrative);
+
+  return {
+    accountId: stringValue(record.accountId, fallbackAccountId),
+    actId: stringValue(record.actId, "act_01_wasteland_railway"),
+    highestStoryProgressId: stringValue(storyProgress?.highestStoryProgressId ?? record.highestStoryProgressId, "none"),
+    highestClearedOperationId: stringValue(
+      storyProgress?.highestClearedOperationId ?? record.highestClearedOperationId,
+      "none"
+    ),
+    order: numberValue(storyProgress?.order ?? record.order, 0),
+    clearedOperationIds: stringArrayValue(record.clearedOperationIds),
+    unlockedOperations: stringArrayValue(record.unlockedOperations),
+    narrativeVersion: stringValue(narrative?.narrativeVersion ?? record.narrativeVersion, "연동 대기"),
+    contentStatus: stringValue(narrative?.contentStatus ?? record.contentStatus, "content_missing"),
+    localizationStatus: stringValue(narrative?.localizationStatus ?? record.localizationStatus, "localization_pending"),
+    fixtureStatus: stringValue(narrative?.fixtureStatus ?? record.fixtureStatus, "fixture_pending"),
+    missingContentStatus: stringValue(narrative?.missingContentStatus ?? record.missingContentStatus, "content_missing"),
+    supportContext: mapSupportContext(record.supportContext, {
+      lastProgressRunId: record.lastProgressRunId,
+      updatedAt: record.updatedAt,
+      permission: fallbackPermission
+    })
+  };
+}
+
+export function mapStoryProgressListResponse(response: unknown): StoryProgressListResponse {
+  const record = asRecord(response);
+  const items = Array.isArray(record?.items)
+    ? record.items.map((item) => mapStoryProgressItem(item, "연동 대기", record?.permission))
+    : [];
+
+  return {
+    items,
+    nextCursor: typeof record?.nextCursor === "string" ? record.nextCursor : null
+  };
+}
+
+export function mapStoryProgressDetailResponse(response: unknown, accountId: string): StoryProgressDetail {
+  return response === null || response === undefined
+    ? emptyStoryProgressDetail(accountId)
+    : mapStoryProgressItem(response, accountId);
+}
+
 export const storyProgressContractPreview = {
   listItem,
   detail: {
@@ -113,8 +224,9 @@ export const storyProgressContractPreview = {
     actId: listItem.actId,
     highestClearedOperationId: listItem.highestClearedOperationId,
     highestStoryProgressId: listItem.highestStoryProgressId,
-    clearedOperations: [],
-    storyFlags: {},
+    order: listItem.order,
+    clearedOperationIds: listItem.clearedOperationIds,
+    unlockedOperations: listItem.unlockedOperations,
     narrativeVersion: listItem.narrativeVersion,
     contentStatus: listItem.contentStatus,
     localizationStatus: listItem.localizationStatus,

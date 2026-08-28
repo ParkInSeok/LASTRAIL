@@ -1,8 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { levelSourceLabel, permissionLabel, storyProgressLabel } from "../shared/labels/adminLabels";
-import { storyProgressReadContractFilterFields } from "../shared/storyProgress/storyProgressContract";
+import {
+  levelSourceLabel,
+  permissionLabel,
+  storyProgressLabel,
+  storyProgressStatusLabel
+} from "../shared/labels/adminLabels";
+import {
+  storyProgressReadContractFilterFields,
+  type StoryProgressDetail
+} from "../shared/storyProgress/storyProgressContract";
 
 type RunRiskRewardPlaceholder = {
   label: string;
@@ -30,7 +38,7 @@ type RaidNarrativeObjectivePlaceholder = {
 type StoryProgressReadContractPlaceholder = {
   label: string;
   field: string;
-  value: "연동 대기";
+  value: string;
   note: string;
 };
 
@@ -88,7 +96,13 @@ export const raidNarrativeObjectivePlaceholders: RaidNarrativeObjectivePlacehold
 ];
 
 export const storyProgressReadContractPlaceholders: StoryProgressReadContractPlaceholder[] = [
+  { label: "계정 ID", field: "accountId", value: "연동 대기", note: "story progress detail 조회 기준" },
+  { label: "Act ID", field: "actId", value: "연동 대기", note: "Act 1 read model 연결 후보" },
   { label: "최고 스토리 진행도", field: "highestStoryProgressId", value: "연동 대기", note: "Run detail story progress 연결 후보" },
+  { label: "최고 클리어 작전", field: "highestClearedOperationId", value: "연동 대기", note: "highest cleared operation 연결 후보" },
+  { label: "진행 순서", field: "order", value: "연동 대기", note: "Act 1 progression order 연결 후보" },
+  { label: "클리어 작전 목록", field: "clearedOperationIds", value: "연동 대기", note: "cleared operation ids read-only 표시 후보" },
+  { label: "해금 작전 목록", field: "unlockedOperations", value: "연동 대기", note: "unlocked operations read-only 표시 후보" },
   { label: "내러티브 콘텐츠 상태", field: "contentStatus", value: "연동 대기", note: "coverage status 연결 후보" },
   { label: "현지화 상태", field: "localizationStatus", value: "연동 대기", note: "localization status 연결 후보" },
   { label: "fixture 상태", field: "fixtureStatus", value: "연동 대기", note: "Unity fixture status 연결 후보" },
@@ -101,10 +115,120 @@ export const storyProgressReadContractPlaceholders: StoryProgressReadContractPla
     field: "permission",
     value: "연동 대기",
     note: `${permissionLabel("STORY_PROGRESS_READ")} / STORY_PROGRESS_READ`
+  },
+  {
+    label: "읽기 전용",
+    field: "readOnly",
+    value: "연동 대기",
+    note: "mutation control 금지 경계"
   }
 ];
 
 export const storyProgressReadContractFilters = [...storyProgressReadContractFilterFields];
+
+function labelWithCode(label: string, code: string): string {
+  return label === code ? code : `${label} / ${code}`;
+}
+
+function missionLabelWithCode(missionId: string): string {
+  return labelWithCode(storyProgressLabel(missionId), missionId);
+}
+
+function statusLabelWithCode(status: string): string {
+  return labelWithCode(storyProgressStatusLabel(status), status);
+}
+
+function missionListLabel(missionIds: string[]): string {
+  return missionIds.length > 0 ? missionIds.map(missionLabelWithCode).join(", ") : "연동 대기";
+}
+
+export function storyProgressDetailToReadContractPlaceholders(
+  detail: StoryProgressDetail
+): StoryProgressReadContractPlaceholder[] {
+  return [
+    { label: "계정 ID", field: "accountId", value: detail.accountId, note: "story progress detail 조회 기준" },
+    { label: "Act ID", field: "actId", value: detail.actId, note: "Act 1 read model 연결 후보" },
+    {
+      label: "최고 스토리 진행도",
+      field: "highestStoryProgressId",
+      value: missionLabelWithCode(detail.highestStoryProgressId),
+      note: "Run detail story progress 연결 후보"
+    },
+    {
+      label: "최고 클리어 작전",
+      field: "highestClearedOperationId",
+      value: missionLabelWithCode(detail.highestClearedOperationId),
+      note: "highest cleared operation 연결 후보"
+    },
+    { label: "진행 순서", field: "order", value: String(detail.order), note: "Act 1 progression order 연결 후보" },
+    {
+      label: "클리어 작전 목록",
+      field: "clearedOperationIds",
+      value: missionListLabel(detail.clearedOperationIds),
+      note: "cleared operation ids read-only 표시 후보"
+    },
+    {
+      label: "해금 작전 목록",
+      field: "unlockedOperations",
+      value: missionListLabel(detail.unlockedOperations),
+      note: "unlocked operations read-only 표시 후보"
+    },
+    {
+      label: "내러티브 콘텐츠 상태",
+      field: "contentStatus",
+      value: statusLabelWithCode(detail.contentStatus),
+      note: "coverage status 연결 후보"
+    },
+    {
+      label: "현지화 상태",
+      field: "localizationStatus",
+      value: statusLabelWithCode(detail.localizationStatus),
+      note: "localization status 연결 후보"
+    },
+    {
+      label: "fixture 상태",
+      field: "fixtureStatus",
+      value: statusLabelWithCode(detail.fixtureStatus),
+      note: "Unity fixture status 연결 후보"
+    },
+    {
+      label: "내러티브 버전",
+      field: "narrativeVersion",
+      value: detail.narrativeVersion,
+      note: "예: act1.2026-08-27.001 후보"
+    },
+    {
+      label: "누락 콘텐츠 상태",
+      field: "missingContentStatus",
+      value: statusLabelWithCode(detail.missingContentStatus),
+      note: "missing-state 연결 후보"
+    },
+    {
+      label: "마지막 진행 출격",
+      field: "lastProgressRunId",
+      value: detail.supportContext.lastProgressRunId,
+      note: "플레이어 문의 지원 문맥 후보"
+    },
+    {
+      label: "진행 갱신 시각",
+      field: "updatedAt",
+      value: detail.supportContext.updatedAt,
+      note: "read-only updatedAt 후보"
+    },
+    {
+      label: "조회 권한 후보",
+      field: "permission",
+      value: permissionLabel(detail.supportContext.permission),
+      note: `${permissionLabel("STORY_PROGRESS_READ")} / STORY_PROGRESS_READ`
+    },
+    {
+      label: "읽기 전용",
+      field: "readOnly",
+      value: detail.supportContext.readOnly ? "읽기 전용" : "확인 필요",
+      note: "mutation control 금지 경계"
+    }
+  ];
+}
 
 export function RunDetailPage() {
   const { runId = "" } = useParams();
@@ -119,6 +243,15 @@ export function RunDetailPage() {
   if (!query.data) return <main className="content">선택된 출격이 없습니다</main>;
 
   const run = query.data;
+  const storyProgressQuery = useQuery({
+    queryKey: ["story-progress-detail", run.accountId],
+    queryFn: () => adminApi.storyProgressDetail(run.accountId),
+    enabled: run.accountId.length > 0,
+    retry: false
+  });
+  const storyProgressCards = storyProgressQuery.data
+    ? storyProgressDetailToReadContractPlaceholders(storyProgressQuery.data)
+    : storyProgressReadContractPlaceholders;
 
   return (
     <main className="content">
@@ -174,7 +307,7 @@ export function RunDetailPage() {
           ))}
         </div>
         <div className="metric-grid">
-          {storyProgressReadContractPlaceholders.map((placeholder) => (
+          {storyProgressCards.map((placeholder) => (
             <div key={placeholder.field} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

@@ -220,4 +220,75 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads story progress list with read-only filters", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        items: [
+          {
+            accountId: "account-1",
+            actId: "act_01_wasteland_railway",
+            operationId: "opn_02_first_signal",
+            storyProgress: {
+              highestStoryProgressId: "opn_02_first_signal",
+              highestClearedOperationId: "opn_02_first_signal",
+              order: 2
+            },
+            clearedOperationIds: ["opn_01_last_departure", "opn_02_first_signal"],
+            unlockedOperations: ["opn_03_water_stop"],
+            narrative: {
+              narrativeVersion: "act1.2026-08-27.001",
+              contentStatus: "CANDIDATE",
+              localizationStatus: "PENDING",
+              fixtureStatus: "PARTIAL",
+              missingContentStatus: "UNKNOWN"
+            },
+            supportContext: {
+              source: "account_story_progress",
+              readOnly: true
+            },
+            updatedAt: "2026-08-28T05:00:00.000Z"
+          }
+        ],
+        permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_READ_ONLY_INTERIM",
+        nextCursor: "cursor-2"
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.storyProgressList({
+      accountId: "account-1",
+      actId: "act_01_wasteland_railway",
+      highestStoryProgressId: "opn_02_first_signal",
+      limit: "25"
+    });
+
+    expect(result.items[0]?.highestStoryProgressId).toBe("opn_02_first_signal");
+    expect(result.items[0]?.missingContentStatus).toBe("UNKNOWN");
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/story-progress?accountId=account-1&actId=act_01_wasteland_railway&highestStoryProgressId=opn_02_first_signal&limit=25",
+      {
+        headers: {
+          accept: "application/json"
+        }
+      }
+    );
+  });
+
+  it("reads story progress detail by account id and preserves no-row none defaults", async () => {
+    const fetchSpy = vi.fn(async () => Response.json(null));
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.storyProgressDetail("account-no-row");
+
+    expect(result.accountId).toBe("account-no-row");
+    expect(result.highestStoryProgressId).toBe("none");
+    expect(result.supportContext.readOnly).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledWith("/api/story-progress/account-no-row", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });

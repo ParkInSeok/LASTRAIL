@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   actOneNarrativeCoverage,
+  storyProgressDetailToReadContractPlaceholders,
   raidNarrativeObjectivePlaceholders,
   runRiskRewardPlaceholders,
   runStoryNarrativePlaceholders,
@@ -52,7 +53,13 @@ describe("RunDetailPage risk reward skeleton", () => {
 
   it("aligns story progress placeholders with read-only admin query contract fields", () => {
     expect(storyProgressReadContractPlaceholders.map((placeholder) => placeholder.field)).toEqual([
+      "accountId",
+      "actId",
       "highestStoryProgressId",
+      "highestClearedOperationId",
+      "order",
+      "clearedOperationIds",
+      "unlockedOperations",
       "contentStatus",
       "localizationStatus",
       "fixtureStatus",
@@ -60,12 +67,55 @@ describe("RunDetailPage risk reward skeleton", () => {
       "missingContentStatus",
       "lastProgressRunId",
       "updatedAt",
-      "permission"
+      "permission",
+      "readOnly"
     ]);
     expect(storyProgressReadContractPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
     expect(storyProgressReadContractPlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
       "STORY_PROGRESS_READ"
     );
+  });
+
+  it("maps story progress detail data into run detail read-only cards", () => {
+    const placeholders = storyProgressDetailToReadContractPlaceholders({
+      accountId: "account-1",
+      actId: "act_01_wasteland_railway",
+      highestStoryProgressId: "opn_05_night_boarders",
+      highestClearedOperationId: "opn_05_night_boarders",
+      order: 5,
+      clearedOperationIds: ["opn_01_last_departure", "opn_05_night_boarders"],
+      unlockedOperations: ["opn_06_broken_line"],
+      narrativeVersion: "act1.2026-08-27.001",
+      contentStatus: "ready",
+      localizationStatus: "localization_pending",
+      fixtureStatus: "future_status",
+      missingContentStatus: "content_missing",
+      supportContext: {
+        lastProgressRunId: "run-5",
+        updatedAt: "2026-08-28T06:00:00.000Z",
+        permission: "ROLE_READ_ONLY_INTERIM",
+        readOnly: true
+      }
+    });
+
+    expect(placeholders.map((placeholder) => [placeholder.field, placeholder.value])).toEqual([
+      ["accountId", "account-1"],
+      ["actId", "act_01_wasteland_railway"],
+      ["highestStoryProgressId", "야간 승선전 / opn_05_night_boarders"],
+      ["highestClearedOperationId", "야간 승선전 / opn_05_night_boarders"],
+      ["order", "5"],
+      ["clearedOperationIds", "마지막 출발 / opn_01_last_departure, 야간 승선전 / opn_05_night_boarders"],
+      ["unlockedOperations", "끊어진 선로 / opn_06_broken_line"],
+      ["contentStatus", "준비 완료 / ready"],
+      ["localizationStatus", "현지화 대기 / localization_pending"],
+      ["fixtureStatus", "future_status"],
+      ["narrativeVersion", "act1.2026-08-27.001"],
+      ["missingContentStatus", "콘텐츠 누락 / content_missing"],
+      ["lastProgressRunId", "run-5"],
+      ["updatedAt", "2026-08-28T06:00:00.000Z"],
+      ["permission", "ROLE_READ_ONLY_INTERIM"],
+      ["readOnly", "읽기 전용"]
+    ]);
   });
 
   it("prepares story progress read-only filter skeleton fields", () => {

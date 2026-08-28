@@ -1,4 +1,10 @@
 import {
+  mapStoryProgressDetailResponse,
+  mapStoryProgressListResponse,
+  type StoryProgressFiltersPreview
+} from "../storyProgress/storyProgressContract";
+
+import {
   AuditLogsResponseSchema,
   BootstrapResponseSchema,
   CreatePlayerNoteRequestSchema,
@@ -42,6 +48,15 @@ async function writeJson(path: string, body: unknown): Promise<unknown> {
   }
 
   return response.json();
+}
+
+function storyProgressQuery(filters: Partial<StoryProgressFiltersPreview>): string {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+  const query = params.toString();
+  return query ? `?${query}` : "";
 }
 
 export const adminApi = {
@@ -117,5 +132,14 @@ export const adminApi = {
   },
   async runDetail(runId: string) {
     return RunDetailSchema.parse(await readJson(`/api/runs/${encodeURIComponent(runId)}`));
+  },
+  async storyProgressList(filters: Partial<StoryProgressFiltersPreview>) {
+    return mapStoryProgressListResponse(await readJson(`/api/story-progress${storyProgressQuery(filters)}`));
+  },
+  async storyProgressDetail(accountId: string) {
+    return mapStoryProgressDetailResponse(
+      await readJson(`/api/story-progress/${encodeURIComponent(accountId)}`),
+      accountId
+    );
   }
 };
