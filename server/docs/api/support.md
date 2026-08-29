@@ -187,6 +187,15 @@ Fields:
 - `status`
 - `operationId`
 - `actId`
+- `regionId`
+- `encounterType`: `ORDINARY_15_WAVE` or `RAID_BOSS`
+- `raidId`: raid-only, otherwise null
+- `bossId`: raid-only, otherwise null
+- `bossPhaseRefs`: raid-only refs, otherwise empty
+- `allowedOperatorSlots`: nullable launch candidate metadata
+- `startAugmentPackageRef`
+- `startTacticPackageRef`
+- `contentVersion`
 - `risk`
 - `balanceVersion`
 - `startedAt`
@@ -200,6 +209,8 @@ Support usage:
 - Answer whether a reported sortie exists.
 - Correlate run finish idempotency and reward preview creation.
 - Link to Admin run detail.
+- Distinguish ordinary 15-wave operations from raid boss-only encounters using
+  server-authored preview refs.
 
 Do not return:
 
@@ -207,6 +218,8 @@ Do not return:
 - combat validator internals;
 - client-submitted reward fields;
 - localized story dialogue text.
+- raw animation timelines, frame data, VFX/SFX/camera/hit-stop tracks, or raid
+  seasonal attempt internals.
 
 ### Run Reward Previews/Claims
 

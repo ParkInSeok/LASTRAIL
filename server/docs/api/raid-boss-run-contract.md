@@ -57,13 +57,21 @@ route:
   "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
   "allowedOperatorSlots": 4,
   "startAugmentPackageRef": "act1_full_start_package_v1",
-  "startTacticPackageRef": "act1_full_start_package_v1"
+  "startTacticPackageRef": "act1_full_start_package_v1",
+  "contentVersion": "act1.launch.content.v1"
 }
 ```
 
 The server may store refs/ids that let Unity select the correct authored
 content. The server does not own frame-by-frame animation data, VFX timing,
 camera choreography, hit stop, SFX playback, or combat cinematic timelines.
+
+Admin/support read models may expose the same sanitized refs from
+`operation_previews.preview_json` so operators can distinguish ordinary
+15-wave operations from raid boss-only encounters. Raid-only refs are only
+client-visible when `encounterType = RAID_BOSS`; ordinary previews must not leak
+or reinterpret `raidId`, `bossId`, or `bossPhaseRefs` if malformed preview JSON
+contains them.
 
 ## Run Finish Payload
 
@@ -109,6 +117,33 @@ Raid finish uses boss result metadata:
 For `RAID_BOSS`, `completedWaveCount` remains a storage-compatible final result
 field and may be `0`; the server maps verified boss defeat to full completion
 for reward, first clear, and story progress calculation.
+
+The accepted run finish transaction stores a sanitized
+`serverPreviewMetadata` snapshot in `run_final_results.payload_json`. It is a
+support/debug snapshot of server-authored preview refs, not a new combat
+simulation contract:
+
+```json
+{
+  "serverPreviewMetadata": {
+    "operationId": "raid_raider_king_engine",
+    "actId": "act_01_wasteland_railway",
+    "regionId": "region_wasteland_railway",
+    "encounterType": "RAID_BOSS",
+    "raidId": "raid_raider_king_engine",
+    "bossId": "boss_raider_king_engine",
+    "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
+    "allowedOperatorSlots": 4,
+    "startAugmentPackageRef": "act1_full_start_package_v1",
+    "startTacticPackageRef": "act1_full_start_package_v1",
+    "balanceVersion": "1",
+    "contentVersion": "act1.launch.content.v1"
+  }
+}
+```
+
+Duplicate run finish replay returns the stored result/reward preview refs and
+does not recompute this metadata.
 
 ## Reward / Story / Offline Effects
 
@@ -158,7 +193,9 @@ Contract smoke should cover:
 
 - Final raid start metadata ids: `bossId`, `bossPhaseRefs`,
   `startAugmentPackageRef`, and `startTacticPackageRef`.
-- Whether `allowedOperatorSlots` differs from ordinary operations.
+- Whether `allowedOperatorSlots` differs from ordinary operations. Current
+  parser/read models treat it as nullable/candidate metadata, not a final
+  balance decision.
 - Whether raid failure needs phase-specific reward scaling or launch default
   failure/abandoned policy is sufficient.
 - Whether raid completion needs a future seasonal/attempt table. Not launch

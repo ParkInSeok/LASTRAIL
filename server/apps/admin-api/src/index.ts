@@ -818,16 +818,75 @@ function jsonObjectString(value: JsonValue, key: string): string | null {
   return typeof field === "string" && field.length > 0 ? field : null;
 }
 
-function parseRunPreviewIds(previewJson: string | null): { operationId: string | null; actId: string | null } {
-  if (previewJson === null) return { operationId: null, actId: null };
+function jsonObjectStringArray(value: JsonValue, key: string): string[] {
+  if (!isJsonObject(value) || !Array.isArray(value[key])) return [];
+  return value[key].filter((item): item is string => typeof item === "string" && item.length > 0);
+}
+
+function jsonObjectPositiveInteger(value: JsonValue, key: string): number | null {
+  if (!isJsonObject(value)) return null;
+  const field = value[key];
+  return typeof field === "number" && Number.isInteger(field) && field > 0 ? field : null;
+}
+
+function parseRunPreviewMetadata(previewJson: string | null): {
+  operationId: string | null;
+  actId: string | null;
+  regionId: string | null;
+  encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS";
+  raidId: string | null;
+  bossId: string | null;
+  bossPhaseRefs: string[];
+  allowedOperatorSlots: number | null;
+  startAugmentPackageRef: string | null;
+  startTacticPackageRef: string | null;
+  contentVersion: string | null;
+} {
+  if (previewJson === null) {
+    return {
+      operationId: null,
+      actId: null,
+      regionId: null,
+      encounterType: "ORDINARY_15_WAVE",
+      raidId: null,
+      bossId: null,
+      bossPhaseRefs: [],
+      allowedOperatorSlots: null,
+      startAugmentPackageRef: null,
+      startTacticPackageRef: null,
+      contentVersion: null,
+    };
+  }
   try {
     const parsed = parseJsonValue(previewJson);
+    const encounterType = isJsonObject(parsed) && parsed.encounterType === "RAID_BOSS" ? "RAID_BOSS" : "ORDINARY_15_WAVE";
     return {
       operationId: jsonObjectString(parsed, "operationId"),
       actId: jsonObjectString(parsed, "actId"),
+      regionId: jsonObjectString(parsed, "regionId"),
+      encounterType,
+      raidId: encounterType === "RAID_BOSS" ? jsonObjectString(parsed, "raidId") : null,
+      bossId: encounterType === "RAID_BOSS" ? jsonObjectString(parsed, "bossId") : null,
+      bossPhaseRefs: encounterType === "RAID_BOSS" ? jsonObjectStringArray(parsed, "bossPhaseRefs") : [],
+      allowedOperatorSlots: jsonObjectPositiveInteger(parsed, "allowedOperatorSlots"),
+      startAugmentPackageRef: jsonObjectString(parsed, "startAugmentPackageRef"),
+      startTacticPackageRef: jsonObjectString(parsed, "startTacticPackageRef"),
+      contentVersion: jsonObjectString(parsed, "contentVersion"),
     };
   } catch {
-    return { operationId: null, actId: null };
+    return {
+      operationId: null,
+      actId: null,
+      regionId: null,
+      encounterType: "ORDINARY_15_WAVE",
+      raidId: null,
+      bossId: null,
+      bossPhaseRefs: [],
+      allowedOperatorSlots: null,
+      startAugmentPackageRef: null,
+      startTacticPackageRef: null,
+      contentVersion: null,
+    };
   }
 }
 
@@ -1533,12 +1592,21 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
       concurrentUsersPrecision: "UNAVAILABLE",
     },
     recentRuns: recentRuns.results.map((run) => {
-      const previewIds = parseRunPreviewIds(run.preview_json);
+      const previewMetadata = parseRunPreviewMetadata(run.preview_json);
       return {
         runId: run.run_id,
         status: run.status,
-        operationId: previewIds.operationId,
-        actId: previewIds.actId,
+        operationId: previewMetadata.operationId,
+        actId: previewMetadata.actId,
+        regionId: previewMetadata.regionId,
+        encounterType: previewMetadata.encounterType,
+        raidId: previewMetadata.raidId,
+        bossId: previewMetadata.bossId,
+        bossPhaseRefs: previewMetadata.bossPhaseRefs,
+        allowedOperatorSlots: previewMetadata.allowedOperatorSlots,
+        startAugmentPackageRef: previewMetadata.startAugmentPackageRef,
+        startTacticPackageRef: previewMetadata.startTacticPackageRef,
+        contentVersion: previewMetadata.contentVersion,
         risk: normalizeRiskTier(run.risk),
         balanceVersion: String(run.balance_config_version),
         startedAt: toIso(run.started_at),

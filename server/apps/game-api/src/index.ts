@@ -650,20 +650,35 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
   encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS";
   raidId: string | null;
   bossId: string | null;
+  bossPhaseRefs: string[];
+  allowedOperatorSlots: number | null;
   startAugmentPackageRef: string | null;
   startTacticPackageRef: string | null;
+  contentVersion: string | null;
 } {
   try {
     const parsed = JSON.parse(previewJson) as Record<string, unknown>;
+    const encounterType = parsed.encounterType === "RAID_BOSS" ? "RAID_BOSS" : "ORDINARY_15_WAVE";
+    const bossPhaseRefs = Array.isArray(parsed.bossPhaseRefs)
+      ? parsed.bossPhaseRefs.filter((value): value is string => typeof value === "string" && value.trim() !== "")
+      : [];
+    const allowedOperatorSlots = typeof parsed.allowedOperatorSlots === "number" &&
+      Number.isInteger(parsed.allowedOperatorSlots) &&
+      parsed.allowedOperatorSlots > 0
+      ? parsed.allowedOperatorSlots
+      : null;
     return {
       operationId: typeof parsed.operationId === "string" ? parsed.operationId : objective,
       actId: typeof parsed.actId === "string" ? parsed.actId : "act_01_wasteland_railway",
       regionId: typeof parsed.regionId === "string" ? parsed.regionId : "region_wasteland_railway",
-      encounterType: parsed.encounterType === "RAID_BOSS" ? "RAID_BOSS" : "ORDINARY_15_WAVE",
-      raidId: typeof parsed.raidId === "string" ? parsed.raidId : null,
-      bossId: typeof parsed.bossId === "string" ? parsed.bossId : null,
+      encounterType,
+      raidId: encounterType === "RAID_BOSS" && typeof parsed.raidId === "string" ? parsed.raidId : null,
+      bossId: encounterType === "RAID_BOSS" && typeof parsed.bossId === "string" ? parsed.bossId : null,
+      bossPhaseRefs: encounterType === "RAID_BOSS" ? bossPhaseRefs : [],
+      allowedOperatorSlots,
       startAugmentPackageRef: typeof parsed.startAugmentPackageRef === "string" ? parsed.startAugmentPackageRef : null,
       startTacticPackageRef: typeof parsed.startTacticPackageRef === "string" ? parsed.startTacticPackageRef : null,
+      contentVersion: typeof parsed.contentVersion === "string" ? parsed.contentVersion : null,
     };
   } catch {
     return {
@@ -673,10 +688,48 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
       encounterType: "ORDINARY_15_WAVE",
       raidId: null,
       bossId: null,
+      bossPhaseRefs: [],
+      allowedOperatorSlots: null,
       startAugmentPackageRef: null,
       startTacticPackageRef: null,
+      contentVersion: null,
     };
   }
+}
+
+function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType<typeof parseRunPreviewMetadata>, balanceVersion: number): RunFinishBody & {
+  serverPreviewMetadata: {
+    operationId: string;
+    actId: string;
+    regionId: string;
+    encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS";
+    raidId: string | null;
+    bossId: string | null;
+    bossPhaseRefs: string[];
+    allowedOperatorSlots: number | null;
+    startAugmentPackageRef: string | null;
+    startTacticPackageRef: string | null;
+    balanceVersion: string;
+    contentVersion: string | null;
+  };
+} {
+  return {
+    ...body,
+    serverPreviewMetadata: {
+      operationId: previewMetadata.operationId,
+      actId: previewMetadata.actId,
+      regionId: previewMetadata.regionId,
+      encounterType: previewMetadata.encounterType,
+      raidId: previewMetadata.raidId,
+      bossId: previewMetadata.bossId,
+      bossPhaseRefs: previewMetadata.bossPhaseRefs,
+      allowedOperatorSlots: previewMetadata.allowedOperatorSlots,
+      startAugmentPackageRef: previewMetadata.startAugmentPackageRef,
+      startTacticPackageRef: previewMetadata.startTacticPackageRef,
+      balanceVersion: String(balanceVersion),
+      contentVersion: previewMetadata.contentVersion,
+    },
+  };
 }
 
 function isRunFullCompletion(body: RunFinishBody, previewMetadata: { encounterType: "ORDINARY_15_WAVE" | "RAID_BOSS" }): boolean {
@@ -2900,12 +2953,13 @@ app.post("/v1/runs/:runId/finish", async (c) => {
       balanceVersion: String(row.balance_config_version),
     },
   });
+  const finalPayloadJson = JSON.stringify(createRunFinishPayload(body, previewMetadata, row.balance_config_version));
 
   const finishStatements = [
     c.env.DB.prepare(
       `INSERT INTO run_final_results (run_id, outcome, cleared_waves, payload_json, submitted_at)
        VALUES (?, ?, ?, ?, ?)`,
-    ).bind(runId, body.outcome, body.completedWaveCount, JSON.stringify(body), now),
+    ).bind(runId, body.outcome, body.completedWaveCount, finalPayloadJson, now),
     c.env.DB.prepare(
       `UPDATE runs
        SET status = ?, finished_at = ?

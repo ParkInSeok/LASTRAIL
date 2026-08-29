@@ -209,6 +209,10 @@ describe("game-api run finish contract", () => {
                         raidId: "raid_raider_king_engine",
                         bossId: "boss_raider_king_engine",
                         bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+                        allowedOperatorSlots: 4,
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                        contentVersion: "act1.launch.content.v1",
                       }),
                       config_json: JSON.stringify({
                         runRewards: launchRunRewardsConfig,
@@ -279,11 +283,33 @@ describe("game-api run finish contract", () => {
     const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
       encounterType?: string;
       raidResult?: { bossDefeated?: boolean; completedPhaseCount?: number };
+      serverPreviewMetadata?: {
+        encounterType?: string;
+        raidId?: string | null;
+        bossId?: string | null;
+        bossPhaseRefs?: string[];
+        allowedOperatorSlots?: number | null;
+        startAugmentPackageRef?: string | null;
+        startTacticPackageRef?: string | null;
+        balanceVersion?: string;
+        contentVersion?: string | null;
+      };
     };
     expect(storedPayload.encounterType).toBe("RAID_BOSS");
     expect(storedPayload.raidResult).toMatchObject({
       bossDefeated: true,
       completedPhaseCount: 3,
+    });
+    expect(storedPayload.serverPreviewMetadata).toMatchObject({
+      encounterType: "RAID_BOSS",
+      raidId: "raid_raider_king_engine",
+      bossId: "boss_raider_king_engine",
+      bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+      allowedOperatorSlots: 4,
+      startAugmentPackageRef: "act1_full_start_package_v1",
+      startTacticPackageRef: "act1_full_start_package_v1",
+      balanceVersion: "1",
+      contentVersion: "act1.launch.content.v1",
     });
 
     const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));

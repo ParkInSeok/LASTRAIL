@@ -367,6 +367,116 @@ describe("admin-api support account summary contract", () => {
     });
   });
 
+  it("returns raid boss start metadata refs without mixing ordinary wave previews", async () => {
+    const response = await app.request(
+      "/v1/admin/support/accounts/account-1",
+      { headers: { "Cf-Access-Subject": "access|viewer-1" } },
+      createEnv([
+        principal,
+        accountRow,
+        [{ provider: "GUEST" }],
+        { active_session_count: 1, latest_session_created_at: 1787651000000, latest_session_expires_at: 1788255800000 },
+        [
+          {
+            run_id: "raid-run-1",
+            status: "COMPLETED",
+            started_at: 1787652000000,
+            finished_at: 1787653000000,
+            risk: "V",
+            balance_config_version: 1,
+            preview_json: JSON.stringify({
+              operationId: "raid_raider_king_engine",
+              actId: "act_01_wasteland_railway",
+              regionId: "region_wasteland_railway",
+              encounterType: "RAID_BOSS",
+              raidId: "raid_raider_king_engine",
+              bossId: "boss_raider_king_engine",
+              bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+              allowedOperatorSlots: 4,
+              startAugmentPackageRef: "act1_full_start_package_v1",
+              startTacticPackageRef: "act1_full_start_package_v1",
+              contentVersion: "act1.launch.content.v1",
+            }),
+            outcome: "VICTORY",
+            cleared_waves: 0,
+            reward_preview_id: "reward_preview_raid",
+          },
+          {
+            run_id: "ordinary-run-1",
+            status: "COMPLETED",
+            started_at: 1787651000000,
+            finished_at: 1787651800000,
+            risk: "II",
+            balance_config_version: 1,
+            preview_json: JSON.stringify({
+              operationId: "opn_01_last_departure",
+              actId: "act_01_wasteland_railway",
+              regionId: "region_wasteland_railway",
+              encounterType: "ORDINARY_15_WAVE",
+              raidId: "should_not_leak",
+              bossId: "should_not_leak",
+              bossPhaseRefs: ["should_not_leak"],
+              allowedOperatorSlots: 4,
+              startAugmentPackageRef: "act1_full_start_package_v1",
+              startTacticPackageRef: "act1_full_start_package_v1",
+              contentVersion: "act1.launch.content.v1",
+            }),
+            outcome: "VICTORY",
+            cleared_waves: 15,
+            reward_preview_id: "reward_preview_ordinary",
+          },
+        ],
+        [],
+        null,
+        null,
+        [],
+        [],
+        [],
+        { open_signals: 0, hard_violations: 0, latest_detection_at: null, primary_reason: null },
+        null,
+        [],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.recentRuns).toEqual([
+      expect.objectContaining({
+        runId: "raid-run-1",
+        operationId: "raid_raider_king_engine",
+        encounterType: "RAID_BOSS",
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        allowedOperatorSlots: 4,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "1",
+        clearedWaves: 0,
+      }),
+      expect.objectContaining({
+        runId: "ordinary-run-1",
+        operationId: "opn_01_last_departure",
+        encounterType: "ORDINARY_15_WAVE",
+        raidId: null,
+        bossId: null,
+        bossPhaseRefs: [],
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "1",
+        clearedWaves: 15,
+      }),
+    ]);
+    const serialized = JSON.stringify(body);
+    expect(serialized).not.toContain("animationTimeline");
+    expect(serialized).not.toContain("frameData");
+    expect(serialized).not.toContain("rawRng");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("should_not_leak");
+  });
+
   it("does not return tokens, raw request bodies, RNG, probability, localized dialogue, or reward internals", async () => {
     const response = await app.request(
       "/v1/admin/support/accounts/account-1",

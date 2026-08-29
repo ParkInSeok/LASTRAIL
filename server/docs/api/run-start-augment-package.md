@@ -33,7 +33,8 @@ The server-authored run/operation preview metadata may include:
   "encounterType": "ORDINARY_15_WAVE",
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
-  "allowedOperatorSlots": 4
+  "allowedOperatorSlots": 4,
+  "contentVersion": "act1.launch.content.v1"
 }
 ```
 
@@ -47,7 +48,8 @@ Raid preview metadata may use the same refs:
   "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
-  "allowedOperatorSlots": 4
+  "allowedOperatorSlots": 4,
+  "contentVersion": "act1.launch.content.v1"
 }
 ```
 
@@ -55,6 +57,11 @@ Raid preview metadata may use the same refs:
 Unity may display/select concrete ids from the referenced authored package, but
 client-supplied refs do not become economy, reward, unlock, story progress, or
 offline reward Source of Truth.
+
+Admin/support read models may expose these server-authored refs for
+read-only investigation. `raidId`, `bossId`, and `bossPhaseRefs` remain
+raid-only metadata; ordinary 15-wave previews must not inherit raid refs from
+malformed preview JSON.
 
 ## Run Finish Selection Echo
 
