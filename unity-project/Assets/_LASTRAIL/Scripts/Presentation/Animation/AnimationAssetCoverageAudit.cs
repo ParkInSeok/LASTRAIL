@@ -1,32 +1,10 @@
 using System.Collections.Generic;
+using LastRail.Operators;
 
 namespace LastRail.Presentation.Animation
 {
     public static class AnimationAssetCoverageAudit
     {
-        private static readonly string[] ActOneInitialOperatorIds =
-        {
-            "op_kyle",
-            "op_reina",
-            "op_eve",
-            "op_sera",
-            "op_mira"
-        };
-
-        private static readonly string[] ActOneGachaEliteOperatorIds =
-        {
-            "op_vex",
-            "op_nyx",
-            "op_sable",
-            "op_marrow",
-            "op_iris",
-            "op_rail",
-            "op_anchor",
-            "op_lumen",
-            "op_cinder",
-            "op_warden"
-        };
-
         private static readonly string[] OperatorRequiredKeys =
         {
             "idle_loop",
@@ -69,6 +47,9 @@ namespace LastRail.Presentation.Animation
                 throw new System.ArgumentNullException(nameof(manifest));
             }
 
+            var initialOperatorIds = ActOneOperatorRosterRules.CreateInitialOperatorIds();
+            var gachaEliteOperatorIds = ActOneOperatorRosterRules.CreateGachaEliteOperatorIds();
+
             for (var i = 0; i < manifest.Entries.Count; i++)
             {
                 switch (manifest.Entries[i].Role)
@@ -85,14 +66,14 @@ namespace LastRail.Presentation.Animation
                 }
             }
 
-            for (var i = 0; i < ActOneInitialOperatorIds.Length; i++)
+            for (var i = 0; i < initialOperatorIds.Count; i++)
             {
-                AddMissingKeys(manifest.Find(ActOneInitialOperatorIds[i], AnimationAssetRole.Operator), ActOneInitialOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
+                AddMissingKeys(manifest.Find(initialOperatorIds[i], AnimationAssetRole.Operator), initialOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
             }
 
-            for (var i = 0; i < ActOneGachaEliteOperatorIds.Length; i++)
+            for (var i = 0; i < gachaEliteOperatorIds.Count; i++)
             {
-                AddMissingKeys(manifest.Find(ActOneGachaEliteOperatorIds[i], AnimationAssetRole.Operator), ActOneGachaEliteOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
+                AddMissingKeys(manifest.Find(gachaEliteOperatorIds[i], AnimationAssetRole.Operator), gachaEliteOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
             }
 
             AddMissingKeys(manifest.Find("enemy_raider_grunt", AnimationAssetRole.Enemy), "enemy_raider_grunt", AnimationAssetRole.Enemy, EnemyRequiredKeys, missing);
@@ -100,8 +81,8 @@ namespace LastRail.Presentation.Animation
 
             return new AnimationAssetCoverageAuditResult(
                 operatorCount,
-                CountPresentOperators(manifest, ActOneInitialOperatorIds),
-                CountPresentOperators(manifest, ActOneGachaEliteOperatorIds),
+                CountPresentOperators(manifest, initialOperatorIds),
+                CountPresentOperators(manifest, gachaEliteOperatorIds),
                 enemyCount,
                 raidBossCount,
                 missing);

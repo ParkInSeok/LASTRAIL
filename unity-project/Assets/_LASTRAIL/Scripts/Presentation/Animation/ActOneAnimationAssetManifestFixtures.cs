@@ -1,3 +1,5 @@
+using LastRail.Operators;
+
 namespace LastRail.Presentation.Animation
 {
     public static class ActOneAnimationAssetManifestFixtures
@@ -34,38 +36,32 @@ namespace LastRail.Presentation.Animation
 
         public static AnimationAssetManifest CreateMinimumLaunchCandidate()
         {
-            return new AnimationAssetManifest(new[]
+            var operatorIds = ActOneOperatorRosterRules.CreateLaunchVisualOperatorIds();
+            var entries = new AnimationAssetManifestEntry[operatorIds.Count + 2];
+            for (var i = 0; i < operatorIds.Count; i++)
             {
-                Operator("op_kyle"),
-                Operator("op_reina"),
-                Operator("op_eve"),
-                Operator("op_sera"),
-                Operator("op_mira"),
-                Operator("op_vex"),
-                Operator("op_nyx"),
-                Operator("op_sable"),
-                Operator("op_marrow"),
-                Operator("op_iris"),
-                Operator("op_rail"),
-                Operator("op_anchor"),
-                Operator("op_lumen"),
-                Operator("op_cinder"),
-                Operator("op_warden"),
+                entries[i] = Operator(operatorIds[i]);
+            }
+
+            entries[operatorIds.Count] =
                 new AnimationAssetManifestEntry(
                     "enemy_raider_grunt",
                     AnimationAssetRole.Enemy,
                     "portrait_enemy_raider_grunt",
                     "icon_enemy_raider_grunt",
                     "combat_enemy_raider_grunt",
-                    EnemyAnimationKeys),
+                    EnemyAnimationKeys);
+
+            entries[operatorIds.Count + 1] =
                 new AnimationAssetManifestEntry(
                     "boss_raider_king_engine",
                     AnimationAssetRole.RaidBoss,
                     "portrait_boss_raider_king_engine",
                     "icon_boss_raider_king_engine",
                     "combat_boss_raider_king_engine",
-                    RaidBossAnimationKeys)
-            });
+                    RaidBossAnimationKeys);
+
+            return new AnimationAssetManifest(entries);
         }
 
         private static AnimationAssetManifestEntry Operator(string operatorId)
