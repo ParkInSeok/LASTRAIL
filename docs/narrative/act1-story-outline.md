@@ -226,23 +226,27 @@ The Raider King arrives as an armored command engine built from stolen cars, fue
 
 Use "Raider King" as the public title. Internally and in dialogue, the engine can be called the Crown Engine. This lets the story distinguish the person, the machine, and the ideology.
 
-### Raid Structure
+### Launch Raid Structure
 
-#### Phase 1: Chase the Crown
+`raid_raider_king_engine` launches as a boss-only story raid. It uses the same 5 operator slots as ordinary operations, but it does not play as a 15-wave mission and it does not use World Raid score, ranking, participation, settlement, or season reward language.
 
-The King's Engine tries to force Last Rail off the route. The player disables escort cars and survives route hazards.
+The encounter should feel like one continuous duel with the Crown Engine. The boss can change posture, expose weak points, overheat, broadcast threats, or trigger danger warnings, but these are encounter beats inside one boss fight rather than separate enemy-wave phases.
 
-#### Phase 2: Break the Trophies
+#### Boss Entrance
 
-The player targets attached cars that hold stolen supplies, prisoners, or broadcast equipment. Destroying everything is faster, but rescuing people or preserving supplies better fits the Act 1 theme.
+The Crown Engine enters as a moving fortress made from stolen cars and forced connections. Its first image should communicate weight, heat, and command: a machine that expects smaller trains to clear the line.
 
-#### Phase 3: Stop the Engine
+#### Pressure Shift
 
-The final phase focuses on disabling the command engine without detonating the fuel core. The Last Rail wins by stopping the machine and separating people from the Raider King's system.
+As the boss loses integrity, it should become more dangerous and less controlled. Use short danger warnings around fuel core heat, brake lock failure, broadcast pressure, and collision risk. Avoid presenting these shifts as World Raid scoring phases or multi-wave objectives.
+
+#### Final Stop
+
+Victory is verified boss defeat: the Crown Engine is stopped. The final action should emphasize disabling the command engine without adopting the Raider King's disposable-people logic. Failure refunds stamina in the launch UX and should read as a tactical withdrawal, not as participation settlement.
 
 ### Ending Beat
 
-The captured raider cars contain people who expected execution, not rescue. The Conductor opens the doors. The train becomes heavier, slower, and more worth defending.
+The stopped engine leaves behind people who expected execution, not rescue. The Conductor opens the doors. The train becomes heavier, slower, and more worth defending.
 
 ### Sample Lines
 
@@ -296,4 +300,3 @@ Story-facing UI should never imply raw logs, tokens, or hidden probability. Admi
 - Should the Raider King be a named human antagonist in Act 1, or should the "King" remain mostly a title attached to the Crown Engine?
 - Which Act 1 operator is the player's emotional anchor: Conductor, Signal Officer, Chief Mechanic, or first recruited field operator?
 - Does Act 1 end with a clear destination for Act 2, or only a stronger outgoing signal?
-
