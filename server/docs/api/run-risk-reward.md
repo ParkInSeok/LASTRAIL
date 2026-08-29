@@ -660,6 +660,23 @@ Completed fourth local-only slice:
 - Did not change migrations, DEV seed data, reward claim/economy mutation, or
   remote Cloudflare resources.
 
+Completed fifth local-only slice:
+
+- Added Act 1 story raid failure stamina refund contract metadata.
+- `raid_raider_king_engine` failure with `encounterType = RAID_BOSS`,
+  `outcome = FAILURE`, and `raidResult.bossDefeated = false` returns
+  `staminaRefund.status = PENDING`.
+- The marker uses stable display/support refs:
+  `refundType = STAMINA`, `reason = STORY_RAID_FAILURE`, and
+  `policyRef = act1_story_raid_failure_stamina_refund_v1`.
+- The marker is stored in `run_final_results.payload_json.staminaRefund` and
+  mirrored into `run_reward_previews.reward_plan_json.calculation.staminaRefund`
+  as sanitized metadata.
+- Duplicate replay restores the stored marker and does not recalculate or apply
+  stamina twice.
+- This slice does not write `fuel_ledger`, update `fuel_state`, add reward
+  lines, change reward/economy claim mutation, or touch World Raid scope.
+
 Next implementation candidates:
 
 1. Decide whether the DEV balance seed should include `runRewards` before run
@@ -677,3 +694,5 @@ Next implementation candidates:
 - Whether abandoned runs give zero reward or a capped checkpoint reward.
 - Whether item reward lines are needed before item-ledger claim support lands.
 - Exact Admin metric names and thresholds for risk/reward imbalance.
+- Whether story raid stamina refund is committed during run finish, reward
+  claim, or a dedicated future stamina refund endpoint.

@@ -415,6 +415,153 @@ describe("game-api run finish contract", () => {
     });
   });
 
+  it("marks Act 1 story raid failure as a stamina refund candidate without first clear or story progress", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM account_first_clears")) return null;
+                  if (sql.includes("FROM account_story_progress")) {
+                    throw new Error("failed story raid must not query story progress advancement");
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    throw new Error("failed story raid must not allocate story progress mutation");
+                  }
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_raid_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "raid_raider_king_engine",
+                      risk: "V",
+                      preview_json: JSON.stringify({
+                        operationId: "raid_raider_king_engine",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "RAID_BOSS",
+                        raidId: "raid_raider_king_engine",
+                        bossId: "boss_raider_king_engine",
+                        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+                        allowedOperatorSlots: 5,
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                        contentVersion: "act1.launch.content.v1",
+                      }),
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: false,
+            completedPhaseCount: 2,
+            encounterDurationSeconds: 360,
+          },
+          outcome: "FAILURE",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run_raid_1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      rewardClaimId: null,
+      balanceVersion: "1",
+      staminaRefund: {
+        status: "PENDING",
+        refundType: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyRef: "act1_story_raid_failure_stamina_refund_v1",
+      },
+      message: null,
+      errorCode: null,
+    });
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO fuel_ledger");
+    expect(batchSql.join("\n")).not.toContain("UPDATE fuel_state");
+
+    const finalResultInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_final_results"));
+    const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
+      staminaRefund?: { status?: string; reason?: string; policyRef?: string };
+      raidResult?: { bossDefeated?: boolean };
+    };
+    expect(storedPayload.raidResult?.bossDefeated).toBe(false);
+    expect(storedPayload.staminaRefund).toMatchObject({
+      status: "PENDING",
+      reason: "STORY_RAID_FAILURE",
+      policyRef: "act1_story_raid_failure_stamina_refund_v1",
+    });
+
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      calculation: { staminaRefund?: { status?: string; reason?: string; policyRef?: string } };
+    };
+    expect(rewardPlan.calculation.staminaRefund).toMatchObject({
+      status: "PENDING",
+      reason: "STORY_RAID_FAILURE",
+      policyRef: "act1_story_raid_failure_stamina_refund_v1",
+    });
+  });
+
   it("rejects raw rng or reward fields nested inside tactic selections", async () => {
     const env: TestEnv = {
       ENVIRONMENT: "DEV",
@@ -537,7 +684,106 @@ describe("game-api run finish contract", () => {
       rewardPreviewId: "reward_preview_1",
       serverReceivedAt: "2026-08-27T00:00:00.000Z",
       balanceVersion: "1",
+      staminaRefund: null,
       message: "Run finish was already accepted.",
+      errorCode: "duplicate_replay",
+    });
+  });
+
+  it("replays stored story raid failure stamina refund metadata without recalculating", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    expect(values).toEqual(["session_1", "account_1"]);
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    expect(values).toEqual(["account_1", "run-finish-raid-failure-idem-1"]);
+                    return {
+                      result_ref: "reward_preview_raid_failure_1",
+                      created_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      reward_created_at: null,
+                      balance_config_version: 1,
+                      preview_run_id: "run_raid_1",
+                      final_payload_json: JSON.stringify({
+                        encounterType: "RAID_BOSS",
+                        raidResult: { bossDefeated: false },
+                        staminaRefund: {
+                          status: "PENDING",
+                          refundType: "STAMINA",
+                          reason: "STORY_RAID_FAILURE",
+                          policyRef: "act1_story_raid_failure_stamina_refund_v1",
+                        },
+                      }),
+                    };
+                  }
+                  throw new Error(`duplicate replay must not query finishable raid run: ${sql}`);
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("duplicate replay must not write a second raid failure finish batch");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: false,
+            completedPhaseCount: 2,
+          },
+          outcome: "FAILURE",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_raid_1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardPreviewId: "reward_preview_raid_failure_1",
+      staminaRefund: {
+        status: "PENDING",
+        refundType: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyRef: "act1_story_raid_failure_stamina_refund_v1",
+      },
       errorCode: "duplicate_replay",
     });
   });

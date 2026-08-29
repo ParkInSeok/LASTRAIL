@@ -97,6 +97,7 @@ type IdempotencyRecordRow = {
   reward_created_at: number | null;
   balance_config_version?: number | null;
   preview_run_id?: string | null;
+  final_payload_json?: string | null;
 };
 
 type RunStartIdempotencyRecordRow = {
@@ -159,6 +160,13 @@ type RunFinishBody = {
   runtimeStateJson: string;
   tacticSelections: unknown[];
   clientCompletedAt: string;
+};
+
+type StoryRaidStaminaRefundCandidate = {
+  status: "PENDING";
+  refundType: "STAMINA";
+  reason: "STORY_RAID_FAILURE";
+  policyRef: "act1_story_raid_failure_stamina_refund_v1";
 };
 
 type GachaBannerRow = {
@@ -532,6 +540,7 @@ function createRunFinishAcceptedResponse(options: {
   rewardPreviewId: string;
   balanceVersion: string;
   serverReceivedAt: number;
+  staminaRefund?: StoryRaidStaminaRefundCandidate | null;
 }) {
   return {
     runId: options.runId,
@@ -541,6 +550,7 @@ function createRunFinishAcceptedResponse(options: {
     rewardPreviewId: options.rewardPreviewId,
     serverReceivedAt: toIso(options.serverReceivedAt),
     balanceVersion: options.balanceVersion,
+    staminaRefund: options.staminaRefund ?? null,
     message: null,
     errorCode: null,
   };
@@ -551,6 +561,7 @@ function createRunFinishDuplicateReplayResponse(options: {
   rewardPreviewId: string;
   balanceVersion?: string | null;
   serverReceivedAt: number;
+  staminaRefund?: StoryRaidStaminaRefundCandidate | null;
 }) {
   return {
     runId: options.runId,
@@ -560,6 +571,7 @@ function createRunFinishDuplicateReplayResponse(options: {
     rewardPreviewId: options.rewardPreviewId,
     serverReceivedAt: toIso(options.serverReceivedAt),
     balanceVersion: options.balanceVersion ?? null,
+    staminaRefund: options.staminaRefund ?? null,
     message: "Run finish was already accepted.",
     errorCode: "duplicate_replay",
   };
@@ -857,6 +869,49 @@ function parseRunPreviewMetadata(previewJson: string, objective: string): {
   }
 }
 
+function createStoryRaidStaminaRefundCandidate(
+  body: RunFinishBody,
+  previewMetadata: ReturnType<typeof parseRunPreviewMetadata>,
+): StoryRaidStaminaRefundCandidate | null {
+  if (previewMetadata.operationId !== "raid_raider_king_engine") return null;
+  if (previewMetadata.encounterType !== "RAID_BOSS") return null;
+  if (body.encounterType !== "RAID_BOSS") return null;
+  if (body.outcome !== "FAILURE") return null;
+  if (body.raidResult?.bossDefeated !== false) return null;
+  return {
+    status: "PENDING",
+    refundType: "STAMINA",
+    reason: "STORY_RAID_FAILURE",
+    policyRef: "act1_story_raid_failure_stamina_refund_v1",
+  };
+}
+
+function parseStoryRaidStaminaRefundCandidate(value: unknown): StoryRaidStaminaRefundCandidate | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const candidate = value as Record<string, unknown>;
+  if (candidate.status !== "PENDING") return null;
+  if (candidate.refundType !== "STAMINA") return null;
+  if (candidate.reason !== "STORY_RAID_FAILURE") return null;
+  if (candidate.policyRef !== "act1_story_raid_failure_stamina_refund_v1") return null;
+  return {
+    status: "PENDING",
+    refundType: "STAMINA",
+    reason: "STORY_RAID_FAILURE",
+    policyRef: "act1_story_raid_failure_stamina_refund_v1",
+  };
+}
+
+function getStoredStoryRaidStaminaRefundCandidate(payloadJson: string | null | undefined): StoryRaidStaminaRefundCandidate | null {
+  if (payloadJson === null || payloadJson === undefined) return null;
+  try {
+    const parsed = JSON.parse(payloadJson) as unknown;
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return null;
+    return parseStoryRaidStaminaRefundCandidate((parsed as Record<string, unknown>).staminaRefund);
+  } catch {
+    return null;
+  }
+}
+
 function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType<typeof parseRunPreviewMetadata>, balanceVersion: number): RunFinishBody & {
   serverPreviewMetadata: {
     operationId: string;
@@ -872,7 +927,9 @@ function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType
     balanceVersion: string;
     contentVersion: string | null;
   };
+  staminaRefund?: StoryRaidStaminaRefundCandidate;
 } {
+  const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
   return {
     ...body,
     serverPreviewMetadata: {
@@ -889,6 +946,7 @@ function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType
       balanceVersion: String(balanceVersion),
       contentVersion: previewMetadata.contentVersion,
     },
+    ...(staminaRefund === null ? {} : { staminaRefund }),
   };
 }
 
@@ -3104,9 +3162,11 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   const idempotencyRecord = await c.env.DB.prepare(
     `SELECT idem.result_ref, idem.created_at, NULL AS reward_created_at,
             preview.balance_config_version AS balance_config_version,
-            preview.run_id AS preview_run_id
+            preview.run_id AS preview_run_id,
+            final.payload_json AS final_payload_json
      FROM idempotency_records idem
      LEFT JOIN run_reward_previews preview ON preview.id = idem.result_ref
+     LEFT JOIN run_final_results final ON final.run_id = preview.run_id
      WHERE idem.account_id = ? AND idem.operation = 'run_finish' AND idem.idempotency_key = ?`,
   )
     .bind(authContext.accountId, idempotencyKey)
@@ -3127,6 +3187,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
         ? null
         : String(idempotencyRecord.balance_config_version),
       serverReceivedAt: idempotencyRecord.created_at,
+      staminaRefund: getStoredStoryRaidStaminaRefundCandidate(idempotencyRecord.final_payload_json),
     }));
   }
 
@@ -3258,6 +3319,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     firstClearEligible,
     integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
   });
+  const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
   const now = Date.now();
   const rewardPreviewId = createDomainId("reward_preview");
   const storyProgressPlan = fullCompletion
@@ -3287,6 +3349,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     calculation: {
       ...rewardPreview.calculation,
       balanceVersion: String(row.balance_config_version),
+      ...(staminaRefund === null ? {} : { staminaRefund }),
     },
   });
   const finalPayloadJson = JSON.stringify(createRunFinishPayload(body, previewMetadata, row.balance_config_version));
@@ -3430,6 +3493,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     rewardPreviewId,
     balanceVersion: String(row.balance_config_version),
     serverReceivedAt: now,
+    staminaRefund,
   }));
 });
 

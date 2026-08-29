@@ -385,6 +385,12 @@ Raid boss-only run lifecycle impact is captured in
 distinguishes ordinary 15-wave operations from boss-only raids with
 `encounterType`.
 
+Act 1 story raid failure returns a server-authored `staminaRefund` marker with
+`status = PENDING`, `refundType = STAMINA`, `reason = STORY_RAID_FAILURE`, and
+`policyRef = act1_story_raid_failure_stamina_refund_v1`. It is display/support
+metadata only in the current local slice: no `fuel_ledger` write, no
+`fuel_state` update, and no World Raid settlement coupling.
+
 Act 1 launch starts ordinary and raid encounters with server-authored full
 augment/tactic package refs. See `docs/api/run-start-augment-package.md`.
 

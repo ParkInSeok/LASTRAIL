@@ -94,6 +94,7 @@ Stable fields:
   "rewardPreviewId": "reward_preview_...",
   "serverReceivedAt": "2026-08-26T00:00:00.000Z",
   "balanceVersion": "1",
+  "staminaRefund": null,
   "message": null,
   "errorCode": null
 }
@@ -163,12 +164,49 @@ Rationale:
 
 `rewardClaimId` should be reserved for a later claim/commit operation. Do not return final reward amounts in result submit.
 
+## Story Raid Failure Stamina Refund
+
+Act 1 story raid failure uses a small contract marker instead of immediate fuel
+ledger mutation in the run finish response. For
+`raid_raider_king_engine`, when the server receives a valid `RAID_BOSS`
+finish with `outcome = FAILURE` and `raidResult.bossDefeated = false`, the
+accepted response includes:
+
+```json
+{
+  "staminaRefund": {
+    "status": "PENDING",
+    "refundType": "STAMINA",
+    "reason": "STORY_RAID_FAILURE",
+    "policyRef": "act1_story_raid_failure_stamina_refund_v1"
+  }
+}
+```
+
+Rules:
+
+- The marker is server-authored and displayable by Unity.
+- It does not include refund amount, fuel balance, raw cost, or ledger ids.
+- It is stored in `run_final_results.payload_json.staminaRefund` and mirrored
+  into `run_reward_previews.reward_plan_json.calculation.staminaRefund` as
+  sanitized metadata.
+- This slice does not insert `fuel_ledger`, update `fuel_state`, or grant any
+  economy value.
+- `VICTORY + raidResult.bossDefeated=true` does not receive a failure refund
+  marker.
+- Ordinary 15-wave operations do not receive this marker.
+- Duplicate finish replay restores the stored marker and does not recalculate
+  or reapply it.
+- World Raid schedule, scoring, ranking, settlement, entry cost, and refund
+  rules are separate future scope and must not share this contract.
+
 Duplicate replay response:
 
 - `accepted: false`
 - `resultStatus: "DUPLICATE_REPLAY"`
 - `rewardPreviewId: "<previous rewardPreviewId>"`
 - `rewardClaimId: null`
+- `staminaRefund: <stored marker or null>`
 - `errorCode: "duplicate_replay"`
 - no reward recalculation;
 - no second `run_final_results`;
