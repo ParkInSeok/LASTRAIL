@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   assertLaunchReadOnlyBoundary,
   buildLaunchIntegrationRegressionSmoke,
+  buildPreviewSmokeChecklist,
   buildLaunchReadOnlyBoundarySnapshot,
   launchForbiddenActionControls,
   launchForbiddenSensitiveFields
@@ -167,5 +168,53 @@ describe("launch read-only boundary guard", () => {
     expect(serialized).not.toContain("stack_dump");
     expect(serialized).not.toContain("animation_timeline");
     expect(serialized).not.toContain("concurrentUsersPrecision");
+  });
+
+  it("locks the final preview smoke checklist for launch read-only pages", () => {
+    const checklist = buildPreviewSmokeChecklist();
+
+    expect(checklist.previewUrl).toBe("https://preview.lastrail-admin-console.pages.dev");
+    expect(checklist.accessSmoke).toEqual({
+      unauthenticatedExpectedStatus: 302,
+      expectedProtection: "Cloudflare Access login redirect"
+    });
+    expect(checklist.loginSessionFallback).toBe(
+      "If an authenticated browser session is unavailable, use Access 302 plus local test/typecheck/build verification."
+    );
+    expect(checklist.pages.map((page) => [page.code, page.path, page.readOnly])).toEqual([
+      ["dashboard", "/", true],
+      ["support_account_summary", "/support/accounts/:accountId", true],
+      ["player_detail", "/players/:accountId", true],
+      ["run_detail", "/runs/:runId", true],
+      ["gacha", "/gacha", true],
+      ["offline_reward", "/offline-rewards", true],
+      ["ops_error_logs", "/ops/error-logs", true]
+    ]);
+    expect(checklist.assertions.map((assertion) => assertion.code)).toEqual([
+      "read_only_boundary",
+      "dashboard_trim",
+      "gacha_ticket_12",
+      "story_raid_policy",
+      "world_raid_backlog",
+      "google_verifier_ops_only",
+      "rail_choice_backlog"
+    ]);
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "login 5 + opn_03 1 + opn_05 1 + opn_06 2 + story raid 3"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "story_raid_policy")?.expected).toContain(
+      "boss-only / 5 operators / failure stamina refund / boss defeat success"
+    );
+
+    const serialized = JSON.stringify(checklist);
+    expect(serialized).not.toContain("production deploy");
+    expect(serialized).not.toContain("secret write");
+    expect(serialized).not.toContain("link_account");
+    expect(serialized).not.toContain("ops_resolve");
+    expect(serialized).not.toContain("reward_correction");
+    expect(serialized).not.toContain("raw_token");
+    expect(serialized).not.toContain("raw_payload");
+    expect(serialized).not.toContain("raw_rng");
+    expect(serialized).not.toContain("animation_timeline");
   });
 });

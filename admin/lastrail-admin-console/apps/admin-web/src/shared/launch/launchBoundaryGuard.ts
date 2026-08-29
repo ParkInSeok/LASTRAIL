@@ -118,6 +118,38 @@ export type LaunchIntegrationRegressionSmoke = {
   };
 };
 
+export type PreviewSmokeChecklist = {
+  previewUrl: "https://preview.lastrail-admin-console.pages.dev";
+  accessSmoke: {
+    unauthenticatedExpectedStatus: 302;
+    expectedProtection: "Cloudflare Access login redirect";
+  };
+  loginSessionFallback: string;
+  pages: Array<{
+    code:
+      | "dashboard"
+      | "support_account_summary"
+      | "player_detail"
+      | "run_detail"
+      | "gacha"
+      | "offline_reward"
+      | "ops_error_logs";
+    path: string;
+    readOnly: true;
+  }>;
+  assertions: Array<{
+    code:
+      | "read_only_boundary"
+      | "dashboard_trim"
+      | "gacha_ticket_12"
+      | "story_raid_policy"
+      | "world_raid_backlog"
+      | "google_verifier_ops_only"
+      | "rail_choice_backlog";
+    expected: string;
+  }>;
+};
+
 export function buildLaunchReadOnlyBoundarySnapshot(): LaunchReadOnlyBoundarySnapshot {
   const firstSuggestion = customerSupportSuggestionCases[0];
   return {
@@ -139,6 +171,58 @@ export function buildLaunchReadOnlyBoundarySnapshot(): LaunchReadOnlyBoundarySna
       runCombatMutationControlsEnabled: customerSupportContractPreview.runCombat.mutationControlsEnabled,
       opsErrorRepairMechanism: customerSupportContractPreview.supportContext.mutationEndpointsEnabled
     }
+  };
+}
+
+export function buildPreviewSmokeChecklist(): PreviewSmokeChecklist {
+  return {
+    previewUrl: "https://preview.lastrail-admin-console.pages.dev",
+    accessSmoke: {
+      unauthenticatedExpectedStatus: 302,
+      expectedProtection: "Cloudflare Access login redirect"
+    },
+    loginSessionFallback:
+      "If an authenticated browser session is unavailable, use Access 302 plus local test/typecheck/build verification.",
+    pages: [
+      { code: "dashboard", path: "/", readOnly: true },
+      { code: "support_account_summary", path: "/support/accounts/:accountId", readOnly: true },
+      { code: "player_detail", path: "/players/:accountId", readOnly: true },
+      { code: "run_detail", path: "/runs/:runId", readOnly: true },
+      { code: "gacha", path: "/gacha", readOnly: true },
+      { code: "offline_reward", path: "/offline-rewards", readOnly: true },
+      { code: "ops_error_logs", path: "/ops/error-logs", readOnly: true }
+    ],
+    assertions: [
+      {
+        code: "read_only_boundary",
+        expected:
+          "No mutation, repair, compensation, link/unlink, session revoke, acknowledge/resolve, replay, reprocess, result edit, or reward correction controls."
+      },
+      {
+        code: "dashboard_trim",
+        expected: "Dashboard first screen stays launch operations summary focused."
+      },
+      {
+        code: "gacha_ticket_12",
+        expected: "Launch non-repeat command tickets total 12: login 5 + opn_03 1 + opn_05 1 + opn_06 2 + story raid 3."
+      },
+      {
+        code: "story_raid_policy",
+        expected: "Act 1 story raid stays boss-only / 5 operators / failure stamina refund / boss defeat success."
+      },
+      {
+        code: "world_raid_backlog",
+        expected: "World Raid ranking, settlement, and reward repair stay future/backlog and separate from story raid."
+      },
+      {
+        code: "google_verifier_ops_only",
+        expected: "`google_auth_verifier_unavailable` stays dedicated ops error logs evidence, not default support summary."
+      },
+      {
+        code: "rail_choice_backlog",
+        expected: "Rail Choice Events stay outside Act 1 launch scope."
+      }
+    ]
   };
 }
 
