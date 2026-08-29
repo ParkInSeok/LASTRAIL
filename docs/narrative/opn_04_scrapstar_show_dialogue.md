@@ -63,7 +63,7 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 - 시스템: "스크랩스타 외곽 진입. 다수 송신기 감지."
 - 약탈자 진행자: "왔습니다! 선한 척하는 철덩어리, Last Rail!"
 - 차장: "상대는 교전보다 방송을 먼저 시작했습니다."
-- 통신 담당: "송신 채널이 너무 많습니다. 끊지 않으면 우리 위치가 계속 노출됩니다."
+- 통신 담당: "채널이 너무 많습니다. 끊지 않으면 위치가 샙니다."
 
 ### First Broadcast Trap
 
@@ -75,7 +75,7 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 - 시스템: "적 접근. 방송 송신기 보호 병력 확인."
 - 통신 담당: "송신기 뒤쪽에 포로 구획이 있습니다. 화력 조심해야 합니다."
-- 차장: "쉽게 이기려면 쏘면 됩니다. 제대로 이기려면 골라 쏴야 합니다."
+- 차장: "쉽게 이기려면 쏘면 됩니다. 제대로 이기려면 골라 쏘십시오."
 
 ## Tutorial-Adjacent Lines
 
@@ -99,7 +99,7 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 ### Broadcast Exposes Raider Philosophy
 
-- 약탈자 진행자: "자, 보십시오! 부드러운 자들은 선택이 느립니다. 느린 자들은 연료가 됩니다!"
+- 약탈자 진행자: "보십시오! 느린 자비는 결국 연료가 됩니다!"
 - 통신 담당: "그들은 이걸 철학처럼 팔고 있어요."
 - 차장: "철학이라기보단 허가증입니다. 잔인해져도 된다는 허가증."
 
@@ -140,9 +140,9 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 ### Last Rail Interrupts the Broadcast
 
-- 통신 담당: "송신기 역방향 연결 가능. 우리 목소리를 태울 수 있습니다."
+- 통신 담당: "역방향 연결 가능. 우리 목소리를 태울 수 있습니다."
 - 차장: "선전전은 우리 일이 아닙니다."
-- 통신 담당: "아니요. 생존자들에게 아직 다른 선택지가 있다고 말하는 겁니다."
+- 통신 담당: "아직 다른 선택지가 있다고 말하는 겁니다."
 - 정비장: "십 초 드립니다. 멋있는 말은 짧게 하십시오."
 
 ### Broadcast Override Candidates
@@ -173,7 +173,7 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 - 시스템: "작전 완료. 스크랩스타 송신망 침묵."
 - 통신 담당: "적 방송 종료. 포로 구역 대피 완료."
-- 정비장: "시장이라고 부르기엔 너무 많이 부서졌고, 투기장이라고 부르기엔 너무 조용해졌습니다."
+- 정비장: "시장치곤 많이 부서졌고, 투기장치곤 조용합니다."
 - 차장: "좋은 침묵입니다."
 
 ### Emotional Close
@@ -227,7 +227,7 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 스크랩스타 잔존 시장에서 교환 가능한 부품과 데이터를 회수했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -241,8 +241,8 @@ Last Rail은 고철 시장과 투기장이 합쳐진 이동식 정거장, 스크
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_04_scrapstar_show` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not encode reward quantities in narrative text.
 - Do not frame rescued captives or recruited operators as purchased goods.
 - Optional objective language can support future broadcast/captive scoring without requiring it in launch scope.
 - This mission should establish Raider philosophy before `opn_05_night_boarders` brings the threat inside the train.
-

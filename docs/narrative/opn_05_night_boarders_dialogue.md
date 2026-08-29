@@ -62,14 +62,14 @@ The mission text should make the player feel three things:
 
 - 시스템: "비상 경보. 후방 객차 침입 감지."
 - 차장: "조명 절반이 꺼졌습니다. 객차 문 수동 잠금으로 전환합니다."
-- 정비장: "연결부에 절단 흔적. 밖에서 탄 게 아닙니다. 아래에서 올라왔습니다."
+- 정비장: "연결부 절단 흔적. 아래에서 올라왔습니다."
 - 통신 담당: "승객 채널 혼선. 다들 서로를 적으로 보고 있습니다."
 
 ### First Contact
 
 - 승선대장: "조용히 움직여. 엔진만 잡으면 열차는 우리 거다."
 - 차장: "저 목소리, 내부 방송에 탔습니다."
-- 의무 담당: "의무칸 문 두드립니다. 우리 사람이에요. 아니, 확인이 필요해요."
+- 의무 담당: "의무칸 문 두드립니다. 우리 사람인지 확인해야 해요."
 - 시스템: "객차 식별 불안정. 방어 구역을 재확인하십시오."
 
 ### First Enemy Wave
@@ -93,7 +93,7 @@ The mission text should make the player feel three things:
 
 ### Door Control
 
-- 시스템: "객차 문 제어를 회복하면 적 이동을 늦출 수 있습니다."
+- 시스템: "객차 문 제어 회복 시 적 이동이 느려집니다."
 - 정비장: "문은 벽이 아닙니다. 하지만 좋은 시간벌이는 됩니다."
 
 ## Mid-Mission Escalation
@@ -115,7 +115,7 @@ The mission text should make the player feel three things:
 
 - 시스템: "승객 지원자 협력 가능."
 - 차장: "지원자 셋, 동쪽 문. 둘은 의무칸 대피로."
-- 승객 지원자: "명령이 있으니 낫네요. 무서운 건 그대로지만."
+- 승객 지원자: "명령이 있으니 낫네요. 무섭긴 하지만."
 - 정비장: "무섭지 않은 사람은 없습니다. 고장난 사람도 아니고요."
 
 ## Optional Objective Callouts
@@ -150,7 +150,7 @@ The mission text should make the player feel three things:
 
 - 승선대장: "승객들은 겁먹으면 엎드린다. 그게 규칙이야."
 - 승객 지원자: "오늘은 문을 잡고 있습니다."
-- 통신 담당: "후방 객차에서 승객들이 직접 차단막을 세웁니다."
+- 통신 담당: "후방 객차에서 차단막을 세웁니다. 승객들이 직접요."
 - 차장: "지휘관님, 열차가 스스로를 지키기 시작했습니다."
 
 ### Raider Mark
@@ -236,7 +236,7 @@ The mission text should make the player feel three things:
 
 객차 복구 작업을 통해 유지 보급품과 방어 데이터를 확보했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -250,8 +250,8 @@ The mission text should make the player feel three things:
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_05_night_boarders` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not encode reward quantities in narrative text.
 - Passenger participation should not imply permanent combat unit acquisition unless a later recruitment contract says so.
 - Optional objective language can support future carriage/infirmary/passenger safety scoring without requiring it in launch scope.
 - This mission should bridge `opn_04_scrapstar_show` and `opn_06_broken_line` by showing that the Raider threat is now personal and internal.
-

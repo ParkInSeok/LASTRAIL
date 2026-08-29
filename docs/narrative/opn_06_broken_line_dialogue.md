@@ -32,7 +32,7 @@ The mission text should make the player feel three things:
 
 ### Briefing Summary
 
-첫 신호의 발신지는 끊어진 교량 너머에 있다. 선로는 무너졌고, 레이더스는 같은 지점을 향해 집결 중이다. Last Rail은 임시 선로를 놓고, 마지막 기록을 회수하고, 왕의 엔진이 오기 전에 길을 열어야 한다.
+첫 신호의 발신지는 끊어진 교량 너머에 있다. 선로는 무너졌고, 레이더스는 같은 지점을 향해 집결 중이다. Last Rail은 임시 선로를 놓고, 마지막 기록을 회수하고, 왕의 엔진이 오기 전에 통과해야 한다.
 
 ### Briefing Lines
 
@@ -64,14 +64,14 @@ The mission text should make the player feel three things:
 - 정비장: "좋은 소식은, 아직 철이 남아 있다는 겁니다."
 - 차장: "나쁜 소식은?"
 - 정비장: "철이 있어야 할 곳에 없다는 겁니다."
-- 통신 담당: "신호는 아래쪽 잔해에서 올라옵니다. 아직 약하게 반복 중입니다."
+- 통신 담당: "신호는 아래 잔해에서 올라옵니다. 아직 반복 중입니다."
 
 ### Repair Team Deploy
 
 - 시스템: "임시 선로반 배치."
 - 임시 선로반: "작업 시작합니다. 엄호 없으면 바로 접힙니다."
 - 차장: "선로반 보호. 저 사람들이 오늘 우리의 앞바퀴입니다."
-- 정비장: "레일을 놓는 동안 열차는 못 도망칩니다. 선택지가 선명하군요."
+- 정비장: "레일을 놓는 동안 열차는 못 도망칩니다."
 
 ### First Enemy Wave
 
@@ -85,7 +85,7 @@ The mission text should make the player feel three things:
 ### Bridge Segment Defense
 
 - 시스템: "교량 복구 구역을 방어하십시오."
-- 정비장: "방어선이 흔들리면 선로도 흔들립니다. 선로가 흔들리면 모두가 낙하합니다."
+- 정비장: "방어선이 흔들리면 선로도 흔들립니다."
 
 ### Repair Progress
 
@@ -152,7 +152,8 @@ The mission text should make the player feel three things:
 - 시스템: "최종 기록 복원 가능."
 - 통신 담당: "이건 구조 요청이 아닙니다. 유언에 가까워요."
 - 차장: "재생하십시오."
-- 복원된 신호: "우리는 사람을 내리고 엔진만 보냈다. 그래서 졌다. 다음 열차가 있다면, 사람을 버리지 마라."
+- 복원된 신호: "우리는 사람을 내리고 엔진만 보냈다. 그래서 졌다."
+- 복원된 신호: "다음 열차가 있다면, 사람을 버리지 마라."
 - 정비장: "..."
 
 ### Emotional Reaction
@@ -169,7 +170,7 @@ The mission text should make the player feel three things:
 - 시스템: "대형 열원 접근. 원거리 진동 감지."
 - 약탈자 선봉대: "엎드려라! 왕의 엔진이 길을 받으신다!"
 - 통신 담당: "진동 패턴이 열차입니다. 너무 큽니다."
-- 차장: "우리가 찾던 이름이 우리를 찾고 있군요."
+- 차장: "우리가 찾던 이름이 우리를 찾고 있습니다."
 
 ### Objective Update
 
@@ -249,7 +250,7 @@ The mission text should make the player feel three things:
 
 ### Clear Summary
 
-Last Rail은 무너진 교량을 임시로 이었고, 첫 신호의 마지막 기록을 회수했다. 신호는 구조 요청이 아니라 부탁이었다. 사람을 버리지 말라는 부탁. 그리고 왕의 엔진은 이제 가까이 있다.
+Last Rail은 무너진 교량을 임시로 이었고, 첫 신호의 마지막 기록을 회수했다. 신호는 구조 요청이 아니라 부탁이었다. 사람을 버리지 말라는 부탁. 왕의 엔진은 이제 가까이 있다.
 
 ### First Clear Reward Framing
 
@@ -259,7 +260,7 @@ Last Rail은 무너진 교량을 임시로 이었고, 첫 신호의 마지막 �
 
 임시 선로 주변에서 유지 자재와 경로 데이터를 회수했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -273,8 +274,8 @@ Last Rail은 무너진 교량을 임시로 이었고, 첫 신호의 마지막 �
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_06_broken_line` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not encode reward quantities in narrative text.
 - First clear reward language should align with inheritance, route record, and one-time preserved cache.
 - Optional objective language can support future bridge/repair crew/signal integrity scoring without requiring it in launch scope.
 - This mission should directly seed `raid_raider_king_engine`.
-
