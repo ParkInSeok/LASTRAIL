@@ -72,7 +72,9 @@ This document is the current planning source of truth for Act 1 launch scope.
 - Done: Act 1 localization string-id map draft.
 - Done: `opn_01` through `opn_03` dialogue polish and early mission coverage pass.
 - Done: `opn_04` through `opn_06` dialogue polish and late Act 1 tension pass.
-- Remaining: story raid boss callout/failure refund wording polish, codex/archive copy final pass, battle callout density rules, reward framing localization candidate selection, and narrative launch checklist.
+- Done: Story raid boss callout/failure refund wording polish.
+- Done: Act 1 narrative launch checklist and battle callout density rules.
+- Remaining: codex/archive copy final pass and reward framing localization candidate selection.
 
 ## Launch Progress Board
 
@@ -81,7 +83,7 @@ This document is the current planning source of truth for Act 1 launch scope.
 | Server contracts/source of truth | 85% | Core launch contracts are green locally; remaining risk is final config/source promotion and PRD-only OAuth/deploy work. |
 | Admin read-only ops/support | 90% | Main surfaces and regression guards are in place; authenticated preview smoke remains environment-dependent. |
 | Unity client/presentation | 62% | Mission shell presenter work has started actual UI wiring; scene/prefab binding, assets, combat, SDK/storage, and device QA remain the main bottleneck. |
-| Narrative/direction | 70% | Ordinary missions and localization map are aligned; story raid copy, codex final pass, and checklist remain. |
+| Narrative/direction | 82% | Ordinary missions, story raid copy, localization map, operator voice guide, and checklist are aligned; codex final pass and reward framing selection remain. |
 | Overall Act 1 launch readiness | 71% | Source-of-truth/backend is ahead; launch readiness now depends mostly on Unity implementation and final narrative/UI integration. |
 
 ## Decision Queue
