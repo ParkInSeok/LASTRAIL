@@ -10,7 +10,8 @@ import {
   type RunOutcome,
   type RunRiskTier,
 } from "../../../packages/balance/src/index";
-import { createAccessToken, hashRefreshToken, verifyAccessToken } from "./auth";
+import { createAccessToken, createGoogleIdTokenVerifier, hashRefreshToken, verifyAccessToken } from "./auth";
+import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -20,16 +21,6 @@ type GameApiEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT?: string;
   GOOGLE_AUTH_AUDIENCES?: string;
   GOOGLE_ID_TOKEN_VERIFIER?: GoogleIdTokenVerifier;
-};
-
-type GoogleIdTokenVerifier = {
-  verifyIdToken: (idToken: string, audiences: string[]) => Promise<GoogleIdentityClaims>;
-};
-
-type GoogleIdentityClaims = {
-  subject: string;
-  email?: string;
-  emailVerified?: boolean;
 };
 
 const apiBaseUrls = {
@@ -1315,7 +1306,7 @@ function getGoogleAudiences(env: Env): string[] {
 }
 
 function getGoogleVerifier(env: Env): GoogleIdTokenVerifier | null {
-  return (env as GameApiEnv).GOOGLE_ID_TOKEN_VERIFIER ?? null;
+  return (env as GameApiEnv).GOOGLE_ID_TOKEN_VERIFIER ?? createGoogleIdTokenVerifier();
 }
 
 function createAuthError(errorCode: string, message: string) {

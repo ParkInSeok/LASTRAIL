@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import app from "../../apps/game-api/src/index";
 import { createAccessToken, hashRefreshToken, verifyAccessToken } from "../../apps/game-api/src/auth";
 
@@ -6,6 +6,8 @@ type BoundStatement = {
   sql: string;
   values: unknown[];
 };
+
+const encoder = new TextEncoder();
 
 type TestEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT: string;
@@ -93,20 +95,24 @@ function createGoogleEnv(options: {
   linkedAccountId?: string | null;
   linkedAccountStatus?: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
   verifierSubject?: string;
+  idToken?: string;
+  useDefaultVerifier?: boolean;
 } = {}): TestEnv {
   const env = createEnv();
   env.GOOGLE_AUTH_AUDIENCES = "unit-google-client.apps.googleusercontent.com";
-  env.GOOGLE_ID_TOKEN_VERIFIER = {
-    verifyIdToken: async (idToken, audiences) => {
-      expect(idToken).toBe("google.id.token");
-      expect(audiences).toEqual(["unit-google-client.apps.googleusercontent.com"]);
-      return {
-        subject: options.verifierSubject ?? "google-sub-1",
-        email: "commander@example.com",
-        emailVerified: true,
-      };
-    },
-  };
+  if (options.useDefaultVerifier !== true) {
+    env.GOOGLE_ID_TOKEN_VERIFIER = {
+      verifyIdToken: async (idToken, audiences) => {
+        expect(idToken).toBe(options.idToken ?? "google.id.token");
+        expect(audiences).toEqual(["unit-google-client.apps.googleusercontent.com"]);
+        return {
+          subject: options.verifierSubject ?? "google-sub-1",
+          email: "commander@example.com",
+          emailVerified: true,
+        };
+      },
+    };
+  }
 
   const statements: BoundStatement[] = [];
   env.DB = {
@@ -147,6 +153,45 @@ function createGoogleEnv(options: {
     __statements: statements,
   } as unknown as D1Database;
   return env;
+}
+
+async function createSignedGoogleIdToken(payloadOverrides: Record<string, unknown> = {}) {
+  const keyPair = await crypto.subtle.generateKey(
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256",
+    },
+    true,
+    ["sign", "verify"],
+  );
+  const publicJwk = await crypto.subtle.exportKey("jwk", keyPair.publicKey);
+  const payload = {
+    iss: "https://accounts.google.com",
+    aud: "unit-google-client.apps.googleusercontent.com",
+    sub: "google-sub-from-default-verifier",
+    exp: Math.floor((Date.now() + 60_000) / 1000),
+    ...payloadOverrides,
+  };
+  const signingInput = `${base64UrlJson({ alg: "RS256", kid: "default-verifier-key" })}.${base64UrlJson(payload)}`;
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", keyPair.privateKey, encoder.encode(signingInput));
+  return {
+    token: `${signingInput}.${base64UrlEncode(new Uint8Array(signature))}`,
+    jwks: {
+      keys: [{ ...publicJwk, kid: "default-verifier-key", alg: "RS256", use: "sig" }],
+    },
+  };
+}
+
+function base64UrlJson(value: unknown): string {
+  return base64UrlEncode(encoder.encode(JSON.stringify(value)));
+}
+
+function base64UrlEncode(bytes: Uint8Array): string {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "");
 }
 
 describe("game-api auth", () => {
@@ -253,6 +298,43 @@ describe("game-api auth", () => {
     expect(serializedValues).not.toContain("google.id.token");
     expect(serializedValues).not.toContain("commander@example.com");
     expect(db.__statements.map((statement) => statement.sql).join("\n")).toContain("INSERT INTO auth_sessions");
+  });
+
+  it("uses the production Google verifier adapter when no test verifier override is provided", async () => {
+    const fixture = await createSignedGoogleIdToken();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(fixture.jwks), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=3600",
+      },
+    }));
+    try {
+      const env = createGoogleEnv({
+        linkedAccountId: "account_google_1",
+        idToken: fixture.token,
+        useDefaultVerifier: true,
+      });
+      const response = await app.request(
+        "/v1/auth/google",
+        {
+          method: "POST",
+          body: JSON.stringify({ idToken: fixture.token }),
+        },
+        env,
+      );
+
+      expect(response.status).toBe(200);
+      await expect(response.json()).resolves.toMatchObject({
+        tokenType: "Bearer",
+        account: {
+          id: "account_google_1",
+          status: "ACTIVE",
+        },
+      });
+      expect(fetchSpy).toHaveBeenCalledWith("https://www.googleapis.com/oauth2/v3/certs");
+    } finally {
+      fetchSpy.mockRestore();
+    }
   });
 
   it("links a guest account to a Google identity through bearer auth", async () => {

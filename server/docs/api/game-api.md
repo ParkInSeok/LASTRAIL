@@ -124,16 +124,34 @@ and `POST /v1/auth/refresh`.
 Implementation note: production verification must follow the current Google
 Identity / OpenID Connect guidance at implementation/deploy time:
 
-- Verify the ID token signature against Google public keys.
+- Verify the ID token signature against Google public keys from the Google JWKS
+  endpoint.
 - Verify `aud` against the configured Google OAuth client id allow-list.
 - Verify `iss` is `accounts.google.com` or `https://accounts.google.com`.
 - Verify the token has not expired.
 - Use the Google `sub` claim as the provider subject. Do not key identity by
   email.
+- Cache Google public keys according to the HTTP `Cache-Control` max-age
+  response header and refresh when the cached key set expires or the key id is
+  unavailable.
 
 The actual Google OAuth client id / audience values are decision-queue items
-and must not be hardcoded into source. Local tests use a verifier abstraction
-with a fake verifier.
+and must not be hardcoded into source. The route uses
+`GOOGLE_AUTH_AUDIENCES` as the allow-list source. Local tests may still inject
+`GOOGLE_ID_TOKEN_VERIFIER` as a fake verifier, but production can use the
+default Worker/WebCrypto verifier adapter behind the same
+`verifyIdToken(idToken, audiences)` abstraction.
+
+Current safe adapter boundary:
+
+- Accepts only JWTs with `alg = RS256` and a non-empty `kid`.
+- Fetches public keys from `https://www.googleapis.com/oauth2/v3/certs`.
+- Verifies the RS256 signature with WebCrypto.
+- Rejects missing or unconfigured audiences.
+- Rejects unknown audience, unsupported issuer, expired token, missing subject,
+  missing key id, unavailable JWKS, or invalid signature.
+- Returns only the Google `sub` as `subject` plus optional scrub-safe email
+  fields for future use; route persistence continues to use only `subject`.
 
 `POST /v1/auth/google` signs in or restores an account through a verified
 Google identity.
