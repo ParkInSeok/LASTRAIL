@@ -120,6 +120,7 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("offline_reward_claim_unavailable")).toBe("오프라인 보상 수령 불가");
     expect(opsErrorCodeLabel("offline_reward_state_conflict")).toBe("오프라인 보상 상태 충돌");
     expect(opsErrorCodeLabel("google_auth_config_missing")).toBe("Google 인증 설정 누락");
+    expect(opsErrorCodeLabel("google_auth_verifier_unavailable")).toBe("Google 인증 검증기 사용 불가");
     expect(opsErrorCodeLabel("gacha_state_conflict")).toBe("모집 상태 충돌");
     expect(opsErrorCodeLabel("duplicate_replay")).toBe("중복 재생");
     expect(opsErrorCodeLabel("offline_reward_not_claimable")).toBe("오프라인 보상 수령 대상 없음");

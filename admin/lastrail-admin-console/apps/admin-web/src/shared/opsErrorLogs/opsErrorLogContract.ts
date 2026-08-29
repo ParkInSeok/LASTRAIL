@@ -44,6 +44,7 @@ export type OpsErrorLogListItem = {
   idempotencyKeyHash: string | null;
   payloadRef: string | null;
   traceRef: string | null;
+  retryable: boolean | "연동 대기";
   masked: boolean | "연동 대기";
 };
 
@@ -139,6 +140,7 @@ function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsEr
     idempotencyKeyHash: nullableStringValue(pick(record, "idempotencyKeyHash", "idempotency_key_hash")),
     payloadRef: nullableStringValue(pick(record, "payloadRef", "payload_ref")),
     traceRef: nullableStringValue(pick(record, "traceRef", "trace_ref")),
+    retryable: booleanOrPending(record?.retryable),
     masked: booleanOrPending(record?.masked)
   };
 }

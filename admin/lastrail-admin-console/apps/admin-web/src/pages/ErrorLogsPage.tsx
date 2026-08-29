@@ -82,6 +82,7 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
     label: "인증/보상/모집/스토리 오류",
     options: [
       "google_auth_config_missing",
+      "google_auth_verifier_unavailable",
       "reward_plan_mismatch",
       "reward_multiplier_missing",
       "reward_plan_unavailable",
@@ -161,6 +162,12 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
     title: "지원 근거",
     status: "연동 대기",
     description: "support summary opsErrors는 최근 open/acknowledged latest 5, critical first 후보이며 복구 수단이 아닙니다."
+  },
+  {
+    title: "Google 인증 검증기 장애",
+    status: "연동 대기",
+    description:
+      "Google JWKS/fetch/parse 계열 운영 장애는 retryable=true, masked=true, severity=error, source/service=game_api 기준으로 표시합니다."
   }
 ];
 

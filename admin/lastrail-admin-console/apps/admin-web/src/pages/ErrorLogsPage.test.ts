@@ -41,6 +41,7 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
     expect(options).toContain("치명 오류 (fatal)");
     expect(options).toContain("Google 인증 설정 누락 (google_auth_config_missing)");
+    expect(options).toContain("Google 인증 검증기 사용 불가 (google_auth_verifier_unavailable)");
     expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
     expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
     expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
@@ -61,6 +62,12 @@ describe("ErrorLogsPage configuration", () => {
     expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("지원 근거");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("resolve button");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("repair action");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("Google JWKS/fetch/parse");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("retryable=true");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("masked=true");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("JWKS raw dump");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("full claims");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("stack dump");
   });
 
   it("prepares actual read-only Admin API filters and list columns", () => {

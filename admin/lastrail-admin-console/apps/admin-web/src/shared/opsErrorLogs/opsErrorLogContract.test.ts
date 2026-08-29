@@ -36,6 +36,7 @@ describe("opsErrorLogContract", () => {
           idempotencyKeyHash: "sha256:abc",
           payloadRef: null,
           traceRef: null,
+          retryable: true,
           masked: true
         }
       ],
@@ -52,10 +53,52 @@ describe("opsErrorLogContract", () => {
       accountId: "account-1",
       gachaBannerId: "banner-launch-1",
       idempotencyKeyHash: "sha256:abc",
+      retryable: true,
       masked: true
     });
     expect(JSON.stringify(result)).not.toContain("raw request body");
     expect(JSON.stringify(result)).not.toContain("rawIdempotencyKey");
+  });
+
+  it("maps Google verifier unavailable ops errors as masked retryable game api failures", () => {
+    const result = mapOpsErrorLogListResponse({
+      items: [
+        {
+          id: "ops-google-verifier-1",
+          occurredAt: "2026-08-29T02:00:00.000Z",
+          environment: "DEV",
+          severity: "error",
+          status: "open",
+          source: "game_api",
+          service: "game_api",
+          errorCode: "google_auth_verifier_unavailable",
+          messageSummary: "Google verifier unavailable during JWKS fetch",
+          requestId: "req-google-1",
+          correlationJson: { accountId: "account-1" },
+          retryable: true,
+          masked: true,
+          jwksRawDump: "must-not-copy",
+          fullClaims: "must-not-copy",
+          stackDump: "must-not-copy",
+          rawAuthHeader: "must-not-copy"
+        }
+      ]
+    });
+
+    expect(result.items[0]).toMatchObject({
+      id: "ops-google-verifier-1",
+      severity: "error",
+      source: "game_api",
+      service: "game_api",
+      errorCode: "google_auth_verifier_unavailable",
+      accountId: "account-1",
+      retryable: true,
+      masked: true
+    });
+    expect(JSON.stringify(result)).not.toContain("jwksRawDump");
+    expect(JSON.stringify(result)).not.toContain("fullClaims");
+    expect(JSON.stringify(result)).not.toContain("stackDump");
+    expect(JSON.stringify(result)).not.toContain("rawAuthHeader");
   });
 
   it("maps detail response with null detail placeholder and safe refs", () => {
