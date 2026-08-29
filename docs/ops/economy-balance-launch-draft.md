@@ -24,7 +24,7 @@ These are draft balance values for testing and tuning. They are not final produc
 | `cur_operator_exp` | Operator growth | Allowed in runs and offline rewards at conservative amounts. |
 | `cur_special_core` | Rare upgrade limiter | First clear/high-risk/event only candidate. |
 | `cur_command_ticket_fragment` | Controlled recruitment progress | Not normal offline repeat. Limited first clear/event candidate. |
-| `cur_command_ticket` | Full recruitment ticket | Not normal run/offline repeat at launch. |
+| `cur_command_ticket` | Full recruitment ticket | Limited non-repeat launch sources only. Not normal offline repeat at launch. |
 
 ## Active Run Reward Formula
 
@@ -113,7 +113,24 @@ Controlled reward notes:
 
 - `cur_command_ticket_fragment` should remain candidate-only until gacha economy is validated.
 - `cur_special_core` should be first-clear or event-limited, not normal repeat.
-- Full `cur_command_ticket` should not be granted by normal Act 1 operation clears.
+- Full `cur_command_ticket` should be granted only from selected Act 1 first clears and launch login bonus at launch.
+
+Recommended launch command ticket distribution:
+
+| Source | Tickets |
+| --- | ---: |
+| Launch login bonus total | 5 |
+| `opn_03_water_stop` first clear | 1 |
+| `opn_05_night_boarders` first clear | 1 |
+| `opn_06_broken_line` first clear | 2 |
+| `raid_raider_king_engine` story raid first clear | 3 |
+| **Launch non-repeat total** | **12** |
+
+Rationale:
+
+- 12 tickets lets a launch player experience one 10-pull plus a small number of single pulls.
+- Tickets stay tied to account progression and launch attendance, not repeat offline income.
+- Offline repeat rewards remain stable and do not become a recruitment faucet.
 
 ## Offline Reward Formula
 
