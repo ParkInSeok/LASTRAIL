@@ -59,7 +59,7 @@ The mission text should make the player feel three things:
 ### Start
 
 - 차장: "폐쇄문 균열 확대. 출발 준비까지 얼마 안 남았습니다."
-- 정비장: "1번 동력 계전기 켭니다. 끊기면 이 열차는 그냥 쇳덩이입니다."
+- 정비장: "1번 동력 계전기 기동. 끊기면 열차가 죽습니다."
 - 통신 담당: "플랫폼 서쪽에서 움직임 확인. 생존자입니다. 적도 따라오고 있습니다."
 
 ### First Enemy Wave
@@ -111,8 +111,14 @@ These lines can appear near mechanical tutorial prompts.
 ### Risk Moment
 
 - 시스템: "추가 적 접근. 방어선 과부하 위험."
-- 정비장: "좋은 소식입니다. 엔진이 화났습니다. 나쁜 소식은, 아직 살아 있다는 뜻입니다."
+- 정비장: "엔진이 화났습니다. 아직 살아 있다는 뜻입니다."
 - 통신 담당: "마지막 그룹, 거의 도착했습니다!"
+
+### Major Turn
+
+- 시스템: "탑승로 재개방. 마지막 생존자 접근 중."
+- 차장: "지금 기다리면 늦습니다."
+- 정비장: "그래도 빈칸으로 떠나는 것보단 낫습니다."
 
 ## Final Wave
 
@@ -187,7 +193,7 @@ These lines can appear near mechanical tutorial prompts.
 
 정비역 주변 잔존 보급품을 회수했습니다. 열차 유지에 사용할 수 있습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -201,7 +207,7 @@ These lines can appear near mechanical tutorial prompts.
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_01_last_departure` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not encode reward quantities in narrative text.
 - Do not imply gacha ownership language. If a new operator joins after this mission, frame it as assignment, rescue, or voluntary boarding.
 - The first clear reward language should align with server `FIRST_CLEAR` rewardLine separation.
-

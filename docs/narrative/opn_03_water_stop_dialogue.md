@@ -63,7 +63,7 @@ The mission text should make the player feel three things:
 - 시스템: "급수 정거장 접근. 민간 열원 다수 확인."
 - 정거장 대표: "더 오지 마! 여기 물은 우리 아이들 몫이야!"
 - 차장: "적대 신호는 아닙니다. 겁먹은 신호입니다."
-- 정비장: "펌프 상태가 엉망입니다. 고치면 물이 나옵니다. 총으로는 안 나옵니다."
+- 정비장: "펌프 상태가 엉망입니다. 총으로는 물이 안 나옵니다."
 
 ### First Contact
 
@@ -115,6 +115,14 @@ The mission text should make the player feel three things:
 - "펌프를 지켜. 목줄을 끊는다."
 - "민간 구역을 우선 보호한다."
 - "물은 거래하지 않는다. 공유하게 만든다."
+
+## Major Turn
+
+### Station Trust Shift
+
+- 시스템: "정거장 협력 신호 확인."
+- 정거장 대표: "서쪽 밸브를 열겠다. 우리도 돕겠다."
+- 차장: "신뢰 확보. 방어선 다시 잡습니다."
 
 ## Optional Objective Callouts
 
@@ -210,7 +218,7 @@ Last Rail은 물을 빼앗지 않았다. 펌프를 고치고, 정거장을 지�
 
 급수 정거장과의 교환으로 유지 보급품을 확보했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -224,8 +232,8 @@ Last Rail은 물을 빼앗지 않았다. 펌프를 고치고, 정거장을 지�
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_03_water_stop` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not encode reward quantities in narrative text.
 - Do not describe water or supplies as loot.
 - First clear reward language should align with trust/shared supply, not conquest.
 - Optional objective language can support future mission scoring without requiring it in launch scope.
-

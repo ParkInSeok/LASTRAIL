@@ -60,8 +60,8 @@ The mission text should make the player feel three things:
 
 - 시스템: "통신탑 접근. 복원 장비 배치 중."
 - 통신 담당: "신호가 가까워집니다. 잡음 사이에 단어가 있어요."
-- 차장: "주변 움직임 확인. 우리만 이 신호를 들은 게 아닐 수 있습니다."
-- 정비장: "안테나 지지대가 반쯤 녹았습니다. 오래 기대지 마십시오."
+- 차장: "주변 움직임 확인. 우리만 들은 신호가 아닐 수 있습니다."
+- 정비장: "안테나 지지대가 녹았습니다. 오래 못 버팁니다."
 
 ### First Enemy Wave
 
@@ -113,9 +113,9 @@ The mission text should make the player feel three things:
 - "신호를 끝까지 듣는다."
 - "우리가 여기 온 이유를 잃지 마라."
 
-## Major Reveal Fragment
+## Major Turn
 
-### Second Fragment
+### Warning Fragment
 
 - 복원된 신호: "...왕의 엔진... 끊어진 노선..."
 - 통신 담당: "왕의 엔진?"
@@ -203,7 +203,7 @@ The mission text should make the player feel three things:
 
 통신탑 주변에서 잔존 부품과 경로 데이터를 회수했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -217,8 +217,8 @@ Last Rail이 정비역을 떠난 뒤 처음 들은 외부 신호는 구조 요�
 
 - These are narrative text candidates, not finalized localized string IDs.
 - Use stable mission id `opn_02_first_signal` for data references.
+- Required launch coverage: briefing, loading, opening, first wave, tutorial, escalation, major turn, final wave, victory, failure, result, reward framing, and codex/archive.
 - Do not reveal the full Raider King identity in this mission.
 - Do not encode reward quantities in narrative text.
 - First clear reward language should align with one-time route intelligence/cache recovery.
 - This mission should seed `opn_06_broken_line` and `raid_raider_king_engine` without resolving them.
-
