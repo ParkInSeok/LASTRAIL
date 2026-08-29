@@ -210,7 +210,7 @@ async function seedStartableRunPreview(db: initSqlJs.Database): Promise<string> 
         raidId: "raid_raider_king_engine",
         bossId: "boss_raider_king_engine",
         bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
-        allowedOperatorSlots: 4,
+        allowedOperatorSlots: 5,
         startAugmentPackageRef: "act1_full_start_package_v1",
         startTacticPackageRef: "act1_full_start_package_v1",
         contentVersion: "act1.launch.content.v1",
@@ -238,7 +238,10 @@ describe("game-api run finish local D1 smoke", () => {
       "/v1/runs/start",
       {
         method: "POST",
-        headers: { Authorization: authorization },
+        headers: {
+          Authorization: authorization,
+          "Idempotency-Key": "run-start-smoke-idem-1",
+        },
         body: JSON.stringify({ operationPreviewId: "preview-start-smoke-1" }),
       },
       createEnv(db),
@@ -288,21 +291,28 @@ describe("game-api run finish local D1 smoke", () => {
       "/v1/runs/start",
       {
         method: "POST",
-        headers: { Authorization: authorization },
+        headers: {
+          Authorization: authorization,
+          "Idempotency-Key": "run-start-smoke-idem-1",
+        },
         body: JSON.stringify({ operationPreviewId: "preview-start-smoke-1" }),
       },
       createEnv(db),
     );
 
-    expect(replayResponse.status).toBe(409);
+    expect(replayResponse.status).toBe(200);
     await expect(replayResponse.json()).resolves.toMatchObject({
-      accepted: false,
-      startStatus: "REJECTED",
+      accepted: true,
+      startStatus: "STARTED",
+      runId,
       operationPreviewId: "preview-start-smoke-1",
-      errorCode: "operation_preview_already_consumed",
+      errorCode: null,
     });
     expect(db.exec(`SELECT COUNT(*) FROM runs WHERE preview_id = 'preview-start-smoke-1';`)[0]?.values).toEqual([[1]]);
     expect(db.exec(`SELECT COUNT(*) FROM run_snapshots WHERE run_id = '${runId}';`)[0]?.values).toEqual([[1]]);
+    expect(db.exec(`SELECT operation, result_ref FROM idempotency_records WHERE operation = 'run_start';`)[0]?.values).toEqual([
+      ["run_start", runId],
+    ]);
     expect(db.exec("PRAGMA foreign_key_check;")[0]?.values ?? []).toEqual([]);
   });
 

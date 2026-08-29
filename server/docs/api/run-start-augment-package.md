@@ -29,6 +29,7 @@ The local launch Game API run start route is:
 ```text
 POST /v1/runs/start
 Authorization: Bearer <access-token>
+Idempotency-Key: <client-generated-key>
 ```
 
 The request body contains only the server-created operation preview reference:
@@ -42,8 +43,14 @@ The request body contains only the server-created operation preview reference:
 The route consumes an ACTIVE `operation_previews` row for the authenticated
 account, creates an ACTIVE `runs` row, stores a sanitized `run_snapshots`
 metadata payload, and returns server-authored start metadata for Unity.
+`Idempotency-Key` is required for launch and is scoped by authenticated account
+plus operation `run_start`. A retry with the same key and same
+`operationPreviewId` returns the stored `STARTED` response shape without
+creating another run. Reusing the same key with a different
+`operationPreviewId` returns `contract_violation`.
+
 The consume step is guarded by affected row count. If the preview was already
-consumed by another request, the route returns `409
+consumed without a matching idempotency replay record, the route returns `409
 operation_preview_already_consumed` and does not create another run or
 snapshot.
 
@@ -56,7 +63,7 @@ The server-authored run/operation preview metadata may include:
   "encounterType": "ORDINARY_15_WAVE",
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
-  "allowedOperatorSlots": 4,
+  "allowedOperatorSlots": 5,
   "contentVersion": "act1.launch.content.v1"
 }
 ```
@@ -71,7 +78,7 @@ Raid preview metadata may use the same refs:
   "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
-  "allowedOperatorSlots": 4,
+  "allowedOperatorSlots": 5,
   "contentVersion": "act1.launch.content.v1"
 }
 ```
@@ -174,5 +181,4 @@ Launch contract tests should cover:
 - Final `startAugmentPackageRef` and `startTacticPackageRef` stable ids.
 - Whether selected ids need a server-side authored package catalog before
   launch, or whether package-ref legality is enough for the first Unity QA pass.
-- Whether `allowedOperatorSlots` is identical for ordinary and raid encounters.
 - Future mid-wave drafting restart criteria. Backlog, not launch.

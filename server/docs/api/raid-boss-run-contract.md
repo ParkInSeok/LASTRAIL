@@ -51,6 +51,7 @@ route. The local launch route is:
 ```text
 POST /v1/runs/start
 Authorization: Bearer <access-token>
+Idempotency-Key: <client-generated-key>
 ```
 
 The body contains only the server-created `operationPreviewId`. The response
@@ -63,7 +64,7 @@ returns server-authored refs from `operation_previews.preview_json`:
   "raidId": "raid_raider_king_engine",
   "bossId": "boss_raider_king_engine",
   "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
-  "allowedOperatorSlots": 4,
+  "allowedOperatorSlots": 5,
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
   "contentVersion": "act1.launch.content.v1"
@@ -82,8 +83,11 @@ or reinterpret `raidId`, `bossId`, or `bossPhaseRefs` if malformed preview JSON
 contains them.
 
 Run start uses the same preview consume guard for raids as ordinary operations.
-If a raid preview has already been consumed, the route returns `409
-operation_preview_already_consumed` and does not create a second raid run.
+If a raid preview has already been consumed without a matching
+`Idempotency-Key` replay record, the route returns `409
+operation_preview_already_consumed` and does not create a second raid run. A
+retry with the same account, operation `run_start`, key, and
+`operationPreviewId` returns the stored `STARTED` response shape.
 
 ## Run Finish Payload
 
@@ -145,7 +149,7 @@ simulation contract:
     "raidId": "raid_raider_king_engine",
     "bossId": "boss_raider_king_engine",
     "bossPhaseRefs": ["crown_chase", "trophy_break", "engine_stop"],
-    "allowedOperatorSlots": 4,
+    "allowedOperatorSlots": 5,
     "startAugmentPackageRef": "act1_full_start_package_v1",
     "startTacticPackageRef": "act1_full_start_package_v1",
     "balanceVersion": "1",
@@ -205,11 +209,6 @@ Contract smoke should cover:
 
 - Final raid start metadata ids: `bossId`, `bossPhaseRefs`,
   `startAugmentPackageRef`, and `startTacticPackageRef`.
-- Whether run start needs a client-visible idempotency key before production
-  traffic, or whether active preview consumption is sufficient for launch QA.
-- Whether `allowedOperatorSlots` differs from ordinary operations. Current
-  parser/read models treat it as nullable/candidate metadata, not a final
-  balance decision.
 - Whether raid failure needs phase-specific reward scaling or launch default
   failure/abandoned policy is sufficient.
 - Whether raid completion needs a future seasonal/attempt table. Not launch

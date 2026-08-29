@@ -2414,6 +2414,10 @@ Provider:
 
 Admin API는 Game API와 별도 Worker.
 
+Launch run start requires `Authorization: Bearer <access-token>` and
+`Idempotency-Key: <client-generated-key>`. Replays are scoped to the
+authenticated account plus operation `run_start`.
+
 ---
 
 # 69. Server Runtime Config

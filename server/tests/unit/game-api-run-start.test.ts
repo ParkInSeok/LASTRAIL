@@ -19,7 +19,10 @@ async function createAuthorizationHeader(accountId = "account_1"): Promise<strin
   return `Bearer ${token}`;
 }
 
-function createEnv(previewRow: Record<string, unknown> | null, options: { consumeChanges?: number } = {}) {
+function createEnv(previewRow: Record<string, unknown> | null, options: {
+  consumeChanges?: number;
+  idempotencyRow?: Record<string, unknown> | null;
+} = {}) {
   const batchSql: string[] = [];
   const batchBinds: unknown[][] = [];
   const runSql: string[] = [];
@@ -54,6 +57,9 @@ function createEnv(previewRow: Record<string, unknown> | null, options: { consum
                     session_expires_at: Date.now() + 900000,
                     account_status: "ACTIVE",
                   };
+                }
+                if (sql.includes("FROM idempotency_records") && sql.includes("run_start")) {
+                  return options.idempotencyRow ?? null;
                 }
                 if (sql.includes("FROM operation_previews")) {
                   return previewRow;
@@ -95,7 +101,7 @@ describe("game-api run start contract", () => {
         raidId: "should_not_leak",
         bossId: "should_not_leak",
         bossPhaseRefs: ["should_not_leak"],
-        allowedOperatorSlots: 4,
+        allowedOperatorSlots: 5,
         startAugmentPackageRef: "act1_full_start_package_v1",
         startTacticPackageRef: "act1_full_start_package_v1",
         contentVersion: "act1.launch.content.v1",
@@ -109,7 +115,10 @@ describe("game-api run start contract", () => {
       "/v1/runs/start",
       {
         method: "POST",
-        headers: { Authorization: await createAuthorizationHeader() },
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
         body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
       },
       env,
@@ -135,7 +144,7 @@ describe("game-api run start contract", () => {
       raidId: null,
       bossId: null,
       bossPhaseRefs: [],
-      allowedOperatorSlots: 4,
+      allowedOperatorSlots: 5,
       startAugmentPackageRef: "act1_full_start_package_v1",
       startTacticPackageRef: "act1_full_start_package_v1",
       errorCode: null,
@@ -149,6 +158,113 @@ describe("game-api run start contract", () => {
     expect(env.__runSql.join("\n")).toContain("UPDATE operation_previews");
     expect(env.__batchSql.join("\n")).toContain("INSERT INTO runs");
     expect(env.__batchSql.join("\n")).not.toContain("UPDATE operation_previews");
+  });
+
+  it("requires Idempotency-Key header before starting a run", async () => {
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: { Authorization: await createAuthorizationHeader() },
+        body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
+      },
+      createEnv(null),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      startStatus: "REJECTED",
+      operationPreviewId: "preview_ordinary_1",
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("replays a prior successful run start without consuming the preview again", async () => {
+    const env = createEnv(null, {
+      idempotencyRow: {
+        result_ref: "run_previous_1",
+        created_at: 1798444800000,
+        preview_id: "preview_ordinary_1",
+        snapshot_json: JSON.stringify({
+          runId: "run_previous_1",
+          operationPreviewId: "preview_ordinary_1",
+          operationId: "opn_03_water_stop",
+          actId: "act_01_wasteland_railway",
+          regionId: "region_wasteland_railway",
+          encounterType: "ORDINARY_15_WAVE",
+          riskLevel: "III",
+          risk: "III",
+          balanceVersion: "501",
+          contentVersion: "act1.launch.content.v1",
+          ordinary: { totalWaves: 15, startWaveNumber: 1 },
+          raid: null,
+          raidId: null,
+          bossId: null,
+          bossPhaseRefs: [],
+          allowedOperatorSlots: 5,
+          startAugmentPackageRef: "act1_full_start_package_v1",
+          startTacticPackageRef: "act1_full_start_package_v1",
+          serverStartedAt: "2026-12-28T00:00:00.000Z",
+        }),
+      },
+    });
+
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
+        body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: true,
+      startStatus: "STARTED",
+      runId: "run_previous_1",
+      operationPreviewId: "preview_ordinary_1",
+      encounterType: "ORDINARY_15_WAVE",
+      allowedOperatorSlots: 5,
+      errorCode: null,
+    });
+    expect(env.__runSql.join("\n")).not.toContain("UPDATE operation_previews");
+    expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO runs");
+  });
+
+  it("rejects Idempotency-Key reuse for a different operation preview", async () => {
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
+        body: JSON.stringify({ operationPreviewId: "preview_other_1" }),
+      },
+      createEnv(null, {
+        idempotencyRow: {
+          result_ref: "run_previous_1",
+          created_at: 1798444800000,
+          preview_id: "preview_ordinary_1",
+          snapshot_json: "{}",
+        },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      startStatus: "REJECTED",
+      operationPreviewId: "preview_other_1",
+      errorCode: "contract_violation",
+    });
   });
 
   it("rejects a stale active preview consume race without creating another run", async () => {
@@ -172,7 +288,10 @@ describe("game-api run start contract", () => {
       "/v1/runs/start",
       {
         method: "POST",
-        headers: { Authorization: await createAuthorizationHeader() },
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
         body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
       },
       env,
@@ -205,7 +324,7 @@ describe("game-api run start contract", () => {
         raidId: "raid_raider_king_engine",
         bossId: "boss_raider_king_engine",
         bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
-        allowedOperatorSlots: 4,
+        allowedOperatorSlots: 5,
         startAugmentPackageRef: "act1_full_start_package_v1",
         startTacticPackageRef: "act1_full_start_package_v1",
         contentVersion: "act1.launch.content.v1",
@@ -219,7 +338,10 @@ describe("game-api run start contract", () => {
       "/v1/runs/start",
       {
         method: "POST",
-        headers: { Authorization: await createAuthorizationHeader() },
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
         body: JSON.stringify({ operationPreviewId: "preview_raid_1" }),
       },
       env,
@@ -255,7 +377,10 @@ describe("game-api run start contract", () => {
       "/v1/runs/start?accountId=account_other",
       {
         method: "POST",
-        headers: { Authorization: await createAuthorizationHeader() },
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-1",
+        },
         body: JSON.stringify({
           operationPreviewId: "preview_ordinary_1",
           accountId: "account_other",
@@ -280,6 +405,7 @@ describe("game-api run start contract", () => {
       "/v1/runs/start",
       {
         method: "POST",
+        headers: { "Idempotency-Key": "run-start-idem-1" },
         body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
       },
       createEnv(null),

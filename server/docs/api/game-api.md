@@ -310,6 +310,7 @@ Run start uses a local launch contract route:
 ```text
 POST /v1/runs/start
 Authorization: Bearer <access-token>
+Idempotency-Key: <client-generated-key>
 ```
 
 Request body:
@@ -349,7 +350,7 @@ Accepted response shape:
   "raidId": null,
   "bossId": null,
   "bossPhaseRefs": [],
-  "allowedOperatorSlots": 4,
+  "allowedOperatorSlots": 5,
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
   "serverStartedAt": "2026-08-27T00:00:00.000Z",
@@ -364,11 +365,13 @@ fields and the `raid` object. Ordinary previews must not leak `raidId`,
 `bossId`, or `bossPhaseRefs` from malformed preview JSON.
 
 Run start consumes `operation_previews` with an affected-row guard before
-creating the run snapshot. A second request for the same consumed preview
-returns `409` with `operation_preview_already_consumed`; it must not create a
-second `runs` row or `run_snapshots` row. `Idempotency-Key` for run start is
-still a pre-production decision and is not required by this launch contract
-slice.
+creating the run snapshot. `Idempotency-Key` is required for launch. A retry
+with the same account, operation `run_start`, key, and `operationPreviewId`
+returns the stored `STARTED` response shape and must not create a second
+`runs` row or `run_snapshots` row. Reusing the same key for a different
+`operationPreviewId` returns `contract_violation`. A consumed preview without a
+matching idempotency record returns `409` with
+`operation_preview_already_consumed`.
 
 Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.md`.
 

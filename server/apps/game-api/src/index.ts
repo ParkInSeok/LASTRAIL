@@ -99,6 +99,13 @@ type IdempotencyRecordRow = {
   preview_run_id?: string | null;
 };
 
+type RunStartIdempotencyRecordRow = {
+  result_ref: string;
+  created_at: number;
+  preview_id: string | null;
+  snapshot_json: string | null;
+};
+
 type OfflineRewardReplayRow = {
   result_ref: string;
   created_at: number;
@@ -633,6 +640,50 @@ function createRunStartAcceptedResponse(options: {
     errorCode: null,
     message: null,
   };
+}
+
+function createRunStartReplayResponse(row: RunStartIdempotencyRecordRow) {
+  if (row.snapshot_json === null) return null;
+  try {
+    const snapshot = JSON.parse(row.snapshot_json) as Record<string, unknown>;
+    if (snapshot.encounterType !== "RAID_BOSS" && snapshot.encounterType !== "ORDINARY_15_WAVE") return null;
+    const encounterType = snapshot.encounterType;
+    const raid = encounterType === "RAID_BOSS" && typeof snapshot.raid === "object" && snapshot.raid !== null
+      ? snapshot.raid
+      : null;
+    const ordinary = encounterType === "ORDINARY_15_WAVE" && typeof snapshot.ordinary === "object" && snapshot.ordinary !== null
+      ? snapshot.ordinary
+      : null;
+    return {
+      accepted: true,
+      startStatus: "STARTED",
+      runId: row.result_ref,
+      operationPreviewId: typeof snapshot.operationPreviewId === "string" ? snapshot.operationPreviewId : row.preview_id,
+      operationId: typeof snapshot.operationId === "string" ? snapshot.operationId : null,
+      actId: typeof snapshot.actId === "string" ? snapshot.actId : null,
+      regionId: typeof snapshot.regionId === "string" ? snapshot.regionId : null,
+      encounterType,
+      riskLevel: typeof snapshot.riskLevel === "string" ? snapshot.riskLevel : null,
+      risk: typeof snapshot.risk === "string" ? snapshot.risk : null,
+      balanceVersion: typeof snapshot.balanceVersion === "string" ? snapshot.balanceVersion : null,
+      contentVersion: typeof snapshot.contentVersion === "string" ? snapshot.contentVersion : null,
+      ordinary,
+      raid,
+      raidId: encounterType === "RAID_BOSS" && typeof snapshot.raidId === "string" ? snapshot.raidId : null,
+      bossId: encounterType === "RAID_BOSS" && typeof snapshot.bossId === "string" ? snapshot.bossId : null,
+      bossPhaseRefs: encounterType === "RAID_BOSS" && Array.isArray(snapshot.bossPhaseRefs)
+        ? snapshot.bossPhaseRefs.filter((value): value is string => typeof value === "string")
+        : [],
+      allowedOperatorSlots: typeof snapshot.allowedOperatorSlots === "number" ? snapshot.allowedOperatorSlots : null,
+      startAugmentPackageRef: typeof snapshot.startAugmentPackageRef === "string" ? snapshot.startAugmentPackageRef : null,
+      startTacticPackageRef: typeof snapshot.startTacticPackageRef === "string" ? snapshot.startTacticPackageRef : null,
+      serverStartedAt: typeof snapshot.serverStartedAt === "string" ? snapshot.serverStartedAt : toIso(row.created_at),
+      errorCode: null,
+      message: null,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function parseRunStartBody(value: unknown): { operationPreviewId: string } | null {
@@ -2862,6 +2913,15 @@ app.post("/v1/runs/start", async (c) => {
     }), 400);
   }
 
+  const idempotencyKey = c.req.header("Idempotency-Key");
+  if (idempotencyKey === undefined || idempotencyKey.trim() === "") {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    }), 400);
+  }
+
   const authContext = await resolveAuthContext(c);
   if (isAuthFailure(authContext)) {
     return c.json(createRunStartRejectedResponse({
@@ -2872,6 +2932,35 @@ app.post("/v1/runs/start", async (c) => {
   }
 
   const now = Date.now();
+  const idempotencyRecord = await c.env.DB.prepare(
+    `SELECT idem.result_ref, idem.created_at, runs.preview_id, snapshots.snapshot_json
+     FROM idempotency_records idem
+     LEFT JOIN runs ON runs.id = idem.result_ref
+     LEFT JOIN run_snapshots snapshots ON snapshots.run_id = idem.result_ref
+     WHERE idem.account_id = ? AND idem.operation = 'run_start' AND idem.idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<RunStartIdempotencyRecordRow>();
+
+  if (idempotencyRecord !== null) {
+    if (idempotencyRecord.preview_id !== body.operationPreviewId) {
+      return c.json(createRunStartRejectedResponse({
+        operationPreviewId: body.operationPreviewId,
+        errorCode: "contract_violation",
+        message: "Idempotency-Key was already used for another run start.",
+      }), 400);
+    }
+    const replayResponse = createRunStartReplayResponse(idempotencyRecord);
+    if (replayResponse === null) {
+      return c.json(createRunStartRejectedResponse({
+        operationPreviewId: body.operationPreviewId,
+        errorCode: "operation_preview_already_consumed",
+        message: "Operation preview was already consumed.",
+      }), 409);
+    }
+    return c.json(replayResponse);
+  }
+
   const row = await c.env.DB.prepare(
     `SELECT id, account_id, mutation_id, objective, risk, balance_config_version,
             preview_json, status, expires_at, created_at
@@ -2959,6 +3048,10 @@ app.post("/v1/runs/start", async (c) => {
       `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
        VALUES (?, ?, ?)`,
     ).bind(runId, snapshotJson, now),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'run_start', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, runId, now),
   ]);
 
   return c.json(createRunStartAcceptedResponse({
