@@ -87,6 +87,32 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void Create_ExposesStoryRaidStaminaRefundMarkerAsDisplayOnly()
+        {
+            var state = RewardStoryDisplayPresentationState.Create(
+                RunEndUxState.FromSubmitPolicy(RunApiFlowSubmitPolicy.Evaluate(new RunApiFlowSubmitResult(
+                    RunApiFlowSubmitOutcome.Accepted,
+                    RunFinishResponse(staminaRefund: new RunStaminaRefundMarker("AVAILABLE", "Story raid failure refund available.")),
+                    null))),
+                null,
+                null,
+                OfflineRewardPreviewFlowResult.ForClientResult(OfflineRewardPreviewClientResult.Empty(OfflinePreview(OfflineRewardPreviewStatus.Empty, accepted: false))),
+                null,
+                StoryProgress());
+
+            var json = RewardStoryDisplayPresentationStateJsonAdapter.ToJson(state);
+
+            Assert.That(state.RunReward.HasStaminaRefund, Is.EqualTo(true));
+            Assert.That(state.RunReward.StaminaRefundStatus, Is.EqualTo("AVAILABLE"));
+            Assert.That(state.RunReward.StaminaRefundMessage, Is.EqualTo("Story raid failure refund available."));
+            Assert.That(json.Contains("\"hasStaminaRefund\":true"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"staminaRefundStatus\":\"AVAILABLE\""), Is.EqualTo(true));
+            Assert.That(json.Contains("staminaRefundAmount"), Is.EqualTo(false));
+            Assert.That(json.Contains("rewardAmount"), Is.EqualTo(false));
+            Assert.That(json.Contains("animationTimeline"), Is.EqualTo(false));
+        }
+
+        [Test]
         public void ToJson_WritesStableDisplayFieldsWithoutTruthCalculationTransportOrSensitivePayload()
         {
             var state = RewardStoryDisplayPresentationState.Create(
@@ -129,7 +155,8 @@ namespace LastRail.Tests.EditMode
             bool accepted = true,
             string status = "ACCEPTED",
             string rewardPreviewId = "preview_001",
-            string errorCode = null)
+            string errorCode = null,
+            RunStaminaRefundMarker staminaRefund = null)
         {
             return new RunResultSubmitResponseDto(
                 "run_001",
@@ -140,7 +167,8 @@ namespace LastRail.Tests.EditMode
                 new DateTime(2026, 8, 29, 1, 0, 0, DateTimeKind.Utc),
                 "1",
                 null,
-                errorCode);
+                errorCode,
+                staminaRefund);
         }
 
         private static RunRewardPreviewDto RunRewardPreview()

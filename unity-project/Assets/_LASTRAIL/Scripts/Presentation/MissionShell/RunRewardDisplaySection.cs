@@ -10,6 +10,7 @@ namespace LastRail.Presentation.MissionShell
             RunEndUxStateKind? kind,
             RunApiFlowSubmitOutcome? submitOutcome,
             string recognizedRewardPreviewId,
+            RunStaminaRefundMarker staminaRefund,
             RunRewardPreviewClientOutcome? previewOutcome,
             string previewStatus,
             string claimability,
@@ -25,6 +26,7 @@ namespace LastRail.Presentation.MissionShell
             Kind = kind;
             SubmitOutcome = submitOutcome;
             RecognizedRewardPreviewId = OptionalText(recognizedRewardPreviewId);
+            StaminaRefund = staminaRefund;
             PreviewOutcome = previewOutcome;
             PreviewStatus = OptionalText(previewStatus);
             Claimability = OptionalText(claimability);
@@ -42,6 +44,10 @@ namespace LastRail.Presentation.MissionShell
         public RunApiFlowSubmitOutcome? SubmitOutcome { get; }
         public string RecognizedRewardPreviewId { get; }
         public bool HasRecognizedRewardPreviewId => RecognizedRewardPreviewId != null;
+        public RunStaminaRefundMarker StaminaRefund { get; }
+        public bool HasStaminaRefund => StaminaRefund != null;
+        public string StaminaRefundStatus => StaminaRefund == null ? null : StaminaRefund.Status;
+        public string StaminaRefundMessage => StaminaRefund == null ? null : StaminaRefund.Message;
         public RunRewardPreviewClientOutcome? PreviewOutcome { get; }
         public string PreviewStatus { get; }
         public string Claimability { get; }
@@ -84,6 +90,7 @@ namespace LastRail.Presentation.MissionShell
                 endUxState == null ? (RunEndUxStateKind?)null : endUxState.Kind,
                 endUxState == null ? (RunApiFlowSubmitOutcome?)null : endUxState.SubmitOutcome,
                 endUxState == null ? null : endUxState.RecognizedRewardPreviewId,
+                endUxState == null ? null : endUxState.StaminaRefund,
                 previewResult == null ? (RunRewardPreviewClientOutcome?)null : previewResult.Outcome,
                 preview == null ? null : preview.PreviewStatus.ToString(),
                 preview == null ? null : preview.Claimability.ToString(),

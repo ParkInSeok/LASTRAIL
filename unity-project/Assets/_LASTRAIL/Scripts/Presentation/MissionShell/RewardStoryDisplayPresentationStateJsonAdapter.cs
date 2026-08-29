@@ -35,6 +35,9 @@ namespace LastRail.Presentation.MissionShell
             AppendOptionalString(builder, "submitOutcome", runReward.SubmitOutcome.HasValue ? runReward.SubmitOutcome.Value.ToString() : null).Append(',');
             AppendOptionalString(builder, "recognizedRewardPreviewId", runReward.RecognizedRewardPreviewId).Append(',');
             builder.Append("\"hasRecognizedRewardPreviewId\":").Append(Bool(runReward.HasRecognizedRewardPreviewId)).Append(',');
+            builder.Append("\"hasStaminaRefund\":").Append(Bool(runReward.HasStaminaRefund)).Append(',');
+            AppendOptionalString(builder, "staminaRefundStatus", runReward.StaminaRefundStatus).Append(',');
+            AppendOptionalString(builder, "staminaRefundMessage", runReward.StaminaRefundMessage).Append(',');
             AppendOptionalString(builder, "previewOutcome", runReward.PreviewOutcome.HasValue ? runReward.PreviewOutcome.Value.ToString() : null).Append(',');
             AppendOptionalString(builder, "previewStatus", runReward.PreviewStatus).Append(',');
             AppendOptionalString(builder, "claimability", runReward.Claimability).Append(',');
