@@ -1,4 +1,9 @@
 import type { AdminPermission } from "@lastrail/admin-contracts";
+import {
+  encounterTypeLabel,
+  gachaResultStatusLabel,
+  opsErrorCodeLabel
+} from "../labels/adminLabels";
 import { visibleNavigation } from "../navigation/navigation";
 import {
   customerSupportContractPreview,
@@ -76,6 +81,43 @@ export type LaunchReadOnlyBoundarySnapshot = {
   };
 };
 
+export type LaunchIntegrationRegressionSmoke = {
+  visiblePageLabels: string[];
+  railChoiceEvents: "backlog";
+  surfaces: Array<{
+    code:
+      | "dashboard"
+      | "support_account_summary"
+      | "player_detail"
+      | "run_detail"
+      | "gacha"
+      | "ops_error_logs"
+      | "cs_template"
+      | "read_only_boundary";
+    readOnly: true;
+    mutationControlsEnabled: false;
+  }>;
+  contractPoints: Array<
+    | "support_auth_session_metrics"
+    | "support_ops_errors"
+    | "raid_start_metadata"
+    | "gacha_launch_visibility"
+    | "google_verifier_ops_label"
+  >;
+  labels: {
+    googleVerifierUnavailable: string;
+    raidBossOnly: string;
+    ordinary15Wave: string;
+    duplicateReplay: string;
+  };
+  supportEvidence: {
+    authSessionMetrics: string[];
+    opsErrors: string[];
+    raidStartMetadata: string[];
+    gachaLaunchVisibility: string[];
+  };
+};
+
 export function buildLaunchReadOnlyBoundarySnapshot(): LaunchReadOnlyBoundarySnapshot {
   const firstSuggestion = customerSupportSuggestionCases[0];
   return {
@@ -114,4 +156,55 @@ export function assertLaunchReadOnlyBoundary(snapshot: LaunchReadOnlyBoundarySna
   if (snapshot.railChoiceEvents !== "backlog") {
     throw new Error("Rail Choice Events must stay outside Act 1 launch scope");
   }
+}
+
+export function buildLaunchIntegrationRegressionSmoke(): LaunchIntegrationRegressionSmoke {
+  const navigationLabels = buildLaunchReadOnlyBoundarySnapshot().navigationLabels;
+  return {
+    visiblePageLabels: navigationLabels,
+    railChoiceEvents: "backlog",
+    surfaces: [
+      "dashboard",
+      "support_account_summary",
+      "player_detail",
+      "run_detail",
+      "gacha",
+      "ops_error_logs",
+      "cs_template",
+      "read_only_boundary"
+    ].map((code) => ({
+      code: code as LaunchIntegrationRegressionSmoke["surfaces"][number]["code"],
+      readOnly: true,
+      mutationControlsEnabled: false
+    })),
+    contractPoints: [
+      "support_auth_session_metrics",
+      "support_ops_errors",
+      "raid_start_metadata",
+      "gacha_launch_visibility",
+      "google_verifier_ops_label"
+    ],
+    labels: {
+      googleVerifierUnavailable: opsErrorCodeLabel("google_auth_verifier_unavailable"),
+      raidBossOnly: encounterTypeLabel("RAID_BOSS"),
+      ordinary15Wave: encounterTypeLabel("ORDINARY_15_WAVE"),
+      duplicateReplay: gachaResultStatusLabel("DUPLICATE_REPLAY")
+    },
+    supportEvidence: {
+      authSessionMetrics: ["lastLoginAt", "lastLoginAgeSeconds", "concurrentUsers", "concurrentUsersPrecision"],
+      opsErrors: ["latest 5", "critical first", "safe correlation ids"],
+      raidStartMetadata: [
+        "encounterType",
+        "raidId",
+        "bossId",
+        "bossPhaseRefs",
+        "startAugmentPackageRef",
+        "startTacticPackageRef",
+        "contentVersion",
+        "balanceVersion",
+        "allowedOperatorSlots"
+      ],
+      gachaLaunchVisibility: ["activeBannerId", "guaranteeType", "actOneEliteVisualScope"]
+    }
+  };
 }

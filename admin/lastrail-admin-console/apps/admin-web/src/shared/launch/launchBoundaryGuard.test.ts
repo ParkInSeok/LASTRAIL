@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   assertLaunchReadOnlyBoundary,
+  buildLaunchIntegrationRegressionSmoke,
   buildLaunchReadOnlyBoundarySnapshot,
   launchForbiddenActionControls,
   launchForbiddenSensitiveFields
@@ -93,5 +94,77 @@ describe("launch read-only boundary guard", () => {
     expect(serialized).not.toContain("full weight list");
     expect(serialized).not.toContain("stack dump");
     expect(serialized).not.toContain("animation timeline");
+  });
+
+  it("covers launch read-only integration smoke points across visible admin surfaces", () => {
+    const smoke = buildLaunchIntegrationRegressionSmoke();
+
+    expect(smoke.visiblePageLabels).toEqual([
+      "개요",
+      "플레이어",
+      "출격",
+      "CS 지원",
+      "요원 모집",
+      "오프라인 보상",
+      "시스템 에러 로그",
+      "무결성",
+      "의심 플레이어",
+      "사건",
+      "제재",
+      "지표",
+      "게임 설정",
+      "감사 로그"
+    ]);
+    expect(smoke.surfaces.map((surface) => surface.code)).toEqual([
+      "dashboard",
+      "support_account_summary",
+      "player_detail",
+      "run_detail",
+      "gacha",
+      "ops_error_logs",
+      "cs_template",
+      "read_only_boundary"
+    ]);
+    expect(smoke.surfaces.every((surface) => surface.readOnly === true)).toBe(true);
+    expect(smoke.surfaces.every((surface) => surface.mutationControlsEnabled === false)).toBe(true);
+    expect(smoke.contractPoints).toEqual([
+      "support_auth_session_metrics",
+      "support_ops_errors",
+      "raid_start_metadata",
+      "gacha_launch_visibility",
+      "google_verifier_ops_label"
+    ]);
+    expect(smoke.labels.googleVerifierUnavailable).toBe("Google 인증 검증기 사용 불가");
+    expect(smoke.labels.raidBossOnly).toBe("보스 전용 레이드");
+    expect(smoke.labels.ordinary15Wave).toBe("일반 15공세 작전");
+    expect(smoke.labels.duplicateReplay).toBe("이전 결과 재조회");
+    expect(smoke.supportEvidence).toEqual({
+      authSessionMetrics: ["lastLoginAt", "lastLoginAgeSeconds", "concurrentUsers", "concurrentUsersPrecision"],
+      opsErrors: ["latest 5", "critical first", "safe correlation ids"],
+      raidStartMetadata: [
+        "encounterType",
+        "raidId",
+        "bossId",
+        "bossPhaseRefs",
+        "startAugmentPackageRef",
+        "startTacticPackageRef",
+        "contentVersion",
+        "balanceVersion",
+        "allowedOperatorSlots"
+      ],
+      gachaLaunchVisibility: ["activeBannerId", "guaranteeType", "actOneEliteVisualScope"]
+    });
+    expect(smoke.railChoiceEvents).toBe("backlog");
+
+    const serialized = JSON.stringify(smoke);
+    expect(serialized).not.toContain("link_account");
+    expect(serialized).not.toContain("ops_resolve");
+    expect(serialized).not.toContain("reward_correction");
+    expect(serialized).not.toContain("raw_token");
+    expect(serialized).not.toContain("raw_payload");
+    expect(serialized).not.toContain("raw_rng");
+    expect(serialized).not.toContain("full_weights");
+    expect(serialized).not.toContain("stack_dump");
+    expect(serialized).not.toContain("animation_timeline");
   });
 });
