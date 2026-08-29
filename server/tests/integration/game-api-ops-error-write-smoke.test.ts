@@ -48,8 +48,9 @@ class SqlJsD1Statement {
     }
   }
 
-  run(): void {
+  run(): { success: true; meta: { changes: number } } {
     this.database.run(this.sql, this.values);
+    return { success: true, meta: { changes: this.database.getRowsModified() } };
   }
 }
 
@@ -250,6 +251,51 @@ function seedFinishableRun(db: initSqlJs.Database, accountId: string): void {
        id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id
      ) VALUES ('run-ops-story-1', ?, 'preview-ops-run-1', 'mutation-ops-run-start-1', 402, 'ACTIVE', ?, NULL, NULL);`,
     [accountId, fixedNow],
+  );
+}
+
+function seedStartableOperationPreview(db: initSqlJs.Database, accountId: string): void {
+  db.run(
+    `INSERT INTO balance_config_drafts (
+       id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+     ) VALUES (
+       'draft-ops-run-start-1', NULL, 1, 1, '{}', 'checksum-ops-run-start-1', 1, 'PUBLISHED', 'test', ?, ?
+     );`,
+    [fixedNow, fixedNow],
+  );
+  db.run(
+    `INSERT INTO balance_config_versions (
+       version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+     ) VALUES (?, 1, 1, 'checksum-ops-run-start-1', ?, ?, 'test', 'draft-ops-run-start-1');`,
+    [403, JSON.stringify({ runRewards: launchRunRewardsConfig }), fixedNow],
+  );
+  db.run(
+    `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+     VALUES ('mutation-ops-run-start-preview-1', ?, 2, 'OPERATION_PREVIEW', 'idem-ops-run-start-preview-1', ?);`,
+    [accountId, fixedNow],
+  );
+  db.run(
+    `INSERT INTO operation_previews (
+       id, account_id, mutation_id, objective, risk, balance_config_version, preview_json, status, expires_at, created_at
+     ) VALUES (?, ?, ?, ?, ?, 403, ?, 'ACTIVE', ?, ?);`,
+    [
+      "preview-ops-run-start-1",
+      accountId,
+      "mutation-ops-run-start-preview-1",
+      "opn_03_water_stop",
+      "III",
+      JSON.stringify({
+        operationId: "opn_03_water_stop",
+        actId: "act_01_wasteland_railway",
+        regionId: "region_wasteland_railway",
+        encounterType: "ORDINARY_15_WAVE",
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+      }),
+      fixedNow + 900000,
+      fixedNow,
+    ],
   );
 }
 
@@ -508,6 +554,63 @@ describe("game-api minimal ops error write integration", () => {
       });
       expect(String(log.idempotency_key_hash)).toMatch(/^sha256:/u);
       expect(String(log.idempotency_key_hash)).not.toContain("story-conflict-idem-1");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("reopens a consumed operation preview and logs a fail-soft ops error when run start persistence fails", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const setupEnv = createEnv(db);
+      const guest = await createGuest(setupEnv);
+      seedStartableOperationPreview(db, guest.accountId);
+
+      const response = await app.request(
+        "/v1/runs/start",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guest.accessToken}`,
+            "Idempotency-Key": "run-start-conflict-idem-1",
+            "X-Request-Id": "req_run_start_conflict_1",
+          },
+          body: JSON.stringify({ operationPreviewId: "preview-ops-run-start-1" }),
+        },
+        createEnv(db, { failBatchSqlIncludes: "INSERT INTO run_snapshots" }),
+      );
+
+      expect(response.status).toBe(409);
+      await expect(response.json()).resolves.toMatchObject({
+        accepted: false,
+        startStatus: "REJECTED",
+        operationPreviewId: "preview-ops-run-start-1",
+        errorCode: "run_start_state_conflict",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM runs WHERE preview_id = 'preview-ops-run-start-1';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM run_snapshots;")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'run_start';")).toBe(0);
+      expect(firstRow(db, "SELECT status FROM operation_previews WHERE id = 'preview-ops-run-start-1';")).toEqual({
+        status: "ACTIVE",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM ops_error_logs WHERE error_code = 'run_start_state_conflict';")).toBe(1);
+
+      const log = firstRow(db, "SELECT account_id, run_id, idempotency_operation, idempotency_key_hash, correlation_json, retryable, masked FROM ops_error_logs WHERE error_code = 'run_start_state_conflict';");
+      expect(log).toMatchObject({
+        account_id: guest.accountId,
+        run_id: null,
+        idempotency_operation: "run_start",
+        retryable: 1,
+        masked: 1,
+      });
+      expect(String(log.idempotency_key_hash)).toMatch(/^sha256:/u);
+      expect(String(log.idempotency_key_hash)).not.toContain("run-start-conflict-idem-1");
+      expect(String(log.correlation_json)).toContain("preview-ops-run-start-1");
+      expect(String(log.correlation_json)).toContain("\"runId\":\"run_");
+      expect(JSON.stringify(db.exec("SELECT * FROM ops_error_logs WHERE error_code = 'run_start_state_conflict';"))).not.toContain("rawRng");
+      expect(JSON.stringify(db.exec("SELECT * FROM ops_error_logs WHERE error_code = 'run_start_state_conflict';"))).not.toContain("animationTimeline");
     } finally {
       vi.useRealTimers();
     }

@@ -79,6 +79,10 @@ Current direct-write scope:
   accepted full-clear run finish cannot safely commit the story progress
   update batch. It is reserved for server-owned story/unlock/progression state
   conflicts, not player-supplied story progress values.
+- `run_start_state_conflict`: `error`, `game_api`, open. Written when
+  `POST /v1/runs/start` consumes an operation preview but cannot safely persist
+  the run, snapshot, and `run_start` idempotency record. The route attempts a
+  best-effort preview reopen before returning the stable rejected response.
 
 These writes are fail-soft. If the ops log insert fails, the original player API
 response is preserved. Request bodies, raw Google tokens, Authorization headers,

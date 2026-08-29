@@ -373,6 +373,11 @@ returns the stored `STARTED` response shape and must not create a second
 matching idempotency record returns `409` with
 `operation_preview_already_consumed`.
 
+If preview consumption succeeds but run/snapshot/idempotency persistence fails,
+the route returns `409 run_start_state_conflict`, attempts to reopen the preview
+to `ACTIVE`, and writes a scrubbed fail-soft ops error log. The client should
+retry with the same `Idempotency-Key` after fetching/confirming preview state.
+
 Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.md`.
 
 Accepted run finish responses return `rewardPreviewId` first. Reward review and

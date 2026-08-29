@@ -22,6 +22,8 @@ async function createAuthorizationHeader(accountId = "account_1"): Promise<strin
 function createEnv(previewRow: Record<string, unknown> | null, options: {
   consumeChanges?: number;
   idempotencyRow?: Record<string, unknown> | null;
+  failStartBatch?: boolean;
+  rollbackChanges?: number;
 } = {}) {
   const batchSql: string[] = [];
   const batchBinds: unknown[][] = [];
@@ -46,6 +48,9 @@ function createEnv(previewRow: Record<string, unknown> | null, options: {
               run: async () => {
                 runSql.push(sql);
                 runBinds.push(values);
+                if (sql.includes("UPDATE operation_previews") && sql.includes("SET status = 'ACTIVE'")) {
+                  return { success: true, meta: { changes: options.rollbackChanges ?? 1 } };
+                }
                 return { success: true, meta: { changes: options.consumeChanges ?? 1 } };
               },
               first: async () => {
@@ -73,6 +78,9 @@ function createEnv(previewRow: Record<string, unknown> | null, options: {
       async batch(statements: Array<{ sql?: string; values?: unknown[] }>) {
         batchSql.push(...statements.map((statement) => String(statement.sql)));
         batchBinds.push(...statements.map((statement) => statement.values ?? []));
+        if (options.failStartBatch) {
+          throw new Error("simulated run start persistence failure");
+        }
         return statements.map(() => ({ success: true }));
       },
     } as unknown as D1Database,
@@ -306,6 +314,58 @@ describe("game-api run start contract", () => {
     });
     expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO runs");
     expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO run_snapshots");
+  });
+
+  it("reopens the consumed preview and logs ops context when run start persistence fails", async () => {
+    const env = createEnv({
+      id: "preview_ordinary_1",
+      account_id: "account_1",
+      mutation_id: "mutation_preview_1",
+      objective: "opn_03_water_stop",
+      risk: "III",
+      balance_config_version: 501,
+      preview_json: JSON.stringify({
+        operationId: "opn_03_water_stop",
+        encounterType: "ORDINARY_15_WAVE",
+        allowedOperatorSlots: 5,
+      }),
+      status: "ACTIVE",
+      expires_at: Date.now() + 900000,
+      created_at: Date.now() - 1000,
+    }, { failStartBatch: true });
+
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-failed-batch",
+        },
+        body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      startStatus: "REJECTED",
+      operationPreviewId: "preview_ordinary_1",
+      errorCode: "run_start_state_conflict",
+      message: "Run start could not be committed safely.",
+    });
+    const runSql = env.__runSql.join("\n");
+    expect(runSql).toContain("SET status = 'CONSUMED'");
+    expect(runSql).toContain("SET status = 'ACTIVE'");
+    expect(env.__runBinds[1]).toEqual(["preview_ordinary_1", "account_1"]);
+    expect(env.__batchSql.join("\n")).toContain("INSERT INTO runs");
+    expect(runSql).toContain("INSERT INTO ops_error_logs");
+    expect(JSON.stringify(env.__runBinds)).toContain("run_start_state_conflict");
+    expect(JSON.stringify(env.__runBinds)).toContain("sha256:");
+    expect(JSON.stringify(env.__runBinds)).not.toContain("run-start-idem-failed-batch");
+    expect(JSON.stringify(env.__runBinds)).not.toContain("rawRng");
+    expect(JSON.stringify(env.__runBinds)).not.toContain("animationTimeline");
   });
 
   it("starts a raid boss run with raid-only metadata refs", async () => {

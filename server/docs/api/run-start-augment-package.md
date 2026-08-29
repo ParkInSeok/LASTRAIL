@@ -54,6 +54,15 @@ consumed without a matching idempotency replay record, the route returns `409
 operation_preview_already_consumed` and does not create another run or
 snapshot.
 
+If preview consumption succeeds but the subsequent `runs`,
+`run_snapshots`, or `idempotency_records` persistence batch fails, the route
+returns `409 run_start_state_conflict`. The server attempts a best-effort
+reopen of the same preview back to `ACTIVE` and writes a scrubbed
+`ops_error_logs` row with `idempotency_operation = run_start`. The error log is
+observational only; log write failure must not worsen the player-facing
+response. The response must not include raw auth headers, tokens, raw request
+body, RNG/probability data, internal weights, or animation timeline fields.
+
 ## Server-Owned Metadata
 
 The server-authored run/operation preview metadata may include:
@@ -103,6 +112,7 @@ Current rejected codes include:
 - `operation_preview_not_found`
 - `operation_preview_not_startable`
 - `operation_preview_already_consumed`
+- `run_start_state_conflict`
 
 ## Run Finish Selection Echo
 

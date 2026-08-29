@@ -3097,20 +3097,57 @@ app.post("/v1/runs/start", async (c) => {
     }), 409);
   }
 
-  await c.env.DB.batch([
-    c.env.DB.prepare(
-      `INSERT INTO runs (id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id)
-       VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, NULL, NULL)`,
-    ).bind(runId, authContext.accountId, row.id, row.mutation_id, row.balance_config_version, now),
-    c.env.DB.prepare(
-      `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
-       VALUES (?, ?, ?)`,
-    ).bind(runId, snapshotJson, now),
-    c.env.DB.prepare(
-      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
-       VALUES (?, ?, ?, 'run_start', ?, ?)`,
-    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, runId, now),
-  ]);
+  try {
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        `INSERT INTO runs (id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id)
+         VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, NULL, NULL)`,
+      ).bind(runId, authContext.accountId, row.id, row.mutation_id, row.balance_config_version, now),
+      c.env.DB.prepare(
+        `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
+         VALUES (?, ?, ?)`,
+      ).bind(runId, snapshotJson, now),
+      c.env.DB.prepare(
+        `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+         VALUES (?, ?, ?, 'run_start', ?, ?)`,
+      ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, runId, now),
+    ]);
+  } catch {
+    try {
+      await c.env.DB.prepare(
+        `UPDATE operation_previews
+         SET status = 'ACTIVE'
+         WHERE id = ? AND account_id = ? AND status = 'CONSUMED'`,
+      ).bind(row.id, authContext.accountId).run();
+    } catch {
+      // Best-effort recovery only; the player-facing response remains stable.
+    }
+    await writeGameApiOpsErrorLog(c, {
+      severity: "error",
+      errorCode: "run_start_state_conflict",
+      messageSummary: "Run start persistence failed after operation preview consumption.",
+      accountId: authContext.accountId,
+      idempotencyOperation: "run_start",
+      idempotencyKey,
+      correlation: {
+        runId,
+        operationPreviewId: row.id,
+        operationId: previewMetadata.operationId,
+        encounterType: previewMetadata.encounterType,
+      },
+      context: {
+        phase: "run_start_commit_after_preview_consume",
+        rollbackAttempted: true,
+        responseShape: "run_start_rejected",
+      },
+      retryable: true,
+    });
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "run_start_state_conflict",
+      message: "Run start could not be committed safely.",
+    }), 409);
+  }
 
   return c.json(createRunStartAcceptedResponse({
     runId,
