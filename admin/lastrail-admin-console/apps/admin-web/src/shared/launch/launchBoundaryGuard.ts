@@ -191,7 +191,7 @@ export function buildLaunchIntegrationRegressionSmoke(): LaunchIntegrationRegres
       duplicateReplay: gachaResultStatusLabel("DUPLICATE_REPLAY")
     },
     supportEvidence: {
-      authSessionMetrics: ["lastLoginAt", "lastLoginAgeSeconds", "concurrentUsers", "concurrentUsersPrecision"],
+      authSessionMetrics: ["activeSessionCount", "lastLoginAt", "lastLoginAgeSeconds", "latestSessionAt"],
       opsErrors: ["latest 5", "critical first", "safe correlation ids"],
       raidStartMetadata: [
         "encounterType",

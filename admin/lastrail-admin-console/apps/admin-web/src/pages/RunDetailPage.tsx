@@ -133,6 +133,33 @@ export const raidBossResultPlaceholders: RunCombatEvidencePlaceholder[] = [
   { field: "encounterDurationSeconds", label: "전투 소요 시간", value: "연동 대기", note: "sanitized duration 후보" }
 ];
 
+export const storyRaidLaunchResultPolicyPlaceholders: RunCombatEvidencePlaceholder[] = [
+  {
+    field: "allowedOperatorSlots",
+    label: "허용 요원 슬롯",
+    value: "5",
+    note: "Act 1 story raid는 일반 작전과 동일하게 5 operators 기준"
+  },
+  {
+    field: "failureStaminaRefund",
+    label: "실패 stamina 환급",
+    value: "연동 대기",
+    note: "story raid 실패 시 stamina refund 후보, read-only evidence"
+  },
+  {
+    field: "successCondition",
+    label: "성공 기준",
+    value: "boss_defeat",
+    note: "boss defeat success 기준"
+  },
+  {
+    field: "worldRaidScope",
+    label: "World Raid 범위",
+    value: "backlog",
+    note: "World Raid와 분리, ranking/settlement/reward repair UI는 launch 제외"
+  }
+];
+
 export const runStartPackageEvidencePlaceholders: RunCombatEvidencePlaceholder[] = [
   {
     field: "startAugmentPackageRef",
@@ -541,6 +568,17 @@ export function RunDetailPage() {
         </div>
         <div className="metric-grid">
           {raidBossResultPlaceholders.map((placeholder) => (
+            <div key={placeholder.field} className="metric-card">
+              <span>{placeholder.label}</span>
+              <strong>{placeholder.value}</strong>
+              <small>
+                {placeholder.field} / {placeholder.note}
+              </small>
+            </div>
+          ))}
+        </div>
+        <div className="metric-grid">
+          {storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => (
             <div key={placeholder.field} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

@@ -139,7 +139,7 @@ describe("launch read-only boundary guard", () => {
     expect(smoke.labels.ordinary15Wave).toBe("일반 15공세 작전");
     expect(smoke.labels.duplicateReplay).toBe("이전 결과 재조회");
     expect(smoke.supportEvidence).toEqual({
-      authSessionMetrics: ["lastLoginAt", "lastLoginAgeSeconds", "concurrentUsers", "concurrentUsersPrecision"],
+      authSessionMetrics: ["activeSessionCount", "lastLoginAt", "lastLoginAgeSeconds", "latestSessionAt"],
       opsErrors: ["latest 5", "critical first", "safe correlation ids"],
       raidStartMetadata: [
         "encounterType",
@@ -166,5 +166,6 @@ describe("launch read-only boundary guard", () => {
     expect(serialized).not.toContain("full_weights");
     expect(serialized).not.toContain("stack_dump");
     expect(serialized).not.toContain("animation_timeline");
+    expect(serialized).not.toContain("concurrentUsersPrecision");
   });
 });

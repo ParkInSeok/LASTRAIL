@@ -96,10 +96,10 @@ export const launchDashboardSections: DashboardSection[] = [
     title: "인증/세션",
     description: "Google 로그인과 활성 세션 상태를 보는 launch 핵심 요약",
     metrics: [
-      { label: "현재 동접자", value: "연동 대기", note: "concurrentUsers 후보" },
-      { label: "활성 세션", value: "연동 대기", note: "activeSessions 후보" },
-      { label: "최근 5분 접속", value: "연동 대기", note: "recentActiveAccounts5m 후보" },
-      { label: "마지막 로그인 경과", value: "연동 대기", note: "lastLoginAgeBuckets 후보" }
+      { label: "활성 세션", value: "연동 대기", note: "activeSessionCount / activeSessions 후보" },
+      { label: "마지막 로그인 시각", value: "연동 대기", note: "lastLoginAt 기준" },
+      { label: "마지막 로그인 경과", value: "연동 대기", note: "lastLoginAgeSeconds 후보" },
+      { label: "Google 연동 상태", value: "연동 대기", note: "provider/link read-only evidence 후보" }
     ]
   },
   {

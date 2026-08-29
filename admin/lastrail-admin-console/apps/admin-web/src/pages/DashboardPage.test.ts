@@ -24,10 +24,10 @@ describe("DashboardPage configuration", () => {
       "치명 시스템 오류"
     ]);
     expect(launchDashboardSections.flatMap((section) => section.metrics.map((metric) => metric.label))).toEqual([
-      "현재 동접자",
       "활성 세션",
-      "최근 5분 접속",
+      "마지막 로그인 시각",
       "마지막 로그인 경과",
+      "Google 연동 상태",
       "지원 확인 필요 계정",
       "계정 복구 후보",
       "Google 연동 계정",
@@ -44,6 +44,9 @@ describe("DashboardPage configuration", () => {
     expect(launchDashboardSections.flatMap((section) => section.metrics).every((metric) => metric.value === "연동 대기")).toBe(
       true
     );
+    expect(JSON.stringify(launchDashboardSections)).toContain("activeSessionCount");
+    expect(JSON.stringify(launchDashboardSections)).toContain("lastLoginAt");
+    expect(JSON.stringify(launchDashboardSections)).not.toContain("concurrentUsers 후보");
   });
 
   it("moves long policy and placeholder-heavy metrics into detail candidates", () => {

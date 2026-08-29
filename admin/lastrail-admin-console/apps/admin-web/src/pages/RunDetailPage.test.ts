@@ -4,6 +4,7 @@ import {
   encounterTypePlaceholders,
   forbiddenRunCombatEvidenceExamplesOutOfScope,
   raidBossResultPlaceholders,
+  storyRaidLaunchResultPolicyPlaceholders,
   storyProgressDetailToReadContractPlaceholders,
   raidNarrativeObjectivePlaceholders,
   runStartMetadataEvidenceFrom,
@@ -199,6 +200,15 @@ describe("RunDetailPage risk reward skeleton", () => {
       "encounterDurationSeconds"
     ]);
     expect(raidBossResultPlaceholders.every((placeholder) => placeholder.value === "연동 대기")).toBe(true);
+    expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => [placeholder.field, placeholder.value])).toEqual([
+      ["allowedOperatorSlots", "5"],
+      ["failureStaminaRefund", "연동 대기"],
+      ["successCondition", "boss_defeat"],
+      ["worldRaidScope", "backlog"]
+    ]);
+    expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
+      "World Raid와 분리"
+    );
   });
 
   it("prepares augment-at-start evidence without exposing combat internals", () => {

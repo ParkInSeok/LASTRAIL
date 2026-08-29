@@ -3,6 +3,7 @@ import {
   actOneEliteOperatorDraftBoundary,
   actOneEliteOperatorIdsDraft,
   gachaDuplicateConversionSupportFields,
+  gachaLaunchTicketAcquisitionPolicy,
   gachaLaunchResultFields,
   gachaLaunchSupportVisibilityCards,
   gachaReadOnlySections,
@@ -44,6 +45,7 @@ describe("GachaPage configuration", () => {
       "guaranteeType",
       "duplicateConversion",
       "resultFields",
+      "ticketAcquisition",
       "actOneEliteVisualScope"
     ]);
     expect(gachaSupportPullCountVisibility).toEqual(["1-pull", "10-pull"]);
@@ -61,6 +63,27 @@ describe("GachaPage configuration", () => {
     );
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "seedPromotionApproved=false"
+    );
+  });
+
+  it("shows launch non-repeat command ticket sources without putting tickets into offline repeat rewards", () => {
+    expect(gachaLaunchTicketAcquisitionPolicy).toEqual({
+      totalNonRepeatTickets: 12,
+      costItemId: "cur_command_ticket",
+      offlineRepeatIncludesCommandTicket: false,
+      sources: [
+        { code: "launch_login_bonus", label: "launch login bonus", quantity: 5 },
+        { code: "opn_03_first_clear", label: "opn_03 first clear", quantity: 1 },
+        { code: "opn_05_first_clear", label: "opn_05 first clear", quantity: 1 },
+        { code: "opn_06_first_clear", label: "opn_06 first clear", quantity: 2 },
+        { code: "story_raid_first_clear", label: "story raid first clear", quantity: 3 }
+      ]
+    });
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "launch non-repeat total 12"
+    );
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "offline repeat reward excludes cur_command_ticket"
     );
   });
 

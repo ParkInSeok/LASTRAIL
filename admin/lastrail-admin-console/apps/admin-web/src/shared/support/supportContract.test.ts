@@ -93,7 +93,8 @@ describe("supportContract", () => {
       "concurrentUsersPrecision"
     ]);
     expect(accountAuthSessionFieldLabel("lastLoginAgeSeconds")).toBe("마지막 로그인 경과 초");
-    expect(accountAuthSessionFieldLabel("concurrentUsersPrecision")).toBe("동접자 정밀도");
+    expect(accountAuthSessionFieldLabel("concurrentUsers")).toBe("동접자 집계 상태");
+    expect(accountAuthSessionFieldLabel("concurrentUsersPrecision")).toBe("동접자 집계 정밀도");
     expect(accountAuthProviderLabel("guest")).toBe("게스트");
     expect(accountAuthProviderLabel("google")).toBe("Google");
     expect(accountAuthProviderLabel("GUEST")).toBe("게스트");
@@ -118,8 +119,8 @@ describe("supportContract", () => {
   it("formats unavailable concurrent user metrics without presenting them as exact counts", () => {
     expect(formatConcurrentUsersDisplay(null, "UNAVAILABLE")).toBe("집계 불가 (UNAVAILABLE)");
     expect(formatConcurrentUsersDisplay(undefined, null)).toBe("연동 대기");
-    expect(formatConcurrentUsersDisplay(42, "EXACT")).toBe("42");
-    expect(formatConcurrentUsersDisplay(42, "ESTIMATED")).toBe("약 42");
+    expect(formatConcurrentUsersDisplay(42, "EXACT")).toBe("launch backlog 지표 (EXACT): 42");
+    expect(formatConcurrentUsersDisplay(42, "ESTIMATED")).toBe("launch backlog 지표 (ESTIMATED): 약 42");
   });
 
   it("prepares boss raid and run-start package support evidence without raw combat internals", () => {
@@ -512,9 +513,7 @@ describe("supportContract", () => {
     expect(result.authSession.items.find((item) => item.field === "primaryProvider")?.value).toBe("Google");
     expect(result.authSession.items.find((item) => item.field === "hasGoogleLink")?.value).toBe("연동됨");
     expect(result.authSession.items.find((item) => item.field === "lastLoginAgeSeconds")?.value).toBe("300초");
-    expect(result.authSession.items.find((item) => item.field === "concurrentUsers")?.value).toBe(
-      "집계 불가 (UNAVAILABLE)"
-    );
+    expect(result.authSession.items.find((item) => item.field === "concurrentUsers")?.value).toBe("집계 불가 (UNAVAILABLE)");
     expect(result.authSession.items.find((item) => item.field === "concurrentUsersPrecision")?.value).toBe(
       "UNAVAILABLE"
     );

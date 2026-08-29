@@ -59,6 +59,19 @@ export const gachaLaunchResultFields = [
   "duplicateConversion"
 ] as const;
 
+export const gachaLaunchTicketAcquisitionPolicy = {
+  totalNonRepeatTickets: 12,
+  costItemId: "cur_command_ticket",
+  offlineRepeatIncludesCommandTicket: false,
+  sources: [
+    { code: "launch_login_bonus", label: "launch login bonus", quantity: 5 },
+    { code: "opn_03_first_clear", label: "opn_03 first clear", quantity: 1 },
+    { code: "opn_05_first_clear", label: "opn_05 first clear", quantity: 1 },
+    { code: "opn_06_first_clear", label: "opn_06 first clear", quantity: 2 },
+    { code: "story_raid_first_clear", label: "story raid first clear", quantity: 3 }
+  ]
+} as const;
+
 export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
   { code: "activeBannerId", label: "활성 배너 ID", value: "연동 대기", note: "active banner id read-only 후보" },
   { code: "bannerType", label: "배너 유형", value: "연동 대기", note: "PICKUP/non-PICKUP banner type 후보" },
@@ -88,6 +101,17 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
     note: gachaDuplicateConversionSupportFields.join(" / ")
   },
   { code: "resultFields", label: "결과 필드", value: "연동 대기", note: gachaLaunchResultFields.join(" / ") },
+  {
+    code: "ticketAcquisition",
+    label: "지휘권 획득처",
+    value: "연동 대기",
+    note: [
+      `launch non-repeat total ${gachaLaunchTicketAcquisitionPolicy.totalNonRepeatTickets}`,
+      `cost=${gachaLaunchTicketAcquisitionPolicy.costItemId}`,
+      ...gachaLaunchTicketAcquisitionPolicy.sources.map((source) => `${source.label} ${source.quantity}`),
+      "offline repeat reward excludes cur_command_ticket"
+    ].join(" / ")
+  },
   {
     code: "actOneEliteVisualScope",
     label: "Act 1 정예 요원 10인",

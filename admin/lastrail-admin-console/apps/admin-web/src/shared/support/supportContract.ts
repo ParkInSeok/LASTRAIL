@@ -840,8 +840,8 @@ export function accountAuthSessionFieldLabel(field: AccountAuthSessionField | st
       lastLoginAgeSeconds: "마지막 로그인 경과 초",
       lastSeenAt: "마지막 활동 시각",
       lastSeenSource: "마지막 활동 소스",
-      concurrentUsers: "현재 동접자",
-      concurrentUsersPrecision: "동접자 정밀도"
+      concurrentUsers: "동접자 집계 상태",
+      concurrentUsersPrecision: "동접자 집계 정밀도"
     }[field] ?? field
   );
 }
@@ -866,7 +866,9 @@ function providerListValue(value: unknown): string {
 export function formatConcurrentUsersDisplay(value: unknown, precision: unknown): string {
   if (precision === "UNAVAILABLE" && (value === null || value === undefined)) return "집계 불가 (UNAVAILABLE)";
   if (typeof value !== "number") return "연동 대기";
-  return precision === "ESTIMATED" ? `약 ${value}` : `${value}`;
+  return precision === "ESTIMATED"
+    ? `launch backlog 지표 (ESTIMATED): 약 ${value}`
+    : `launch backlog 지표 (${typeof precision === "string" && precision ? precision : "UNKNOWN"}): ${value}`;
 }
 
 export function accountAuthStateLabel(state: AccountAuthState | string): string {
