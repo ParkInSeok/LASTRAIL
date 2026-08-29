@@ -203,10 +203,12 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => [placeholder.field, placeholder.value])).toEqual([
       ["allowedOperatorSlots", "5"],
       ["failureStaminaRefund", "연동 대기"],
-      ["failureStaminaRefundStatus", "PENDING"],
+      ["failureStaminaRefundStatus", "COMMITTED"],
       ["failureStaminaRefundResource", "STAMINA"],
       ["failureStaminaRefundReason", "STORY_RAID_FAILURE"],
       ["failureStaminaRefundPolicyId", "act1_story_raid_failure_stamina_refund_v1"],
+      ["serverOwnedMutation", "STORY_RAID_STAMINA_REFUND"],
+      ["fuelLedgerReason", "STORY_RAID_FAILURE_REFUND"],
       ["successCondition", "boss_defeat"],
       ["worldRaidScope", "backlog"]
     ]);

@@ -493,10 +493,12 @@ describe("supportContract", () => {
             balanceVersion: "balance.dev.001",
             allowedOperatorSlots: 5,
             failureStaminaRefundMarker: {
-              status: "PENDING",
+              status: "COMMITTED",
               resource: "STAMINA",
               reason: "STORY_RAID_FAILURE",
-              policyId: "act1_story_raid_failure_stamina_refund_v1"
+              policyId: "act1_story_raid_failure_stamina_refund_v1",
+              serverOwnedMutation: "STORY_RAID_STAMINA_REFUND",
+              fuelLedgerReason: "STORY_RAID_FAILURE_REFUND"
             },
             rawRng: "must-not-copy",
             fullWeights: "must-not-copy",
@@ -593,10 +595,12 @@ describe("supportContract", () => {
           balanceVersion: "balance.dev.001",
           allowedOperatorSlots: "5",
           failureStaminaRefundMarker: {
-            status: "PENDING",
+            status: "COMMITTED",
             resource: "STAMINA",
             reason: "STORY_RAID_FAILURE",
-            policyId: "act1_story_raid_failure_stamina_refund_v1"
+            policyId: "act1_story_raid_failure_stamina_refund_v1",
+            serverOwnedMutation: "STORY_RAID_STAMINA_REFUND",
+            fuelLedgerReason: "STORY_RAID_FAILURE_REFUND"
           },
           source: "run_start"
         }

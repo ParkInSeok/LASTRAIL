@@ -133,11 +133,13 @@ function storyRaidRefundSummary(marker: SupportRecentRunEvidence["startMetadata"
     marker.status === "연동 대기" &&
     marker.resource === "연동 대기" &&
     marker.reason === "연동 대기" &&
-    marker.policyId === "연동 대기"
+    marker.policyId === "연동 대기" &&
+    marker.serverOwnedMutation === "연동 대기" &&
+    marker.fuelLedgerReason === "연동 대기"
   ) {
     return "연동 대기";
   }
-  return `status=${marker.status} / resource=${marker.resource} / reason=${marker.reason} / policyId=${marker.policyId}`;
+  return `status=${marker.status} / resource=${marker.resource} / reason=${marker.reason} / policyId=${marker.policyId} / mutation=${marker.serverOwnedMutation} / ledgerReason=${marker.fuelLedgerReason}`;
 }
 
 export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]): SupportRecentRunEvidenceRow[] {

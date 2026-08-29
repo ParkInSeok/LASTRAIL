@@ -31,6 +31,8 @@ import {
   riskLevelLabel,
   roleLabel,
   runResultLabel,
+  serverOwnedMutationLabel,
+  fuelLedgerReasonLabel,
   storyProgressStatusLabel,
   storyProgressLabel
 } from "./adminLabels";
@@ -122,6 +124,12 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("google_auth_config_missing")).toBe("Google 인증 설정 누락");
     expect(opsErrorCodeLabel("google_auth_verifier_unavailable")).toBe("Google 인증 검증기 사용 불가");
     expect(opsErrorCodeLabel("run_start_state_conflict")).toBe("출격 시작 상태 충돌");
+    expect(opsErrorCodeLabel("story_raid_stamina_refund_state_conflict")).toBe(
+      "스토리 레이드 stamina 환급 상태 충돌"
+    );
+    expect(opsErrorCodeLabel("story_raid_stamina_refund_policy_missing")).toBe(
+      "스토리 레이드 stamina 환급 정책 누락"
+    );
     expect(opsErrorCodeLabel("gacha_state_conflict")).toBe("모집 상태 충돌");
     expect(opsErrorCodeLabel("duplicate_replay")).toBe("중복 재생");
     expect(opsErrorCodeLabel("offline_reward_not_claimable")).toBe("오프라인 보상 수령 대상 없음");
@@ -138,6 +146,13 @@ describe("adminLabels", () => {
     expect(opsErrorCodeLabel("narrative_version_mismatch")).toBe("내러티브 버전 불일치");
     expect(opsErrorCodeLabel("contract_violation")).toBe("계약 위반");
     expect(opsErrorCodeLabel("unknown_ops_error")).toBe("unknown_ops_error");
+  });
+
+  it("translates server-owned mutation and fuel ledger reason labels without hiding unknown codes", () => {
+    expect(serverOwnedMutationLabel("STORY_RAID_STAMINA_REFUND")).toBe("스토리 레이드 stamina 환급");
+    expect(serverOwnedMutationLabel("FUTURE_MUTATION")).toBe("FUTURE_MUTATION");
+    expect(fuelLedgerReasonLabel("STORY_RAID_FAILURE_REFUND")).toBe("스토리 레이드 실패 환급");
+    expect(fuelLedgerReasonLabel("FUTURE_REASON")).toBe("FUTURE_REASON");
   });
 
   it("translates offline reward preview status while preserving unknown fallback", () => {

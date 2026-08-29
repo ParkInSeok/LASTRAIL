@@ -224,6 +224,8 @@ export function opsErrorCodeLabel(code: string): string {
       google_auth_config_missing: "Google 인증 설정 누락",
       google_auth_verifier_unavailable: "Google 인증 검증기 사용 불가",
       run_start_state_conflict: "출격 시작 상태 충돌",
+      story_raid_stamina_refund_state_conflict: "스토리 레이드 stamina 환급 상태 충돌",
+      story_raid_stamina_refund_policy_missing: "스토리 레이드 stamina 환급 정책 누락",
       gacha_state_conflict: "모집 상태 충돌",
       duplicate_replay: "중복 재생",
       offline_reward_not_claimable: "오프라인 보상 수령 대상 없음",
@@ -237,6 +239,24 @@ export function opsErrorCodeLabel(code: string): string {
       narrative_content_missing: "내러티브 콘텐츠 누락",
       narrative_version_mismatch: "내러티브 버전 불일치",
       contract_violation: "계약 위반"
+    },
+    code
+  );
+}
+
+export function serverOwnedMutationLabel(code: string): string {
+  return labelFor(
+    {
+      STORY_RAID_STAMINA_REFUND: "스토리 레이드 stamina 환급"
+    },
+    code
+  );
+}
+
+export function fuelLedgerReasonLabel(code: string): string {
+  return labelFor(
+    {
+      STORY_RAID_FAILURE_REFUND: "스토리 레이드 실패 환급"
     },
     code
   );

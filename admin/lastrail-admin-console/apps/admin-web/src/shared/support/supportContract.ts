@@ -214,6 +214,8 @@ export type SupportRecentRunStartMetadata = {
     resource: string;
     reason: string;
     policyId: string;
+    serverOwnedMutation: string;
+    fuelLedgerReason: string;
   };
   source: "run_start";
 };
@@ -1166,7 +1168,9 @@ function supportRunStartMetadata(record: Record<string, unknown>): SupportRecent
       status: stringValue(failureStaminaRefundMarker?.status),
       resource: stringValue(failureStaminaRefundMarker?.resource),
       reason: stringValue(failureStaminaRefundMarker?.reason),
-      policyId: stringValue(failureStaminaRefundMarker?.policyId)
+      policyId: stringValue(failureStaminaRefundMarker?.policyId),
+      serverOwnedMutation: stringValue(failureStaminaRefundMarker?.serverOwnedMutation),
+      fuelLedgerReason: stringValue(failureStaminaRefundMarker?.fuelLedgerReason)
     },
     source: "run_start"
   };

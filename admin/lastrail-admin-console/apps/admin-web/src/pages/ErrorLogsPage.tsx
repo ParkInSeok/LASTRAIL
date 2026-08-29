@@ -84,6 +84,8 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
       "google_auth_config_missing",
       "google_auth_verifier_unavailable",
       "run_start_state_conflict",
+      "story_raid_stamina_refund_state_conflict",
+      "story_raid_stamina_refund_policy_missing",
       "reward_plan_mismatch",
       "reward_multiplier_missing",
       "reward_plan_unavailable",
@@ -175,6 +177,12 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
     status: "연동 대기",
     description:
       "run_start_state_conflict는 retryable=true, masked=true 기준이며 run id FK가 없을 수 있어 safe correlation only로 표시합니다."
+  },
+  {
+    title: "스토리 레이드 stamina 환급",
+    status: "연동 대기",
+    description:
+      "story_raid_stamina_refund_state_conflict / story_raid_stamina_refund_policy_missing은 story raid failure refund read-only evidence로만 표시합니다."
   }
 ];
 

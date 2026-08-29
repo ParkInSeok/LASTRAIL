@@ -343,10 +343,12 @@ describe("SupportAccountPage configuration", () => {
           balanceVersion: "balance.dev.001",
           allowedOperatorSlots: "5",
           failureStaminaRefundMarker: {
-            status: "PENDING",
+            status: "COMMITTED",
             resource: "STAMINA",
             reason: "STORY_RAID_FAILURE",
-            policyId: "act1_story_raid_failure_stamina_refund_v1"
+            policyId: "act1_story_raid_failure_stamina_refund_v1",
+            serverOwnedMutation: "STORY_RAID_STAMINA_REFUND",
+            fuelLedgerReason: "STORY_RAID_FAILURE_REFUND"
           },
           source: "run_start"
         }
@@ -364,7 +366,7 @@ describe("SupportAccountPage configuration", () => {
           "startAugmentPackageRef=augment_pkg_act1_raid_v1 / startTacticPackageRef=tactic_pkg_act1_raid_v1 / source=run_start",
         versions: "contentVersion=act1.content.001 / balanceVersion=balance.dev.001 / allowedOperatorSlots=5",
         storyRaidRefund:
-          "status=PENDING / resource=STAMINA / reason=STORY_RAID_FAILURE / policyId=act1_story_raid_failure_stamina_refund_v1",
+          "status=COMMITTED / resource=STAMINA / reason=STORY_RAID_FAILURE / policyId=act1_story_raid_failure_stamina_refund_v1 / mutation=STORY_RAID_STAMINA_REFUND / ledgerReason=STORY_RAID_FAILURE_REFUND",
         rewardPreviewId: "reward-preview-raid-1"
       }
     ]);

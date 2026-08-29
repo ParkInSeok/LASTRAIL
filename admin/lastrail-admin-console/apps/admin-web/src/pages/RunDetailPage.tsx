@@ -149,8 +149,8 @@ export const storyRaidLaunchResultPolicyPlaceholders: RunCombatEvidencePlacehold
   {
     field: "failureStaminaRefundStatus",
     label: "실패 환급 상태",
-    value: "PENDING",
-    note: "story raid failure stamina refund read-only marker"
+    value: "COMMITTED",
+    note: "story raid failure stamina refund committed read-only marker"
   },
   {
     field: "failureStaminaRefundResource",
@@ -169,6 +169,18 @@ export const storyRaidLaunchResultPolicyPlaceholders: RunCombatEvidencePlacehold
     label: "실패 환급 정책 ID",
     value: "act1_story_raid_failure_stamina_refund_v1",
     note: "story raid failure stamina refund read-only marker"
+  },
+  {
+    field: "serverOwnedMutation",
+    label: "서버 소유 mutation",
+    value: "STORY_RAID_STAMINA_REFUND",
+    note: "server-owned mutation label evidence only, Admin action 아님"
+  },
+  {
+    field: "fuelLedgerReason",
+    label: "fuel ledger 사유",
+    value: "STORY_RAID_FAILURE_REFUND",
+    note: "fuel ledger reason read-only evidence only, reward/economy correction 아님"
   },
   {
     field: "successCondition",
