@@ -60,6 +60,7 @@ type SupportAccountSummary = {
   offlineRewards: SupportOfflineRewardSummary;
   storyProgress: SupportStoryProgressSummary;
   gacha: SupportGachaSummary;
+  loginBonus: SupportLoginBonusSummary;
   idempotency: SupportIdempotencySummary[];
   integrity: SupportIntegritySummary;
   opsErrors: SupportOpsErrorSummary[];
@@ -451,6 +452,39 @@ Current support route status:
 
 Do not return raw payloads, raw request bodies, tokens, secrets, or unsanitized
 stack traces in launch support summary.
+
+### Launch Login Bonus
+
+Source candidates:
+
+- `account_login_bonus_claims`
+- `reward_transactions`
+- `idempotency_records.operation = 'login_bonus_claim'`
+
+Fields:
+
+- `bonusId`
+- `claimStatus`: `UNCLAIMED` or `CLAIMED`
+- `claimedAt`
+- `rewardTransactionId`
+- `expectedRewardLines`
+- `rewardLineSummary`
+- `idempotencyReplayKnown`
+- `readOnly`
+
+Launch status:
+
+- The support summary exposes read-only evidence for the Act 1 launch login
+  bonus.
+- The expected non-repeat launch reward is `cur_command_ticket` quantity `5`
+  with source `LAUNCH_LOGIN_BONUS`.
+- Claimed status is derived from server-owned `account_login_bonus_claims`;
+  support never trusts client-side bonus state.
+- `idempotencyReplayKnown` is a support hint from stored
+  `login_bonus_claim` idempotency records.
+
+This section does not open manual grant, replay, repair, reset, revoke, or
+economy correction controls.
 
 ### Escalation Hints
 

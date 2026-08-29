@@ -100,6 +100,7 @@ function seedSupportAccount(db: initSqlJs.Database): void {
   const runFinishedAt = Date.parse("2026-08-27T01:15:00.000Z");
   const offlineClaimAt = Date.parse("2026-08-27T02:00:00.000Z");
   const gachaAt = Date.parse("2026-08-27T03:00:00.000Z");
+  const loginBonusAt = Date.parse("2026-08-27T00:45:00.000Z");
 
   db.run(
     `INSERT INTO admin_principals (
@@ -153,8 +154,9 @@ function seedSupportAccount(db: initSqlJs.Database): void {
      VALUES
        ('mutation-run-support-1', 'account-support-1', 1, 'RUN_START', 'run-start-support-1', ?),
        ('mutation-offline-support-1', 'account-support-1', 2, 'OFFLINE_REWARD_CLAIM', 'offline-support-1', ?),
-       ('mutation-gacha-support-1', 'account-support-1', 3, 'GACHA_PULL', 'gacha-support-1', ?);`,
-    [runStartedAt, offlineClaimAt, gachaAt],
+       ('mutation-gacha-support-1', 'account-support-1', 3, 'GACHA_PULL', 'gacha-support-1', ?),
+       ('mutation-login-bonus-support-1', 'account-support-1', 4, 'LOGIN_BONUS_CLAIM', 'login-bonus-support-1', ?);`,
+    [runStartedAt, offlineClaimAt, gachaAt, loginBonusAt],
   );
   db.run(
     `INSERT INTO operation_previews (
@@ -227,6 +229,32 @@ function seedSupportAccount(db: initSqlJs.Database): void {
     ],
   );
   db.run(
+    `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
+     VALUES ('login_bonus_claim_support_1', 'account-support-1', NULL, 'mutation-login-bonus-support-1', NULL, ?, ?);`,
+    [
+      JSON.stringify({
+        bonusId: "launch_login_bonus_act1_v1",
+        rewardLines: [
+          { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 5 },
+        ],
+      }),
+      loginBonusAt,
+    ],
+  );
+  db.run(
+    `INSERT INTO account_login_bonus_claims (
+       account_id, bonus_id, reward_transaction_id, claimed_at, idempotency_key, reward_json
+     ) VALUES ('account-support-1', 'launch_login_bonus_act1_v1', 'login_bonus_claim_support_1', ?, 'login-bonus-support-key-1', ?);`,
+    [
+      loginBonusAt,
+      JSON.stringify({
+        rewardLines: [
+          { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 5 },
+        ],
+      }),
+    ],
+  );
+  db.run(
     `INSERT INTO gacha_banners (
        id, banner_type, status, balance_config_version, pickup_operator_id,
        starts_at, ends_at, pity_config_json, pool_snapshot_json, created_at, updated_at
@@ -259,8 +287,9 @@ function seedSupportAccount(db: initSqlJs.Database): void {
      VALUES
        ('idem-run-support-1', 'account-support-1', 'finish-support-key-1', 'run_finish', 'reward_preview_support_1', ?),
        ('idem-offline-support-1', 'account-support-1', 'offline-support-key-1', 'offline_reward_claim', 'offline_claim_support_1', ?),
-       ('idem-gacha-support-1', 'account-support-1', 'gacha-support-key-1', 'gacha_pull', 'gacha_batch_support_1', ?);`,
-    [runFinishedAt, offlineClaimAt, gachaAt],
+       ('idem-gacha-support-1', 'account-support-1', 'gacha-support-key-1', 'gacha_pull', 'gacha_batch_support_1', ?),
+       ('idem-login-bonus-support-1', 'account-support-1', 'login-bonus-support-key-1', 'login_bonus_claim', 'login_bonus_claim_support_1', ?);`,
+    [runFinishedAt, offlineClaimAt, gachaAt, loginBonusAt],
   );
   db.run(
     `INSERT INTO integrity_events (
@@ -405,6 +434,20 @@ describe("admin-api support account summary local D1 smoke", () => {
           },
         ],
       },
+      loginBonus: {
+        bonusId: "launch_login_bonus_act1_v1",
+        claimStatus: "CLAIMED",
+        claimedAt: "2026-08-27T00:45:00.000Z",
+        rewardTransactionId: "login_bonus_claim_support_1",
+        expectedRewardLines: [
+          { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" },
+        ],
+        rewardLineSummary: [
+          { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 5 },
+        ],
+        idempotencyReplayKnown: true,
+        readOnly: true,
+      },
       integrity: {
         openSignals: 1,
         accountReviewStatus: "REVIEWING",
@@ -466,6 +509,7 @@ describe("admin-api support account summary local D1 smoke", () => {
       expect.arrayContaining([
         expect.objectContaining({ operation: "run_finish", resultRef: "reward_preview_support_1" }),
         expect.objectContaining({ operation: "offline_reward_claim", resultRef: "offline_claim_support_1" }),
+        expect.objectContaining({ operation: "login_bonus_claim", resultRef: "login_bonus_claim_support_1" }),
         expect.objectContaining({ operation: "gacha_pull", resultRef: "gacha_batch_support_1" }),
       ]),
     );

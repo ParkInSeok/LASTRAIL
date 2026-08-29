@@ -34,11 +34,13 @@ function createEnv(results: QueryResult[]): Env {
             return {
               first: async () => {
                 const result = queue.shift();
+                if (result === undefined) return null;
                 if (Array.isArray(result)) return result[0] ?? null;
                 return result;
               },
               all: async () => {
                 const result = queue.shift();
+                if (result === undefined) return { results: [] };
                 return { results: Array.isArray(result) ? result : result === null ? [] : [result] };
               },
               run: async () => {
@@ -196,6 +198,7 @@ describe("admin-api support account summary contract", () => {
           ],
           [
             { operation: "run_finish", result_ref: "reward_preview_1", created_at: 1787653000000 },
+            { operation: "login_bonus_claim", result_ref: "login_bonus_claim_1", created_at: 1787654500000 },
             { operation: "gacha_pull", result_ref: "gacha_batch_1", created_at: 1787657000000 },
           ],
           { open_signals: 1, hard_violations: 0, latest_detection_at: 1787658000000, primary_reason: "ABNORMAL_CLEAR_TIME" },
@@ -234,6 +237,18 @@ describe("admin-api support account summary contract", () => {
               resolved_by: null,
               resolution_note: null,
               created_at: 1787658200000,
+            },
+          ],
+          [
+            {
+              bonus_id: "launch_login_bonus_act1_v1",
+              reward_transaction_id: "login_bonus_claim_1",
+              claimed_at: 1787654500000,
+              reward_json: JSON.stringify({
+                rewardLines: [
+                  { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 5 },
+                ],
+              }),
             },
           ],
         ]),
@@ -302,6 +317,20 @@ describe("admin-api support account summary contract", () => {
               guaranteeTypes: ["ELITE_30"],
             },
           ],
+        },
+        loginBonus: {
+          bonusId: "launch_login_bonus_act1_v1",
+          claimStatus: "CLAIMED",
+          claimedAt: "2026-08-25T10:41:40.000Z",
+          rewardTransactionId: "login_bonus_claim_1",
+          expectedRewardLines: [
+            { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" },
+          ],
+          rewardLineSummary: [
+            { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 5 },
+          ],
+          idempotencyReplayKnown: true,
+          readOnly: true,
         },
         integrity: {
           openSignals: 1,

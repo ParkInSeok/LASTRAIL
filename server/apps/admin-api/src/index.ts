@@ -238,6 +238,13 @@ type AdminSupportRunRewardRow = {
   reward_plan_json: string;
 };
 
+type AdminSupportLoginBonusClaimRow = {
+  bonus_id: string;
+  reward_transaction_id: string;
+  claimed_at: number;
+  reward_json: string;
+};
+
 type AdminSupportGachaBatchRow = {
   batch_id: string;
   banner_id: string;
@@ -319,6 +326,10 @@ const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
 const OFFLINE_REWARD_READ_PERMISSION = "OFFLINE_REWARD_READ";
 const SUPPORT_READ_PERMISSION = "SUPPORT_READ";
 const OPS_ERROR_LOG_READ_PERMISSION = "OPS_ERROR_LOG_READ";
+const LAUNCH_LOGIN_BONUS_ID = "launch_login_bonus_act1_v1";
+const LAUNCH_LOGIN_BONUS_EXPECTED_REWARD_LINES = [
+  { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" },
+] as const;
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
 const ACT_ONE_STORY_PROGRESS_ORDER = [
@@ -925,6 +936,21 @@ function parseGachaGuaranteeTypes(resultSummaryJson: string): string[] {
   }
 }
 
+function supportLoginBonusSummary(row: AdminSupportLoginBonusClaimRow | null, idempotencyRows: AdminSupportIdempotencyRow[]) {
+  return {
+    bonusId: LAUNCH_LOGIN_BONUS_ID,
+    claimStatus: row === null ? "UNCLAIMED" : "CLAIMED",
+    claimedAt: row === null ? null : toIso(row.claimed_at),
+    rewardTransactionId: row?.reward_transaction_id ?? null,
+    expectedRewardLines: LAUNCH_LOGIN_BONUS_EXPECTED_REWARD_LINES,
+    rewardLineSummary: row === null ? [] : parseRewardLineSummary(row.reward_json),
+    idempotencyReplayKnown: row === null
+      ? false
+      : idempotencyRows.some((idem) => idem.operation === "login_bonus_claim" && idem.result_ref === row.reward_transaction_id),
+    readOnly: true,
+  };
+}
+
 function supportExplanationTemplates() {
   return [
     {
@@ -1494,7 +1520,7 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
     `SELECT operation, result_ref, created_at
      FROM idempotency_records
      WHERE account_id = ?
-       AND operation IN ('run_finish','run_reward_claim','offline_reward_claim','gacha_pull')
+       AND operation IN ('run_finish','run_reward_claim','offline_reward_claim','login_bonus_claim','gacha_pull')
      ORDER BY created_at DESC, id
      LIMIT 20`,
   )
@@ -1557,6 +1583,13 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
   )
     .bind(accountId)
     .all<AdminOpsErrorLogRow>();
+  const loginBonusClaim = await c.env.DB.prepare(
+    `SELECT bonus_id, reward_transaction_id, claimed_at, reward_json
+     FROM account_login_bonus_claims
+     WHERE account_id = ? AND bonus_id = ?`,
+  )
+    .bind(accountId, LAUNCH_LOGIN_BONUS_ID)
+    .first<AdminSupportLoginBonusClaimRow>();
 
   const providers = identities.results.map((row) => row.provider);
   const lastLoginAt = authStatus?.last_login_at ?? null;
@@ -1644,6 +1677,7 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
         createdAt: toIso(batch.created_at),
       })),
     },
+    loginBonus: supportLoginBonusSummary(loginBonusClaim, idempotencyRows.results),
     idempotency: idempotencyRows.results.map((row) => ({
       operation: row.operation,
       resultRef: row.result_ref,
@@ -1651,6 +1685,8 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
       replaySafe: true,
       linkedResourceType: row.operation === "gacha_pull"
         ? "gacha_batch"
+        : row.operation === "login_bonus_claim"
+          ? "login_bonus_claim"
         : row.operation === "offline_reward_claim" || row.operation === "run_reward_claim"
           ? "reward_transaction"
           : "reward_preview",

@@ -188,8 +188,8 @@ Permission:
 The support summary is a read-only account-centered investigation view that
 composes existing read models such as account/auth status, recent runs, run
 reward previews/claims, offline reward state/claims, story progress/unlocks,
-gacha batches, idempotency replay records, integrity status, and future ops
-error logs.
+gacha batches, launch login bonus claim evidence, idempotency replay records,
+integrity status, and future ops error logs.
 
 The route does not open account mutation, reward repair, manual grant, offline
 timestamp reset, story/unlock mutation, gacha repair, economy correction,
