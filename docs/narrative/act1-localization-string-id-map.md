@@ -262,7 +262,8 @@ narrative.operator.<operator_id>.ultimate.cue
 
 Operator notes:
 
-- `display.name` should be presentation-only and should not encode rarity or acquisition source.
+- `display.name` should use the launch display name candidates in `act1-operator-voice-guide.md`.
+- `display.name` is presentation-only and should not encode rarity, acquisition source, ownership, probability, reward status, or server truth.
 - `profile.snippet` should frame the operator as assigned, rescued, defected, responding, or voluntarily aboard.
 - `ultimate.cue` is the launch cue line only. Do not add cinematic script ids for launch.
 

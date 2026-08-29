@@ -76,6 +76,7 @@ This document is the current planning source of truth for Act 1 launch scope.
 - Done: Act 1 narrative launch checklist and battle callout density rules.
 - Done: Codex/archive copy final pass for all Act 1 missions and story raid.
 - Done: Reward framing localization candidate selection, failure refund toast id recommendation, optional objective launch fixture recommendation, and Raider King title recommendation.
+- Done: 15 operator launch display name candidates and display.name localization guidance.
 - Remaining: final narrative version revision and any copy corrections from Unity integration review.
 
 ## Launch Progress Board
@@ -85,7 +86,7 @@ This document is the current planning source of truth for Act 1 launch scope.
 | Server contracts/source of truth | 85% | Core launch contracts are green locally; remaining risk is final config/source promotion and PRD-only OAuth/deploy work. |
 | Admin read-only ops/support | 90% | Main surfaces and regression guards are in place; authenticated preview smoke remains environment-dependent. |
 | Unity client/presentation | 62% | Mission shell presenter work has started actual UI wiring; scene/prefab binding, assets, combat, SDK/storage, and device QA remain the main bottleneck. |
-| Narrative/direction | 90% | Ordinary missions, story raid copy, codex/archive, localization map, operator voice guide, checklist, and reward framing recommendations are aligned; remaining work is final fixture/version review. |
+| Narrative/direction | 92% | Ordinary missions, story raid copy, codex/archive, localization map, operator voice/display guide, checklist, and reward framing recommendations are aligned; remaining work is final fixture/version review. |
 | Overall Act 1 launch readiness | 71% | Source-of-truth/backend is ahead; launch readiness now depends mostly on Unity implementation and final narrative/UI integration. |
 
 ## Decision Queue
@@ -105,7 +106,7 @@ These decisions should be surfaced to the user when they return, but they should
 - Cloudflare Access policy for hashed preview deployment URLs versus alias-only protection.
 - Whether story raid legacy accounts without `fuel_state` need a bootstrap/repair policy, or should remain rejected with state conflict.
 - Whether `opn_01` Commander direct speech and optional objective callouts stay internal/presentation-only or enter launch localization fixtures.
-- Operator display names and final narrative version revision.
+- Final narrative version revision.
 - Story raid failure refund toast consolidation is recommended for localization planning only; Unity may still choose exact presentation.
 - Raider King should remain a title for launch; personal naming is deferred to a future narrative pass.
 - World Raid implementation plan and live-service schedule remain future/backlog.

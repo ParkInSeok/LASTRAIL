@@ -18,8 +18,13 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ## Initial Operators
 
+Display names are launch localization candidates for `narrative.operator.<operator_id>.display.name`.
+
+They are presentation names only. They do not encode acquisition source, rarity, ownership, probability, reward status, or server truth.
+
 ### op_kyle
 
+- Launch display name: Kyle
 - Role fantasy / battlefield role: Frontline rail guard who holds doors, platforms, and engine-side choke points.
 - Voice keywords: Plain, protective, grounded, quick to take the hit before explaining it.
 - Profile / codex snippet: Kyle stood at the first door until the train moved, then kept standing there because someone still had to.
@@ -32,6 +37,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_reina
 
+- Launch display name: Reina
 - Role fantasy / battlefield role: Precision striker who cuts through priority threats before they reach civilians or train systems.
 - Voice keywords: Cool, exact, clipped, quietly intense.
 - Profile / codex snippet: Reina counts shots, exits, and seconds; she wastes none of them.
@@ -44,6 +50,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_eve
 
+- Launch display name: Eve
 - Role fantasy / battlefield role: Signal medic and field support who keeps operators steady under panic and static.
 - Voice keywords: Gentle, focused, calm under bad news, never sentimental during danger.
 - Profile / codex snippet: Eve learned that a clear voice can keep people alive almost as long as clean bandages.
@@ -56,6 +63,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_sera
 
+- Launch display name: Sera
 - Role fantasy / battlefield role: Mobile scout who reads broken routes, flanks, and incoming pressure before the HUD catches up.
 - Voice keywords: Fast, alert, lightly wry, always moving.
 - Profile / codex snippet: Sera trusts rails, dust, and footprints more than promises, but she still came aboard.
@@ -68,6 +76,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_mira
 
+- Launch display name: Mira
 - Role fantasy / battlefield role: Train systems technician who stabilizes relays, turrets, doors, and emergency gear mid-fight.
 - Voice keywords: Bright, practical, mechanically affectionate, anxious only when machines go quiet.
 - Profile / codex snippet: Mira talks to the train because someone should thank the parts that keep everyone breathing.
@@ -82,6 +91,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_vex
 
+- Launch display name: Vex
 - Role fantasy / battlefield role: Defector saboteur who knows raider hardware, dirty tricks, and how to break them faster.
 - Voice keywords: Sardonic, sharp, guilty under the jokes, hates raider doctrine from experience.
 - Profile / codex snippet: Vex used to repair raider traps; now he leaves them open from the inside.
@@ -94,6 +104,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_nyx
 
+- Launch display name: Nyx
 - Role fantasy / battlefield role: Night infiltrator who controls darkness, misdirection, and close-quarters rescue routes.
 - Voice keywords: Low, spare, intimate, almost whispered, never wastes a syllable.
 - Profile / codex snippet: Nyx boards without a sound and leaves the lights working for everyone behind her.
@@ -106,6 +117,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_sable
 
+- Launch display name: Sable
 - Role fantasy / battlefield role: Heavy shield operator who anchors the line when the train cannot retreat.
 - Voice keywords: Formal, steady, vow-like, heavy with restraint.
 - Profile / codex snippet: Sable does not promise victory; she promises there will be something left to stand behind.
@@ -118,6 +130,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_marrow
 
+- Launch display name: Marrow
 - Role fantasy / battlefield role: Improvised field surgeon and grim sustain specialist who keeps crews functional past comfort.
 - Voice keywords: Dry, clinical, darkly practical, kinder in action than in speech.
 - Profile / codex snippet: Marrow saves lives with ugly tools, clean hands, and no patience for heroic bleeding.
@@ -130,6 +143,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_iris
 
+- Launch display name: Iris
 - Role fantasy / battlefield role: Optics and targeting specialist who paints weak points, signal relays, and safe lanes.
 - Voice keywords: Clear, observant, exacting, quietly wonderstruck by patterns.
 - Profile / codex snippet: Iris sees the battlefield as light, heat, and intent; the trick is teaching others where to look.
@@ -142,6 +156,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_rail
 
+- Launch display name: Rail
 - Role fantasy / battlefield role: Routebreaker bruiser who turns tracks, couplers, and momentum into close-range force.
 - Voice keywords: Loud, direct, hearty, built from train-yard confidence.
 - Profile / codex snippet: Rail joined because any train still moving deserves someone willing to shove the world back.
@@ -154,6 +169,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_anchor
 
+- Launch display name: Anchor
 - Role fantasy / battlefield role: Stabilization specialist who locks positions, slows enemy pushes, and keeps objectives from folding.
 - Voice keywords: Patient, nautical in metaphor without leaving the rail theme, reassuring but firm.
 - Profile / codex snippet: Anchor believes every moving home needs one person who remembers how to hold still.
@@ -166,6 +182,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_lumen
 
+- Launch display name: Lumen
 - Role fantasy / battlefield role: Light and morale support who clears visual noise, exposes hidden threats, and steadies panic.
 - Voice keywords: Warm, radiant, encouraging, never naive about darkness.
 - Profile / codex snippet: Lumen does not chase darkness away; she gives people enough light to move through it.
@@ -178,6 +195,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_cinder
 
+- Launch display name: Cinder
 - Role fantasy / battlefield role: Controlled burn demolitionist who clears swarms and seals ruined paths without reckless destruction.
 - Voice keywords: Hot-blooded, disciplined, impatient with cruelty, careful around civilians.
 - Profile / codex snippet: Cinder knows fire is not justice; it is a tool that must be told when to stop.
@@ -190,6 +208,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 
 ### op_warden
 
+- Launch display name: Warden
 - Role fantasy / battlefield role: Veteran protector who manages prisoners, panicked crowds, and hard defensive choices without cruelty.
 - Voice keywords: Grave, authoritative, humane, carries old rules like a burden.
 - Profile / codex snippet: Warden remembers what order became when fear owned it, and refuses to build that order again.
@@ -205,6 +224,7 @@ The text here is narrative copy guidance only. It does not define operator stats
 Use this pattern later when promoting the guide into localization fixtures:
 
 ```text
+narrative.operator.<operatorId>.display.name
 narrative.operator.<operatorId>.profile.snippet
 narrative.operator.<operatorId>.callout.001
 narrative.operator.<operatorId>.callout.002
@@ -218,7 +238,8 @@ Do not encode rarity, banner, pity, probability, ticket count, ownership state, 
 ## Self-Review Checklist
 
 - 15 operators are covered: 5 initial and 10 gacha elite.
-- Every operator has role fantasy, voice keywords, profile/codex snippet, 2-3 battle callouts, skill cue, and ultimate cue.
+- Every operator has launch display name, role fantasy, voice keywords, profile/codex snippet, 2-3 battle callouts, skill cue, and ultimate cue.
+- Display names are presentation-only and do not encode acquisition source, rarity, ownership, probability, reward status, or server truth.
 - Ultimate lines are short cues only.
 - Gacha elite text avoids probability, pity, ownership, and guaranteed acquisition language.
 - No Rail Choice Event launch copy is included.
