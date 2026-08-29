@@ -42,6 +42,10 @@ The request body contains only the server-created operation preview reference:
 The route consumes an ACTIVE `operation_previews` row for the authenticated
 account, creates an ACTIVE `runs` row, stores a sanitized `run_snapshots`
 metadata payload, and returns server-authored start metadata for Unity.
+The consume step is guarded by affected row count. If the preview was already
+consumed by another request, the route returns `409
+operation_preview_already_consumed` and does not create another run or
+snapshot.
 
 ## Server-Owned Metadata
 
@@ -84,6 +88,14 @@ malformed preview JSON.
 
 Rejected run start responses keep the same envelope with `accepted=false`,
 `startStatus=REJECTED`, null refs, and a stable `errorCode`.
+
+Current rejected codes include:
+
+- `auth_required`
+- `contract_violation`
+- `operation_preview_not_found`
+- `operation_preview_not_startable`
+- `operation_preview_already_consumed`
 
 ## Run Finish Selection Echo
 

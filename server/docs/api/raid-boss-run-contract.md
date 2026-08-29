@@ -81,6 +81,10 @@ client-visible when `encounterType = RAID_BOSS`; ordinary previews must not leak
 or reinterpret `raidId`, `bossId`, or `bossPhaseRefs` if malformed preview JSON
 contains them.
 
+Run start uses the same preview consume guard for raids as ordinary operations.
+If a raid preview has already been consumed, the route returns `409
+operation_preview_already_consumed` and does not create a second raid run.
+
 ## Run Finish Payload
 
 Ordinary finish keeps the existing payload:

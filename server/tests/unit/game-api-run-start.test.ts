@@ -19,10 +19,17 @@ async function createAuthorizationHeader(accountId = "account_1"): Promise<strin
   return `Bearer ${token}`;
 }
 
-function createEnv(previewRow: Record<string, unknown> | null) {
+function createEnv(previewRow: Record<string, unknown> | null, options: { consumeChanges?: number } = {}) {
   const batchSql: string[] = [];
   const batchBinds: unknown[][] = [];
-  const env: TestEnv & { __batchSql: string[]; __batchBinds: unknown[][] } = {
+  const runSql: string[] = [];
+  const runBinds: unknown[][] = [];
+  const env: TestEnv & {
+    __batchSql: string[];
+    __batchBinds: unknown[][];
+    __runSql: string[];
+    __runBinds: unknown[][];
+  } = {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     AUTH_SIGNING_KEY_CURRENT: authSecret,
@@ -33,6 +40,11 @@ function createEnv(previewRow: Record<string, unknown> | null) {
             return {
               sql,
               values,
+              run: async () => {
+                runSql.push(sql);
+                runBinds.push(values);
+                return { success: true, meta: { changes: options.consumeChanges ?? 1 } };
+              },
               first: async () => {
                 if (sql.includes("FROM auth_sessions")) {
                   return {
@@ -60,6 +72,8 @@ function createEnv(previewRow: Record<string, unknown> | null) {
     } as unknown as D1Database,
     __batchSql: batchSql,
     __batchBinds: batchBinds,
+    __runSql: runSql,
+    __runBinds: runBinds,
   };
   return env;
 }
@@ -132,8 +146,47 @@ describe("game-api run start contract", () => {
     expect(JSON.stringify(body)).not.toContain("rawRng");
     expect(JSON.stringify(body)).not.toContain("probability");
     expect(JSON.stringify(body)).not.toContain("animationTimeline");
+    expect(env.__runSql.join("\n")).toContain("UPDATE operation_previews");
     expect(env.__batchSql.join("\n")).toContain("INSERT INTO runs");
-    expect(env.__batchSql.join("\n")).toContain("UPDATE operation_previews");
+    expect(env.__batchSql.join("\n")).not.toContain("UPDATE operation_previews");
+  });
+
+  it("rejects a stale active preview consume race without creating another run", async () => {
+    const env = createEnv({
+      id: "preview_ordinary_1",
+      account_id: "account_1",
+      mutation_id: "mutation_preview_1",
+      objective: "opn_03_water_stop",
+      risk: "III",
+      balance_config_version: 501,
+      preview_json: JSON.stringify({
+        operationId: "opn_03_water_stop",
+        encounterType: "ORDINARY_15_WAVE",
+      }),
+      status: "ACTIVE",
+      expires_at: Date.now() + 900000,
+      created_at: Date.now() - 1000,
+    }, { consumeChanges: 0 });
+
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: { Authorization: await createAuthorizationHeader() },
+        body: JSON.stringify({ operationPreviewId: "preview_ordinary_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      startStatus: "REJECTED",
+      operationPreviewId: "preview_ordinary_1",
+      errorCode: "operation_preview_already_consumed",
+    });
+    expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO runs");
+    expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO run_snapshots");
   });
 
   it("starts a raid boss run with raid-only metadata refs", async () => {

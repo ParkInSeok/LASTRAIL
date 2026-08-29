@@ -34,8 +34,9 @@ class SqlJsD1Statement {
     }
   }
 
-  run(): void {
+  run(): { success: true; meta: { changes: number } } {
     this.database.run(this.sql, this.values);
+    return { success: true, meta: { changes: this.database.getRowsModified() } };
   }
 }
 
@@ -282,6 +283,26 @@ describe("game-api run finish local D1 smoke", () => {
     expect(serialized).not.toContain("rawRng");
     expect(serialized).not.toContain("probability");
     expect(serialized).not.toContain("animationTimeline");
+
+    const replayResponse = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: { Authorization: authorization },
+        body: JSON.stringify({ operationPreviewId: "preview-start-smoke-1" }),
+      },
+      createEnv(db),
+    );
+
+    expect(replayResponse.status).toBe(409);
+    await expect(replayResponse.json()).resolves.toMatchObject({
+      accepted: false,
+      startStatus: "REJECTED",
+      operationPreviewId: "preview-start-smoke-1",
+      errorCode: "operation_preview_already_consumed",
+    });
+    expect(db.exec(`SELECT COUNT(*) FROM runs WHERE preview_id = 'preview-start-smoke-1';`)[0]?.values).toEqual([[1]]);
+    expect(db.exec(`SELECT COUNT(*) FROM run_snapshots WHERE run_id = '${runId}';`)[0]?.values).toEqual([[1]]);
     expect(db.exec("PRAGMA foreign_key_check;")[0]?.values ?? []).toEqual([]);
   });
 

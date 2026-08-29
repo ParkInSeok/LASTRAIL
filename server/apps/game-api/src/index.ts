@@ -381,6 +381,14 @@ function createDomainId(prefix: string): string {
   return `${prefix}_${createRequestId().slice(4)}`;
 }
 
+function d1Changes(result: unknown): number | null {
+  if (result === null || typeof result !== "object") return null;
+  const meta = "meta" in result ? result.meta : null;
+  if (meta === null || typeof meta !== "object") return null;
+  const changes = "changes" in meta ? meta.changes : null;
+  return typeof changes === "number" ? changes : null;
+}
+
 function createRefreshToken(): string {
   return `refresh_${createRequestId().slice(4)}${createRequestId().slice(4)}`;
 }
@@ -2881,6 +2889,14 @@ app.post("/v1/runs/start", async (c) => {
     }), 404);
   }
 
+  if (row.status === "CONSUMED") {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "operation_preview_already_consumed",
+      message: "Operation preview was already consumed.",
+    }), 409);
+  }
+
   if (row.status !== "ACTIVE" || row.expires_at <= now) {
     return c.json(createRunStartRejectedResponse({
       operationPreviewId: body.operationPreviewId,
@@ -2921,6 +2937,19 @@ app.post("/v1/runs/start", async (c) => {
     serverStartedAt: toIso(now),
   });
 
+  const consumeResult = await c.env.DB.prepare(
+    `UPDATE operation_previews
+     SET status = 'CONSUMED'
+     WHERE id = ? AND account_id = ? AND status = 'ACTIVE'`,
+  ).bind(row.id, authContext.accountId).run();
+  if (d1Changes(consumeResult) !== 1) {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "operation_preview_already_consumed",
+      message: "Operation preview was already consumed.",
+    }), 409);
+  }
+
   await c.env.DB.batch([
     c.env.DB.prepare(
       `INSERT INTO runs (id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id)
@@ -2930,11 +2959,6 @@ app.post("/v1/runs/start", async (c) => {
       `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
        VALUES (?, ?, ?)`,
     ).bind(runId, snapshotJson, now),
-    c.env.DB.prepare(
-      `UPDATE operation_previews
-       SET status = 'CONSUMED'
-       WHERE id = ? AND account_id = ? AND status = 'ACTIVE'`,
-    ).bind(row.id, authContext.accountId),
   ]);
 
   return c.json(createRunStartAcceptedResponse({

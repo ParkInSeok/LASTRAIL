@@ -363,6 +363,13 @@ RAID_BOSS`, `ordinary = null`, and raid refs under both the compact top-level
 fields and the `raid` object. Ordinary previews must not leak `raidId`,
 `bossId`, or `bossPhaseRefs` from malformed preview JSON.
 
+Run start consumes `operation_previews` with an affected-row guard before
+creating the run snapshot. A second request for the same consumed preview
+returns `409` with `operation_preview_already_consumed`; it must not create a
+second `runs` row or `run_snapshots` row. `Idempotency-Key` for run start is
+still a pre-production decision and is not required by this launch contract
+slice.
+
 Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.md`.
 
 Accepted run finish responses return `rewardPreviewId` first. Reward review and
