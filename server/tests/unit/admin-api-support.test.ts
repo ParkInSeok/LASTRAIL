@@ -79,6 +79,7 @@ describe("admin-api support account summary contract", () => {
         [],
         { open_signals: 0, hard_violations: 0, latest_detection_at: null, primary_reason: null },
         null,
+        [],
       ]),
     );
 
@@ -199,6 +200,42 @@ describe("admin-api support account summary contract", () => {
           ],
           { open_signals: 1, hard_violations: 0, latest_detection_at: 1787658000000, primary_reason: "ABNORMAL_CLEAR_TIME" },
           { status: "REVIEWING", reason: "manual review", updated_at: 1787658100000 },
+          [
+            {
+              id: "ops_error_1",
+              occurred_at: 1787658200000,
+              environment: "DEV",
+              service: "game_api",
+              severity: "critical",
+              error_code: "gacha_state_conflict",
+              message_summary: "Gacha state conflict detected.",
+              status: "open",
+              source: "game_api",
+              request_id: "req-gacha-1",
+              account_id: "account-1",
+              run_id: null,
+              reward_preview_id: null,
+              reward_claim_id: null,
+              offline_reward_claim_id: null,
+              gacha_batch_id: "gacha_batch_1",
+              gacha_banner_id: "banner-1",
+              story_progress_id: null,
+              integrity_event_id: null,
+              support_ticket_id: null,
+              idempotency_operation: "gacha_pull",
+              idempotency_key_hash: "sha256:gacha-key",
+              correlation_json: "{}",
+              sanitized_context_json: "{\"safe\":true}",
+              retryable: 0,
+              masked: 1,
+              payload_ref: null,
+              trace_ref: null,
+              resolved_at: null,
+              resolved_by: null,
+              resolution_note: null,
+              created_at: 1787658200000,
+            },
+          ],
         ]),
       );
 
@@ -271,7 +308,31 @@ describe("admin-api support account summary contract", () => {
           hardViolations: 0,
           accountReviewStatus: "REVIEWING",
         },
-        opsErrors: [],
+        opsErrors: [
+          {
+            errorLogId: "ops_error_1",
+            occurredAt: "2026-08-25T11:43:20.000Z",
+            environment: "DEV",
+            service: "game_api",
+            severity: "critical",
+            errorCode: "gacha_state_conflict",
+            messageSummary: "Gacha state conflict detected.",
+            status: "open",
+            source: "game_api",
+            requestId: "req-gacha-1",
+            gachaBatchId: "gacha_batch_1",
+            gachaBannerId: "banner-1",
+            idempotencyOperation: "gacha_pull",
+            idempotencyKeyHash: "sha256:gacha-key",
+            retryable: false,
+            masked: true,
+            links: {
+              accountId: "account-1",
+              gachaBatchId: "gacha_batch_1",
+              gachaBannerId: "banner-1",
+            },
+          },
+        ],
       });
       expect(body.idempotency).toEqual(
         expect.arrayContaining([
@@ -324,6 +385,7 @@ describe("admin-api support account summary contract", () => {
         [],
         { open_signals: 0, hard_violations: 0, latest_detection_at: null, primary_reason: null },
         null,
+        [],
       ]),
     );
 

@@ -427,11 +427,14 @@ Support usage:
 
 Current support route status:
 
-- `GET /v1/admin/support/accounts/:accountId` keeps `opsErrors: []` until a
-  separate support-summary integration slice explicitly composes account-scoped
-  ops error rows.
-- Operators can use `GET /v1/admin/ops/error-logs?accountId=...` for the
-  dedicated ops log read model.
+- `GET /v1/admin/support/accounts/:accountId` composes the latest 5
+  account-scoped launch-critical ops error rows.
+- Included launch error codes are `google_auth_config_missing`,
+  `offline_reward_state_conflict`, `gacha_state_conflict`, and
+  `story_progress_state_conflict`.
+- Rows are ordered critical first, then by latest occurrence.
+- Operators can still use `GET /v1/admin/ops/error-logs?accountId=...` for the
+  dedicated ops log read model and broader filters.
 
 Do not return raw payloads, raw request bodies, tokens, secrets, or unsanitized
 stack traces in launch support summary.

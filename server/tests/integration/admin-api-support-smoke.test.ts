@@ -277,6 +277,61 @@ function seedSupportAccount(db: initSqlJs.Database): void {
      ) VALUES ('account-support-1', 'REVIEWING', NULL, 'support smoke', 'principal-support-1', ?, ?);`,
     [gachaAt, gachaAt],
   );
+  db.run(
+    `INSERT INTO ops_error_logs (
+       id, occurred_at, environment, service, severity, error_code, message_summary,
+       status, source, request_id, account_id, run_id, reward_preview_id,
+       reward_claim_id, offline_reward_claim_id, gacha_batch_id, gacha_banner_id,
+       story_progress_id, integrity_event_id, support_ticket_id,
+       idempotency_operation, idempotency_key_hash, correlation_json,
+       sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+       resolved_at, resolved_by, resolution_note, created_at
+     ) VALUES
+       ('ops-support-critical', ?, 'DEV', 'game_api', 'critical', 'gacha_state_conflict',
+        'Gacha state conflict detected.', 'open', 'game_api', 'req-gacha', 'account-support-1',
+        NULL, NULL, NULL, NULL, 'gacha_batch_support_1', 'banner-support-1', NULL, NULL, NULL,
+        'gacha_pull', 'sha256:gacha-key', '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-error', ?, 'DEV', 'game_api', 'error', 'offline_reward_state_conflict',
+        'Offline reward state conflict detected.', 'acknowledged', 'game_api', 'req-offline', 'account-support-1',
+        NULL, NULL, NULL, 'offline_claim_support_1', NULL, NULL, NULL, NULL, NULL,
+        'offline_reward_claim', 'sha256:offline-key', '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-old', ?, 'DEV', 'game_api', 'error', 'google_auth_config_missing',
+        'Google auth config missing.', 'open', 'game_api', 'req-google', 'account-support-1',
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-warning-new', ?, 'DEV', 'game_api', 'warning', 'story_progress_state_conflict',
+        'Story progress state conflict detected.', 'open', 'game_api', 'req-story-new', 'account-support-1',
+        'run-support-1', NULL, NULL, NULL, NULL, NULL, 'opn_04_scrapstar_show', NULL, NULL,
+        'run_finish', 'sha256:story-new-key', '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-warning-old', ?, 'DEV', 'game_api', 'warning', 'offline_reward_state_conflict',
+        'Older offline warning.', 'open', 'game_api', 'req-warning-old', 'account-support-1',
+        NULL, NULL, NULL, 'offline_claim_support_1', NULL, NULL, NULL, NULL, NULL,
+        'offline_reward_claim', 'sha256:warning-old-key', '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-info-excluded', ?, 'DEV', 'game_api', 'info', 'google_auth_config_missing',
+        'Newest info should not displace higher severity rows.', 'open', 'game_api', 'req-info', 'account-support-1',
+        NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+        NULL, NULL, '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?),
+       ('ops-support-other-account', ?, 'DEV', 'game_api', 'critical', 'story_progress_state_conflict',
+        'Other account conflict.', 'open', 'game_api', 'req-story-other', NULL,
+        NULL, NULL, NULL, NULL, NULL, NULL, 'opn_04_scrapstar_show', NULL, NULL,
+        'run_finish', 'sha256:other-key', '{}', '{"safe":true}', 0, 1, NULL, NULL, NULL, NULL, NULL, ?);`,
+    [
+      gachaAt + 3000,
+      gachaAt + 3000,
+      gachaAt + 4000,
+      gachaAt + 4000,
+      gachaAt + 1000,
+      gachaAt + 1000,
+      gachaAt + 2000,
+      gachaAt + 2000,
+      gachaAt + 500,
+      gachaAt + 500,
+      gachaAt + 6000,
+      gachaAt + 6000,
+      gachaAt + 5000,
+      gachaAt + 5000,
+    ],
+  );
 }
 
 describe("admin-api support account summary local D1 smoke", () => {
@@ -354,6 +409,49 @@ describe("admin-api support account summary local D1 smoke", () => {
         openSignals: 1,
         accountReviewStatus: "REVIEWING",
       },
+      opsErrors: [
+        {
+          errorLogId: "ops-support-critical",
+          occurredAt: "2026-08-27T03:00:03.000Z",
+          environment: "DEV",
+          service: "game_api",
+          severity: "critical",
+          errorCode: "gacha_state_conflict",
+          messageSummary: "Gacha state conflict detected.",
+          status: "open",
+          source: "game_api",
+          requestId: "req-gacha",
+          retryable: false,
+          masked: true,
+          links: {
+            accountId: "account-support-1",
+            gachaBatchId: "gacha_batch_support_1",
+            gachaBannerId: "banner-support-1",
+          },
+        },
+        {
+          errorLogId: "ops-support-error",
+          errorCode: "offline_reward_state_conflict",
+          severity: "error",
+          status: "acknowledged",
+          offlineRewardClaimId: "offline_claim_support_1",
+        },
+        {
+          errorLogId: "ops-support-old",
+          errorCode: "google_auth_config_missing",
+          severity: "error",
+        },
+        {
+          errorLogId: "ops-support-warning-new",
+          errorCode: "story_progress_state_conflict",
+          severity: "warning",
+        },
+        {
+          errorLogId: "ops-support-warning-old",
+          errorCode: "offline_reward_state_conflict",
+          severity: "warning",
+        },
+      ],
       supportContext: {
         readOnly: true,
         mutationEndpointsEnabled: false,
@@ -361,6 +459,9 @@ describe("admin-api support account summary local D1 smoke", () => {
       },
     });
     expect(body.auth.lastLoginAgeSeconds).toBeGreaterThan(0);
+    expect(body.opsErrors).toHaveLength(5);
+    expect(body.opsErrors.map((item: { errorLogId: string }) => item.errorLogId)).not.toContain("ops-support-info-excluded");
+    expect(body.opsErrors.map((item: { errorLogId: string }) => item.errorLogId)).not.toContain("ops-support-other-account");
     expect(body.idempotency).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ operation: "run_finish", resultRef: "reward_preview_support_1" }),
@@ -379,6 +480,8 @@ describe("admin-api support account summary local D1 smoke", () => {
     expect(serialized).not.toContain("rngSeed");
     expect(serialized).not.toContain("probability");
     expect(serialized).not.toContain("fullWeight");
+    expect(serialized).not.toContain("sanitizedContext");
+    expect(serialized).not.toContain("rawStack");
     expect(serialized).not.toContain("localizedDialogue");
     expect(serialized).not.toContain("storyProgressMultiplierBps");
     expect(serialized).not.toContain("rewardCalculation");

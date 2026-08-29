@@ -968,6 +968,38 @@ function opsErrorLogDetail(row: AdminOpsErrorLogRow) {
   };
 }
 
+function supportOpsErrorSummary(row: AdminOpsErrorLogRow) {
+  return {
+    errorLogId: row.id,
+    occurredAt: toIso(row.occurred_at),
+    environment: row.environment,
+    service: row.service,
+    severity: row.severity,
+    errorCode: row.error_code,
+    messageSummary: row.message_summary,
+    status: row.status,
+    source: row.source,
+    requestId: row.request_id,
+    accountId: row.account_id,
+    runId: row.run_id,
+    rewardPreviewId: row.reward_preview_id,
+    rewardClaimId: row.reward_claim_id,
+    offlineRewardClaimId: row.offline_reward_claim_id,
+    gachaBatchId: row.gacha_batch_id,
+    gachaBannerId: row.gacha_banner_id,
+    storyProgressId: row.story_progress_id,
+    integrityEventId: row.integrity_event_id,
+    supportTicketId: row.support_ticket_id,
+    idempotencyOperation: row.idempotency_operation,
+    idempotencyKeyHash: row.idempotency_key_hash,
+    retryable: row.retryable === 1,
+    masked: row.masked === 1,
+    payloadRef: row.payload_ref,
+    traceRef: row.trace_ref,
+    links: opsErrorLogLinks(row),
+  };
+}
+
 function hasRequestBody(c: AppContext): boolean {
   const contentLength = c.req.header("content-length");
   return contentLength !== undefined && contentLength !== "0";
@@ -1435,6 +1467,37 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
   )
     .bind(accountId)
     .first<AdminSupportReviewRow>();
+  const opsErrors = await c.env.DB.prepare(
+    `SELECT
+       id, occurred_at, environment, service, severity, error_code, message_summary,
+       status, source, request_id, account_id, run_id, reward_preview_id,
+       reward_claim_id, offline_reward_claim_id, gacha_batch_id, gacha_banner_id,
+       story_progress_id, integrity_event_id, support_ticket_id,
+       idempotency_operation, idempotency_key_hash, correlation_json,
+       sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+       resolved_at, resolved_by, resolution_note, created_at
+     FROM ops_error_logs
+     WHERE account_id = ?
+       AND error_code IN (
+         'google_auth_config_missing',
+         'offline_reward_state_conflict',
+         'gacha_state_conflict',
+         'story_progress_state_conflict'
+       )
+       AND status IN ('open','acknowledged')
+     ORDER BY
+       CASE severity
+         WHEN 'critical' THEN 0
+         WHEN 'error' THEN 1
+         WHEN 'warning' THEN 2
+         ELSE 3
+       END,
+       occurred_at DESC,
+       id
+     LIMIT 5`,
+  )
+    .bind(accountId)
+    .all<AdminOpsErrorLogRow>();
 
   const providers = identities.results.map((row) => row.provider);
   const lastLoginAt = authStatus?.last_login_at ?? null;
@@ -1533,7 +1596,7 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
       reviewUpdatedAt: suspiciousReview === null ? null : toIso(suspiciousReview.updated_at),
       primaryReason: integrity?.primary_reason ?? null,
     },
-    opsErrors: [],
+    opsErrors: opsErrors.results.map(supportOpsErrorSummary),
     supportNotes: supportExplanationTemplates(),
     supportContext: {
       readOnly: true,
