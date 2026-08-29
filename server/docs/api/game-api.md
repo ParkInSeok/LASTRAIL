@@ -507,7 +507,33 @@ Contract baseline:
 - Launch command ticket acquisition is promoted into local launch balance
   contract as a non-repeat 12-ticket path: login bonus 5, `opn_03` first clear
   1, `opn_05` first clear 1, `opn_06` first clear 2, and story raid first clear
-  3. The first-clear tickets are emitted as server-owned `ITEM`
-  `rewardLines` and committed through `account_items`/`item_ledger` during
-  reward claim. Remote production seed/config deployment still requires
-  explicit approval.
+  3. The login bonus tickets are claimed through `POST /v1/login-bonus/claim`.
+  The first-clear tickets are emitted as server-owned `ITEM` `rewardLines` and
+  committed through `account_items`/`item_ledger` during reward claim. Remote
+  production seed/config deployment still requires explicit approval.
+
+## Launch Login Bonus
+
+```text
+POST /v1/login-bonus/claim
+Authorization: Bearer <access-token>
+Idempotency-Key: <client-generated-key>
+```
+
+Contract baseline:
+
+- Request body and query parameters are not accepted.
+- Account identity comes only from verified Game API bearer auth.
+- The launch bonus id is `launch_login_bonus_act1_v1`.
+- The server grants one non-repeat `ITEM` reward line:
+  `cur_command_ticket x5`, `source = 'LAUNCH_LOGIN_BONUS'`.
+- Success writes `account_mutations`, `economy_transactions`,
+  `reward_transactions`, `account_items`, `item_ledger`,
+  `account_login_bonus_claims`, and `idempotency_records.operation =
+  'login_bonus_claim'` in one committed batch.
+- Same account + same `Idempotency-Key` returns `DUPLICATE_REPLAY` and does not
+  write ledger or grant again.
+- Same account + different key after the bonus was claimed returns
+  `ALREADY_CLAIMED` and does not write ledger or grant again.
+- The response does not include raw ledger dumps, tokens, auth headers, RNG
+  material, probability data, full weight tables, or account shortcut data.

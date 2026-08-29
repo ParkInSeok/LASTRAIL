@@ -761,8 +761,10 @@ story raid first clear         cur_command_ticket         3  no
 Total non-repeat launch supply is 12 `cur_command_ticket`. The first-clear
 portion is emitted as server-owned `ITEM` reward lines from
 `launchRunRewardsConfig` and committed through `account_items`/`item_ledger`
-during reward claim. Normal offline repeat rewards must not include
-`cur_command_ticket`, `cur_command_ticket_fragment`, or `cur_special_core`.
+during reward claim. The login bonus portion is delivered by
+`POST /v1/login-bonus/claim` and guarded by `account_login_bonus_claims`.
+Normal offline repeat rewards must not include `cur_command_ticket`,
+`cur_command_ticket_fragment`, or `cur_special_core`.
 World Raid score, ranking, settlement, and event reward tickets are separate
 future scope and must not be mixed into the Act 1 story/pickup banner launch
 fixture.
@@ -775,7 +777,5 @@ tokens, secrets, or account shortcut data.
 Decision queue:
 
 - Final launch banner IDs, pickup rotation, and exact weight tuning.
-- Which login bonus endpoint/state table will deliver the remaining
-  `launch_login_bonus cur_command_ticket x5`.
 - Remote production seed/config deployment still requires explicit approval
   and Unity/Admin compatibility smoke.

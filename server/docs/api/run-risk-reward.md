@@ -348,7 +348,9 @@ Together with `launch_login_bonus cur_command_ticket x5`, the Act 1 launch
 path provides 12 non-repeat command tickets. The first-clear portion is emitted
 by `calculateRunRewardPreview(...)` as `ITEM` `FIRST_CLEAR` reward lines and is
 committed through `account_items`/`item_ledger` when the reward preview is
-claimed. Login bonus delivery remains a separate endpoint/state decision.
+claimed. The login bonus portion is delivered through
+`POST /v1/login-bonus/claim` using the `account_login_bonus_claims` non-repeat
+guard and `idempotency_records.operation = 'login_bonus_claim'`.
 
 This is a local launch balance/config contract. Remote production seed/config
 deployment still requires separate explicit approval and compatibility smoke
@@ -703,8 +705,8 @@ Next implementation candidates:
 ## Open Decisions
 
 - Exact base reward quantities per operation.
-- Which login bonus endpoint/state table will deliver the remaining
-  `launch_login_bonus cur_command_ticket x5`.
+- Remote production deployment approval for the local launch balance/config
+  contract and login bonus claim route.
 - Whether `cur_command_ticket_fragment` is kept out of launch rewards entirely
   or reserved for weekly/event/pass rewards.
 - Whether `SPECIAL_CORE` is repeatable at Risk IV/V or first-clear only.

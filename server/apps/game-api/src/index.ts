@@ -126,6 +126,12 @@ type OfflineRewardReplayRow = {
   reward_json: string | null;
 };
 
+type LoginBonusClaimRow = {
+  reward_transaction_id: string;
+  claimed_at: number;
+  reward_json: string;
+};
+
 type FirstClearRow = {
   cleared_at: number;
 };
@@ -316,6 +322,13 @@ const currencyIdToD1Currency = {
 } as const;
 
 const runRewardPreviewTtlMs = 24 * 60 * 60 * 1000;
+const launchLoginBonusId = "launch_login_bonus_act1_v1";
+const launchLoginBonusRewardLine = {
+  kind: "ITEM",
+  id: "cur_command_ticket",
+  quantity: 5,
+  source: "LAUNCH_LOGIN_BONUS",
+} as const;
 const runFinishForbiddenRewardFields = new Set([
   "rewardAmount",
   "rewardAmounts",
@@ -1246,6 +1259,56 @@ function createOfflineRewardClaimDuplicateReplayResponse(options: {
     narrativeVersion: parsed.narrativeVersion ?? actOneNarrativeVersion,
     errorCode: "duplicate_replay",
     message: "Offline reward claim was already committed.",
+  };
+}
+
+function createLoginBonusClaimRejectedResponse(options: {
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    accepted: false,
+    claimStatus: "REJECTED",
+    bonusId: launchLoginBonusId,
+    loginBonusClaimId: null,
+    rewardTransactionId: null,
+    economyTransactionId: null,
+    accountMutationId: null,
+    rewardLines: [],
+    serverClaimedAt: null,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createLoginBonusClaimReplayResponse(options: {
+  claimStatus: "DUPLICATE_REPLAY" | "ALREADY_CLAIMED";
+  loginBonusClaimId: string;
+  rewardJson: string | null;
+  serverClaimedAt: number;
+}) {
+  let parsed: Record<string, unknown> = {};
+  try {
+    parsed = options.rewardJson === null ? {} : JSON.parse(options.rewardJson) as Record<string, unknown>;
+  } catch {
+    parsed = {};
+  }
+  const errorCode = options.claimStatus === "DUPLICATE_REPLAY" ? "duplicate_replay" : "already_claimed";
+
+  return {
+    accepted: false,
+    claimStatus: options.claimStatus,
+    bonusId: launchLoginBonusId,
+    loginBonusClaimId: options.loginBonusClaimId,
+    rewardTransactionId: parsed.rewardTransactionId ?? options.loginBonusClaimId,
+    economyTransactionId: parsed.economyTransactionId ?? null,
+    accountMutationId: parsed.accountMutationId ?? null,
+    rewardLines: [],
+    serverClaimedAt: toIso(options.serverClaimedAt),
+    errorCode,
+    message: options.claimStatus === "DUPLICATE_REPLAY"
+      ? "Launch login bonus claim was already committed."
+      : "Launch login bonus was already claimed for this account.",
   };
 }
 
@@ -2488,6 +2551,158 @@ app.post("/v1/offline-rewards/claim", async (c) => {
 
   return c.json(responsePayload);
 });
+
+app.post("/v1/login-bonus/claim", async (c) => {
+  const requestUrl = new URL(c.req.url);
+  const hasAnyQuery = [...requestUrl.searchParams.keys()].length > 0;
+  const contentLength = c.req.header("content-length");
+  const idempotencyKey = c.req.header("Idempotency-Key");
+
+  if (idempotencyKey === undefined || idempotencyKey.trim() === "") {
+    return c.json(createLoginBonusClaimRejectedResponse({
+      errorCode: "contract_violation",
+      message: "Idempotency-Key header is required.",
+    }), 400);
+  }
+
+  if (hasAnyQuery || (contentLength !== undefined && contentLength !== "0")) {
+    return c.json(createLoginBonusClaimRejectedResponse({
+      errorCode: "contract_violation",
+      message: "POST /v1/login-bonus/claim must not include query parameters or a request body.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createLoginBonusClaimRejectedResponse({
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const replay = await c.env.DB.prepare(
+    `SELECT idem.result_ref, idem.created_at, reward.created_at AS reward_created_at,
+            reward.reward_json AS reward_json
+     FROM idempotency_records idem
+     LEFT JOIN reward_transactions reward ON reward.id = idem.result_ref
+     WHERE idem.account_id = ? AND idem.operation = 'login_bonus_claim' AND idem.idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<OfflineRewardReplayRow>();
+
+  if (replay !== null) {
+    return c.json(createLoginBonusClaimReplayResponse({
+      claimStatus: "DUPLICATE_REPLAY",
+      loginBonusClaimId: replay.result_ref,
+      rewardJson: replay.reward_json,
+      serverClaimedAt: replay.reward_created_at ?? replay.created_at,
+    }));
+  }
+
+  const existingClaim = await c.env.DB.prepare(
+    `SELECT reward_transaction_id, claimed_at, reward_json
+     FROM account_login_bonus_claims
+     WHERE account_id = ? AND bonus_id = ?`,
+  )
+    .bind(authContext.accountId, launchLoginBonusId)
+    .first<LoginBonusClaimRow>();
+
+  if (existingClaim !== null) {
+    return c.json(createLoginBonusClaimReplayResponse({
+      claimStatus: "ALREADY_CLAIMED",
+      loginBonusClaimId: existingClaim.reward_transaction_id,
+      rewardJson: existingClaim.reward_json,
+      serverClaimedAt: existingClaim.claimed_at,
+    }));
+  }
+
+  const now = Date.now();
+  const loginBonusClaimId = createDomainId("login_bonus_claim");
+  const mutationId = createDomainId("mutation");
+  const economyTransactionId = createDomainId("economy");
+  const itemLedgerId = createDomainId("item_ledger");
+  const latestMutation = await c.env.DB.prepare(
+    `SELECT MAX(sequence) AS sequence
+     FROM account_mutations
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<AccountMutationSequenceRow>();
+  const nextSequence = (latestMutation?.sequence ?? 0) + 1;
+  const currentItem = await c.env.DB.prepare(
+    `SELECT quantity
+     FROM account_items
+     WHERE account_id = ? AND item_id = ?`,
+  )
+    .bind(authContext.accountId, launchLoginBonusRewardLine.id)
+    .first<AccountItemRow>();
+  const balanceAfter = (currentItem?.quantity ?? 0) + launchLoginBonusRewardLine.quantity;
+  const rewardLines = [{ ...launchLoginBonusRewardLine, balanceAfter }];
+  const rewardJson = JSON.stringify({
+    bonusId: launchLoginBonusId,
+    rewardLines,
+    rewardTransactionId: loginBonusClaimId,
+    economyTransactionId,
+    accountMutationId: mutationId,
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES (?, ?, ?, 'LOGIN_BONUS_CLAIM', ?, ?)`,
+    ).bind(mutationId, authContext.accountId, nextSequence, idempotencyKey, now),
+    c.env.DB.prepare(
+      `INSERT INTO economy_transactions (id, account_id, mutation_id, reason, source_type, source_id, created_at)
+       VALUES (?, ?, ?, 'LOGIN_BONUS_CLAIM', 'LOGIN_BONUS_CLAIM', ?, ?)`,
+    ).bind(economyTransactionId, authContext.accountId, mutationId, loginBonusClaimId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at`,
+    ).bind(authContext.accountId, launchLoginBonusRewardLine.id, balanceAfter, now),
+    c.env.DB.prepare(
+      `INSERT INTO item_ledger (id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'LAUNCH_LOGIN_BONUS', 'LOGIN_BONUS_CLAIM', ?, ?)`,
+    ).bind(
+      itemLedgerId,
+      authContext.accountId,
+      mutationId,
+      launchLoginBonusRewardLine.id,
+      launchLoginBonusRewardLine.quantity,
+      balanceAfter,
+      loginBonusClaimId,
+      now,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
+       VALUES (?, ?, NULL, ?, NULL, ?, ?)`,
+    ).bind(loginBonusClaimId, authContext.accountId, mutationId, rewardJson, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_login_bonus_claims (
+         account_id, bonus_id, reward_transaction_id, claimed_at, idempotency_key, reward_json
+       ) VALUES (?, ?, ?, ?, ?, ?)`,
+    ).bind(authContext.accountId, launchLoginBonusId, loginBonusClaimId, now, idempotencyKey, rewardJson),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'login_bonus_claim', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, loginBonusClaimId, now),
+  ]);
+
+  return c.json({
+    accepted: true,
+    claimStatus: "CLAIMED",
+    bonusId: launchLoginBonusId,
+    loginBonusClaimId,
+    rewardTransactionId: loginBonusClaimId,
+    economyTransactionId,
+    accountMutationId: mutationId,
+    rewardLines,
+    serverClaimedAt: toIso(now),
+    errorCode: null,
+    message: null,
+  });
+});
+
 app.get("/v1/balance-config/:version", async (c) => {
   const rawVersion = c.req.param("version");
   const version = parsePositiveInteger(rawVersion);

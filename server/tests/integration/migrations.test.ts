@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-6])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(16);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-7])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(17);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -437,6 +437,49 @@ describe("D1 migrations", () => {
          'ops_error_1', 2, 'DEV', 'game_api', 'error', 'reward_plan_mismatch',
          'Reward plan mismatch.', 'open', 'game_api', 'req_ops_1', 'account-ops-1',
          '{"accountId":"account-ops-1"}', '{"safe":true}', 1, 1, 2
+       );`,
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates launch login bonus claim table for account-scoped non-repeat rewards", async () => {
+    const db = await createMigratedDb();
+
+    const columns = db.exec("PRAGMA table_info(account_login_bonus_claims);");
+    const indexes = db.exec("PRAGMA index_list(account_login_bonus_claims);");
+
+    expect(columns[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "bonus_id",
+      "reward_transaction_id",
+      "claimed_at",
+      "idempotency_key",
+      "reward_json",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining([
+        "idx_account_login_bonus_claims_bonus_claimed",
+        "sqlite_autoindex_account_login_bonus_claims_2",
+      ]),
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-login-bonus-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+       VALUES ('mutation-login-bonus-1', 'account-login-bonus-1', 1, 'LOGIN_BONUS_CLAIM', 'login-bonus-key-1', 2);`,
+    );
+    db.run(
+      `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
+       VALUES ('login-bonus-claim-1', 'account-login-bonus-1', NULL, 'mutation-login-bonus-1', NULL, '{"rewardLines":[]}', 2);`,
+    );
+    db.run(
+      `INSERT INTO account_login_bonus_claims (
+         account_id, bonus_id, reward_transaction_id, claimed_at, idempotency_key, reward_json
+       ) VALUES (
+         'account-login-bonus-1', 'launch_login_bonus_act1_v1', 'login-bonus-claim-1', 2,
+         'login-bonus-key-1', '{"rewardLines":[]}'
        );`,
     );
 
