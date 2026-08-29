@@ -1,4 +1,4 @@
-# raid_raider_king_engine Dialogue Draft
+# raid_raider_king_engine Dialogue Launch Draft
 
 ## Purpose
 
@@ -6,7 +6,7 @@
 
 The raid text should make the player feel three things:
 
-1. The boss is not only a machine. It is a system of fear, trophies, fuel, and obedience.
+1. The boss is not only a machine. It is a system of fear, fuel, and obedience.
 2. Winning means stopping the engine without becoming like it.
 3. Act 1 ends with Last Rail heavier, slower, and more worth defending.
 
@@ -18,7 +18,7 @@ The raid text should make the player feel three things:
 - Let the Conductor answer with choices that sound impractical, human, and now inevitable.
 - Let the Signal Officer carry the transition from receiving the first signal to becoming a signal for others.
 - Let the Chief Mechanic focus on heat, couplers, fuel core pressure, and the danger of destroying too much.
-- Avoid score, ranking, settlement, participation, season, leaderboard, or bracket language.
+- Avoid World Raid language: score, ranking, settlement, participation, season, leaderboard, or bracket.
 - Avoid trophy/loot language for rescued people. People are freed, boarded, or protected, not acquired.
 
 ## Cast Labels
@@ -36,7 +36,7 @@ The raid text should make the player feel three things:
 
 ### Briefing Summary
 
-왕관 기관차가 끊어진 노선을 넘어온다. 훔친 객차와 연료 탱크를 강제로 물린 장갑 지휘 열차다. Last Rail은 5명의 요원으로 출격해 연료 코어가 폭주하기 전에 보스 기관차를 멈춰야 한다.
+왕관 기관차가 끊어진 노선을 넘어온다. 훔친 객차와 연료 탱크를 강제로 물린 장갑 지휘 열차다. Last Rail은 5명의 요원으로 출격해 연료 코어가 폭주하기 전에 보스를 멈춰야 한다.
 
 ### Briefing Lines
 
@@ -44,7 +44,7 @@ The raid text should make the player feel three things:
 - 정비장: "저건 열차라기보다 움직이는 고철 도시입니다. 나쁜 쪽으로요."
 - 차장: "왕의 엔진."
 - 통신 담당: "방송 신호도 잡힙니다. 자신을 왕이라고 부르고 있습니다."
-- 약탈왕: "길 위의 모든 것은 가벼워져야 한다. 짐이 되는 것은 버려라."
+- 약탈왕: "길 위의 짐은 버려라."
 - 차장: "지휘관님, 저 열차는 우리가 받은 부탁의 반대편입니다."
 
 ### Commander Response Candidates
@@ -59,7 +59,7 @@ The raid text should make the player feel three things:
 
 ## Loading Screen Hint
 
-이 레이드는 5명의 요원이 출격하는 보스 전투입니다. 왕관 기관차의 제동 장치를 노리고, 연료 코어가 폭주하기 전에 지휘 엔진을 정지시키십시오.
+5명의 요원이 출격하는 보스 전투입니다. 왕관 기관차의 제동 장치를 노리고, 연료 코어가 폭주하기 전에 멈추십시오.
 
 ## Boss-Only Encounter Direction
 
@@ -70,14 +70,14 @@ Launch structure:
 - Not a 15-wave operation.
 - No World Raid score, ranking, settlement, participation, or season language.
 - Success is boss defeat: the Crown Engine stops.
-- Failure is a tactical withdrawal; launch UX should communicate stamina refund without promising reward amounts.
+- Failure is tactical withdrawal; launch UX may state stamina return without promising reward amounts or claim results.
 
 ## Boss Entrance
 
 ### Raid Start
 
 - 시스템: "스토리 레이드 개시. 보스: 왕관 기관차."
-- 정비장: "대형 열원 하나. 연료 코어 불안정. 저건 열차라기보다 사고 예고입니다."
+- 정비장: "대형 열원 하나. 연료 코어 불안정."
 - 약탈왕: "작은 열차여. 길을 비켜라."
 - 차장: "길은 당신 것이 아닙니다."
 
@@ -86,30 +86,30 @@ Launch structure:
 - 시스템: "목표: 왕관 기관차 정지."
 - 시스템: "승리 조건: 보스 격파."
 - 시스템: "출격 요원: 5명."
-- 정비장: "제동 장치를 노리십시오. 코어를 터뜨리면 우리도 같이 멈춥니다."
+- 정비장: "제동 장치를 노리십시오. 코어는 건드리지 마십시오."
 
 ### Entrance Callout Candidates
 
-- 통신 담당: "방송 신호가 열립니다. 그가 우리 전투를 들려주려 합니다."
+- 통신 담당: "방송 신호가 열립니다."
 - 약탈왕: "자비는 중량이다. 중량은 열차를 늦춘다."
 - 차장: "객차 하나 더 연결하십시오."
 - 정비장: "그 말, 정말 정비팀에게 하신 겁니까?"
 
 ## Boss State Transitions
 
-These are presentation beats inside one boss fight. Do not label them as separate waves, score phases, or World Raid milestones.
+These are presentation beats inside one boss fight. Do not label them as separate waves, score stages, or World Raid milestones.
 
 ### Transition: Armor Break
 
 - 시스템: "장갑판 파손. 제동 장치 일부 노출."
 - 정비장: "겉껍질 벗겨집니다. 이제 멈출 곳이 보입니다."
 - 약탈왕: "가까이 와라. 무거운 자는 충돌로 배운다."
-- 차장: "우리는 배우러 온 게 아닙니다. 멈추러 왔습니다."
+- 차장: "배우러 온 게 아닙니다. 멈추러 왔습니다."
 
 ### Transition: Broadcast Break
 
 - 시스템: "왕관 기관차 방송 출력 저하."
-- 통신 담당: "저쪽 방송이 흔들립니다. 우리 신호를 밀어 넣을 수 있어요."
+- 통신 담당: "저쪽 방송이 흔들립니다."
 - 차장: "짧게 보내십시오."
 - 통신 담당: "Last Rail은 사람을 버리지 않는다."
 
@@ -125,22 +125,22 @@ These are presentation beats inside one boss fight. Do not label them as separat
 ### Fuel Core Warning
 
 - 시스템: "위험: 연료 코어 과열."
-- 정비장: "열이 치솟습니다. 지금은 화력이 아니라 정밀도가 필요합니다."
+- 정비장: "열이 치솟습니다. 정밀하게 치십시오."
 
 ### Collision Warning
 
 - 시스템: "위험: 충돌 경로 접근."
-- 차장: "전 구역 충격 대비. 하지만 선로는 비키지 않습니다."
+- 차장: "전 구역 충격 대비. 선로는 비키지 않습니다."
 
 ### Brake Lock Warning
 
 - 시스템: "위험: 제동 장치 재잠금."
-- 정비장: "잠금이 돌아옵니다. 지금 놓치면 다시 껍질부터 벗겨야 합니다."
+- 정비장: "잠금이 돌아옵니다. 지금 놓치면 닫힙니다."
 
 ### Last Rail Integrity Warning
 
 - 시스템: "경고: Last Rail 핵심 구획 손상."
-- 차장: "열차가 먼저 살아야 사람을 싣습니다. 방어선 재정렬."
+- 차장: "열차가 살아야 사람을 싣습니다. 방어선 재정렬."
 
 ## Final Stop
 
@@ -154,7 +154,7 @@ These are presentation beats inside one boss fight. Do not label them as separat
 ### Final Action
 
 - 시스템: "제동 장치 안정화 가능."
-- 통신 담당: "응답 신호가 늘고 있습니다. 아주 약하지만, 많습니다."
+- 통신 담당: "응답 신호가 늘고 있습니다."
 - 정비장: "엔진을 죽이지 말고 멈추십시오."
 - 차장: "지휘관님, 지금입니다."
 
@@ -163,7 +163,7 @@ These are presentation beats inside one boss fight. Do not label them as separat
 ### Immediate Clear
 
 - 시스템: "레이드 완료. 왕관 기관차 정지."
-- 정비장: "연료 코어 안정. 폭발 안 했습니다. 제 기준에서는 대성공입니다."
+- 정비장: "연료 코어 안정. 폭발은 없습니다."
 - 통신 담당: "방송이 끊겼습니다."
 - 차장: "아니요. 저쪽 방송이 끊긴 겁니다. 우리 신호는 계속 나갑니다."
 
@@ -193,7 +193,7 @@ These are presentation beats inside one boss fight. Do not label them as separat
 
 - 시스템: "연료 코어 폭주. 레이드 실패."
 - 정비장: "물러나야 합니다! 저 열은 못 버팁니다!"
-- 차장: "전 구획 후퇴. 사람을 살릴 수 있는 거리까지 빠집니다."
+- 차장: "전 구획 후퇴. 살릴 수 있는 거리까지 빠집니다."
 
 ### Boss Not Stopped
 
@@ -205,12 +205,12 @@ These are presentation beats inside one boss fight. Do not label them as separat
 
 - 시스템: "Last Rail 핵심 구획 손상. 레이드 실패."
 - 정비장: "엔진 보호막 나갔습니다. 여기서 더 맞으면 우리가 멈춥니다!"
-- 차장: "철수. 멈춰야 할 엔진은 저쪽이지만, 오늘은 우리가 먼저 살아야 합니다."
+- 차장: "철수. 오늘은 우리가 먼저 살아야 합니다."
 
 ### Refund UX Copy Candidates
 
-- 시스템: "스태미나가 반환되었습니다. 보스 격파 후 진행이 기록됩니다."
-- 시스템: "전술 철수 처리. 스태미나는 반환됩니다."
+- 시스템: "스태미나가 반환되었습니다."
+- 시스템: "보스를 멈추면 진행이 기록됩니다."
 - 차장: "후퇴는 끝이 아닙니다. 다시 멈추러 옵니다."
 
 ## Post-Mission Result Text
@@ -231,7 +231,7 @@ Last Rail은 왕관 기관차를 정지시켰다. 약탈왕의 방송은 끊겼�
 
 정지된 왕관 기관차 주변 노선에서 유지 자재와 경로 데이터를 회수했습니다.
 
-## Optional Codex / Archive Entry
+## Launch Codex / Archive Entry
 
 ### Title
 
@@ -250,6 +250,6 @@ Last Rail은 왕관 기관차를 정지시켰다. 약탈왕의 방송은 끊겼�
 - First clear reward language should align with recovered route records, freed support systems, and one-time preserved command data.
 - Repeat reward language should align with patrol, stabilization, and route data recovery, not pillage.
 - Captives and rescued specialists should never be described as purchased goods or owned rewards.
-- Boss state changes are presentation beats, not World Raid score phases.
-- Failure copy may mention stamina refund as launch UX, but should not promise reward amounts, settlement, ranking, or participation credit.
+- Boss state changes are presentation beats, not World Raid score stages.
+- Failure copy may mention stamina refund as launch UX, but should not promise reward amounts, claim success, settlement, ranking, or participation credit.
 - Optional objective language for prisoner cars, broadcast relay, supply cars, fuel core, or engine integrity belongs to future/backlog scoring and should not appear as launch raid objectives unless a later contract promotes it.
