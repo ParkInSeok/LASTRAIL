@@ -259,7 +259,7 @@ describe("game-api reward preview and claim contract", () => {
     });
   });
 
-  it("commits an active reward claim and writes economy ledger statements in one batch", async () => {
+  it("commits an active reward claim and writes currency and item ledger statements in one batch", async () => {
     const batchSql: string[] = [];
     const env = {
       ENVIRONMENT: "DEV",
@@ -287,6 +287,12 @@ describe("game-api reward preview and claim contract", () => {
                             source: "RUN_CLEAR",
                             adBonusEligible: true,
                           },
+                          {
+                            kind: "ITEM",
+                            id: "cur_command_ticket",
+                            quantity: 1,
+                            source: "FIRST_CLEAR",
+                          },
                         ],
                       }),
                       expires_at: Date.parse(ACTIVE_REWARD_PREVIEW_EXPIRES_AT),
@@ -300,6 +306,9 @@ describe("game-api reward preview and claim contract", () => {
                   }
                   if (sql.includes("FROM account_currencies")) {
                     return { balance: 100 };
+                  }
+                  if (sql.includes("FROM account_items")) {
+                    return { quantity: 2 };
                   }
                   return null;
                 },
@@ -339,6 +348,13 @@ describe("game-api reward preview and claim contract", () => {
           source: "RUN_CLEAR",
           balanceAfter: 1300,
         },
+        {
+          kind: "ITEM",
+          id: "cur_command_ticket",
+          quantity: 1,
+          source: "FIRST_CLEAR",
+          balanceAfter: 3,
+        },
       ],
       errorCode: null,
       message: null,
@@ -349,6 +365,8 @@ describe("game-api reward preview and claim contract", () => {
     expect(batchSql.join("\n")).toContain("INSERT INTO reward_transactions");
     expect(batchSql.join("\n")).toContain("INSERT INTO economy_transactions");
     expect(batchSql.join("\n")).toContain("INSERT INTO currency_ledger");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_items");
+    expect(batchSql.join("\n")).toContain("INSERT INTO item_ledger");
     expect(batchSql.join("\n")).toContain("UPDATE run_reward_previews");
     expect(batchSql.join("\n")).toContain("INSERT INTO idempotency_records");
   });

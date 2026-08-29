@@ -461,11 +461,17 @@ describe("game-api run finish local D1 smoke", () => {
     expect(previewRows[0]?.values.length).toBe(1);
     const rewardPlanJson = String(previewRows[0]?.values[0]?.[2]);
     const rewardPlan = JSON.parse(rewardPlanJson) as {
-      rewardLines: Array<{ source?: string }>;
+      rewardLines: Array<{ kind?: string; id?: string; quantity?: number; source?: string }>;
       calculation: { risk: string; firstClearEligible: boolean; firstClearApplied: boolean };
     };
     expect(rewardPlan.rewardLines.length).toBeGreaterThan(0);
     expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
+    expect(rewardPlan.rewardLines).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 1,
+      source: "FIRST_CLEAR",
+    });
     expect(rewardPlan.calculation.risk).toBe("III");
     expect(rewardPlan.calculation.firstClearEligible).toBe(true);
     expect(rewardPlan.calculation.firstClearApplied).toBe(true);
@@ -537,6 +543,43 @@ describe("game-api run finish local D1 smoke", () => {
     expect(db.exec("SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM progression_ledger WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([[1]]);
+
+    const claimResponse = await app.request(
+      `/v1/runs/run-smoke-1/reward-preview/${body.rewardPreviewId}/claim`,
+      {
+        method: "POST",
+        headers: { "Idempotency-Key": "run-reward-claim-ticket-smoke-idem-1" },
+        body: JSON.stringify({ runId: "run-smoke-1", rewardPreviewId: body.rewardPreviewId }),
+      },
+      createEnv(db),
+    );
+
+    expect(claimResponse.status).toBe(200);
+    await expect(claimResponse.json()).resolves.toMatchObject({
+      runId: "run-smoke-1",
+      rewardPreviewId: body.rewardPreviewId,
+      status: "CLAIMED",
+      rewardLines: expect.arrayContaining([
+        {
+          kind: "ITEM",
+          id: "cur_command_ticket",
+          quantity: 1,
+          source: "FIRST_CLEAR",
+          balanceAfter: 1,
+        },
+      ]),
+      errorCode: null,
+    });
+    expect(
+      db.exec(
+        "SELECT item_id, quantity FROM account_items WHERE account_id = 'account-smoke-1' AND item_id = 'cur_command_ticket';",
+      )[0]?.values,
+    ).toEqual([["cur_command_ticket", 1]]);
+    expect(
+      db.exec(
+        "SELECT item_id, delta, quantity_after, reason, source_type FROM item_ledger WHERE account_id = 'account-smoke-1' AND item_id = 'cur_command_ticket';",
+      )[0]?.values,
+    ).toEqual([["cur_command_ticket", 1, 1, "RUN_REWARD_ITEM_GRANT", "RUN_REWARD_CLAIM"]]);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();

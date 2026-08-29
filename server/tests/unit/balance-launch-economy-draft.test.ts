@@ -51,8 +51,8 @@ describe("launch economy balance draft contract", () => {
     ]);
   });
 
-  it("keeps launch gacha command ticket acquisition at 12 non-repeat candidate tickets", () => {
-    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.status).toBe("LAUNCH_CANDIDATE");
+  it("promotes launch gacha command ticket acquisition into server-owned first-clear reward config", () => {
+    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.status).toBe("LAUNCH_CONFIG");
     expect(launchEconomyBalanceDraft.gachaTicketAcquisition.totalNonRepeatTickets).toBe(12);
     expect(launchEconomyBalanceDraft.gachaTicketAcquisition.sources).toEqual([
       {
@@ -98,11 +98,32 @@ describe("launch economy balance draft contract", () => {
       ),
     ).toBe(12);
     expect(launchEconomyBalanceDraft.gachaTicketAcquisition.sources.every((source) => !source.repeatable)).toBe(true);
-    expect(launchRunRewardsConfig.operations.opn_03_water_stop.firstClearRewards).not.toContainEqual({
+    expect(launchRunRewardsConfig.operations.opn_03_water_stop.firstClearRewards).toContainEqual({
       kind: "ITEM",
       id: "cur_command_ticket",
       quantity: 1,
     });
+    expect(launchRunRewardsConfig.operations.opn_05_night_boarders.firstClearRewards).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 1,
+    });
+    expect(launchRunRewardsConfig.operations.opn_06_broken_line.firstClearRewards).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 2,
+    });
+    expect(launchRunRewardsConfig.operations.raid_raider_king_engine.firstClearRewards).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 3,
+    });
+    const ticketTotal = Object.values(launchRunRewardsConfig.operations).reduce((sum, operation) => (
+      sum + operation.firstClearRewards
+        .filter((line) => line.kind === "ITEM" && line.id === "cur_command_ticket")
+        .reduce((lineSum, line) => lineSum + line.quantity, 0)
+    ), 0);
+    expect(ticketTotal).toBe(7);
   });
 
   it("keeps draft offline hourly rewards separate from live offline reward config", () => {

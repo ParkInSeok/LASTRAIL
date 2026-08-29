@@ -132,7 +132,7 @@ export type LaunchEconomyBalanceDraft = {
   normalActOneRunBlockedRewardIds: string[];
   candidateOnlyRewardIds: string[];
   gachaTicketAcquisition: {
-    status: "LAUNCH_CANDIDATE";
+    status: "LAUNCH_CONFIG";
     totalNonRepeatTickets: 12;
     sources: Array<{
       sourceType: "LOGIN_BONUS" | "FIRST_CLEAR" | "STORY_RAID_FIRST_CLEAR";
@@ -296,6 +296,7 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
       ],
       firstClearRewards: [
         { kind: "CURRENCY", id: "cur_machine_parts", quantity: 160 },
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 1 },
       ],
     },
     opn_04_scrapstar_show: {
@@ -314,6 +315,7 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
       ],
       firstClearRewards: [
         { kind: "CURRENCY", id: "cur_tactical_data", quantity: 160 },
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 1 },
       ],
     },
     opn_06_broken_line: {
@@ -323,6 +325,7 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
       ],
       firstClearRewards: [
         { kind: "CURRENCY", id: "cur_special_core", quantity: 1 },
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 2 },
       ],
     },
     raid_raider_king_engine: {
@@ -332,6 +335,7 @@ export const launchRunRewardsConfig: RunRewardsConfig = {
       ],
       firstClearRewards: [
         { kind: "CURRENCY", id: "cur_special_core", quantity: 2 },
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 3 },
       ],
     },
   },
@@ -490,7 +494,7 @@ export const launchEconomyBalanceDraft: LaunchEconomyBalanceDraft = {
   normalActOneRunBlockedRewardIds: ["cur_command_ticket"],
   candidateOnlyRewardIds: ["cur_command_ticket_fragment", "cur_special_core"],
   gachaTicketAcquisition: {
-    status: "LAUNCH_CANDIDATE",
+    status: "LAUNCH_CONFIG",
     totalNonRepeatTickets: 12,
     sources: [
       {

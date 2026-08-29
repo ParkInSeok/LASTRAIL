@@ -232,7 +232,8 @@ function seedRaidRun(db: initSqlJs.Database, accountId: string): void {
 function seedGacha(db: initSqlJs.Database, accountId: string): void {
   db.run(
     `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
-     VALUES (?, 'cur_command_ticket', 12, ?);`,
+     VALUES (?, 'cur_command_ticket', 12, ?)
+     ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at;`,
     [accountId, fixedNow],
   );
   db.run(

@@ -83,6 +83,13 @@ type CurrencyRewardLine = {
   adBonusEligible?: boolean;
 };
 
+type ItemRewardLine = {
+  kind: "ITEM";
+  id: string;
+  quantity: number;
+  source?: string;
+};
+
 type AccountMutationSequenceRow = {
   sequence: number | null;
 };
@@ -507,6 +514,19 @@ function getCurrencyRewardLines(rewardPlanJson: string): CurrencyRewardLine[] {
     return candidate.kind === "CURRENCY"
       && typeof candidate.id === "string"
       && Object.hasOwn(currencyIdToD1Currency, candidate.id)
+      && typeof candidate.quantity === "number"
+      && Number.isSafeInteger(candidate.quantity)
+      && candidate.quantity > 0;
+  });
+}
+
+function getItemRewardLines(rewardPlanJson: string): ItemRewardLine[] {
+  return getRewardLines(rewardPlanJson).filter((line): line is ItemRewardLine => {
+    if (typeof line !== "object" || line === null) return false;
+    const candidate = line as Record<string, unknown>;
+    return candidate.kind === "ITEM"
+      && typeof candidate.id === "string"
+      && candidate.id.trim().length > 0
       && typeof candidate.quantity === "number"
       && Number.isSafeInteger(candidate.quantity)
       && candidate.quantity > 0;
@@ -3786,6 +3806,7 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
   const mutationId = createDomainId("mutation");
   const economyTransactionId = createDomainId("economy");
   const rewardLines = getCurrencyRewardLines(row.reward_plan_json);
+  const itemRewardLines = getItemRewardLines(row.reward_plan_json);
   const latestMutation = await c.env.DB.prepare(
     `SELECT MAX(sequence) AS sequence
      FROM account_mutations
@@ -3831,6 +3852,36 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
         `INSERT INTO currency_ledger (id, account_id, transaction_id, currency, delta, balance_after, created_at)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
       ).bind(ledgerId, accountId, economyTransactionId, currency, rewardLine.quantity, balanceAfter, now),
+    );
+    claimRewardLines.push({
+      kind: rewardLine.kind,
+      id: rewardLine.id,
+      quantity: rewardLine.quantity,
+      source: rewardLine.source,
+      balanceAfter,
+    });
+  }
+
+  for (const rewardLine of itemRewardLines) {
+    const current = await c.env.DB.prepare(
+      `SELECT quantity
+       FROM account_items
+       WHERE account_id = ? AND item_id = ?`,
+    )
+      .bind(accountId, rewardLine.id)
+      .first<AccountItemRow>();
+    const balanceAfter = (current?.quantity ?? 0) + rewardLine.quantity;
+    const itemLedgerId = createDomainId("item_ledger");
+    statements.push(
+      c.env.DB.prepare(
+        `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
+         VALUES (?, ?, ?, ?)
+         ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at`,
+      ).bind(accountId, rewardLine.id, balanceAfter, now),
+      c.env.DB.prepare(
+        `INSERT INTO item_ledger (id, account_id, mutation_id, item_id, delta, quantity_after, reason, source_type, source_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, 'RUN_REWARD_ITEM_GRANT', 'RUN_REWARD_CLAIM', ?, ?)`,
+      ).bind(itemLedgerId, accountId, mutationId, rewardLine.id, rewardLine.quantity, balanceAfter, rewardPreviewId, now),
     );
     claimRewardLines.push({
       kind: rewardLine.kind,

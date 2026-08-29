@@ -334,26 +334,25 @@ opn_06_broken_line               225             18             10          1180
 raid_raider_king_engine          360             28             16          1600
 ```
 
-Draft first-clear candidate rewards keep controlled items separate from live
-run reward config. The latest launch gacha ticket path is a candidate-only
-non-repeat plan:
+Launch first-clear reward config now includes the approved non-repeat command
+ticket path:
 
-- `opn_03_water_stop`: `cur_command_ticket x1` candidate only.
-- `opn_05_night_boarders`: `cur_command_ticket x1` candidate only.
+- `opn_03_water_stop`: `cur_command_ticket x1`.
+- `opn_05_night_boarders`: `cur_command_ticket x1`.
 - `opn_06_broken_line`: `cur_command_ticket x2` and `cur_special_core x1`
-  candidate only.
+  first clear.
 - `raid_raider_king_engine`: `cur_command_ticket x3` and
-  `cur_special_core x2` candidate only.
+  `cur_special_core x2` first clear.
 
 Together with `launch_login_bonus cur_command_ticket x5`, the Act 1 launch
-candidate path provides 12 non-repeat command tickets. These ticket candidates
-are not currently emitted by `calculateRunRewardPreview(...)`,
-`launchRunRewardsConfig`, D1 seed data, DEV balance config, or production
-economy values.
+path provides 12 non-repeat command tickets. The first-clear portion is emitted
+by `calculateRunRewardPreview(...)` as `ITEM` `FIRST_CLEAR` reward lines and is
+committed through `account_items`/`item_ledger` when the reward preview is
+claimed. Login bonus delivery remains a separate endpoint/state decision.
 
-These values are not final production economy values. Promoting them into
-server seed/config requires a separate explicit approval and compatibility
-smoke with Unity/Admin no-calculation boundaries.
+This is a local launch balance/config contract. Remote production seed/config
+deployment still requires separate explicit approval and compatibility smoke
+with Unity/Admin no-calculation boundaries.
 
 ## Run Finish Reward Preview Generation Contract
 
@@ -704,8 +703,8 @@ Next implementation candidates:
 ## Open Decisions
 
 - Exact base reward quantities per operation.
-- Whether the 12 non-repeat `cur_command_ticket` launch candidate path is
-  promoted into versioned run/login/raid milestone config.
+- Which login bonus endpoint/state table will deliver the remaining
+  `launch_login_bonus cur_command_ticket x5`.
 - Whether `cur_command_ticket_fragment` is kept out of launch rewards entirely
   or reserved for weekly/event/pass rewards.
 - Whether `SPECIAL_CORE` is repeatable at Risk IV/V or first-clear only.

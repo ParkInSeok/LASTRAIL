@@ -746,8 +746,8 @@ The draft pickup banner keeps:
 - `allowedPullCounts = [1, 10]`
 - all 10 Act 1 elite operator IDs in the elite operator pool
 
-Launch command ticket acquisition is a non-repeat candidate path, not a
-production seed promotion:
+Launch command ticket acquisition is a non-repeat local launch balance
+contract, not a remote production seed deployment:
 
 ```text
 source                         item                quantity  repeatable
@@ -758,11 +758,14 @@ opn_06_broken_line first       cur_command_ticket         2  no
 story raid first clear         cur_command_ticket         3  no
 ```
 
-Total non-repeat launch candidate supply is 12 `cur_command_ticket`. Normal
-offline repeat rewards must not include `cur_command_ticket` or
-`cur_command_ticket_fragment`. World Raid score, ranking, settlement, and event
-reward tickets are separate future scope and must not be mixed into the Act 1
-story/pickup banner launch fixture.
+Total non-repeat launch supply is 12 `cur_command_ticket`. The first-clear
+portion is emitted as server-owned `ITEM` reward lines from
+`launchRunRewardsConfig` and committed through `account_items`/`item_ledger`
+during reward claim. Normal offline repeat rewards must not include
+`cur_command_ticket`, `cur_command_ticket_fragment`, or `cur_special_core`.
+World Raid score, ranking, settlement, and event reward tickets are separate
+future scope and must not be mixed into the Act 1 story/pickup banner launch
+fixture.
 
 Local smoke uses this fixture as `gacha_banners.pool_snapshot_json` input and
 asserts the response keeps Unity-visible fields stable while not returning raw
@@ -772,8 +775,7 @@ tokens, secrets, or account shortcut data.
 Decision queue:
 
 - Final launch banner IDs, pickup rotation, and exact weight tuning.
-- Whether candidate-only economy draft values should ever be promoted to a
-  versioned balance config.
-- Whether the 12-ticket launch candidate path should be promoted into a
-  versioned seed/config after explicit approval and Unity/Admin compatibility
-  smoke.
+- Which login bonus endpoint/state table will deliver the remaining
+  `launch_login_bonus cur_command_ticket x5`.
+- Remote production seed/config deployment still requires explicit approval
+  and Unity/Admin compatibility smoke.

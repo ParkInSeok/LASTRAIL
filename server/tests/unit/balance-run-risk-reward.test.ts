@@ -99,6 +99,59 @@ describe("run risk reward balance contract", () => {
     expect(preview.calculation.operationProgressionMultiplierBps).toBe(12000);
   });
 
+  it("returns launch command tickets as first-clear item reward lines only on configured milestones", () => {
+    const op3 = calculateRunRewardPreview({
+      config: launchRunRewardsConfig,
+      operationId: "opn_03_water_stop",
+      actId: "act_01_wasteland_railway",
+      regionId: "region_wasteland_railway",
+      risk: "III",
+      outcome: "VICTORY",
+      clearedWaves: 15,
+      firstClearEligible: true,
+      integrityDisposition: "ALLOW",
+    });
+    const op6 = calculateRunRewardPreview({
+      config: launchRunRewardsConfig,
+      operationId: "opn_06_broken_line",
+      actId: "act_01_wasteland_railway",
+      regionId: "region_wasteland_railway",
+      risk: "III",
+      outcome: "VICTORY",
+      clearedWaves: 15,
+      firstClearEligible: true,
+      integrityDisposition: "ALLOW",
+    });
+    const repeatedOp6 = calculateRunRewardPreview({
+      config: launchRunRewardsConfig,
+      operationId: "opn_06_broken_line",
+      actId: "act_01_wasteland_railway",
+      regionId: "region_wasteland_railway",
+      risk: "III",
+      outcome: "VICTORY",
+      clearedWaves: 15,
+      firstClearEligible: false,
+      integrityDisposition: "ALLOW",
+    });
+
+    expect(op3.rewardLines).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 1,
+      source: "FIRST_CLEAR",
+    });
+    expect(op6.rewardLines).toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 2,
+      source: "FIRST_CLEAR",
+    });
+    expect(repeatedOp6.rewardLines).not.toContainEqual(expect.objectContaining({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+    }));
+  });
+
   it("rejects missing risk reward policy instead of guessing multipliers", () => {
     expect(() =>
       calculateRunRewardPreview({
