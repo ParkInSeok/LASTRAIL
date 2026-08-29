@@ -23,6 +23,16 @@ export type GoogleIdTokenVerifier = {
   verifyIdToken: (idToken: string, audiences: string[]) => Promise<GoogleIdentityClaims>;
 };
 
+export class GoogleIdTokenVerificationError extends Error {
+  readonly code: string;
+
+  constructor(code: string) {
+    super(code);
+    this.name = "GoogleIdTokenVerificationError";
+    this.code = code;
+  }
+}
+
 type GoogleVerifierOptions = {
   fetcher?: typeof fetch;
   jwksUrl?: string;
@@ -63,18 +73,18 @@ export function createGoogleIdTokenVerifier(options: GoogleVerifierOptions = {})
   return {
     async verifyIdToken(idToken, audiences) {
       const audienceSet = new Set(audiences.map((audience) => audience.trim()).filter((audience) => audience.length > 0));
-      if (audienceSet.size === 0) throw new Error("google_id_token_audience_missing");
+      if (audienceSet.size === 0) throw new GoogleIdTokenVerificationError("google_id_token_audience_missing");
 
       const parsed = parseJwt(idToken);
-      if (parsed === null) throw new Error("google_id_token_malformed");
-      if (parsed.header.alg !== "RS256") throw new Error("google_id_token_algorithm_invalid");
+      if (parsed === null) throw new GoogleIdTokenVerificationError("google_id_token_malformed");
+      if (parsed.header.alg !== "RS256") throw new GoogleIdTokenVerificationError("google_id_token_algorithm_invalid");
 
       const payload = parsed.payload;
-      if (!hasAcceptedAudience(payload.aud, audienceSet)) throw new Error("google_id_token_audience_invalid");
-      if (!GOOGLE_ID_TOKEN_ISSUERS.has(payload.iss)) throw new Error("google_id_token_issuer_invalid");
-      if (!Number.isSafeInteger(payload.exp) || payload.exp * 1000 <= nowMs()) throw new Error("google_id_token_expired");
+      if (!hasAcceptedAudience(payload.aud, audienceSet)) throw new GoogleIdTokenVerificationError("google_id_token_audience_invalid");
+      if (!GOOGLE_ID_TOKEN_ISSUERS.has(payload.iss)) throw new GoogleIdTokenVerificationError("google_id_token_issuer_invalid");
+      if (!Number.isSafeInteger(payload.exp) || payload.exp * 1000 <= nowMs()) throw new GoogleIdTokenVerificationError("google_id_token_expired");
       if (typeof payload.sub !== "string" || payload.sub.trim() === "" || payload.sub.length > 255) {
-        throw new Error("google_id_token_subject_invalid");
+        throw new GoogleIdTokenVerificationError("google_id_token_subject_invalid");
       }
 
       let jwks = await getCachedJwks();
@@ -83,7 +93,7 @@ export function createGoogleIdTokenVerifier(options: GoogleVerifierOptions = {})
         jwks = await fetchAndCacheJwks();
         jwk = jwks.keys.find((key) => key.kid === parsed.header.kid);
       }
-      if (jwk === undefined) throw new Error("google_id_token_key_not_found");
+      if (jwk === undefined) throw new GoogleIdTokenVerificationError("google_id_token_key_not_found");
 
       const key = await crypto.subtle.importKey(
         "jwk",
@@ -98,7 +108,7 @@ export function createGoogleIdTokenVerifier(options: GoogleVerifierOptions = {})
         parsed.signature,
         new TextEncoder().encode(parsed.signingInput),
       );
-      if (!verified) throw new Error("google_id_token_signature_invalid");
+      if (!verified) throw new GoogleIdTokenVerificationError("google_id_token_signature_invalid");
 
       const verifiedClaims: GoogleIdentityClaims = {
         subject: payload.sub,
@@ -119,9 +129,9 @@ export function createGoogleIdTokenVerifier(options: GoogleVerifierOptions = {})
   async function fetchAndCacheJwks(): Promise<GoogleJwks> {
     const now = nowMs();
     const response = await fetcher(jwksUrl);
-    if (!response.ok) throw new Error("google_jwks_unavailable");
+    if (!response.ok) throw new GoogleIdTokenVerificationError("google_jwks_unavailable");
     const parsed = await response.json() as unknown;
-    if (!isGoogleJwks(parsed)) throw new Error("google_jwks_invalid");
+    if (!isGoogleJwks(parsed)) throw new GoogleIdTokenVerificationError("google_jwks_invalid");
 
     cachedJwks = {
       keys: parsed.keys,

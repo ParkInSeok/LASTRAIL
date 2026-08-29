@@ -6,6 +6,7 @@ import app from "../../apps/game-api/src/index";
 import { launchRunRewardsConfig } from "../../packages/balance/src/index";
 
 type SqlValue = string | number | Uint8Array | null;
+const encoder = new TextEncoder();
 
 class SqlJsD1Statement {
   readonly sql: string;
@@ -104,12 +105,13 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
 function createEnv(
   db: initSqlJs.Database,
-  options: { failBatchSqlIncludes?: string } = {},
-): Env & { AUTH_SIGNING_KEY_CURRENT: string } {
+  options: { failBatchSqlIncludes?: string; googleAudiences?: string } = {},
+): Env & { AUTH_SIGNING_KEY_CURRENT: string; GOOGLE_AUTH_AUDIENCES?: string } {
   return {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     AUTH_SIGNING_KEY_CURRENT: authSecret,
+    GOOGLE_AUTH_AUDIENCES: options.googleAudiences,
     DB: new SqlJsD1Database(db, options) as unknown as D1Database,
   };
 }
@@ -124,6 +126,39 @@ function firstRow<T extends Record<string, unknown>>(db: initSqlJs.Database, sql
   const columns = result[0]?.columns ?? [];
   const values = result[0]?.values[0] ?? [];
   return Object.fromEntries(columns.map((column, index) => [column, values[index]])) as T;
+}
+
+async function createSignedGoogleIdToken(): Promise<string> {
+  const keyPair = await crypto.subtle.generateKey(
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256",
+    },
+    true,
+    ["sign", "verify"],
+  );
+  const header = { alg: "RS256", kid: "jwks-failure-key", typ: "JWT" };
+  const payload = {
+    iss: "https://accounts.google.com",
+    aud: "unit-google-client.apps.googleusercontent.com",
+    sub: "google-jwks-failure-subject",
+    exp: Math.floor((fixedNow + 60_000) / 1000),
+  };
+  const signingInput = `${base64UrlJson(header)}.${base64UrlJson(payload)}`;
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", keyPair.privateKey, encoder.encode(signingInput));
+  return `${signingInput}.${base64UrlEncode(new Uint8Array(signature))}`;
+}
+
+function base64UrlJson(value: unknown): string {
+  return base64UrlEncode(encoder.encode(JSON.stringify(value)));
+}
+
+function base64UrlEncode(bytes: Uint8Array): string {
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/u, "");
 }
 
 async function createGuest(env: Env): Promise<{ accountId: string; accessToken: string }> {
@@ -257,6 +292,54 @@ describe("game-api minimal ops error write integration", () => {
       expect(serializedLog).not.toContain("idToken");
       expect(serializedLog).not.toContain("Authorization");
     } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("writes a scrubbed ops error when Google JWKS verification is unavailable", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("raw-jwks-upstream-body", { status: 503 }));
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db, { googleAudiences: "unit-google-client.apps.googleusercontent.com" });
+      const idToken = await createSignedGoogleIdToken();
+
+      const response = await app.request(
+        "/v1/auth/google",
+        {
+          method: "POST",
+          headers: { "X-Request-Id": "req_google_jwks_unavailable_1" },
+          body: JSON.stringify({ idToken }),
+        },
+        env,
+      );
+
+      expect(response.status).toBe(503);
+      await expect(response.json()).resolves.toEqual({
+        errorCode: "google_auth_temporarily_unavailable",
+        message: "Google auth verification is temporarily unavailable.",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM ops_error_logs WHERE error_code = 'google_auth_verifier_unavailable';")).toBe(1);
+      expect(firstRow(db, "SELECT environment, service, severity, error_code, status, source, request_id, masked, retryable FROM ops_error_logs WHERE error_code = 'google_auth_verifier_unavailable';")).toEqual({
+        environment: "DEV",
+        service: "game_api",
+        severity: "error",
+        error_code: "google_auth_verifier_unavailable",
+        status: "open",
+        source: "game_api",
+        request_id: "req_google_jwks_unavailable_1",
+        masked: 1,
+        retryable: 1,
+      });
+      const serializedLog = JSON.stringify(db.exec("SELECT * FROM ops_error_logs;"));
+      expect(serializedLog).not.toContain(idToken);
+      expect(serializedLog).not.toContain("google-jwks-failure-subject");
+      expect(serializedLog).not.toContain("idToken");
+      expect(serializedLog).not.toContain("Authorization");
+      expect(serializedLog).not.toContain("raw-jwks-upstream-body");
+    } finally {
+      fetchSpy.mockRestore();
       vi.useRealTimers();
     }
   });

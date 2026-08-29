@@ -10,7 +10,7 @@ import {
   type RunOutcome,
   type RunRiskTier,
 } from "../../../packages/balance/src/index";
-import { createAccessToken, createGoogleIdTokenVerifier, hashRefreshToken, verifyAccessToken } from "./auth";
+import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificationError, hashRefreshToken, verifyAccessToken } from "./auth";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 
 const app = new Hono<{ Bindings: Env }>();
@@ -259,7 +259,7 @@ type GachaReplayResultRow = {
   duplicate_conversion_json: string | null;
 };
 
-type AuthFailureStatus = 400 | 401 | 403 | 409 | 500;
+type AuthFailureStatus = 400 | 401 | 403 | 409 | 500 | 503;
 
 type AuthFailure = {
   status: AuthFailureStatus;
@@ -1433,7 +1433,19 @@ async function verifyGoogleIdentity(c: GameApiContext, idToken: string): Promise
   let claims: GoogleIdentityClaims;
   try {
     claims = await verifier.verifyIdToken(idToken, audiences);
-  } catch {
+  } catch (error) {
+    if (error instanceof GoogleIdTokenVerificationError && error.code.startsWith("google_jwks_")) {
+      await writeGameApiOpsErrorLog(c, {
+        severity: "error",
+        errorCode: "google_auth_verifier_unavailable",
+        messageSummary: "Google auth verifier public keys are unavailable.",
+        context: {
+          verifierErrorCode: error.code,
+        },
+        retryable: true,
+      });
+      return createAuthFailure(503, "google_auth_temporarily_unavailable", "Google auth verification is temporarily unavailable.");
+    }
     return createAuthFailure(401, "google_id_token_invalid", "Google ID token is invalid.");
   }
 

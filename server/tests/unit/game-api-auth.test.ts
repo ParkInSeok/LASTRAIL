@@ -97,9 +97,10 @@ function createGoogleEnv(options: {
   verifierSubject?: string;
   idToken?: string;
   useDefaultVerifier?: boolean;
+  googleAudiences?: string;
 } = {}): TestEnv {
   const env = createEnv();
-  env.GOOGLE_AUTH_AUDIENCES = "unit-google-client.apps.googleusercontent.com";
+  env.GOOGLE_AUTH_AUDIENCES = options.googleAudiences ?? "unit-google-client.apps.googleusercontent.com";
   if (options.useDefaultVerifier !== true) {
     env.GOOGLE_ID_TOKEN_VERIFIER = {
       verifyIdToken: async (idToken, audiences) => {
@@ -155,7 +156,7 @@ function createGoogleEnv(options: {
   return env;
 }
 
-async function createSignedGoogleIdToken(payloadOverrides: Record<string, unknown> = {}) {
+async function createSignedGoogleIdToken(payloadOverrides: Record<string, unknown> = {}, headerOverrides: Record<string, unknown> = {}) {
   const keyPair = await crypto.subtle.generateKey(
     {
       name: "RSASSA-PKCS1-v1_5",
@@ -174,7 +175,7 @@ async function createSignedGoogleIdToken(payloadOverrides: Record<string, unknow
     exp: Math.floor((Date.now() + 60_000) / 1000),
     ...payloadOverrides,
   };
-  const signingInput = `${base64UrlJson({ alg: "RS256", kid: "default-verifier-key" })}.${base64UrlJson(payload)}`;
+  const signingInput = `${base64UrlJson({ alg: "RS256", kid: "default-verifier-key", ...headerOverrides })}.${base64UrlJson(payload)}`;
   const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", keyPair.privateKey, encoder.encode(signingInput));
   return {
     token: `${signingInput}.${base64UrlEncode(new Uint8Array(signature))}`,
@@ -332,6 +333,73 @@ describe("game-api auth", () => {
         },
       });
       expect(fetchSpy).toHaveBeenCalledWith("https://www.googleapis.com/oauth2/v3/certs");
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  });
+
+  it("keeps Google verifier config and invalid token failures stable without exposing verifier details", async () => {
+    const validFixture = await createSignedGoogleIdToken();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(validFixture.jwks), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=3600",
+      },
+    }));
+    try {
+      const emptyAudienceEnv = createGoogleEnv({
+        linkedAccountId: "account_google_1",
+        idToken: validFixture.token,
+        useDefaultVerifier: true,
+        googleAudiences: " , ,, ",
+      });
+      const emptyAudienceResponse = await app.request(
+        "/v1/auth/google",
+        {
+          method: "POST",
+          body: JSON.stringify({ idToken: validFixture.token }),
+        },
+        emptyAudienceEnv,
+      );
+      expect(emptyAudienceResponse.status).toBe(500);
+      await expect(emptyAudienceResponse.json()).resolves.toEqual({
+        errorCode: "google_auth_not_configured",
+        message: "Google auth verifier is not configured.",
+      });
+
+      const invalidCases = [
+        await createSignedGoogleIdToken({ aud: "evil-client.apps.googleusercontent.com" }),
+        await createSignedGoogleIdToken({ iss: "https://evil.example" }),
+        await createSignedGoogleIdToken({ exp: Math.floor((Date.now() - 60_000) / 1000) }),
+        await createSignedGoogleIdToken({}, { alg: "HS256" }),
+      ];
+      for (const fixture of invalidCases) {
+        const env = createGoogleEnv({
+          linkedAccountId: "account_google_1",
+          idToken: fixture.token,
+          useDefaultVerifier: true,
+        });
+        const response = await app.request(
+          "/v1/auth/google",
+          {
+            method: "POST",
+            body: JSON.stringify({ idToken: fixture.token }),
+          },
+          env,
+        );
+        expect(response.status).toBe(401);
+        const body = await response.json();
+        expect(body).toEqual({
+          errorCode: "google_id_token_invalid",
+          message: "Google ID token is invalid.",
+        });
+        const serializedBody = JSON.stringify(body);
+        expect(serializedBody).not.toContain(fixture.token);
+        expect(serializedBody).not.toContain("google_id_token_audience_invalid");
+        expect(serializedBody).not.toContain("google_id_token_issuer_invalid");
+        expect(serializedBody).not.toContain("google_id_token_expired");
+        expect(serializedBody).not.toContain("google_id_token_algorithm_invalid");
+      }
     } finally {
       fetchSpy.mockRestore();
     }

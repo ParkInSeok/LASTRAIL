@@ -63,6 +63,10 @@ Current direct-write scope:
 - `google_auth_config_missing`: `critical`, `game_api`, open. Written when the
   Google identity verifier or audience config is missing for
   `POST /v1/auth/google`.
+- `google_auth_verifier_unavailable`: `error`, `game_api`, open. Written when
+  the Google ID token verifier cannot fetch or parse Google's public keys
+  during `POST /v1/auth/google`. The player response remains the stable generic
+  `google_auth_temporarily_unavailable`.
 - `offline_reward_state_conflict`: `error`, `game_api`, open. Written when
   server-owned offline reward state is ahead of server time during
   `POST /v1/offline-rewards/claim`.
@@ -76,7 +80,7 @@ Current direct-write scope:
   update batch. It is reserved for server-owned story/unlock/progression state
   conflicts, not player-supplied story progress values.
 
-Both writes are fail-soft. If the ops log insert fails, the original player API
+These writes are fail-soft. If the ops log insert fails, the original player API
 response is preserved. Request bodies, raw Google tokens, Authorization headers,
 raw idempotency keys, RNG material, probability data, full weight tables, raw
 multiplier bps, and unrestricted stack traces are still not stored.

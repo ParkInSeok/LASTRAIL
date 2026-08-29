@@ -150,6 +150,10 @@ Current safe adapter boundary:
 - Rejects missing or unconfigured audiences.
 - Rejects unknown audience, unsupported issuer, expired token, missing subject,
   missing key id, unavailable JWKS, or invalid signature.
+- Player-facing invalid token failures use stable generic
+  `google_id_token_invalid` without exposing the internal verifier reason.
+- JWKS fetch/parse failures use `google_auth_temporarily_unavailable` and may
+  write a scrubbed `google_auth_verifier_unavailable` ops error for operations.
 - Returns only the Google `sub` as `subject` plus optional scrub-safe email
   fields for future use; route persistence continues to use only `subject`.
 

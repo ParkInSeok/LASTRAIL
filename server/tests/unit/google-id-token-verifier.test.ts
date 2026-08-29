@@ -71,6 +71,14 @@ function jsonResponse(body: unknown, cacheControl = "public, max-age=3600"): Res
 }
 
 describe("Google ID token verifier adapter", () => {
+  it("normalizes malformed inputs and empty audience lists to stable verifier errors", async () => {
+    const verifier = createGoogleIdTokenVerifier({ fetcher: async () => jsonResponse({ keys: [] }) });
+
+    await expect(verifier.verifyIdToken("not-a-jwt", ["unit-google-client.apps.googleusercontent.com"])).rejects.toThrow("google_id_token_malformed");
+    await expect(verifier.verifyIdToken("a.b.c", ["unit-google-client.apps.googleusercontent.com"])).rejects.toThrow("google_id_token_malformed");
+    await expect(verifier.verifyIdToken("a.b.c", ["", "   "])).rejects.toThrow("google_id_token_audience_missing");
+  });
+
   it("verifies Google-signed RS256 ID tokens against audience, issuer, expiry, and subject", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-08-25T09:46:40.000Z"));
@@ -136,6 +144,25 @@ describe("Google ID token verifier adapter", () => {
         subject: "google-subject-2",
       });
       expect(fetcher).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("reports stable verifier errors for unavailable or invalid JWKS responses without raw dumps", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-08-25T09:46:40.000Z"));
+    try {
+      const fixture = await createSignedGoogleIdToken();
+      const unavailableVerifier = createGoogleIdTokenVerifier({
+        fetcher: async () => new Response("raw-jwks-upstream-body", { status: 503 }),
+      });
+      const invalidVerifier = createGoogleIdTokenVerifier({
+        fetcher: async () => jsonResponse({ nope: [] }),
+      });
+
+      await expect(unavailableVerifier.verifyIdToken(fixture.token, ["unit-google-client.apps.googleusercontent.com"])).rejects.toThrow("google_jwks_unavailable");
+      await expect(invalidVerifier.verifyIdToken(fixture.token, ["unit-google-client.apps.googleusercontent.com"])).rejects.toThrow("google_jwks_invalid");
     } finally {
       vi.useRealTimers();
     }
