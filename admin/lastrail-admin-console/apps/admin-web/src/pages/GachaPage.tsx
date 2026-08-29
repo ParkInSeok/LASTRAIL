@@ -63,12 +63,34 @@ export const gachaLaunchTicketAcquisitionPolicy = {
   totalNonRepeatTickets: 12,
   costItemId: "cur_command_ticket",
   offlineRepeatIncludesCommandTicket: false,
+  excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
+  boundary: "launch candidate/draft, not production seed/config promotion",
   sources: [
-    { code: "launch_login_bonus", label: "launch login bonus", quantity: 5 },
-    { code: "opn_03_first_clear", label: "opn_03 first clear", quantity: 1 },
-    { code: "opn_05_first_clear", label: "opn_05 first clear", quantity: 1 },
-    { code: "opn_06_first_clear", label: "opn_06 first clear", quantity: 2 },
-    { code: "story_raid_first_clear", label: "story raid first clear", quantity: 3 }
+    { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
+    {
+      code: "opn_03_water_stop_first_clear",
+      label: "opn_03_water_stop first clear",
+      quantity: 1,
+      repeatable: false
+    },
+    {
+      code: "opn_05_night_boarders_first_clear",
+      label: "opn_05_night_boarders first clear",
+      quantity: 1,
+      repeatable: false
+    },
+    {
+      code: "opn_06_broken_line_first_clear",
+      label: "opn_06_broken_line first clear",
+      quantity: 2,
+      repeatable: false
+    },
+    {
+      code: "raid_raider_king_engine_story_raid_first_clear",
+      label: "raid_raider_king_engine story raid first clear",
+      quantity: 3,
+      repeatable: false
+    }
   ]
 } as const;
 
@@ -108,8 +130,11 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
     note: [
       `launch non-repeat total ${gachaLaunchTicketAcquisitionPolicy.totalNonRepeatTickets}`,
       `cost=${gachaLaunchTicketAcquisitionPolicy.costItemId}`,
-      ...gachaLaunchTicketAcquisitionPolicy.sources.map((source) => `${source.label} ${source.quantity}`),
-      "offline repeat reward excludes cur_command_ticket"
+      gachaLaunchTicketAcquisitionPolicy.boundary,
+      ...gachaLaunchTicketAcquisitionPolicy.sources.map(
+        (source) => `${source.label} ${source.quantity} repeatable=${source.repeatable}`
+      ),
+      `offline repeat reward excludes ${gachaLaunchTicketAcquisitionPolicy.excludedOfflineRepeatRewards.join(" / ")}`
     ].join(" / ")
   },
   {

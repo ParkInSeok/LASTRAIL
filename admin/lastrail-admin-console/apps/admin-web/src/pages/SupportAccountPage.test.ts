@@ -144,11 +144,24 @@ describe("SupportAccountPage configuration", () => {
       "guaranteeType",
       "duplicateConversion",
       "resultFields",
+      "ticketAcquisition",
       "actOneEliteVisualScope"
     ]);
     expect(supportGachaLaunchEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "pityThresholds")?.note).toContain(
       "draft/contract candidate"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "launch non-repeat total 12"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "opn_06_broken_line first clear 2 repeatable=false"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "offline repeat reward excludes cur_command_ticket / cur_command_ticket_fragment / cur_special_core"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "not production seed/config promotion"
     );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "TESTING_TUNING_DRAFT"

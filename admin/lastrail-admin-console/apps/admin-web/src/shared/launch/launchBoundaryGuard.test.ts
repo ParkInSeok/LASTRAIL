@@ -200,7 +200,19 @@ describe("launch read-only boundary guard", () => {
       "rail_choice_backlog"
     ]);
     expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
-      "login 5 + opn_03 1 + opn_05 1 + opn_06 2 + story raid 3"
+      "login bonus 5 repeatable=false + opn_03_water_stop first clear 1 repeatable=false"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "opn_05_night_boarders first clear 1 repeatable=false + opn_06_broken_line first clear 2 repeatable=false"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "raid_raider_king_engine story raid first clear 3 repeatable=false"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "offline repeat excludes cur_command_ticket / cur_command_ticket_fragment / cur_special_core"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "not production seed/config promotion"
     );
     expect(checklist.assertions.find((assertion) => assertion.code === "story_raid_policy")?.expected).toContain(
       "boss-only / 5 operators / failure stamina refund / boss defeat success"

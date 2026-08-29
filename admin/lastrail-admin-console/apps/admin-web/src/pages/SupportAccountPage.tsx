@@ -239,12 +239,25 @@ export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGac
       guaranteeType: "보장 발동",
       duplicateConversion: "중복 변환",
       resultFields: "결과 필드",
+      ticketAcquisition: "지휘권 획득처",
       actOneEliteVisualScope: "Act 1 정예 요원 10인"
     }[field] ?? field,
   value: "연동 대기",
   note:
     field === "pityThresholds"
       ? "rare 10 / elite 30 / pickup 60 draft/contract candidate"
+      : field === "ticketAcquisition"
+        ? [
+            `launch non-repeat total ${customerSupportGachaLaunchPolicy.ticketAcquisition.totalNonRepeatTickets}`,
+            `cost=${customerSupportGachaLaunchPolicy.ticketAcquisition.costItemId}`,
+            customerSupportGachaLaunchPolicy.ticketAcquisition.boundary,
+            ...customerSupportGachaLaunchPolicy.ticketAcquisition.sources.map(
+              (source) => `${source.label} ${source.quantity} repeatable=${source.repeatable}`
+            ),
+            `offline repeat reward excludes ${customerSupportGachaLaunchPolicy.ticketAcquisition.excludedOfflineRepeatRewards.join(
+              " / "
+            )}`
+          ].join(" / ")
       : field === "actOneEliteVisualScope"
         ? [
             customerSupportGachaLaunchPolicy.scopeStatus,
