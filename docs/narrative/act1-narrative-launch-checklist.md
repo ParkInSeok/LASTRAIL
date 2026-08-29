@@ -134,6 +134,7 @@ Ready when:
 
 - The result summarizes what happened in the story, not what the server awarded.
 - Reward framing describes source and mood only.
+- Reward framing uses the localization map's selected qualitative directions and avoids amount, claim, ownership, ticket, probability, and mutation language.
 - Story progress language stays narrative-level and does not promise unlock mutation, account state, or ledger state.
 
 ### Reward / Codex
@@ -269,7 +270,15 @@ Raid notes:
 - Do not use ordinary `first_wave` or `final_wave` slots.
 - Do not use World Raid score, rank, season, settlement, participation, or leaderboard slots.
 - Boss state transitions are presentation beats inside one encounter.
-- Refund copy is UX policy wording only and should not state amounts or claim results.
+- Recommended launch fixture uses one consolidated `failure_refund.toast` id for stamina return; alternate refund lines remain source-copy candidates unless a UI pass needs them.
+- Refund copy is UX policy wording only and should not state amounts, claim results, compensation, or server mutation details.
+
+## Launch Fixture Decisions
+
+- Reward framing: include first clear and repeat clear ids as qualitative flavor only.
+- Story raid failure refund: prefer one consolidated toast id, `narrative.raid_raider_king_engine.failure_refund.toast`, as localization planning rather than a Unity implementation requirement.
+- Optional objective copy: keep in source dialogue drafts but exclude from the launch fixture by default.
+- Raider King: keep as a title for launch; defer any personal name to a future narrative identity pass.
 
 ## Launch Self-Review Checklist
 
@@ -278,6 +287,9 @@ Before marking Act 1 narrative launch-ready:
 - All `opn_01` through `opn_06` documents include briefing, loading, battle callouts, result, reward framing, and launch codex/archive.
 - `raid_raider_king_engine` includes boss-only briefing, loading, boss entrance, state transitions, danger warnings, final stop, victory, failure, refund UX, result, reward framing, and launch codex/archive.
 - All launch narrative surfaces have stable string-id coverage in `act1-localization-string-id-map.md`.
+- Reward framing candidates follow the selected qualitative directions in the localization map.
+- Optional objective copy is not promoted into the launch fixture unless a later contract explicitly marks it presentation-only.
+- Raider King is treated as a title, not a named antagonist, for launch.
 - All 15 operators have profile/codex snippet, battle callouts, skill cue, and ultimate cue in `act1-operator-voice-guide.md`.
 - Active combat lines are short enough for mobile HUD use.
 - Ordinary 15-wave slots and story raid boss-only slots are not mixed.

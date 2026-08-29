@@ -96,6 +96,43 @@ Notes:
 - Optional-objective copy may remain in source dialogue drafts, but launch ids should only be promoted if the objective is presentation-only and not tied to scoring or reward contracts.
 - If a mission needs fewer player-visible lines on mobile, keep the id reserved but leave it out of the launch fixture rather than recycling the id for unrelated text.
 
+## Reward Framing Candidate Selection
+
+Recommended launch fixture status: include qualitative `reward_framing.first_clear` and `reward_framing.repeat_clear` ids for each ordinary operation and the story raid.
+
+These strings are flavor wrappers for result/reward presentation only. They must not be treated as reward source of truth, claim confirmation, ownership confirmation, economy mutation, pity progress, ticket grant, or server validation text.
+
+Ordinary operation candidates:
+
+| Mission id | First clear direction | Repeat clear direction |
+| --- | --- | --- |
+| `opn_01_last_departure` | Emergency cache left by the last station crew. | Remaining station supplies used for train upkeep. |
+| `opn_02_first_signal` | Preserved route intelligence and communication parts. | Residual parts and route data around the tower. |
+| `opn_03_water_stop` | Shared station supplies given after repair and protection. | Maintenance supplies gained through continued exchange. |
+| `opn_04_scrapstar_show` | Maintenance material and route data shared after captives are freed. | Tradeable parts and data recovered from the remaining market area. |
+| `opn_05_night_boarders` | Emergency gear and internal defense records organized after the boarding attack. | Maintenance supplies and defense data from carriage repair. |
+| `opn_06_broken_line` | Preserved cache tied to the broken route and prior crew records. | Maintenance material and route data around the temporary rail. |
+
+Story raid candidate:
+
+| Mission id | First clear direction | Repeat clear direction |
+| --- | --- | --- |
+| `raid_raider_king_engine` | Crown Engine command records, preserved route data, and freed support systems. | Maintenance material and route data around the stopped Crown Engine. |
+
+Allowed wording:
+
+- "recovered", "shared", "opened", "organized", "preserved", "route data", "maintenance supplies", "records", "parts".
+- Korean equivalents that frame source and mood without amount or entitlement.
+
+Forbidden wording:
+
+- Amounts, rates, pity progress, ticket counts, claim success, compensation, guaranteed reward, owned operator, ledger update, server-verified mutation, rank, settlement, score bracket, or season reward.
+
+Failure reward framing:
+
+- Ordinary operation failure should use failure result/callout text, not reward framing ids.
+- Story raid failure should use the dedicated refund UX ids below.
+
 ## Ordinary Operation Mission Ids
 
 | Mission id | Display title id | Required coverage status |
@@ -142,6 +179,7 @@ Required launch ids:
 | Failure | `narrative.raid_raider_king_engine.callout.failure_core_overload_001` through `failure_core_overload_003` |
 | Failure | `narrative.raid_raider_king_engine.callout.failure_boss_not_stopped_001` through `failure_boss_not_stopped_003` |
 | Failure | `narrative.raid_raider_king_engine.callout.failure_train_integrity_001` through `failure_train_integrity_003` |
+| Refund UX toast | `narrative.raid_raider_king_engine.failure_refund.toast` |
 | Refund UX | `narrative.raid_raider_king_engine.failure_refund.stamina_001` through `stamina_003` |
 | Result | `narrative.raid_raider_king_engine.result.title` and `result.summary` |
 | Reward framing | `narrative.raid_raider_king_engine.reward_framing.first_clear` and `reward_framing.repeat_clear` |
@@ -150,8 +188,39 @@ Required launch ids:
 Raid notes:
 
 - `raid_ui.success_condition` may say boss defeat/stopping the Crown Engine. It must not say score threshold, rank, settlement, or participation.
-- `failure_refund.stamina_*` may communicate stamina return. It must not promise reward amounts, compensation, ranking credit, or claim results.
+- Recommended launch fixture choice: use `failure_refund.toast` as the consolidated player-facing toast id for stamina return. Keep `failure_refund.stamina_*` as source-copy candidates only unless the UI needs multiple lines.
+- `failure_refund.toast` and `failure_refund.stamina_*` may communicate stamina return. They must not promise refund amount, compensation, ranking credit, claim success, or server mutation details.
 - State transition ids are presentation beats inside one boss fight, not combat phases or score stages.
+
+## Optional Objective Copy
+
+Recommended launch fixture status: exclude optional objective copy from the launch localization fixture.
+
+Rationale:
+
+- Optional objective lines in the mission drafts are useful for tone and future design continuity.
+- Launch scope does not require optional objective scoring, ranking, bonus rewards, or reward eligibility.
+- Keeping the lines in source drafts avoids losing writing work while preventing accidental fixture promotion.
+
+If a later presentation-only pass uses optional objective lines, ids should use a clearly non-rewarding segment:
+
+```text
+narrative.<mission_id>.presentation_optional.<slot>
+```
+
+Do not use `objective_bonus`, `score`, `rank`, `reward`, `settlement`, or eligibility language for these lines unless a future launch contract explicitly promotes that behavior.
+
+## Raider King Naming
+
+Recommended launch fixture status: keep Raider King as a title, not a named antagonist.
+
+Use title-based ids and copy:
+
+```text
+narrative.raid_raider_king_engine.antagonist.title
+```
+
+Do not add a personal name to launch localization fixtures. A named antagonist can be decided in a future narrative identity pass after Act 1 launch copy is stable.
 
 ## Operator Coverage
 
