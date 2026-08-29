@@ -201,7 +201,7 @@ These lines can appear near mechanical tutorial prompts.
 
 ### Body
 
-정비역의 공식 폐쇄 시각은 이미 지났지만, Last Rail은 즉시 출발하지 않았다. 지휘관은 엔진 기동을 유지하며 플랫폼의 생존자들을 더 태우는 선택을 했다. 이 결정으로 열차는 무거워졌고, 느려졌고, 더 지킬 가치가 생겼다.
+정비역의 공식 폐쇄 시각은 이미 지나 있었다. Last Rail은 엔진 기동을 유지한 채 플랫폼의 생존자들을 더 태웠다. 그 선택으로 열차는 무거워졌고, 느려졌고, 더 지킬 가치가 생겼다.
 
 ## Implementation Notes
 
