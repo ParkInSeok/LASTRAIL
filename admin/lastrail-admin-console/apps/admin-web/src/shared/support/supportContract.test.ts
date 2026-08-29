@@ -440,7 +440,29 @@ describe("supportContract", () => {
         concurrentUsers: null,
         concurrentUsersPrecision: "UNAVAILABLE"
       },
-      recentRuns: [{ runId: "run-1", operationId: "opn_01_last_departure", risk: "I", outcome: "VICTORY" }],
+      recentRuns: [
+        {
+          runId: "run-1",
+          operationId: "opn_01_last_departure",
+          risk: "I",
+          outcome: "VICTORY",
+          rewardPreviewId: "reward-preview-1",
+          serverPreviewMetadata: {
+            encounterType: "RAID_BOSS",
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossPhaseRefs: ["phase_01", "phase_02"],
+            startAugmentPackageRef: "augment_pkg_act1_raid_v1",
+            startTacticPackageRef: "tactic_pkg_act1_raid_v1",
+            contentVersion: "act1.content.001",
+            balanceVersion: "balance.dev.001",
+            allowedOperatorSlots: 5,
+            rawRng: "must-not-copy",
+            fullWeights: "must-not-copy",
+            animationTimeline: "must-not-copy"
+          }
+        }
+      ],
       runRewards: [{ rewardPreviewId: "reward-preview-1", rewardClaimId: "reward-claim-1", status: "CLAIMED" }],
       offlineReward: { stateSource: "account_offline_reward_state", latestClaimId: "offline-claim-1" },
       storyProgress: { highestStoryProgressId: "opn_01_last_departure", unlockedOperations: ["opn_02_first_signal"] },
@@ -514,6 +536,27 @@ describe("supportContract", () => {
       repairEnabled: false,
       mutationEndpointsEnabled: false
     });
+    expect(result.recentRuns).toEqual([
+      {
+        runId: "run-1",
+        operationId: "opn_01_last_departure",
+        risk: "I",
+        outcome: "VICTORY",
+        rewardPreviewId: "reward-preview-1",
+        startMetadata: {
+          encounterType: "RAID_BOSS",
+          raidId: "raid_raider_king_engine",
+          bossId: "boss_raider_king_engine",
+          bossPhaseRefs: ["phase_01", "phase_02"],
+          startAugmentPackageRef: "augment_pkg_act1_raid_v1",
+          startTacticPackageRef: "tactic_pkg_act1_raid_v1",
+          contentVersion: "act1.content.001",
+          balanceVersion: "balance.dev.001",
+          allowedOperatorSlots: "5",
+          source: "run_start"
+        }
+      }
+    ]);
     expect(result.opsErrors).toEqual([
       {
         errorLogId: "err-1",
@@ -549,6 +592,9 @@ describe("supportContract", () => {
     expect(JSON.stringify(result)).not.toContain("rawBody");
     expect(JSON.stringify(result)).not.toContain("stackDump");
     expect(JSON.stringify(result)).not.toContain("accessToken");
+    expect(JSON.stringify(result)).not.toContain("rawRng");
+    expect(JSON.stringify(result)).not.toContain("fullWeights");
+    expect(JSON.stringify(result)).not.toContain("animationTimeline");
   });
 
   it("maps null support summary response to placeholder fallback", () => {

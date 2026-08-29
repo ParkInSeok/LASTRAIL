@@ -39,6 +39,7 @@ import {
   customerSupportTemplateStatuses
 } from "../shared/support/supportContract";
 import type { SupportOpsErrorEvidence } from "../shared/support/supportContract";
+import type { SupportRecentRunEvidence } from "../shared/support/supportContract";
 
 type SupportCard = {
   code: string;
@@ -59,6 +60,17 @@ type SupportOpsErrorEvidenceRow = {
   messageSummary: string;
   correlations: string;
   links: string;
+};
+
+type SupportRecentRunEvidenceRow = {
+  id: string;
+  operation: string;
+  riskOutcome: string;
+  encounter: string;
+  raidRefs: string;
+  packageRefs: string;
+  versions: string;
+  rewardPreviewId: string;
 };
 
 function labelWithCode(label: string, code: string): string {
@@ -109,6 +121,46 @@ export function supportOpsErrorEvidenceRows(items: SupportOpsErrorEvidence[]): S
     correlations: correlationSummary(item.correlationIds),
     links: linkSummary(item.links)
   }));
+}
+
+function listSummary(values: string[]): string {
+  return values.length > 0 ? values.join(" / ") : "연동 대기";
+}
+
+export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]): SupportRecentRunEvidenceRow[] {
+  if (items.length === 0) {
+    return [
+      {
+        id: "연동 대기",
+        operation: "연동 대기",
+        riskOutcome: "연동 대기",
+        encounter: "연동 대기",
+        raidRefs: "연동 대기",
+        packageRefs: "server-authored run start package 연동 대기",
+        versions: "연동 대기",
+        rewardPreviewId: "연동 대기"
+      }
+    ];
+  }
+
+  return items.map((item) => {
+    const metadata = item.startMetadata;
+    return {
+      id: item.runId,
+      operation: item.operationId,
+      riskOutcome: `${item.risk} / ${item.outcome}`,
+      encounter:
+        metadata.encounterType === "연동 대기"
+          ? "연동 대기"
+          : labelWithCode(encounterTypeLabel(metadata.encounterType), metadata.encounterType),
+      raidRefs: `raidId=${metadata.raidId} / bossId=${metadata.bossId} / bossPhaseRefs=${listSummary(
+        metadata.bossPhaseRefs
+      )}`,
+      packageRefs: `startAugmentPackageRef=${metadata.startAugmentPackageRef} / startTacticPackageRef=${metadata.startTacticPackageRef} / source=${metadata.source}`,
+      versions: `contentVersion=${metadata.contentVersion} / balanceVersion=${metadata.balanceVersion} / allowedOperatorSlots=${metadata.allowedOperatorSlots}`,
+      rewardPreviewId: item.rewardPreviewId
+    };
+  });
 }
 
 export const supportCaseTypeCards: SupportCard[] = customerSupportCaseTypes.map((caseType) => ({
@@ -308,6 +360,7 @@ export function SupportAccountPage() {
   });
   const summary = query.data ?? emptySupportAccountSummary(accountId);
   const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors);
+  const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns);
 
   return (
     <main className="content">
@@ -440,6 +493,34 @@ export function SupportAccountPage() {
           <h2>출격/레이드 전투 근거</h2>
           <p>일반 15공세와 보스 전용 레이드를 분리하고 run start 패키지 근거만 읽기 전용으로 표시합니다</p>
         </header>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>runId</th>
+              <th>작전</th>
+              <th>위험도/결과</th>
+              <th>encounter</th>
+              <th>레이드 ref</th>
+              <th>시작 패키지 ref</th>
+              <th>버전/슬롯</th>
+              <th>rewardPreviewId</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentRunRows.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.operation}</td>
+                <td>{row.riskOutcome}</td>
+                <td>{row.encounter}</td>
+                <td>{row.raidRefs}</td>
+                <td>{row.packageRefs}</td>
+                <td>{row.versions}</td>
+                <td>{row.rewardPreviewId}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         <div className="metric-grid">
           {supportCombatEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">

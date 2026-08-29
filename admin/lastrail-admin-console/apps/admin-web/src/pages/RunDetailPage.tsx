@@ -53,7 +53,7 @@ type RunEncounterPlaceholder = {
 type RunCombatEvidencePlaceholder = {
   field: string;
   label: string;
-  value: "연동 대기" | "run_start";
+  value: string;
   note: string;
 };
 
@@ -177,6 +177,77 @@ export const forbiddenRunCombatEvidenceExamplesOutOfScope = [
   "hit-stop",
   "debug payload"
 ] as const;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function stringValue(value: unknown): string {
+  return typeof value === "string" && value.length > 0 ? value : "연동 대기";
+}
+
+function nullableStringValue(value: unknown): string {
+  if (typeof value === "number") return String(value);
+  return stringValue(value);
+}
+
+function stringListValue(value: unknown): string {
+  if (!Array.isArray(value)) return "연동 대기";
+  const values = value.filter((item): item is string => typeof item === "string" && item.length > 0);
+  return values.length > 0 ? values.join(" / ") : "연동 대기";
+}
+
+function startMetadataRecord(source: unknown): Record<string, unknown> | null {
+  const record = asRecord(source);
+  return asRecord(record?.serverPreviewMetadata) ?? asRecord(record?.metadata) ?? record;
+}
+
+export function runStartMetadataEvidenceFrom(source: unknown): RunCombatEvidencePlaceholder[] {
+  const metadata = startMetadataRecord(source);
+  const encounterType = stringValue(metadata?.encounterType);
+  const encounterValue =
+    encounterType === "연동 대기" ? encounterType : labelWithCode(encounterTypeLabel(encounterType), encounterType);
+
+  return [
+    {
+      field: "encounterType",
+      label: "Encounter 유형",
+      value: encounterValue,
+      note: `${encounterTypeLabel("ORDINARY_15_WAVE")} / ${encounterTypeLabel("RAID_BOSS")} / ORDINARY_15_WAVE / RAID_BOSS`
+    },
+    { field: "raidId", label: "레이드 ID", value: stringValue(metadata?.raidId), note: "boss-only raid reference" },
+    { field: "bossId", label: "보스 ID", value: stringValue(metadata?.bossId), note: "boss-only encounter reference" },
+    {
+      field: "bossPhaseRefs",
+      label: "보스 페이즈 ref",
+      value: stringListValue(metadata?.bossPhaseRefs),
+      note: "raid boss phase references"
+    },
+    {
+      field: "startAugmentPackageRef",
+      label: "시작 증강 패키지 ref",
+      value: stringValue(metadata?.startAugmentPackageRef),
+      note:
+        "server-authored run start package / ORDINARY_15_WAVE / RAID_BOSS 공통 후보 / reward/economy/story/offline/gacha Source of Truth 아님"
+    },
+    {
+      field: "startTacticPackageRef",
+      label: "시작 전술 패키지 ref",
+      value: stringValue(metadata?.startTacticPackageRef),
+      note:
+        "server-authored run start package / ORDINARY_15_WAVE / RAID_BOSS 공통 후보 / reward/economy/story/offline/gacha Source of Truth 아님"
+    },
+    { field: "contentVersion", label: "콘텐츠 버전", value: stringValue(metadata?.contentVersion), note: "server preview metadata" },
+    { field: "balanceVersion", label: "밸런스 버전", value: stringValue(metadata?.balanceVersion), note: "server preview metadata" },
+    {
+      field: "allowedOperatorSlots",
+      label: "허용 요원 슬롯",
+      value: nullableStringValue(metadata?.allowedOperatorSlots),
+      note: "nullable/candidate allowed operator slots"
+    },
+    { field: "source", label: "근거 소스", value: "run_start", note: "source=run_start read-only evidence" }
+  ];
+}
 
 export const storyProgressReadContractPlaceholders: StoryProgressReadContractPlaceholder[] = [
   { label: "계정 ID", field: "accountId", value: "연동 대기", note: "story progress detail 조회 기준" },
@@ -347,6 +418,7 @@ export function RunDetailPage() {
   const storyProgressCards = storyProgressQuery.data
     ? storyProgressDetailToReadContractPlaceholders(storyProgressQuery.data)
     : storyProgressReadContractPlaceholders;
+  const startMetadataCards = runStartMetadataEvidenceFrom(run);
 
   return (
     <main className="content">
@@ -479,7 +551,7 @@ export function RunDetailPage() {
           ))}
         </div>
         <div className="metric-grid">
-          {runStartPackageEvidencePlaceholders.map((placeholder) => (
+          {startMetadataCards.map((placeholder) => (
             <div key={placeholder.field} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

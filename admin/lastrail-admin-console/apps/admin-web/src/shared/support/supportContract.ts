@@ -198,6 +198,28 @@ export type SupportOpsErrorEvidence = {
   links: SupportOpsErrorLink[];
 };
 
+export type SupportRecentRunStartMetadata = {
+  encounterType: string;
+  raidId: string;
+  bossId: string;
+  bossPhaseRefs: string[];
+  startAugmentPackageRef: string;
+  startTacticPackageRef: string;
+  contentVersion: string;
+  balanceVersion: string;
+  allowedOperatorSlots: string;
+  source: "run_start";
+};
+
+export type SupportRecentRunEvidence = {
+  runId: string;
+  operationId: string;
+  risk: string;
+  outcome: string;
+  rewardPreviewId: string;
+  startMetadata: SupportRecentRunStartMetadata;
+};
+
 export type SupportAccountSummary = {
   permission: "SUPPORT_READ";
   permissionMode: "ROLE_PERMISSION";
@@ -210,6 +232,7 @@ export type SupportAccountSummary = {
     providerOrder: readonly ["GOOGLE", "GUEST"];
     items: SupportAuthSessionItem[];
   };
+  recentRuns: SupportRecentRunEvidence[];
   opsErrors: SupportOpsErrorEvidence[];
   sections: SupportSummarySection[];
   supportContext: {
@@ -1061,6 +1084,50 @@ function supportOpsErrorEvidenceList(value: unknown): SupportOpsErrorEvidence[] 
   return value.map(supportOpsErrorEvidence).filter((item): item is SupportOpsErrorEvidence => Boolean(item));
 }
 
+function stringListValue(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string" && item.length > 0);
+}
+
+function nullableStringValue(value: unknown): string {
+  if (typeof value === "number") return String(value);
+  return stringValue(value);
+}
+
+function supportRunStartMetadata(record: Record<string, unknown>): SupportRecentRunStartMetadata {
+  const metadata = asRecord(record.serverPreviewMetadata) ?? asRecord(record.metadata) ?? {};
+  return {
+    encounterType: stringValue(metadata.encounterType),
+    raidId: stringValue(metadata.raidId),
+    bossId: stringValue(metadata.bossId),
+    bossPhaseRefs: stringListValue(metadata.bossPhaseRefs),
+    startAugmentPackageRef: stringValue(metadata.startAugmentPackageRef),
+    startTacticPackageRef: stringValue(metadata.startTacticPackageRef),
+    contentVersion: stringValue(metadata.contentVersion),
+    balanceVersion: stringValue(metadata.balanceVersion),
+    allowedOperatorSlots: nullableStringValue(metadata.allowedOperatorSlots),
+    source: "run_start"
+  };
+}
+
+function supportRecentRunEvidence(value: unknown): SupportRecentRunEvidence | null {
+  const record = asRecord(value);
+  if (!record) return null;
+  return {
+    runId: stringValue(record.runId),
+    operationId: stringValue(record.operationId),
+    risk: stringValue(record.risk),
+    outcome: stringValue(record.outcome),
+    rewardPreviewId: stringValue(record.rewardPreviewId),
+    startMetadata: supportRunStartMetadata(record)
+  };
+}
+
+function supportRecentRunEvidenceList(value: unknown): SupportRecentRunEvidence[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(supportRecentRunEvidence).filter((item): item is SupportRecentRunEvidence => Boolean(item));
+}
+
 export function emptySupportAccountSummary(accountId = "연동 대기"): SupportAccountSummary {
   return {
     permission: "SUPPORT_READ",
@@ -1074,6 +1141,7 @@ export function emptySupportAccountSummary(accountId = "연동 대기"): Support
       providerOrder: accountAuthProviderDisplayOrder,
       items: authSessionItems(null)
     },
+    recentRuns: [],
     opsErrors: [],
     sections: customerSupportSummarySectionCodes.map((code) => ({
       code,
@@ -1109,6 +1177,7 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
       providerOrder: accountAuthProviderDisplayOrder,
       items: authSessionItems(auth)
     },
+    recentRuns: supportRecentRunEvidenceList(record.recentRuns),
     opsErrors: supportOpsErrorEvidenceList(record.opsErrors),
     sections: customerSupportSummarySectionCodes.map((code) => {
       if (code === "account") return sectionFrom(code, account);

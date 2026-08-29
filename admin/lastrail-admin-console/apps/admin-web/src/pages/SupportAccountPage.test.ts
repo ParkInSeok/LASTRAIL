@@ -16,7 +16,8 @@ import {
   supportResponseTemplateCards,
   supportSafeSnippetCards,
   supportSuggestionCards,
-  supportOpsErrorEvidenceRows
+  supportOpsErrorEvidenceRows,
+  supportRecentRunEvidenceRows
 } from "./SupportAccountPage";
 
 describe("SupportAccountPage configuration", () => {
@@ -308,6 +309,55 @@ describe("SupportAccountPage configuration", () => {
     expect(serialized).not.toContain("raw auth header");
     expect(serialized).not.toContain("stack dump");
     expect(serialized).not.toContain("animation timeline");
+  });
+
+  it("formats support recent runs with server start metadata without raw combat internals", () => {
+    const rows = supportRecentRunEvidenceRows([
+      {
+        runId: "run-raid-1",
+        operationId: "raid_raider_king_engine",
+        risk: "V",
+        outcome: "VICTORY",
+        rewardPreviewId: "reward-preview-raid-1",
+        startMetadata: {
+          encounterType: "RAID_BOSS",
+          raidId: "raid_raider_king_engine",
+          bossId: "boss_raider_king_engine",
+          bossPhaseRefs: ["phase_01", "phase_02"],
+          startAugmentPackageRef: "augment_pkg_act1_raid_v1",
+          startTacticPackageRef: "tactic_pkg_act1_raid_v1",
+          contentVersion: "act1.content.001",
+          balanceVersion: "balance.dev.001",
+          allowedOperatorSlots: "5",
+          source: "run_start"
+        }
+      }
+    ]);
+
+    expect(rows).toEqual([
+      {
+        id: "run-raid-1",
+        operation: "raid_raider_king_engine",
+        riskOutcome: "V / VICTORY",
+        encounter: "보스 전용 레이드 (RAID_BOSS)",
+        raidRefs: "raidId=raid_raider_king_engine / bossId=boss_raider_king_engine / bossPhaseRefs=phase_01 / phase_02",
+        packageRefs:
+          "startAugmentPackageRef=augment_pkg_act1_raid_v1 / startTacticPackageRef=tactic_pkg_act1_raid_v1 / source=run_start",
+        versions: "contentVersion=act1.content.001 / balanceVersion=balance.dev.001 / allowedOperatorSlots=5",
+        rewardPreviewId: "reward-preview-raid-1"
+      }
+    ]);
+
+    const fallbackRows = supportRecentRunEvidenceRows([]);
+    expect(fallbackRows[0].encounter).toBe("연동 대기");
+    expect(fallbackRows[0].packageRefs).toContain("server-authored run start package");
+
+    const serialized = JSON.stringify(rows);
+    expect(serialized).not.toContain("raw RNG");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("animation timeline");
+    expect(serialized).not.toContain("token");
   });
 
   it("prepares escalation placeholders without write actions", () => {

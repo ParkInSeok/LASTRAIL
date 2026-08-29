@@ -6,6 +6,7 @@ import {
   raidBossResultPlaceholders,
   storyProgressDetailToReadContractPlaceholders,
   raidNarrativeObjectivePlaceholders,
+  runStartMetadataEvidenceFrom,
   runStartPackageEvidencePlaceholders,
   runRiskRewardPlaceholders,
   runStoryNarrativePlaceholders,
@@ -237,5 +238,55 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(serialized).not.toContain("reprocess");
     expect(serialized).not.toContain("result edit");
     expect(serialized).not.toContain("reward correction");
+  });
+
+  it("maps server-authored raid start metadata into read-only run detail cards", () => {
+    const cards = runStartMetadataEvidenceFrom({
+      serverPreviewMetadata: {
+        encounterType: "RAID_BOSS",
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["phase_01", "phase_02"],
+        startAugmentPackageRef: "augment_pkg_act1_raid_v1",
+        startTacticPackageRef: "tactic_pkg_act1_raid_v1",
+        contentVersion: "act1.content.001",
+        balanceVersion: "balance.dev.001",
+        allowedOperatorSlots: null,
+        rawRng: "must-not-copy",
+        animationTimeline: "must-not-copy",
+        token: "must-not-copy"
+      }
+    });
+
+    expect(cards.map((card) => [card.field, card.value])).toEqual([
+      ["encounterType", "보스 전용 레이드 / RAID_BOSS"],
+      ["raidId", "raid_raider_king_engine"],
+      ["bossId", "boss_raider_king_engine"],
+      ["bossPhaseRefs", "phase_01 / phase_02"],
+      ["startAugmentPackageRef", "augment_pkg_act1_raid_v1"],
+      ["startTacticPackageRef", "tactic_pkg_act1_raid_v1"],
+      ["contentVersion", "act1.content.001"],
+      ["balanceVersion", "balance.dev.001"],
+      ["allowedOperatorSlots", "연동 대기"],
+      ["source", "run_start"]
+    ]);
+    expect(cards.find((card) => card.field === "startAugmentPackageRef")?.note).toContain(
+      "server-authored run start package"
+    );
+    expect(cards.find((card) => card.field === "encounterType")?.note).toContain("ORDINARY_15_WAVE / RAID_BOSS");
+
+    const serialized = JSON.stringify(cards);
+    expect(serialized).not.toContain("must-not-copy");
+    expect(serialized).not.toContain("rawRng");
+    expect(serialized).not.toContain("animationTimeline");
+    expect(serialized).not.toContain("token");
+  });
+
+  it("keeps run start metadata fail-soft for older run detail responses", () => {
+    const cards = runStartMetadataEvidenceFrom({});
+
+    expect(cards.find((card) => card.field === "encounterType")?.value).toBe("연동 대기");
+    expect(cards.find((card) => card.field === "bossPhaseRefs")?.value).toBe("연동 대기");
+    expect(cards.find((card) => card.field === "source")?.value).toBe("run_start");
   });
 });
