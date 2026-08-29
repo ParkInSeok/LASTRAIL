@@ -82,7 +82,7 @@ Duplicate finish replay must not recalculate, reapply, or regress story progress
     "opn_04_scrapstar_show"
   ],
   "narrative": {
-    "narrativeVersion": "act1.2026-08-27.001",
+    "narrativeVersion": "act1.2026-08-30.001",
     "contentStatus": "draft_exists",
     "localizationStatus": "localization_pending",
     "fixtureStatus": "fixture_pending",
@@ -114,7 +114,7 @@ If an account has no story progress row yet, return stable default state rather 
     "opn_01_last_departure"
   ],
   "narrative": {
-    "narrativeVersion": "act1.2026-08-27.001",
+    "narrativeVersion": "act1.2026-08-30.001",
     "contentStatus": "draft_exists",
     "localizationStatus": "localization_pending",
     "fixtureStatus": "fixture_pending",
@@ -166,7 +166,7 @@ If a dedicated permission is not ready, use an existing read-only support/admin 
   "highestStoryProgressId": "opn_03_water_stop",
   "highestClearedOperationId": "opn_03_water_stop",
   "order": 3,
-  "narrativeVersion": "act1.2026-08-27.001",
+  "narrativeVersion": "act1.2026-08-30.001",
   "contentStatus": "draft_exists",
   "localizationStatus": "localization_pending",
   "fixtureStatus": "fixture_pending",
@@ -207,7 +207,7 @@ If a dedicated permission is not ready, use an existing read-only support/admin 
     ]
   },
   "narrative": {
-    "narrativeVersion": "act1.2026-08-27.001",
+    "narrativeVersion": "act1.2026-08-30.001",
     "contentStatus": "draft_exists",
     "localizationStatus": "localization_pending",
     "fixtureStatus": "fixture_pending",

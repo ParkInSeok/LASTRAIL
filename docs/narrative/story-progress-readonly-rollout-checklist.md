@@ -97,7 +97,7 @@ Display labels:
 ## Shared Act 1 Defaults
 
 - `actId`: `act_01`
-- `narrativeVersion`: `act1.2026-08-27.001`
+- `narrativeVersion`: `act1.2026-08-30.001`
 - empty progress id: `none`
 - empty progress order: `0`
 - first unlock candidate: `opn_01_last_departure`
