@@ -105,7 +105,7 @@ describe("GachaPage configuration", () => {
         }
       ],
       firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-      loginBonusTickets: { quantity: 5, state: "pending_endpoint_state_table" }
+      loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" }
     });
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
       "launch non-repeat total 12"
@@ -126,7 +126,7 @@ describe("GachaPage configuration", () => {
       "first-clear 7 promoted_local_launch_config"
     );
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
-      "login bonus 5 pending_endpoint_state_table"
+      "login bonus 5 game_api_claim_committed_admin_read_pending"
     );
   });
 

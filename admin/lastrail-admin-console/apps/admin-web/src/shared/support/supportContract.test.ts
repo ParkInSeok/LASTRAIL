@@ -219,7 +219,7 @@ describe("supportContract", () => {
         }
       ],
       firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-      loginBonusTickets: { quantity: 5, state: "pending_endpoint_state_table" }
+      loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" }
     });
     expect(customerSupportGachaLaunchPolicy.resultFields).toEqual([
       "pullSequence",

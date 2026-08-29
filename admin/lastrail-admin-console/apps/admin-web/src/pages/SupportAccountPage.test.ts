@@ -167,7 +167,7 @@ describe("SupportAccountPage configuration", () => {
       "first-clear 7 promoted_local_launch_config"
     );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
-      "login bonus 5 pending_endpoint_state_table"
+      "login bonus 5 game_api_claim_committed_admin_read_pending"
     );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "TESTING_TUNING_DRAFT"

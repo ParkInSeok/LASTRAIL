@@ -325,7 +325,7 @@ export type CustomerSupportContractPreview = {
       };
       loginBonusTickets: {
         quantity: 5;
-        state: "pending_endpoint_state_table";
+        state: "game_api_claim_committed_admin_read_pending";
       };
       sources: ReadonlyArray<{
         code: string;
@@ -570,7 +570,7 @@ export const customerSupportGachaLaunchPolicy = {
     excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
     boundary: "launch candidate/draft, not production seed/config promotion",
     firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-    loginBonusTickets: { quantity: 5, state: "pending_endpoint_state_table" },
+    loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" },
     sources: [
       { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
       {
