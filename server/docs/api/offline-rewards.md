@@ -779,6 +779,10 @@ Resource safety:
 - Default offline reward lines exclude `cur_special_core`.
 - Default offline reward lines exclude `cur_command_ticket`.
 - Default offline reward lines exclude `cur_command_ticket_fragment` for launch.
+- Act 1 gacha ticket acquisition is separate non-repeat launch candidate scope:
+  login bonus 5, `opn_03` first clear 1, `opn_05` first clear 1, `opn_06`
+  first clear 2, and story raid first clear 3. Offline repeat preview/claim
+  must not provide those tickets.
 
 Parser safety:
 

@@ -334,11 +334,22 @@ opn_06_broken_line               225             18             10          1180
 raid_raider_king_engine          360             28             16          1600
 ```
 
-Draft first-clear candidate rewards keep controlled items separate:
+Draft first-clear candidate rewards keep controlled items separate from live
+run reward config. The latest launch gacha ticket path is a candidate-only
+non-repeat plan:
 
-- `opn_04_scrapstar_show`: `cur_command_ticket_fragment x1` candidate only.
-- `opn_06_broken_line`: `cur_special_core x1` candidate only.
-- `raid_raider_king_engine`: `cur_special_core x2` candidate only.
+- `opn_03_water_stop`: `cur_command_ticket x1` candidate only.
+- `opn_05_night_boarders`: `cur_command_ticket x1` candidate only.
+- `opn_06_broken_line`: `cur_command_ticket x2` and `cur_special_core x1`
+  candidate only.
+- `raid_raider_king_engine`: `cur_command_ticket x3` and
+  `cur_special_core x2` candidate only.
+
+Together with `launch_login_bonus cur_command_ticket x5`, the Act 1 launch
+candidate path provides 12 non-repeat command tickets. These ticket candidates
+are not currently emitted by `calculateRunRewardPreview(...)`,
+`launchRunRewardsConfig`, D1 seed data, DEV balance config, or production
+economy values.
 
 These values are not final production economy values. Promoting them into
 server seed/config requires a separate explicit approval and compatibility
@@ -688,8 +699,10 @@ Next implementation candidates:
 ## Open Decisions
 
 - Exact base reward quantities per operation.
-- Whether `cur_command_ticket_fragment` is allowed in launch run rewards.
-- Whether any full `cur_command_ticket` can be granted outside pass/event/shop.
+- Whether the 12 non-repeat `cur_command_ticket` launch candidate path is
+  promoted into versioned run/login/raid milestone config.
+- Whether `cur_command_ticket_fragment` is kept out of launch rewards entirely
+  or reserved for weekly/event/pass rewards.
 - Whether `SPECIAL_CORE` is repeatable at Risk IV/V or first-clear only.
 - Whether abandoned runs give zero reward or a capped checkpoint reward.
 - Whether item reward lines are needed before item-ledger claim support lands.

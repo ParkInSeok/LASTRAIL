@@ -131,6 +131,17 @@ export type LaunchEconomyBalanceDraft = {
   offlineRepeatBlockedRewardIds: string[];
   normalActOneRunBlockedRewardIds: string[];
   candidateOnlyRewardIds: string[];
+  gachaTicketAcquisition: {
+    status: "LAUNCH_CANDIDATE";
+    totalNonRepeatTickets: 12;
+    sources: Array<{
+      sourceType: "LOGIN_BONUS" | "FIRST_CLEAR" | "STORY_RAID_FIRST_CLEAR";
+      sourceId: string;
+      itemId: "cur_command_ticket";
+      quantity: number;
+      repeatable: false;
+    }>;
+  };
 };
 
 export type GachaResultRarity = "COMMON" | "RARE" | "ELITE";
@@ -478,6 +489,47 @@ export const launchEconomyBalanceDraft: LaunchEconomyBalanceDraft = {
   ],
   normalActOneRunBlockedRewardIds: ["cur_command_ticket"],
   candidateOnlyRewardIds: ["cur_command_ticket_fragment", "cur_special_core"],
+  gachaTicketAcquisition: {
+    status: "LAUNCH_CANDIDATE",
+    totalNonRepeatTickets: 12,
+    sources: [
+      {
+        sourceType: "LOGIN_BONUS",
+        sourceId: "launch_login_bonus",
+        itemId: "cur_command_ticket",
+        quantity: 5,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_03_water_stop",
+        itemId: "cur_command_ticket",
+        quantity: 1,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_05_night_boarders",
+        itemId: "cur_command_ticket",
+        quantity: 1,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_06_broken_line",
+        itemId: "cur_command_ticket",
+        quantity: 2,
+        repeatable: false,
+      },
+      {
+        sourceType: "STORY_RAID_FIRST_CLEAR",
+        sourceId: "raid_raider_king_engine",
+        itemId: "cur_command_ticket",
+        quantity: 3,
+        repeatable: false,
+      },
+    ],
+  },
 };
 
 export const launchGachaDataDraft: LaunchGachaDataDraft = {

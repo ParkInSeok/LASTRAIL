@@ -51,6 +51,60 @@ describe("launch economy balance draft contract", () => {
     ]);
   });
 
+  it("keeps launch gacha command ticket acquisition at 12 non-repeat candidate tickets", () => {
+    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.status).toBe("LAUNCH_CANDIDATE");
+    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.totalNonRepeatTickets).toBe(12);
+    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.sources).toEqual([
+      {
+        sourceType: "LOGIN_BONUS",
+        sourceId: "launch_login_bonus",
+        itemId: "cur_command_ticket",
+        quantity: 5,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_03_water_stop",
+        itemId: "cur_command_ticket",
+        quantity: 1,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_05_night_boarders",
+        itemId: "cur_command_ticket",
+        quantity: 1,
+        repeatable: false,
+      },
+      {
+        sourceType: "FIRST_CLEAR",
+        sourceId: "opn_06_broken_line",
+        itemId: "cur_command_ticket",
+        quantity: 2,
+        repeatable: false,
+      },
+      {
+        sourceType: "STORY_RAID_FIRST_CLEAR",
+        sourceId: "raid_raider_king_engine",
+        itemId: "cur_command_ticket",
+        quantity: 3,
+        repeatable: false,
+      },
+    ]);
+    expect(
+      launchEconomyBalanceDraft.gachaTicketAcquisition.sources.reduce(
+        (sum, source) => sum + source.quantity,
+        0,
+      ),
+    ).toBe(12);
+    expect(launchEconomyBalanceDraft.gachaTicketAcquisition.sources.every((source) => !source.repeatable)).toBe(true);
+    expect(launchRunRewardsConfig.operations.opn_03_water_stop.firstClearRewards).not.toContainEqual({
+      kind: "ITEM",
+      id: "cur_command_ticket",
+      quantity: 1,
+    });
+  });
+
   it("keeps draft offline hourly rewards separate from live offline reward config", () => {
     expect(launchEconomyBalanceDraft.offlineBaseHourlyRewards).toEqual({
       cur_credits: 24,

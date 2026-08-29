@@ -746,6 +746,24 @@ The draft pickup banner keeps:
 - `allowedPullCounts = [1, 10]`
 - all 10 Act 1 elite operator IDs in the elite operator pool
 
+Launch command ticket acquisition is a non-repeat candidate path, not a
+production seed promotion:
+
+```text
+source                         item                quantity  repeatable
+launch_login_bonus             cur_command_ticket         5  no
+opn_03_water_stop first clear  cur_command_ticket         1  no
+opn_05_night_boarders first    cur_command_ticket         1  no
+opn_06_broken_line first       cur_command_ticket         2  no
+story raid first clear         cur_command_ticket         3  no
+```
+
+Total non-repeat launch candidate supply is 12 `cur_command_ticket`. Normal
+offline repeat rewards must not include `cur_command_ticket` or
+`cur_command_ticket_fragment`. World Raid score, ranking, settlement, and event
+reward tickets are separate future scope and must not be mixed into the Act 1
+story/pickup banner launch fixture.
+
 Local smoke uses this fixture as `gacha_banners.pool_snapshot_json` input and
 asserts the response keeps Unity-visible fields stable while not returning raw
 RNG material, seed preimages, per-candidate probabilities, full weight tables,
@@ -754,6 +772,8 @@ tokens, secrets, or account shortcut data.
 Decision queue:
 
 - Final launch banner IDs, pickup rotation, and exact weight tuning.
-- Command ticket acquisition path before production gacha can be enabled.
 - Whether candidate-only economy draft values should ever be promoted to a
   versioned balance config.
+- Whether the 12-ticket launch candidate path should be promoted into a
+  versioned seed/config after explicit approval and Unity/Admin compatibility
+  smoke.

@@ -496,3 +496,8 @@ Contract baseline:
 - Launch data has a `TESTING_TUNING_DRAFT` fixture in
   `launchGachaDataDraft`. It is used for local response stability smoke only and
   is not a production seed/config promotion.
+- Launch command ticket acquisition is tracked as a candidate-only non-repeat
+  path in `launchEconomyBalanceDraft`: login bonus 5, `opn_03` first clear 1,
+  `opn_05` first clear 1, `opn_06` first clear 2, and story raid first clear 3,
+  for 12 total `cur_command_ticket`. This is not a production seed/config
+  promotion until explicitly approved.
