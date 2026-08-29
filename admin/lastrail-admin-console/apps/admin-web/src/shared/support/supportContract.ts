@@ -147,6 +147,7 @@ export type SupportSummarySectionCode =
   | "offlineReward"
   | "storyProgress"
   | "gacha"
+  | "loginBonus"
   | "idempotency"
   | "integrity"
   | "opsErrors"
@@ -199,6 +200,25 @@ export type SupportOpsErrorEvidence = {
   links: SupportOpsErrorLink[];
 };
 
+export type SupportLoginBonusRewardLine = {
+  kind: string;
+  id: string;
+  quantity: number;
+  source: string;
+  balanceAfter?: string;
+};
+
+export type SupportLoginBonusSummary = {
+  bonusId: string;
+  claimStatus: "UNCLAIMED" | "CLAIMED" | string;
+  claimedAt: string;
+  rewardTransactionId: string;
+  expectedRewardLines: SupportLoginBonusRewardLine[];
+  rewardLineSummary: SupportLoginBonusRewardLine[];
+  idempotencyReplayKnown: boolean;
+  readOnly: true;
+};
+
 export type SupportRecentRunStartMetadata = {
   encounterType: string;
   raidId: string;
@@ -243,6 +263,7 @@ export type SupportAccountSummary = {
   };
   recentRuns: SupportRecentRunEvidence[];
   opsErrors: SupportOpsErrorEvidence[];
+  loginBonus: SupportLoginBonusSummary;
   sections: SupportSummarySection[];
   supportContext: {
     readOnly: true;
@@ -325,14 +346,14 @@ export type CustomerSupportContractPreview = {
       };
       loginBonusTickets: {
         quantity: 5;
-        state: "game_api_claim_committed_admin_read_pending";
+        state: "support_summary_read_model_available";
       };
       sources: ReadonlyArray<{
         code: string;
         label: string;
         quantity: number;
         repeatable: false;
-        state?: "promoted_local_launch_config";
+        state?: "promoted_local_launch_config" | "support_summary_read_model_available";
       }>;
     };
     actOneEliteOperatorIds: readonly string[];
@@ -458,6 +479,7 @@ export const customerSupportSummarySectionCodes: SupportSummarySectionCode[] = [
   "offlineReward",
   "storyProgress",
   "gacha",
+  "loginBonus",
   "idempotency",
   "integrity",
   "opsErrors",
@@ -570,9 +592,15 @@ export const customerSupportGachaLaunchPolicy = {
     excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
     boundary: "launch candidate/draft, not production seed/config promotion",
     firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-    loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" },
+    loginBonusTickets: { quantity: 5, state: "support_summary_read_model_available" },
     sources: [
-      { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
+      {
+        code: "launch_login_bonus",
+        label: "login bonus",
+        quantity: 5,
+        repeatable: false,
+        state: "support_summary_read_model_available"
+      },
       {
         code: "opn_03_water_stop_first_clear",
         label: "opn_03_water_stop first clear",
@@ -777,6 +805,7 @@ const summarySectionLabels: Record<SupportSummarySectionCode, string> = {
   offlineReward: "오프라인 보상 상태/수령",
   storyProgress: "스토리 진행/해금",
   gacha: "최근 모집 batch/보장",
+  loginBonus: "로그인 보너스 수령",
   idempotency: "Idempotency replay 기록",
   integrity: "무결성 신호/리뷰",
   opsErrors: "시스템 에러 로그",
@@ -1156,6 +1185,42 @@ function supportOpsErrorEvidenceList(value: unknown): SupportOpsErrorEvidence[] 
   return value.map(supportOpsErrorEvidence).filter((item): item is SupportOpsErrorEvidence => Boolean(item));
 }
 
+function supportLoginBonusRewardLine(value: unknown): SupportLoginBonusRewardLine | null {
+  const record = asRecord(value);
+  if (!record) return null;
+  const line: SupportLoginBonusRewardLine = {
+    kind: stringValue(record.kind),
+    id: stringValue(record.id),
+    quantity: typeof record.quantity === "number" ? record.quantity : Number(record.quantity) || 0,
+    source: stringValue(record.source)
+  };
+  if (record.balanceAfter !== undefined && record.balanceAfter !== null) {
+    line.balanceAfter = nullableStringValue(record.balanceAfter);
+  }
+  return line;
+}
+
+function supportLoginBonusRewardLines(value: unknown): SupportLoginBonusRewardLine[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map(supportLoginBonusRewardLine)
+    .filter((item): item is SupportLoginBonusRewardLine => Boolean(item));
+}
+
+function supportLoginBonusSummary(value: unknown): SupportLoginBonusSummary {
+  const record = asRecord(value);
+  return {
+    bonusId: stringValue(record?.bonusId),
+    claimStatus: stringValue(record?.claimStatus),
+    claimedAt: stringValue(record?.claimedAt),
+    rewardTransactionId: stringValue(record?.rewardTransactionId),
+    expectedRewardLines: supportLoginBonusRewardLines(record?.expectedRewardLines),
+    rewardLineSummary: supportLoginBonusRewardLines(record?.rewardLineSummary),
+    idempotencyReplayKnown: record?.idempotencyReplayKnown === true,
+    readOnly: true
+  };
+}
+
 function stringListValue(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((item): item is string => typeof item === "string" && item.length > 0);
@@ -1224,6 +1289,7 @@ export function emptySupportAccountSummary(accountId = "연동 대기"): Support
     },
     recentRuns: [],
     opsErrors: [],
+    loginBonus: supportLoginBonusSummary(null),
     sections: customerSupportSummarySectionCodes.map((code) => ({
       code,
       label: customerSupportSummarySectionLabel(code),
@@ -1260,6 +1326,7 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
     },
     recentRuns: supportRecentRunEvidenceList(record.recentRuns),
     opsErrors: supportOpsErrorEvidenceList(record.opsErrors),
+    loginBonus: supportLoginBonusSummary(record.loginBonus),
     sections: customerSupportSummarySectionCodes.map((code) => {
       if (code === "account") return sectionFrom(code, account);
       return sectionFrom(code, record[code]);

@@ -66,9 +66,15 @@ export const gachaLaunchTicketAcquisitionPolicy = {
   excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
   boundary: "launch candidate/draft, not production seed/config promotion",
   firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-  loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" },
+  loginBonusTickets: { quantity: 5, state: "support_summary_read_model_available" },
   sources: [
-    { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
+    {
+      code: "launch_login_bonus",
+      label: "login bonus",
+      quantity: 5,
+      repeatable: false,
+      state: "support_summary_read_model_available"
+    },
     {
       code: "opn_03_water_stop_first_clear",
       label: "opn_03_water_stop first clear",

@@ -188,7 +188,13 @@ describe("supportContract", () => {
       excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
       boundary: "launch candidate/draft, not production seed/config promotion",
       sources: [
-        { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
+        {
+          code: "launch_login_bonus",
+          label: "login bonus",
+          quantity: 5,
+          repeatable: false,
+          state: "support_summary_read_model_available"
+        },
         {
           code: "opn_03_water_stop_first_clear",
           label: "opn_03_water_stop first clear",
@@ -219,7 +225,7 @@ describe("supportContract", () => {
         }
       ],
       firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-      loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" }
+      loginBonusTickets: { quantity: 5, state: "support_summary_read_model_available" }
     });
     expect(customerSupportGachaLaunchPolicy.resultFields).toEqual([
       "pullSequence",
@@ -516,6 +522,19 @@ describe("supportContract", () => {
       offlineReward: { stateSource: "account_offline_reward_state", latestClaimId: "offline-claim-1" },
       storyProgress: { highestStoryProgressId: "opn_01_last_departure", unlockedOperations: ["opn_02_first_signal"] },
       gacha: { recentBatchIds: ["batch-1"], guaranteeTypes: ["ELITE_30"] },
+      loginBonus: {
+        bonusId: "launch_login_bonus_act1_v1",
+        claimStatus: "CLAIMED",
+        claimedAt: "2026-08-29T00:05:00.000Z",
+        rewardTransactionId: "login_bonus_claim_1",
+        expectedRewardLines: [{ kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" }],
+        rewardLineSummary: [
+          { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: 12 }
+        ],
+        idempotencyReplayKnown: true,
+        readOnly: true,
+        rawBody: "must-not-copy"
+      },
       idempotency: { operationTypes: ["run_finish", "offline_reward_claim"], duplicateReplayCount: 1 },
       integrity: { openSignals: 0, reviewStatus: "CLEARED" },
       opsErrors: [
@@ -573,6 +592,7 @@ describe("supportContract", () => {
       "offlineReward",
       "storyProgress",
       "gacha",
+      "loginBonus",
       "idempotency",
       "integrity",
       "opsErrors",
@@ -639,6 +659,18 @@ describe("supportContract", () => {
         links: [{ label: "시스템 에러 로그", href: "/ops/error-logs/err-1" }]
       }
     ]);
+    expect(result.loginBonus).toEqual({
+      bonusId: "launch_login_bonus_act1_v1",
+      claimStatus: "CLAIMED",
+      claimedAt: "2026-08-29T00:05:00.000Z",
+      rewardTransactionId: "login_bonus_claim_1",
+      expectedRewardLines: [{ kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" }],
+      rewardLineSummary: [
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: "12" }
+      ],
+      idempotencyReplayKnown: true,
+      readOnly: true
+    });
     expect(JSON.stringify(result)).not.toContain("refreshToken");
     expect(JSON.stringify(result)).not.toContain("refresh token hash");
     expect(JSON.stringify(result)).not.toContain("googleIdToken");

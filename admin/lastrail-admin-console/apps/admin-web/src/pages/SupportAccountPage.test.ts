@@ -17,6 +17,7 @@ import {
   supportSafeSnippetCards,
   supportSuggestionCards,
   supportOpsErrorEvidenceRows,
+  supportLoginBonusEvidenceRows,
   supportRecentRunEvidenceRows
 } from "./SupportAccountPage";
 
@@ -43,6 +44,7 @@ describe("SupportAccountPage configuration", () => {
       "offlineReward",
       "storyProgress",
       "gacha",
+      "loginBonus",
       "idempotency",
       "integrity",
       "opsErrors",
@@ -167,7 +169,7 @@ describe("SupportAccountPage configuration", () => {
       "first-clear 7 promoted_local_launch_config"
     );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
-      "login bonus 5 game_api_claim_committed_admin_read_pending"
+      "login bonus 5 support_summary_read_model_available"
     );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "TESTING_TUNING_DRAFT"
@@ -192,6 +194,38 @@ describe("SupportAccountPage configuration", () => {
     expect(serialized).not.toContain("seed preimage");
     expect(serialized).not.toContain("manual grant");
     expect(serialized).not.toContain("reroll");
+  });
+
+  it("formats login bonus support summary as read-only claim evidence", () => {
+    const rows = supportLoginBonusEvidenceRows({
+      bonusId: "launch_login_bonus_act1_v1",
+      claimStatus: "CLAIMED",
+      claimedAt: "2026-08-29T00:05:00.000Z",
+      rewardTransactionId: "login_bonus_claim_1",
+      expectedRewardLines: [{ kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" }],
+      rewardLineSummary: [
+        { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS", balanceAfter: "12" }
+      ],
+      idempotencyReplayKnown: true,
+      readOnly: true
+    });
+
+    expect(rows).toEqual([
+      {
+        bonusId: "launch_login_bonus_act1_v1",
+        claimStatus: "수령 완료 (CLAIMED)",
+        claimedAt: "2026-08-29T00:05:00.000Z",
+        rewardTransactionId: "login_bonus_claim_1",
+        expectedReward: "ITEM cur_command_ticket x5 source=LAUNCH_LOGIN_BONUS",
+        rewardLineSummary: "ITEM cur_command_ticket x5 source=LAUNCH_LOGIN_BONUS balanceAfter=12",
+        idempotencyReplayKnown: "재생 기록 확인됨",
+        readOnly: "읽기 전용"
+      }
+    ]);
+
+    expect(JSON.stringify(rows)).not.toContain("manual grant");
+    expect(JSON.stringify(rows)).not.toContain("repair");
+    expect(JSON.stringify(rows)).not.toContain("raw");
   });
 
   it("does not expose mutation controls in the support skeleton", () => {

@@ -74,7 +74,13 @@ describe("GachaPage configuration", () => {
       excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
       boundary: "launch candidate/draft, not production seed/config promotion",
       sources: [
-        { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
+        {
+          code: "launch_login_bonus",
+          label: "login bonus",
+          quantity: 5,
+          repeatable: false,
+          state: "support_summary_read_model_available"
+        },
         {
           code: "opn_03_water_stop_first_clear",
           label: "opn_03_water_stop first clear",
@@ -105,7 +111,7 @@ describe("GachaPage configuration", () => {
         }
       ],
       firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
-      loginBonusTickets: { quantity: 5, state: "game_api_claim_committed_admin_read_pending" }
+      loginBonusTickets: { quantity: 5, state: "support_summary_read_model_available" }
     });
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
       "launch non-repeat total 12"
@@ -126,7 +132,7 @@ describe("GachaPage configuration", () => {
       "first-clear 7 promoted_local_launch_config"
     );
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
-      "login bonus 5 game_api_claim_committed_admin_read_pending"
+      "login bonus 5 support_summary_read_model_available"
     );
   });
 

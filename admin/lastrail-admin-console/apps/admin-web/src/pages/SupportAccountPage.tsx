@@ -39,6 +39,7 @@ import {
   customerSupportTemplateStatuses
 } from "../shared/support/supportContract";
 import type { SupportOpsErrorEvidence } from "../shared/support/supportContract";
+import type { SupportLoginBonusSummary } from "../shared/support/supportContract";
 import type { SupportRecentRunEvidence } from "../shared/support/supportContract";
 
 type SupportCard = {
@@ -72,6 +73,17 @@ type SupportRecentRunEvidenceRow = {
   versions: string;
   storyRaidRefund: string;
   rewardPreviewId: string;
+};
+
+type SupportLoginBonusEvidenceRow = {
+  bonusId: string;
+  claimStatus: string;
+  claimedAt: string;
+  rewardTransactionId: string;
+  expectedReward: string;
+  rewardLineSummary: string;
+  idempotencyReplayKnown: string;
+  readOnly: "읽기 전용";
 };
 
 function labelWithCode(label: string, code: string): string {
@@ -126,6 +138,44 @@ export function supportOpsErrorEvidenceRows(items: SupportOpsErrorEvidence[]): S
 
 function listSummary(values: string[]): string {
   return values.length > 0 ? values.join(" / ") : "연동 대기";
+}
+
+function rewardLineSummary(
+  lines: SupportLoginBonusSummary["expectedRewardLines"] | SupportLoginBonusSummary["rewardLineSummary"]
+): string {
+  if (lines.length === 0) return "연동 대기";
+  return lines
+    .map((line) =>
+      [
+        `${line.kind} ${line.id} x${line.quantity}`,
+        `source=${line.source}`,
+        line.balanceAfter ? `balanceAfter=${line.balanceAfter}` : null
+      ]
+        .filter(Boolean)
+        .join(" ")
+    )
+    .join(" / ");
+}
+
+function loginBonusClaimStatusLabel(status: string): string {
+  if (status === "CLAIMED") return "수령 완료";
+  if (status === "UNCLAIMED") return "미수령";
+  return status;
+}
+
+export function supportLoginBonusEvidenceRows(summary: SupportLoginBonusSummary): SupportLoginBonusEvidenceRow[] {
+  return [
+    {
+      bonusId: summary.bonusId,
+      claimStatus: labelWithCode(loginBonusClaimStatusLabel(summary.claimStatus), summary.claimStatus),
+      claimedAt: summary.claimedAt,
+      rewardTransactionId: summary.rewardTransactionId,
+      expectedReward: rewardLineSummary(summary.expectedRewardLines),
+      rewardLineSummary: rewardLineSummary(summary.rewardLineSummary),
+      idempotencyReplayKnown: summary.idempotencyReplayKnown ? "재생 기록 확인됨" : "연동 대기",
+      readOnly: "읽기 전용"
+    }
+  ];
 }
 
 function storyRaidRefundSummary(marker: SupportRecentRunEvidence["startMetadata"]["failureStaminaRefundMarker"]): string {
@@ -393,6 +443,7 @@ export function SupportAccountPage() {
   const summary = query.data ?? emptySupportAccountSummary(accountId);
   const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors);
   const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns);
+  const loginBonusRows = supportLoginBonusEvidenceRows(summary.loginBonus);
 
   return (
     <main className="content">
@@ -579,6 +630,40 @@ export function SupportAccountPage() {
             </div>
           ))}
         </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>로그인 보너스 근거</h2>
+          <p>launch login bonus 5장 수령 상태를 서버 support summary 기준으로 읽기 전용 표시합니다</p>
+        </header>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>bonusId</th>
+              <th>수령 상태</th>
+              <th>수령 시각</th>
+              <th>rewardTransactionId</th>
+              <th>예상 보상</th>
+              <th>저장 보상 요약</th>
+              <th>idempotency</th>
+              <th>권한</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loginBonusRows.map((row) => (
+              <tr key={row.bonusId}>
+                <td>{row.bonusId}</td>
+                <td>{row.claimStatus}</td>
+                <td>{row.claimedAt}</td>
+                <td>{row.rewardTransactionId}</td>
+                <td>{row.expectedReward}</td>
+                <td>{row.rewardLineSummary}</td>
+                <td>{row.idempotencyReplayKnown}</td>
+                <td>{row.readOnly}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
       <section className="admin-panel">
         <header>
