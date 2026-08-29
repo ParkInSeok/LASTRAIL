@@ -24,6 +24,8 @@ import {
   customerSupportRepairCategories,
   customerSupportRepairCategoryLabel,
   customerSupportSafeSnippetPlaceholders,
+  customerSupportSuggestionCaseLabel,
+  customerSupportSuggestionCases,
   customerSupportSummarySectionCodes,
   customerSupportSummarySectionLabel,
   emptySupportAccountSummary,
@@ -158,6 +160,13 @@ export const supportSafeSnippetCards: SupportCard[] = customerSupportSafeSnippet
     }[snippet] ?? snippet,
   value: "연동 대기",
   note: `${snippet} safe explanation 후보`
+}));
+
+export const supportSuggestionCards: SupportCard[] = customerSupportSuggestionCases.map((suggestion) => ({
+  code: suggestion.caseType,
+  label: customerSupportSuggestionCaseLabel(suggestion.caseType),
+  value: suggestion.availability,
+  note: suggestion.safeSnippet
 }));
 
 export const supportEscalationSeverityCards: SupportCard[] = customerSupportEscalationSeverities.map((severity) => ({
@@ -372,6 +381,21 @@ export function SupportAccountPage() {
               <span>{card.label}</span>
               <strong>{card.value}</strong>
               <small>{card.code}</small>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>CS 추천 문구 후보</h2>
+          <p>case type별 짧은 안전 설명을 읽기 전용 상태로만 표시합니다</p>
+        </header>
+        <div className="metric-grid">
+          {supportSuggestionCards.map((card) => (
+            <div key={card.code} className="metric-card">
+              <span>{card.label}</span>
+              <strong>{card.value}</strong>
+              <small>{card.note}</small>
             </div>
           ))}
         </div>

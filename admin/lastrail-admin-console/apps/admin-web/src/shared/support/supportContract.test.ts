@@ -34,6 +34,8 @@ import {
   customerSupportNoteFormatFields,
   customerSupportOpsErrorsEvidencePolicy,
   customerSupportSafeSnippetPlaceholders,
+  customerSupportSuggestionCases,
+  customerSupportSuggestionCaseLabel,
   customerSupportSensitiveExamplesOutOfScope,
   customerSupportTemplateStatuses
 } from "./supportContract";
@@ -281,6 +283,47 @@ describe("supportContract", () => {
     expect(serialized).not.toContain("copy action");
     expect(serialized).not.toContain("ticket creation");
     expect(serialized).not.toContain("send template");
+  });
+
+  it("prepares case-specific read-only suggestion snippets without support actions", () => {
+    expect(customerSupportSuggestionCases.map((item) => item.caseType)).toEqual([
+      "google_login_link_conflict",
+      "auth_session_expired",
+      "reward_claim_issue",
+      "offline_reward_issue",
+      "gacha_duplicate_guarantee_inquiry",
+      "raid_boss_only_result_inquiry",
+      "start_package_ref_mismatch",
+      "ops_error_observed"
+    ]);
+    expect(customerSupportSuggestionCaseLabel("google_login_link_conflict")).toBe("Google 로그인/연동 충돌");
+    expect(customerSupportSuggestionCaseLabel("future_case")).toBe("future_case");
+    expect(customerSupportSuggestionCases.every((item) => item.availability === "연동 대기")).toBe(true);
+    expect(customerSupportSuggestionCases.every((item) => item.readOnly === true)).toBe(true);
+    expect(customerSupportSuggestionCases.every((item) => item.copyActionEnabled === false)).toBe(true);
+    expect(customerSupportSuggestionCases.every((item) => item.sendActionEnabled === false)).toBe(true);
+    expect(customerSupportSuggestionCases.every((item) => item.ticketCreationEnabled === false)).toBe(true);
+    expect(customerSupportSuggestionCases.every((item) => item.escalationWriteEnabled === false)).toBe(true);
+    expect(customerSupportSuggestionCases.find((item) => item.caseType === "gacha_duplicate_guarantee_inquiry")?.safeSnippet).toBe(
+      "중복 요청은 기존 처리 결과를 다시 보여주는 방식입니다."
+    );
+    expect(customerSupportSuggestionCases.find((item) => item.caseType === "raid_boss_only_result_inquiry")?.safeSnippet).toContain(
+      "보스 전용 레이드"
+    );
+    expect(customerSupportSuggestionCases.find((item) => item.caseType === "start_package_ref_mismatch")?.safeSnippet).toContain(
+      "시작 시점"
+    );
+
+    const serialized = JSON.stringify(customerSupportSuggestionCases);
+    expect(serialized).not.toContain("copy action");
+    expect(serialized).not.toContain("ticket creation");
+    expect(serialized).not.toContain("send template");
+    expect(serialized).not.toContain("raw payload");
+    expect(serialized).not.toContain("raw auth header");
+    expect(serialized).not.toContain("token");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("animation timeline");
   });
 
   it("prepares escalation workflow placeholders as read-only support evidence", () => {

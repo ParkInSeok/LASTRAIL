@@ -14,7 +14,8 @@ import {
   supportSummarySectionCards,
   supportOutOfScopeControls,
   supportResponseTemplateCards,
-  supportSafeSnippetCards
+  supportSafeSnippetCards,
+  supportSuggestionCards
 } from "./SupportAccountPage";
 
 describe("SupportAccountPage configuration", () => {
@@ -203,6 +204,41 @@ describe("SupportAccountPage configuration", () => {
       "escalated_for_ops_review"
     ]);
     expect(supportSafeSnippetCards.every((card) => card.value === "연동 대기")).toBe(true);
+  });
+
+  it("prepares case-specific CS suggestion cards as read-only availability", () => {
+    expect(supportSuggestionCards.map((card) => card.code)).toEqual([
+      "google_login_link_conflict",
+      "auth_session_expired",
+      "reward_claim_issue",
+      "offline_reward_issue",
+      "gacha_duplicate_guarantee_inquiry",
+      "raid_boss_only_result_inquiry",
+      "start_package_ref_mismatch",
+      "ops_error_observed"
+    ]);
+    expect(supportSuggestionCards.map((card) => card.label)).toContain("Google 로그인/연동 충돌");
+    expect(supportSuggestionCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportSuggestionCards.find((card) => card.code === "gacha_duplicate_guarantee_inquiry")?.note).toContain(
+      "중복 요청은 기존 처리 결과"
+    );
+    expect(supportSuggestionCards.find((card) => card.code === "raid_boss_only_result_inquiry")?.note).toContain(
+      "보스 전용 레이드"
+    );
+    expect(supportSuggestionCards.find((card) => card.code === "start_package_ref_mismatch")?.note).toContain(
+      "시작 시점"
+    );
+
+    const serialized = JSON.stringify(supportSuggestionCards);
+    expect(serialized).not.toContain("copy action");
+    expect(serialized).not.toContain("send template");
+    expect(serialized).not.toContain("ticket creation");
+    expect(serialized).not.toContain("raw payload");
+    expect(serialized).not.toContain("raw auth header");
+    expect(serialized).not.toContain("token");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("animation timeline");
   });
 
   it("prepares escalation placeholders without write actions", () => {

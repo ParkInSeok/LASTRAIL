@@ -7,6 +7,27 @@ export type CustomerSupportCaseType =
   | "gacha_recruitment"
   | "integrity_restriction";
 
+export type CustomerSupportSuggestionCaseType =
+  | "google_login_link_conflict"
+  | "auth_session_expired"
+  | "reward_claim_issue"
+  | "offline_reward_issue"
+  | "gacha_duplicate_guarantee_inquiry"
+  | "raid_boss_only_result_inquiry"
+  | "start_package_ref_mismatch"
+  | "ops_error_observed";
+
+export type CustomerSupportSuggestionCase = {
+  caseType: CustomerSupportSuggestionCaseType;
+  availability: "연동 대기";
+  readOnly: true;
+  safeSnippet: string;
+  copyActionEnabled: false;
+  sendActionEnabled: false;
+  ticketCreationEnabled: false;
+  escalationWriteEnabled: false;
+};
+
 export type CustomerSupportContextField =
   | "accountStatus"
   | "recentRuns"
@@ -173,6 +194,7 @@ export type CustomerSupportContractPreview = {
   noteFormatFields: readonly string[];
   responseTemplateStatuses: readonly string[];
   safeSnippetPlaceholders: readonly string[];
+  suggestionCases: readonly CustomerSupportSuggestionCase[];
   escalation: {
     readOnly: true;
     writeEnabled: false;
@@ -244,6 +266,89 @@ export const customerSupportCaseTypes: CustomerSupportCaseType[] = [
   "story_progress",
   "gacha_recruitment",
   "integrity_restriction"
+];
+
+export const customerSupportSuggestionCases: CustomerSupportSuggestionCase[] = [
+  {
+    caseType: "google_login_link_conflict",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "서버 기록 기준으로 Google 연동 상태를 확인했습니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "auth_session_expired",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "마지막 로그인과 세션 만료 시각을 서버 기록 기준으로 확인했습니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "reward_claim_issue",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "보상 미리보기와 수령 기록은 서버 장부 기준으로 확인됩니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "offline_reward_issue",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "수령 가능 시간과 보관 한도가 함께 적용됩니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "gacha_duplicate_guarantee_inquiry",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "중복 요청은 기존 처리 결과를 다시 보여주는 방식입니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "raid_boss_only_result_inquiry",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "레이드는 보스 전용 레이드 결과로 일반 15공세와 분리해 확인합니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "start_package_ref_mismatch",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "증강과 지휘전술 패키지는 출격 시작 시점의 서버 기록으로 확인합니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  },
+  {
+    caseType: "ops_error_observed",
+    availability: "연동 대기",
+    readOnly: true,
+    safeSnippet: "추가 검토가 필요한 시스템 기록은 읽기 전용 근거로 확인합니다.",
+    copyActionEnabled: false,
+    sendActionEnabled: false,
+    ticketCreationEnabled: false,
+    escalationWriteEnabled: false
+  }
 ];
 
 export const customerSupportContextFields: CustomerSupportContextField[] = [
@@ -565,6 +670,21 @@ export function customerSupportCaseTypeLabel(caseType: CustomerSupportCaseType |
   );
 }
 
+export function customerSupportSuggestionCaseLabel(caseType: CustomerSupportSuggestionCaseType | string): string {
+  return (
+    {
+      google_login_link_conflict: "Google 로그인/연동 충돌",
+      auth_session_expired: "인증/세션 만료",
+      reward_claim_issue: "보상 수령 문의",
+      offline_reward_issue: "오프라인 보상 문의",
+      gacha_duplicate_guarantee_inquiry: "모집 중복/보장 문의",
+      raid_boss_only_result_inquiry: "레이드 보스 결과 문의",
+      start_package_ref_mismatch: "시작 패키지 ref 불일치",
+      ops_error_observed: "시스템 에러 관측"
+    }[caseType] ?? caseType
+  );
+}
+
 export function customerSupportContextFieldLabel(field: CustomerSupportContextField | string): string {
   return contextLabels[field as CustomerSupportContextField] ?? field;
 }
@@ -735,6 +855,7 @@ export const customerSupportContractPreview: CustomerSupportContractPreview = {
   noteFormatFields: customerSupportNoteFormatFields,
   responseTemplateStatuses: customerSupportTemplateStatuses,
   safeSnippetPlaceholders: customerSupportSafeSnippetPlaceholders,
+  suggestionCases: customerSupportSuggestionCases,
   escalation: {
     readOnly: true,
     writeEnabled: false,
