@@ -45,8 +45,16 @@ package that a 15-wave run would have accumulated before the boss fight.
 
 ## Run Start Metadata
 
-Run start/read metadata should distinguish the raid without requiring a new
-route:
+Run start/read metadata distinguishes the raid without requiring a raid-specific
+route. The local launch route is:
+
+```text
+POST /v1/runs/start
+Authorization: Bearer <access-token>
+```
+
+The body contains only the server-created `operationPreviewId`. The response
+returns server-authored refs from `operation_previews.preview_json`:
 
 ```json
 {
@@ -193,6 +201,8 @@ Contract smoke should cover:
 
 - Final raid start metadata ids: `bossId`, `bossPhaseRefs`,
   `startAugmentPackageRef`, and `startTacticPackageRef`.
+- Whether run start needs a client-visible idempotency key before production
+  traffic, or whether active preview consumption is sufficient for launch QA.
 - Whether `allowedOperatorSlots` differs from ordinary operations. Current
   parser/read models treat it as nullable/candidate metadata, not a final
   balance decision.

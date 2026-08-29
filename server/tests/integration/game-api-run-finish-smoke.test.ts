@@ -159,7 +159,132 @@ async function seedFinishableRun(db: initSqlJs.Database): Promise<string> {
   })}`;
 }
 
+async function seedStartableRunPreview(db: initSqlJs.Database): Promise<string> {
+  const now = Date.now();
+  const refreshTokenHash = await hashRefreshToken("refresh-start-smoke-token");
+  db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES (?, 'ACTIVE', ?, ?);", [
+    "account-start-smoke-1",
+    now,
+    now,
+  ]);
+  db.run(
+    `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+     VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL);`,
+    ["session-start-smoke-1", "account-start-smoke-1", refreshTokenHash, "family-start-smoke-1", now, now + 900000],
+  );
+  db.run(
+    `INSERT INTO balance_config_drafts (
+       id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+     ) VALUES (
+       'draft-start-smoke-1', NULL, 1, 1, '{}', 'checksum-start-smoke-1', 1, 'PUBLISHED', 'test', ?, ?
+     );`,
+    [now, now],
+  );
+  db.run(
+    `INSERT INTO balance_config_versions (
+       version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+     ) VALUES (?, 1, 1, 'checksum-start-smoke-1', ?, ?, 'test', 'draft-start-smoke-1');`,
+    [701, JSON.stringify({ runRewards: launchRunRewardsConfig }), now],
+  );
+  db.run(
+    `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+     VALUES ('mutation-start-smoke-1', 'account-start-smoke-1', 1, 'RUN_START', 'idem-start-smoke-1', ?);`,
+    [now],
+  );
+  db.run(
+    `INSERT INTO operation_previews (
+       id, account_id, mutation_id, objective, risk, balance_config_version, preview_json, status, expires_at, created_at
+     ) VALUES (?, ?, ?, ?, ?, 701, ?, 'ACTIVE', ?, ?);`,
+    [
+      "preview-start-smoke-1",
+      "account-start-smoke-1",
+      "mutation-start-smoke-1",
+      "raid_raider_king_engine",
+      "V",
+      JSON.stringify({
+        operationId: "raid_raider_king_engine",
+        actId: "act_01_wasteland_railway",
+        regionId: "region_wasteland_railway",
+        encounterType: "RAID_BOSS",
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        allowedOperatorSlots: 4,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+      }),
+      now + 900000,
+      now,
+    ],
+  );
+
+  return `Bearer ${await createAccessToken({
+    secret: authSecret,
+    accountId: "account-start-smoke-1",
+    sessionId: "session-start-smoke-1",
+    nowMs: now,
+    ttlMs: 900000,
+  })}`;
+}
+
 describe("game-api run finish local D1 smoke", () => {
+  it("starts a raid boss run from an active operation preview and stores a sanitized snapshot", async () => {
+    const db = await createMigratedDb();
+    const authorization = await seedStartableRunPreview(db);
+
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: { Authorization: authorization },
+        body: JSON.stringify({ operationPreviewId: "preview-start-smoke-1" }),
+      },
+      createEnv(db),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      accepted: true,
+      startStatus: "STARTED",
+      operationPreviewId: "preview-start-smoke-1",
+      operationId: "raid_raider_king_engine",
+      encounterType: "RAID_BOSS",
+      riskLevel: "V",
+      balanceVersion: "701",
+      ordinary: null,
+      raid: {
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+      },
+      startAugmentPackageRef: "act1_full_start_package_v1",
+      startTacticPackageRef: "act1_full_start_package_v1",
+      errorCode: null,
+    });
+
+    const runId = String(body.runId);
+    expect(runId).toMatch(/^run_/u);
+    expect(db.exec(`SELECT status FROM operation_previews WHERE id = 'preview-start-smoke-1';`)[0]?.values).toEqual([["CONSUMED"]]);
+    expect(db.exec(`SELECT account_id, preview_id, status, balance_config_version FROM runs WHERE id = '${runId}';`)[0]?.values).toEqual([
+      ["account-start-smoke-1", "preview-start-smoke-1", "ACTIVE", 701],
+    ]);
+    const snapshotRows = db.exec(`SELECT snapshot_json FROM run_snapshots WHERE run_id = '${runId}';`);
+    const snapshot = JSON.parse(String(snapshotRows[0]?.values[0]?.[0])) as Record<string, unknown>;
+    expect(snapshot).toMatchObject({
+      encounterType: "RAID_BOSS",
+      raidId: "raid_raider_king_engine",
+      bossId: "boss_raider_king_engine",
+      bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+    });
+    const serialized = JSON.stringify(body);
+    expect(serialized).not.toContain("rawRng");
+    expect(serialized).not.toContain("probability");
+    expect(serialized).not.toContain("animationTimeline");
+    expect(db.exec("PRAGMA foreign_key_check;")[0]?.values ?? []).toEqual([]);
+  });
+
   it("creates a reward preview once from an accepted run finish", async () => {
     const db = await createMigratedDb();
     const authorization = await seedFinishableRun(db);

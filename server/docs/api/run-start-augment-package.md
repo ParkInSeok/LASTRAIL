@@ -24,6 +24,25 @@ backlog and is not a launch gameplay contract.
 Raid boss encounters use the same package model. `raid_raider_king_engine`
 starts directly at the boss fight with the ordinary full build package refs.
 
+The local launch Game API run start route is:
+
+```text
+POST /v1/runs/start
+Authorization: Bearer <access-token>
+```
+
+The request body contains only the server-created operation preview reference:
+
+```json
+{
+  "operationPreviewId": "preview_..."
+}
+```
+
+The route consumes an ACTIVE `operation_previews` row for the authenticated
+account, creates an ACTIVE `runs` row, stores a sanitized `run_snapshots`
+metadata payload, and returns server-authored start metadata for Unity.
+
 ## Server-Owned Metadata
 
 The server-authored run/operation preview metadata may include:
@@ -62,6 +81,9 @@ Admin/support read models may expose these server-authored refs for
 read-only investigation. `raidId`, `bossId`, and `bossPhaseRefs` remain
 raid-only metadata; ordinary 15-wave previews must not inherit raid refs from
 malformed preview JSON.
+
+Rejected run start responses keep the same envelope with `accepted=false`,
+`startStatus=REJECTED`, null refs, and a stable `errorCode`.
 
 ## Run Finish Selection Echo
 

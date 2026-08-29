@@ -62,6 +62,19 @@ type RunFinishRow = {
   config_json: string;
 };
 
+type RunStartPreviewRow = {
+  id: string;
+  account_id: string;
+  mutation_id: string;
+  objective: string;
+  risk: string;
+  balance_config_version: number;
+  preview_json: string;
+  status: "ACTIVE" | "CONSUMED" | "EXPIRED" | "CANCELLED";
+  expires_at: number;
+  created_at: number;
+};
+
 type CurrencyRewardLine = {
   kind: "CURRENCY";
   id: string;
@@ -534,6 +547,94 @@ function createRunFinishDuplicateReplayResponse(options: {
     balanceVersion: options.balanceVersion ?? null,
     message: "Run finish was already accepted.",
     errorCode: "duplicate_replay",
+  };
+}
+
+function createRunStartRejectedResponse(options: {
+  operationPreviewId: string | null;
+  errorCode: string;
+  message: string;
+}) {
+  return {
+    accepted: false,
+    startStatus: "REJECTED",
+    runId: null,
+    operationPreviewId: options.operationPreviewId,
+    operationId: null,
+    encounterType: null,
+    riskLevel: null,
+    risk: null,
+    balanceVersion: null,
+    contentVersion: null,
+    ordinary: null,
+    raid: null,
+    raidId: null,
+    bossId: null,
+    bossPhaseRefs: [],
+    allowedOperatorSlots: null,
+    startAugmentPackageRef: null,
+    startTacticPackageRef: null,
+    serverStartedAt: null,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createRunStartAcceptedResponse(options: {
+  runId: string;
+  operationPreviewId: string;
+  previewMetadata: ReturnType<typeof parseRunPreviewMetadata>;
+  risk: string;
+  balanceVersion: number;
+  serverStartedAt: number;
+}) {
+  const raid = options.previewMetadata.encounterType === "RAID_BOSS"
+    ? {
+        raidId: options.previewMetadata.raidId,
+        bossId: options.previewMetadata.bossId,
+        bossPhaseRefs: options.previewMetadata.bossPhaseRefs,
+      }
+    : null;
+  return {
+    accepted: true,
+    startStatus: "STARTED",
+    runId: options.runId,
+    operationPreviewId: options.operationPreviewId,
+    operationId: options.previewMetadata.operationId,
+    actId: options.previewMetadata.actId,
+    regionId: options.previewMetadata.regionId,
+    encounterType: options.previewMetadata.encounterType,
+    riskLevel: options.risk,
+    risk: options.risk,
+    balanceVersion: String(options.balanceVersion),
+    contentVersion: options.previewMetadata.contentVersion,
+    ordinary: options.previewMetadata.encounterType === "ORDINARY_15_WAVE"
+      ? {
+          totalWaves: 15,
+          startWaveNumber: 1,
+        }
+      : null,
+    raid,
+    raidId: raid?.raidId ?? null,
+    bossId: raid?.bossId ?? null,
+    bossPhaseRefs: raid?.bossPhaseRefs ?? [],
+    allowedOperatorSlots: options.previewMetadata.allowedOperatorSlots,
+    startAugmentPackageRef: options.previewMetadata.startAugmentPackageRef,
+    startTacticPackageRef: options.previewMetadata.startTacticPackageRef,
+    serverStartedAt: toIso(options.serverStartedAt),
+    errorCode: null,
+    message: null,
+  };
+}
+
+function parseRunStartBody(value: unknown): { operationPreviewId: string } | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const body = value as Record<string, unknown>;
+  if (typeof body.operationPreviewId !== "string" || body.operationPreviewId.trim() === "") return null;
+  const allowedFields = new Set(["operationPreviewId"]);
+  if (Object.keys(body).some((key) => !allowedFields.has(key))) return null;
+  return {
+    operationPreviewId: body.operationPreviewId,
   };
 }
 
@@ -2725,6 +2826,124 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     results: responseResults,
     postPityState,
     createdAt: now,
+  }));
+});
+
+app.post("/v1/runs/start", async (c) => {
+  if (new URL(c.req.url).search !== "") {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: null,
+      errorCode: "contract_violation",
+      message: "Run start request must not include query parameters.",
+    }), 400);
+  }
+
+  let requestJson: unknown;
+  try {
+    requestJson = await c.req.json();
+  } catch {
+    requestJson = null;
+  }
+
+  const body = parseRunStartBody(requestJson);
+  if (body === null) {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: null,
+      errorCode: "contract_violation",
+      message: "Run start request body is invalid.",
+    }), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: authContext.errorCode,
+      message: authContext.message,
+    }), authContext.status);
+  }
+
+  const now = Date.now();
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, mutation_id, objective, risk, balance_config_version,
+            preview_json, status, expires_at, created_at
+     FROM operation_previews
+     WHERE id = ? AND account_id = ?`,
+  )
+    .bind(body.operationPreviewId, authContext.accountId)
+    .first<RunStartPreviewRow>();
+
+  if (row === null) {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "operation_preview_not_found",
+      message: "Operation preview was not found.",
+    }), 404);
+  }
+
+  if (row.status !== "ACTIVE" || row.expires_at <= now) {
+    return c.json(createRunStartRejectedResponse({
+      operationPreviewId: body.operationPreviewId,
+      errorCode: "operation_preview_not_startable",
+      message: "Operation preview is not startable.",
+    }), 409);
+  }
+
+  const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  const runId = createDomainId("run");
+  const snapshotJson = JSON.stringify({
+    runId,
+    operationPreviewId: row.id,
+    operationId: previewMetadata.operationId,
+    actId: previewMetadata.actId,
+    regionId: previewMetadata.regionId,
+    encounterType: previewMetadata.encounterType,
+    riskLevel: row.risk,
+    risk: row.risk,
+    balanceVersion: String(row.balance_config_version),
+    contentVersion: previewMetadata.contentVersion,
+    ordinary: previewMetadata.encounterType === "ORDINARY_15_WAVE"
+      ? { totalWaves: 15, startWaveNumber: 1 }
+      : null,
+    raid: previewMetadata.encounterType === "RAID_BOSS"
+      ? {
+          raidId: previewMetadata.raidId,
+          bossId: previewMetadata.bossId,
+          bossPhaseRefs: previewMetadata.bossPhaseRefs,
+        }
+      : null,
+    raidId: previewMetadata.encounterType === "RAID_BOSS" ? previewMetadata.raidId : null,
+    bossId: previewMetadata.encounterType === "RAID_BOSS" ? previewMetadata.bossId : null,
+    bossPhaseRefs: previewMetadata.encounterType === "RAID_BOSS" ? previewMetadata.bossPhaseRefs : [],
+    allowedOperatorSlots: previewMetadata.allowedOperatorSlots,
+    startAugmentPackageRef: previewMetadata.startAugmentPackageRef,
+    startTacticPackageRef: previewMetadata.startTacticPackageRef,
+    serverStartedAt: toIso(now),
+  });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO runs (id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id)
+       VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, NULL, NULL)`,
+    ).bind(runId, authContext.accountId, row.id, row.mutation_id, row.balance_config_version, now),
+    c.env.DB.prepare(
+      `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
+       VALUES (?, ?, ?)`,
+    ).bind(runId, snapshotJson, now),
+    c.env.DB.prepare(
+      `UPDATE operation_previews
+       SET status = 'CONSUMED'
+       WHERE id = ? AND account_id = ? AND status = 'ACTIVE'`,
+    ).bind(row.id, authContext.accountId),
+  ]);
+
+  return c.json(createRunStartAcceptedResponse({
+    runId,
+    operationPreviewId: row.id,
+    previewMetadata,
+    risk: row.risk,
+    balanceVersion: row.balance_config_version,
+    serverStartedAt: now,
   }));
 });
 

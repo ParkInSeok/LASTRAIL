@@ -305,6 +305,64 @@ Only positive integer versions are accepted. Missing/unpublished versions return
 
 ## Run Finish / Reward
 
+Run start uses a local launch contract route:
+
+```text
+POST /v1/runs/start
+Authorization: Bearer <access-token>
+```
+
+Request body:
+
+```json
+{
+  "operationPreviewId": "preview_..."
+}
+```
+
+The account id is resolved only from the authenticated player session. Query
+parameters and client-supplied source-of-truth fields such as `accountId`,
+`risk`, `riskLevel`, `storyProgress`, reward amounts, economy grants, or
+animation timeline data are rejected with `contract_violation`.
+
+Accepted response shape:
+
+```json
+{
+  "accepted": true,
+  "startStatus": "STARTED",
+  "runId": "run_...",
+  "operationPreviewId": "preview_...",
+  "operationId": "opn_03_water_stop",
+  "actId": "act_01_wasteland_railway",
+  "regionId": "region_wasteland_railway",
+  "encounterType": "ORDINARY_15_WAVE",
+  "riskLevel": "III",
+  "risk": "III",
+  "balanceVersion": "501",
+  "contentVersion": "act1.launch.content.v1",
+  "ordinary": {
+    "totalWaves": 15,
+    "startWaveNumber": 1
+  },
+  "raid": null,
+  "raidId": null,
+  "bossId": null,
+  "bossPhaseRefs": [],
+  "allowedOperatorSlots": 4,
+  "startAugmentPackageRef": "act1_full_start_package_v1",
+  "startTacticPackageRef": "act1_full_start_package_v1",
+  "serverStartedAt": "2026-08-27T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
+}
+```
+
+Raid boss-only previews use the same route and return `encounterType =
+RAID_BOSS`, `ordinary = null`, and raid refs under both the compact top-level
+fields and the `raid` object. Ordinary previews must not leak `raidId`,
+`bossId`, or `bossPhaseRefs` from malformed preview JSON.
+
 Run finish uses `POST /v1/runs/:runId/finish`. See `docs/api/run-result-submit.md`.
 
 Accepted run finish responses return `rewardPreviewId` first. Reward review and
