@@ -118,7 +118,7 @@ Example flat entry:
   "id": "narrative.opn_01_last_departure.briefing.summary",
   "locale": "ko-KR",
   "text": "정비역의 마지막 출발 창구가 닫히고 있다.",
-  "narrativeVersion": "act1.2026-08-27.001"
+  "narrativeVersion": "act1.2026-08-30.001"
 }
 ```
 
@@ -132,9 +132,9 @@ Recommended first-pass format:
 
 Examples:
 
-- `act1.2026-08-27.001`
-- `opn_01_last_departure.2026-08-27.001`
-- `raid_raider_king_engine.2026-08-27.001`
+- `act1.2026-08-30.001`
+- `opn_01_last_departure.2026-08-30.001`
+- `raid_raider_king_engine.2026-08-30.001`
 
 Recommended launch policy:
 
@@ -274,7 +274,7 @@ Suggested Korean display labels:
 Use this candidate until a formal localization pipeline replaces it:
 
 - Scope: `act1`
-- Version: `act1.2026-08-27.001`
+- Version: `act1.2026-08-30.001`
 - Covered ids:
   - `opn_01_last_departure`
   - `opn_02_first_signal`
@@ -284,7 +284,7 @@ Use this candidate until a formal localization pipeline replaces it:
   - `opn_06_broken_line`
   - `raid_raider_king_engine`
 
-This version marks narrative draft compatibility only. It does not indicate production localization readiness.
+This version marks Act 1 launch fixture compatibility only. It does not indicate production localization readiness, reward eligibility, unlock truth, or economy truth.
 
 ## Future Contract Checks
 

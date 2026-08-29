@@ -49,13 +49,15 @@ Gacha flavor pattern:
 narrative.gacha.<banner_or_context>.<surface>.<slot>
 ```
 
-Recommended Act 1 narrative version candidate:
+Recommended Act 1 launch fixture version candidate:
 
 ```text
-act1.2026-08-27.001
+act1.2026-08-30.001
 ```
 
-This version indicates draft compatibility only. It is not a production localization readiness claim.
+This follows the versioning policy format `<scope>.<date>.<revision>` from `narrative-localization-versioning.md`.
+
+This version indicates Act 1 launch fixture compatibility only. It is not a production localization readiness claim, reward eligibility input, unlock truth, economy truth, or server mutation signal.
 
 ## Standard Mission Coverage
 
@@ -306,8 +308,39 @@ Forbidden flavor direction:
 - The story raid uses boss-only id slots, not ordinary `first_wave` or `final_wave` slots.
 - The story raid includes boss entrance, danger warning, state transition, defeat, failure, and stamina refund UX ids.
 - All 15 operators have display, profile, voice keyword, callout, skill cue, and ultimate cue ids.
+- Operator display names use launch candidates from `act1-operator-voice-guide.md`.
+- Codex/archive ids are included for all ordinary operations and the story raid.
+- Reward framing ids are included as qualitative first clear and repeat clear flavor only.
+- Story raid failure refund includes the consolidated `failure_refund.toast` candidate id.
 - Gacha flavor ids are presentation-only and avoid probability, pity, ticket quantity, ownership, and guarantee promises.
 - Reward framing ids remain qualitative and do not encode amounts or eligibility.
+- Optional objective copy remains excluded from the launch fixture by default.
+- Raider King remains a title for launch; personal naming is deferred to a future narrative pass.
 - No Rail Choice Event ids are included in launch coverage.
 - No World Raid ids are included in launch coverage.
 - No server/API/Unity implementation requirement is introduced by this map.
+
+## Launch Freeze Recommendation
+
+Recommended freeze candidate:
+
+```text
+act1.2026-08-30.001
+```
+
+Freeze-ready narrative coverage:
+
+- `opn_01` through `opn_06` ordinary operation narrative slots.
+- `raid_raider_king_engine` boss-only story raid narrative slots.
+- 15 operator display/profile/callout/skill/ultimate cue ids.
+- Codex/archive ids for all Act 1 missions and the story raid.
+- Qualitative reward framing ids for first clear and repeat clear surfaces.
+- Consolidated story raid failure refund toast id.
+- Launch-safe gacha flavor/reveal id pattern.
+
+Remaining before launch freeze:
+
+- Unity integration review for copy length, line wrapping, safe-area placement, and slot timing.
+- Final fixture export/version stamp after Unity review accepts the visible line lengths.
+- Optional objective copy archival or future presentation-only grouping.
+- Raider King personal name remains deferred and should not block launch fixture freeze.

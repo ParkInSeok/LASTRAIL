@@ -275,15 +275,41 @@ Raid notes:
 
 ## Launch Fixture Decisions
 
+- Narrative/localization version: recommend `act1.2026-08-30.001` as the Act 1 launch fixture freeze candidate.
 - Reward framing: include first clear and repeat clear ids as qualitative flavor only.
 - Story raid failure refund: prefer one consolidated toast id, `narrative.raid_raider_king_engine.failure_refund.toast`, as localization planning rather than a Unity implementation requirement.
 - Optional objective copy: keep in source dialogue drafts but exclude from the launch fixture by default.
 - Raider King: keep as a title for launch; defer any personal name to a future narrative identity pass.
 
+## Launch Freeze Checklist
+
+Closed for freeze candidate:
+
+- Ordinary operation coverage: `opn_01` through `opn_06`.
+- Story raid coverage: `raid_raider_king_engine` as boss-only, 5 operators, boss defeat success, and failure stamina refund UX.
+- Operator coverage: 15 launch display names, profile snippets, voice keywords, battle callouts, skill cues, and ultimate cues.
+- Codex/archive coverage: all Act 1 ordinary operations and the story raid.
+- Reward framing coverage: first clear and repeat clear qualitative ids.
+- Failure refund coverage: consolidated story raid refund toast id plus source-copy candidates.
+- Gacha flavor coverage: launch-safe id pattern only, without probability, pity, ticket quantity, ownership, or guarantee copy.
+
+Still required before launch freeze:
+
+- Unity integration review for copy length, HUD overlap, line wrapping, safe-area placement, and slot timing.
+- Final fixture export after Unity review.
+- Final narrative version stamp using `act1.2026-08-30.001` or a later same-format revision if copy changes after review.
+
+Explicitly deferred:
+
+- Optional objective copy fixture promotion; preserve as source draft or future `presentation_optional` grouping.
+- Raider King personal name; keep title-only launch copy.
+- Rail Choice Events and World Raid narrative surfaces.
+
 ## Launch Self-Review Checklist
 
 Before marking Act 1 narrative launch-ready:
 
+- Act 1 launch fixture version uses `act1.2026-08-30.001` or a later same-format approved revision.
 - All `opn_01` through `opn_06` documents include briefing, loading, battle callouts, result, reward framing, and launch codex/archive.
 - `raid_raider_king_engine` includes boss-only briefing, loading, boss entrance, state transitions, danger warnings, final stop, victory, failure, refund UX, result, reward framing, and launch codex/archive.
 - All launch narrative surfaces have stable string-id coverage in `act1-localization-string-id-map.md`.
