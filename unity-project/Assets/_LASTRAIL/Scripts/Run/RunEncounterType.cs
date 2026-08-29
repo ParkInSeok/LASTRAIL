@@ -10,6 +10,21 @@ namespace LastRail.Run
 
     public static class RunEncounterTypeFormatter
     {
+        public static RunEncounterType FromServerValue(string value)
+        {
+            switch (value)
+            {
+                case null:
+                case "":
+                case "ORDINARY_15_WAVE":
+                    return RunEncounterType.Ordinary15Wave;
+                case "RAID_BOSS":
+                    return RunEncounterType.RaidBoss;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(value), value, "Unsupported run encounter type.");
+            }
+        }
+
         public static string ToServerValue(RunEncounterType encounterType)
         {
             switch (encounterType)

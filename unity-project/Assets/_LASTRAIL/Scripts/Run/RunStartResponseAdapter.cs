@@ -22,7 +22,7 @@ namespace LastRail.Run
             return RunStartSnapshotBuilder.BuildActOne(
                 response.RunId,
                 response.BalanceVersion,
-                contentVersion: response.BalanceVersion,
+                contentVersion: response.ContentVersion ?? response.BalanceVersion,
                 selectedOperatorIds,
                 selectedUltimateOperatorId,
                 selectedTrainCarSlots,
@@ -38,7 +38,14 @@ namespace LastRail.Run
                 response.Seed,
                 response.ServerStartedAt,
                 response.StartAugmentPackageRef,
-                response.StartTacticPackageRef);
+                response.StartTacticPackageRef,
+                response.OperationPreviewId,
+                response.EncounterType,
+                response.OrdinaryTotalWaves,
+                response.RaidId,
+                response.BossId,
+                response.BossPhaseRefs,
+                response.AllowedOperatorSlots);
         }
     }
 }

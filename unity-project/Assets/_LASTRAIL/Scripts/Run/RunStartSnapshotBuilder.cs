@@ -26,7 +26,14 @@ namespace LastRail.Run
             uint seed,
             DateTime serverStartedAt,
             string startAugmentPackageRef = null,
-            string startTacticPackageRef = null)
+            string startTacticPackageRef = null,
+            string operationPreviewId = null,
+            RunEncounterType encounterType = RunEncounterType.Ordinary15Wave,
+            int? ordinaryTotalWaves = null,
+            string raidId = null,
+            string bossId = null,
+            IReadOnlyList<string> bossPhaseRefs = null,
+            IReadOnlyList<string> allowedOperatorSlots = null)
         {
             var defaultRoster = selectedOperatorIds == null || string.IsNullOrWhiteSpace(selectedUltimateOperatorId)
                 ? ActOneOperatorRosterRules.CreateInitialRoster()
@@ -56,7 +63,14 @@ namespace LastRail.Run
                 seed,
                 serverStartedAt,
                 startAugmentPackageRef,
-                startTacticPackageRef);
+                startTacticPackageRef,
+                operationPreviewId,
+                encounterType,
+                ordinaryTotalWaves,
+                raidId,
+                bossId,
+                bossPhaseRefs,
+                allowedOperatorSlots);
         }
 
         public static RunSnapshot Build(
@@ -77,7 +91,14 @@ namespace LastRail.Run
             uint seed,
             DateTime serverStartedAt,
             string startAugmentPackageRef = null,
-            string startTacticPackageRef = null)
+            string startTacticPackageRef = null,
+            string operationPreviewId = null,
+            RunEncounterType encounterType = RunEncounterType.Ordinary15Wave,
+            int? ordinaryTotalWaves = null,
+            string raidId = null,
+            string bossId = null,
+            IReadOnlyList<string> bossPhaseRefs = null,
+            IReadOnlyList<string> allowedOperatorSlots = null)
         {
             if (trainCarSlots == null)
             {
@@ -119,7 +140,14 @@ namespace LastRail.Run
                 seed,
                 serverStartedAt,
                 startAugmentPackageRef,
-                startTacticPackageRef);
+                startTacticPackageRef,
+                operationPreviewId,
+                encounterType,
+                ordinaryTotalWaves,
+                raidId,
+                bossId,
+                bossPhaseRefs,
+                allowedOperatorSlots);
         }
 
         private static IReadOnlyList<CarriageType> DefaultTrainCarSlotsFor(IReadOnlyList<string> completedOperationIds)

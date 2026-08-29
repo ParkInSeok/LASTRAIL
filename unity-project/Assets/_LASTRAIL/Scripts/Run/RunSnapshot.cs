@@ -27,7 +27,14 @@ namespace LastRail.Run
             uint rngSeed,
             DateTime serverStartedAt,
             string startAugmentPackageRef,
-            string startTacticPackageRef)
+            string startTacticPackageRef,
+            string operationPreviewId,
+            RunEncounterType encounterType,
+            int? ordinaryTotalWaves,
+            string raidId,
+            string bossId,
+            IReadOnlyList<string> bossPhaseRefs,
+            IReadOnlyList<string> allowedOperatorSlots)
         {
             RunId = runId;
             BalanceVersion = balanceVersion;
@@ -49,6 +56,13 @@ namespace LastRail.Run
             ServerStartedAt = serverStartedAt;
             StartAugmentPackageRef = NormalizeOptional(startAugmentPackageRef);
             StartTacticPackageRef = NormalizeOptional(startTacticPackageRef);
+            OperationPreviewId = NormalizeOptional(operationPreviewId);
+            EncounterType = encounterType;
+            OrdinaryTotalWaves = ordinaryTotalWaves;
+            RaidId = NormalizeOptional(raidId);
+            BossId = NormalizeOptional(bossId);
+            BossPhaseRefs = CopyOptionalStrings(bossPhaseRefs, nameof(bossPhaseRefs));
+            AllowedOperatorSlots = CopyOptionalStrings(allowedOperatorSlots, nameof(allowedOperatorSlots));
         }
 
         public string RunId { get; }
@@ -73,6 +87,13 @@ namespace LastRail.Run
         public DateTime ServerStartedAt { get; }
         public string StartAugmentPackageRef { get; }
         public string StartTacticPackageRef { get; }
+        public string OperationPreviewId { get; }
+        public RunEncounterType EncounterType { get; }
+        public int? OrdinaryTotalWaves { get; }
+        public string RaidId { get; }
+        public string BossId { get; }
+        public IReadOnlyList<string> BossPhaseRefs { get; }
+        public IReadOnlyList<string> AllowedOperatorSlots { get; }
 
         public static RunSnapshot Create(
             string runId,
@@ -110,7 +131,14 @@ namespace LastRail.Run
                 rngSeed,
                 DateTime.MinValue,
                 null,
-                null);
+                null,
+                null,
+                RunEncounterType.Ordinary15Wave,
+                null,
+                null,
+                null,
+                Array.Empty<string>(),
+                Array.Empty<string>());
         }
 
         public static RunSnapshot Create(
@@ -133,7 +161,14 @@ namespace LastRail.Run
             uint rngSeed,
             DateTime serverStartedAt,
             string startAugmentPackageRef = null,
-            string startTacticPackageRef = null)
+            string startTacticPackageRef = null,
+            string operationPreviewId = null,
+            RunEncounterType encounterType = RunEncounterType.Ordinary15Wave,
+            int? ordinaryTotalWaves = null,
+            string raidId = null,
+            string bossId = null,
+            IReadOnlyList<string> bossPhaseRefs = null,
+            IReadOnlyList<string> allowedOperatorSlots = null)
         {
             RequireText(runId, nameof(runId));
             RequireText(balanceVersion, nameof(balanceVersion));
@@ -201,7 +236,14 @@ namespace LastRail.Run
                 rngSeed,
                 serverStartedAt,
                 startAugmentPackageRef,
-                startTacticPackageRef);
+                startTacticPackageRef,
+                operationPreviewId,
+                encounterType,
+                ordinaryTotalWaves,
+                raidId,
+                bossId,
+                bossPhaseRefs,
+                allowedOperatorSlots);
         }
 
         private static void RequireText(string value, string name)
@@ -215,6 +257,23 @@ namespace LastRail.Run
         private static string NormalizeOptional(string value)
         {
             return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+
+        private static IReadOnlyList<string> CopyOptionalStrings(IReadOnlyList<string> values, string name)
+        {
+            if (values == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            var copy = new string[values.Count];
+            for (var i = 0; i < values.Count; i++)
+            {
+                RequireText(values[i], name);
+                copy[i] = values[i].Trim();
+            }
+
+            return copy;
         }
     }
 }

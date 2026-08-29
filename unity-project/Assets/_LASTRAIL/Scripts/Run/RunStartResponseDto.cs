@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LastRail.Run
 {
@@ -18,7 +19,15 @@ namespace LastRail.Run
             DateTime serverStartedAt,
             bool firstClearEligible,
             string startAugmentPackageRef = null,
-            string startTacticPackageRef = null)
+            string startTacticPackageRef = null,
+            string operationPreviewId = null,
+            string contentVersion = null,
+            RunEncounterType encounterType = RunEncounterType.Ordinary15Wave,
+            int? ordinaryTotalWaves = null,
+            string raidId = null,
+            string bossId = null,
+            IReadOnlyList<string> bossPhaseRefs = null,
+            IReadOnlyList<string> allowedOperatorSlots = null)
         {
             RequireText(runId, nameof(runId));
             RequireText(balanceVersion, nameof(balanceVersion));
@@ -43,6 +52,14 @@ namespace LastRail.Run
             FirstClearEligible = firstClearEligible;
             StartAugmentPackageRef = NormalizeOptional(startAugmentPackageRef);
             StartTacticPackageRef = NormalizeOptional(startTacticPackageRef);
+            OperationPreviewId = NormalizeOptional(operationPreviewId);
+            ContentVersion = NormalizeOptional(contentVersion);
+            EncounterType = encounterType;
+            OrdinaryTotalWaves = ordinaryTotalWaves;
+            RaidId = NormalizeOptional(raidId);
+            BossId = NormalizeOptional(bossId);
+            BossPhaseRefs = CopyOptionalStrings(bossPhaseRefs, nameof(bossPhaseRefs));
+            AllowedOperatorSlots = CopyOptionalStrings(allowedOperatorSlots, nameof(allowedOperatorSlots));
         }
 
         public string RunId { get; }
@@ -59,6 +76,14 @@ namespace LastRail.Run
         public bool FirstClearEligible { get; }
         public string StartAugmentPackageRef { get; }
         public string StartTacticPackageRef { get; }
+        public string OperationPreviewId { get; }
+        public string ContentVersion { get; }
+        public RunEncounterType EncounterType { get; }
+        public int? OrdinaryTotalWaves { get; }
+        public string RaidId { get; }
+        public string BossId { get; }
+        public IReadOnlyList<string> BossPhaseRefs { get; }
+        public IReadOnlyList<string> AllowedOperatorSlots { get; }
 
         private static void RequireText(string value, string name)
         {
@@ -71,6 +96,27 @@ namespace LastRail.Run
         private static string NormalizeOptional(string value)
         {
             return string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+
+        private static IReadOnlyList<string> CopyOptionalStrings(IReadOnlyList<string> values, string name)
+        {
+            if (values == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            var copy = new string[values.Count];
+            for (var i = 0; i < values.Count; i++)
+            {
+                if (string.IsNullOrWhiteSpace(values[i]))
+                {
+                    throw new ArgumentException("Value cannot be empty.", name);
+                }
+
+                copy[i] = values[i].Trim();
+            }
+
+            return copy;
         }
     }
 }
