@@ -101,6 +101,44 @@ describe("opsErrorLogContract", () => {
     expect(JSON.stringify(result)).not.toContain("rawAuthHeader");
   });
 
+  it("maps run start state conflicts as masked retryable events with safe optional run correlation", () => {
+    const result = mapOpsErrorLogListResponse({
+      items: [
+        {
+          id: "ops-run-start-1",
+          occurredAt: "2026-08-29T03:00:00.000Z",
+          environment: "DEV",
+          severity: "error",
+          status: "open",
+          source: "game_api",
+          service: "game_api",
+          errorCode: "run_start_state_conflict",
+          messageSummary: "Run start state conflict recovered",
+          requestId: "req-run-start-1",
+          correlationJson: { accountId: "account-1", runId: "candidate-run-id-without-fk" },
+          retryable: true,
+          masked: true,
+          rawBody: "must-not-copy",
+          stackDump: "must-not-copy"
+        }
+      ]
+    });
+
+    expect(result.items[0]).toMatchObject({
+      id: "ops-run-start-1",
+      severity: "error",
+      source: "game_api",
+      service: "game_api",
+      errorCode: "run_start_state_conflict",
+      accountId: "account-1",
+      runId: "candidate-run-id-without-fk",
+      retryable: true,
+      masked: true
+    });
+    expect(JSON.stringify(result)).not.toContain("rawBody");
+    expect(JSON.stringify(result)).not.toContain("stackDump");
+  });
+
   it("maps detail response with null detail placeholder and safe refs", () => {
     const result = mapOpsErrorLogDetailResponse({
       item: {

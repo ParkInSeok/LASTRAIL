@@ -83,6 +83,7 @@ export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
     options: [
       "google_auth_config_missing",
       "google_auth_verifier_unavailable",
+      "run_start_state_conflict",
       "reward_plan_mismatch",
       "reward_multiplier_missing",
       "reward_plan_unavailable",
@@ -168,6 +169,12 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
     status: "연동 대기",
     description:
       "Google JWKS/fetch/parse 계열 운영 장애는 retryable=true, masked=true, severity=error, source/service=game_api 기준으로 표시합니다."
+  },
+  {
+    title: "출격 시작 상태 충돌",
+    status: "연동 대기",
+    description:
+      "run_start_state_conflict는 retryable=true, masked=true 기준이며 run id FK가 없을 수 있어 safe correlation only로 표시합니다."
   }
 ];
 

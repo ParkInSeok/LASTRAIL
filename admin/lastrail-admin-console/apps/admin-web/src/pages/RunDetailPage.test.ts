@@ -203,9 +203,16 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => [placeholder.field, placeholder.value])).toEqual([
       ["allowedOperatorSlots", "5"],
       ["failureStaminaRefund", "연동 대기"],
+      ["failureStaminaRefundStatus", "PENDING"],
+      ["failureStaminaRefundResource", "STAMINA"],
+      ["failureStaminaRefundReason", "STORY_RAID_FAILURE"],
+      ["failureStaminaRefundPolicyId", "act1_story_raid_failure_stamina_refund_v1"],
       ["successCondition", "boss_defeat"],
       ["worldRaidScope", "backlog"]
     ]);
+    expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
+      "read-only marker"
+    );
     expect(storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => placeholder.note).join(" ")).toContain(
       "World Raid와 분리"
     );

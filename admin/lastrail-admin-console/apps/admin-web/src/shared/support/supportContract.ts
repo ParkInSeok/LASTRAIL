@@ -209,6 +209,12 @@ export type SupportRecentRunStartMetadata = {
   contentVersion: string;
   balanceVersion: string;
   allowedOperatorSlots: string;
+  failureStaminaRefundMarker: {
+    status: string;
+    resource: string;
+    reason: string;
+    policyId: string;
+  };
   source: "run_start";
 };
 
@@ -1145,6 +1151,7 @@ function nullableStringValue(value: unknown): string {
 
 function supportRunStartMetadata(record: Record<string, unknown>): SupportRecentRunStartMetadata {
   const metadata = asRecord(record.serverPreviewMetadata) ?? asRecord(record.metadata) ?? {};
+  const failureStaminaRefundMarker = asRecord(metadata.failureStaminaRefundMarker);
   return {
     encounterType: stringValue(metadata.encounterType),
     raidId: stringValue(metadata.raidId),
@@ -1155,6 +1162,12 @@ function supportRunStartMetadata(record: Record<string, unknown>): SupportRecent
     contentVersion: stringValue(metadata.contentVersion),
     balanceVersion: stringValue(metadata.balanceVersion),
     allowedOperatorSlots: nullableStringValue(metadata.allowedOperatorSlots),
+    failureStaminaRefundMarker: {
+      status: stringValue(failureStaminaRefundMarker?.status),
+      resource: stringValue(failureStaminaRefundMarker?.resource),
+      reason: stringValue(failureStaminaRefundMarker?.reason),
+      policyId: stringValue(failureStaminaRefundMarker?.policyId)
+    },
     source: "run_start"
   };
 }

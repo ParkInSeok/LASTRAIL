@@ -42,6 +42,7 @@ describe("ErrorLogsPage configuration", () => {
     expect(options).toContain("치명 오류 (fatal)");
     expect(options).toContain("Google 인증 설정 누락 (google_auth_config_missing)");
     expect(options).toContain("Google 인증 검증기 사용 불가 (google_auth_verifier_unavailable)");
+    expect(options).toContain("출격 시작 상태 충돌 (run_start_state_conflict)");
     expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
     expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
     expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
@@ -65,6 +66,8 @@ describe("ErrorLogsPage configuration", () => {
     expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("Google JWKS/fetch/parse");
     expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("retryable=true");
     expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("masked=true");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("run_start_state_conflict");
+    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("safe correlation only");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("JWKS raw dump");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("full claims");
     expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("stack dump");

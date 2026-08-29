@@ -147,6 +147,30 @@ export const storyRaidLaunchResultPolicyPlaceholders: RunCombatEvidencePlacehold
     note: "story raid 실패 시 stamina refund 후보, read-only evidence"
   },
   {
+    field: "failureStaminaRefundStatus",
+    label: "실패 환급 상태",
+    value: "PENDING",
+    note: "story raid failure stamina refund read-only marker"
+  },
+  {
+    field: "failureStaminaRefundResource",
+    label: "실패 환급 리소스",
+    value: "STAMINA",
+    note: "story raid failure stamina refund read-only marker"
+  },
+  {
+    field: "failureStaminaRefundReason",
+    label: "실패 환급 사유",
+    value: "STORY_RAID_FAILURE",
+    note: "story raid failure stamina refund read-only marker"
+  },
+  {
+    field: "failureStaminaRefundPolicyId",
+    label: "실패 환급 정책 ID",
+    value: "act1_story_raid_failure_stamina_refund_v1",
+    note: "story raid failure stamina refund read-only marker"
+  },
+  {
     field: "successCondition",
     label: "성공 기준",
     value: "boss_defeat",

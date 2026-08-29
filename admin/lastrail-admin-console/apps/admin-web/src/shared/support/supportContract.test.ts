@@ -492,6 +492,12 @@ describe("supportContract", () => {
             contentVersion: "act1.content.001",
             balanceVersion: "balance.dev.001",
             allowedOperatorSlots: 5,
+            failureStaminaRefundMarker: {
+              status: "PENDING",
+              resource: "STAMINA",
+              reason: "STORY_RAID_FAILURE",
+              policyId: "act1_story_raid_failure_stamina_refund_v1"
+            },
             rawRng: "must-not-copy",
             fullWeights: "must-not-copy",
             animationTimeline: "must-not-copy"
@@ -586,6 +592,12 @@ describe("supportContract", () => {
           contentVersion: "act1.content.001",
           balanceVersion: "balance.dev.001",
           allowedOperatorSlots: "5",
+          failureStaminaRefundMarker: {
+            status: "PENDING",
+            resource: "STAMINA",
+            reason: "STORY_RAID_FAILURE",
+            policyId: "act1_story_raid_failure_stamina_refund_v1"
+          },
           source: "run_start"
         }
       }

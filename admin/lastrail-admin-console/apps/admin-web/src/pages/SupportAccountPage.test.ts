@@ -342,6 +342,12 @@ describe("SupportAccountPage configuration", () => {
           contentVersion: "act1.content.001",
           balanceVersion: "balance.dev.001",
           allowedOperatorSlots: "5",
+          failureStaminaRefundMarker: {
+            status: "PENDING",
+            resource: "STAMINA",
+            reason: "STORY_RAID_FAILURE",
+            policyId: "act1_story_raid_failure_stamina_refund_v1"
+          },
           source: "run_start"
         }
       }
@@ -357,6 +363,8 @@ describe("SupportAccountPage configuration", () => {
         packageRefs:
           "startAugmentPackageRef=augment_pkg_act1_raid_v1 / startTacticPackageRef=tactic_pkg_act1_raid_v1 / source=run_start",
         versions: "contentVersion=act1.content.001 / balanceVersion=balance.dev.001 / allowedOperatorSlots=5",
+        storyRaidRefund:
+          "status=PENDING / resource=STAMINA / reason=STORY_RAID_FAILURE / policyId=act1_story_raid_failure_stamina_refund_v1",
         rewardPreviewId: "reward-preview-raid-1"
       }
     ]);
@@ -364,6 +372,7 @@ describe("SupportAccountPage configuration", () => {
     const fallbackRows = supportRecentRunEvidenceRows([]);
     expect(fallbackRows[0].encounter).toBe("연동 대기");
     expect(fallbackRows[0].packageRefs).toContain("server-authored run start package");
+    expect(fallbackRows[0].storyRaidRefund).toContain("연동 대기");
 
     const serialized = JSON.stringify(rows);
     expect(serialized).not.toContain("raw RNG");

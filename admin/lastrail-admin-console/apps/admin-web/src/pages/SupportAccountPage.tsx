@@ -70,6 +70,7 @@ type SupportRecentRunEvidenceRow = {
   raidRefs: string;
   packageRefs: string;
   versions: string;
+  storyRaidRefund: string;
   rewardPreviewId: string;
 };
 
@@ -127,6 +128,18 @@ function listSummary(values: string[]): string {
   return values.length > 0 ? values.join(" / ") : "연동 대기";
 }
 
+function storyRaidRefundSummary(marker: SupportRecentRunEvidence["startMetadata"]["failureStaminaRefundMarker"]): string {
+  if (
+    marker.status === "연동 대기" &&
+    marker.resource === "연동 대기" &&
+    marker.reason === "연동 대기" &&
+    marker.policyId === "연동 대기"
+  ) {
+    return "연동 대기";
+  }
+  return `status=${marker.status} / resource=${marker.resource} / reason=${marker.reason} / policyId=${marker.policyId}`;
+}
+
 export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]): SupportRecentRunEvidenceRow[] {
   if (items.length === 0) {
     return [
@@ -138,6 +151,7 @@ export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]):
         raidRefs: "연동 대기",
         packageRefs: "server-authored run start package 연동 대기",
         versions: "연동 대기",
+        storyRaidRefund: "연동 대기",
         rewardPreviewId: "연동 대기"
       }
     ];
@@ -158,6 +172,7 @@ export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]):
       )}`,
       packageRefs: `startAugmentPackageRef=${metadata.startAugmentPackageRef} / startTacticPackageRef=${metadata.startTacticPackageRef} / source=${metadata.source}`,
       versions: `contentVersion=${metadata.contentVersion} / balanceVersion=${metadata.balanceVersion} / allowedOperatorSlots=${metadata.allowedOperatorSlots}`,
+      storyRaidRefund: storyRaidRefundSummary(metadata.failureStaminaRefundMarker),
       rewardPreviewId: item.rewardPreviewId
     };
   });
@@ -516,6 +531,7 @@ export function SupportAccountPage() {
               <th>레이드 ref</th>
               <th>시작 패키지 ref</th>
               <th>버전/슬롯</th>
+              <th>스토리 레이드 환급</th>
               <th>rewardPreviewId</th>
             </tr>
           </thead>
@@ -529,6 +545,7 @@ export function SupportAccountPage() {
                 <td>{row.raidRefs}</td>
                 <td>{row.packageRefs}</td>
                 <td>{row.versions}</td>
+                <td>{row.storyRaidRefund}</td>
                 <td>{row.rewardPreviewId}</td>
               </tr>
             ))}
