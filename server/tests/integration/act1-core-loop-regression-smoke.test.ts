@@ -48,8 +48,9 @@ class SqlJsD1Statement {
     }
   }
 
-  run(): void {
+  run(): { success: true; meta: { changes: number } } {
     this.database.run(this.sql, this.values);
+    return { success: true, meta: { changes: this.database.getRowsModified() } };
   }
 }
 
@@ -226,6 +227,44 @@ function seedRaidRun(db: initSqlJs.Database, accountId: string): void {
        id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id
      ) VALUES ('run-act1-raid-1', ?, 'preview-act1-raid-1', 'mutation-act1-raid-start-1', 501, 'ACTIVE', ?, NULL, NULL);`,
     [accountId, fixedNow],
+  );
+}
+
+function seedStartablePreview(options: {
+  db: initSqlJs.Database;
+  accountId: string;
+  mutationId: string;
+  previewId: string;
+  sequence: number;
+  operationId: string;
+  risk: string;
+  previewJson: Record<string, unknown>;
+}): void {
+  options.db.run(
+    `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+     VALUES (?, ?, ?, 'RUN_PREVIEW', ?, ?);`,
+    [
+      options.mutationId,
+      options.accountId,
+      options.sequence,
+      `${options.previewId}-seed`,
+      fixedNow,
+    ],
+  );
+  options.db.run(
+    `INSERT INTO operation_previews (
+       id, account_id, mutation_id, objective, risk, balance_config_version, preview_json, status, expires_at, created_at
+     ) VALUES (?, ?, ?, ?, ?, 501, ?, 'ACTIVE', ?, ?);`,
+    [
+      options.previewId,
+      options.accountId,
+      options.mutationId,
+      options.operationId,
+      options.risk,
+      JSON.stringify(options.previewJson),
+      fixedNow + 900000,
+      fixedNow,
+    ],
   );
 }
 
@@ -578,6 +617,172 @@ describe("Act 1 core loop full local regression smoke", () => {
       expect(scalar(db, "SELECT COUNT(*) FROM run_final_results;")).toBe(0);
       expect(scalar(db, "SELECT COUNT(*) FROM run_reward_previews;")).toBe(0);
       expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'run_finish';")).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("keeps run start and Admin support metadata aligned from operation preview source refs", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      seedAdminPrincipal(db);
+      seedBalance(db);
+      const gameEnv = createGameEnv(db);
+      const guestResponse = await gameApi.request("/v1/auth/guest", { method: "POST" }, gameEnv);
+      const guest = await guestResponse.json() as { account: { id: string }; accessToken: string };
+
+      seedStartablePreview({
+        db,
+        accountId: guest.account.id,
+        mutationId: "mutation-start-align-ordinary",
+        previewId: "preview-start-align-ordinary",
+        sequence: 10,
+        operationId: "opn_03_water_stop",
+        risk: "III",
+        previewJson: {
+          operationId: "opn_03_water_stop",
+          actId: "act_01_wasteland_railway",
+          regionId: "region_wasteland_railway",
+          encounterType: "ORDINARY_15_WAVE",
+          raidId: "should_not_leak",
+          bossId: "should_not_leak",
+          bossPhaseRefs: ["should_not_leak"],
+          allowedOperatorSlots: 5,
+          startAugmentPackageRef: "act1_full_start_package_v1",
+          startTacticPackageRef: "act1_full_start_package_v1",
+          contentVersion: "act1.launch.content.v1",
+        },
+      });
+      seedStartablePreview({
+        db,
+        accountId: guest.account.id,
+        mutationId: "mutation-start-align-raid",
+        previewId: "preview-start-align-raid",
+        sequence: 11,
+        operationId: "raid_raider_king_engine",
+        risk: "V",
+        previewJson: {
+          operationId: "raid_raider_king_engine",
+          actId: "act_01_wasteland_railway",
+          regionId: "region_wasteland_railway",
+          encounterType: "RAID_BOSS",
+          raidId: "raid_raider_king_engine",
+          bossId: "boss_raider_king_engine",
+          bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+          allowedOperatorSlots: 5,
+          startAugmentPackageRef: "act1_full_start_package_v1",
+          startTacticPackageRef: "act1_full_start_package_v1",
+          contentVersion: "act1.launch.content.v1",
+        },
+      });
+
+      const ordinaryStart = await gameApi.request(
+        "/v1/runs/start",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guest.accessToken}`,
+            "Idempotency-Key": "act1-start-align-ordinary",
+          },
+          body: JSON.stringify({ operationPreviewId: "preview-start-align-ordinary" }),
+        },
+        gameEnv,
+      );
+      expect(ordinaryStart.status).toBe(200);
+      const ordinaryBody = await ordinaryStart.json() as { runId: string };
+      expect(ordinaryBody).toMatchObject({
+        accepted: true,
+        operationPreviewId: "preview-start-align-ordinary",
+        operationId: "opn_03_water_stop",
+        encounterType: "ORDINARY_15_WAVE",
+        ordinary: { totalWaves: 15, startWaveNumber: 1 },
+        raid: null,
+        raidId: null,
+        bossId: null,
+        bossPhaseRefs: [],
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "501",
+      });
+
+      const raidStart = await gameApi.request(
+        "/v1/runs/start",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guest.accessToken}`,
+            "Idempotency-Key": "act1-start-align-raid",
+          },
+          body: JSON.stringify({ operationPreviewId: "preview-start-align-raid" }),
+        },
+        gameEnv,
+      );
+      expect(raidStart.status).toBe(200);
+      const raidBody = await raidStart.json() as { runId: string };
+      expect(raidBody).toMatchObject({
+        accepted: true,
+        operationPreviewId: "preview-start-align-raid",
+        operationId: "raid_raider_king_engine",
+        encounterType: "RAID_BOSS",
+        ordinary: null,
+        raid: {
+          raidId: "raid_raider_king_engine",
+          bossId: "boss_raider_king_engine",
+          bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        },
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "501",
+      });
+
+      const supportResponse = await adminApi.request(
+        `/v1/admin/support/accounts/${guest.account.id}`,
+        { headers: { "Cf-Access-Subject": "access|act1-smoke-admin" } },
+        createAdminEnv(db),
+      );
+      expect(supportResponse.status).toBe(200);
+      const support = await supportResponse.json() as { recentRuns: Array<Record<string, unknown>> };
+      const supportOrdinary = support.recentRuns.find((run) => run.runId === ordinaryBody.runId);
+      const supportRaid = support.recentRuns.find((run) => run.runId === raidBody.runId);
+
+      expect(supportOrdinary).toMatchObject({
+        operationId: "opn_03_water_stop",
+        encounterType: "ORDINARY_15_WAVE",
+        raidId: null,
+        bossId: null,
+        bossPhaseRefs: [],
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "501",
+      });
+      expect(supportRaid).toMatchObject({
+        operationId: "raid_raider_king_engine",
+        encounterType: "RAID_BOSS",
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+        balanceVersion: "501",
+      });
+      expectForbiddenFieldsAbsent(ordinaryBody);
+      expectForbiddenFieldsAbsent(raidBody);
+      expectForbiddenFieldsAbsent(support);
+      expect(JSON.stringify(ordinaryBody)).not.toContain("should_not_leak");
+      expect(JSON.stringify(supportOrdinary)).not.toContain("should_not_leak");
     } finally {
       vi.useRealTimers();
     }
