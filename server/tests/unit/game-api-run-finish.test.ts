@@ -415,7 +415,7 @@ describe("game-api run finish contract", () => {
     });
   });
 
-  it("marks Act 1 story raid failure as a stamina refund candidate without first clear or story progress", async () => {
+  it("commits Act 1 story raid failure stamina refund without first clear or story progress", async () => {
     const batchSql: string[] = [];
     const batchBinds: unknown[][] = [];
     const env: TestEnv = {
@@ -445,7 +445,15 @@ describe("game-api run finish contract", () => {
                     throw new Error("failed story raid must not query story progress advancement");
                   }
                   if (sql.includes("MAX(sequence)")) {
-                    throw new Error("failed story raid must not allocate story progress mutation");
+                    expect(values).toEqual(["account_1"]);
+                    return { sequence: 4 };
+                  }
+                  if (sql.includes("FROM fuel_state")) {
+                    expect(values).toEqual(["account_1"]);
+                    return {
+                      fuel: 80,
+                      max_fuel: 100,
+                    };
                   }
                   if (sql.includes("FROM runs")) {
                     return {
@@ -469,6 +477,7 @@ describe("game-api run finish contract", () => {
                         contentVersion: "act1.launch.content.v1",
                       }),
                       config_json: JSON.stringify({
+                        fuel: { max: 100, runStartCost: 10, rechargeSeconds: 300 },
                         runRewards: launchRunRewardsConfig,
                       }),
                     };
@@ -526,7 +535,7 @@ describe("game-api run finish contract", () => {
       rewardClaimId: null,
       balanceVersion: "1",
       staminaRefund: {
-        status: "PENDING",
+        status: "COMMITTED",
         refundType: "STAMINA",
         reason: "STORY_RAID_FAILURE",
         policyRef: "act1_story_raid_failure_stamina_refund_v1",
@@ -536,8 +545,10 @@ describe("game-api run finish contract", () => {
     });
     expect(batchSql.join("\n")).not.toContain("INSERT INTO account_first_clears");
     expect(batchSql.join("\n")).not.toContain("INSERT INTO account_story_progress");
-    expect(batchSql.join("\n")).not.toContain("INSERT INTO fuel_ledger");
-    expect(batchSql.join("\n")).not.toContain("UPDATE fuel_state");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_mutations");
+    expect(batchSql.join("\n")).toContain("'STORY_RAID_STAMINA_REFUND'");
+    expect(batchSql.join("\n")).toContain("INSERT INTO fuel_ledger");
+    expect(batchSql.join("\n")).toContain("UPDATE fuel_state");
 
     const finalResultInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_final_results"));
     const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
@@ -546,17 +557,29 @@ describe("game-api run finish contract", () => {
     };
     expect(storedPayload.raidResult?.bossDefeated).toBe(false);
     expect(storedPayload.staminaRefund).toMatchObject({
-      status: "PENDING",
+      status: "COMMITTED",
       reason: "STORY_RAID_FAILURE",
       policyRef: "act1_story_raid_failure_stamina_refund_v1",
     });
+    const fuelLedgerInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO fuel_ledger"));
+    expect(batchBinds[fuelLedgerInsertIndex]).toEqual([
+      expect.stringMatching(/^fuel_ledger_/u),
+      "account_1",
+      expect.stringMatching(/^mutation_/u),
+      10,
+      90,
+      expect.any(Number),
+    ]);
+    expect(batchSql[fuelLedgerInsertIndex]).toContain("'STORY_RAID_FAILURE_REFUND'");
+    const fuelStateUpdateIndex = batchSql.findIndex((sql) => sql.includes("UPDATE fuel_state"));
+    expect(batchBinds[fuelStateUpdateIndex]).toEqual([90, expect.any(Number), "account_1"]);
 
     const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
     const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
       calculation: { staminaRefund?: { status?: string; reason?: string; policyRef?: string } };
     };
     expect(rewardPlan.calculation.staminaRefund).toMatchObject({
-      status: "PENDING",
+      status: "COMMITTED",
       reason: "STORY_RAID_FAILURE",
       policyRef: "act1_story_raid_failure_stamina_refund_v1",
     });
@@ -723,7 +746,7 @@ describe("game-api run finish contract", () => {
                         encounterType: "RAID_BOSS",
                         raidResult: { bossDefeated: false },
                         staminaRefund: {
-                          status: "PENDING",
+                          status: "COMMITTED",
                           refundType: "STAMINA",
                           reason: "STORY_RAID_FAILURE",
                           policyRef: "act1_story_raid_failure_stamina_refund_v1",
@@ -779,7 +802,7 @@ describe("game-api run finish contract", () => {
       resultStatus: "DUPLICATE_REPLAY",
       rewardPreviewId: "reward_preview_raid_failure_1",
       staminaRefund: {
-        status: "PENDING",
+        status: "COMMITTED",
         refundType: "STAMINA",
         reason: "STORY_RAID_FAILURE",
         policyRef: "act1_story_raid_failure_stamina_refund_v1",

@@ -163,8 +163,9 @@ does not recompute this metadata.
 
 ## Story Raid Failure Stamina Refund
 
-Act 1 story raid failure has a launch-only refund marker. It is not World Raid
-settlement and it is not an immediate economy mutation.
+Act 1 story raid failure has a launch-only stamina refund commit. It is not
+World Raid settlement and it does not share World Raid score/ranking/reward
+tables.
 
 For `raid_raider_king_engine`, a valid finish with:
 
@@ -177,7 +178,7 @@ returns and stores:
 ```json
 {
   "staminaRefund": {
-    "status": "PENDING",
+    "status": "COMMITTED",
     "refundType": "STAMINA",
     "reason": "STORY_RAID_FAILURE",
     "policyRef": "act1_story_raid_failure_stamina_refund_v1"
@@ -187,15 +188,23 @@ returns and stores:
 
 The marker is safe for Unity display and support correlation. It deliberately
 does not include refund amount, fuel balance, raw run start cost, or fuel
-ledger ids. The current slice stores the same marker in
+ledger ids. The accepted finish transaction stores the marker in
 `run_final_results.payload_json.staminaRefund` and in
-`run_reward_previews.reward_plan_json.calculation.staminaRefund`, but does not
-write `fuel_ledger`, update `fuel_state`, or add a reward line.
+`run_reward_previews.reward_plan_json.calculation.staminaRefund`, then writes:
+
+- `account_mutations.mutation_type = STORY_RAID_STAMINA_REFUND`;
+- one `fuel_ledger` row with reason `STORY_RAID_FAILURE_REFUND`;
+- a `fuel_state` update capped by `fuel_state.max_fuel`.
+
+The refund amount is derived from the server balance config `fuel.runStartCost`.
+The ledger delta records the effective applied fuel amount after the max-fuel
+cap. If the policy or account fuel state is missing, the finish is rejected with
+a stable state/policy error instead of accepting a partial finish.
 
 Duplicate finish replay reads the stored payload marker and returns the same
 stable marker. It must not recalculate, create another reward preview, or apply
-stamina twice. Ordinary 15-wave operations and successful boss defeats return
-`staminaRefund: null`.
+stamina twice. Ordinary 15-wave operations, successful boss defeats, and
+non-story raid scopes return `staminaRefund: null`.
 
 ## Reward / Story / Offline Effects
 
@@ -204,7 +213,7 @@ For `raid_raider_king_engine`:
 - First clear eligibility uses `accountId + operationId + risk` as before.
 - First clear applies when `outcome = VICTORY` and `raidResult.bossDefeated =
   true`.
-- Failure stamina refund eligibility uses the story raid marker above and does
+- Failure stamina refund eligibility uses the story raid commit above and does
   not grant first clear, story progress, or offline progress.
 - Reward preview generation uses the server run reward config and treats boss
   defeat as full completion.
@@ -240,8 +249,9 @@ Contract smoke should cover:
 - ordinary operation rejects raid metadata;
 - raid operation rejects missing raid metadata;
 - duplicate replay returns the stored `rewardPreviewId`;
-- story raid failure returns the `staminaRefund` marker and does not write fuel
-  ledger/state;
+- story raid failure returns the committed `staminaRefund` marker, writes one
+  fuel ledger row, updates fuel state, and duplicate replay does not write a
+  second refund;
 - forbidden animation/raw RNG/internal validator fields are rejected or never
   returned.
 
@@ -249,8 +259,6 @@ Contract smoke should cover:
 
 - Final raid start metadata ids: `bossId`, `bossPhaseRefs`,
   `startAugmentPackageRef`, and `startTacticPackageRef`.
-- Whether the later fuel refund commit should happen during finish, reward
-  claim, or a dedicated stamina refund endpoint.
 - Whether raid failure needs phase-specific reward scaling beyond the launch
   stamina refund marker.
 - Whether raid completion needs a future seasonal/attempt table. Not launch

@@ -676,17 +676,22 @@ Completed fifth local-only slice:
 - Added Act 1 story raid failure stamina refund contract metadata.
 - `raid_raider_king_engine` failure with `encounterType = RAID_BOSS`,
   `outcome = FAILURE`, and `raidResult.bossDefeated = false` returns
-  `staminaRefund.status = PENDING`.
+  a server-authored `staminaRefund` marker.
 - The marker uses stable display/support refs:
   `refundType = STAMINA`, `reason = STORY_RAID_FAILURE`, and
   `policyRef = act1_story_raid_failure_stamina_refund_v1`.
 - The marker is stored in `run_final_results.payload_json.staminaRefund` and
   mirrored into `run_reward_previews.reward_plan_json.calculation.staminaRefund`
   as sanitized metadata.
-- Duplicate replay restores the stored marker and does not recalculate or apply
-  stamina twice.
-- This slice does not write `fuel_ledger`, update `fuel_state`, add reward
-  lines, change reward/economy claim mutation, or touch World Raid scope.
+- The follow-up launch slice commits the marker as
+  `staminaRefund.status = COMMITTED`, inserts
+  `account_mutations.mutation_type = STORY_RAID_STAMINA_REFUND`, writes one
+  `fuel_ledger` row with reason `STORY_RAID_FAILURE_REFUND`, and updates
+  `fuel_state` capped by `max_fuel`.
+- Duplicate replay restores the stored committed marker and does not
+  recalculate or apply stamina twice.
+- The refund remains separate from reward lines, reward claim mutation, and
+  World Raid scope.
 
 Next implementation candidates:
 
@@ -707,5 +712,5 @@ Next implementation candidates:
 - Whether abandoned runs give zero reward or a capped checkpoint reward.
 - Whether item reward lines are needed before item-ledger claim support lands.
 - Exact Admin metric names and thresholds for risk/reward imbalance.
-- Whether story raid stamina refund is committed during run finish, reward
-  claim, or a dedicated future stamina refund endpoint.
+- Whether story raid failure later needs phase-specific reward scaling beyond
+  the launch stamina refund.

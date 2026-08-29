@@ -93,6 +93,10 @@ function createEnv(db: initSqlJs.Database): Env & { AUTH_SIGNING_KEY_CURRENT: st
   };
 }
 
+function scalar(db: initSqlJs.Database, sql: string): number | string | null {
+  return (db.exec(sql)[0]?.values[0]?.[0] as number | string | undefined) ?? null;
+}
+
 async function seedFinishableRun(db: initSqlJs.Database): Promise<string> {
   const now = Date.now();
   const refreshTokenHash = await hashRefreshToken("refresh-smoke-token");
@@ -155,6 +159,99 @@ async function seedFinishableRun(db: initSqlJs.Database): Promise<string> {
     secret: authSecret,
     accountId: "account-smoke-1",
     sessionId: "session-smoke-1",
+    nowMs: now,
+    ttlMs: 900000,
+  })}`;
+}
+
+async function seedFinishableStoryRaidFailureRun(db: initSqlJs.Database): Promise<string> {
+  const now = Date.now();
+  const refreshTokenHash = await hashRefreshToken("refresh-raid-failure-smoke-token");
+  db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES (?, 'ACTIVE', ?, ?);", [
+    "account-raid-failure-smoke-1",
+    now,
+    now,
+  ]);
+  db.run(
+    `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+     VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL);`,
+    [
+      "session-raid-failure-smoke-1",
+      "account-raid-failure-smoke-1",
+      refreshTokenHash,
+      "family-raid-failure-smoke-1",
+      now,
+      now + 900000,
+    ],
+  );
+  db.run(
+    `INSERT INTO balance_config_drafts (
+       id, base_version, schema_version, required_content_version, config_json, checksum, revision, status, created_by, created_at, updated_at
+     ) VALUES (
+       'draft-raid-failure-smoke-1', NULL, 1, 1, '{}', 'checksum-raid-failure-smoke-1', 1, 'PUBLISHED', 'test', ?, ?
+     );`,
+    [now, now],
+  );
+  db.run(
+    `INSERT INTO balance_config_versions (
+       version, schema_version, required_content_version, checksum, config_json, published_at, published_by, draft_id
+     ) VALUES (?, 1, 1, 'checksum-raid-failure-smoke-1', ?, ?, 'test', 'draft-raid-failure-smoke-1');`,
+    [704, JSON.stringify({ fuel: { max: 100, runStartCost: 10, rechargeSeconds: 300 }, runRewards: launchRunRewardsConfig }), now],
+  );
+  db.run(
+    `INSERT INTO fuel_state (account_id, fuel, max_fuel, last_regen_at, updated_at)
+     VALUES ('account-raid-failure-smoke-1', 80, 100, ?, ?);`,
+    [now, now],
+  );
+  db.run(
+    `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+     VALUES ('mutation-raid-failure-smoke-1', 'account-raid-failure-smoke-1', 1, 'RUN_START', 'idem-raid-failure-start-smoke-1', ?);`,
+    [now],
+  );
+  db.run(
+    `INSERT INTO operation_previews (
+       id, account_id, mutation_id, objective, risk, balance_config_version, preview_json, status, expires_at, created_at
+     ) VALUES (?, ?, ?, ?, ?, 704, ?, 'CONSUMED', ?, ?);`,
+    [
+      "preview-raid-failure-smoke-1",
+      "account-raid-failure-smoke-1",
+      "mutation-raid-failure-smoke-1",
+      "raid_raider_king_engine",
+      "V",
+      JSON.stringify({
+        operationId: "raid_raider_king_engine",
+        actId: "act_01_wasteland_railway",
+        regionId: "region_wasteland_railway",
+        encounterType: "RAID_BOSS",
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+      }),
+      now + 900000,
+      now,
+    ],
+  );
+  db.run(
+    `INSERT INTO runs (
+       id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id
+     ) VALUES (?, ?, ?, ?, 704, 'ACTIVE', ?, NULL, NULL);`,
+    [
+      "run-raid-failure-smoke-1",
+      "account-raid-failure-smoke-1",
+      "preview-raid-failure-smoke-1",
+      "mutation-raid-failure-smoke-1",
+      now,
+    ],
+  );
+
+  return `Bearer ${await createAccessToken({
+    secret: authSecret,
+    accountId: "account-raid-failure-smoke-1",
+    sessionId: "session-raid-failure-smoke-1",
     nowMs: now,
     ttlMs: 900000,
   })}`;
@@ -440,6 +537,115 @@ describe("game-api run finish local D1 smoke", () => {
     expect(db.exec("SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM progression_ledger WHERE account_id = 'account-smoke-1';")[0]?.values).toEqual([[1]]);
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+    db.close();
+  });
+
+  it("commits story raid failure stamina refund once and replays without another fuel grant", async () => {
+    const db = await createMigratedDb();
+    const authorization = await seedFinishableStoryRaidFailureRun(db);
+
+    const requestBody = {
+      runId: "run-raid-failure-smoke-1",
+      currentStage: "Complete",
+      currentWaveNumber: 0,
+      completedWaveCount: 0,
+      encounterType: "RAID_BOSS",
+      raidResult: {
+        raidId: "raid_raider_king_engine",
+        bossId: "boss_raider_king_engine",
+        bossDefeated: false,
+        completedPhaseCount: 2,
+        encounterDurationSeconds: 360,
+      },
+      outcome: "FAILURE",
+      runtimeStateJson: "{}",
+      tacticSelections: [
+        { tacticId: "tactic_full_start_raid", packageRef: "act1_full_start_package_v1" },
+      ],
+      clientCompletedAt: "2026-08-27T00:00:00.000Z",
+    };
+
+    const response = await app.request(
+      "/v1/runs/run-raid-failure-smoke-1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-smoke-idem-1",
+          Authorization: authorization,
+        },
+        body: JSON.stringify(requestBody),
+      },
+      createEnv(db),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run-raid-failure-smoke-1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      balanceVersion: "704",
+      staminaRefund: {
+        status: "COMMITTED",
+        refundType: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyRef: "act1_story_raid_failure_stamina_refund_v1",
+      },
+      errorCode: null,
+    });
+    expect(scalar(db, "SELECT fuel FROM fuel_state WHERE account_id = 'account-raid-failure-smoke-1';")).toBe(90);
+    expect(
+      db.exec(
+        "SELECT delta, fuel_after, reason FROM fuel_ledger WHERE account_id = 'account-raid-failure-smoke-1';",
+      )[0]?.values,
+    ).toEqual([[10, 90, "STORY_RAID_FAILURE_REFUND"]]);
+    expect(
+      db.exec(
+        "SELECT mutation_type FROM account_mutations WHERE account_id = 'account-raid-failure-smoke-1' ORDER BY sequence;",
+      )[0]?.values,
+    ).toEqual([["RUN_START"], ["STORY_RAID_STAMINA_REFUND"]]);
+    expect(scalar(db, "SELECT COUNT(*) FROM account_first_clears WHERE account_id = 'account-raid-failure-smoke-1';")).toBe(0);
+    expect(scalar(db, "SELECT COUNT(*) FROM account_story_progress WHERE account_id = 'account-raid-failure-smoke-1';")).toBe(0);
+
+    const finalPayload = JSON.parse(String(db.exec(
+      "SELECT payload_json FROM run_final_results WHERE run_id = 'run-raid-failure-smoke-1';",
+    )[0]?.values[0]?.[0])) as { staminaRefund?: { status?: string } };
+    expect(finalPayload.staminaRefund?.status).toBe("COMMITTED");
+
+    const replayResponse = await app.request(
+      "/v1/runs/run-raid-failure-smoke-1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-smoke-idem-1",
+          Authorization: authorization,
+        },
+        body: JSON.stringify(requestBody),
+      },
+      createEnv(db),
+    );
+
+    expect(replayResponse.status).toBe(200);
+    await expect(replayResponse.json()).resolves.toMatchObject({
+      runId: "run-raid-failure-smoke-1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardPreviewId: body.rewardPreviewId,
+      staminaRefund: {
+        status: "COMMITTED",
+        reason: "STORY_RAID_FAILURE",
+      },
+      errorCode: "duplicate_replay",
+    });
+    expect(scalar(db, "SELECT fuel FROM fuel_state WHERE account_id = 'account-raid-failure-smoke-1';")).toBe(90);
+    expect(scalar(db, "SELECT COUNT(*) FROM fuel_ledger WHERE account_id = 'account-raid-failure-smoke-1';")).toBe(1);
+    expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'run_finish';")).toBe(1);
+    expect(JSON.stringify(body)).not.toContain("runStartCost");
+    expect(JSON.stringify(body)).not.toContain("fuelAfter");
+    expect(JSON.stringify(body)).not.toContain("rawRng");
+    expect(JSON.stringify(body)).not.toContain("animationTimeline");
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
     db.close();

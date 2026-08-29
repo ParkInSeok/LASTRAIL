@@ -166,8 +166,8 @@ Rationale:
 
 ## Story Raid Failure Stamina Refund
 
-Act 1 story raid failure uses a small contract marker instead of immediate fuel
-ledger mutation in the run finish response. For
+Act 1 story raid failure uses a small committed stamina refund marker in the
+run finish response. For
 `raid_raider_king_engine`, when the server receives a valid `RAID_BOSS`
 finish with `outcome = FAILURE` and `raidResult.bossDefeated = false`, the
 accepted response includes:
@@ -175,7 +175,7 @@ accepted response includes:
 ```json
 {
   "staminaRefund": {
-    "status": "PENDING",
+    "status": "COMMITTED",
     "refundType": "STAMINA",
     "reason": "STORY_RAID_FAILURE",
     "policyRef": "act1_story_raid_failure_stamina_refund_v1"
@@ -190,13 +190,20 @@ Rules:
 - It is stored in `run_final_results.payload_json.staminaRefund` and mirrored
   into `run_reward_previews.reward_plan_json.calculation.staminaRefund` as
   sanitized metadata.
-- This slice does not insert `fuel_ledger`, update `fuel_state`, or grant any
-  economy value.
+- The same accepted finish transaction inserts
+  `account_mutations.mutation_type = STORY_RAID_STAMINA_REFUND`, writes one
+  `fuel_ledger` row with reason `STORY_RAID_FAILURE_REFUND`, and updates
+  `fuel_state` capped by `max_fuel`.
+- Refund quantity is server-owned and derived from `fuel.runStartCost`; the
+  response does not expose the raw cost or resulting fuel balance.
 - `VICTORY + raidResult.bossDefeated=true` does not receive a failure refund
   marker.
 - Ordinary 15-wave operations do not receive this marker.
 - Duplicate finish replay restores the stored marker and does not recalculate
-  or reapply it.
+  or reapply it, so no second fuel ledger row is written.
+- Missing refund policy returns `story_raid_stamina_refund_policy_missing`.
+- Missing or invalid fuel state returns `story_raid_stamina_refund_state_conflict`
+  and may write a scrubbed ops error log.
 - World Raid schedule, scoring, ranking, settlement, entry cost, and refund
   rules are separate future scope and must not share this contract.
 

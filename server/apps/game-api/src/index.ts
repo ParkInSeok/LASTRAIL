@@ -91,6 +91,11 @@ type AccountCurrencyRow = {
   balance: number;
 };
 
+type FuelStateRow = {
+  fuel: number;
+  max_fuel: number;
+};
+
 type IdempotencyRecordRow = {
   result_ref: string;
   created_at: number;
@@ -163,7 +168,7 @@ type RunFinishBody = {
 };
 
 type StoryRaidStaminaRefundCandidate = {
-  status: "PENDING";
+  status: "COMMITTED";
   refundType: "STAMINA";
   reason: "STORY_RAID_FAILURE";
   policyRef: "act1_story_raid_failure_stamina_refund_v1";
@@ -879,7 +884,7 @@ function createStoryRaidStaminaRefundCandidate(
   if (body.outcome !== "FAILURE") return null;
   if (body.raidResult?.bossDefeated !== false) return null;
   return {
-    status: "PENDING",
+    status: "COMMITTED",
     refundType: "STAMINA",
     reason: "STORY_RAID_FAILURE",
     policyRef: "act1_story_raid_failure_stamina_refund_v1",
@@ -889,12 +894,12 @@ function createStoryRaidStaminaRefundCandidate(
 function parseStoryRaidStaminaRefundCandidate(value: unknown): StoryRaidStaminaRefundCandidate | null {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
   const candidate = value as Record<string, unknown>;
-  if (candidate.status !== "PENDING") return null;
+  if (candidate.status !== "COMMITTED") return null;
   if (candidate.refundType !== "STAMINA") return null;
   if (candidate.reason !== "STORY_RAID_FAILURE") return null;
   if (candidate.policyRef !== "act1_story_raid_failure_stamina_refund_v1") return null;
   return {
-    status: "PENDING",
+    status: "COMMITTED",
     refundType: "STAMINA",
     reason: "STORY_RAID_FAILURE",
     policyRef: "act1_story_raid_failure_stamina_refund_v1",
@@ -910,6 +915,16 @@ function getStoredStoryRaidStaminaRefundCandidate(payloadJson: string | null | u
   } catch {
     return null;
   }
+}
+
+function getStoryRaidStaminaRefundAmount(balanceConfig: unknown): number | null {
+  if (typeof balanceConfig !== "object" || balanceConfig === null || Array.isArray(balanceConfig)) return null;
+  const fuelConfig = (balanceConfig as Record<string, unknown>).fuel;
+  if (typeof fuelConfig !== "object" || fuelConfig === null || Array.isArray(fuelConfig)) return null;
+  const runStartCost = (fuelConfig as Record<string, unknown>).runStartCost;
+  return typeof runStartCost === "number" && Number.isSafeInteger(runStartCost) && runStartCost > 0
+    ? runStartCost
+    : null;
 }
 
 function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType<typeof parseRunPreviewMetadata>, balanceVersion: number): RunFinishBody & {
@@ -3276,9 +3291,10 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     }));
   }
 
+  let balanceConfig: { runRewards?: unknown };
   let runRewardsConfig;
   try {
-    const balanceConfig = JSON.parse(row.config_json) as { runRewards?: unknown };
+    balanceConfig = JSON.parse(row.config_json) as { runRewards?: unknown };
     runRewardsConfig = parseRunRewardsConfig(balanceConfig.runRewards);
   } catch (error) {
     return c.json(createRunFinishRejectedResponse({
@@ -3357,6 +3373,57 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
   });
   const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
+  const staminaRefundAmount = staminaRefund === null ? null : getStoryRaidStaminaRefundAmount(balanceConfig);
+  if (staminaRefund !== null && staminaRefundAmount === null) {
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "story_raid_stamina_refund_policy_missing",
+      message: "Story raid stamina refund policy is unavailable.",
+    }), 409);
+  }
+  const fuelState = staminaRefund === null
+    ? null
+    : await c.env.DB.prepare(
+        `SELECT fuel, max_fuel
+         FROM fuel_state
+         WHERE account_id = ?`,
+      )
+        .bind(authContext.accountId)
+        .first<FuelStateRow>();
+  if (staminaRefund !== null && fuelState === null) {
+    await writeGameApiOpsErrorLog(c, {
+      severity: "error",
+      errorCode: "story_raid_stamina_refund_state_conflict",
+      messageSummary: "Story raid stamina refund could not find fuel state.",
+      accountId: authContext.accountId,
+      runId,
+      idempotencyOperation: "run_finish",
+      idempotencyKey,
+      correlation: {
+        runId,
+        operationId: previewMetadata.operationId,
+        encounterType: previewMetadata.encounterType,
+      },
+      context: {
+        phase: "run_finish_story_raid_stamina_refund",
+        responseShape: "run_finish_rejected",
+      },
+      retryable: true,
+    });
+    return c.json(createRunFinishRejectedResponse({
+      runId,
+      balanceVersion: String(row.balance_config_version),
+      errorCode: "story_raid_stamina_refund_state_conflict",
+      message: "Story raid stamina refund could not be committed safely.",
+    }), 409);
+  }
+  const staminaRefundFuelDelta = staminaRefund !== null && staminaRefundAmount !== null && fuelState !== null
+    ? Math.max(0, Math.min(staminaRefundAmount, fuelState.max_fuel - fuelState.fuel))
+    : null;
+  const staminaRefundFuelAfter = staminaRefund !== null && staminaRefundAmount !== null && fuelState !== null
+    ? fuelState.fuel + (staminaRefundFuelDelta ?? 0)
+    : null;
   const now = Date.now();
   const rewardPreviewId = createDomainId("reward_preview");
   const storyProgressPlan = fullCompletion
@@ -3371,7 +3438,9 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     : null;
   const storyProgressMutationId = storyProgressPlan === null ? null : createDomainId("mutation");
   const storyProgressLedgerId = storyProgressPlan === null ? null : createDomainId("progression");
-  const latestMutation = storyProgressPlan === null
+  const staminaRefundMutationId = staminaRefund === null ? null : createDomainId("mutation");
+  const staminaRefundFuelLedgerId = staminaRefund === null ? null : createDomainId("fuel_ledger");
+  const latestMutation = storyProgressPlan === null && staminaRefund === null
     ? null
     : await c.env.DB.prepare(
         `SELECT MAX(sequence) AS sequence
@@ -3381,6 +3450,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
         .bind(authContext.accountId)
         .first<AccountMutationSequenceRow>();
   const nextMutationSequence = (latestMutation?.sequence ?? 0) + 1;
+  const staminaRefundMutationSequence = storyProgressPlan === null ? nextMutationSequence : nextMutationSequence + 1;
   const rewardPlanJson = JSON.stringify({
     rewardLines: rewardPreview.rewardLines,
     calculation: {
@@ -3479,6 +3549,35 @@ app.post("/v1/runs/:runId/finish", async (c) => {
             }),
             now,
           ),
+        ]),
+    ...(staminaRefund === null ||
+      staminaRefundAmount === null ||
+      staminaRefundFuelDelta === null ||
+      staminaRefundFuelAfter === null ||
+      staminaRefundMutationId === null ||
+      staminaRefundFuelLedgerId === null
+      ? []
+      : [
+          c.env.DB.prepare(
+            `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
+             VALUES (?, ?, ?, 'STORY_RAID_STAMINA_REFUND', ?, ?)`,
+          ).bind(staminaRefundMutationId, authContext.accountId, staminaRefundMutationSequence, `run_finish:${idempotencyKey}:stamina_refund`, now),
+          c.env.DB.prepare(
+            `INSERT INTO fuel_ledger (id, account_id, mutation_id, delta, fuel_after, reason, created_at)
+             VALUES (?, ?, ?, ?, ?, 'STORY_RAID_FAILURE_REFUND', ?)`,
+          ).bind(
+            staminaRefundFuelLedgerId,
+            authContext.accountId,
+            staminaRefundMutationId,
+            staminaRefundFuelDelta,
+            staminaRefundFuelAfter,
+            now,
+          ),
+          c.env.DB.prepare(
+            `UPDATE fuel_state
+             SET fuel = ?, updated_at = ?
+             WHERE account_id = ?`,
+          ).bind(staminaRefundFuelAfter, now, authContext.accountId),
         ]),
     c.env.DB.prepare(
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)

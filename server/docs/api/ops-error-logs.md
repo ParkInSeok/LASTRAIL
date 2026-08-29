@@ -79,6 +79,11 @@ Current direct-write scope:
   accepted full-clear run finish cannot safely commit the story progress
   update batch. It is reserved for server-owned story/unlock/progression state
   conflicts, not player-supplied story progress values.
+- `story_raid_stamina_refund_state_conflict`: `error`, `game_api`, open.
+  Written when Act 1 story raid failure refund eligibility is server-verified
+  but the account fuel state needed for the committed stamina refund is missing
+  or invalid. It is not written for ordinary failures, successful boss defeats,
+  or World Raid settlement.
 - `run_start_state_conflict`: `error`, `game_api`, open. Written when
   `POST /v1/runs/start` consumes an operation preview but cannot safely persist
   the run, snapshot, and `run_start` idempotency record. The route attempts a

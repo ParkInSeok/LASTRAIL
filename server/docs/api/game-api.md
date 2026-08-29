@@ -391,10 +391,13 @@ distinguishes ordinary 15-wave operations from boss-only raids with
 `encounterType`.
 
 Act 1 story raid failure returns a server-authored `staminaRefund` marker with
-`status = PENDING`, `refundType = STAMINA`, `reason = STORY_RAID_FAILURE`, and
-`policyRef = act1_story_raid_failure_stamina_refund_v1`. It is display/support
-metadata only in the current local slice: no `fuel_ledger` write, no
-`fuel_state` update, and no World Raid settlement coupling.
+`status = COMMITTED`, `refundType = STAMINA`, `reason = STORY_RAID_FAILURE`,
+and `policyRef = act1_story_raid_failure_stamina_refund_v1`. The accepted
+finish transaction writes `STORY_RAID_STAMINA_REFUND` mutation evidence, one
+`fuel_ledger` row with reason `STORY_RAID_FAILURE_REFUND`, and a capped
+`fuel_state` update. The response does not expose refund amount, raw run start
+cost, or fuel balances. This is Act 1 story raid only and is not World Raid
+settlement.
 
 Act 1 launch starts ordinary and raid encounters with server-authored full
 augment/tactic package refs. See `docs/api/run-start-augment-package.md`.
