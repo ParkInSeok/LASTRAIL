@@ -33,41 +33,53 @@ This document is the current planning source of truth for Act 1 launch scope.
 
 ## Server Launch Work
 
-- Google auth sign-in endpoint and contract.
-- Guest to Google link or upgrade contract.
-- Existing Google identity sign-in and restore.
-- Google auth security tests: no raw token storage, no raw token logs, no account id shortcuts.
-- Raid boss-only run start and finish contract.
-- Ordinary 15-wave augment-at-start contract.
-- Gacha launch data and response stability smoke.
-- Minimal ops error write integration for critical failures.
-- Login and session metrics read model for Dashboard and support/player detail.
-- Full launch regression for auth, run finish, reward, story progress, offline reward, gacha, Admin read-only, migrations, and secret scanning.
+- Done: Google auth sign-in/link/restore contracts, production ID token verifier adapter, JWKS failure safety, and raw token safety tests.
+- Done: `POST /v1/runs/start` skeleton, server-authored metadata response, `Idempotency-Key` requirement, preview consume race guard, and consume-success failure recovery.
+- Done: Raid boss-only run finish contract and story raid failure stamina refund commit for `raid_raider_king_engine`.
+- Done: Ordinary 15-wave augment-at-start contract and start package refs echo.
+- Done: Gacha launch draft data, response stability smoke, and 12-ticket non-repeat acquisition path candidate docs/tests.
+- Done: Minimal ops error write integration for critical failures.
+- Done: Login and session metrics read model for support/player detail.
+- In progress/remaining: final start package/contentVersion source alignment, live balance seed promotion decision, Google PRD app values later, and final full regression after Unity/Admin/Narrative surfaces settle.
 
 ## Unity Launch Work
 
-- Google SDK integration, ID token provider, social auth flow, guest upgrade, restore UX.
-- Secure token storage and auth-aware Game API transport.
-- Fully animated combat scene for ordinary 15-wave operations.
-- Boss-only raid combat scene and boss HUD.
-- 10 operator portraits, icons, combat sprites, and battle-ready animation minimum set.
-- Enemy and raid boss animation minimum set.
-- Gacha UI and reveal animation.
-- Mission select, briefing, loading, battle, result, reward, offline reward, story progress, and codex/archive UI.
-- String-id localization lookup, fallback, and missing-content handling.
-- Mobile safe area, touch target, vibration, SFX, BGM, and performance pass.
+- Done: Google/auth contract flow models, auth gate UX state, auth-aware transport boundary, UnityWebRequest adapter boundary, and run start client wiring.
+- Done: Run start response metadata, start package refs, raid finish payload, and stamina refund display marker compatibility.
+- Done: 15-operator visual manifest/audit and initial 5 versus gacha elite 10 roster separation.
+- Done: Mission shell, narrative/localization presentation state, codex/archive presentation state, gacha reveal/screen presentation state, reward/offline/story display state, combat presentation cue state, and mobile HUD policy models.
+- Done: Android Keystore secure token storage spec; PlayerPrefs token storage is forbidden.
+- In progress/remaining: vetted secure storage plugin or first-party bridge integration, Google SDK preparation, concrete client injection beyond run start, actual Unity screens/presenters/prefabs, 2D Animation/Sprite Atlas asset pipeline, fully animated combat scene, story raid boss UI, gacha reveal UI, reward/offline/story/codex UI, SFX/BGM/vibration implementation, and device performance QA.
 
 ## Admin Launch Work
 
-- Google provider/link/account recovery read-only visibility.
-- Dashboard trim while keeping all Admin pages visible.
-- Login/session metrics on Dashboard and support/player detail.
-- Gacha support visibility.
-- Boss-only raid labels and run evidence.
-- Augment-at-start read-only evidence.
-- CS template read-only suggestions.
-- Ops error logs read-only list/detail/filter aligned with minimal write sources.
-- Forbidden-field and mutation-control absence verification.
+- Done: Google provider/link/account recovery read-only visibility.
+- Done: Dashboard trim while keeping Admin pages/nav visible.
+- Done: Login/session metrics on support/player detail, with exact concurrent users kept as backlog/unavailable.
+- Done: Gacha support visibility, 15 visual versus 10 gacha elite separation, and 12-ticket acquisition policy display.
+- Done: Boss-only story raid labels, run start metadata evidence, start package refs evidence, and stamina refund read-only evidence.
+- Done: CS template read-only suggestions without copy/send/ticket actions.
+- Done: Ops error logs read-only list/detail/filter aligned with minimal write sources, including `run_start_state_conflict`.
+- Done: Forbidden-field and mutation-control absence guard plus preview smoke checklist.
+- Remaining: final preview/browser smoke when an authenticated preview session is available, and small label corrections only when new server/narrative contract fields land.
+
+## Narrative And Direction Launch Work
+
+- Done: Act 1 story raid direction corrected to boss-only, 5 operators, failure stamina refund, and boss defeat success.
+- Done: 15-operator voice guide.
+- Done: Act 1 localization string-id map draft.
+- Done: `opn_01` through `opn_03` dialogue polish and early mission coverage pass.
+- Remaining: `opn_04` through `opn_06` dialogue polish, story raid boss callout/failure refund wording polish, codex/archive copy final pass, battle callout density rules, and narrative launch checklist.
+
+## Launch Progress Board
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Server contracts/source of truth | 85% | Core launch contracts are green locally; remaining risk is final config/source promotion and PRD-only OAuth/deploy work. |
+| Admin read-only ops/support | 88% | Main surfaces and regression guards are in place; authenticated preview smoke remains environment-dependent. |
+| Unity client/presentation | 58% | Compatibility and presentation models are strong; actual screens, assets, SDK/storage integration, and device QA remain the main bottleneck. |
+| Narrative/direction | 55% | Framework and early missions are aligned; later missions, raid copy, codex, and checklist still need prose passes. |
+| Overall Act 1 launch readiness | 68% | Source-of-truth/backend is ahead; launch readiness now depends mostly on Unity implementation and narrative content completion. |
 
 ## Decision Queue
 
@@ -76,14 +88,18 @@ These decisions should be surfaced to the user when they return, but they should
 - Google OAuth client ids and allowed audiences for Android and future platforms are deferred until app registration / production-readiness work.
 - Exact Google link endpoint shape and idempotency requirement.
 - Whether Google email is stored at all; current recommendation is no email storage for launch.
-- Secure token storage plugin selection within the Android Keystore requirement.
+- Specific secure token storage plugin approval within the Android Keystore requirement, or approval to build a first-party Android native bridge.
+- Unity launch version, Android min SDK, target SDK, ARM64, IL2CPP, and managed stripping baseline.
 - Ultimate cue scope and per-character unique animation count.
 - Final `startAugmentPackageRef`, `startTacticPackageRef`, and `contentVersion` metadata source.
-- Consume-success but run/snapshot insert-failure strategy for `POST /v1/runs/start`.
 - Economy draft promotion into live launch config or seed.
 - DEV/internal-test deploy and smoke timing.
 - JWKS failure retry/backoff/alerting thresholds.
-- World Raid detailed implementation plan and live-service schedule.
+- Cloudflare Access policy for hashed preview deployment URLs versus alias-only protection.
+- Whether story raid legacy accounts without `fuel_state` need a bootstrap/repair policy, or should remain rejected with state conflict.
+- Whether `opn_01` Commander direct speech and optional objective callouts stay internal/presentation-only or enter launch localization fixtures.
+- Operator display names and final narrative version revision.
+- World Raid implementation plan and live-service schedule remain future/backlog.
 
 ## Backlog
 
