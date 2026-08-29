@@ -15,7 +15,8 @@ import {
   supportOutOfScopeControls,
   supportResponseTemplateCards,
   supportSafeSnippetCards,
-  supportSuggestionCards
+  supportSuggestionCards,
+  supportOpsErrorEvidenceRows
 } from "./SupportAccountPage";
 
 describe("SupportAccountPage configuration", () => {
@@ -238,6 +239,74 @@ describe("SupportAccountPage configuration", () => {
     expect(serialized).not.toContain("token");
     expect(serialized).not.toContain("probability");
     expect(serialized).not.toContain("full weights");
+    expect(serialized).not.toContain("animation timeline");
+  });
+
+  it("formats support ops errors as read-only evidence rows with labels and safe links", () => {
+    const rows = supportOpsErrorEvidenceRows([
+      {
+        errorLogId: "err-1",
+        occurredAt: "2026-08-29T00:00:00.000Z",
+        environment: "DEV",
+        service: "game_api",
+        severity: "critical",
+        errorCode: "gacha_state_conflict",
+        messageSummary: "Gacha state conflict while composing support evidence",
+        status: "open",
+        source: "game_api",
+        requestId: "req-1",
+        correlationIds: {
+          accountId: "account-1",
+          runId: "run-1",
+          rewardPreviewId: "reward-preview-1",
+          rewardClaimId: "reward-claim-1",
+          offlineRewardClaimId: "offline-claim-1",
+          gachaBatchId: "batch-1",
+          gachaBannerId: "banner-1",
+          storyProgressId: "opn_01_last_departure",
+          integrityEventId: "integrity-event-1",
+          supportTicketId: "support-ticket-1"
+        },
+        links: [{ label: "시스템 에러 로그", href: "/ops/error-logs/err-1" }]
+      }
+    ]);
+
+    expect(rows).toEqual([
+      {
+        id: "err-1",
+        summary: "치명 (critical) / 모집 상태 충돌 (gacha_state_conflict)",
+        occurredAt: "2026-08-29T00:00:00.000Z",
+        service: "게임 API (game_api)",
+        status: "열림 (open)",
+        source: "게임 API (game_api)",
+        requestId: "req-1",
+        messageSummary: "Gacha state conflict while composing support evidence",
+        correlations:
+          "accountId=account-1 / runId=run-1 / rewardPreviewId=reward-preview-1 / rewardClaimId=reward-claim-1 / offlineRewardClaimId=offline-claim-1 / gachaBatchId=batch-1 / gachaBannerId=banner-1 / storyProgressId=opn_01_last_departure / integrityEventId=integrity-event-1 / supportTicketId=support-ticket-1",
+        links: "시스템 에러 로그: /ops/error-logs/err-1"
+      }
+    ]);
+
+    const fallbackRows = supportOpsErrorEvidenceRows([]);
+    expect(fallbackRows).toEqual([
+      {
+        id: "연동 대기",
+        summary: "연동 대기",
+        occurredAt: "연동 대기",
+        service: "연동 대기",
+        status: "연동 대기",
+        source: "연동 대기",
+        requestId: "연동 대기",
+        messageSummary: "latest 5 / critical first read-only evidence 대기",
+        correlations: "safe correlation ids 연동 대기",
+        links: "연동 대기"
+      }
+    ]);
+
+    const serialized = JSON.stringify(rows);
+    expect(serialized).not.toContain("raw body");
+    expect(serialized).not.toContain("raw auth header");
+    expect(serialized).not.toContain("stack dump");
     expect(serialized).not.toContain("animation timeline");
   });
 

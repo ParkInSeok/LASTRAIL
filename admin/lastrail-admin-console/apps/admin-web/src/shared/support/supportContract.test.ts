@@ -447,7 +447,34 @@ describe("supportContract", () => {
       gacha: { recentBatchIds: ["batch-1"], guaranteeTypes: ["ELITE_30"] },
       idempotency: { operationTypes: ["run_finish", "offline_reward_claim"], duplicateReplayCount: 1 },
       integrity: { openSignals: 0, reviewStatus: "CLEARED" },
-      opsErrors: [],
+      opsErrors: [
+        {
+          errorLogId: "err-1",
+          occurredAt: "2026-08-29T00:00:00.000Z",
+          environment: "DEV",
+          service: "game_api",
+          severity: "critical",
+          errorCode: "gacha_state_conflict",
+          messageSummary: "Gacha state conflict while composing support evidence",
+          status: "open",
+          source: "game_api",
+          requestId: "req-1",
+          accountId: "account-1",
+          runId: "run-1",
+          rewardPreviewId: "reward-preview-1",
+          rewardClaimId: "reward-claim-1",
+          offlineRewardClaimId: "offline-claim-1",
+          gachaBatchId: "batch-1",
+          gachaBannerId: "banner-1",
+          storyProgressId: "opn_01_last_departure",
+          integrityEventId: "integrity-event-1",
+          supportTicketId: "support-ticket-1",
+          links: [{ label: "시스템 에러 로그", href: "/ops/error-logs/err-1" }],
+          rawBody: "must-not-copy",
+          stackDump: "must-not-copy",
+          accessToken: "must-not-copy"
+        }
+      ],
       supportNotes: { safeTemplateHints: ["server_record_checked"] },
       supportContext: {
         readOnly: true,
@@ -487,11 +514,41 @@ describe("supportContract", () => {
       repairEnabled: false,
       mutationEndpointsEnabled: false
     });
+    expect(result.opsErrors).toEqual([
+      {
+        errorLogId: "err-1",
+        occurredAt: "2026-08-29T00:00:00.000Z",
+        environment: "DEV",
+        service: "game_api",
+        severity: "critical",
+        errorCode: "gacha_state_conflict",
+        messageSummary: "Gacha state conflict while composing support evidence",
+        status: "open",
+        source: "game_api",
+        requestId: "req-1",
+        correlationIds: {
+          accountId: "account-1",
+          runId: "run-1",
+          rewardPreviewId: "reward-preview-1",
+          rewardClaimId: "reward-claim-1",
+          offlineRewardClaimId: "offline-claim-1",
+          gachaBatchId: "batch-1",
+          gachaBannerId: "banner-1",
+          storyProgressId: "opn_01_last_departure",
+          integrityEventId: "integrity-event-1",
+          supportTicketId: "support-ticket-1"
+        },
+        links: [{ label: "시스템 에러 로그", href: "/ops/error-logs/err-1" }]
+      }
+    ]);
     expect(JSON.stringify(result)).not.toContain("refreshToken");
     expect(JSON.stringify(result)).not.toContain("refresh token hash");
     expect(JSON.stringify(result)).not.toContain("googleIdToken");
     expect(JSON.stringify(result)).not.toContain("sessionSecret");
     expect(JSON.stringify(result)).not.toContain("raw body");
+    expect(JSON.stringify(result)).not.toContain("rawBody");
+    expect(JSON.stringify(result)).not.toContain("stackDump");
+    expect(JSON.stringify(result)).not.toContain("accessToken");
   });
 
   it("maps null support summary response to placeholder fallback", () => {

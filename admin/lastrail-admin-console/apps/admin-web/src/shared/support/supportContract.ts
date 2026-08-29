@@ -165,6 +165,39 @@ export type SupportAuthSessionItem = {
   note: string;
 };
 
+export type SupportOpsErrorCorrelationIds = {
+  accountId: string | null;
+  runId: string | null;
+  rewardPreviewId: string | null;
+  rewardClaimId: string | null;
+  offlineRewardClaimId: string | null;
+  gachaBatchId: string | null;
+  gachaBannerId: string | null;
+  storyProgressId: string | null;
+  integrityEventId: string | null;
+  supportTicketId: string | null;
+};
+
+export type SupportOpsErrorLink = {
+  label: string;
+  href: string;
+};
+
+export type SupportOpsErrorEvidence = {
+  errorLogId: string;
+  occurredAt: string;
+  environment: string;
+  service: string;
+  severity: string;
+  errorCode: string;
+  messageSummary: string;
+  status: string;
+  source: string;
+  requestId: string;
+  correlationIds: SupportOpsErrorCorrelationIds;
+  links: SupportOpsErrorLink[];
+};
+
 export type SupportAccountSummary = {
   permission: "SUPPORT_READ";
   permissionMode: "ROLE_PERMISSION";
@@ -177,6 +210,7 @@ export type SupportAccountSummary = {
     providerOrder: readonly ["GOOGLE", "GUEST"];
     items: SupportAuthSessionItem[];
   };
+  opsErrors: SupportOpsErrorEvidence[];
   sections: SupportSummarySection[];
   supportContext: {
     readOnly: true;
@@ -976,6 +1010,57 @@ function sectionFrom(code: SupportSummarySectionCode, value: unknown): SupportSu
   };
 }
 
+function stringOrNull(value: unknown): string | null {
+  return typeof value === "string" && value ? value : null;
+}
+
+function supportOpsErrorLink(record: unknown): SupportOpsErrorLink | null {
+  const link = asRecord(record);
+  const label = stringOrNull(link?.label);
+  const href = stringOrNull(link?.href);
+  return label && href ? { label, href } : null;
+}
+
+function supportOpsErrorLinks(value: unknown): SupportOpsErrorLink[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(supportOpsErrorLink).filter((link): link is SupportOpsErrorLink => Boolean(link));
+}
+
+function supportOpsErrorEvidence(value: unknown): SupportOpsErrorEvidence | null {
+  const record = asRecord(value);
+  if (!record) return null;
+  return {
+    errorLogId: stringValue(record.errorLogId),
+    occurredAt: stringValue(record.occurredAt),
+    environment: stringValue(record.environment),
+    service: stringValue(record.service),
+    severity: stringValue(record.severity),
+    errorCode: stringValue(record.errorCode),
+    messageSummary: stringValue(record.messageSummary),
+    status: stringValue(record.status),
+    source: stringValue(record.source),
+    requestId: stringValue(record.requestId),
+    correlationIds: {
+      accountId: stringOrNull(record.accountId),
+      runId: stringOrNull(record.runId),
+      rewardPreviewId: stringOrNull(record.rewardPreviewId),
+      rewardClaimId: stringOrNull(record.rewardClaimId),
+      offlineRewardClaimId: stringOrNull(record.offlineRewardClaimId),
+      gachaBatchId: stringOrNull(record.gachaBatchId),
+      gachaBannerId: stringOrNull(record.gachaBannerId),
+      storyProgressId: stringOrNull(record.storyProgressId),
+      integrityEventId: stringOrNull(record.integrityEventId),
+      supportTicketId: stringOrNull(record.supportTicketId)
+    },
+    links: supportOpsErrorLinks(record.links)
+  };
+}
+
+function supportOpsErrorEvidenceList(value: unknown): SupportOpsErrorEvidence[] {
+  if (!Array.isArray(value)) return [];
+  return value.map(supportOpsErrorEvidence).filter((item): item is SupportOpsErrorEvidence => Boolean(item));
+}
+
 export function emptySupportAccountSummary(accountId = "연동 대기"): SupportAccountSummary {
   return {
     permission: "SUPPORT_READ",
@@ -989,6 +1074,7 @@ export function emptySupportAccountSummary(accountId = "연동 대기"): Support
       providerOrder: accountAuthProviderDisplayOrder,
       items: authSessionItems(null)
     },
+    opsErrors: [],
     sections: customerSupportSummarySectionCodes.map((code) => ({
       code,
       label: customerSupportSummarySectionLabel(code),
@@ -1023,6 +1109,7 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
       providerOrder: accountAuthProviderDisplayOrder,
       items: authSessionItems(auth)
     },
+    opsErrors: supportOpsErrorEvidenceList(record.opsErrors),
     sections: customerSupportSummarySectionCodes.map((code) => {
       if (code === "account") return sectionFrom(code, account);
       return sectionFrom(code, record[code]);

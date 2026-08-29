@@ -1,7 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { encounterTypeLabel, permissionLabel } from "../shared/labels/adminLabels";
+import {
+  encounterTypeLabel,
+  opsErrorCodeLabel,
+  opsErrorLogSourceLabel,
+  opsErrorLogStatusLabel,
+  opsSeverityLabel,
+  permissionLabel
+} from "../shared/labels/adminLabels";
 import {
   accountAuthVisibilityFields,
   accountAuthSessionFieldLabel,
@@ -31,6 +38,7 @@ import {
   emptySupportAccountSummary,
   customerSupportTemplateStatuses
 } from "../shared/support/supportContract";
+import type { SupportOpsErrorEvidence } from "../shared/support/supportContract";
 
 type SupportCard = {
   code: string;
@@ -39,6 +47,69 @@ type SupportCard = {
   value: "연동 대기" | "비활성";
   note: string;
 };
+
+type SupportOpsErrorEvidenceRow = {
+  id: string;
+  summary: string;
+  occurredAt: string;
+  service: string;
+  status: string;
+  source: string;
+  requestId: string;
+  messageSummary: string;
+  correlations: string;
+  links: string;
+};
+
+function labelWithCode(label: string, code: string): string {
+  return label === code ? code : `${label} (${code})`;
+}
+
+function correlationSummary(correlationIds: SupportOpsErrorEvidence["correlationIds"]): string {
+  const parts = Object.entries(correlationIds)
+    .filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1].length > 0)
+    .map(([key, value]) => `${key}=${value}`);
+  return parts.length > 0 ? parts.join(" / ") : "safe correlation ids 연동 대기";
+}
+
+function linkSummary(links: SupportOpsErrorEvidence["links"]): string {
+  return links.length > 0 ? links.map((link) => `${link.label}: ${link.href}`).join(" / ") : "연동 대기";
+}
+
+export function supportOpsErrorEvidenceRows(items: SupportOpsErrorEvidence[]): SupportOpsErrorEvidenceRow[] {
+  if (items.length === 0) {
+    return [
+      {
+        id: "연동 대기",
+        summary: "연동 대기",
+        occurredAt: "연동 대기",
+        service: "연동 대기",
+        status: "연동 대기",
+        source: "연동 대기",
+        requestId: "연동 대기",
+        messageSummary: "latest 5 / critical first read-only evidence 대기",
+        correlations: "safe correlation ids 연동 대기",
+        links: "연동 대기"
+      }
+    ];
+  }
+
+  return items.map((item) => ({
+    id: item.errorLogId,
+    summary: `${labelWithCode(opsSeverityLabel(item.severity), item.severity)} / ${labelWithCode(
+      opsErrorCodeLabel(item.errorCode),
+      item.errorCode
+    )}`,
+    occurredAt: item.occurredAt,
+    service: labelWithCode(opsErrorLogSourceLabel(item.service), item.service),
+    status: labelWithCode(opsErrorLogStatusLabel(item.status), item.status),
+    source: labelWithCode(opsErrorLogSourceLabel(item.source), item.source),
+    requestId: item.requestId,
+    messageSummary: item.messageSummary,
+    correlations: correlationSummary(item.correlationIds),
+    links: linkSummary(item.links)
+  }));
+}
 
 export const supportCaseTypeCards: SupportCard[] = customerSupportCaseTypes.map((caseType) => ({
   code: caseType,
@@ -236,6 +307,7 @@ export function SupportAccountPage() {
     retry: false
   });
   const summary = query.data ?? emptySupportAccountSummary(accountId);
+  const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors);
 
   return (
     <main className="content">
@@ -324,6 +396,44 @@ export function SupportAccountPage() {
             </div>
           ))}
         </div>
+      </section>
+      <section className="admin-panel">
+        <header>
+          <h2>최근 시스템 에러 근거</h2>
+          <p>support summary에 compose된 latest 5 / critical first 시스템 에러를 읽기 전용으로 표시합니다</p>
+        </header>
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>발생 시각</th>
+              <th>요약</th>
+              <th>서비스/소스</th>
+              <th>상태</th>
+              <th>requestId</th>
+              <th>관련 식별자</th>
+              <th>링크</th>
+            </tr>
+          </thead>
+          <tbody>
+            {opsErrorRows.map((row) => (
+              <tr key={row.id}>
+                <td>{row.occurredAt}</td>
+                <td>
+                  <strong>{row.summary}</strong>
+                  <small>{row.messageSummary}</small>
+                </td>
+                <td>
+                  {row.service}
+                  <small>{row.source}</small>
+                </td>
+                <td>{row.status}</td>
+                <td>{row.requestId}</td>
+                <td>{row.correlations}</td>
+                <td>{row.links}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </section>
       <section className="admin-panel">
         <header>
