@@ -319,11 +319,20 @@ export type CustomerSupportContractPreview = {
       costItemId: "cur_command_ticket";
       excludedOfflineRepeatRewards: readonly ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"];
       boundary: "launch candidate/draft, not production seed/config promotion";
+      firstClearTickets: {
+        quantity: 7;
+        state: "promoted_local_launch_config";
+      };
+      loginBonusTickets: {
+        quantity: 5;
+        state: "pending_endpoint_state_table";
+      };
       sources: ReadonlyArray<{
         code: string;
         label: string;
         quantity: number;
         repeatable: false;
+        state?: "promoted_local_launch_config";
       }>;
     };
     actOneEliteOperatorIds: readonly string[];
@@ -560,31 +569,37 @@ export const customerSupportGachaLaunchPolicy = {
     costItemId: "cur_command_ticket",
     excludedOfflineRepeatRewards: ["cur_command_ticket", "cur_command_ticket_fragment", "cur_special_core"],
     boundary: "launch candidate/draft, not production seed/config promotion",
+    firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
+    loginBonusTickets: { quantity: 5, state: "pending_endpoint_state_table" },
     sources: [
       { code: "launch_login_bonus", label: "login bonus", quantity: 5, repeatable: false },
       {
         code: "opn_03_water_stop_first_clear",
         label: "opn_03_water_stop first clear",
         quantity: 1,
-        repeatable: false
+        repeatable: false,
+        state: "promoted_local_launch_config"
       },
       {
         code: "opn_05_night_boarders_first_clear",
         label: "opn_05_night_boarders first clear",
         quantity: 1,
-        repeatable: false
+        repeatable: false,
+        state: "promoted_local_launch_config"
       },
       {
         code: "opn_06_broken_line_first_clear",
         label: "opn_06_broken_line first clear",
         quantity: 2,
-        repeatable: false
+        repeatable: false,
+        state: "promoted_local_launch_config"
       },
       {
         code: "raid_raider_king_engine_story_raid_first_clear",
         label: "raid_raider_king_engine story raid first clear",
         quantity: 3,
-        repeatable: false
+        repeatable: false,
+        state: "promoted_local_launch_config"
       }
     ]
   },

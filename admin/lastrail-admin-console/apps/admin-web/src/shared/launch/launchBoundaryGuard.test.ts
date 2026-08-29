@@ -203,6 +203,12 @@ describe("launch read-only boundary guard", () => {
       "login bonus 5 repeatable=false + opn_03_water_stop first clear 1 repeatable=false"
     );
     expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "first-clear 7 promoted_local_launch_config"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
+      "login bonus 5 pending_endpoint_state_table"
+    );
+    expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(
       "opn_05_night_boarders first clear 1 repeatable=false + opn_06_broken_line first clear 2 repeatable=false"
     );
     expect(checklist.assertions.find((assertion) => assertion.code === "gacha_ticket_12")?.expected).toContain(

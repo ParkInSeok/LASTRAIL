@@ -266,10 +266,12 @@ export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGac
       : field === "ticketAcquisition"
         ? [
             `launch non-repeat total ${customerSupportGachaLaunchPolicy.ticketAcquisition.totalNonRepeatTickets}`,
+            `first-clear ${customerSupportGachaLaunchPolicy.ticketAcquisition.firstClearTickets.quantity} ${customerSupportGachaLaunchPolicy.ticketAcquisition.firstClearTickets.state}`,
+            `login bonus ${customerSupportGachaLaunchPolicy.ticketAcquisition.loginBonusTickets.quantity} ${customerSupportGachaLaunchPolicy.ticketAcquisition.loginBonusTickets.state}`,
             `cost=${customerSupportGachaLaunchPolicy.ticketAcquisition.costItemId}`,
             customerSupportGachaLaunchPolicy.ticketAcquisition.boundary,
             ...customerSupportGachaLaunchPolicy.ticketAcquisition.sources.map(
-              (source) => `${source.label} ${source.quantity} repeatable=${source.repeatable}`
+              (source) => `${source.label} ${source.quantity} repeatable=${source.repeatable}${"state" in source ? ` state=${source.state}` : ""}`
             ),
             `offline repeat reward excludes ${customerSupportGachaLaunchPolicy.ticketAcquisition.excludedOfflineRepeatRewards.join(
               " / "

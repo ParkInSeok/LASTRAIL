@@ -79,27 +79,33 @@ describe("GachaPage configuration", () => {
           code: "opn_03_water_stop_first_clear",
           label: "opn_03_water_stop first clear",
           quantity: 1,
-          repeatable: false
+          repeatable: false,
+          state: "promoted_local_launch_config"
         },
         {
           code: "opn_05_night_boarders_first_clear",
           label: "opn_05_night_boarders first clear",
           quantity: 1,
-          repeatable: false
+          repeatable: false,
+          state: "promoted_local_launch_config"
         },
         {
           code: "opn_06_broken_line_first_clear",
           label: "opn_06_broken_line first clear",
           quantity: 2,
-          repeatable: false
+          repeatable: false,
+          state: "promoted_local_launch_config"
         },
         {
           code: "raid_raider_king_engine_story_raid_first_clear",
           label: "raid_raider_king_engine story raid first clear",
           quantity: 3,
-          repeatable: false
+          repeatable: false,
+          state: "promoted_local_launch_config"
         }
-      ]
+      ],
+      firstClearTickets: { quantity: 7, state: "promoted_local_launch_config" },
+      loginBonusTickets: { quantity: 5, state: "pending_endpoint_state_table" }
     });
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
       "launch non-repeat total 12"
@@ -115,6 +121,12 @@ describe("GachaPage configuration", () => {
     );
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
       "launch candidate/draft, not production seed/config promotion"
+    );
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "first-clear 7 promoted_local_launch_config"
+    );
+    expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "login bonus 5 pending_endpoint_state_table"
     );
   });
 

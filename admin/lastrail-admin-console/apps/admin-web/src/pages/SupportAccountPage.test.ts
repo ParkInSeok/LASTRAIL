@@ -163,6 +163,12 @@ describe("SupportAccountPage configuration", () => {
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
       "not production seed/config promotion"
     );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "first-clear 7 promoted_local_launch_config"
+    );
+    expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "ticketAcquisition")?.note).toContain(
+      "login bonus 5 pending_endpoint_state_table"
+    );
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "TESTING_TUNING_DRAFT"
     );

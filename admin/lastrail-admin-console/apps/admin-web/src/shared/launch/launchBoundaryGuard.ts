@@ -205,7 +205,7 @@ export function buildPreviewSmokeChecklist(): PreviewSmokeChecklist {
       {
         code: "gacha_ticket_12",
         expected:
-          "Launch candidate/draft command tickets total 12: login bonus 5 repeatable=false + opn_03_water_stop first clear 1 repeatable=false + opn_05_night_boarders first clear 1 repeatable=false + opn_06_broken_line first clear 2 repeatable=false + raid_raider_king_engine story raid first clear 3 repeatable=false; offline repeat excludes cur_command_ticket / cur_command_ticket_fragment / cur_special_core; not production seed/config promotion."
+          "Launch candidate/draft command tickets total 12: first-clear 7 promoted_local_launch_config + login bonus 5 pending_endpoint_state_table; login bonus 5 repeatable=false + opn_03_water_stop first clear 1 repeatable=false + opn_05_night_boarders first clear 1 repeatable=false + opn_06_broken_line first clear 2 repeatable=false + raid_raider_king_engine story raid first clear 3 repeatable=false; offline repeat excludes cur_command_ticket / cur_command_ticket_fragment / cur_special_core; not production seed/config promotion."
       },
       {
         code: "story_raid_policy",
