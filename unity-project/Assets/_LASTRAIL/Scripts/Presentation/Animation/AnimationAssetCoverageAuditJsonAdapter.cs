@@ -17,6 +17,8 @@ namespace LastRail.Presentation.Animation
             builder.Append('{');
             builder.Append("\"isComplete\":").Append(audit.IsComplete ? "true" : "false").Append(',');
             builder.Append("\"operatorCount\":").Append(audit.OperatorCount.ToString(CultureInfo.InvariantCulture)).Append(',');
+            builder.Append("\"initialOperatorCount\":").Append(audit.InitialOperatorCount.ToString(CultureInfo.InvariantCulture)).Append(',');
+            builder.Append("\"gachaEliteOperatorCount\":").Append(audit.GachaEliteOperatorCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             builder.Append("\"enemyCount\":").Append(audit.EnemyCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             builder.Append("\"raidBossCount\":").Append(audit.RaidBossCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             builder.Append("\"missingRequirementCount\":").Append(audit.MissingRequirementCount.ToString(CultureInfo.InvariantCulture)).Append(',');

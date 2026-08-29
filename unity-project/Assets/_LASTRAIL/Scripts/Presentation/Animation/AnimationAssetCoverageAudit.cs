@@ -4,18 +4,27 @@ namespace LastRail.Presentation.Animation
 {
     public static class AnimationAssetCoverageAudit
     {
-        private static readonly string[] ActOneOperatorIds =
+        private static readonly string[] ActOneInitialOperatorIds =
         {
             "op_kyle",
             "op_reina",
             "op_eve",
             "op_sera",
-            "op_mira",
+            "op_mira"
+        };
+
+        private static readonly string[] ActOneGachaEliteOperatorIds =
+        {
             "op_vex",
-            "op_rin",
             "op_nyx",
-            "op_cipher",
-            "op_iris"
+            "op_sable",
+            "op_marrow",
+            "op_iris",
+            "op_rail",
+            "op_anchor",
+            "op_lumen",
+            "op_cinder",
+            "op_warden"
         };
 
         private static readonly string[] OperatorRequiredKeys =
@@ -76,15 +85,40 @@ namespace LastRail.Presentation.Animation
                 }
             }
 
-            for (var i = 0; i < ActOneOperatorIds.Length; i++)
+            for (var i = 0; i < ActOneInitialOperatorIds.Length; i++)
             {
-                AddMissingKeys(manifest.Find(ActOneOperatorIds[i], AnimationAssetRole.Operator), ActOneOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
+                AddMissingKeys(manifest.Find(ActOneInitialOperatorIds[i], AnimationAssetRole.Operator), ActOneInitialOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
+            }
+
+            for (var i = 0; i < ActOneGachaEliteOperatorIds.Length; i++)
+            {
+                AddMissingKeys(manifest.Find(ActOneGachaEliteOperatorIds[i], AnimationAssetRole.Operator), ActOneGachaEliteOperatorIds[i], AnimationAssetRole.Operator, OperatorRequiredKeys, missing);
             }
 
             AddMissingKeys(manifest.Find("enemy_raider_grunt", AnimationAssetRole.Enemy), "enemy_raider_grunt", AnimationAssetRole.Enemy, EnemyRequiredKeys, missing);
             AddMissingKeys(manifest.Find("boss_raider_king_engine", AnimationAssetRole.RaidBoss), "boss_raider_king_engine", AnimationAssetRole.RaidBoss, RaidBossRequiredKeys, missing);
 
-            return new AnimationAssetCoverageAuditResult(operatorCount, enemyCount, raidBossCount, missing);
+            return new AnimationAssetCoverageAuditResult(
+                operatorCount,
+                CountPresentOperators(manifest, ActOneInitialOperatorIds),
+                CountPresentOperators(manifest, ActOneGachaEliteOperatorIds),
+                enemyCount,
+                raidBossCount,
+                missing);
+        }
+
+        private static int CountPresentOperators(AnimationAssetManifest manifest, IReadOnlyList<string> operatorIds)
+        {
+            var count = 0;
+            for (var i = 0; i < operatorIds.Count; i++)
+            {
+                if (manifest.Find(operatorIds[i], AnimationAssetRole.Operator) != null)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         private static void AddMissingKeys(

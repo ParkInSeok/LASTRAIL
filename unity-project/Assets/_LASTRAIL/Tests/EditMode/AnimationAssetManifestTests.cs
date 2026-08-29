@@ -7,30 +7,54 @@ namespace LastRail.Tests.EditMode
     public sealed class AnimationAssetManifestTests
     {
         [Test]
-        public void AuditActOneLaunchManifest_RequiresTenOperatorsAndMinimumCombatAnimationKeys()
+        public void AuditActOneLaunchManifest_RequiresFifteenOperatorsAndSeparatesInitialAndGachaEliteScope()
         {
             var manifest = ActOneAnimationAssetManifestFixtures.CreateMinimumLaunchCandidate();
 
             var audit = AnimationAssetCoverageAudit.AuditActOneLaunch(manifest);
 
             Assert.That(audit.IsComplete, Is.EqualTo(true));
-            Assert.That(audit.OperatorCount, Is.EqualTo(10));
+            Assert.That(audit.OperatorCount, Is.EqualTo(15));
+            Assert.That(audit.InitialOperatorCount, Is.EqualTo(5));
+            Assert.That(audit.GachaEliteOperatorCount, Is.EqualTo(10));
             Assert.That(audit.EnemyCount, Is.EqualTo(1));
             Assert.That(audit.RaidBossCount, Is.EqualTo(1));
             Assert.That(audit.MissingRequirements.Count, Is.EqualTo(0));
         }
 
         [Test]
+        public void AuditActOneLaunchManifest_UsesServerLaunchGachaElitePoolForVisualCoverage()
+        {
+            var manifest = ActOneAnimationAssetManifestFixtures.CreateMinimumLaunchCandidate();
+
+            var audit = AnimationAssetCoverageAudit.AuditActOneLaunch(manifest);
+
+            Assert.That(audit.IsComplete, Is.EqualTo(true));
+            Assert.That(manifest.Find("op_vex", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_nyx", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_sable", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_marrow", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_iris", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_rail", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_anchor", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_lumen", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_cinder", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_warden", AnimationAssetRole.Operator) == null, Is.EqualTo(false));
+            Assert.That(manifest.Find("op_rin", AnimationAssetRole.Operator), Is.EqualTo(null));
+            Assert.That(manifest.Find("op_cipher", AnimationAssetRole.Operator), Is.EqualTo(null));
+        }
+
+        [Test]
         public void AuditActOneLaunchManifest_ReportsMissingOperatorRequiredAnimationKey()
         {
             var manifest = ActOneAnimationAssetManifestFixtures.CreateMinimumLaunchCandidate()
-                .WithAnimationKeyRemoved("op_vex", "ultimate_cue");
+                .WithAnimationKeyRemoved("op_lumen", "ultimate_cue");
 
             var audit = AnimationAssetCoverageAudit.AuditActOneLaunch(manifest);
 
             Assert.That(audit.IsComplete, Is.EqualTo(false));
             Assert.That(audit.MissingRequirements.Count, Is.EqualTo(1));
-            Assert.That(audit.MissingRequirements[0].AssetId, Is.EqualTo("op_vex"));
+            Assert.That(audit.MissingRequirements[0].AssetId, Is.EqualTo("op_lumen"));
             Assert.That(audit.MissingRequirements[0].Role, Is.EqualTo(AnimationAssetRole.Operator));
             Assert.That(audit.MissingRequirements[0].MissingKey, Is.EqualTo("ultimate_cue"));
         }
@@ -94,7 +118,9 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(json, Is.EqualTo(
                 "{\"isComplete\":false," +
-                "\"operatorCount\":10," +
+                "\"operatorCount\":15," +
+                "\"initialOperatorCount\":5," +
+                "\"gachaEliteOperatorCount\":10," +
                 "\"enemyCount\":1," +
                 "\"raidBossCount\":1," +
                 "\"missingRequirementCount\":1," +

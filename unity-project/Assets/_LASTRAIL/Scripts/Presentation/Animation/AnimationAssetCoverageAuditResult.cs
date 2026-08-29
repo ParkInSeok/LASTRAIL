@@ -7,17 +7,23 @@ namespace LastRail.Presentation.Animation
     {
         public AnimationAssetCoverageAuditResult(
             int operatorCount,
+            int initialOperatorCount,
+            int gachaEliteOperatorCount,
             int enemyCount,
             int raidBossCount,
             IEnumerable<AnimationAssetMissingRequirement> missingRequirements)
         {
             OperatorCount = operatorCount;
+            InitialOperatorCount = initialOperatorCount;
+            GachaEliteOperatorCount = gachaEliteOperatorCount;
             EnemyCount = enemyCount;
             RaidBossCount = raidBossCount;
             MissingRequirements = CopyMissing(missingRequirements);
         }
 
         public int OperatorCount { get; }
+        public int InitialOperatorCount { get; }
+        public int GachaEliteOperatorCount { get; }
         public int EnemyCount { get; }
         public int RaidBossCount { get; }
         public IReadOnlyList<AnimationAssetMissingRequirement> MissingRequirements { get; }
