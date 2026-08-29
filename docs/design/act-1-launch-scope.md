@@ -49,7 +49,8 @@ This document is the current planning source of truth for Act 1 launch scope.
 - Done: 15-operator visual manifest/audit and initial 5 versus gacha elite 10 roster separation.
 - Done: Mission shell, narrative/localization presentation state, codex/archive presentation state, gacha reveal/screen presentation state, reward/offline/story display state, combat presentation cue state, and mobile HUD policy models.
 - Done: Android Keystore secure token storage spec; PlayerPrefs token storage is forbidden.
-- In progress/remaining: vetted secure storage plugin or first-party bridge integration, Google SDK preparation, concrete client injection beyond run start, actual Unity screens/presenters/prefabs, 2D Animation/Sprite Atlas asset pipeline, fully animated combat scene, story raid boss UI, gacha reveal UI, reward/offline/story/codex UI, SFX/BGM/vibration implementation, and device performance QA.
+- Done: Mission shell presenter/view boundary for mission select, briefing, run start loading, and result placeholder.
+- In progress/remaining: vetted secure storage plugin or first-party bridge integration, Google SDK preparation, concrete client injection beyond run start, actual Unity scene/prefab binding, 2D Animation/Sprite Atlas asset pipeline, fully animated combat scene, story raid boss UI, gacha reveal UI, reward/offline/story/codex UI, SFX/BGM/vibration implementation, and device performance QA.
 
 ## Admin Launch Work
 
@@ -60,6 +61,7 @@ This document is the current planning source of truth for Act 1 launch scope.
 - Done: Boss-only story raid labels, run start metadata evidence, start package refs evidence, and stamina refund read-only evidence.
 - Done: CS template read-only suggestions without copy/send/ticket actions.
 - Done: Ops error logs read-only list/detail/filter aligned with minimal write sources, including `run_start_state_conflict`.
+- Done: Story raid stamina refund evidence aligned to the committed `COMMITTED` marker and read-only mutation/ledger labels.
 - Done: Forbidden-field and mutation-control absence guard plus preview smoke checklist.
 - Remaining: final preview/browser smoke when an authenticated preview session is available, and small label corrections only when new server/narrative contract fields land.
 
@@ -69,17 +71,18 @@ This document is the current planning source of truth for Act 1 launch scope.
 - Done: 15-operator voice guide.
 - Done: Act 1 localization string-id map draft.
 - Done: `opn_01` through `opn_03` dialogue polish and early mission coverage pass.
-- Remaining: `opn_04` through `opn_06` dialogue polish, story raid boss callout/failure refund wording polish, codex/archive copy final pass, battle callout density rules, and narrative launch checklist.
+- Done: `opn_04` through `opn_06` dialogue polish and late Act 1 tension pass.
+- Remaining: story raid boss callout/failure refund wording polish, codex/archive copy final pass, battle callout density rules, reward framing localization candidate selection, and narrative launch checklist.
 
 ## Launch Progress Board
 
 | Area | Status | Notes |
 | --- | --- | --- |
 | Server contracts/source of truth | 85% | Core launch contracts are green locally; remaining risk is final config/source promotion and PRD-only OAuth/deploy work. |
-| Admin read-only ops/support | 88% | Main surfaces and regression guards are in place; authenticated preview smoke remains environment-dependent. |
-| Unity client/presentation | 58% | Compatibility and presentation models are strong; actual screens, assets, SDK/storage integration, and device QA remain the main bottleneck. |
-| Narrative/direction | 55% | Framework and early missions are aligned; later missions, raid copy, codex, and checklist still need prose passes. |
-| Overall Act 1 launch readiness | 68% | Source-of-truth/backend is ahead; launch readiness now depends mostly on Unity implementation and narrative content completion. |
+| Admin read-only ops/support | 90% | Main surfaces and regression guards are in place; authenticated preview smoke remains environment-dependent. |
+| Unity client/presentation | 62% | Mission shell presenter work has started actual UI wiring; scene/prefab binding, assets, combat, SDK/storage, and device QA remain the main bottleneck. |
+| Narrative/direction | 70% | Ordinary missions and localization map are aligned; story raid copy, codex final pass, and checklist remain. |
+| Overall Act 1 launch readiness | 71% | Source-of-truth/backend is ahead; launch readiness now depends mostly on Unity implementation and final narrative/UI integration. |
 
 ## Decision Queue
 
