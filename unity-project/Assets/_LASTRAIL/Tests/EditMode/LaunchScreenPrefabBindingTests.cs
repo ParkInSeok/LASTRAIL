@@ -1,4 +1,5 @@
 #if UNITY_5_3_OR_NEWER
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -94,6 +95,18 @@ namespace LastRail.Tests.EditMode
             AssertButtonsMeetMinimumTouchTarget("StoryProgressSummaryScreen.prefab");
         }
 
+        [Test]
+        public void LaunchScreenPrefabs_DistributeReadableTextSlotsAcrossPortraitSafeArea()
+        {
+            AssertReadableTextSlotsAreDistributed("MissionShellScreen.prefab", 4);
+            AssertReadableTextSlotsAreDistributed("GachaScreen.prefab", 7);
+            AssertReadableTextSlotsAreDistributed("FullyAnimatedCombatHud.prefab", 7);
+            AssertReadableTextSlotsAreDistributed("CodexArchiveScreen.prefab", 4);
+            AssertReadableTextSlotsAreDistributed("RewardReviewScreen.prefab", 5);
+            AssertReadableTextSlotsAreDistributed("OfflineRewardScreen.prefab", 5);
+            AssertReadableTextSlotsAreDistributed("StoryProgressSummaryScreen.prefab", 5);
+        }
+
         private static void AssertRewardStoryBindings(string prefabName)
         {
             AssertBoundFields<RewardStoryScreenRootBehaviour>(
@@ -147,6 +160,31 @@ namespace LastRail.Tests.EditMode
                 Assert.That(rectTransform.sizeDelta.x, Is.GreaterThanOrEqualTo(48f), button.name);
                 Assert.That(rectTransform.sizeDelta.y, Is.GreaterThanOrEqualTo(48f), button.name);
             }
+        }
+
+        private static void AssertReadableTextSlotsAreDistributed(string prefabName, int minimumDistinctY)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
+            Assert.That(prefab, Is.Not.Null, prefabName);
+            var yPositions = new HashSet<int>();
+            foreach (var text in prefab.GetComponentsInChildren<Text>(includeInactive: true))
+            {
+                if (text.transform.parent != null && text.transform.parent.GetComponent<Button>() != null)
+                {
+                    continue;
+                }
+
+                var rectTransform = text.GetComponent<RectTransform>();
+                Assert.That(rectTransform, Is.Not.Null, text.name);
+                yPositions.Add(Mathf.RoundToInt(rectTransform.anchoredPosition.y));
+                Assert.That(rectTransform.sizeDelta.x, Is.GreaterThanOrEqualTo(720f), prefabName + ":" + text.name);
+                Assert.That(rectTransform.sizeDelta.y, Is.GreaterThanOrEqualTo(64f), prefabName + ":" + text.name);
+            }
+
+            Assert.That(
+                yPositions.Count,
+                Is.GreaterThanOrEqualTo(minimumDistinctY),
+                prefabName + " text slots overlap instead of using the portrait safe area.");
         }
     }
 }

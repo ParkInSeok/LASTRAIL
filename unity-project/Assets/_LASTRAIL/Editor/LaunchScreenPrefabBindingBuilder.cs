@@ -45,6 +45,12 @@ namespace LastRail.Editor
                 var missionRows = CreateText(safeArea, "MissionRowsText", "작전 목록");
                 var primary = CreateButton(safeArea, "PrimaryButton", "시작", out var primaryText);
                 var secondary = CreateButton(safeArea, "SecondaryButton", "돌아가기", out var secondaryText);
+                Place(title, 0f, 780f, 960f, 96f);
+                Place(subtitle, 0f, 700f, 960f, 72f);
+                Place(body, 0f, 520f, 960f, 220f);
+                Place(missionRows, 0f, 260f, 960f, 260f);
+                Place(primary.GetComponent<RectTransform>(), -190f, -720f, 320f, 64f);
+                Place(secondary.GetComponent<RectTransform>(), 190f, -720f, 320f, 64f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -82,6 +88,17 @@ namespace LastRail.Editor
                 var onePull = CreateButton(safeArea, "OnePullButton", "1회 모집", out var onePullText);
                 var tenPull = CreateButton(safeArea, "TenPullButton", "10회 모집", out var tenPullText);
                 var primaryAction = CreateText(safeArea, "PrimaryActionText", "결과 확인");
+                Place(title, 0f, 800f, 960f, 96f);
+                Place(banner, 0f, 690f, 960f, 96f);
+                Place(status, 0f, 590f, 960f, 72f);
+                Place(cost, 0f, 500f, 960f, 72f);
+                Place(pity, 0f, 410f, 960f, 72f);
+                Place(revealMode, 0f, 300f, 960f, 96f);
+                Place(resultGrid, 0f, -30f, 960f, 520f);
+                Place(error, 0f, -360f, 960f, 96f);
+                Place(primaryAction, 0f, -585f, 960f, 72f);
+                Place(onePull.GetComponent<RectTransform>(), -190f, -720f, 320f, 64f);
+                Place(tenPull.GetComponent<RectTransform>(), 190f, -720f, 320f, 64f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -120,6 +137,13 @@ namespace LastRail.Editor
                 var refundHint = CreateText(safeArea, "RefundHintText", string.Empty);
                 var unitRefs = CreateText(safeArea, "UnitRefsText", "Unit refs");
                 var cueRefs = CreateText(safeArea, "CueRefsText", "Cue refs");
+                Place(encounterTitle, 0f, 800f, 960f, 96f);
+                Place(waveCounter, 0f, 710f, 960f, 72f);
+                Place(bossStatus, 0f, 615f, 960f, 96f);
+                Place(objective, 0f, 500f, 960f, 96f);
+                Place(unitRefs, 0f, 80f, 960f, 560f);
+                Place(cueRefs, 0f, -360f, 960f, 240f);
+                Place(refundHint, 0f, -700f, 960f, 96f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -152,6 +176,13 @@ namespace LastRail.Editor
                 var missionSelect = CreateButton(safeArea, "MissionSelectButton", "작전 선택", out var missionSelectText);
                 var result = CreateButton(safeArea, "ResultButton", "결과", out var resultText);
                 var rewardReview = CreateButton(safeArea, "RewardReviewButton", "보상", out var rewardReviewText);
+                Place(title, 0f, 800f, 960f, 96f);
+                Place(subtitle, 0f, 720f, 960f, 72f);
+                Place(entries, 0f, 170f, 960f, 940f);
+                Place(overflow, 0f, -370f, 960f, 96f);
+                Place(missionSelect.GetComponent<RectTransform>(), -300f, -720f, 280f, 64f);
+                Place(result.GetComponent<RectTransform>(), 0f, -720f, 240f, 64f);
+                Place(rewardReview.GetComponent<RectTransform>(), 300f, -720f, 240f, 64f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -188,6 +219,14 @@ namespace LastRail.Editor
                 var primary = CreateButton(safeArea, "PrimaryButton", "확인", out var primaryText);
                 var secondary = CreateButton(safeArea, "SecondaryButton", "돌아가기", out var secondaryText);
                 var codex = CreateButton(safeArea, "CodexButton", "기록 보관소", out var codexText);
+                Place(title, 0f, 800f, 960f, 96f);
+                Place(subtitle, 0f, 720f, 960f, 72f);
+                Place(body, 0f, 520f, 960f, 220f);
+                Place(rewardLines, 0f, 140f, 960f, 380f);
+                Place(status, 0f, -300f, 960f, 160f);
+                Place(primary.GetComponent<RectTransform>(), -300f, -720f, 280f, 64f);
+                Place(secondary.GetComponent<RectTransform>(), 0f, -720f, 240f, 64f);
+                Place(codex.GetComponent<RectTransform>(), 300f, -720f, 280f, 64f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -255,6 +294,20 @@ namespace LastRail.Editor
             text.resizeTextMinSize = 18;
             text.resizeTextMaxSize = 32;
             return text;
+        }
+
+        private static void Place(Component component, float x, float y, float width, float height)
+        {
+            Place(component.GetComponent<RectTransform>(), x, y, width, height);
+        }
+
+        private static void Place(RectTransform rect, float x, float y, float width, float height)
+        {
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(x, y);
+            rect.sizeDelta = new Vector2(width, height);
         }
 
         private static Button CreateButton(Transform parent, string name, string label, out Text labelText)

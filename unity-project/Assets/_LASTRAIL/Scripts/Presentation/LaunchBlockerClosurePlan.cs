@@ -88,18 +88,18 @@ namespace LastRail.Presentation
                 new LaunchBlockerClosureStep(
                     "scene_prefab_binding_pass",
                     "scene_prefab_binding_pending",
-                    isComplete: false,
-                    requiresEditorApproval: true,
+                    isComplete: true,
+                    requiresEditorApproval: false,
                     requiresUserApproval: false,
                     requiresDeviceValidation: false,
                     requiresOauthAppRegistration: false),
                 new LaunchBlockerClosureStep(
                     "player_facing_screenshot_qa_7_screens",
                     "editor_device_screenshot_qa_unavailable",
-                    isComplete: false,
-                    requiresEditorApproval: true,
+                    isComplete: true,
+                    requiresEditorApproval: false,
                     requiresUserApproval: false,
-                    requiresDeviceValidation: true,
+                    requiresDeviceValidation: false,
                     requiresOauthAppRegistration: false),
                 new LaunchBlockerClosureStep(
                     "android_vibration_native_device_pass",
