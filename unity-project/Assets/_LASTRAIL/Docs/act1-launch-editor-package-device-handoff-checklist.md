@@ -4,7 +4,7 @@ This checklist moves the Unity code-readiness slices into Editor/package/device 
 
 ## Required Order
 
-1. Resolve `com.unity.2d.animation` in Unity Package Manager.
+1. Resolve `com.unity.2d.animation` in Unity Package Manager. Completed for Unity `6000.3.22f1` with package version `13.0.0`.
 2. Bind MissionShell, Gacha, Combat HUD, Codex/archive, RewardReview, OfflineReward, and StoryProgressSummary scene or prefab roots.
 3. Run portrait 9:16 screenshot QA for all 7 player-facing screens.
 4. Validate Android native vibration bridge on device.
@@ -20,13 +20,17 @@ This checklist moves the Unity code-readiness slices into Editor/package/device 
 
 ## Approval Or Device Blockers
 
-- `com_unity_2d_animation_package_resolve_pending`
 - `scene_prefab_binding_pending`
 - `editor_device_screenshot_qa_unavailable`
 - `native_vibration_bridge_pending`
 - `android_keystore_secure_storage_plugin_pending`
 - `google_sdk_oauth_app_registration_pending`
 - `android_build_smoke_pending`
+
+## Editor Warnings To Clear
+
+- Repair or regenerate `Assets/_LASTRAIL/Scripts/Presentation/MissionShell/MissionShellScreenRootBehaviour.cs.meta`, which Unity reports as an invalid GUID.
+- Confirm Player Settings input handling because Unity Input System reports `activeInputHandler = -1` during batchmode test startup.
 
 ## Boundaries
 

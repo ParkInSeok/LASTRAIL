@@ -1,6 +1,6 @@
 # Unity Editor Environment Discovery - 2026-08-30
 
-This read-only discovery did not import packages, change project settings, install SDKs, configure OAuth values, install secure storage plugins, or run Android device operations.
+This launch package pass resolved only the approved Unity 2D Animation package and the built-in UnityWebRequest module needed by existing client adapter code. It did not install SDKs, configure OAuth values, install secure storage plugins, or run Android device operations.
 
 ## Project Hints
 
@@ -8,11 +8,12 @@ This read-only discovery did not import packages, change project settings, insta
 - Project editor version: `6000.3.22f1`
 - Project editor revision: `6000.3.22f1 (1c726e1fb402)`
 - `Packages/manifest.json` exists.
-- Declared packages include `com.unity.2d.sprite`, `com.unity.inputsystem`, `com.unity.test-framework`, `com.unity.textmeshpro`, `com.unity.ugui`, and `com.unity.visualscripting`.
-- `com.unity.2d.animation` is not currently declared.
+- Declared packages include `com.unity.2d.animation`, `com.unity.2d.sprite`, `com.unity.inputsystem`, `com.unity.modules.unitywebrequest`, `com.unity.test-framework`, `com.unity.textmeshpro`, `com.unity.ugui`, and `com.unity.visualscripting`.
+- `com.unity.2d.animation` is resolved as `13.0.0` for Unity `6000.3.22f1`.
 
 ## Local Editor Hints
 
+- `D:\Program Files\Unity\Hub\Editor\6000.3.22f1\Editor\Unity.exe` was discovered.
 - `C:\Program Files\Unity\Hub\Editor` was not found.
 - `Unity`, `unity`, and `UnityHub` were not found on PATH.
 - Registry version hints exist for `2021.3.20f1`, `6000.0.68f1`, and `6000.3.22f1`, but no executable location was available from those keys.
@@ -21,19 +22,29 @@ This read-only discovery did not import packages, change project settings, insta
 
 ## Dry-run Result
 
-- Editor dry-run was not attempted because no Unity Editor executable path was discoverable.
-- Current dry-run status: `NOOP_EDITOR_EXECUTABLE_NOT_DISCOVERED`.
+- Unity batchmode compile smoke was run with `6000.3.22f1`.
+- Current dry-run status: `BATCHMODE_COMPILE_SMOKE_PASSED`.
+- Unity EditMode tests were run with `6000.3.22f1`: `501` total, `501` passed, `0` failed.
+
+## Editor Warnings To Check During Binding Pass
+
+- `Assets/_LASTRAIL/Scripts/Presentation/MissionShell/MissionShellScreenRootBehaviour.cs.meta` reported an invalid GUID and should be regenerated or repaired before scene/prefab binding.
+- Input System emitted `Invalid value of 'activeInputHandler' setting: -1`; confirm Player Settings input handling during the next Editor configuration pass.
+- TextMeshPro package is deprecated in Unity `6000.3`; keep the existing dependency for compatibility until UI package migration is intentionally scheduled.
 
 ## Remaining Handoff Blockers
 
-- `unity_editor_executable_not_discovered`
-- `com_unity_2d_animation_package_resolve_pending`
 - `editor_device_screenshot_qa_unavailable`
 - Existing launch checklist blockers still apply for native vibration, Android Keystore secure storage plugin, Google SDK/OAuth app registration, and Android build smoke.
+- `scene_prefab_binding_pending`
+- `native_vibration_bridge_pending`
+- `android_keystore_secure_storage_plugin_pending`
+- `google_sdk_oauth_app_registration_pending`
+- `android_build_smoke_pending`
 
 ## Boundaries
 
-- No package imports.
+- Approved launch package resolve only: `com.unity.2d.animation` and built-in `com.unity.modules.unitywebrequest`.
 - No Google SDK or OAuth values.
 - No secure storage plugin install.
 - No Android device operation.

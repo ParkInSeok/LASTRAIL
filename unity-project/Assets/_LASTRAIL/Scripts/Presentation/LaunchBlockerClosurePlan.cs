@@ -80,8 +80,8 @@ namespace LastRail.Presentation
                 new LaunchBlockerClosureStep(
                     "unity_2d_animation_package_resolve",
                     "com_unity_2d_animation_package_resolve_pending",
-                    isComplete: false,
-                    requiresEditorApproval: true,
+                    isComplete: true,
+                    requiresEditorApproval: false,
                     requiresUserApproval: false,
                     requiresDeviceValidation: false,
                     requiresOauthAppRegistration: false),
