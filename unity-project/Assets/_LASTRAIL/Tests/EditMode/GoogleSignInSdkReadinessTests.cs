@@ -13,6 +13,9 @@ namespace LastRail.Tests.EditMode
             var readiness = GoogleSignInSdkIntegrationReadiness.FromAuthGate(AuthGateUxState.FirstLaunch());
 
             Assert.That(readiness.ProviderPortName, Is.EqualTo("IGoogleIdTokenProvider"));
+            Assert.That(readiness.ConfigurationSlotName, Is.EqualTo("GoogleSignInSdkConfigurationSlot"));
+            Assert.That(readiness.SdkBridgePortName, Is.EqualTo("IGoogleSignInSdkBridge"));
+            Assert.That(readiness.SdkIdTokenProviderName, Is.EqualTo("GoogleSignInSdkIdTokenProvider"));
             Assert.That(readiness.SignInFlowName, Is.EqualTo("GameApiGoogleAuthFlow"));
             Assert.That(readiness.LinkFlowName, Is.EqualTo("GameApiGoogleLinkFlow"));
             Assert.That(readiness.TokenStorePortName, Is.EqualTo("IGameApiAuthTokenStore"));
@@ -22,6 +25,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(readiness.CanLinkGuestToGoogle, Is.EqualTo(false));
             Assert.That(readiness.RequiresGoogleSignInSdkImport, Is.EqualTo(true));
             Assert.That(readiness.RequiresOAuthClientConfiguration, Is.EqualTo(true));
+            Assert.That(readiness.HasPlaceholderConfigSlots, Is.EqualTo(true));
             Assert.That(readiness.HasRealOAuthClientId, Is.EqualTo(false));
             Assert.That(readiness.HasRawTokenDebugPayload, Is.EqualTo(false));
             Assert.That(readiness.UsesInsecureTokenStorage, Is.EqualTo(false));
@@ -65,8 +69,12 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(json.Contains("\"authGateKind\":\"StartOptions\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"providerPortName\":\"IGoogleIdTokenProvider\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"configurationSlotName\":\"GoogleSignInSdkConfigurationSlot\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"sdkBridgePortName\":\"IGoogleSignInSdkBridge\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"sdkIdTokenProviderName\":\"GoogleSignInSdkIdTokenProvider\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresProviderSdkImport\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresOAuthClientConfiguration\":true"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"hasPlaceholderConfigSlots\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"secureStorageStrategy\":\"AndroidKeystoreFirstPartyBridge\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasRealOAuthClientId\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasSecureStorageImplementation\":true"), Is.EqualTo(true));

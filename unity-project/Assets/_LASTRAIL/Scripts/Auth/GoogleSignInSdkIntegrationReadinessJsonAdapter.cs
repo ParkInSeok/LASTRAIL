@@ -16,6 +16,9 @@ namespace LastRail.Auth
             builder.Append('{');
             AppendString(builder, "authGateKind", readiness.AuthGateKind).Append(',');
             AppendString(builder, "providerPortName", readiness.ProviderPortName).Append(',');
+            AppendString(builder, "configurationSlotName", readiness.ConfigurationSlotName).Append(',');
+            AppendString(builder, "sdkBridgePortName", readiness.SdkBridgePortName).Append(',');
+            AppendString(builder, "sdkIdTokenProviderName", readiness.SdkIdTokenProviderName).Append(',');
             AppendString(builder, "signInFlowName", readiness.SignInFlowName).Append(',');
             AppendString(builder, "linkFlowName", readiness.LinkFlowName).Append(',');
             AppendString(builder, "tokenStorePortName", readiness.TokenStorePortName).Append(',');
@@ -27,6 +30,7 @@ namespace LastRail.Auth
             AppendBool(builder, "hasSession", readiness.HasSession).Append(',');
             AppendBool(builder, "requiresProviderSdkImport", readiness.RequiresGoogleSignInSdkImport).Append(',');
             AppendBool(builder, "requiresOAuthClientConfiguration", readiness.RequiresOAuthClientConfiguration).Append(',');
+            AppendBool(builder, "hasPlaceholderConfigSlots", readiness.HasPlaceholderConfigSlots).Append(',');
             AppendBool(builder, "hasRealOAuthClientId", readiness.HasRealOAuthClientId).Append(',');
             AppendBool(builder, "hasSecureStorageImplementation", readiness.HasSecureStorageImplementation).Append(',');
             AppendBool(builder, "usesInsecureTokenStorage", readiness.UsesInsecureTokenStorage).Append(',');

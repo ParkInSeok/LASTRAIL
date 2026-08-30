@@ -31,6 +31,9 @@ namespace LastRail.Auth
 
         public string AuthGateKind { get; }
         public string ProviderPortName => nameof(IGoogleIdTokenProvider);
+        public string ConfigurationSlotName => nameof(GoogleSignInSdkConfigurationSlot);
+        public string SdkBridgePortName => nameof(IGoogleSignInSdkBridge);
+        public string SdkIdTokenProviderName => nameof(GoogleSignInSdkIdTokenProvider);
         public string SignInFlowName => nameof(GameApiGoogleAuthFlow);
         public string LinkFlowName => nameof(GameApiGoogleLinkFlow);
         public string TokenStorePortName => nameof(IGameApiAuthTokenStore);
@@ -42,6 +45,7 @@ namespace LastRail.Auth
         public bool HasSession { get; }
         public bool RequiresGoogleSignInSdkImport => true;
         public bool RequiresOAuthClientConfiguration => true;
+        public bool HasPlaceholderConfigSlots => true;
         public bool HasRealOAuthClientId => false;
         public bool HasSecureStorageImplementation => true;
         public bool UsesInsecureTokenStorage => false;
