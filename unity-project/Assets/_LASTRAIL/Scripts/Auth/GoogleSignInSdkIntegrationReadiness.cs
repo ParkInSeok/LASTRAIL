@@ -34,7 +34,7 @@ namespace LastRail.Auth
         public string SignInFlowName => nameof(GameApiGoogleAuthFlow);
         public string LinkFlowName => nameof(GameApiGoogleLinkFlow);
         public string TokenStorePortName => nameof(IGameApiAuthTokenStore);
-        public string SecureStorageStrategy => "AndroidKeystorePlugin";
+        public string SecureStorageStrategy => "AndroidKeystoreFirstPartyBridge";
         public IReadOnlyList<string> ProviderOutcomeNames { get; }
         public bool CanStartGoogleSignIn { get; }
         public bool CanContinueAsGuest { get; }
@@ -43,7 +43,7 @@ namespace LastRail.Auth
         public bool RequiresGoogleSignInSdkImport => true;
         public bool RequiresOAuthClientConfiguration => true;
         public bool HasRealOAuthClientId => false;
-        public bool HasSecureStorageImplementation => false;
+        public bool HasSecureStorageImplementation => true;
         public bool UsesInsecureTokenStorage => false;
         public bool HasRawTokenDebugPayload => false;
         public bool HasAccountShortcut => false;

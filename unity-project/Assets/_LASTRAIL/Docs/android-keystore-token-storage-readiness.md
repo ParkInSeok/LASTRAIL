@@ -5,17 +5,19 @@ Act 1 launch requires Game API auth tokens to be stored through Android Keystore
 Current Unity boundary:
 - `IGameApiAuthTokenStore` remains the game-facing token store port.
 - `AndroidKeystoreGameApiAuthTokenStore` adapts that port to `IAndroidKeystoreAuthTokenBridge`.
-- The native bridge is compile-safe and testable, but no external plugin or Android native implementation is imported in this slice.
+- The selected launch path is a first-party Android Keystore bridge: `AndroidUnityKeystoreAuthTokenBridge` + `AndroidKeystoreNativeStoragePort`.
+- The native bridge is compile-safe and testable in Editor. Actual Android Keystore execution still requires an Android device/build validation pass.
 - Save calls are overwrite-safe so refresh token rotation can replace the stored access/refresh token bundle.
 - Clear supports logout/session reset.
 - Availability/readiness is exposed without raw token values.
 
-Required approval before real device storage:
-- Select and import a vetted Unity secure storage plugin with Android Keystore support.
+Required validation before real device storage:
+- Run an Android player/device save/load/overwrite/clear pass through `AndroidKeystoreNativeStoragePort`.
 - Confirm IL2CPP Android build compatibility.
 - Confirm clear/delete behavior for logout.
 - Confirm migration behavior if storage keys change.
-- Confirm token values are never logged by the plugin wrapper.
+- Confirm token values are never logged by the bridge or auth UI/debug adapters.
+- Keep third-party secure-storage plugin import as a fallback only if the first-party bridge fails device validation.
 
 Launch security boundaries:
 - Do not store tokens in PlayerPrefs.

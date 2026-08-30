@@ -18,12 +18,14 @@ namespace LastRail.Auth
 
         public string StoreImplementationName => "AndroidKeystoreGameApiAuthTokenStore";
         public string NativeBridgePortName => "IAndroidKeystoreAuthTokenBridge";
-        public string StorageStrategy => "AndroidKeystore";
+        public string StorageStrategy => "AndroidKeystoreFirstPartyBridge";
         public bool IsSecureStorageAvailable { get; }
         public string ProviderName { get; }
         public string ErrorCode { get; }
         public string Message { get; }
-        public bool RequiresPluginApproval => !IsSecureStorageAvailable;
+        public bool RequiresPluginApproval => false;
+        public bool RequiresAndroidDeviceValidation => !IsSecureStorageAvailable;
+        public string BlockerCode => RequiresAndroidDeviceValidation ? "android_keystore_device_validation_pending" : null;
         public bool UsesInsecureTokenStorage => false;
         public bool HasRawTokenDebugPayload => false;
         public bool HasAccountShortcut => false;

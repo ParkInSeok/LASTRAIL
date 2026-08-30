@@ -15,9 +15,10 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(readiness.StoreImplementationName, Is.EqualTo("AndroidKeystoreGameApiAuthTokenStore"));
             Assert.That(readiness.NativeBridgePortName, Is.EqualTo("IAndroidKeystoreAuthTokenBridge"));
-            Assert.That(readiness.StorageStrategy, Is.EqualTo("AndroidKeystore"));
+            Assert.That(readiness.StorageStrategy, Is.EqualTo("AndroidKeystoreFirstPartyBridge"));
             Assert.That(readiness.IsSecureStorageAvailable, Is.EqualTo(true));
             Assert.That(readiness.RequiresPluginApproval, Is.EqualTo(false));
+            Assert.That(readiness.RequiresAndroidDeviceValidation, Is.EqualTo(false));
             Assert.That(readiness.UsesInsecureTokenStorage, Is.EqualTo(false));
             Assert.That(readiness.HasRawTokenDebugPayload, Is.EqualTo(false));
             Assert.That(readiness.HasAccountShortcut, Is.EqualTo(false));
@@ -66,13 +67,13 @@ namespace LastRail.Tests.EditMode
         public void DebugJson_WritesStatusOnlyWithoutRawTokensAccountShortcutsOrAuthPayload()
         {
             var readiness = AndroidKeystoreAuthTokenStoreReadiness.FromBridgeAvailability(
-                AndroidKeystoreBridgeAvailability.Unavailable("plugin_not_imported", "Android Keystore plugin approval pending."));
+                AndroidKeystoreBridgeAvailability.Unavailable("android_keystore_android_device_required", "Android Keystore device validation pending."));
             var ux = GameApiSecureTokenStorageUxState.FromAvailability(readiness);
 
             var json = GameApiSecureTokenStorageUxStateJsonAdapter.ToJson(ux);
 
             Assert.That(json.Contains("\"kind\":\"StorageUnavailable\""), Is.EqualTo(true));
-            Assert.That(json.Contains("\"errorCode\":\"plugin_not_imported\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"errorCode\":\"android_keystore_android_device_required\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresGuestReauthOnNextLaunch\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"usesInsecureTokenStorage\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("lst1."), Is.EqualTo(false));

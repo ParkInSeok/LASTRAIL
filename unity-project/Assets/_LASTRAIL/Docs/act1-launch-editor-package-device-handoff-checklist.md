@@ -23,7 +23,7 @@ This checklist moves the Unity code-readiness slices into Editor/package/device 
 - `scene_prefab_binding_pending`
 - `editor_device_screenshot_qa_unavailable`
 - `native_vibration_bridge_pending`
-- `android_keystore_secure_storage_plugin_pending`
+- `android_keystore_device_validation_pending`
 - `google_sdk_oauth_app_registration_pending`
 - `android_build_smoke_pending`
 

@@ -110,11 +110,11 @@ namespace LastRail.Presentation
                     requiresDeviceValidation: true,
                     requiresOauthAppRegistration: false),
                 new LaunchBlockerClosureStep(
-                    "android_keystore_secure_storage_plugin_pass",
-                    "android_keystore_secure_storage_plugin_pending",
+                    "android_keystore_secure_storage_device_pass",
+                    "android_keystore_device_validation_pending",
                     isComplete: false,
                     requiresEditorApproval: true,
-                    requiresUserApproval: true,
+                    requiresUserApproval: false,
                     requiresDeviceValidation: true,
                     requiresOauthAppRegistration: false),
                 new LaunchBlockerClosureStep(

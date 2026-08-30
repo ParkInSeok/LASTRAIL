@@ -8,7 +8,7 @@ namespace LastRail.Tests.EditMode
     public sealed class GoogleSignInSdkReadinessTests
     {
         [Test]
-        public void FromFirstLaunch_ExposesProviderBoundaryWithoutRealOAuthValuesOrStorageImplementation()
+        public void FromFirstLaunch_ExposesProviderBoundaryWithoutRealOAuthValues()
         {
             var readiness = GoogleSignInSdkIntegrationReadiness.FromAuthGate(AuthGateUxState.FirstLaunch());
 
@@ -16,7 +16,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(readiness.SignInFlowName, Is.EqualTo("GameApiGoogleAuthFlow"));
             Assert.That(readiness.LinkFlowName, Is.EqualTo("GameApiGoogleLinkFlow"));
             Assert.That(readiness.TokenStorePortName, Is.EqualTo("IGameApiAuthTokenStore"));
-            Assert.That(readiness.SecureStorageStrategy, Is.EqualTo("AndroidKeystorePlugin"));
+            Assert.That(readiness.SecureStorageStrategy, Is.EqualTo("AndroidKeystoreFirstPartyBridge"));
             Assert.That(readiness.CanStartGoogleSignIn, Is.EqualTo(true));
             Assert.That(readiness.CanContinueAsGuest, Is.EqualTo(true));
             Assert.That(readiness.CanLinkGuestToGoogle, Is.EqualTo(false));
@@ -51,8 +51,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(readiness.HasSession, Is.EqualTo(true));
             Assert.That(readiness.AuthGateKind, Is.EqualTo("GuestReady"));
             Assert.That(readiness.TokenStorePortName, Is.EqualTo("IGameApiAuthTokenStore"));
-            Assert.That(readiness.SecureStorageStrategy, Is.EqualTo("AndroidKeystorePlugin"));
-            Assert.That(readiness.HasSecureStorageImplementation, Is.EqualTo(false));
+            Assert.That(readiness.SecureStorageStrategy, Is.EqualTo("AndroidKeystoreFirstPartyBridge"));
+            Assert.That(readiness.HasSecureStorageImplementation, Is.EqualTo(true));
             Assert.That(readiness.UsesInsecureTokenStorage, Is.EqualTo(false));
         }
 
@@ -67,9 +67,9 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"providerPortName\":\"IGoogleIdTokenProvider\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresProviderSdkImport\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresOAuthClientConfiguration\":true"), Is.EqualTo(true));
-            Assert.That(json.Contains("\"secureStorageStrategy\":\"AndroidKeystorePlugin\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"secureStorageStrategy\":\"AndroidKeystoreFirstPartyBridge\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasRealOAuthClientId\":false"), Is.EqualTo(true));
-            Assert.That(json.Contains("\"hasSecureStorageImplementation\":false"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"hasSecureStorageImplementation\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"usesInsecureTokenStorage\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasRawTokenDebugPayload\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasAccountShortcut\":false"), Is.EqualTo(true));

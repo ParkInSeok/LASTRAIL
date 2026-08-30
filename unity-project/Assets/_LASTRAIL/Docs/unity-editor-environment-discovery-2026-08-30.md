@@ -38,7 +38,7 @@ This launch package pass resolved only the approved Unity 2D Animation package a
 - Existing launch checklist blockers still apply for native vibration, Android Keystore secure storage plugin, Google SDK/OAuth app registration, and Android build smoke.
 - `scene_prefab_binding_pending`
 - `native_vibration_bridge_pending`
-- `android_keystore_secure_storage_plugin_pending`
+- `android_keystore_device_validation_pending`
 - `google_sdk_oauth_app_registration_pending`
 - `android_build_smoke_pending`
 
