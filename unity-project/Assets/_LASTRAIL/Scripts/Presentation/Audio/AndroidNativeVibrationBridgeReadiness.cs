@@ -22,9 +22,11 @@ namespace LastRail.Presentation.Audio
     public enum AndroidVibrationDispatchOutcome
     {
         WouldDispatch,
+        Dispatched,
         SkippedDisabled,
         SkippedUnsupportedPlatform,
-        FailedNativeBridgeMissing
+        FailedNativeBridgeMissing,
+        FailedNativeDispatch
     }
 
     public sealed class AndroidVibrationCue
@@ -409,3 +411,5 @@ namespace LastRail.Presentation.Audio
         }
     }
 }
+
+

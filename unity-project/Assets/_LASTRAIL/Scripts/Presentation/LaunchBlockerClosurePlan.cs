@@ -103,7 +103,7 @@ namespace LastRail.Presentation
                     requiresOauthAppRegistration: false),
                 new LaunchBlockerClosureStep(
                     "android_vibration_native_device_pass",
-                    "native_vibration_bridge_pending",
+                    "android_vibration_device_validation_pending",
                     isComplete: false,
                     requiresEditorApproval: true,
                     requiresUserApproval: false,
@@ -312,3 +312,5 @@ namespace LastRail.Presentation
         }
     }
 }
+
+

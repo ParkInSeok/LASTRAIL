@@ -38,7 +38,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(plan.OpenBlockers, Does.Not.Contain("com_unity_2d_animation_package_resolve_pending"));
             Assert.That(plan.OpenBlockers, Does.Not.Contain("scene_prefab_binding_pending"));
             Assert.That(plan.OpenBlockers, Does.Not.Contain("editor_device_screenshot_qa_unavailable"));
-            Assert.That(plan.OpenBlockers, Does.Contain("native_vibration_bridge_pending"));
+            Assert.That(plan.OpenBlockers, Does.Contain("android_vibration_device_validation_pending"));
             Assert.That(plan.OpenBlockers, Does.Contain("android_keystore_secure_storage_plugin_pending"));
             Assert.That(plan.OpenBlockers, Does.Contain("google_sdk_oauth_app_registration_pending"));
             Assert.That(plan.OpenBlockers, Does.Contain("android_build_smoke_pending"));
@@ -66,7 +66,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"isComplete\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"player_facing_screenshot_qa_7_screens\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"google_sign_in_sdk_pass_after_app_registration\""), Is.EqualTo(true));
-            Assert.That(json.Contains("\"openBlockers\":[\"native_vibration_bridge_pending\",\"android_keystore_secure_storage_plugin_pending\",\"google_sdk_oauth_app_registration_pending\",\"android_build_smoke_pending\"]"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"openBlockers\":[\"android_vibration_device_validation_pending\",\"android_keystore_secure_storage_plugin_pending\",\"google_sdk_oauth_app_registration_pending\",\"android_build_smoke_pending\"]"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewServerScope\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewAdminScope\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewNarrativeScope\":false"), Is.EqualTo(true));
@@ -89,3 +89,6 @@ namespace LastRail.Tests.EditMode
         }
     }
 }
+
+
+

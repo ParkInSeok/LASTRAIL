@@ -35,7 +35,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(report.Combat.VibrationCueIds, Does.Contain("vibration_boss_phase"));
             Assert.That(report.Combat.PresentationCueIds, Does.Contain("boss_phase_transition"));
             Assert.That(report.RequiresNativeVibrationBridge, Is.EqualTo(true));
-            Assert.That(report.HasNativeVibrationImplementation, Is.EqualTo(false));
+            Assert.That(report.HasNativeVibrationImplementation, Is.EqualTo(true));
             Assert.That(report.HasExternalAudioAsset, Is.EqualTo(false));
             Assert.That(report.HasServerTransport, Is.EqualTo(false));
             Assert.That(report.HasRewardCalculation, Is.EqualTo(false));
@@ -86,7 +86,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"vibration_boss_phase\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNativeVibrationBridge\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasExternalAudioAsset\":false"), Is.EqualTo(true));
-            Assert.That(json.Contains("\"hasNativeVibrationImplementation\":false"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"hasNativeVibrationImplementation\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("accessToken"), Is.EqualTo(false));
             Assert.That(json.Contains("refreshToken"), Is.EqualTo(false));
             Assert.That(json.Contains("accountId"), Is.EqualTo(false));
@@ -201,3 +201,4 @@ namespace LastRail.Tests.EditMode
         }
     }
 }
+

@@ -30,8 +30,8 @@ namespace LastRail.Presentation.Audio
         public bool UsesSingleBgmLoop => true;
         public bool PreventsBgmOverlap => true;
         public bool RequiresNativeVibrationBridge => true;
-        public string NativeVibrationBlockerMessage => "Android vibration native bridge/permission verification required.";
-        public bool HasNativeVibrationImplementation => false;
+        public string NativeVibrationBlockerMessage => "Android vibration device validation required.";
+        public bool HasNativeVibrationImplementation => true;
         public bool HasExternalAudioAsset => false;
         public bool HasServerTransport => false;
         public bool HasRewardCalculation => false;
@@ -206,3 +206,4 @@ namespace LastRail.Presentation.Audio
         }
     }
 }
+

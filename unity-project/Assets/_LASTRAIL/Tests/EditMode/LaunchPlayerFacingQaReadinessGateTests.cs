@@ -57,7 +57,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(gate.UsesSingleBgmLoop, Is.EqualTo(true));
             Assert.That(gate.RequiresNativeVibrationBridge, Is.EqualTo(true));
             Assert.That(gate.Blockers[0], Is.EqualTo("editor_device_screenshot_qa_unavailable"));
-            Assert.That(gate.Blockers[1], Is.EqualTo("native_vibration_bridge_pending"));
+            Assert.That(gate.Blockers[1], Is.EqualTo("android_vibration_device_validation_pending"));
             Assert.That(gate.IsReadyForEditorBindingPass, Is.EqualTo(true));
             Assert.That(gate.IsLaunchQaComplete, Is.EqualTo(false));
         }
@@ -83,7 +83,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"warningCount\":2"), Is.EqualTo(true));
             Assert.That(json.Contains("\"failCount\":0"), Is.EqualTo(true));
             Assert.That(json.Contains("\"screenKeys\":[\"mission_shell\",\"gacha_screen\",\"fully_animated_combat_hud\",\"codex_archive\",\"reward_review\",\"offline_reward\",\"story_progress_summary\"]"), Is.EqualTo(true));
-            Assert.That(json.Contains("\"blockers\":[\"editor_device_screenshot_qa_unavailable\",\"native_vibration_bridge_pending\"]"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"blockers\":[\"editor_device_screenshot_qa_unavailable\",\"android_vibration_device_validation_pending\"]"), Is.EqualTo(true));
             Assert.That(json.Contains("\"targetFps\":60"), Is.EqualTo(true));
             Assert.That(json.Contains("\"lowEndFallbackFps\":30"), Is.EqualTo(true));
             Assert.That(json.Contains("\"largeVfxConcurrentLimit\":2"), Is.EqualTo(true));
@@ -255,3 +255,6 @@ namespace LastRail.Tests.EditMode
         }
     }
 }
+
+
+

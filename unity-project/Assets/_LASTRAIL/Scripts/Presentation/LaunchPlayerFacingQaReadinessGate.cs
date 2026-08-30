@@ -126,6 +126,10 @@ namespace LastRail.Presentation
             {
                 blockers.Add("native_vibration_bridge_pending");
             }
+            else if (audio.RequiresNativeVibrationBridge)
+            {
+                blockers.Add("android_vibration_device_validation_pending");
+            }
 
             return new LaunchPlayerFacingQaReadinessGate(
                 screenKeys,
@@ -228,3 +232,5 @@ namespace LastRail.Presentation
         }
     }
 }
+
+
