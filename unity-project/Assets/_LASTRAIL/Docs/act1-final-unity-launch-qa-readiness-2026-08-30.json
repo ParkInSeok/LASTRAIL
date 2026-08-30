@@ -1,0 +1,46 @@
+{
+  "reportId": "act1-final-unity-launch-qa-2026-08-30",
+  "status": "BLOCKED_ON_DEVICE_AND_RELEASE_SETUP",
+  "codeReadiness": {
+    "status": "PASS",
+    "editModeTotal": 526,
+    "editModePassed": 526,
+    "editModeFailed": 0
+  },
+  "editorQa": {
+    "status": "PASS",
+    "screenCount": 7,
+    "screenshotResolution": "1080x1920",
+    "passCount": 7,
+    "warningCount": 0,
+    "failCount": 0,
+    "narrativeCopyIssueCount": 0
+  },
+  "androidBuildSmoke": {
+    "gradleExportStatus": "PASS",
+    "gradleExportPath": "E:\\Projects\\LASTRAIL\\unity-project\\Builds\\AndroidSmoke\\GradleProjectExportClean",
+    "gradleExportFileCount": 2412,
+    "apkStatus": "BLOCKED",
+    "apkBlocker": "android_apk_il2cpp_toolchain_oom",
+    "deviceBlocker": "android_device_or_emulator_unavailable"
+  },
+  "remainingBlockers": [
+    "android_device_or_emulator_unavailable",
+    "android_vibration_device_validation_pending",
+    "android_keystore_device_validation_pending",
+    "android_apk_il2cpp_toolchain_oom",
+    "google_oauth_app_registration_and_real_values_pending",
+    "production_deploy_and_release_decisions_pending"
+  ],
+  "boundaryAudit": {
+    "playerPrefsTokenStorage": false,
+    "accountShortcut": false,
+    "rawTokenOrSecretPayload": false,
+    "rawRngOrProbabilityPayload": false,
+    "rewardAmountOrLedgerPayload": false,
+    "serverSubmitPayload": false,
+    "unitySideServerTruthCalculation": false,
+    "railChoiceEventsLaunchScope": false,
+    "worldRaidLaunchScope": false
+  }
+}
