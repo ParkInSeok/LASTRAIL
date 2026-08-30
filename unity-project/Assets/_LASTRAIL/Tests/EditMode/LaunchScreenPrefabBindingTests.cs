@@ -107,6 +107,40 @@ namespace LastRail.Tests.EditMode
             AssertReadableTextSlotsAreDistributed("StoryProgressSummaryScreen.prefab", 5);
         }
 
+        [Test]
+        public void LaunchScreenRoots_ExposeCallbackActionsWithoutParentReadingChildButtons()
+        {
+            AssertMissionShellCallbacks();
+            AssertGachaCallbacks();
+            AssertCodexCallbacks();
+            AssertRewardStoryCallbacks("RewardReviewScreen.prefab");
+            AssertRewardStoryCallbacks("OfflineRewardScreen.prefab");
+            AssertRewardStoryCallbacks("StoryProgressSummaryScreen.prefab");
+        }
+
+        [Test]
+        public void LaunchScreenRootCallbacks_DoNotDuplicateButtonListenersWhenRebound()
+        {
+            var root = InstantiateScreenRoot<MissionShellScreenRootBehaviour>("MissionShellScreen.prefab");
+            try
+            {
+                var primaryCount = 0;
+                root.PrimaryActionRequested += () => primaryCount++;
+                root.BindInteractionCallbacks();
+                root.BindInteractionCallbacks();
+
+                var button = GetSerializedObjectReference<Button>(root, "primaryButton");
+                button.interactable = true;
+                button.onClick.Invoke();
+
+                Assert.That(primaryCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
+        }
+
         private static void AssertRewardStoryBindings(string prefabName)
         {
             AssertBoundFields<RewardStoryScreenRootBehaviour>(
@@ -123,6 +157,106 @@ namespace LastRail.Tests.EditMode
                 "secondaryButton",
                 "codexButtonText",
                 "codexButton");
+        }
+
+        private static void AssertMissionShellCallbacks()
+        {
+            var root = InstantiateScreenRoot<MissionShellScreenRootBehaviour>("MissionShellScreen.prefab");
+            try
+            {
+                var primaryCount = 0;
+                var secondaryCount = 0;
+                root.PrimaryActionRequested += () => primaryCount++;
+                root.SecondaryActionRequested += () => secondaryCount++;
+                root.BindInteractionCallbacks();
+
+                ClickSerializedButton(root, "primaryButton");
+                ClickSerializedButton(root, "secondaryButton");
+
+                Assert.That(primaryCount, Is.EqualTo(1));
+                Assert.That(secondaryCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
+        }
+
+        private static void AssertGachaCallbacks()
+        {
+            var root = InstantiateScreenRoot<GachaScreenRootBehaviour>("GachaScreen.prefab");
+            try
+            {
+                var onePullCount = 0;
+                var tenPullCount = 0;
+                root.OnePullRequested += () => onePullCount++;
+                root.TenPullRequested += () => tenPullCount++;
+                root.BindInteractionCallbacks();
+
+                ClickSerializedButton(root, "onePullButton");
+                ClickSerializedButton(root, "tenPullButton");
+
+                Assert.That(onePullCount, Is.EqualTo(1));
+                Assert.That(tenPullCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
+        }
+
+        private static void AssertCodexCallbacks()
+        {
+            var root = InstantiateScreenRoot<CodexArchiveScreenRootBehaviour>("CodexArchiveScreen.prefab");
+            try
+            {
+                var missionSelectCount = 0;
+                var resultCount = 0;
+                var rewardReviewCount = 0;
+                root.MissionSelectRequested += () => missionSelectCount++;
+                root.ResultRequested += () => resultCount++;
+                root.RewardReviewRequested += () => rewardReviewCount++;
+                root.BindInteractionCallbacks();
+
+                ClickSerializedButton(root, "missionSelectButton");
+                ClickSerializedButton(root, "resultButton");
+                ClickSerializedButton(root, "rewardReviewButton");
+
+                Assert.That(missionSelectCount, Is.EqualTo(1));
+                Assert.That(resultCount, Is.EqualTo(1));
+                Assert.That(rewardReviewCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
+        }
+
+        private static void AssertRewardStoryCallbacks(string prefabName)
+        {
+            var root = InstantiateScreenRoot<RewardStoryScreenRootBehaviour>(prefabName);
+            try
+            {
+                var primaryCount = 0;
+                var secondaryCount = 0;
+                var codexCount = 0;
+                root.PrimaryActionRequested += () => primaryCount++;
+                root.SecondaryActionRequested += () => secondaryCount++;
+                root.CodexArchiveRequested += () => codexCount++;
+                root.BindInteractionCallbacks();
+
+                ClickSerializedButton(root, "primaryButton");
+                ClickSerializedButton(root, "secondaryButton");
+                ClickSerializedButton(root, "codexButton");
+
+                Assert.That(primaryCount, Is.EqualTo(1));
+                Assert.That(secondaryCount, Is.EqualTo(1));
+                Assert.That(codexCount, Is.EqualTo(1));
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
         }
 
         private static void AssertPrefabExists<TComponent>(string prefabName)
@@ -185,6 +319,35 @@ namespace LastRail.Tests.EditMode
                 yPositions.Count,
                 Is.GreaterThanOrEqualTo(minimumDistinctY),
                 prefabName + " text slots overlap instead of using the portrait safe area.");
+        }
+
+        private static TComponent InstantiateScreenRoot<TComponent>(string prefabName)
+            where TComponent : Component
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
+            Assert.That(prefab, Is.Not.Null, prefabName);
+            var instance = Object.Instantiate(prefab);
+            var component = instance.GetComponent<TComponent>();
+            Assert.That(component, Is.Not.Null, prefabName);
+            return component;
+        }
+
+        private static void ClickSerializedButton(Component owner, string fieldName)
+        {
+            var button = GetSerializedObjectReference<Button>(owner, fieldName);
+            button.interactable = true;
+            button.onClick.Invoke();
+        }
+
+        private static TReference GetSerializedObjectReference<TReference>(Component owner, string fieldName)
+            where TReference : Object
+        {
+            var serialized = new SerializedObject(owner);
+            var property = serialized.FindProperty(fieldName);
+            Assert.That(property, Is.Not.Null, fieldName);
+            var value = property.objectReferenceValue as TReference;
+            Assert.That(value, Is.Not.Null, fieldName);
+            return value;
         }
     }
 }

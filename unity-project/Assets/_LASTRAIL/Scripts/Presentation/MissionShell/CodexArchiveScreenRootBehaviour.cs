@@ -1,4 +1,5 @@
 #if UNITY_5_3_OR_NEWER
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,26 @@ namespace LastRail.Presentation.MissionShell
         [SerializeField] private Button rewardReviewButton;
 
         public CodexArchiveScreenViewState CurrentState { get; private set; }
+        public event Action MissionSelectRequested;
+        public event Action ResultRequested;
+        public event Action RewardReviewRequested;
+
+        private void OnEnable()
+        {
+            BindInteractionCallbacks();
+        }
+
+        private void OnDisable()
+        {
+            UnbindInteractionCallbacks();
+        }
+
+        public void BindInteractionCallbacks()
+        {
+            BindButton(missionSelectButton, OnMissionSelectClicked);
+            BindButton(resultButton, OnResultClicked);
+            BindButton(rewardReviewButton, OnRewardReviewClicked);
+        }
 
         public void Render(CodexArchiveScreenViewState state)
         {
@@ -40,6 +61,66 @@ namespace LastRail.Presentation.MissionShell
             SetButton(resultButton, state.CanNavigateToResult);
             SetText(rewardReviewButtonText, "보상");
             SetButton(rewardReviewButton, state.CanNavigateToRewardReview);
+            BindInteractionCallbacks();
+        }
+
+        private void OnMissionSelectClicked()
+        {
+            if (missionSelectButton == null || !missionSelectButton.interactable)
+            {
+                return;
+            }
+
+            MissionSelectRequested?.Invoke();
+        }
+
+        private void OnResultClicked()
+        {
+            if (resultButton == null || !resultButton.interactable)
+            {
+                return;
+            }
+
+            ResultRequested?.Invoke();
+        }
+
+        private void OnRewardReviewClicked()
+        {
+            if (rewardReviewButton == null || !rewardReviewButton.interactable)
+            {
+                return;
+            }
+
+            RewardReviewRequested?.Invoke();
+        }
+
+        private static void BindButton(Button target, UnityEngine.Events.UnityAction action)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.onClick.RemoveListener(action);
+            target.onClick.AddListener(action);
+        }
+
+        private void UnbindInteractionCallbacks()
+        {
+            if (missionSelectButton != null)
+            {
+                missionSelectButton.onClick.RemoveListener(OnMissionSelectClicked);
+            }
+
+            if (resultButton != null)
+            {
+                resultButton.onClick.RemoveListener(OnResultClicked);
+            }
+
+            if (rewardReviewButton != null)
+            {
+                rewardReviewButton.onClick.RemoveListener(OnRewardReviewClicked);
+            }
         }
 
         private void ApplySafeArea()

@@ -1,4 +1,5 @@
 #if UNITY_5_3_OR_NEWER
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,26 @@ namespace LastRail.Presentation.MissionShell
         [SerializeField] private Button codexButton;
 
         public RewardStoryScreenViewState CurrentState { get; private set; }
+        public event Action PrimaryActionRequested;
+        public event Action SecondaryActionRequested;
+        public event Action CodexArchiveRequested;
+
+        private void OnEnable()
+        {
+            BindInteractionCallbacks();
+        }
+
+        private void OnDisable()
+        {
+            UnbindInteractionCallbacks();
+        }
+
+        public void BindInteractionCallbacks()
+        {
+            BindButton(primaryButton, OnPrimaryActionClicked);
+            BindButton(secondaryButton, OnSecondaryActionClicked);
+            BindButton(codexButton, OnCodexArchiveClicked);
+        }
 
         public void Render(RewardStoryScreenViewState state)
         {
@@ -42,6 +63,66 @@ namespace LastRail.Presentation.MissionShell
             SetButton(secondaryButton, state.SecondaryActionLabel != null);
             SetText(codexButtonText, "기록 보관소");
             SetButton(codexButton, state.CanNavigateToCodexArchive);
+            BindInteractionCallbacks();
+        }
+
+        private void OnPrimaryActionClicked()
+        {
+            if (primaryButton == null || !primaryButton.interactable)
+            {
+                return;
+            }
+
+            PrimaryActionRequested?.Invoke();
+        }
+
+        private void OnSecondaryActionClicked()
+        {
+            if (secondaryButton == null || !secondaryButton.interactable)
+            {
+                return;
+            }
+
+            SecondaryActionRequested?.Invoke();
+        }
+
+        private void OnCodexArchiveClicked()
+        {
+            if (codexButton == null || !codexButton.interactable)
+            {
+                return;
+            }
+
+            CodexArchiveRequested?.Invoke();
+        }
+
+        private static void BindButton(Button target, UnityEngine.Events.UnityAction action)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.onClick.RemoveListener(action);
+            target.onClick.AddListener(action);
+        }
+
+        private void UnbindInteractionCallbacks()
+        {
+            if (primaryButton != null)
+            {
+                primaryButton.onClick.RemoveListener(OnPrimaryActionClicked);
+            }
+
+            if (secondaryButton != null)
+            {
+                secondaryButton.onClick.RemoveListener(OnSecondaryActionClicked);
+            }
+
+            if (codexButton != null)
+            {
+                codexButton.onClick.RemoveListener(OnCodexArchiveClicked);
+            }
         }
 
         private void ApplySafeArea()

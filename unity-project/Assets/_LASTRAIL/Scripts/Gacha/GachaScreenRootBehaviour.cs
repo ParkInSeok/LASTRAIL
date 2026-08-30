@@ -1,4 +1,5 @@
 #if UNITY_5_3_OR_NEWER
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,24 @@ namespace LastRail.Gacha
         [SerializeField] private Text primaryActionText;
 
         public GachaScreenViewState CurrentState { get; private set; }
+        public event Action OnePullRequested;
+        public event Action TenPullRequested;
+
+        private void OnEnable()
+        {
+            BindInteractionCallbacks();
+        }
+
+        private void OnDisable()
+        {
+            UnbindInteractionCallbacks();
+        }
+
+        public void BindInteractionCallbacks()
+        {
+            BindButton(onePullButton, OnOnePullClicked);
+            BindButton(tenPullButton, OnTenPullClicked);
+        }
 
         public void Render(GachaScreenViewState state)
         {
@@ -46,6 +65,51 @@ namespace LastRail.Gacha
             SetText(tenPullButtonText, state.TenPullButtonLabel);
             SetButton(tenPullButton, state.IsTenPullEnabled);
             SetText(primaryActionText, state.PrimaryActionLabel);
+            BindInteractionCallbacks();
+        }
+
+        private void OnOnePullClicked()
+        {
+            if (onePullButton == null || !onePullButton.interactable)
+            {
+                return;
+            }
+
+            OnePullRequested?.Invoke();
+        }
+
+        private void OnTenPullClicked()
+        {
+            if (tenPullButton == null || !tenPullButton.interactable)
+            {
+                return;
+            }
+
+            TenPullRequested?.Invoke();
+        }
+
+        private static void BindButton(Button target, UnityEngine.Events.UnityAction action)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            target.onClick.RemoveListener(action);
+            target.onClick.AddListener(action);
+        }
+
+        private void UnbindInteractionCallbacks()
+        {
+            if (onePullButton != null)
+            {
+                onePullButton.onClick.RemoveListener(OnOnePullClicked);
+            }
+
+            if (tenPullButton != null)
+            {
+                tenPullButton.onClick.RemoveListener(OnTenPullClicked);
+            }
         }
 
         private void ApplySafeArea()
