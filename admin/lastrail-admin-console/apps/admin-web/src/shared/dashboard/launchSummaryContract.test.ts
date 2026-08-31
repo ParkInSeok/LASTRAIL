@@ -23,6 +23,16 @@ describe("launch dashboard summary contract", () => {
       duplicateReplayCount: 7,
       criticalOpenOpsErrorCount: 5,
       unacknowledgedCoreFailureCount: 6,
+      accountsWithStoryProgressCount: 4,
+      highestProgressDistribution: [
+        { storyProgressId: "opn_03_water_stop", count: 2 },
+        { storyProgressId: "raid_raider_king_engine", count: 1 }
+      ],
+      contentMissingCount: 0,
+      localizationPendingCount: 7,
+      fixturePendingCount: 7,
+      versionMismatchCount: 0,
+      latestNarrativeVersion: null,
       serverCalculatedAt: "2026-08-25T11:56:40.000Z",
       supportContext: { readOnly: true, mutationEndpointsEnabled: false, exactConcurrentUsersEnabled: false }
     });
@@ -31,6 +41,11 @@ describe("launch dashboard summary contract", () => {
     expect(summary.concurrentUsers).toBe("정밀 동접자 백로그 (UNAVAILABLE)");
     expect(summary.lastLoginAtLatest).toBe("2026-08-25T11:51:40.000Z");
     expect(summary.lastLoginAgeSeconds).toBe("300초");
+    expect(summary.accountsWithStoryProgressCount).toBe("4");
+    expect(summary.highestProgressDistribution).toBe(
+      "급수 정차 / opn_03_water_stop: 2, 약탈왕 기관차 / raid_raider_king_engine: 1"
+    );
+    expect(summary.latestNarrativeVersion).toBe("없음");
     expect(summary.supportContext.mutationEndpointsEnabled).toBe(false);
 
     const cards = dashboardLaunchSummaryMetricCards(summary);
@@ -39,6 +54,7 @@ describe("launch dashboard summary contract", () => {
       "2"
     ]);
     expect(JSON.stringify(cards)).not.toContain("대시보드 집계 API 대기");
+    expect(JSON.stringify(cards)).toContain("스토리 진행 계정");
   });
 
   it("keeps success empty summary as zero/none semantics", () => {
@@ -55,11 +71,20 @@ describe("launch dashboard summary contract", () => {
       gachaSupportIssueCount: 0,
       duplicateReplayCount: 0,
       criticalOpenOpsErrorCount: 0,
-      unacknowledgedCoreFailureCount: 0
+      unacknowledgedCoreFailureCount: 0,
+      accountsWithStoryProgressCount: 0,
+      highestProgressDistribution: [],
+      contentMissingCount: 0,
+      localizationPendingCount: 0,
+      fixturePendingCount: 0,
+      versionMismatchCount: 0,
+      latestNarrativeVersion: null
     });
 
     expect(summary.activeSessions).toBe("0");
     expect(summary.lastLoginAtLatest).toBe("없음");
     expect(summary.supportReviewNeededCount).toBe("0");
+    expect(summary.highestProgressDistribution).toBe("데이터 없음");
+    expect(summary.latestNarrativeVersion).toBe("없음");
   });
 });

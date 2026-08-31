@@ -15,6 +15,8 @@ import {
   type OfflineRewardReadFiltersPreview
 } from "../offlineRewards/offlineRewardContract";
 
+import { mapNarrativeCoverageResponse } from "../narrative/narrativeCoverageContract";
+
 import {
   mapOpsErrorLogDetailResponse,
   mapOpsErrorLogListResponse,
@@ -253,6 +255,9 @@ export const adminApi = {
       await readJson(`/api/story-progress/${encodeURIComponent(accountId)}`),
       accountId
     );
+  },
+  async narrativeCoverage(actId: string) {
+    return mapNarrativeCoverageResponse(await readJson(`/api/narrative/coverage${queryString({ actId })}`));
   },
   async offlineRewardList(filters: Partial<OfflineRewardReadFiltersPreview>) {
     return mapOfflineRewardListResponse(await readJson(`/api/offline-rewards${offlineRewardQuery(filters)}`));

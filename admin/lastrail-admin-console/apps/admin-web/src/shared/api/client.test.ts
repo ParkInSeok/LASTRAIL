@@ -434,6 +434,46 @@ describe("admin web API client", () => {
     });
   });
 
+  it("reads narrative coverage by act id as read-only Admin API data", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_PERMISSION",
+        items: [
+          {
+            missionId: "opn_01_last_departure",
+            displayName: "마지막 출발",
+            contentStatus: "draft_exists",
+            localizationStatus: "localization_pending",
+            fixtureStatus: "fixture_pending",
+            missingContentStatus: "version_pending",
+            narrativeVersion: null,
+            updatedAt: "2026-08-31T09:00:00.000Z",
+            source: "narrative_coverage_read_model"
+          }
+        ],
+        summary: {
+          contentMissingCount: 0,
+          localizationPendingCount: 1,
+          fixturePendingCount: 1,
+          versionMismatchCount: 0,
+          latestNarrativeVersion: null
+        }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.narrativeCoverage("act_01_wasteland_railway");
+
+    expect(result.items[0]?.contentStatus).toBe("draft_exists");
+    expect(result.summary.latestNarrativeVersion).toBe("없음");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/narrative/coverage?actId=act_01_wasteland_railway", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
+
   it("reads offline reward list with optional read-only filters", async () => {
     const fetchSpy = vi.fn(async () =>
       Response.json({
@@ -623,7 +663,17 @@ describe("admin web API client", () => {
         gachaSupportIssueCount: 0,
         duplicateReplayCount: 0,
         criticalOpenOpsErrorCount: 0,
-        unacknowledgedCoreFailureCount: 0
+        unacknowledgedCoreFailureCount: 0,
+        accountsWithStoryProgressCount: 4,
+        highestProgressDistribution: [
+          { storyProgressId: "opn_03_water_stop", count: 2 },
+          { storyProgressId: "raid_raider_king_engine", count: 1 }
+        ],
+        contentMissingCount: 0,
+        localizationPendingCount: 7,
+        fixturePendingCount: 7,
+        versionMismatchCount: 0,
+        latestNarrativeVersion: null
       })
     );
     vi.stubGlobal("fetch", fetchSpy);
@@ -632,6 +682,11 @@ describe("admin web API client", () => {
 
     expect(result.activeSessions).toBe("2");
     expect(result.concurrentUsers).toBe("정밀 동접자 백로그 (UNAVAILABLE)");
+    expect(result.accountsWithStoryProgressCount).toBe("4");
+    expect(result.highestProgressDistribution).toBe(
+      "급수 정차 / opn_03_water_stop: 2, 약탈왕 기관차 / raid_raider_king_engine: 1"
+    );
+    expect(result.latestNarrativeVersion).toBe("없음");
     expect(fetchSpy).toHaveBeenCalledWith("/api/dashboard/launch-summary", {
       headers: {
         accept: "application/json"

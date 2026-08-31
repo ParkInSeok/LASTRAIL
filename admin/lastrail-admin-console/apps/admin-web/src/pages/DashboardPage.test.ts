@@ -70,6 +70,13 @@ describe("DashboardPage configuration", () => {
         duplicateReplayCount: "7",
         criticalOpenOpsErrorCount: "5",
         unacknowledgedCoreFailureCount: "6",
+        accountsWithStoryProgressCount: "4",
+        highestProgressDistribution: "급수 정차 / opn_03_water_stop: 2",
+        contentMissingCount: "0",
+        localizationPendingCount: "7",
+        fixturePendingCount: "7",
+        versionMismatchCount: "0",
+        latestNarrativeVersion: "없음",
         serverCalculatedAt: "2026-08-25T11:56:40.000Z",
         supportContext: {
           readOnly: true,
@@ -87,6 +94,22 @@ describe("DashboardPage configuration", () => {
     ]);
     expect(JSON.stringify(sections)).toContain("정밀 동접자 백로그 (UNAVAILABLE)");
     expect(JSON.stringify(sections)).not.toContain(dashboardAggregateApiWait);
+  });
+
+  it("shows loading state for story narrative aggregate cards", () => {
+    const sections = dashboardLaunchSectionsForReadState({
+      isLoading: true,
+      error: null
+    });
+
+    expect(sections.flatMap((section) => section.metrics.map((metric) => [metric.label, metric.value]))).toContainEqual([
+      "스토리 진행 계정",
+      "조회 중"
+    ]);
+    expect(sections.flatMap((section) => section.metrics.map((metric) => [metric.label, metric.value]))).toContainEqual([
+      "최신 내러티브 버전",
+      "조회 중"
+    ]);
   });
 
   it("moves long policy and placeholder-heavy metrics into detail candidates", () => {

@@ -3,6 +3,7 @@ import {
   actOneNarrativeCoverage,
   encounterTypePlaceholders,
   forbiddenRunCombatEvidenceExamplesOutOfScope,
+  narrativeCoverageRowsForReadState,
   raidBossResultPlaceholders,
   runRiskRewardCardsForLaunchEvidence,
   runStoryNarrativeCardsForStoryProgressDetail,
@@ -243,6 +244,45 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(actOneNarrativeCoverage.every((item) => item.localizationState === "연동 대기")).toBe(true);
     expect(actOneNarrativeCoverage.every((item) => item.narrativeVersionState === "연동 대기")).toBe(true);
     expect(actOneNarrativeCoverage.map((item) => item.statusHint).join(" ")).not.toContain("보상량");
+  });
+
+  it("maps narrative coverage API rows into the Run detail coverage table", () => {
+    const rows = narrativeCoverageRowsForReadState({
+      data: {
+        permission: "STORY_PROGRESS_READ",
+        permissionMode: "ROLE_PERMISSION",
+        items: [
+          {
+            missionId: "opn_01_last_departure",
+            displayName: "마지막 출발",
+            contentStatus: "draft_exists",
+            localizationStatus: "localization_pending",
+            fixtureStatus: "fixture_pending",
+            missingContentStatus: "version_pending",
+            narrativeVersion: "없음",
+            updatedAt: "2026-08-31T09:00:00.000Z",
+            source: "narrative_coverage_read_model"
+          }
+        ],
+        summary: {
+          contentMissingCount: "0",
+          localizationPendingCount: "1",
+          fixturePendingCount: "1",
+          versionMismatchCount: "0",
+          latestNarrativeVersion: "없음"
+        }
+      },
+      isLoading: false,
+      error: null
+    });
+
+    expect(rows[0]).toMatchObject({
+      missionId: "opn_01_last_departure",
+      coverageState: "초안 존재 / draft_exists",
+      localizationState: "현지화 대기 / localization_pending",
+      fixtureState: "fixture 대기 / fixture_pending",
+      narrativeVersionState: "없음"
+    });
   });
 
   it("prepares raid optional objectives as read-only scoring candidates", () => {

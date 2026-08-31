@@ -1,4 +1,5 @@
 import { adminReadValueLabel } from "../api/errorDisplay";
+import { storyProgressLabel } from "../labels/adminLabels";
 
 export type DashboardLaunchSummary = {
   permission: string;
@@ -19,6 +20,13 @@ export type DashboardLaunchSummary = {
   duplicateReplayCount: string;
   criticalOpenOpsErrorCount: string;
   unacknowledgedCoreFailureCount: string;
+  accountsWithStoryProgressCount: string;
+  highestProgressDistribution: string;
+  contentMissingCount: string;
+  localizationPendingCount: string;
+  fixturePendingCount: string;
+  versionMismatchCount: string;
+  latestNarrativeVersion: string;
   serverCalculatedAt: string;
   supportContext: {
     readOnly: true;
@@ -61,6 +69,21 @@ function secondsValue(value: unknown): string {
   return typeof value === "number" && Number.isFinite(value) ? `${value}초` : "없음";
 }
 
+function progressDistributionValue(value: unknown): string {
+  if (!Array.isArray(value) || value.length === 0) return "데이터 없음";
+  const entries = value
+    .map((item) => {
+      const record = asRecord(item);
+      const storyProgressId = readValue(record?.storyProgressId);
+      const count = numberValue(record?.count);
+      if (storyProgressId === "없음") return null;
+      const label = storyProgressLabel(storyProgressId);
+      return `${label === storyProgressId ? storyProgressId : `${label} / ${storyProgressId}`}: ${count}`;
+    })
+    .filter((item): item is string => Boolean(item));
+  return entries.length > 0 ? entries.join(", ") : "데이터 없음";
+}
+
 export function mapDashboardLaunchSummaryResponse(response: unknown): DashboardLaunchSummary {
   const record = asRecord(response) ?? {};
   const buckets = asRecord(record.lastLoginAgeBuckets);
@@ -85,6 +108,13 @@ export function mapDashboardLaunchSummaryResponse(response: unknown): DashboardL
     duplicateReplayCount: numberValue(record.duplicateReplayCount),
     criticalOpenOpsErrorCount: numberValue(record.criticalOpenOpsErrorCount),
     unacknowledgedCoreFailureCount: numberValue(record.unacknowledgedCoreFailureCount),
+    accountsWithStoryProgressCount: numberValue(record.accountsWithStoryProgressCount),
+    highestProgressDistribution: progressDistributionValue(record.highestProgressDistribution),
+    contentMissingCount: numberValue(record.contentMissingCount),
+    localizationPendingCount: numberValue(record.localizationPendingCount),
+    fixturePendingCount: numberValue(record.fixturePendingCount),
+    versionMismatchCount: numberValue(record.versionMismatchCount),
+    latestNarrativeVersion: readValue(record.latestNarrativeVersion),
     serverCalculatedAt: readValue(record.serverCalculatedAt),
     supportContext: {
       readOnly: true,
@@ -114,6 +144,13 @@ export function emptyDashboardLaunchSummary(): DashboardLaunchSummary {
     duplicateReplayCount: "연동 대기",
     criticalOpenOpsErrorCount: "연동 대기",
     unacknowledgedCoreFailureCount: "연동 대기",
+    accountsWithStoryProgressCount: "연동 대기",
+    highestProgressDistribution: "연동 대기",
+    contentMissingCount: "연동 대기",
+    localizationPendingCount: "연동 대기",
+    fixturePendingCount: "연동 대기",
+    versionMismatchCount: "연동 대기",
+    latestNarrativeVersion: "연동 대기",
     serverCalculatedAt: "연동 대기",
     supportContext: {
       readOnly: true,
@@ -141,7 +178,12 @@ export function dashboardLaunchSummaryMetricCards(summary: DashboardLaunchSummar
       metrics: [
         { label: "지원 확인 필요 계정", value: summary.supportReviewNeededCount, note: "supportReviewNeededCount" },
         { label: "계정 복구 후보", value: summary.accountRecoveryCandidateCount, note: "accountRecoveryCandidateCount" },
-        { label: "Google 연동 계정", value: summary.accountRecoveryCandidateCount, note: "guest to Google recovery evidence" }
+        { label: "Google 연동 계정", value: summary.accountRecoveryCandidateCount, note: "guest to Google recovery evidence" },
+        { label: "스토리 진행 계정", value: summary.accountsWithStoryProgressCount, note: "accountsWithStoryProgressCount" },
+        { label: "최고 진행 분포", value: summary.highestProgressDistribution, note: "highestProgressDistribution" },
+        { label: "내러티브 현지화 대기", value: summary.localizationPendingCount, note: "localizationPendingCount" },
+        { label: "내러티브 fixture 대기", value: summary.fixturePendingCount, note: "fixturePendingCount" },
+        { label: "최신 내러티브 버전", value: summary.latestNarrativeVersion, note: "latestNarrativeVersion" }
       ]
     },
     {

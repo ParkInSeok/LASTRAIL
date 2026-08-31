@@ -18,6 +18,10 @@ import {
   storyProgressReadContractFilterFields,
   type StoryProgressDetail
 } from "../shared/storyProgress/storyProgressContract";
+import {
+  narrativeCoverageRowsForReadState,
+  type NarrativeCoverageRow
+} from "../shared/narrative/narrativeCoverageContract";
 
 type RunRiskRewardPlaceholder = {
   label: string;
@@ -25,15 +29,7 @@ type RunRiskRewardPlaceholder = {
   note: string;
 };
 
-type ActOneNarrativeCoverage = {
-  missionId: string;
-  displayName: string;
-  coverageState: "연동 대기";
-  localizationState: "연동 대기";
-  fixtureState: "연동 대기";
-  narrativeVersionState: "연동 대기";
-  statusHint: string;
-};
+type ActOneNarrativeCoverage = NarrativeCoverageRow;
 
 type RaidNarrativeObjectivePlaceholder = {
   objectiveId: string;
@@ -463,6 +459,8 @@ export const storyProgressReadContractPlaceholders: StoryProgressReadContractPla
 
 export const storyProgressReadContractFilters = [...storyProgressReadContractFilterFields];
 
+export { narrativeCoverageRowsForReadState };
+
 function labelWithCode(label: string, code: string): string {
   return label === code ? code : `${label} / ${code}`;
 }
@@ -665,6 +663,11 @@ export function RunDetailPage() {
     enabled: storyProgressAccountId.length > 0,
     retry: false
   });
+  const narrativeCoverageQuery = useQuery({
+    queryKey: ["narrative-coverage", "act_01_wasteland_railway"],
+    queryFn: () => adminApi.narrativeCoverage("act_01_wasteland_railway"),
+    retry: false
+  });
 
   if (query.isLoading) return <main className="content">출격을 불러오는 중</main>;
   if (query.error) return <RunDetailFailure error={query.error} runId={runId} />;
@@ -684,6 +687,12 @@ export function RunDetailPage() {
   const startMetadataCards = runStartMetadataEvidenceFrom(run);
   const riskRewardCards = runRiskRewardCardsForLaunchEvidence(run.launchEvidence);
   const storyRaidPolicyCards = storyRaidPolicyCardsForLaunchEvidence(run.launchEvidence);
+  const narrativeCoverageRows =
+    narrativeCoverageRowsForReadState({
+      data: narrativeCoverageQuery.data,
+      isLoading: narrativeCoverageQuery.isLoading,
+      error: narrativeCoverageQuery.error
+    }) ?? actOneNarrativeCoverage;
 
   return (
     <main className="content">
@@ -768,7 +777,7 @@ export function RunDetailPage() {
               </tr>
             </thead>
             <tbody>
-              {actOneNarrativeCoverage.map((item) => (
+              {narrativeCoverageRows.map((item) => (
                 <tr key={item.missionId}>
                   <td>{item.missionId}</td>
                   <td>{item.displayName}</td>

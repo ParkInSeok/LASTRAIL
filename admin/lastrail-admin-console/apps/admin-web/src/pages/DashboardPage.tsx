@@ -171,7 +171,14 @@ export function dashboardLaunchSectionsForReadState(state: {
       gachaSupportIssueCount: "조회 중",
       duplicateReplayCount: "조회 중",
       criticalOpenOpsErrorCount: "조회 중",
-      unacknowledgedCoreFailureCount: "조회 중"
+      unacknowledgedCoreFailureCount: "조회 중",
+      accountsWithStoryProgressCount: "조회 중",
+      highestProgressDistribution: "조회 중",
+      contentMissingCount: "조회 중",
+      localizationPendingCount: "조회 중",
+      fixturePendingCount: "조회 중",
+      versionMismatchCount: "조회 중",
+      latestNarrativeVersion: "조회 중"
     });
   }
   if (state.error) {
@@ -192,7 +199,14 @@ export function dashboardLaunchSectionsForReadState(state: {
       gachaSupportIssueCount: failure.reason,
       duplicateReplayCount: failure.reason,
       criticalOpenOpsErrorCount: failure.reason,
-      unacknowledgedCoreFailureCount: failure.reason
+      unacknowledgedCoreFailureCount: failure.reason,
+      accountsWithStoryProgressCount: failure.reason,
+      highestProgressDistribution: failure.reason,
+      contentMissingCount: failure.reason,
+      localizationPendingCount: failure.reason,
+      fixturePendingCount: failure.reason,
+      versionMismatchCount: failure.reason,
+      latestNarrativeVersion: failure.reason
     });
   }
   return launchDashboardSections;
