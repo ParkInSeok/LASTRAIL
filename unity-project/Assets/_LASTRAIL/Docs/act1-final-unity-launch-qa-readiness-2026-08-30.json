@@ -20,15 +20,16 @@
     "gradleExportStatus": "PASS",
     "gradleExportPath": "E:\\Projects\\LASTRAIL\\unity-project\\Builds\\AndroidSmoke\\GradleProjectExportClean",
     "gradleExportFileCount": 2412,
-    "apkStatus": "BLOCKED",
-    "apkBlocker": "android_apk_il2cpp_toolchain_oom",
-    "deviceBlocker": "android_device_or_emulator_unavailable"
+    "apkStatus": "NON_BLOCKING_TOOLCHAIN_ISSUE",
+    "apkBlocker": "android_apk_il2cpp_toolchain_oom_reclassified_internal_testing_path",
+    "deviceBlocker": "android_device_or_emulator_unavailable",
+    "internalTestingArtifactPathStatus": "PENDING_AAB_OR_INTERNAL_TEST_BUILD_CONFIGURATION"
   },
   "remainingBlockers": [
     "android_device_or_emulator_unavailable",
     "android_vibration_device_validation_pending",
     "android_keystore_device_validation_pending",
-    "android_apk_il2cpp_toolchain_oom",
+    "android_internal_testing_build_or_play_internal_track_pending",
     "google_oauth_app_registration_and_real_values_pending",
     "production_deploy_and_release_decisions_pending"
   ],

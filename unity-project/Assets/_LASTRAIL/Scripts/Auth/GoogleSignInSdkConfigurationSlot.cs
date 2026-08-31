@@ -13,6 +13,7 @@ namespace LastRail.Auth
             string androidPackageNameStatus,
             string shaFingerprintStatus,
             string tokenStoreStrategy,
+            string realOAuthEnvironmentPolicy,
             bool requiresGoogleSignInSdkImport,
             bool requiresOAuthAppRegistration,
             bool hasRealOAuthValues)
@@ -25,6 +26,7 @@ namespace LastRail.Auth
             AndroidPackageNameStatus = RequireText(androidPackageNameStatus, nameof(androidPackageNameStatus));
             ShaFingerprintStatus = RequireText(shaFingerprintStatus, nameof(shaFingerprintStatus));
             TokenStoreStrategy = RequireText(tokenStoreStrategy, nameof(tokenStoreStrategy));
+            RealOAuthEnvironmentPolicy = RequireText(realOAuthEnvironmentPolicy, nameof(realOAuthEnvironmentPolicy));
             RequiresGoogleSignInSdkImport = requiresGoogleSignInSdkImport;
             RequiresOAuthAppRegistration = requiresOAuthAppRegistration;
             HasRealOAuthValues = hasRealOAuthValues;
@@ -38,9 +40,11 @@ namespace LastRail.Auth
         public string AndroidPackageNameStatus { get; }
         public string ShaFingerprintStatus { get; }
         public string TokenStoreStrategy { get; }
+        public string RealOAuthEnvironmentPolicy { get; }
         public bool RequiresGoogleSignInSdkImport { get; }
         public bool RequiresOAuthAppRegistration { get; }
         public bool HasRealOAuthValues { get; }
+        public bool AllowsRealGoogleInDev => false;
         public bool HasProductionSecret => false;
         public bool UsesPlayerPrefsTokenStorage => false;
         public bool HasRawTokenDebugPayload => false;
@@ -57,6 +61,7 @@ namespace LastRail.Auth
                 "DEFERRED_APP_REGISTRATION",
                 "DEFERRED_APP_REGISTRATION",
                 "AndroidKeystoreFirstPartyBridge",
+                "PRD_ONLY_AFTER_APP_REGISTRATION",
                 true,
                 true,
                 false);
@@ -73,6 +78,7 @@ namespace LastRail.Auth
                 "CONFIGURED_FOR_LOCAL_HARNESS",
                 "CONFIGURED_FOR_LOCAL_HARNESS",
                 "AndroidKeystoreFirstPartyBridge",
+                "LOCAL_HARNESS_ONLY",
                 true,
                 false,
                 true);

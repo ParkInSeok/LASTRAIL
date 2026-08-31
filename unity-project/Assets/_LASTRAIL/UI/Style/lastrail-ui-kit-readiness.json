@@ -1,0 +1,11 @@
+{
+  "status": "ready_for_launch_screen_reskin",
+  "referenceResolution": "1080x1920",
+  "minimumTouchDp": 48,
+  "componentPrefabCount": 20,
+  "iconCount": 16,
+  "fontPolicy": "Pretendard TMP SDF with UI material preset",
+  "eventPolicy": "Root components expose callbacks; parents bind to public events only",
+  "railsChoiceIncluded": false,
+  "worldRaidIncluded": false
+}

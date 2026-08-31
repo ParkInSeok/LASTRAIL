@@ -22,6 +22,8 @@ namespace LastRail.Auth
                 + "\"requiresGoogleSignInSdkImport\":" + Bool(config.RequiresGoogleSignInSdkImport) + ","
                 + "\"requiresOAuthAppRegistration\":" + Bool(config.RequiresOAuthAppRegistration) + ","
                 + "\"hasRealOAuthValues\":" + Bool(config.HasRealOAuthValues) + ","
+                + "\"realOAuthEnvironmentPolicy\":\"" + Escape(config.RealOAuthEnvironmentPolicy) + "\","
+                + "\"allowsRealGoogleInDev\":" + Bool(config.AllowsRealGoogleInDev) + ","
                 + "\"hasProductionSecret\":" + Bool(config.HasProductionSecret) + ","
                 + "\"tokenStoreStrategy\":\"" + Escape(config.TokenStoreStrategy) + "\","
                 + "\"usesPlayerPrefsTokenStorage\":" + Bool(config.UsesPlayerPrefsTokenStorage) + ","

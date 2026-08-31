@@ -126,8 +126,8 @@ namespace LastRail.Presentation
                     requiresDeviceValidation: true,
                     requiresOauthAppRegistration: true),
                 new LaunchBlockerClosureStep(
-                    "android_build_smoke",
-                    "android_build_smoke_pending",
+                    "android_internal_testing_build_path",
+                    "android_internal_testing_build_or_play_internal_track_pending",
                     isComplete: false,
                     requiresEditorApproval: true,
                     requiresUserApproval: false,
@@ -312,5 +312,3 @@ namespace LastRail.Presentation
         }
     }
 }
-
-

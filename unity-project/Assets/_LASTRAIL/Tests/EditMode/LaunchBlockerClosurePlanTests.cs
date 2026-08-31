@@ -18,7 +18,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(plan.Steps[3].StepKey, Is.EqualTo("android_vibration_native_device_pass"));
             Assert.That(plan.Steps[4].StepKey, Is.EqualTo("android_keystore_secure_storage_device_pass"));
             Assert.That(plan.Steps[5].StepKey, Is.EqualTo("google_sign_in_sdk_pass_after_app_registration"));
-            Assert.That(plan.Steps[6].StepKey, Is.EqualTo("android_build_smoke"));
+            Assert.That(plan.Steps[6].StepKey, Is.EqualTo("android_internal_testing_build_path"));
             Assert.That(plan.Steps[0].IsComplete, Is.EqualTo(true));
             Assert.That(plan.Steps[0].RequiresEditorApproval, Is.EqualTo(false));
             Assert.That(plan.Steps[2].RequiresDeviceValidation, Is.EqualTo(false));
@@ -41,7 +41,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(plan.OpenBlockers, Does.Contain("android_vibration_device_validation_pending"));
             Assert.That(plan.OpenBlockers, Does.Contain("android_keystore_device_validation_pending"));
             Assert.That(plan.OpenBlockers, Does.Contain("google_sdk_oauth_app_registration_pending"));
-            Assert.That(plan.OpenBlockers, Does.Contain("android_build_smoke_pending"));
+            Assert.That(plan.OpenBlockers, Does.Contain("android_internal_testing_build_or_play_internal_track_pending"));
             Assert.That(plan.RequiresNewServerScope, Is.EqualTo(false));
             Assert.That(plan.RequiresNewAdminScope, Is.EqualTo(false));
             Assert.That(plan.RequiresNewNarrativeScope, Is.EqualTo(false));
@@ -89,6 +89,3 @@ namespace LastRail.Tests.EditMode
         }
     }
 }
-
-
-

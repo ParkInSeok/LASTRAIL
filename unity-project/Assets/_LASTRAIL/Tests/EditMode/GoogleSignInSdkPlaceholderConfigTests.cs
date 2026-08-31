@@ -22,6 +22,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(config.RequiresGoogleSignInSdkImport, Is.EqualTo(true));
             Assert.That(config.RequiresOAuthAppRegistration, Is.EqualTo(true));
             Assert.That(config.HasRealOAuthValues, Is.EqualTo(false));
+            Assert.That(config.RealOAuthEnvironmentPolicy, Is.EqualTo("PRD_ONLY_AFTER_APP_REGISTRATION"));
+            Assert.That(config.AllowsRealGoogleInDev, Is.EqualTo(false));
             Assert.That(config.HasProductionSecret, Is.EqualTo(false));
             Assert.That(config.UsesPlayerPrefsTokenStorage, Is.EqualTo(false));
             Assert.That(config.HasRawTokenDebugPayload, Is.EqualTo(false));
@@ -44,6 +46,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"requiresGoogleSignInSdkImport\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresOAuthAppRegistration\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasRealOAuthValues\":false"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"realOAuthEnvironmentPolicy\":\"PRD_ONLY_AFTER_APP_REGISTRATION\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"allowsRealGoogleInDev\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"tokenStoreStrategy\":\"AndroidKeystoreFirstPartyBridge\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"usesPlayerPrefsTokenStorage\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasRawTokenDebugPayload\":false"), Is.EqualTo(true));
