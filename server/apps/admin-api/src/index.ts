@@ -372,6 +372,16 @@ type AdminDashboardRecoveryRow = {
   account_recovery_candidate_count: number | null;
 };
 
+type AdminDashboardStorySummaryRow = {
+  accounts_with_story_progress_count: number | null;
+  version_mismatch_count: number | null;
+};
+
+type AdminDashboardStoryDistributionRow = {
+  highest_story_progress_id: string;
+  account_count: number | null;
+};
+
 type AdminOpsErrorAggregateRow = {
   recent_error_count: number | null;
   warning_count: number | null;
@@ -461,6 +471,7 @@ const LAUNCH_LOGIN_BONUS_EXPECTED_REWARD_LINES = [
 ] as const;
 const CONFIRMATION_TTL_MS = 5 * 60 * 1000;
 const ACT_ONE_NARRATIVE_VERSION = "act1.2026-08-27.001";
+const ACT_ONE_NARRATIVE_COVERAGE_VERSION = "act1.2026-08-30.001";
 const ACT_ONE_STORY_PROGRESS_ORDER = [
   "none",
   "opn_01_last_departure",
@@ -472,6 +483,15 @@ const ACT_ONE_STORY_PROGRESS_ORDER = [
   "raid_raider_king_engine",
 ] as const;
 const ACT_ONE_OPERATION_IDS = ACT_ONE_STORY_PROGRESS_ORDER.filter((id) => id !== "none");
+const ACT_ONE_NARRATIVE_COVERAGE = [
+  { missionId: "opn_01_last_departure", displayName: "마지막 출발" },
+  { missionId: "opn_02_first_signal", displayName: "첫 신호" },
+  { missionId: "opn_03_water_stop", displayName: "급수 정차" },
+  { missionId: "opn_04_scrapstar_show", displayName: "스크랩스타 쇼" },
+  { missionId: "opn_05_night_boarders", displayName: "야간 승선전" },
+  { missionId: "opn_06_broken_line", displayName: "끊어진 선로" },
+  { missionId: "raid_raider_king_engine", displayName: "약탈왕 기관차" },
+] as const;
 
 type AccessJwtPayload = {
   iss?: unknown;
@@ -825,6 +845,41 @@ function narrativeMetadata(narrativeVersion: string) {
     localizationStatus: "PENDING",
     fixtureStatus: "PARTIAL",
     missingContentStatus: "UNKNOWN",
+  };
+}
+
+function actOneNarrativeCoverageItems() {
+  return ACT_ONE_NARRATIVE_COVERAGE.map((item) => ({
+    missionId: item.missionId,
+    displayName: item.displayName,
+    contentStatus: "draft_exists",
+    localizationStatus: "localization_pending",
+    fixtureStatus: "fixture_pending",
+    missingContentStatus: "version_pending",
+    narrativeVersion: ACT_ONE_NARRATIVE_COVERAGE_VERSION,
+    updatedAt: null,
+    source: "narrative_doc_candidate",
+  }));
+}
+
+function actOneNarrativeCoverageSummary(versionMismatchCount = 0) {
+  const items = actOneNarrativeCoverageItems();
+  return {
+    contentMissingCount: items.filter((item) => item.contentStatus === "content_missing").length,
+    localizationPendingCount: items.filter((item) => item.localizationStatus === "localization_pending").length,
+    fixturePendingCount: items.filter((item) => item.fixtureStatus === "fixture_pending").length,
+    versionMismatchCount,
+    latestNarrativeVersion: ACT_ONE_NARRATIVE_COVERAGE_VERSION,
+  };
+}
+
+function emptyNarrativeCoverageSummary() {
+  return {
+    contentMissingCount: 0,
+    localizationPendingCount: 0,
+    fixturePendingCount: 0,
+    versionMismatchCount: 0,
+    latestNarrativeVersion: null,
   };
 }
 
@@ -1741,7 +1796,25 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
   )
     .bind()
     .first<AdminDashboardRecoveryRow>();
+  const storySummary = await c.env.DB.prepare(
+    `SELECT
+       COUNT(*) AS accounts_with_story_progress_count,
+       COALESCE(SUM(CASE WHEN narrative_version IS NOT NULL AND narrative_version != ? THEN 1 ELSE 0 END), 0) AS version_mismatch_count
+     FROM account_story_progress`,
+  )
+    .bind(ACT_ONE_NARRATIVE_COVERAGE_VERSION)
+    .first<AdminDashboardStorySummaryRow>();
+  const storyDistribution = await c.env.DB.prepare(
+    `SELECT highest_story_progress_id, COUNT(*) AS account_count
+     FROM account_story_progress
+     GROUP BY highest_story_progress_id
+     ORDER BY COUNT(*) DESC, highest_story_progress_id
+     LIMIT 20`,
+  )
+    .bind()
+    .all<AdminDashboardStoryDistributionRow>();
   const lastLoginAt = sessionSummary?.latest_session_created_at ?? null;
+  const narrativeSummary = actOneNarrativeCoverageSummary(countValue(storySummary?.version_mismatch_count));
 
   return c.json({
     permission: SUPPORT_READ_PERMISSION,
@@ -1766,6 +1839,17 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
     duplicateReplayCount: countValue(duplicateReplay?.duplicate_replay_count),
     criticalOpenOpsErrorCount: countValue(issueSummary?.critical_open_ops_error_count),
     unacknowledgedCoreFailureCount: countValue(issueSummary?.unacknowledged_core_failure_count),
+    accountsWithStoryProgressCount: countValue(storySummary?.accounts_with_story_progress_count),
+    highestProgressDistribution: storyDistribution.results.map((row) => ({
+      storyProgressId: row.highest_story_progress_id,
+      order: storyProgressOrder(row.highest_story_progress_id),
+      accountCount: countValue(row.account_count),
+    })),
+    contentMissingCount: narrativeSummary.contentMissingCount,
+    localizationPendingCount: narrativeSummary.localizationPendingCount,
+    fixturePendingCount: narrativeSummary.fixturePendingCount,
+    versionMismatchCount: narrativeSummary.versionMismatchCount,
+    latestNarrativeVersion: narrativeSummary.latestNarrativeVersion,
     serverCalculatedAt: toIso(now),
     supportContext: {
       readOnly: true,
@@ -2597,6 +2681,47 @@ app.get("/v1/admin/offline-rewards/:accountId", async (c) => {
   }
 
   return c.json(offlineRewardSummary(row));
+});
+app.get("/v1/admin/narrative/coverage", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, STORY_PROGRESS_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminStoryProgressBody(c);
+
+  const actId = c.req.query("actId")?.trim() || "act_01_wasteland_railway";
+  if (actId !== "act_01_wasteland_railway") {
+    return c.json({
+      permission: STORY_PROGRESS_READ_PERMISSION,
+      permissionMode: "ROLE_PERMISSION",
+      actId,
+      narrativeVersion: null,
+      items: [],
+      summary: emptyNarrativeCoverageSummary(),
+      supportContext: {
+        readOnly: true,
+        mutationEndpointsEnabled: false,
+        narrativeEditingEnabled: false,
+        localizationPublishingEnabled: false,
+        source: "narrative_coverage_static_candidates",
+      },
+    });
+  }
+
+  return c.json({
+    permission: STORY_PROGRESS_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    actId,
+    narrativeVersion: ACT_ONE_NARRATIVE_COVERAGE_VERSION,
+    items: actOneNarrativeCoverageItems(),
+    summary: actOneNarrativeCoverageSummary(),
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      narrativeEditingEnabled: false,
+      localizationPublishingEnabled: false,
+      source: "narrative_coverage_static_candidates",
+    },
+  });
 });
 app.get("/v1/admin/story-progress", async (c) => {
   const principal = await authenticateAdmin(c);

@@ -268,4 +268,110 @@ describe("admin-api story progress read-only contract", () => {
     expect(serialized).not.toContain("rewardCalculation");
     expect(serialized).not.toContain("X-Account-Id");
   });
+
+  it("returns Act 1 narrative coverage readiness without full narrative text", async () => {
+    const response = await app.request(
+      "/v1/admin/narrative/coverage?actId=act_01_wasteland_railway",
+      { headers: { "Cf-Access-Subject": "access|viewer-1" } },
+      createEnv([]),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      permission: "STORY_PROGRESS_READ",
+      permissionMode: "ROLE_PERMISSION",
+      actId: "act_01_wasteland_railway",
+      narrativeVersion: "act1.2026-08-30.001",
+      items: [
+        {
+          missionId: "opn_01_last_departure",
+          displayName: "마지막 출발",
+          contentStatus: "draft_exists",
+          localizationStatus: "localization_pending",
+          fixtureStatus: "fixture_pending",
+          missingContentStatus: "version_pending",
+          narrativeVersion: "act1.2026-08-30.001",
+          updatedAt: null,
+          source: "narrative_doc_candidate",
+        },
+        {
+          missionId: "opn_02_first_signal",
+          displayName: "첫 신호",
+        },
+        {
+          missionId: "opn_03_water_stop",
+          displayName: "급수 정차",
+        },
+        {
+          missionId: "opn_04_scrapstar_show",
+          displayName: "스크랩스타 쇼",
+        },
+        {
+          missionId: "opn_05_night_boarders",
+          displayName: "야간 승선전",
+        },
+        {
+          missionId: "opn_06_broken_line",
+          displayName: "끊어진 선로",
+        },
+        {
+          missionId: "raid_raider_king_engine",
+          displayName: "약탈왕 기관차",
+        },
+      ],
+      summary: {
+        contentMissingCount: 0,
+        localizationPendingCount: 7,
+        fixturePendingCount: 7,
+        versionMismatchCount: 0,
+        latestNarrativeVersion: "act1.2026-08-30.001",
+      },
+    });
+    const serialized = JSON.stringify(body);
+    expect(serialized).not.toContain("dialogueText");
+    expect(serialized).not.toContain("authorNotes");
+    expect(serialized).not.toContain("rawUnpublishedNotes");
+    expect(serialized).not.toContain("rewardCalculation");
+  });
+
+  it("returns empty narrative coverage semantics for non-Act 1 filters", async () => {
+    const response = await app.request(
+      "/v1/admin/narrative/coverage?actId=act_unknown",
+      { headers: { "Cf-Access-Subject": "access|viewer-1" } },
+      createEnv([]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      actId: "act_unknown",
+      items: [],
+      summary: {
+        contentMissingCount: 0,
+        localizationPendingCount: 0,
+        fixturePendingCount: 0,
+        versionMismatchCount: 0,
+        latestNarrativeVersion: null,
+      },
+    });
+  });
+
+  it("rejects narrative coverage request bodies", async () => {
+    const response = await app.request(
+      "/v1/admin/narrative/coverage",
+      {
+        method: "GET",
+        headers: {
+          "Cf-Access-Subject": "access|viewer-1",
+          "Content-Length": "2",
+        },
+      },
+      createEnv([]),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "contract_violation",
+    });
+  });
 });

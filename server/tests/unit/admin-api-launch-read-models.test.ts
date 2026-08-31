@@ -104,6 +104,11 @@ describe("admin-api launch read-only aggregate models", () => {
           { reward_claim_failure_count: 1, offline_reward_issue_count: 2, gacha_support_issue_count: 1, critical_open_ops_error_count: 5, unacknowledged_core_failure_count: 6 },
           { duplicate_replay_count: 7 },
           { account_recovery_candidate_count: 1 },
+          { accounts_with_story_progress_count: 8, version_mismatch_count: 2 },
+          [
+            { highest_story_progress_id: "opn_03_water_stop", account_count: 5 },
+            { highest_story_progress_id: "opn_06_broken_line", account_count: 3 },
+          ],
         ]),
       );
 
@@ -128,6 +133,16 @@ describe("admin-api launch read-only aggregate models", () => {
         duplicateReplayCount: 7,
         criticalOpenOpsErrorCount: 5,
         unacknowledgedCoreFailureCount: 6,
+        accountsWithStoryProgressCount: 8,
+        highestProgressDistribution: [
+          { storyProgressId: "opn_03_water_stop", order: 3, accountCount: 5 },
+          { storyProgressId: "opn_06_broken_line", order: 6, accountCount: 3 },
+        ],
+        contentMissingCount: 0,
+        localizationPendingCount: 7,
+        fixturePendingCount: 7,
+        versionMismatchCount: 2,
+        latestNarrativeVersion: "act1.2026-08-30.001",
         serverCalculatedAt: "2026-08-25T11:56:40.000Z",
       });
     } finally {
@@ -139,7 +154,7 @@ describe("admin-api launch read-only aggregate models", () => {
     const response = await app.request(
       "/v1/admin/dashboard/launch-summary",
       { headers: { "Cf-Access-Subject": "access|operator" } },
-      createEnv([operatorPrincipal, null, null, null, null, null, null]),
+      createEnv([operatorPrincipal, null, null, null, null, null, null, null, []]),
     );
 
     expect(response.status).toBe(200);
@@ -156,6 +171,13 @@ describe("admin-api launch read-only aggregate models", () => {
       duplicateReplayCount: 0,
       criticalOpenOpsErrorCount: 0,
       unacknowledgedCoreFailureCount: 0,
+      accountsWithStoryProgressCount: 0,
+      highestProgressDistribution: [],
+      contentMissingCount: 0,
+      localizationPendingCount: 7,
+      fixturePendingCount: 7,
+      versionMismatchCount: 0,
+      latestNarrativeVersion: "act1.2026-08-30.001",
     });
   });
 

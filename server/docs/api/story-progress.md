@@ -452,6 +452,7 @@ Future Admin read-only candidates:
 Current local Admin API read slice:
 
 ```text
+GET /v1/admin/narrative/coverage?actId=act_01_wasteland_railway
 GET /v1/admin/story-progress
 GET /v1/admin/story-progress/:accountId
 ```
@@ -461,6 +462,36 @@ API player bearer auth. It requires stable permission id `STORY_PROGRESS_READ`.
 Because the current Admin API permission model is role-string based, OWNER /
 OPERATOR / VIEWER all map to this read-only permission. Detail reads include
 operation unlocks from `account_unlocks`; list reads stay compact.
+
+`GET /v1/admin/narrative/coverage` is an Act 1 readiness read model for Admin
+run detail and support context. It is not story progress truth and does not
+drive rewards, unlocks, offline rewards, or first-clear eligibility. The launch
+freeze candidate version is `act1.2026-08-30.001`; rows stay in pending states
+until a final fixture export and version stamp is accepted after Unity/internal
+testing QA.
+
+Current coverage rows use stable mission ids for `opn_01_last_departure`
+through `opn_06_broken_line` plus `raid_raider_king_engine`, with Korean display
+names only. They expose readiness codes such as `draft_exists`,
+`localization_pending`, `fixture_pending`, and `version_pending`. They do not
+return full localized dialogue text, author notes, raw unpublished notes, or
+editorial payloads.
+
+`GET /v1/admin/dashboard/launch-summary` also includes a story/narrative
+aggregate:
+
+- `accountsWithStoryProgressCount`
+- `highestProgressDistribution[]`
+- `contentMissingCount`
+- `localizationPendingCount`
+- `fixturePendingCount`
+- `versionMismatchCount`
+- `latestNarrativeVersion`
+- `serverCalculatedAt`
+
+The aggregate combines server-owned `account_story_progress` counts with the
+static Act 1 narrative coverage candidate set. Empty semantics are stable:
+counts are `0`, distributions are `[]`, and missing latest versions are `null`.
 
 The customer support account summary draft in `docs/api/support.md` can compose
 this story progress read model as one read-only section. It must not add story

@@ -123,12 +123,24 @@ cards:
 - `duplicateReplayCount`
 - `criticalOpenOpsErrorCount`
 - `unacknowledgedCoreFailureCount`
+- `accountsWithStoryProgressCount`
+- `highestProgressDistribution[]`
+- `contentMissingCount`
+- `localizationPendingCount`
+- `fixturePendingCount`
+- `versionMismatchCount`
+- `latestNarrativeVersion`
 - `serverCalculatedAt`
 
 Exact concurrent users are intentionally not claimed. The response returns
 `concurrentUsers = null`, `recentActiveAccounts5m = null`,
 `recentActiveAccounts30m = null`, and source/precision fields that mark those
 values unavailable until a server-owned activity source exists.
+
+The story/narrative aggregate is read-only launch visibility. It counts stored
+`account_story_progress` rows and the static Act 1 narrative coverage candidate
+set. Empty semantics are stable: counts are `0`, distributions are `[]`, and
+missing latest versions are `null`.
 
 Request bodies are rejected with `contract_violation`.
 
@@ -137,6 +149,7 @@ Request bodies are rejected with `contract_violation`.
 Current local read-only endpoints:
 
 ```text
+GET /v1/admin/narrative/coverage?actId=act_01_wasteland_railway
 GET /v1/admin/story-progress
 GET /v1/admin/story-progress/:accountId
 ```
@@ -174,6 +187,30 @@ The list endpoint returns compact `account_story_progress` summaries. The
 detail endpoint returns a single account read model using `account_story_progress`
 and operation unlocks from `account_unlocks`. Accounts without a progress row
 return a stable Act 1 `none` default with `opn_01_last_departure` unlocked.
+
+`GET /v1/admin/narrative/coverage` returns the Act 1 narrative coverage/readiness
+candidate set for Admin run detail and support context. Current launch freeze
+candidate version is `act1.2026-08-30.001`; until final Unity/internal testing
+fixture export and version stamp are accepted, rows use pending readiness states
+instead of `ready`.
+
+Coverage row fields:
+
+- `missionId`
+- `displayName`
+- `contentStatus`: `draft_exists`, `content_missing`, or `ready`
+- `localizationStatus`: `localization_pending`, `ready`, or
+  `version_mismatch`
+- `fixtureStatus`: `fixture_pending`, `ready`, or `version_mismatch`
+- `missingContentStatus`: `version_pending`, `content_missing`,
+  `version_mismatch`, or `ready`
+- `narrativeVersion`
+- `updatedAt`
+- `source`
+
+For unknown or non-launch `actId` filters, the endpoint returns an accepted
+empty read model with `items: []`, zero counts, and `latestNarrativeVersion:
+null`. Request bodies are rejected with `contract_violation`.
 
 These endpoints do not return full localized dialogue text, tokens, secrets, raw
 request bodies, raw RNG material, reward calculation internals, or account
