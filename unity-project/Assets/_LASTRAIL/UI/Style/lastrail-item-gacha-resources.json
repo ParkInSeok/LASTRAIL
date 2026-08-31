@@ -1,0 +1,35 @@
+{
+  "name": "LAST RAIL Act 1 Item And Gacha Visual Resources",
+  "referenceResolution": "1080x1920",
+  "itemIconCount": 9,
+  "gachaResourceCount": 9,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "sourceType": "project_generated_launch_asset",
+  "serverTruthFieldsAllowed": false,
+  "economyTruthIncluded": false,
+  "gachaRateTruthIncluded": false,
+  "railsChoiceIncluded": false,
+  "worldRaidIncluded": false,
+  "items": [
+    { "id": "cur_command_ticket", "category": "currency", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/cur_command_ticket.png", "width": 512, "height": 512, "intendedUsage": "pull_cost_icon", "sourceType": "generated_local_launch_asset" },
+    { "id": "cur_command_ticket_fragment", "category": "currency", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/cur_command_ticket_fragment.png", "width": 512, "height": 512, "intendedUsage": "ticket_fragment_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "cur_special_core", "category": "currency", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/cur_special_core.png", "width": 512, "height": 512, "intendedUsage": "premium_core_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_fuel_stamina", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_fuel_stamina.png", "width": 512, "height": 512, "intendedUsage": "stamina_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_supply_crate", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_supply_crate.png", "width": 512, "height": 512, "intendedUsage": "reward_source_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_reward_chest", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_reward_chest.png", "width": 512, "height": 512, "intendedUsage": "reward_claim_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_operator_duplicate_token", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_operator_duplicate_token.png", "width": 512, "height": 512, "intendedUsage": "duplicate_conversion_display", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_common_material_plate", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_common_material_plate.png", "width": 512, "height": 512, "intendedUsage": "common_backing_plate", "sourceType": "generated_local_launch_asset" },
+    { "id": "ui_common_spark_plate", "category": "item", "path": "Assets/_LASTRAIL/UI/GachaResources/Icons/ui_common_spark_plate.png", "width": 512, "height": 512, "intendedUsage": "small_glow_plate", "sourceType": "generated_local_launch_asset" }
+  ],
+  "gacha": [
+    { "id": "gacha_single_pull_reveal_plate", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_single_pull_reveal_plate.png", "width": 768, "height": 768, "intendedUsage": "single_pull_reveal", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_ten_pull_result_grid_frame", "category": "frame", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_ten_pull_result_grid_frame.png", "width": 1024, "height": 768, "intendedUsage": "ten_pull_grid", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_rare_glow", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_rare_glow.png", "width": 768, "height": 768, "intendedUsage": "rare_presentation_glow", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_elite_glow", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_elite_glow.png", "width": 768, "height": 768, "intendedUsage": "elite_presentation_glow", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_pickup_elite_glow", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_pickup_elite_glow.png", "width": 768, "height": 768, "intendedUsage": "pickup_elite_presentation_glow", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_ticket_spend_pieces", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_ticket_spend_pieces.png", "width": 768, "height": 768, "intendedUsage": "ticket_spend_cue", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_duplicate_conversion_visual", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_duplicate_conversion_visual.png", "width": 768, "height": 768, "intendedUsage": "duplicate_conversion_cue", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_recruitment_aperture_open", "category": "gacha_fx", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_recruitment_aperture_open.png", "width": 768, "height": 768, "intendedUsage": "capsule_open_cue", "sourceType": "generated_local_launch_asset" },
+    { "id": "gacha_result_card_frame", "category": "frame", "path": "Assets/_LASTRAIL/UI/GachaResources/GachaFx/gacha_result_card_frame.png", "width": 768, "height": 1024, "intendedUsage": "result_card_back", "sourceType": "generated_local_launch_asset" }
+  ]
+}
