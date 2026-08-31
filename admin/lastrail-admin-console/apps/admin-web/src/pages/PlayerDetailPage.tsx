@@ -11,14 +11,14 @@ import { accountAuthSessionFieldLabel, accountAuthVisibilityFields } from "../sh
 type PlayerAuthEvidenceCard = {
   code: string;
   label: string;
-  value: "연동 대기";
+  value: string;
   note: string;
 };
 
 type PlayerRecentOpsErrorEvidenceCard = {
   code: string;
   label: string;
-  value: "연동 대기";
+  value: string;
   note: string;
 };
 
@@ -26,7 +26,7 @@ export const playerAuthEvidenceCards: PlayerAuthEvidenceCard[] = [
   ...accountAuthVisibilityFields.map((field) => ({
     code: field,
     label: accountAuthSessionFieldLabel(field),
-    value: "연동 대기" as const,
+    value: "Support에서 확인 가능 / Player 표시 대기",
     note:
       field === "concurrentUsers"
         ? "UNAVAILABLE/null은 확정 동접자 수 아님"
@@ -38,31 +38,31 @@ export const playerRecentOpsErrorEvidenceCards: PlayerRecentOpsErrorEvidenceCard
   {
     code: "recentOpsErrorLogs",
     label: "최근 시스템 에러 로그",
-    value: "연동 대기",
+    value: "Player ops compose 대기",
     note: "recent open/acknowledged latest 5, critical first read-only compose 후보"
   },
   {
     code: "opsErrorSeverity",
     label: "심각도",
-    value: "연동 대기",
+    value: "Player ops compose 대기",
     note: "info / warning / error / critical"
   },
   {
     code: "opsErrorStatus",
     label: "상태",
-    value: "연동 대기",
+    value: "Player ops compose 대기",
     note: "open / acknowledged / resolved / ignored"
   },
   {
     code: "opsErrorSource",
     label: "소스",
-    value: "연동 대기",
+    value: "Player ops compose 대기",
     note: "game_api / admin_api / support_read_model / integrity_pipeline"
   },
   {
     code: "opsErrorCorrelationIds",
     label: "관련 식별자",
-    value: "연동 대기",
+    value: "Player ops compose 대기",
     note: "accountId / runId / gachaBannerId / rewardPreviewId / supportTicketId"
   }
 ] as const;

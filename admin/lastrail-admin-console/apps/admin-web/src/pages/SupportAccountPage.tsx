@@ -47,7 +47,7 @@ type SupportCard = {
   code: string;
   field?: string;
   label: string;
-  value: "연동 대기" | "비활성";
+  value: string;
   note: string;
 };
 
@@ -295,7 +295,7 @@ export function supportRecentRunEvidenceRows(
 export const supportCaseTypeCards: SupportCard[] = customerSupportCaseTypes.map((caseType) => ({
   code: caseType,
   label: customerSupportCaseTypeLabel(caseType),
-  value: "연동 대기",
+  value: "분류 기준",
   note: `${caseType} read-only case 후보`
 }));
 
@@ -303,7 +303,7 @@ export const supportAccountContextCards: SupportCard[] = customerSupportContextF
   code: field,
   field,
   label: customerSupportContextFieldLabel(field),
-  value: "연동 대기",
+  value: "지원 문맥 후보",
   note:
     field === "recentOpsErrorLogs"
       ? "recent open/acknowledged latest 5, critical first, source/correlation ids read-only compose 후보"
@@ -313,7 +313,7 @@ export const supportAccountContextCards: SupportCard[] = customerSupportContextF
 export const supportSummarySectionCards: SupportCard[] = customerSupportSummarySectionCodes.map((section) => ({
   code: section,
   label: customerSupportSummarySectionLabel(section),
-  value: "연동 대기",
+  value: "support summary 계약",
   note: `${section} sanitized read-only section`
 }));
 
@@ -321,7 +321,7 @@ export const supportAccountAuthEvidenceCards: SupportCard[] = [
   ...accountAuthVisibilityFields.map((field) => ({
     code: field,
     label: accountAuthSessionFieldLabel(field),
-    value: "연동 대기" as const,
+    value: "Support summary 연동됨",
     note:
       field === "concurrentUsers"
         ? "UNAVAILABLE/null은 확정 동접자 수 아님"
@@ -345,7 +345,7 @@ export const supportCombatEvidenceCards: SupportCard[] = customerSupportCombatEv
       selectedTacticIds: "선택 전술 ID",
       source: "근거 소스"
     }[field] ?? field,
-  value: "연동 대기",
+  value: "Support recentRuns 연동됨",
   note:
     field === "encounterType"
       ? `${encounterTypeLabel("ORDINARY_15_WAVE")} / ${encounterTypeLabel("RAID_BOSS")} / ORDINARY_15_WAVE / RAID_BOSS`
@@ -371,7 +371,12 @@ export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGac
       ticketAcquisition: "지휘권 획득처",
       actOneEliteVisualScope: "Act 1 정예 요원 10인"
     }[field] ?? field,
-  value: "연동 대기",
+  value:
+    field === "actOneEliteVisualScope"
+      ? customerSupportGachaLaunchPolicy.scopeStatus
+      : field === "pityThresholds" || field === "ticketAcquisition"
+        ? "정책 기준"
+        : "Admin gacha 조회 API 대기",
   note:
     field === "pityThresholds"
       ? "rare 10 / elite 30 / pickup 60 draft/contract candidate"
@@ -409,7 +414,7 @@ export const supportResponseTemplateCards: SupportCard[] = customerSupportTempla
       playerFacingTemplate: "플레이어 안내 템플릿",
       escalateWhen: "운영 검토 조건"
     }[status] ?? status,
-  value: "연동 대기",
+  value: "추천 문구 준비",
   note: `${status} read-only template 상태`
 }));
 
@@ -425,35 +430,35 @@ export const supportSafeSnippetCards: SupportCard[] = customerSupportSafeSnippet
       rng_probability_not_disclosed: "확률·난수 비공개",
       escalated_for_ops_review: "운영 검토 전달"
     }[snippet] ?? snippet,
-  value: "연동 대기",
+  value: "안전 설명 준비",
   note: `${snippet} safe explanation 후보`
 }));
 
 export const supportSuggestionCards: SupportCard[] = customerSupportSuggestionCases.map((suggestion) => ({
   code: suggestion.caseType,
   label: customerSupportSuggestionCaseLabel(suggestion.caseType),
-  value: suggestion.availability,
+  value: "추천 문구 준비",
   note: suggestion.safeSnippet
 }));
 
 export const supportEscalationSeverityCards: SupportCard[] = customerSupportEscalationSeverities.map((severity) => ({
   code: severity,
   label: customerSupportEscalationSeverityLabel(severity),
-  value: "연동 대기",
+  value: "분류 기준",
   note: `${severity} escalation severity 후보`
 }));
 
 export const supportEscalationCategoryCards: SupportCard[] = customerSupportEscalationCategories.map((category) => ({
   code: category,
   label: customerSupportEscalationCategoryLabel(category),
-  value: "연동 대기",
+  value: "분류 기준",
   note: `${category} escalation category 후보`
 }));
 
 export const supportEscalationActionCards: SupportCard[] = customerSupportEscalationActions.map((action) => ({
   code: action,
   label: customerSupportEscalationActionLabel(action),
-  value: "연동 대기",
+  value: "권장 처리 후보",
   note: `${action} recommended action 후보`
 }));
 
@@ -467,7 +472,7 @@ export const supportEscalationEvidenceCards: SupportCard[] = customerSupportEsca
       primaryReferenceId: "주요 참조 ID",
       readOnlyEvidencePackage: "읽기 전용 근거 묶음"
     }[field] ?? field,
-  value: "연동 대기",
+  value: "근거 묶음 후보",
   note: `${field} evidence package 후보`
 }));
 
@@ -491,7 +496,7 @@ export const supportRepairAuditCards: SupportCard[] = customerSupportRepairAudit
       affectedIds: "영향 ID",
       beforeAfterSanitizedSummary: "전후 sanitized 요약"
     }[field] ?? field,
-  value: "연동 대기",
+  value: "backlog",
   note: `${field} future repair audit 후보`
 }));
 

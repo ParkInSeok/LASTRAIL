@@ -27,7 +27,7 @@ describe("PlayerDetailPage configuration", () => {
     expect(playerAuthEvidenceCards.find((card) => card.code === "concurrentUsers")?.note).toContain(
       "UNAVAILABLE/null은 확정 동접자 수 아님"
     );
-    expect(playerAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(playerAuthEvidenceCards.every((card) => card.value === "Support에서 확인 가능 / Player 표시 대기")).toBe(true);
 
     const serialized = JSON.stringify(playerAuthEvidenceCards);
     expect(serialized).not.toContain("link button");
@@ -47,7 +47,7 @@ describe("PlayerDetailPage configuration", () => {
       "opsErrorSource",
       "opsErrorCorrelationIds"
     ]);
-    expect(playerRecentOpsErrorEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(playerRecentOpsErrorEvidenceCards.every((card) => card.value === "Player ops compose 대기")).toBe(true);
     expect(playerRecentOpsErrorEvidenceCards.find((card) => card.code === "recentOpsErrorLogs")?.note).toContain(
       "latest 5"
     );

@@ -50,7 +50,7 @@ describe("SupportAccountPage configuration", () => {
       "gacha_recruitment",
       "integrity_restriction"
     ]);
-    expect(supportCaseTypeCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportCaseTypeCards.every((card) => card.value === "분류 기준")).toBe(true);
   });
 
   it("prepares read-only account support context placeholders", () => {
@@ -68,7 +68,7 @@ describe("SupportAccountPage configuration", () => {
       "opsErrors",
       "supportNotes"
     ]);
-    expect(supportSummarySectionCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportSummarySectionCards.every((card) => card.value === "support summary 계약")).toBe(true);
     expect(supportAccountContextCards.map((card) => card.field)).toEqual([
       "accountStatus",
       "recentRuns",
@@ -89,7 +89,7 @@ describe("SupportAccountPage configuration", () => {
     expect(supportAccountContextCards.find((card) => card.field === "recentOpsErrorLogs")?.note).toContain(
       "source/correlation ids"
     );
-    expect(supportAccountContextCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportAccountContextCards.every((card) => card.value === "지원 문맥 후보")).toBe(true);
   });
 
   it("prepares Google provider and account recovery evidence placeholders", () => {
@@ -116,7 +116,7 @@ describe("SupportAccountPage configuration", () => {
     expect(supportAccountAuthEvidenceCards.find((card) => card.code === "concurrentUsers")?.note).toContain(
       "UNAVAILABLE/null은 확정 동접자 수 아님"
     );
-    expect(supportAccountAuthEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportAccountAuthEvidenceCards.every((card) => card.value === "Support summary 연동됨")).toBe(true);
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("Google ID token");
     expect(JSON.stringify(supportAccountAuthEvidenceCards)).not.toContain("raw auth header");
   });
@@ -135,7 +135,7 @@ describe("SupportAccountPage configuration", () => {
       "selectedTacticIds",
       "source"
     ]);
-    expect(supportCombatEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportCombatEvidenceCards.every((card) => card.value === "Support recentRuns 연동됨")).toBe(true);
     expect(supportCombatEvidenceCards.find((card) => card.code === "source")?.note).toContain("run_start");
     expect(supportCombatEvidenceCards.find((card) => card.code === "startAugmentPackageRef")?.note).toContain(
       "server-authored run start package"
@@ -167,7 +167,18 @@ describe("SupportAccountPage configuration", () => {
       "ticketAcquisition",
       "actOneEliteVisualScope"
     ]);
-    expect(supportGachaLaunchEvidenceCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportGachaLaunchEvidenceCards.map((card) => card.value)).toEqual([
+      "Admin gacha 조회 API 대기",
+      "Admin gacha 조회 API 대기",
+      "Admin gacha 조회 API 대기",
+      "Admin gacha 조회 API 대기",
+      "정책 기준",
+      "Admin gacha 조회 API 대기",
+      "Admin gacha 조회 API 대기",
+      "Admin gacha 조회 API 대기",
+      "정책 기준",
+      "TESTING_TUNING_DRAFT"
+    ]);
     expect(supportGachaLaunchEvidenceCards.find((card) => card.code === "pityThresholds")?.note).toContain(
       "draft/contract candidate"
     );
@@ -266,7 +277,7 @@ describe("SupportAccountPage configuration", () => {
       "playerFacingTemplate",
       "escalateWhen"
     ]);
-    expect(supportResponseTemplateCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportResponseTemplateCards.every((card) => card.value === "추천 문구 준비")).toBe(true);
     expect(supportSafeSnippetCards.map((card) => card.code)).toEqual([
       "server_record_checked",
       "duplicate_replay_existing_result",
@@ -276,7 +287,7 @@ describe("SupportAccountPage configuration", () => {
       "rng_probability_not_disclosed",
       "escalated_for_ops_review"
     ]);
-    expect(supportSafeSnippetCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportSafeSnippetCards.every((card) => card.value === "안전 설명 준비")).toBe(true);
   });
 
   it("prepares case-specific CS suggestion cards as read-only availability", () => {
@@ -291,7 +302,7 @@ describe("SupportAccountPage configuration", () => {
       "ops_error_observed"
     ]);
     expect(supportSuggestionCards.map((card) => card.label)).toContain("Google 로그인/연동 충돌");
-    expect(supportSuggestionCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportSuggestionCards.every((card) => card.value === "추천 문구 준비")).toBe(true);
     expect(supportSuggestionCards.find((card) => card.code === "gacha_duplicate_guarantee_inquiry")?.note).toContain(
       "중복 요청은 기존 처리 결과"
     );
@@ -549,7 +560,7 @@ describe("SupportAccountPage configuration", () => {
         ...supportEscalationCategoryCards,
         ...supportEscalationActionCards,
         ...supportEscalationEvidenceCards
-      ].every((card) => card.value === "연동 대기")
+      ].every((card) => ["분류 기준", "권장 처리 후보", "근거 묶음 후보"].includes(card.value))
     ).toBe(true);
   });
 
@@ -573,6 +584,6 @@ describe("SupportAccountPage configuration", () => {
       "affectedIds",
       "beforeAfterSanitizedSummary"
     ]);
-    expect(supportRepairAuditCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(supportRepairAuditCards.every((card) => card.value === "backlog")).toBe(true);
   });
 });
