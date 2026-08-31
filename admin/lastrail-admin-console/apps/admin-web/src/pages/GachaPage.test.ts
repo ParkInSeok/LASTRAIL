@@ -24,7 +24,7 @@ describe("GachaPage configuration", () => {
   });
 
   it("marks every section as pending server query API integration", () => {
-    expect(gachaReadOnlySections.every((section) => section.status === "조회 API 대기")).toBe(true);
+    expect(gachaReadOnlySections.every((section) => section.status === "Admin 조회 API 대기")).toBe(true);
   });
 
   it("uses Korean labels while keeping stable backend codes visible", () => {

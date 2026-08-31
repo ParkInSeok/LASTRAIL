@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   encounterTypeLabel,
   levelSourceLabel,
@@ -459,6 +460,41 @@ export function storyProgressDetailToReadContractPlaceholders(
   ];
 }
 
+function RunDetailFailure({ error, runId }: { error: unknown; runId: string }) {
+  const failure = adminRequestFailureDisplay(error, { resourceLabel: "출격", resourceId: runId });
+
+  return (
+    <main className="content error">
+      <header>
+        <h1>{failure.title}</h1>
+        <p>{failure.resourceId}</p>
+      </header>
+      <section className="summary-grid" aria-label="출격 요청 실패 분류">
+        <div>
+          <span>분류</span>
+          <strong>{failure.reason}</strong>
+          <small>{failure.nextStep}</small>
+        </div>
+        <div>
+          <span>상태 코드</span>
+          <strong>{failure.statusLabel}</strong>
+          <small>Admin API response status</small>
+        </div>
+        <div>
+          <span>errorCode</span>
+          <strong>{failure.errorCode}</strong>
+          <small>{failure.message}</small>
+        </div>
+        <div>
+          <span>경계</span>
+          <strong>읽기 전용</strong>
+          <small>replay/reprocess/result edit/reward correction 없음</small>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 export function RunDetailPage() {
   const { runId = "" } = useParams();
   const query = useQuery({
@@ -466,18 +502,20 @@ export function RunDetailPage() {
     queryFn: () => adminApi.runDetail(runId),
     enabled: runId.length > 0
   });
+  const runDetail = query.data;
+  const storyProgressAccountId = runDetail?.accountId ?? "";
+  const storyProgressQuery = useQuery({
+    queryKey: ["story-progress-detail", storyProgressAccountId],
+    queryFn: () => adminApi.storyProgressDetail(storyProgressAccountId),
+    enabled: storyProgressAccountId.length > 0,
+    retry: false
+  });
 
   if (query.isLoading) return <main className="content">출격을 불러오는 중</main>;
-  if (query.error) return <main className="content error">출격 요청 실패</main>;
+  if (query.error) return <RunDetailFailure error={query.error} runId={runId} />;
   if (!query.data) return <main className="content">선택된 출격이 없습니다</main>;
 
   const run = query.data;
-  const storyProgressQuery = useQuery({
-    queryKey: ["story-progress-detail", run.accountId],
-    queryFn: () => adminApi.storyProgressDetail(run.accountId),
-    enabled: run.accountId.length > 0,
-    retry: false
-  });
   const storyProgressCards = storyProgressQuery.data
     ? storyProgressDetailToReadContractPlaceholders(storyProgressQuery.data)
     : storyProgressReadContractPlaceholders;

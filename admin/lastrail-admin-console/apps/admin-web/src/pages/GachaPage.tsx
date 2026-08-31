@@ -6,7 +6,7 @@ import {
 
 type GachaReadOnlySection = {
   title: string;
-  status: "조회 API 대기";
+  status: "Admin 조회 API 대기";
   description: string;
   fields: string[];
 };
@@ -166,19 +166,19 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
 export const gachaReadOnlySections: GachaReadOnlySection[] = [
   {
     title: "배너 상태",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "운영 중인 요원 모집 배너와 픽업/비픽업 설정을 확인합니다.",
     fields: ["배너 ID", "배너 유형", "시작/종료 시각", "확률표 버전", "활성 여부"]
   },
   {
     title: "계정별 천장 상태",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "계정과 배너별 pity/guarantee state를 문의 대응용으로 조회합니다.",
     fields: ["총 모집 횟수", "정예 천장 카운트", "픽업 정예 천장 카운트", "희귀 이상 천장 카운트"]
   },
   {
     title: "뽑기 이력",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "pull batch/request와 개별 pull result를 순서대로 추적합니다.",
     fields: [
       "batch ID",
@@ -192,7 +192,7 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "보장 발동",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "서버가 확정한 guaranteeType을 표시하고 클라이언트 계산값은 사용하지 않습니다.",
     fields: [
       labeledCode(gachaGuaranteeTypeLabel("RARE_OR_HIGHER_10"), "RARE_OR_HIGHER_10"),
@@ -203,7 +203,7 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "거절/오류 코드",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "문의 대응과 진단에 필요한 gacha errorCode를 한국어로 표시합니다.",
     fields: [
       labeledCode(gachaErrorCodeLabel("insufficient_command_ticket"), "insufficient_command_ticket"),
@@ -218,13 +218,13 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "중복/조각 변환",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "중복 요원 여부와 조각 변환 결과를 확인합니다.",
     fields: ["요원 ID", "중복 여부", "변환 조각", "duplicate_conversion_json"]
   },
   {
     title: "아이템 원장 연결",
-    status: "조회 API 대기",
+    status: "Admin 조회 API 대기",
     description: "지휘권 소모와 조각/증표/재료 지급을 item ledger 기준으로 추적합니다.",
     fields: ["item_ledger ID", "소모/지급 수량", "연결 batch", "복구/문의 참조"]
   }
@@ -255,8 +255,8 @@ export function GachaPage() {
         </div>
         <div>
           <span>상태</span>
-          <strong>연동 대기</strong>
-          <small>서버 조회 API 계약 대기</small>
+          <strong>Admin 조회 API 대기</strong>
+          <small>Game API smoke 완료, Admin read summary endpoint 대기</small>
         </div>
       </section>
       <section className="admin-panel">

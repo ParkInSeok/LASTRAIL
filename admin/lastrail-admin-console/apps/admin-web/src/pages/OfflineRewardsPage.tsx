@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { adminReadStatusLabel } from "../shared/api/errorDisplay";
 import {
   accountStatusLabel,
   offlineRewardStateSourceLabel,
@@ -103,7 +104,13 @@ export function OfflineRewardsPage() {
         </div>
         <div>
           <span>연동 상태</span>
-          <strong>{query.isError ? "연동 대기" : "연동 대기"}</strong>
+          <strong>
+            {adminReadStatusLabel({
+              hasData: Boolean(query.data),
+              isError: query.isError,
+              isLoading: query.isLoading
+            })}
+          </strong>
           <small>API 실패 시 placeholder 유지</small>
         </div>
         <div>

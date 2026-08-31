@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { hasPermission } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
+import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import { useAdmin } from "../shared/auth/AdminContext";
 import { accountStatusLabel, levelSourceLabel } from "../shared/labels/adminLabels";
 import { accountAuthSessionFieldLabel, accountAuthVisibilityFields } from "../shared/support/supportContract";
@@ -66,6 +67,42 @@ export const playerRecentOpsErrorEvidenceCards: PlayerRecentOpsErrorEvidenceCard
   }
 ] as const;
 
+function PlayerDetailFailure({ error, accountId }: { error: unknown; accountId: string }) {
+  const failure = adminRequestFailureDisplay(error, { resourceLabel: "플레이어", resourceId: accountId });
+
+  return (
+    <main className="content error">
+      <header>
+        <h1>{failure.title}</h1>
+        <p>{failure.resourceId}</p>
+      </header>
+      <section className="summary-grid" aria-label="플레이어 요청 실패 분류">
+        <div>
+          <span>분류</span>
+          <strong>{failure.reason}</strong>
+          <small>{failure.nextStep}</small>
+        </div>
+        <div>
+          <span>상태 코드</span>
+          <strong>{failure.statusLabel}</strong>
+          <small>Admin API response status</small>
+        </div>
+        <div>
+          <span>errorCode</span>
+          <strong>{failure.errorCode}</strong>
+          <small>{failure.message}</small>
+        </div>
+        <div>
+          <span>경계</span>
+          <strong>읽기 전용</strong>
+          <small>복구/병합/세션 revoke action 없음</small>
+        </div>
+      </section>
+      <Link to="/players">플레이어 검색으로 돌아가기</Link>
+    </main>
+  );
+}
+
 export function PlayerDetailPage() {
   const { accountId = "" } = useParams();
   const { bootstrap } = useAdmin();
@@ -99,7 +136,7 @@ export function PlayerDetailPage() {
   }
 
   if (query.isLoading) return <main className="content">플레이어를 불러오는 중</main>;
-  if (query.error) return <main className="content error">플레이어 요청 실패</main>;
+  if (query.error) return <PlayerDetailFailure error={query.error} accountId={accountId} />;
   if (!query.data) return <main className="content">선택된 플레이어가 없습니다</main>;
 
   const player = query.data;

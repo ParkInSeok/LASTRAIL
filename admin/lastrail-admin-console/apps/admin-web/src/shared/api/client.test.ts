@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { adminApi } from "./client";
+import { AdminApiError, adminApi } from "./client";
 
 describe("admin web API client", () => {
   afterEach(() => {
@@ -63,6 +63,39 @@ describe("admin web API client", () => {
       headers: {
         accept: "application/json"
       }
+    });
+  });
+
+  it("preserves normalized Admin API error status and code for actionable UI failures", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({ error: "ADMIN_PLAYER_NOT_FOUND", message: "Player was not found." }, { status: 404 })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    await expect(adminApi.playerDetail("missing-account")).rejects.toMatchObject({
+      name: "AdminApiError",
+      status: 404,
+      errorCode: "ADMIN_PLAYER_NOT_FOUND",
+      upstreamMessage: "Player was not found.",
+      path: "/api/players/missing-account"
+    });
+  });
+
+  it("preserves proxy error codes for environment and credential diagnosis", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json(
+        { error: { code: "ADMIN_API_BASE_URL_REQUIRED", message: "Admin API base URL is missing." } },
+        { status: 500 }
+      )
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const error = await adminApi.runDetail("run-1").catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(AdminApiError);
+    expect(error).toMatchObject({
+      status: 500,
+      errorCode: "ADMIN_API_BASE_URL_REQUIRED"
     });
   });
 

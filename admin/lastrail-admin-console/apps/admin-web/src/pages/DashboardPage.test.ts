@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  dashboardAggregateApiWait,
   dashboardSections,
   dashboardShortcuts,
   dashboardDetailSections,
@@ -41,9 +42,7 @@ describe("DashboardPage configuration", () => {
       "치명 오류",
       "미확인 핵심 실패"
     ]);
-    expect(launchDashboardSections.flatMap((section) => section.metrics).every((metric) => metric.value === "연동 대기")).toBe(
-      true
-    );
+    expect(launchDashboardSections.flatMap((section) => section.metrics).every((metric) => metric.value === dashboardAggregateApiWait)).toBe(true);
     expect(JSON.stringify(launchDashboardSections)).toContain("activeSessionCount");
     expect(JSON.stringify(launchDashboardSections)).toContain("lastLoginAt");
     expect(JSON.stringify(launchDashboardSections)).not.toContain("concurrentUsers 후보");

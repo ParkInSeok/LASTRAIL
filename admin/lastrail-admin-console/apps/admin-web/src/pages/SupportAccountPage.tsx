@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { adminReadStatusLabel } from "../shared/api/errorDisplay";
 import {
   encounterTypeLabel,
   opsErrorCodeLabel,
@@ -167,11 +168,10 @@ export function supportAccountReadStatusLabel(state: {
   hasData: boolean;
   isError: boolean;
   isLoading: boolean;
+  isPlaceholderAccountId?: boolean;
 }): string {
-  if (state.hasData) return "조회 가능";
-  if (state.isError) return "Access/admin credential 확인 필요";
-  if (state.isLoading) return "조회 중";
-  return "연동 대기";
+  if (state.isPlaceholderAccountId) return "계정 ID 선택 필요";
+  return adminReadStatusLabel(state);
 }
 
 export function supportLoginBonusEvidenceRows(summary: SupportLoginBonusSummary): SupportLoginBonusEvidenceRow[] {
@@ -446,12 +446,14 @@ export const supportRepairAuditCards: SupportCard[] = customerSupportRepairAudit
 
 export function SupportAccountPage() {
   const { accountId = "연동 대기" } = useParams();
+  const isPlaceholderAccountId = accountId === "pending";
   const query = useQuery({
     queryKey: ["support-account", accountId],
     queryFn: () => adminApi.supportAccountSummary(accountId),
-    retry: false
+    retry: false,
+    enabled: !isPlaceholderAccountId
   });
-  const summary = query.data ?? emptySupportAccountSummary(accountId);
+  const summary = query.data ?? emptySupportAccountSummary(isPlaceholderAccountId ? "계정 ID 선택 필요" : accountId);
   const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors);
   const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns);
   const loginBonusRows = supportLoginBonusEvidenceRows(summary.loginBonus);
@@ -479,7 +481,8 @@ export function SupportAccountPage() {
             {supportAccountReadStatusLabel({
               hasData: Boolean(query.data),
               isError: query.isError,
-              isLoading: query.isLoading
+              isLoading: query.isLoading,
+              isPlaceholderAccountId
             })}
           </strong>
           <small>{customerSupportContractPreview.endpointCandidate}</small>

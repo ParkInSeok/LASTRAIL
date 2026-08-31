@@ -33,6 +33,60 @@ import {
   SuspiciousPlayersResponseSchema
 } from "@lastrail/admin-contracts";
 
+type AdminApiErrorOptions = {
+  status: number;
+  path: string;
+  errorCode?: string;
+  upstreamMessage?: string;
+};
+
+export class AdminApiError extends Error {
+  readonly name = "AdminApiError";
+  readonly status: number;
+  readonly path: string;
+  readonly errorCode?: string;
+  readonly upstreamMessage?: string;
+
+  constructor(options: AdminApiErrorOptions) {
+    const suffix = options.errorCode ? ` (${options.errorCode})` : "";
+    super(`Admin request failed with ${options.status}${suffix}`);
+    this.status = options.status;
+    this.path = options.path;
+    this.errorCode = options.errorCode;
+    this.upstreamMessage = options.upstreamMessage;
+  }
+}
+
+function record(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
+function errorDetailsFrom(payload: unknown): Pick<AdminApiErrorOptions, "errorCode" | "upstreamMessage"> {
+  const root = record(payload);
+  const nested = record(root?.error);
+
+  if (nested) {
+    return {
+      errorCode: typeof nested.code === "string" ? nested.code : undefined,
+      upstreamMessage: typeof nested.message === "string" ? nested.message : undefined
+    };
+  }
+
+  return {
+    errorCode: typeof root?.error === "string" ? root.error : typeof root?.errorCode === "string" ? root.errorCode : undefined,
+    upstreamMessage: typeof root?.message === "string" ? root.message : undefined
+  };
+}
+
+async function adminApiErrorFrom(response: Response, path: string): Promise<AdminApiError> {
+  try {
+    const details = errorDetailsFrom(await response.clone().json());
+    return new AdminApiError({ status: response.status, path, ...details });
+  } catch {
+    return new AdminApiError({ status: response.status, path });
+  }
+}
+
 async function readJson(path: string): Promise<unknown> {
   const response = await fetch(path, {
     headers: {
@@ -41,7 +95,7 @@ async function readJson(path: string): Promise<unknown> {
   });
 
   if (!response.ok) {
-    throw new Error(`Admin request failed with ${response.status}`);
+    throw await adminApiErrorFrom(response, path);
   }
 
   return response.json();
@@ -58,7 +112,7 @@ async function writeJson(path: string, body: unknown): Promise<unknown> {
   });
 
   if (!response.ok) {
-    throw new Error(`Admin request failed with ${response.status}`);
+    throw await adminApiErrorFrom(response, path);
   }
 
   return response.json();

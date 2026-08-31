@@ -30,6 +30,14 @@ describe("SupportAccountPage configuration", () => {
     );
     expect(supportAccountReadStatusLabel({ hasData: false, isError: false, isLoading: true })).toBe("조회 중");
     expect(supportAccountReadStatusLabel({ hasData: false, isError: false, isLoading: false })).toBe("연동 대기");
+    expect(
+      supportAccountReadStatusLabel({
+        hasData: false,
+        isError: false,
+        isLoading: false,
+        isPlaceholderAccountId: true
+      })
+    ).toBe("계정 ID 선택 필요");
   });
 
   it("prepares launch customer support case cards", () => {

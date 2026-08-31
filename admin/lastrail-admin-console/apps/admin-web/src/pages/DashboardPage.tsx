@@ -38,6 +38,8 @@ type OfflineRewardStoryProgressPolicy = {
   capHours: string;
 };
 
+export const dashboardAggregateApiWait = "대시보드 집계 API 대기";
+
 export const offlineRewardFormulaPlaceholders = [
   "baseHourlyReward × storyProgressMultiplier × cappedOfflineHours",
   "claimableHours = min(actualOfflineHours, offlineStorageCapHours, maxClaimableHours)",
@@ -96,46 +98,46 @@ export const launchDashboardSections: DashboardSection[] = [
     title: "인증/세션",
     description: "Google 로그인과 활성 세션 상태를 보는 launch 핵심 요약",
     metrics: [
-      { label: "활성 세션", value: "연동 대기", note: "activeSessionCount / activeSessions 후보" },
-      { label: "마지막 로그인 시각", value: "연동 대기", note: "lastLoginAt 기준" },
-      { label: "마지막 로그인 경과", value: "연동 대기", note: "lastLoginAgeSeconds 후보" },
-      { label: "Google 연동 상태", value: "연동 대기", note: "provider/link read-only evidence 후보" }
+      { label: "활성 세션", value: dashboardAggregateApiWait, note: "activeSessionCount / activeSessions 후보" },
+      { label: "마지막 로그인 시각", value: dashboardAggregateApiWait, note: "lastLoginAt 기준" },
+      { label: "마지막 로그인 경과", value: dashboardAggregateApiWait, note: "lastLoginAgeSeconds 후보" },
+      { label: "Google 연동 상태", value: dashboardAggregateApiWait, note: "provider/link read-only evidence 후보" }
     ]
   },
   {
     title: "CS/계정 이슈",
     description: "지원 문의와 계정 복구 확인이 필요한 항목",
     metrics: [
-      { label: "지원 확인 필요 계정", value: "연동 대기", note: "support account summary 기준" },
-      { label: "계정 복구 후보", value: "연동 대기", note: "guest to Google recovery evidence 후보" },
-      { label: "Google 연동 계정", value: "연동 대기", note: "provider/link read-only 상태 후보" }
+      { label: "지원 확인 필요 계정", value: dashboardAggregateApiWait, note: "support account summary 기준" },
+      { label: "계정 복구 후보", value: dashboardAggregateApiWait, note: "guest to Google recovery evidence 후보" },
+      { label: "Google 연동 계정", value: dashboardAggregateApiWait, note: "provider/link read-only 상태 후보" }
     ]
   },
   {
     title: "무결성 리스크",
     description: "launch 운영자가 먼저 봐야 하는 계정/출격 위험 신호",
     metrics: [
-      { label: "긴급/높음 의심 계정", value: "연동 대기", note: "계정 단위 검토 큐" },
-      { label: "체크섬 불일치", value: "연동 대기", note: "필수 콘텐츠 버전 검증" },
-      { label: "불가능한 피해량/점수", value: "연동 대기", note: "보스 레이드/출격 검증" }
+      { label: "긴급/높음 의심 계정", value: dashboardAggregateApiWait, note: "계정 단위 검토 큐" },
+      { label: "체크섬 불일치", value: dashboardAggregateApiWait, note: "필수 콘텐츠 버전 검증" },
+      { label: "불가능한 피해량/점수", value: dashboardAggregateApiWait, note: "보스 레이드/출격 검증" }
     ]
   },
   {
     title: "보상/모집 이슈",
     description: "보상 수령, 오프라인 보상, 모집 문의 대응 요약",
     metrics: [
-      { label: "보상 수령 실패", value: "연동 대기", note: "claim 실패 이벤트" },
-      { label: "오프라인 보상 상태", value: "연동 대기", note: "claim 가능/충돌/무결성 제한 후보" },
-      { label: "모집 문의 후보", value: "연동 대기", note: "pity/batch/result read-only 후보" },
-      { label: "중복 재생 확인", value: "연동 대기", note: "duplicate replay는 이전 결과 재조회" }
+      { label: "보상 수령 실패", value: dashboardAggregateApiWait, note: "claim 실패 이벤트" },
+      { label: "오프라인 보상 상태", value: dashboardAggregateApiWait, note: "claim 가능/충돌/무결성 제한 후보" },
+      { label: "모집 문의 후보", value: dashboardAggregateApiWait, note: "pity/batch/result read-only 후보" },
+      { label: "중복 재생 확인", value: dashboardAggregateApiWait, note: "duplicate replay는 이전 결과 재조회" }
     ]
   },
   {
     title: "치명 시스템 오류",
     description: "핵심 서버 실패와 운영 확인이 필요한 런타임 오류",
     metrics: [
-      { label: "치명 오류", value: "연동 대기", note: "ops error logs critical" },
-      { label: "미확인 핵심 실패", value: "연동 대기", note: "open/acknowledged latest critical 후보" }
+      { label: "치명 오류", value: dashboardAggregateApiWait, note: "ops error logs critical" },
+      { label: "미확인 핵심 실패", value: dashboardAggregateApiWait, note: "open/acknowledged latest critical 후보" }
     ]
   }
 ];
