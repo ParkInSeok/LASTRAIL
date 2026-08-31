@@ -135,11 +135,12 @@ Identity / OpenID Connect guidance at implementation/deploy time:
   response header and refresh when the cached key set expires or the key id is
   unavailable.
 
-The actual Google OAuth client id / audience values are decision-queue items
-and must not be hardcoded into source. The route uses
-`GOOGLE_AUTH_AUDIENCES` as the allow-list source. Local tests may still inject
-`GOOGLE_ID_TOKEN_VERIFIER` as a fake verifier, but production can use the
-default Worker/WebCrypto verifier adapter behind the same
+The actual Google OAuth client id / audience values are PRD/app-registration
+inputs and must not be hardcoded into source. DEV real-Google smoke is not a
+launch blocker and may remain `google_auth_not_configured` until PRD values are
+available. The route uses `GOOGLE_AUTH_AUDIENCES` as the allow-list source.
+Local tests may still inject `GOOGLE_ID_TOKEN_VERIFIER` as a fake verifier, but
+production can use the default Worker/WebCrypto verifier adapter behind the same
 `verifyIdToken(idToken, audiences)` abstraction.
 
 Current safe adapter boundary:
@@ -537,3 +538,4 @@ Contract baseline:
   `ALREADY_CLAIMED` and does not write ledger or grant again.
 - The response does not include raw ledger dumps, tokens, auth headers, RNG
   material, probability data, full weight tables, or account shortcut data.
+
