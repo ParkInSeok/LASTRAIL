@@ -101,6 +101,27 @@ small {
   padding: 28px 32px;
 }
 
+.main-area {
+  min-width: 0;
+}
+
+.shell-status-banner {
+  margin: 20px 32px 0;
+}
+
+.shell-status-banner span {
+  color: #667085;
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.shell-status-banner strong {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
 .content header {
   margin-bottom: 24px;
 }
@@ -391,5 +412,9 @@ th {
 
   .content {
     padding: 20px;
+  }
+
+  .shell-status-banner {
+    margin: 16px 20px 0;
   }
 }
