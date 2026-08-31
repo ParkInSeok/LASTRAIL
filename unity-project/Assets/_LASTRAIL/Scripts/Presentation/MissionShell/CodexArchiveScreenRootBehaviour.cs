@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,15 +10,15 @@ namespace LastRail.Presentation.MissionShell
     public sealed class CodexArchiveScreenRootBehaviour : MonoBehaviour, ICodexArchiveScreenView
     {
         [SerializeField] private RectTransform safeAreaRoot;
-        [SerializeField] private Text titleText;
-        [SerializeField] private Text subtitleText;
-        [SerializeField] private Text entriesText;
-        [SerializeField] private Text overflowStatusText;
-        [SerializeField] private Text missionSelectButtonText;
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text subtitleText;
+        [SerializeField] private TMP_Text entriesText;
+        [SerializeField] private TMP_Text overflowStatusText;
+        [SerializeField] private TMP_Text missionSelectButtonText;
         [SerializeField] private Button missionSelectButton;
-        [SerializeField] private Text resultButtonText;
+        [SerializeField] private TMP_Text resultButtonText;
         [SerializeField] private Button resultButton;
-        [SerializeField] private Text rewardReviewButtonText;
+        [SerializeField] private TMP_Text rewardReviewButtonText;
         [SerializeField] private Button rewardReviewButton;
 
         public CodexArchiveScreenViewState CurrentState { get; private set; }
@@ -141,7 +142,7 @@ namespace LastRail.Presentation.MissionShell
             safeAreaRoot.anchorMax = max;
         }
 
-        private static void SetText(Text target, string value)
+        private static void SetText(TMP_Text target, string value)
         {
             if (target != null)
             {

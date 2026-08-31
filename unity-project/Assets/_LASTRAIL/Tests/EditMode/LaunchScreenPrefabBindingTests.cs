@@ -1,12 +1,16 @@
 #if UNITY_5_3_OR_NEWER
+using System.IO;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 using LastRail.Gacha;
 using LastRail.Presentation.Battle;
 using LastRail.Presentation.MissionShell;
+using TMPro;
 
 namespace LastRail.Tests.EditMode
 {
@@ -105,6 +109,74 @@ namespace LastRail.Tests.EditMode
             AssertReadableTextSlotsAreDistributed("RewardReviewScreen.prefab", 5);
             AssertReadableTextSlotsAreDistributed("OfflineRewardScreen.prefab", 5);
             AssertReadableTextSlotsAreDistributed("StoryProgressSummaryScreen.prefab", 5);
+        }
+
+        [Test]
+        public void LaunchScreenPrefabs_UseTextMeshProTextSurfaces()
+        {
+            AssertUsesTextMeshProWithoutLegacyText("MissionShellScreen.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("GachaScreen.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("FullyAnimatedCombatHud.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("CodexArchiveScreen.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("RewardReviewScreen.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("OfflineRewardScreen.prefab");
+            AssertUsesTextMeshProWithoutLegacyText("StoryProgressSummaryScreen.prefab");
+        }
+
+        [Test]
+        public void LaunchScreenPrefabs_UseLaunchKoreanTextMeshProFontAsset()
+        {
+            AssertUsesLaunchKoreanFont("MissionShellScreen.prefab");
+            AssertUsesLaunchKoreanFont("GachaScreen.prefab");
+            AssertUsesLaunchKoreanFont("FullyAnimatedCombatHud.prefab");
+            AssertUsesLaunchKoreanFont("CodexArchiveScreen.prefab");
+            AssertUsesLaunchKoreanFont("RewardReviewScreen.prefab");
+            AssertUsesLaunchKoreanFont("OfflineRewardScreen.prefab");
+            AssertUsesLaunchKoreanFont("StoryProgressSummaryScreen.prefab");
+        }
+
+        [Test]
+        public void LaunchKoreanFontLicenseNotice_ExistsForReleasePackaging()
+        {
+            var licensePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "Fonts", "Pretendard", "LICENSE-Pretendard-OFL.txt");
+            var readmePath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "Fonts", "Pretendard", "README-LASTRAIL.md");
+            Assert.That(File.Exists(licensePath), Is.True, "Pretendard OFL license notice must ship near launch font assets.");
+            Assert.That(File.ReadAllText(licensePath), Does.Contain("SIL OPEN FONT LICENSE Version 1.1"));
+            Assert.That(File.Exists(readmePath), Is.True, "LASTRAIL font attribution README missing.");
+            Assert.That(File.ReadAllText(readmePath), Does.Contain("Release package must include"));
+        }
+        [Test]
+        public void ProjectSettings_UseValidNewInputSystemHandler()
+        {
+            var settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "ProjectSettings", "ProjectSettings.asset");
+            var settings = File.ReadAllText(settingsPath);
+            Assert.That(settings, Does.Not.Contain("activeInputHandler: -1"));
+            Assert.That(settings, Does.Contain("activeInputHandler: 1").Or.Contain("activeInputHandler: 2"));
+        }
+
+        [Test]
+        public void AndroidSmokeScene_UsesInputSystemUiModuleInsteadOfStandaloneInputModule()
+        {
+            var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/_LASTRAIL/Scenes/AndroidBuildSmoke.unity");
+            Assert.That(sceneAsset, Is.Not.Null);
+
+            var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
+                AssetDatabase.GetAssetPath(sceneAsset),
+                UnityEditor.SceneManagement.OpenSceneMode.Single);
+
+            try
+            {
+                var eventSystems = Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
+                Assert.That(eventSystems.Length, Is.EqualTo(1));
+                Assert.That(eventSystems[0].GetComponent<InputSystemUIInputModule>(), Is.Not.Null);
+                Assert.That(eventSystems[0].GetComponent<StandaloneInputModule>(), Is.Null);
+            }
+            finally
+            {
+                UnityEditor.SceneManagement.EditorSceneManager.NewScene(
+                    UnityEditor.SceneManagement.NewSceneSetup.EmptyScene,
+                    UnityEditor.SceneManagement.NewSceneMode.Single);
+            }
         }
 
         [Test]
@@ -301,7 +373,7 @@ namespace LastRail.Tests.EditMode
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
             Assert.That(prefab, Is.Not.Null, prefabName);
             var yPositions = new HashSet<int>();
-            foreach (var text in prefab.GetComponentsInChildren<Text>(includeInactive: true))
+            foreach (var text in prefab.GetComponentsInChildren<TMP_Text>(includeInactive: true))
             {
                 if (text.transform.parent != null && text.transform.parent.GetComponent<Button>() != null)
                 {
@@ -321,6 +393,32 @@ namespace LastRail.Tests.EditMode
                 prefabName + " text slots overlap instead of using the portrait safe area.");
         }
 
+        private static void AssertUsesTextMeshProWithoutLegacyText(string prefabName)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
+            Assert.That(prefab, Is.Not.Null, prefabName);
+            Assert.That(prefab.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThan(0), prefabName);
+            Assert.That(prefab.GetComponentsInChildren<Text>(includeInactive: true).Length, Is.EqualTo(0), prefabName);
+        }
+
+        private static void AssertUsesLaunchKoreanFont(string prefabName)
+        {
+            var fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset");
+            Assert.That(fontAsset, Is.Not.Null, "Launch Korean TMP SDF font asset missing.");
+            Assert.That(fontAsset.name, Does.Contain("Pretendard-Regular SDF"));
+
+            var material = AssetDatabase.LoadAssetAtPath<Material>("Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat");
+            Assert.That(material, Is.Not.Null, "Launch Korean TMP SDF material preset missing.");
+            Assert.That(material.name, Does.Contain("Pretendard-Regular SDF UI"));
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
+            Assert.That(prefab, Is.Not.Null, prefabName);
+            foreach (var text in prefab.GetComponentsInChildren<TMP_Text>(includeInactive: true))
+            {
+                Assert.That(text.font, Is.EqualTo(fontAsset), prefabName + ":" + text.name);
+                Assert.That(text.fontSharedMaterial, Is.EqualTo(material), prefabName + ":" + text.name);
+            }
+        }
         private static TComponent InstantiateScreenRoot<TComponent>(string prefabName)
             where TComponent : Component
         {

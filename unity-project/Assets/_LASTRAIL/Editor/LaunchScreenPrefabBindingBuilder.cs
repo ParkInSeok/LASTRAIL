@@ -4,6 +4,7 @@ using System.IO;
 using LastRail.Gacha;
 using LastRail.Presentation.Battle;
 using LastRail.Presentation.MissionShell;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,10 @@ namespace LastRail.Editor
     public static class LaunchScreenPrefabBindingBuilder
     {
         private const string PrefabRoot = "Assets/_LASTRAIL/Prefabs/Screens";
+        private const string FontRoot = "Assets/_LASTRAIL/UI/Fonts/Pretendard";
+        private const string KoreanFontSourcePath = FontRoot + "/Pretendard-Regular.otf";
+        private const string KoreanFontAssetPath = FontRoot + "/TMP/Pretendard-Regular SDF.asset";
+        private const string KoreanFontMaterialPath = FontRoot + "/TMP/Materials/Pretendard-Regular SDF UI.mat";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -276,23 +281,15 @@ namespace LastRail.Editor
             return safeArea;
         }
 
-        private static Text CreateText(Transform parent, string name, string value)
+        private static TMP_Text CreateText(Transform parent, string name, string value)
         {
-            var gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            var gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             gameObject.transform.SetParent(parent, false);
             var rect = gameObject.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(960f, 96f);
 
-            var text = gameObject.GetComponent<Text>();
-            text.text = value ?? string.Empty;
-            text.font = GetDefaultFont();
-            text.fontSize = 32;
-            text.alignment = TextAnchor.MiddleLeft;
-            text.horizontalOverflow = HorizontalWrapMode.Wrap;
-            text.verticalOverflow = VerticalWrapMode.Truncate;
-            text.resizeTextForBestFit = true;
-            text.resizeTextMinSize = 18;
-            text.resizeTextMaxSize = 32;
+            var text = gameObject.GetComponent<TextMeshProUGUI>();
+            ConfigureText(text, value, 32f, TextAlignmentOptions.MidlineLeft);
             return text;
         }
 
@@ -310,7 +307,7 @@ namespace LastRail.Editor
             rect.sizeDelta = new Vector2(width, height);
         }
 
-        private static Button CreateButton(Transform parent, string name, string label, out Text labelText)
+        private static Button CreateButton(Transform parent, string name, string label, out TMP_Text labelText)
         {
             var buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
             buttonObject.transform.SetParent(parent, false);
@@ -318,7 +315,7 @@ namespace LastRail.Editor
             rect.sizeDelta = new Vector2(320f, 64f);
             buttonObject.GetComponent<Image>().color = new Color(0.11f, 0.13f, 0.16f, 1f);
 
-            var labelObject = new GameObject(name + "Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(Text));
+            var labelObject = new GameObject(name + "Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             labelObject.transform.SetParent(buttonObject.transform, false);
             var labelRect = labelObject.GetComponent<RectTransform>();
             labelRect.anchorMin = Vector2.zero;
@@ -326,22 +323,46 @@ namespace LastRail.Editor
             labelRect.offsetMin = Vector2.zero;
             labelRect.offsetMax = Vector2.zero;
 
-            labelText = labelObject.GetComponent<Text>();
-            labelText.text = label;
-            labelText.font = GetDefaultFont();
-            labelText.fontSize = 28;
-            labelText.alignment = TextAnchor.MiddleCenter;
-            labelText.horizontalOverflow = HorizontalWrapMode.Wrap;
-            labelText.verticalOverflow = VerticalWrapMode.Truncate;
-            labelText.resizeTextForBestFit = true;
-            labelText.resizeTextMinSize = 18;
-            labelText.resizeTextMaxSize = 28;
+            labelText = labelObject.GetComponent<TextMeshProUGUI>();
+            ConfigureText(labelText, label, 28f, TextAlignmentOptions.Center);
             return buttonObject.GetComponent<Button>();
         }
 
-        private static Font GetDefaultFont()
+        private static void ConfigureText(TMP_Text text, string value, float maxFontSize, TextAlignmentOptions alignment)
         {
-            return Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            text.text = value ?? string.Empty;
+            text.font = GetLaunchKoreanFontAsset();
+            text.fontSharedMaterial = GetLaunchKoreanFontMaterialPreset();
+            text.fontSize = maxFontSize;
+            text.fontSizeMax = maxFontSize;
+            text.fontSizeMin = 18f;
+            text.enableAutoSizing = true;
+            text.enableWordWrapping = true;
+            text.overflowMode = TextOverflowModes.Truncate;
+            text.alignment = alignment;
+            text.raycastTarget = false;
+        }
+
+        private static TMP_FontAsset GetLaunchKoreanFontAsset()
+        {
+            var fontAsset = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontAssetPath);
+            if (fontAsset == null)
+            {
+                throw new InvalidOperationException("Missing copied Pretendard TMP SDF font asset: " + KoreanFontAssetPath);
+            }
+
+            return fontAsset;
+        }
+
+        private static Material GetLaunchKoreanFontMaterialPreset()
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>(KoreanFontMaterialPath);
+            if (material == null)
+            {
+                throw new InvalidOperationException("Missing copied Pretendard TMP SDF material preset: " + KoreanFontMaterialPath);
+            }
+
+            return material;
         }
 
         private static void Bind(UnityEngine.Object target, params (string FieldName, UnityEngine.Object Value)[] bindings)

@@ -1,5 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,13 +9,13 @@ namespace LastRail.Presentation.Battle
     public sealed class FullyAnimatedCombatHudRootBehaviour : MonoBehaviour, IFullyAnimatedCombatHudView
     {
         [SerializeField] private RectTransform safeAreaRoot;
-        [SerializeField] private Text encounterTitleText;
-        [SerializeField] private Text waveCounterText;
-        [SerializeField] private Text bossStatusText;
-        [SerializeField] private Text objectiveText;
-        [SerializeField] private Text refundHintText;
-        [SerializeField] private Text unitRefsText;
-        [SerializeField] private Text cueRefsText;
+        [SerializeField] private TMP_Text encounterTitleText;
+        [SerializeField] private TMP_Text waveCounterText;
+        [SerializeField] private TMP_Text bossStatusText;
+        [SerializeField] private TMP_Text objectiveText;
+        [SerializeField] private TMP_Text refundHintText;
+        [SerializeField] private TMP_Text unitRefsText;
+        [SerializeField] private TMP_Text cueRefsText;
 
         public FullyAnimatedCombatHudViewState CurrentState { get; private set; }
 
@@ -54,7 +55,7 @@ namespace LastRail.Presentation.Battle
             safeAreaRoot.anchorMax = max;
         }
 
-        private static void SetText(Text target, string value)
+        private static void SetText(TMP_Text target, string value)
         {
             if (target != null)
             {

@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,16 +10,16 @@ namespace LastRail.Presentation.MissionShell
     public sealed class RewardStoryScreenRootBehaviour : MonoBehaviour, IRewardStoryScreenView
     {
         [SerializeField] private RectTransform safeAreaRoot;
-        [SerializeField] private Text titleText;
-        [SerializeField] private Text subtitleText;
-        [SerializeField] private Text bodyText;
-        [SerializeField] private Text rewardLinesText;
-        [SerializeField] private Text statusText;
-        [SerializeField] private Text primaryButtonText;
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text subtitleText;
+        [SerializeField] private TMP_Text bodyText;
+        [SerializeField] private TMP_Text rewardLinesText;
+        [SerializeField] private TMP_Text statusText;
+        [SerializeField] private TMP_Text primaryButtonText;
         [SerializeField] private Button primaryButton;
-        [SerializeField] private Text secondaryButtonText;
+        [SerializeField] private TMP_Text secondaryButtonText;
         [SerializeField] private Button secondaryButton;
-        [SerializeField] private Text codexButtonText;
+        [SerializeField] private TMP_Text codexButtonText;
         [SerializeField] private Button codexButton;
 
         public RewardStoryScreenViewState CurrentState { get; private set; }
@@ -143,7 +144,7 @@ namespace LastRail.Presentation.MissionShell
             safeAreaRoot.anchorMax = max;
         }
 
-        private static void SetText(Text target, string value)
+        private static void SetText(TMP_Text target, string value)
         {
             if (target != null)
             {

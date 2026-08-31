@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,19 +10,19 @@ namespace LastRail.Gacha
     public sealed class GachaScreenRootBehaviour : MonoBehaviour, IGachaScreenView
     {
         [SerializeField] private RectTransform safeAreaRoot;
-        [SerializeField] private Text titleText;
-        [SerializeField] private Text bannerText;
-        [SerializeField] private Text statusText;
-        [SerializeField] private Text costText;
-        [SerializeField] private Text pityText;
-        [SerializeField] private Text revealModeText;
-        [SerializeField] private Text resultGridText;
-        [SerializeField] private Text errorText;
-        [SerializeField] private Text onePullButtonText;
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text bannerText;
+        [SerializeField] private TMP_Text statusText;
+        [SerializeField] private TMP_Text costText;
+        [SerializeField] private TMP_Text pityText;
+        [SerializeField] private TMP_Text revealModeText;
+        [SerializeField] private TMP_Text resultGridText;
+        [SerializeField] private TMP_Text errorText;
+        [SerializeField] private TMP_Text onePullButtonText;
         [SerializeField] private Button onePullButton;
-        [SerializeField] private Text tenPullButtonText;
+        [SerializeField] private TMP_Text tenPullButtonText;
         [SerializeField] private Button tenPullButton;
-        [SerializeField] private Text primaryActionText;
+        [SerializeField] private TMP_Text primaryActionText;
 
         public GachaScreenViewState CurrentState { get; private set; }
         public event Action OnePullRequested;
@@ -130,7 +131,7 @@ namespace LastRail.Gacha
             safeAreaRoot.anchorMax = max;
         }
 
-        private static void SetText(Text target, string value)
+        private static void SetText(TMP_Text target, string value)
         {
             if (target != null)
             {

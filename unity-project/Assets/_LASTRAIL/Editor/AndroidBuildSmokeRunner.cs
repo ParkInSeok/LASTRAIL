@@ -6,6 +6,7 @@ using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 namespace LastRail.Editor
 {
@@ -62,7 +63,7 @@ namespace LastRail.Editor
             var root = new GameObject("AndroidBuildSmokeRoot");
             root.SetActive(true);
 
-            var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+            var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem.transform.SetParent(root.transform, false);
 
             for (var i = 0; i < ScreenPrefabPaths.Length; i++)
