@@ -437,7 +437,7 @@ Fields:
 Support usage:
 
 - Correlate support tickets with backend/runtime failures.
-- Link to `/ops/error-logs` once implemented.
+- Link to the read-only `/ops/error-logs` Admin surface.
 
 Current support route status:
 
@@ -448,7 +448,8 @@ Current support route status:
   `story_progress_state_conflict`.
 - Rows are ordered critical first, then by latest occurrence.
 - Operators can still use `GET /v1/admin/ops/error-logs?accountId=...` for the
-  dedicated ops log read model and broader filters.
+  dedicated ops log read model and broader filters, or
+  `GET /v1/admin/ops/error-logs/summary` for aggregate counts.
 
 Do not return raw payloads, raw request bodies, tokens, secrets, or unsanitized
 stack traces in launch support summary.

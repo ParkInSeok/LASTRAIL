@@ -39,7 +39,27 @@ Response:
 - `items[].syncLevel`
 - `items[].lastSeenAt`
 
-`GET /v1/admin/players/:accountId` returns account detail with the Training Core / Sync progression inspector. `syncLevel` is the minimum `trained_level` across exactly 5 Training Core slots. Non-core operators use `levelSource: "SYNC"` and `effectiveLevel: syncLevel`. Core operators use `levelSource: "TRAINED"` and their direct `trainedLevel`.
+`GET /v1/admin/players/:accountId` returns account detail with the Training
+Core / Sync progression inspector. `syncLevel` is the minimum `trained_level`
+across exactly 5 Training Core slots. Non-core operators use `levelSource:
+"SYNC"` and `effectiveLevel: syncLevel`. Core operators use `levelSource:
+"TRAINED"` and their direct `trainedLevel`.
+
+The same detail response also exposes launch-safe read-only account support
+evidence:
+
+- `auth.identityProviders`, `providerNames`, `linkedProviders`,
+  `primaryProvider`, and `hasGoogleLink`;
+- `auth.activeSessionCount`, `latestSessionAt`, `lastLoginAt`, and
+  `lastLoginAgeSeconds`;
+- `auth.concurrentUsers = null` and `concurrentUsersPrecision =
+  "UNAVAILABLE"` until a server-owned activity/heartbeat source exists;
+- `opsErrors[]` with the latest account-scoped launch-critical sanitized ops
+  error rows.
+
+Request bodies are rejected with `contract_violation`. The response does not
+return tokens, session secrets, refresh token hashes, raw auth headers, raw
+request bodies, or account shortcut data.
 
 `GET /v1/admin/runs` returns run search rows.
 
@@ -49,7 +69,68 @@ Query:
 
 Response includes run balance version, result, risk tier, and validator version when available.
 
-`GET /v1/admin/runs/:runId` returns run detail with frozen `run_snapshots.snapshot_json`, run balance version, current active balance version, client build, content version, validator version, and validator runtime revision.
+`GET /v1/admin/runs/:runId` returns run detail with frozen
+`run_snapshots.snapshot_json`, run balance version, current active balance
+version, client build, content version, validator version, and validator
+runtime revision.
+
+The detail response includes launch-safe support evidence for reward and Act 1
+story raid investigation:
+
+- `operationId`, `riskTier`, `outcome`, and `clearedWaves`;
+- `rewardPreviewId`, `rewardClaimId`, `appliedMultiplierLabel`,
+  `calculationMetadataStatus`, and `firstClearConsumed`;
+- `encounterType`, `raidId`, `bossId`, `bossPhaseRefs`, `bossDefeated`,
+  `completedPhaseCount`, `encounterDurationSeconds`, and
+  `allowedOperatorSlots`;
+- `startAugmentPackageRef`, `startTacticPackageRef`, `selectedAugmentIds`, and
+  `selectedTacticIds`;
+- `staminaRefund.status/resource/reason/policyId/serverOwnedMutation`,
+  `fuelLedgerReason`, and safe `fuelLedgerRefs`;
+- `integrityDisposition` summary counts.
+
+This is read-only evidence only. It does not expose raw animation timelines,
+VFX/SFX/camera data, raw RNG material, probability, full weight tables,
+unrestricted payload dumps, reward correction controls, or replay/reprocess
+actions.
+
+## Dashboard Launch Summary
+
+Current local read-only endpoint:
+
+```text
+GET /v1/admin/dashboard/launch-summary
+```
+
+Permission:
+
+- `SUPPORT_READ`
+- Current implementation: `ROLE_PERMISSION`; OWNER / OPERATOR / VIEWER can
+  read the launch summary.
+
+The endpoint composes a thin launch operations snapshot for Admin dashboard
+cards:
+
+- `activeSessions`
+- `lastLoginAtLatest`
+- `lastLoginAgeBuckets.latestAgeSeconds`
+- `supportReviewNeededCount`
+- `accountRecoveryCandidateCount`
+- `integrityHighRiskCount`
+- `rewardClaimFailureCount`
+- `offlineRewardIssueCount`
+- `gachaSupportIssueCount`
+- `duplicateReplayCount`
+- `criticalOpenOpsErrorCount`
+- `unacknowledgedCoreFailureCount`
+- `serverCalculatedAt`
+
+Exact concurrent users are intentionally not claimed. The response returns
+`concurrentUsers = null`, `recentActiveAccounts5m = null`,
+`recentActiveAccounts30m = null`, and source/precision fields that mark those
+values unavailable until a server-owned activity source exists.
+
+Request bodies are rejected with `contract_violation`.
 
 ## Story Progress
 
@@ -150,7 +231,9 @@ data. Request bodies are rejected with `contract_violation`.
 Login/session/dashboard metrics are defined in
 `docs/api/admin-session-metrics.md`. The current local implementation exposes
 account-level fields through `GET /v1/admin/support/accounts/:accountId`;
-dashboard aggregate routes remain candidates.
+dashboard-level launch aggregates through
+`GET /v1/admin/dashboard/launch-summary`; and player detail auth/session
+evidence through `GET /v1/admin/players/:accountId`.
 
 Candidate metrics include:
 
@@ -208,6 +291,7 @@ Read-only endpoints are:
 
 ```text
 GET /v1/admin/ops/error-logs
+GET /v1/admin/ops/error-logs/summary
 GET /v1/admin/ops/error-logs/:errorLogId
 ```
 
@@ -222,6 +306,36 @@ slice creates only the D1 searchable summary table and read-only Admin API
 routes. It does not create Queues, R2 buckets, Workers Logs exports, repair
 mutations, resolution workflow mutations, Cloudflare resources, DEV deploys, or
 PRD/STAGING resources.
+
+`GET /v1/admin/ops/error-logs/summary` returns aggregate counts for dashboard
+and ops page cards: `recentErrorCount`, `warningCount`, `criticalCount`,
+`retryableCount`, `maskedCount`, `openCount`, `acknowledgedCount`,
+`latestCriticalAt`, and `serverCalculatedAt`. Detail/raw payload availability
+is represented safely with `detailAvailable = false` unless a future sanitized
+detail store is explicitly approved.
+
+## Gacha Support Read Model
+
+Current local read-only endpoints:
+
+```text
+GET /v1/admin/gacha/banners
+GET /v1/admin/gacha/accounts/:accountId/pity
+GET /v1/admin/gacha/pull-batches
+GET /v1/admin/gacha/pull-batches/:batchId
+```
+
+Permission:
+
+- `SUPPORT_READ`
+- Current implementation: `ROLE_PERMISSION`; OWNER / OPERATOR / VIEWER can
+  read launch gacha support views.
+
+These endpoints expose launch support evidence for active banners, account
+pity state, pull batches, idempotency replay hints, cost references, result
+refs, guarantee types, and duplicate conversion summaries. They intentionally
+omit raw RNG material, RNG seed preimages, per-candidate probability, full
+weight lists, token/secret/account shortcut data, and repair/reroll controls.
 
 ## Balance Config Drafts
 

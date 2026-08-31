@@ -649,13 +649,27 @@ gacha_result_persist_failed
 
 ## Admin / Analytics Read Model
 
-The write model above supports later read-only admin endpoints:
+The write model above now backs launch read-only Admin support endpoints:
+
+```text
+GET /v1/admin/gacha/banners
+GET /v1/admin/gacha/accounts/:accountId/pity
+GET /v1/admin/gacha/pull-batches
+GET /v1/admin/gacha/pull-batches/:batchId
+```
+
+Launch scope exposes banner status, pickup operator id, command-ticket cost,
+pull count options, pity thresholds, account pity state, batch cost refs,
+pre/post pity state, client-visible response result shape, guarantee types,
+duplicate conversion summaries, and safe ledger references.
+
+It does not expose raw RNG material, RNG seed preimages, per-candidate
+probabilities, full weight lists, token/secret/account shortcut data, reroll,
+repair, replay, or economy correction controls.
+
+Future analytics can still add:
 
 - Pull volume by banner.
-- Account pull history.
-- Pity state lookup.
-- Duplicate conversion audit.
-- Pickup guarantee audit.
 - Probability verification by result rarity/type.
 - Suspicious repeated pull or impossible result investigation.
 - Dashboard metrics for command ticket spend and reward/material grants.

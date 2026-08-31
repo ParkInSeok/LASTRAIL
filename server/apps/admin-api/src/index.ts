@@ -159,6 +159,40 @@ type AdminRunDetailRow = AdminRunSearchRow & {
   content_version: number | null;
   validator_runtime_revision: number | null;
   snapshot_json: string;
+  preview_json: string | null;
+};
+
+type AdminRunFinalResultRow = {
+  outcome: "VICTORY" | "FAILURE" | "ABANDONED";
+  cleared_waves: number;
+  payload_json: string;
+  submitted_at: number;
+};
+
+type AdminRunRewardEvidenceRow = {
+  reward_preview_id: string;
+  preview_status: string;
+  reward_claim_id: string | null;
+  reward_plan_json: string;
+};
+
+type AdminRunFirstClearEvidenceRow = {
+  operation_key: string;
+  risk: string;
+  cleared_at: number;
+  run_id: string | null;
+};
+
+type AdminRunFuelLedgerEvidenceRow = {
+  id: string;
+  delta: number;
+  reason: string;
+};
+
+type AdminRunIntegrityEvidenceRow = {
+  open_signals: number | null;
+  hard_violations: number | null;
+  primary_reason: string | null;
 };
 
 type AdminStoryProgressRow = {
@@ -307,6 +341,101 @@ type AdminOpsErrorLogRow = {
   resolved_by: string | null;
   resolution_note: string | null;
   created_at: number;
+};
+
+type AdminDashboardSessionRow = {
+  active_session_count: number | null;
+  latest_session_created_at: number | null;
+};
+
+type AdminDashboardSupportReviewRow = {
+  support_review_needed_count: number | null;
+};
+
+type AdminDashboardIntegrityRow = {
+  integrity_high_risk_count: number | null;
+};
+
+type AdminDashboardIssueRow = {
+  reward_claim_failure_count: number | null;
+  offline_reward_issue_count: number | null;
+  gacha_support_issue_count: number | null;
+  critical_open_ops_error_count: number | null;
+  unacknowledged_core_failure_count: number | null;
+};
+
+type AdminDashboardDuplicateReplayRow = {
+  duplicate_replay_count: number | null;
+};
+
+type AdminDashboardRecoveryRow = {
+  account_recovery_candidate_count: number | null;
+};
+
+type AdminOpsErrorAggregateRow = {
+  recent_error_count: number | null;
+  warning_count: number | null;
+  critical_count: number | null;
+  retryable_count: number | null;
+  masked_count: number | null;
+  open_count: number | null;
+  acknowledged_count: number | null;
+  latest_critical_at: number | null;
+};
+
+type AdminGachaBannerRow = {
+  id: string;
+  banner_type: string;
+  status: string;
+  balance_config_version: number;
+  pickup_operator_id: string | null;
+  starts_at: number;
+  ends_at: number | null;
+  pity_config_json: string;
+  pool_snapshot_json: string;
+  created_at: number;
+  updated_at: number;
+};
+
+type AdminGachaPityRow = {
+  account_id: string;
+  banner_id: string;
+  total_pull_count: number;
+  elite_pity_count: number;
+  pickup_elite_pity_count: number;
+  rare_or_higher_pity_count: number;
+  revision: number;
+  last_batch_id: string | null;
+  updated_at: number;
+};
+
+type AdminGachaBatchRow = {
+  batch_id: string;
+  account_id: string;
+  banner_id: string;
+  pull_count: number;
+  cost_item_id: string;
+  cost_quantity: number;
+  cost_ledger_id?: string | null;
+  pre_pity_json: string;
+  post_pity_json: string;
+  result_summary_json: string;
+  created_at: number;
+  idempotency_replay_known: number | null;
+};
+
+type AdminGachaResultRow = {
+  result_id: string;
+  pull_sequence: number;
+  result_rarity: string;
+  result_type: string;
+  reward_id: string;
+  is_pickup: number;
+  was_duplicate: number;
+  guarantee_type: string;
+  duplicate_conversion_json: string | null;
+  item_ledger_id: string | null;
+  progression_ledger_id: string | null;
 };
 
 type NextVersionRow = {
@@ -840,6 +969,18 @@ function jsonObjectPositiveInteger(value: JsonValue, key: string): number | null
   return typeof field === "number" && Number.isInteger(field) && field > 0 ? field : null;
 }
 
+function jsonObjectNonNegativeInteger(value: JsonValue, key: string): number | null {
+  if (!isJsonObject(value)) return null;
+  const field = value[key];
+  return typeof field === "number" && Number.isInteger(field) && field >= 0 ? field : null;
+}
+
+function jsonObjectBoolean(value: JsonValue, key: string): boolean | null {
+  if (!isJsonObject(value)) return null;
+  const field = value[key];
+  return typeof field === "boolean" ? field : null;
+}
+
 function parseRunPreviewMetadata(previewJson: string | null): {
   operationId: string | null;
   actId: string | null;
@@ -986,6 +1127,10 @@ function getLastLoginAgeSeconds(lastLoginAt: number | null | undefined, now: num
   return Math.max(0, Math.floor((now - lastLoginAt) / 1000));
 }
 
+function countValue(value: number | null | undefined): number {
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
 function parseOptionalJsonObject(json: string): JsonValue {
   try {
     const parsed = parseJsonValue(json);
@@ -1083,6 +1228,294 @@ function supportOpsErrorSummary(row: AdminOpsErrorLogRow) {
     traceRef: row.trace_ref,
     links: opsErrorLogLinks(row),
   };
+}
+
+function parseJsonObjectOrEmpty(json: string): { readonly [key: string]: JsonValue } {
+  try {
+    const parsed = parseJsonValue(json);
+    return isJsonObject(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function getJsonNumber(value: { readonly [key: string]: JsonValue }, keys: readonly string[], fallback: number): number {
+  for (const key of keys) {
+    const field = value[key];
+    if (typeof field === "number" && Number.isSafeInteger(field) && field > 0) return field;
+  }
+  return fallback;
+}
+
+function parseAdminGachaPityThresholds(pityConfigJson: string) {
+  const parsed = parseJsonObjectOrEmpty(pityConfigJson);
+  return {
+    rareOrHigher: getJsonNumber(parsed, ["rare", "rareOrHigher", "rareOrHigherGuarantee"], 10),
+    elite: getJsonNumber(parsed, ["elite", "eliteGuarantee"], 30),
+    pickupElite: getJsonNumber(parsed, ["pickup", "pickupElite", "pickupEliteGuarantee"], 60),
+  };
+}
+
+function parseAdminGachaPoolDisplay(poolSnapshotJson: string): {
+  pullCostItemId: string;
+  pullCostQuantity: number;
+  pullCountOptions: number[];
+} {
+  const parsed = parseJsonObjectOrEmpty(poolSnapshotJson);
+  const cost = isJsonObject(parsed.cost) ? parsed.cost : {};
+  const quantity = cost.quantityPerPull ?? cost.quantity;
+  const pullCountOptions = Array.isArray(parsed.allowedPullCounts)
+    ? parsed.allowedPullCounts
+    : Array.isArray(parsed.pullCountOptions)
+      ? parsed.pullCountOptions
+      : [1, 10];
+
+  return {
+    pullCostItemId: typeof cost.itemId === "string" && cost.itemId.length > 0 ? cost.itemId : "cur_command_ticket",
+    pullCostQuantity: typeof quantity === "number" && Number.isSafeInteger(quantity) && quantity > 0 ? quantity : 1,
+    pullCountOptions: pullCountOptions
+      .filter((value): value is number => typeof value === "number" && (value === 1 || value === 10))
+      .sort((left, right) => left - right),
+  };
+}
+
+function adminGachaBannerSummary(row: AdminGachaBannerRow) {
+  const pool = parseAdminGachaPoolDisplay(row.pool_snapshot_json);
+  return {
+    bannerId: row.id,
+    bannerType: row.banner_type,
+    status: row.status,
+    activeBannerId: row.status === "ACTIVE" ? row.id : null,
+    pickupOperatorId: row.pickup_operator_id,
+    balanceVersion: String(row.balance_config_version),
+    pullCostItemId: pool.pullCostItemId,
+    pullCostQuantity: pool.pullCostQuantity,
+    pullCountOptions: pool.pullCountOptions.length > 0 ? pool.pullCountOptions : [1, 10],
+    pityThresholds: parseAdminGachaPityThresholds(row.pity_config_json),
+    guaranteeTypes: ["NONE", "RARE_OR_HIGHER_10", "ELITE_30", "PICKUP_ELITE_60"],
+    startsAt: toIso(row.starts_at),
+    endsAt: row.ends_at === null ? null : toIso(row.ends_at),
+    updatedAt: toIso(row.updated_at),
+    detailAvailable: true,
+  };
+}
+
+function adminGachaPitySummary(row: AdminGachaPityRow | null, accountId: string, bannerId: string | null) {
+  return {
+    accountId,
+    bannerId,
+    pityState: {
+      totalPullCount: row?.total_pull_count ?? 0,
+      elitePityCount: row?.elite_pity_count ?? 0,
+      pickupElitePityCount: row?.pickup_elite_pity_count ?? 0,
+      rareOrHigherPityCount: row?.rare_or_higher_pity_count ?? 0,
+      revision: row?.revision ?? 0,
+      lastBatchId: row?.last_batch_id ?? null,
+      updatedAt: row === null ? null : toIso(row.updated_at),
+    },
+    detailAvailable: row !== null,
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      source: "player_gacha_pity",
+    },
+  };
+}
+
+function parseGachaResponseResults(resultSummaryJson: string): JsonValue[] {
+  const parsed = parseJsonObjectOrEmpty(resultSummaryJson);
+  if (!Array.isArray(parsed.responseResults)) return [];
+  return parsed.responseResults.filter((value) => isJsonObject(value));
+}
+
+function adminGachaBatchSummary(row: AdminGachaBatchRow) {
+  return {
+    batchId: row.batch_id,
+    accountId: row.account_id,
+    bannerId: row.banner_id,
+    resultStatus: "ACCEPTED",
+    idempotencyReplayKnown: row.idempotency_replay_known === 1,
+    pullCount: row.pull_count,
+    cost: {
+      itemId: row.cost_item_id,
+      quantity: row.cost_quantity,
+      itemLedgerRef: row.cost_ledger_id ?? null,
+    },
+    prePityState: parseOptionalJsonObject(row.pre_pity_json),
+    postPityState: parseOptionalJsonObject(row.post_pity_json),
+    responseResults: parseGachaResponseResults(row.result_summary_json),
+    guaranteeTypes: parseGachaGuaranteeTypes(row.result_summary_json),
+    createdAt: toIso(row.created_at),
+  };
+}
+
+function parseDuplicateConversion(value: string | null) {
+  if (value === null) return null;
+  const parsed = parseJsonObjectOrEmpty(value);
+  const itemId = typeof parsed.itemId === "string" ? parsed.itemId : null;
+  const operatorId = typeof parsed.operatorId === "string" ? parsed.operatorId : null;
+  return {
+    displayItemId: itemId,
+    operatorId,
+    persistedTokenPattern: itemId !== null && operatorId !== null ? `${itemId}:${operatorId}` : null,
+    quantity: typeof parsed.quantity === "number" && Number.isFinite(parsed.quantity) ? parsed.quantity : null,
+  };
+}
+
+function adminGachaResultSummary(row: AdminGachaResultRow) {
+  return {
+    resultId: row.result_id,
+    pullSequence: row.pull_sequence,
+    resultRarity: row.result_rarity,
+    resultType: row.result_type,
+    reward: {
+      id: row.reward_id,
+    },
+    isPickup: row.is_pickup === 1,
+    wasDuplicate: row.was_duplicate === 1,
+    guaranteeType: row.guarantee_type,
+    duplicateConversion: parseDuplicateConversion(row.duplicate_conversion_json),
+    itemLedgerRef: row.item_ledger_id,
+    operatorLedgerRef: row.progression_ledger_id,
+  };
+}
+
+function parseRunFinalPayloadMetadata(payloadJson: string | null | undefined): {
+  selectedAugmentIds: string[];
+  selectedTacticIds: string[];
+  raidId: string | null;
+  bossId: string | null;
+  bossDefeated: boolean | null;
+  completedPhaseCount: number | null;
+  encounterDurationSeconds: number | null;
+  staminaRefund: {
+    status: string | null;
+    resource: string | null;
+    reason: string | null;
+    policyId: string | null;
+    serverOwnedMutation: boolean;
+    fuelLedgerReason: string | null;
+  } | null;
+} {
+  if (typeof payloadJson !== "string") {
+    return {
+      selectedAugmentIds: [],
+      selectedTacticIds: [],
+      raidId: null,
+      bossId: null,
+      bossDefeated: null,
+      completedPhaseCount: null,
+      encounterDurationSeconds: null,
+      staminaRefund: null,
+    };
+  }
+
+  const parsed = parseJsonObjectOrEmpty(payloadJson);
+  const raidResult = isJsonObject(parsed.raidResult) ? parsed.raidResult : {};
+  const directTacticIds = Array.isArray(parsed.selectedTacticIds)
+    ? parsed.selectedTacticIds.filter((value): value is string => typeof value === "string" && value.length > 0)
+    : [];
+  const selectedTacticIds = directTacticIds.length > 0
+    ? directTacticIds
+    : Array.isArray(parsed.tacticSelections)
+      ? parsed.tacticSelections
+          .map((selection) => isJsonObject(selection) ? jsonObjectString(selection, "selectedTacticId") : null)
+          .filter((value): value is string => value !== null)
+      : [];
+  const selectedAugmentIds = Array.isArray(parsed.selectedAugmentIds)
+    ? parsed.selectedAugmentIds.filter((value): value is string => typeof value === "string" && value.length > 0)
+    : Array.isArray(parsed.tacticSelections)
+      ? parsed.tacticSelections
+          .map((selection) => isJsonObject(selection) ? jsonObjectString(selection, "selectedAugmentId") : null)
+          .filter((value): value is string => value !== null)
+      : [];
+  const refund = isJsonObject(parsed.staminaRefund) ? parsed.staminaRefund : null;
+  const refundStatus = refund === null ? null : jsonObjectString(refund, "status");
+  const refundReason = refund === null ? null : jsonObjectString(refund, "reason");
+
+  return {
+    selectedAugmentIds,
+    selectedTacticIds,
+    raidId: jsonObjectString(raidResult, "raidId"),
+    bossId: jsonObjectString(raidResult, "bossId"),
+    bossDefeated: jsonObjectBoolean(raidResult, "bossDefeated"),
+    completedPhaseCount: jsonObjectNonNegativeInteger(raidResult, "completedPhaseCount"),
+    encounterDurationSeconds: jsonObjectNonNegativeInteger(raidResult, "encounterDurationSeconds"),
+    staminaRefund: refund === null
+      ? null
+      : {
+          status: refundStatus,
+          resource: jsonObjectString(refund, "refundType"),
+          reason: refundReason,
+          policyId: jsonObjectString(refund, "policyRef"),
+          serverOwnedMutation: refundStatus === "COMMITTED",
+          fuelLedgerReason: refundReason === "STORY_RAID_FAILURE" ? "STORY_RAID_FAILURE_REFUND" : null,
+        },
+  };
+}
+
+function parseRunRewardCalculationMetadata(rewardPlanJson: string | null | undefined): {
+  appliedMultiplierLabel: string | null;
+  calculationMetadataStatus: "AVAILABLE" | "MISSING";
+} {
+  if (typeof rewardPlanJson !== "string") {
+    return { appliedMultiplierLabel: null, calculationMetadataStatus: "MISSING" };
+  }
+  const parsed = parseJsonObjectOrEmpty(rewardPlanJson);
+  const calculation = isJsonObject(parsed.calculation) ? parsed.calculation : null;
+  if (calculation === null) {
+    return { appliedMultiplierLabel: null, calculationMetadataStatus: "MISSING" };
+  }
+  return {
+    appliedMultiplierLabel: jsonObjectString(calculation, "appliedMultiplierLabel"),
+    calculationMetadataStatus: "AVAILABLE",
+  };
+}
+
+function validSupportIdentityRows(rows: AdminSupportIdentityRow[]): AdminSupportIdentityRow[] {
+  return rows.filter((row): row is AdminSupportIdentityRow =>
+    row !== null && row !== undefined && typeof row.provider === "string"
+  );
+}
+
+function validOpsErrorRows(rows: AdminOpsErrorLogRow[]): AdminOpsErrorLogRow[] {
+  return rows.filter((row): row is AdminOpsErrorLogRow =>
+    row !== null && row !== undefined && typeof row.id === "string"
+  );
+}
+
+function validFuelLedgerRows(rows: AdminRunFuelLedgerEvidenceRow[]): AdminRunFuelLedgerEvidenceRow[] {
+  return rows.filter((row): row is AdminRunFuelLedgerEvidenceRow =>
+    row !== null && row !== undefined && typeof row.id === "string"
+  );
+}
+
+function rejectAdminDashboardBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin dashboard read endpoints do not accept request bodies.",
+  }, 400);
+}
+
+function rejectAdminGachaBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin gacha read endpoints do not accept request bodies.",
+  }, 400);
+}
+
+function rejectAdminPlayerBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin player read endpoints do not accept request bodies.",
+  }, 400);
+}
+
+function rejectAdminRunBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin run read endpoints do not accept request bodies.",
+  }, 400);
 }
 
 function hasRequestBody(c: AppContext): boolean {
@@ -1244,6 +1677,103 @@ app.get("/v1/admin/me", async (c) => {
     },
   });
 });
+app.get("/v1/admin/dashboard/launch-summary", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminDashboardBody(c);
+
+  const now = Date.now();
+  const sessionSummary = await c.env.DB.prepare(
+    `SELECT
+       COALESCE(SUM(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN 1 ELSE 0 END), 0) AS active_session_count,
+       MAX(created_at) AS latest_session_created_at
+     FROM auth_sessions`,
+  )
+    .bind(now)
+    .first<AdminDashboardSessionRow>();
+  const supportReview = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS support_review_needed_count
+     FROM suspicious_player_reviews
+     WHERE status IN ('REVIEWING','ESCALATED','REWARD_HELD','SCORE_EXCLUDED','ACTIONED')`,
+  )
+    .bind()
+    .first<AdminDashboardSupportReviewRow>();
+  const integrityRisk = await c.env.DB.prepare(
+    `SELECT COUNT(DISTINCT account_id) AS integrity_high_risk_count
+     FROM integrity_events
+     WHERE classification = 'HARD_VIOLATION'
+        OR evidence_code IN ('CHECKSUM_MISMATCH','IMPOSSIBLE_SCORE','IMPOSSIBLE_DAMAGE','BALANCE_VERSION_REWARD_MISMATCH')`,
+  )
+    .bind()
+    .first<AdminDashboardIntegrityRow>();
+  const issueSummary = await c.env.DB.prepare(
+    `SELECT
+       COALESCE(SUM(CASE WHEN error_code IN ('reward_plan_mismatch','reward_multiplier_missing','reward_plan_unavailable','reward_integrity_restricted') THEN 1 ELSE 0 END), 0) AS reward_claim_failure_count,
+       COALESCE(SUM(CASE WHEN error_code IN ('offline_reward_state_conflict','offline_reward_claim_conflict','offline_reward_plan_mismatch','offline_reward_policy_missing','offline_reward_policy_invalid') THEN 1 ELSE 0 END), 0) AS offline_reward_issue_count,
+       COALESCE(SUM(CASE WHEN error_code IN ('gacha_state_conflict','gacha_pool_unavailable','gacha_temporarily_unavailable') THEN 1 ELSE 0 END), 0) AS gacha_support_issue_count,
+       COALESCE(SUM(CASE WHEN severity = 'critical' AND status = 'open' THEN 1 ELSE 0 END), 0) AS critical_open_ops_error_count,
+       COALESCE(SUM(CASE WHEN severity IN ('critical','error') AND status = 'open' THEN 1 ELSE 0 END), 0) AS unacknowledged_core_failure_count
+     FROM ops_error_logs
+     WHERE status IN ('open','acknowledged')`,
+  )
+    .bind()
+    .first<AdminDashboardIssueRow>();
+  const duplicateReplay = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS duplicate_replay_count
+     FROM idempotency_records
+     WHERE operation IN ('run_start','run_finish','run_reward_claim','offline_reward_claim','login_bonus_claim','gacha_pull')`,
+  )
+    .bind()
+    .first<AdminDashboardDuplicateReplayRow>();
+  const recoveryCandidates = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS account_recovery_candidate_count
+     FROM accounts a
+     WHERE a.status = 'ACTIVE'
+       AND EXISTS (
+         SELECT 1 FROM auth_identities guest
+         WHERE guest.account_id = a.id AND guest.provider = 'GUEST'
+       )
+       AND NOT EXISTS (
+         SELECT 1 FROM auth_identities google
+         WHERE google.account_id = a.id AND google.provider = 'GOOGLE'
+       )`,
+  )
+    .bind()
+    .first<AdminDashboardRecoveryRow>();
+  const lastLoginAt = sessionSummary?.latest_session_created_at ?? null;
+
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    activeSessions: countValue(sessionSummary?.active_session_count),
+    concurrentUsers: null,
+    concurrentUsersPrecision: "UNAVAILABLE",
+    recentActiveAccounts5m: null,
+    recentActiveAccounts30m: null,
+    recentActiveAccountsSource: "not_available_without_activity_source",
+    lastLoginAtLatest: toNullableIso(lastLoginAt),
+    lastLoginAgeBuckets: {
+      latestAgeSeconds: getLastLoginAgeSeconds(lastLoginAt, now),
+      exactConcurrentUsersAvailable: false,
+    },
+    supportReviewNeededCount: countValue(supportReview?.support_review_needed_count),
+    accountRecoveryCandidateCount: countValue(recoveryCandidates?.account_recovery_candidate_count),
+    integrityHighRiskCount: countValue(integrityRisk?.integrity_high_risk_count),
+    rewardClaimFailureCount: countValue(issueSummary?.reward_claim_failure_count),
+    offlineRewardIssueCount: countValue(issueSummary?.offline_reward_issue_count),
+    gachaSupportIssueCount: countValue(issueSummary?.gacha_support_issue_count),
+    duplicateReplayCount: countValue(duplicateReplay?.duplicate_replay_count),
+    criticalOpenOpsErrorCount: countValue(issueSummary?.critical_open_ops_error_count),
+    unacknowledgedCoreFailureCount: countValue(issueSummary?.unacknowledged_core_failure_count),
+    serverCalculatedAt: toIso(now),
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      exactConcurrentUsersEnabled: false,
+    },
+  });
+});
 app.get("/v1/admin/ops/error-logs", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
@@ -1335,6 +1865,42 @@ app.get("/v1/admin/ops/error-logs", async (c) => {
     permissionMode: "ROLE_PERMISSION",
     items: visibleRows.map(opsErrorLogSummary),
     nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+  });
+});
+app.get("/v1/admin/ops/error-logs/summary", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, OPS_ERROR_LOG_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminOpsErrorLogBody(c);
+
+  const row = await c.env.DB.prepare(
+    `SELECT
+       COUNT(*) AS recent_error_count,
+       COALESCE(SUM(CASE WHEN severity = 'warning' THEN 1 ELSE 0 END), 0) AS warning_count,
+       COALESCE(SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END), 0) AS critical_count,
+       COALESCE(SUM(CASE WHEN retryable = 1 THEN 1 ELSE 0 END), 0) AS retryable_count,
+       COALESCE(SUM(CASE WHEN masked = 1 THEN 1 ELSE 0 END), 0) AS masked_count,
+       COALESCE(SUM(CASE WHEN status = 'open' THEN 1 ELSE 0 END), 0) AS open_count,
+       COALESCE(SUM(CASE WHEN status = 'acknowledged' THEN 1 ELSE 0 END), 0) AS acknowledged_count,
+       MAX(CASE WHEN severity = 'critical' THEN occurred_at ELSE NULL END) AS latest_critical_at
+     FROM ops_error_logs`,
+  )
+    .bind()
+    .first<AdminOpsErrorAggregateRow>();
+
+  return c.json({
+    permission: OPS_ERROR_LOG_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    recentErrorCount: countValue(row?.recent_error_count),
+    warningCount: countValue(row?.warning_count),
+    criticalCount: countValue(row?.critical_count),
+    retryableCount: countValue(row?.retryable_count),
+    maskedCount: countValue(row?.masked_count),
+    openCount: countValue(row?.open_count),
+    acknowledgedCount: countValue(row?.acknowledged_count),
+    latestCriticalAt: toNullableIso(row?.latest_critical_at),
+    serverCalculatedAt: toIso(Date.now()),
+    detailAvailable: false,
   });
 });
 app.get("/v1/admin/ops/error-logs/:errorLogId", async (c) => {
@@ -1712,6 +2278,186 @@ app.get("/v1/admin/support/accounts/:accountId", async (c) => {
     message: null,
   });
 });
+app.get("/v1/admin/gacha/banners", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminGachaBody(c);
+
+  const status = c.req.query("status")?.trim() || null;
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       id, banner_type, status, balance_config_version, pickup_operator_id,
+       starts_at, ends_at, pity_config_json, pool_snapshot_json, created_at, updated_at
+     FROM gacha_banners
+     WHERE (? IS NULL OR status = ?)
+     ORDER BY
+       CASE status WHEN 'ACTIVE' THEN 0 ELSE 1 END,
+       updated_at DESC,
+       id
+     LIMIT 50`,
+  )
+    .bind(status, status)
+    .all<AdminGachaBannerRow>();
+  const items = rows.results.map(adminGachaBannerSummary);
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    activeBannerId: items.find((item) => item.status === "ACTIVE")?.bannerId ?? null,
+    items,
+    nextCursor: null,
+  });
+});
+app.get("/v1/admin/gacha/accounts/:accountId/pity", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminGachaBody(c);
+
+  const accountId = c.req.param("accountId");
+  const bannerId = c.req.query("bannerId")?.trim() || null;
+  const row = await c.env.DB.prepare(
+    `SELECT
+       account_id, banner_id, total_pull_count, elite_pity_count,
+       pickup_elite_pity_count, rare_or_higher_pity_count,
+       revision, last_batch_id, updated_at
+     FROM player_gacha_pity
+     WHERE account_id = ?
+       AND (? IS NULL OR banner_id = ?)
+     ORDER BY updated_at DESC, banner_id
+     LIMIT 1`,
+  )
+    .bind(accountId, bannerId, bannerId)
+    .first<AdminGachaPityRow>();
+
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    ...adminGachaPitySummary(row, accountId, bannerId ?? row?.banner_id ?? null),
+  });
+});
+app.get("/v1/admin/gacha/pull-batches", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminGachaBody(c);
+
+  const accountId = c.req.query("accountId")?.trim() || null;
+  const bannerId = c.req.query("bannerId")?.trim() || null;
+  const limitQuery = c.req.query("limit");
+  const parsedLimit = limitQuery === undefined ? 50 : Number(limitQuery);
+  const limit = Number.isSafeInteger(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, 50) : 50;
+  const cursorQuery = c.req.query("cursor");
+  const parsedCursor = cursorQuery === undefined ? 0 : Number(cursorQuery);
+  const offset = Number.isSafeInteger(parsedCursor) && parsedCursor >= 0 ? parsedCursor : 0;
+
+  const rows = await c.env.DB.prepare(
+    `SELECT
+       batch.id AS batch_id,
+       batch.account_id AS account_id,
+       batch.banner_id AS banner_id,
+       batch.pull_count AS pull_count,
+       batch.cost_item_id AS cost_item_id,
+       batch.cost_quantity AS cost_quantity,
+       batch.cost_ledger_id AS cost_ledger_id,
+       batch.pre_pity_json AS pre_pity_json,
+       batch.post_pity_json AS post_pity_json,
+       batch.result_summary_json AS result_summary_json,
+       batch.created_at AS created_at,
+       CASE WHEN idem.id IS NULL THEN 0 ELSE 1 END AS idempotency_replay_known
+     FROM gacha_pull_batches batch
+     LEFT JOIN idempotency_records idem
+       ON idem.account_id = batch.account_id
+      AND idem.operation = 'gacha_pull'
+      AND idem.result_ref = batch.id
+     WHERE (? IS NULL OR batch.account_id = ?)
+       AND (? IS NULL OR batch.banner_id = ?)
+     ORDER BY batch.created_at DESC, batch.id
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(accountId, accountId, bannerId, bannerId, limit + 1, offset)
+    .all<AdminGachaBatchRow>();
+
+  const visibleRows = rows.results.slice(0, limit);
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    items: visibleRows.map(adminGachaBatchSummary),
+    nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+  });
+});
+app.get("/v1/admin/gacha/pull-batches/:batchId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminGachaBody(c);
+
+  const batchId = c.req.param("batchId");
+  const batch = await c.env.DB.prepare(
+    `SELECT
+       batch.id AS batch_id,
+       batch.account_id AS account_id,
+       batch.banner_id AS banner_id,
+       batch.pull_count AS pull_count,
+       batch.cost_item_id AS cost_item_id,
+       batch.cost_quantity AS cost_quantity,
+       batch.cost_ledger_id AS cost_ledger_id,
+       batch.pre_pity_json AS pre_pity_json,
+       batch.post_pity_json AS post_pity_json,
+       batch.result_summary_json AS result_summary_json,
+       batch.created_at AS created_at,
+       CASE WHEN idem.id IS NULL THEN 0 ELSE 1 END AS idempotency_replay_known
+     FROM gacha_pull_batches batch
+     LEFT JOIN idempotency_records idem
+       ON idem.account_id = batch.account_id
+      AND idem.operation = 'gacha_pull'
+      AND idem.result_ref = batch.id
+     WHERE batch.id = ?`,
+  )
+    .bind(batchId)
+    .first<AdminGachaBatchRow>();
+
+  if (batch === null) {
+    return c.json({ error: "gacha_batch_not_found", message: "Gacha pull batch was not found." }, 404);
+  }
+
+  const results = await c.env.DB.prepare(
+    `SELECT
+       id AS result_id,
+       pull_sequence AS pull_sequence,
+       result_rarity AS result_rarity,
+       result_type AS result_type,
+       result_id AS reward_id,
+       is_pickup AS is_pickup,
+       was_duplicate AS was_duplicate,
+       guarantee_type AS guarantee_type,
+       duplicate_conversion_json AS duplicate_conversion_json,
+       item_ledger_id AS item_ledger_id,
+       progression_ledger_id AS progression_ledger_id
+     FROM gacha_pull_results
+     WHERE batch_id = ?
+     ORDER BY pull_sequence ASC`,
+  )
+    .bind(batchId)
+    .all<AdminGachaResultRow>();
+  const itemLedgerRefs = [
+    batch.cost_ledger_id ?? null,
+    ...results.results.map((result) => result.item_ledger_id),
+  ].filter((value): value is string => value !== null);
+  const operatorLedgerRefs = results.results
+    .map((result) => result.progression_ledger_id)
+    .filter((value): value is string => value !== null);
+
+  return c.json({
+    item: {
+      ...adminGachaBatchSummary(batch),
+      itemLedgerRefs,
+      operatorLedgerRefs,
+      results: results.results.map(adminGachaResultSummary),
+    },
+    detailAvailable: true,
+  });
+});
 app.get("/v1/admin/offline-rewards", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
@@ -2010,6 +2756,7 @@ app.get("/v1/admin/players", async (c) => {
 app.get("/v1/admin/players/:accountId", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
+  if (hasRequestBody(c)) return rejectAdminPlayerBody(c);
 
   const accountId = c.req.param("accountId");
   const account = await c.env.DB.prepare(
@@ -2048,10 +2795,63 @@ app.get("/v1/admin/players/:accountId", async (c) => {
   )
     .bind(accountId)
     .all<AdminOperatorRow>();
+  const identities = await c.env.DB.prepare(
+    `SELECT provider
+     FROM auth_identities
+     WHERE account_id = ?
+     ORDER BY provider`,
+  )
+    .bind(accountId)
+    .all<AdminSupportIdentityRow>();
+  const now = Date.now();
+  const authStatus = await c.env.DB.prepare(
+    `SELECT
+       COALESCE(SUM(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN 1 ELSE 0 END), 0) AS active_session_count,
+       MAX(created_at) AS latest_session_created_at,
+       MAX(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN expires_at ELSE NULL END) AS latest_session_expires_at,
+       MAX(created_at) AS last_login_at
+     FROM auth_sessions
+     WHERE account_id = ?`,
+  )
+    .bind(now, now, accountId)
+    .first<AdminSupportAuthRow>();
+  const opsErrors = await c.env.DB.prepare(
+    `SELECT
+       id, occurred_at, environment, service, severity, error_code, message_summary,
+       status, source, request_id, account_id, run_id, reward_preview_id,
+       reward_claim_id, offline_reward_claim_id, gacha_batch_id, gacha_banner_id,
+       story_progress_id, integrity_event_id, support_ticket_id,
+       idempotency_operation, idempotency_key_hash, correlation_json,
+       sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+       resolved_at, resolved_by, resolution_note, created_at
+     FROM ops_error_logs
+     WHERE account_id = ?
+       AND error_code IN (
+         'google_auth_config_missing',
+         'offline_reward_state_conflict',
+         'gacha_state_conflict',
+         'story_progress_state_conflict'
+       )
+       AND status IN ('open','acknowledged')
+     ORDER BY
+       CASE severity
+         WHEN 'critical' THEN 0
+         WHEN 'error' THEN 1
+         WHEN 'warning' THEN 2
+         ELSE 3
+       END,
+       occurred_at DESC,
+       id
+     LIMIT 5`,
+  )
+    .bind(accountId)
+    .all<AdminOpsErrorLogRow>();
 
   const coreRows = core.results;
   const syncLevel = syncLevelFrom(coreRows);
   const coreByOperator = new Map(coreRows.map((row) => [row.operator_id, row]));
+  const providers = validSupportIdentityRows(identities.results).map((row) => row.provider);
+  const lastLoginAt = authStatus?.last_login_at ?? null;
 
   return c.json({
     accountId: account.account_id,
@@ -2082,6 +2882,31 @@ app.get("/v1/admin/players/:accountId", async (c) => {
           ...(coreSlot ? { coreSlot: coreSlot.slot_index + 1 } : {}),
         };
       }),
+    },
+    auth: {
+      identityProviders: providers,
+      providerNames: providers,
+      linkedProviders: providers,
+      primaryProvider: getSupportPrimaryProvider(providers),
+      hasGoogleLink: providers.includes("GOOGLE"),
+      activeSessionCount: authStatus?.active_session_count ?? 0,
+      latestSessionCreatedAt: toNullableIso(authStatus?.latest_session_created_at),
+      latestSessionAt: toNullableIso(authStatus?.latest_session_created_at),
+      latestSessionExpiresAt: toNullableIso(authStatus?.latest_session_expires_at),
+      latestAuthAt: toNullableIso(lastLoginAt),
+      lastLoginAt: toNullableIso(lastLoginAt),
+      lastLoginAgeSeconds: getLastLoginAgeSeconds(lastLoginAt, now),
+      lastSeenAt: null,
+      lastSeenSource: "not_available_without_activity_source",
+      concurrentUsers: null,
+      concurrentUsersPrecision: "UNAVAILABLE",
+    },
+    opsErrors: validOpsErrorRows(opsErrors.results).map(supportOpsErrorSummary),
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      repairEndpointsEnabled: false,
+      source: "admin_player_detail",
     },
   });
 });
@@ -2609,6 +3434,7 @@ app.get("/v1/admin/runs", async (c) => {
 app.get("/v1/admin/runs/:runId", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
+  if (hasRequestBody(c)) return rejectAdminRunBody(c);
 
   const row = await c.env.DB.prepare(
     `SELECT
@@ -2624,7 +3450,8 @@ app.get("/v1/admin/runs/:runId", async (c) => {
        cb.content_version AS content_version,
        vv.version AS validator_version,
        vrc.runtime_revision AS validator_runtime_revision,
-       rs.snapshot_json AS snapshot_json
+       rs.snapshot_json AS snapshot_json,
+       op.preview_json AS preview_json
      FROM runs r
      INNER JOIN run_snapshots rs ON rs.run_id = r.id
      LEFT JOIN operation_previews op ON op.id = r.preview_id
@@ -2641,6 +3468,74 @@ app.get("/v1/admin/runs/:runId", async (c) => {
     return c.json({ error: "ADMIN_RUN_NOT_FOUND" }, 404);
   }
 
+  const finalResult = await c.env.DB.prepare(
+    `SELECT outcome, cleared_waves, payload_json, submitted_at
+     FROM run_final_results
+     WHERE run_id = ?`,
+  )
+    .bind(row.run_id)
+    .first<AdminRunFinalResultRow>();
+  const rewardPreview = await c.env.DB.prepare(
+    `SELECT id AS reward_preview_id,
+            status AS preview_status,
+            reward_claim_id AS reward_claim_id,
+            reward_plan_json AS reward_plan_json
+     FROM run_reward_previews
+     WHERE run_id = ?`,
+  )
+    .bind(row.run_id)
+    .first<AdminRunRewardEvidenceRow>();
+  const previewMetadata = parseRunPreviewMetadata(row.preview_json ?? null);
+  const firstClear = previewMetadata.operationId === null
+    ? null
+    : await c.env.DB.prepare(
+        `SELECT operation_key, risk, cleared_at, run_id
+         FROM account_first_clears
+         WHERE account_id = ? AND operation_key = ? AND risk = ?`,
+      )
+        .bind(row.account_id, previewMetadata.operationId, normalizeRiskTier(row.risk))
+        .first<AdminRunFirstClearEvidenceRow>();
+  const finalMetadata = parseRunFinalPayloadMetadata(finalResult?.payload_json);
+  const fuelLedgerRows = finalMetadata.staminaRefund === null
+    ? { results: [] as AdminRunFuelLedgerEvidenceRow[] }
+    : await c.env.DB.prepare(
+        `SELECT id, delta, reason
+         FROM fuel_ledger
+         WHERE account_id = ? AND reason = 'STORY_RAID_FAILURE_REFUND'
+         ORDER BY created_at DESC, id
+         LIMIT 5`,
+      )
+        .bind(row.account_id)
+        .all<AdminRunFuelLedgerEvidenceRow>();
+  const integrity = await c.env.DB.prepare(
+    `SELECT
+       COUNT(event.id) AS open_signals,
+       COALESCE(SUM(CASE WHEN event.classification = 'HARD_VIOLATION' THEN 1 ELSE 0 END), 0) AS hard_violations,
+       (
+         SELECT latest.evidence_code
+         FROM integrity_events latest
+         WHERE latest.run_id = ?
+         ORDER BY latest.created_at DESC, latest.id DESC
+         LIMIT 1
+       ) AS primary_reason
+     FROM integrity_events event
+     LEFT JOIN integrity_event_review_states review ON review.event_id = event.id
+     WHERE event.run_id = ?
+       AND COALESCE(review.state, 'OPEN') != 'RESOLVED'`,
+  )
+    .bind(row.run_id, row.run_id)
+    .first<AdminRunIntegrityEvidenceRow>();
+  const rewardCalculation = parseRunRewardCalculationMetadata(rewardPreview?.reward_plan_json);
+  const fuelLedgerRefs = validFuelLedgerRows(fuelLedgerRows.results).map((ledger) => ledger.id);
+  const staminaRefund = finalMetadata.staminaRefund === null
+    ? null
+    : {
+        ...finalMetadata.staminaRefund,
+        fuelLedgerRefs,
+      };
+  const openSignals = integrity?.open_signals ?? 0;
+  const hardViolations = integrity?.hard_violations ?? 0;
+
   return c.json({
     runId: row.run_id,
     accountId: row.account_id,
@@ -2655,6 +3550,39 @@ app.get("/v1/admin/runs/:runId", async (c) => {
     validatorVersion: row.validator_version ?? "UNKNOWN",
     validatorRuntimeRevision: String(row.validator_runtime_revision ?? 0),
     snapshot: parseRunSnapshot(row.snapshot_json),
+    operationId: previewMetadata.operationId,
+    outcome: finalResult?.outcome ?? null,
+    clearedWaves: finalResult?.cleared_waves ?? null,
+    rewardPreviewId: rewardPreview?.reward_preview_id ?? null,
+    rewardClaimId: rewardPreview?.reward_claim_id ?? null,
+    appliedMultiplierLabel: rewardCalculation.appliedMultiplierLabel,
+    calculationMetadataStatus: rewardCalculation.calculationMetadataStatus,
+    firstClearConsumed: firstClear !== null && firstClear !== undefined,
+    integrityDisposition: {
+      status: hardViolations > 0 ? "HIGH_RISK" : openSignals > 0 ? "NEEDS_REVIEW" : "CLEAR",
+      openSignals,
+      hardViolations,
+      primaryReason: integrity?.primary_reason ?? null,
+    },
+    encounterType: previewMetadata.encounterType,
+    raidId: finalMetadata.raidId ?? previewMetadata.raidId,
+    bossId: finalMetadata.bossId ?? previewMetadata.bossId,
+    bossPhaseRefs: previewMetadata.bossPhaseRefs,
+    bossDefeated: finalMetadata.bossDefeated,
+    completedPhaseCount: finalMetadata.completedPhaseCount,
+    encounterDurationSeconds: finalMetadata.encounterDurationSeconds,
+    allowedOperatorSlots: previewMetadata.allowedOperatorSlots,
+    startAugmentPackageRef: previewMetadata.startAugmentPackageRef,
+    startTacticPackageRef: previewMetadata.startTacticPackageRef,
+    selectedAugmentIds: finalMetadata.selectedAugmentIds,
+    selectedTacticIds: finalMetadata.selectedTacticIds,
+    staminaRefund,
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      repairEndpointsEnabled: false,
+      source: "admin_run_detail",
+    },
   });
 });
 app.post("/v1/admin/balance-config/drafts", async (c) => {
