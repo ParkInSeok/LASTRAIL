@@ -4,6 +4,7 @@ import {
   actOneEliteOperatorIdsDraft,
   gachaDuplicateConversionSupportFields,
   gachaLaunchTicketAcquisitionPolicy,
+  gachaLaunchSupportCardsForReadState,
   gachaLaunchResultFields,
   gachaLaunchSupportVisibilityCards,
   gachaReadOnlySections,
@@ -23,8 +24,16 @@ describe("GachaPage configuration", () => {
     expect(sectionTitles).toContain("아이템 원장 연결");
   });
 
-  it("marks every section as pending server query API integration", () => {
-    expect(gachaReadOnlySections.every((section) => section.status === "Admin 조회 API 대기")).toBe(true);
+  it("marks gacha sections by current read-only availability", () => {
+    expect(gachaReadOnlySections.map((section) => [section.title, section.status])).toEqual([
+      ["배너 상태", "조회 가능"],
+      ["계정별 천장 상태", "계정 ID 필요"],
+      ["뽑기 이력", "조회 가능"],
+      ["보장 발동", "조회 가능"],
+      ["거절/오류 코드", "조회 가능"],
+      ["중복/조각 변환", "조회 가능"],
+      ["아이템 원장 연결", "조회 가능"]
+    ]);
   });
 
   it("uses Korean labels while keeping stable backend codes visible", () => {
@@ -42,6 +51,7 @@ describe("GachaPage configuration", () => {
       "pickupOperatorId",
       "pullCountVisibility",
       "pityThresholds",
+      "accountPityState",
       "guaranteeType",
       "duplicateConversion",
       "resultFields",
@@ -63,6 +73,98 @@ describe("GachaPage configuration", () => {
     );
     expect(gachaLaunchSupportVisibilityCards.find((card) => card.code === "actOneEliteVisualScope")?.note).toContain(
       "seedPromotionApproved=false"
+    );
+  });
+
+  it("maps gacha banner and batch API data into launch support cards", () => {
+    const cards = gachaLaunchSupportCardsForReadState({
+      banners: {
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        activeBannerId: "banner-1",
+        nextCursor: null,
+        items: [
+          {
+            bannerId: "banner-1",
+            bannerType: "PICKUP",
+            status: "ACTIVE",
+            activeBannerId: "banner-1",
+            pickupOperatorId: "op_vex",
+            balanceVersion: "7",
+            pullCostItemId: "cur_command_ticket",
+            pullCostQuantity: "1",
+            pullCountOptions: ["1", "10"],
+            pityThresholds: { rareOrHigher: "10", elite: "30", pickupElite: "60" },
+            guaranteeTypes: [
+              "보장 없음 (NONE)",
+              "10회 희귀 이상 보장 (RARE_OR_HIGHER_10)",
+              "30뽑 정예 확정 (ELITE_30)",
+              "60뽑 픽업 정예 확정 (PICKUP_ELITE_60)"
+            ],
+            startsAt: "2026-08-25T11:00:00.000Z",
+            endsAt: "없음",
+            updatedAt: "2026-08-25T11:00:00.000Z",
+            detailAvailable: true
+          }
+        ]
+      },
+      batches: {
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        items: [
+          {
+            batchId: "batch-1",
+            accountId: "account-1",
+            bannerId: "banner-1",
+            resultStatus: "ACCEPTED",
+            idempotencyReplayKnown: "예",
+            pullCount: "10",
+            cost: { itemId: "cur_command_ticket", quantity: "10", itemLedgerRef: "없음" },
+            prePityState: null,
+            postPityState: null,
+            guaranteeTypes: ["60뽑 픽업 정예 확정 (PICKUP_ELITE_60)"],
+            createdAt: "2026-08-25T11:43:20.000Z"
+          }
+        ],
+        nextCursor: null
+      },
+      detail: null,
+      isLoading: false,
+      error: null
+    });
+
+    expect(cards.find((card) => card.code === "activeBannerId")?.value).toBe("banner-1");
+    expect(cards.find((card) => card.code === "pickupOperatorId")?.value).toBe("op_vex");
+    expect(cards.find((card) => card.code === "pullCountVisibility")?.value).toBe("1 / 10");
+    expect(cards.find((card) => card.code === "accountPityState")?.value).toBe("계정 ID 필요");
+    expect(cards.find((card) => card.code === "resultFields")?.value).toBe("batch-1 / 10 pulls / ACCEPTED");
+    expect(cards.find((card) => card.code === "pityThresholds")?.value).toContain("rare 10");
+  });
+
+  it("maps account pity state when account-scoped query data exists", () => {
+    const cards = gachaLaunchSupportCardsForReadState({
+      pity: {
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        accountId: "account-1",
+        bannerId: "banner-1",
+        pityState: {
+          totalPullCount: "12",
+          elitePityCount: "12",
+          pickupElitePityCount: "12",
+          rareOrHigherPityCount: "2",
+          revision: "3",
+          lastBatchId: "batch-1",
+          updatedAt: "2026-08-31T06:00:00.000Z"
+        },
+        detailAvailable: true
+      },
+      isLoading: false,
+      error: null
+    });
+
+    expect(cards.find((card) => card.code === "accountPityState")?.value).toBe(
+      "account-1 / banner-1 / total=12 / elite=12 / pickup=12 / rare=2"
     );
   });
 

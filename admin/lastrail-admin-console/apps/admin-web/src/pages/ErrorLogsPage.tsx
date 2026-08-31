@@ -14,12 +14,13 @@ import {
   emptyOpsErrorLogListItem,
   noDataOpsErrorLogListItem,
   opsErrorLogReadFilterFields,
+  type OpsErrorLogSummaryResponse,
   type OpsErrorLogListItem
 } from "../shared/opsErrorLogs/opsErrorLogContract";
 
 type ErrorLogSummaryCard = {
   label: string;
-  value: "집계 API 대기";
+  value: string;
   note: string;
 };
 
@@ -52,6 +53,33 @@ export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
   { label: "재시도 가능 이벤트", value: "집계 API 대기", note: "retry later 후보" },
   { label: "마스킹 필요 이벤트", value: "집계 API 대기", note: "민감정보 보호 검토" }
 ];
+
+export function errorLogSummaryCardsForReadState(state: {
+  data?: OpsErrorLogSummaryResponse;
+  isLoading: boolean;
+  error: unknown;
+}): ErrorLogSummaryCard[] {
+  if (state.data) {
+    return [
+      { label: "최근 오류", value: state.data.recentErrorCount, note: "recentErrorCount" },
+      { label: "경고", value: state.data.warningCount, note: "warningCount" },
+      { label: "치명 오류", value: state.data.criticalCount, note: "criticalCount" },
+      { label: "재시도 가능 이벤트", value: state.data.retryableCount, note: "retryableCount" },
+      { label: "마스킹 필요 이벤트", value: state.data.maskedCount, note: "maskedCount" }
+    ];
+  }
+  if (state.isLoading) {
+    return errorLogSummaryCards.map((card) => ({ ...card, value: "조회 중" }));
+  }
+  if (state.error) {
+    const failure = adminRequestFailureDisplay(state.error, {
+      resourceLabel: "시스템 에러 로그 요약",
+      resourceId: "/api/ops/error-logs/summary"
+    });
+    return errorLogSummaryCards.map((card) => ({ ...card, value: failure.reason }));
+  }
+  return errorLogSummaryCards;
+}
 
 export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
   { label: "환경", options: ["DEV", "PRD"].map((code) => labeledCode(opsEnvironmentLabel(code), code)) },
@@ -224,11 +252,21 @@ export function ErrorLogsPage() {
     queryFn: () => adminApi.opsErrorLogs({}),
     retry: false
   });
+  const summaryQuery = useQuery({
+    queryKey: ["ops-error-logs-summary"],
+    queryFn: adminApi.opsErrorLogSummary,
+    retry: false
+  });
   const { data } = query;
   const rows = data?.items.length ? data.items : data ? [noDataOpsErrorLogListItem()] : [emptyOpsErrorLogListItem()];
   const failure = query.error
     ? adminRequestFailureDisplay(query.error, { resourceLabel: "시스템 에러 로그", resourceId: "list" })
     : null;
+  const summaryCards = errorLogSummaryCardsForReadState({
+    data: summaryQuery.data,
+    isLoading: summaryQuery.isLoading,
+    error: summaryQuery.error
+  });
 
   return (
     <main className="content">
@@ -237,7 +275,7 @@ export function ErrorLogsPage() {
         <p>Worker, API, Pages Function, 클라이언트 진단 실패를 관측하는 읽기 전용 준비 화면</p>
       </header>
       <section className="summary-grid" aria-label="시스템 에러 로그 요약">
-        {errorLogSummaryCards.map((card) => (
+        {summaryCards.map((card) => (
           <div key={card.label}>
             <span>{card.label}</span>
             <strong>{card.value}</strong>

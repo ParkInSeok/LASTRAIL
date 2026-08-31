@@ -1,4 +1,15 @@
 import {
+  mapDashboardLaunchSummaryResponse
+} from "../dashboard/launchSummaryContract";
+
+import {
+  mapGachaBannerListResponse,
+  mapGachaPityResponse,
+  mapGachaPullBatchDetailResponse,
+  mapGachaPullBatchListResponse
+} from "../gacha/gachaContract";
+
+import {
   mapOfflineRewardDetailResponse,
   mapOfflineRewardListResponse,
   type OfflineRewardReadFiltersPreview
@@ -7,8 +18,12 @@ import {
 import {
   mapOpsErrorLogDetailResponse,
   mapOpsErrorLogListResponse,
+  mapOpsErrorLogSummaryResponse,
   type OpsErrorLogReadFiltersPreview
 } from "../opsErrorLogs/opsErrorLogContract";
+
+import { mapPlayerLaunchEvidence } from "../players/playerLaunchEvidenceContract";
+import { mapRunLaunchEvidence } from "../runs/runLaunchEvidenceContract";
 
 import {
   mapStoryProgressDetailResponse,
@@ -130,6 +145,10 @@ function opsErrorLogQuery(filters: Partial<OpsErrorLogReadFiltersPreview>): stri
   return queryString(filters);
 }
 
+function gachaQuery(filters: Record<string, string | undefined>): string {
+  return queryString(filters);
+}
+
 function queryString(filters: Record<string, string | undefined>): string {
   const params = new URLSearchParams();
   Object.entries(filters).forEach(([key, value]) => {
@@ -143,6 +162,9 @@ export const adminApi = {
   async bootstrap() {
     return BootstrapResponseSchema.parse(await readJson("/api/bootstrap"));
   },
+  async dashboardLaunchSummary() {
+    return mapDashboardLaunchSummaryResponse(await readJson("/api/dashboard/launch-summary"));
+  },
   async searchPlayers(query: string) {
     const params = new URLSearchParams();
     if (query) params.set("q", query);
@@ -151,9 +173,11 @@ export const adminApi = {
     );
   },
   async playerDetail(accountId: string) {
-    return PlayerDetailSchema.parse(
-      await readJson(`/api/players/${encodeURIComponent(accountId)}`)
-    );
+    const raw = await readJson(`/api/players/${encodeURIComponent(accountId)}`);
+    return {
+      ...PlayerDetailSchema.parse(raw),
+      launchEvidence: mapPlayerLaunchEvidence(raw)
+    };
   },
   async createPlayerNote(accountId: string, note: string) {
     const body = CreatePlayerNoteRequestSchema.parse({ note });
@@ -211,7 +235,11 @@ export const adminApi = {
     return RunSearchResponseSchema.parse(await readJson(`/api/runs?${params.toString()}`));
   },
   async runDetail(runId: string) {
-    return RunDetailSchema.parse(await readJson(`/api/runs/${encodeURIComponent(runId)}`));
+    const raw = await readJson(`/api/runs/${encodeURIComponent(runId)}`);
+    return {
+      ...RunDetailSchema.parse(raw),
+      launchEvidence: mapRunLaunchEvidence(raw)
+    };
   },
   async storyProgressList(filters: Partial<StoryProgressFiltersPreview>) {
     return mapStoryProgressListResponse(await readJson(`/api/story-progress${storyProgressQuery(filters)}`));
@@ -237,8 +265,25 @@ export const adminApi = {
       accountId
     );
   },
+  async gachaBanners(filters: { status?: string } = {}) {
+    return mapGachaBannerListResponse(await readJson(`/api/gacha/banners${gachaQuery(filters)}`));
+  },
+  async gachaAccountPity(accountId: string, bannerId?: string) {
+    return mapGachaPityResponse(
+      await readJson(`/api/gacha/accounts/${encodeURIComponent(accountId)}/pity${gachaQuery({ bannerId })}`)
+    );
+  },
+  async gachaPullBatches(filters: { accountId?: string; bannerId?: string; limit?: string; cursor?: string }) {
+    return mapGachaPullBatchListResponse(await readJson(`/api/gacha/pull-batches${gachaQuery(filters)}`));
+  },
+  async gachaPullBatchDetail(batchId: string) {
+    return mapGachaPullBatchDetailResponse(await readJson(`/api/gacha/pull-batches/${encodeURIComponent(batchId)}`));
+  },
   async opsErrorLogs(filters: Partial<OpsErrorLogReadFiltersPreview>) {
     return mapOpsErrorLogListResponse(await readJson(`/api/ops/error-logs${opsErrorLogQuery(filters)}`));
+  },
+  async opsErrorLogSummary() {
+    return mapOpsErrorLogSummaryResponse(await readJson("/api/ops/error-logs/summary"));
   },
   async opsErrorLogDetail(errorLogId: string) {
     return mapOpsErrorLogDetailResponse(

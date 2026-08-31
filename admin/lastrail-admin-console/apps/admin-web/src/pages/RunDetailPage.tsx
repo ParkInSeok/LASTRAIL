@@ -4,11 +4,16 @@ import { adminApi } from "../shared/api/client";
 import { adminReadValueLabel, adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   encounterTypeLabel,
+  firstClearLabel,
+  fuelLedgerReasonLabel,
   levelSourceLabel,
   permissionLabel,
+  runResultLabel,
+  serverOwnedMutationLabel,
   storyProgressLabel,
   storyProgressStatusLabel
 } from "../shared/labels/adminLabels";
+import type { RunLaunchEvidence } from "../shared/runs/runLaunchEvidenceContract";
 import {
   storyProgressReadContractFilterFields,
   type StoryProgressDetail
@@ -16,7 +21,7 @@ import {
 
 type RunRiskRewardPlaceholder = {
   label: string;
-  value: "연동 대기";
+  value: string;
   note: string;
 };
 
@@ -263,7 +268,103 @@ function stringListValue(value: unknown): string {
 
 function startMetadataRecord(source: unknown): Record<string, unknown> | null {
   const record = asRecord(source);
-  return asRecord(record?.serverPreviewMetadata) ?? asRecord(record?.metadata) ?? record;
+  return asRecord(record?.launchEvidence) ?? asRecord(record?.serverPreviewMetadata) ?? asRecord(record?.metadata) ?? record;
+}
+
+function booleanReadValue(value: boolean | null | undefined, trueLabel = "예", falseLabel = "아니오"): string {
+  if (value === true) return trueLabel;
+  if (value === false) return falseLabel;
+  return "없음";
+}
+
+function maybeLabelWithCode(labeler: (value: string) => string, value: string | null | undefined, emptyLabel = "없음"): string {
+  if (!value) return emptyLabel;
+  return labelWithCode(labeler(value), value);
+}
+
+function rewardReferenceValue(evidence: RunLaunchEvidence): string {
+  return `${stringValue(evidence.rewardPreviewId)} / ${stringValue(evidence.rewardClaimId)}`;
+}
+
+function integrityDispositionValue(evidence: RunLaunchEvidence): string {
+  const disposition = evidence.integrityDisposition;
+  const values = [
+    disposition.status,
+    typeof disposition.openSignals === "number" ? `open=${disposition.openSignals}` : null,
+    typeof disposition.hardViolations === "number" ? `hard=${disposition.hardViolations}` : null,
+    disposition.primaryReason
+  ].filter((value): value is string => typeof value === "string" && value.length > 0);
+
+  return values.length > 0 ? values.join(" / ") : "없음";
+}
+
+export function runRiskRewardCardsForLaunchEvidence(
+  evidence: RunLaunchEvidence | null | undefined
+): RunRiskRewardPlaceholder[] {
+  if (!evidence) return runRiskRewardPlaceholders;
+
+  return [
+    { label: "위험도", value: "없음", note: "위험도 I~V 표시 후보" },
+    {
+      label: "작전 ID",
+      value: maybeLabelWithCode(storyProgressLabel, evidence.operationId),
+      note: "operation progression 배율 후보"
+    },
+    { label: "결과", value: maybeLabelWithCode((value) => runResultLabel(value as never), evidence.outcome), note: "CLEARED/PARTIAL/ABANDONED 등 outcome" },
+    { label: "클리어 공세", value: stringValue(evidence.clearedWaves), note: "waveCompletionMultiplier 후보" },
+    { label: "rewardPreviewId / rewardClaimId", value: rewardReferenceValue(evidence), note: "보상 미리보기/수령 연결" },
+    {
+      label: "적용 배율",
+      value: stringValue(evidence.appliedMultiplierLabel),
+      note: "sanitized calculation metadata 후보"
+    },
+    {
+      label: "first clear",
+      value: evidence.firstClearConsumed === null ? "없음" : firstClearLabel(evidence.firstClearConsumed),
+      note: "첫 클리어 보너스 표시 후보"
+    },
+    { label: "무결성 판정", value: integrityDispositionValue(evidence), note: "reward_integrity_restricted 연계 후보" },
+    {
+      label: "계산 메타데이터 상태",
+      value: maybeLabelWithCode(storyProgressStatusLabel, evidence.calculationMetadataStatus),
+      note: "서버 보상 미리보기 / Unity 진단 참고 신호 분리"
+    }
+  ];
+}
+
+function serverOwnedMutationValue(value: string | boolean | null | undefined): string {
+  if (value === true) return labelWithCode(serverOwnedMutationLabel("STORY_RAID_STAMINA_REFUND"), "STORY_RAID_STAMINA_REFUND");
+  if (value === false || value === null || value === undefined) return "없음";
+  return labelWithCode(serverOwnedMutationLabel(value), value);
+}
+
+export function storyRaidPolicyCardsForLaunchEvidence(
+  evidence: RunLaunchEvidence | null | undefined
+): RunCombatEvidencePlaceholder[] {
+  if (!evidence) return storyRaidLaunchResultPolicyPlaceholders;
+  const refund = evidence.staminaRefund;
+
+  return storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => {
+    const valueByField: Record<string, string> = {
+      allowedOperatorSlots: stringValue(evidence.allowedOperatorSlots),
+      failureStaminaRefund: refund ? "있음" : "없음",
+      failureStaminaRefundStatus: stringValue(refund?.status),
+      failureStaminaRefundResource: stringValue(refund?.resource),
+      failureStaminaRefundReason: stringValue(refund?.reason),
+      failureStaminaRefundPolicyId: stringValue(refund?.policyId),
+      serverOwnedMutation: serverOwnedMutationValue(refund?.serverOwnedMutation),
+      fuelLedgerReason: refund?.fuelLedgerReason
+        ? labelWithCode(fuelLedgerReasonLabel(refund.fuelLedgerReason), refund.fuelLedgerReason)
+        : "없음",
+      successCondition: "boss_defeat",
+      worldRaidScope: "backlog"
+    };
+
+    return {
+      ...placeholder,
+      value: valueByField[placeholder.field] ?? placeholder.value
+    };
+  });
 }
 
 export function runStartMetadataEvidenceFrom(source: unknown): RunCombatEvidencePlaceholder[] {
@@ -308,6 +409,18 @@ export function runStartMetadataEvidenceFrom(source: unknown): RunCombatEvidence
       label: "허용 요원 슬롯",
       value: nullableStringValue(metadata?.allowedOperatorSlots),
       note: "nullable/candidate allowed operator slots"
+    },
+    {
+      field: "selectedAugmentIds",
+      label: "선택 증강 ID",
+      value: stringListValue(metadata?.selectedAugmentIds),
+      note: "run start 시점에 확정된 selected augment stable ids"
+    },
+    {
+      field: "selectedTacticIds",
+      label: "선택 전술 ID",
+      value: stringListValue(metadata?.selectedTacticIds),
+      note: "run start 시점에 확정된 selected tactic stable ids"
     },
     { field: "source", label: "근거 소스", value: "run_start", note: "source=run_start read-only evidence" }
   ];
@@ -520,6 +633,8 @@ export function RunDetailPage() {
     ? storyProgressDetailToReadContractPlaceholders(storyProgressQuery.data)
     : storyProgressReadContractPlaceholders;
   const startMetadataCards = runStartMetadataEvidenceFrom(run);
+  const riskRewardCards = runRiskRewardCardsForLaunchEvidence(run.launchEvidence);
+  const storyRaidPolicyCards = storyRaidPolicyCardsForLaunchEvidence(run.launchEvidence);
 
   return (
     <main className="content">
@@ -551,7 +666,7 @@ export function RunDetailPage() {
           <p>서버 reward preview generation 계약 확정 전까지 계산 구조만 준비합니다</p>
         </header>
         <div className="metric-grid">
-          {runRiskRewardPlaceholders.map((placeholder) => (
+          {riskRewardCards.map((placeholder) => (
             <div key={placeholder.label} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>
@@ -652,7 +767,7 @@ export function RunDetailPage() {
           ))}
         </div>
         <div className="metric-grid">
-          {storyRaidLaunchResultPolicyPlaceholders.map((placeholder) => (
+          {storyRaidPolicyCards.map((placeholder) => (
             <div key={placeholder.field} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

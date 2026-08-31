@@ -5,7 +5,14 @@ import { hasPermission } from "@lastrail/admin-contracts";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import { useAdmin } from "../shared/auth/AdminContext";
-import { accountStatusLabel, levelSourceLabel } from "../shared/labels/adminLabels";
+import {
+  accountStatusLabel,
+  levelSourceLabel,
+  opsErrorLogSourceLabel,
+  opsErrorLogStatusLabel,
+  opsSeverityLabel
+} from "../shared/labels/adminLabels";
+import type { PlayerLaunchEvidence } from "../shared/players/playerLaunchEvidenceContract";
 import { accountAuthSessionFieldLabel, accountAuthVisibilityFields } from "../shared/support/supportContract";
 
 type PlayerAuthEvidenceCard = {
@@ -26,7 +33,7 @@ export const playerAuthEvidenceCards: PlayerAuthEvidenceCard[] = [
   ...accountAuthVisibilityFields.map((field) => ({
     code: field,
     label: accountAuthSessionFieldLabel(field),
-    value: "Support에서 확인 가능 / Player 표시 대기",
+    value: "연동 대기",
     note:
       field === "concurrentUsers"
         ? "UNAVAILABLE/null은 확정 동접자 수 아님"
@@ -38,34 +45,84 @@ export const playerRecentOpsErrorEvidenceCards: PlayerRecentOpsErrorEvidenceCard
   {
     code: "recentOpsErrorLogs",
     label: "최근 시스템 에러 로그",
-    value: "Player ops compose 대기",
+    value: "연동 대기",
     note: "recent open/acknowledged latest 5, critical first read-only compose 후보"
   },
   {
     code: "opsErrorSeverity",
     label: "심각도",
-    value: "Player ops compose 대기",
+    value: "연동 대기",
     note: "info / warning / error / critical"
   },
   {
     code: "opsErrorStatus",
     label: "상태",
-    value: "Player ops compose 대기",
+    value: "연동 대기",
     note: "open / acknowledged / resolved / ignored"
   },
   {
     code: "opsErrorSource",
     label: "소스",
-    value: "Player ops compose 대기",
+    value: "연동 대기",
     note: "game_api / admin_api / support_read_model / integrity_pipeline"
   },
   {
     code: "opsErrorCorrelationIds",
     label: "관련 식별자",
-    value: "Player ops compose 대기",
+    value: "연동 대기",
     note: "accountId / runId / gachaBannerId / rewardPreviewId / supportTicketId"
   }
 ] as const;
+
+function labelWithCode(label: string, code: string): string {
+  return label === code ? code : `${label} / ${code}`;
+}
+
+export function playerAuthEvidenceCardsForLaunchEvidence(
+  evidence: PlayerLaunchEvidence | null | undefined
+): PlayerAuthEvidenceCard[] {
+  if (!evidence) return playerAuthEvidenceCards;
+  const itemByField = new Map(evidence.authSession.items.map((item) => [item.field, item]));
+
+  return playerAuthEvidenceCards.map((card) => {
+    const item = itemByField.get(card.code as (typeof accountAuthVisibilityFields)[number]);
+    return {
+      ...card,
+      value: item?.value ?? "없음",
+      note: item?.note ?? card.note
+    };
+  });
+}
+
+function correlationSummary(correlationIds: PlayerLaunchEvidence["opsErrors"][number]["correlationIds"]): string {
+  const entries = Object.entries(correlationIds).filter((entry): entry is [string, string] => {
+    return typeof entry[1] === "string" && entry[1].length > 0;
+  });
+  return entries.length > 0 ? entries.map(([key, value]) => `${key}=${value}`).join(" / ") : "없음";
+}
+
+export function playerRecentOpsErrorEvidenceCardsForLaunchEvidence(
+  evidence: PlayerLaunchEvidence | null | undefined
+): PlayerRecentOpsErrorEvidenceCard[] {
+  if (!evidence) return playerRecentOpsErrorEvidenceCards;
+  const first = evidence.opsErrors[0];
+  if (!first) {
+    return playerRecentOpsErrorEvidenceCards.map((card) => ({ ...card, value: "데이터 없음" }));
+  }
+
+  const values: Record<string, string> = {
+    recentOpsErrorLogs: `${evidence.opsErrors.length}건`,
+    opsErrorSeverity: labelWithCode(opsSeverityLabel(first.severity), first.severity),
+    opsErrorStatus: labelWithCode(opsErrorLogStatusLabel(first.status), first.status),
+    opsErrorSource: labelWithCode(opsErrorLogSourceLabel(first.source), first.source),
+    opsErrorCorrelationIds: correlationSummary(first.correlationIds)
+  };
+
+  return playerRecentOpsErrorEvidenceCards.map((card) => ({
+    ...card,
+    value: values[card.code] ?? "없음"
+  }));
+}
 
 function PlayerDetailFailure({ error, accountId }: { error: unknown; accountId: string }) {
   const failure = adminRequestFailureDisplay(error, { resourceLabel: "플레이어", resourceId: accountId });
@@ -140,6 +197,8 @@ export function PlayerDetailPage() {
   if (!query.data) return <main className="content">선택된 플레이어가 없습니다</main>;
 
   const player = query.data;
+  const authEvidenceCards = playerAuthEvidenceCardsForLaunchEvidence(player.launchEvidence);
+  const recentOpsErrorEvidenceCards = playerRecentOpsErrorEvidenceCardsForLaunchEvidence(player.launchEvidence);
 
   return (
     <main className="content">
@@ -171,7 +230,7 @@ export function PlayerDetailPage() {
           <p>계정 문의와 연결 가능한 ops error evidence 후보를 읽기 전용으로 표시합니다</p>
         </header>
         <div className="metric-grid">
-          {playerRecentOpsErrorEvidenceCards.map((card) => (
+          {recentOpsErrorEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>
@@ -186,7 +245,7 @@ export function PlayerDetailPage() {
           <p>Google provider/link/account recovery 상태를 token 없이 읽기 전용으로 표시합니다</p>
         </header>
         <div className="metric-grid">
-          {playerAuthEvidenceCards.map((card) => (
+          {authEvidenceCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

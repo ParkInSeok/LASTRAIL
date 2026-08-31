@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   dashboardAggregateApiWait,
+  dashboardLaunchSectionsForReadState,
   dashboardSections,
   dashboardShortcuts,
   dashboardDetailSections,
@@ -48,6 +49,46 @@ describe("DashboardPage configuration", () => {
     expect(JSON.stringify(launchDashboardSections)).not.toContain("concurrentUsers 후보");
   });
 
+  it("maps dashboard launch summary data into first-screen query state cards", () => {
+    const sections = dashboardLaunchSectionsForReadState({
+      data: {
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        activeSessions: "2",
+        concurrentUsers: "정밀 동접자 백로그 (UNAVAILABLE)",
+        recentActiveAccounts5m: "없음",
+        recentActiveAccounts30m: "없음",
+        recentActiveAccountsSource: "not_available_without_activity_source",
+        lastLoginAtLatest: "2026-08-25T11:51:40.000Z",
+        lastLoginAgeSeconds: "300초",
+        supportReviewNeededCount: "3",
+        accountRecoveryCandidateCount: "1",
+        integrityHighRiskCount: "4",
+        rewardClaimFailureCount: "1",
+        offlineRewardIssueCount: "2",
+        gachaSupportIssueCount: "1",
+        duplicateReplayCount: "7",
+        criticalOpenOpsErrorCount: "5",
+        unacknowledgedCoreFailureCount: "6",
+        serverCalculatedAt: "2026-08-25T11:56:40.000Z",
+        supportContext: {
+          readOnly: true,
+          mutationEndpointsEnabled: false,
+          exactConcurrentUsersEnabled: false
+        }
+      },
+      isLoading: false,
+      error: null
+    });
+
+    expect(sections.flatMap((section) => section.metrics.map((metric) => [metric.label, metric.value]))).toContainEqual([
+      "활성 세션",
+      "2"
+    ]);
+    expect(JSON.stringify(sections)).toContain("정밀 동접자 백로그 (UNAVAILABLE)");
+    expect(JSON.stringify(sections)).not.toContain(dashboardAggregateApiWait);
+  });
+
   it("moves long policy and placeholder-heavy metrics into detail candidates", () => {
     const launchTitles = launchDashboardSections.map((section) => section.title);
     const detailTitles = dashboardDetailSections.map((section) => section.title);
@@ -67,11 +108,11 @@ describe("DashboardPage configuration", () => {
       "Player/support login session detail"
     ]);
     expect(launchDetailSupportCandidates.map((candidate) => candidate.status)).toEqual([
-      "Support 연동됨 / Player read model 대기",
-      "Admin gacha 조회 API 대기",
+      "Support/Player read model 연동됨",
+      "Gacha read model 연동됨",
       "Run/Support 표시 준비",
       "Run/Support 표시 준비",
-      "Support 연동됨 / Player read model 대기"
+      "Support/Player read model 연동됨"
     ]);
     expect(JSON.stringify(launchDashboardSections)).not.toContain("Boss-only raid label/status");
     expect(JSON.stringify(launchDashboardSections)).not.toContain("Augment-at-start visibility");

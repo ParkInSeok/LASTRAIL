@@ -3,10 +3,20 @@ import {
   gachaGuaranteeTypeLabel,
   gachaResultStatusLabel
 } from "../shared/labels/adminLabels";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
+import { adminApi } from "../shared/api/client";
+import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
+import type {
+  GachaBannerListResponse,
+  GachaPityResponse,
+  GachaPullBatchDetailResponse,
+  GachaPullBatchListResponse
+} from "../shared/gacha/gachaContract";
 
 type GachaReadOnlySection = {
   title: string;
-  status: "Admin 조회 API 대기";
+  status: string;
   description: string;
   fields: string[];
 };
@@ -14,7 +24,7 @@ type GachaReadOnlySection = {
 type GachaLaunchSupportCard = {
   code: string;
   label: string;
-  value: "연동 대기" | "TESTING_TUNING_DRAFT";
+  value: string;
   note: string;
 };
 
@@ -123,6 +133,12 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
     note: "rare 10 / elite 30 / pickup 60 draft/contract candidate, live economy truth 아님"
   },
   {
+    code: "accountPityState",
+    label: "계정별 천장 상태",
+    value: "계정 ID 필요",
+    note: "accountId querystring이 있으면 Admin pity read model로 조회"
+  },
+  {
     code: "guaranteeType",
     label: "보장 발동",
     value: "연동 대기",
@@ -163,22 +179,93 @@ export const gachaLaunchSupportVisibilityCards: GachaLaunchSupportCard[] = [
   }
 ];
 
+export function gachaLaunchSupportCardsForReadState(state: {
+  banners?: GachaBannerListResponse;
+  pity?: GachaPityResponse;
+  batches?: GachaPullBatchListResponse;
+  detail?: GachaPullBatchDetailResponse | null;
+  isLoading: boolean;
+  error: unknown;
+}): GachaLaunchSupportCard[] {
+  if (state.error) {
+    const failure = adminRequestFailureDisplay(state.error, {
+      resourceLabel: "요원 모집",
+      resourceId: "/api/gacha/*"
+    });
+    return gachaLaunchSupportVisibilityCards.map((card) =>
+      card.value === "TESTING_TUNING_DRAFT" ? card : { ...card, value: failure.reason }
+    );
+  }
+  if (state.isLoading) {
+    return gachaLaunchSupportVisibilityCards.map((card) =>
+      card.value === "TESTING_TUNING_DRAFT" ? card : { ...card, value: "조회 중" }
+    );
+  }
+
+  const activeBanner = state.banners?.items.find((item) => item.bannerId === state.banners?.activeBannerId);
+  const latestBatch = state.batches?.items[0];
+  const latestResult = state.detail?.item.results[0];
+
+  return gachaLaunchSupportVisibilityCards.map((card) => {
+    if (card.code === "activeBannerId") return { ...card, value: state.banners?.activeBannerId ?? "없음" };
+    if (card.code === "bannerType") return { ...card, value: activeBanner?.bannerType ?? "없음" };
+    if (card.code === "pickupOperatorId") return { ...card, value: activeBanner?.pickupOperatorId ?? "없음" };
+    if (card.code === "pullCountVisibility") {
+      return { ...card, value: activeBanner?.pullCountOptions.join(" / ") ?? "없음" };
+    }
+    if (card.code === "pityThresholds") {
+      const thresholds = activeBanner?.pityThresholds;
+      return {
+        ...card,
+        value: thresholds
+          ? `rare ${thresholds.rareOrHigher} / elite ${thresholds.elite} / pickup ${thresholds.pickupElite}`
+          : "없음"
+      };
+    }
+    if (card.code === "accountPityState") {
+      const pity = state.pity?.pityState;
+      return {
+        ...card,
+        value: pity
+          ? `${state.pity?.accountId} / ${state.pity?.bannerId} / total=${pity.totalPullCount} / elite=${pity.elitePityCount} / pickup=${pity.pickupElitePityCount} / rare=${pity.rareOrHigherPityCount}`
+          : "계정 ID 필요"
+      };
+    }
+    if (card.code === "guaranteeType") {
+      return { ...card, value: latestBatch?.guaranteeTypes.join(" / ") || activeBanner?.guaranteeTypes.join(" / ") || "없음" };
+    }
+    if (card.code === "duplicateConversion") {
+      return { ...card, value: latestResult?.duplicateConversion ?? "데이터 없음" };
+    }
+    if (card.code === "resultFields") {
+      return {
+        ...card,
+        value: latestBatch
+          ? `${latestBatch.batchId} / ${latestBatch.pullCount} pulls / ${latestBatch.resultStatus}`
+          : "데이터 없음"
+      };
+    }
+    if (card.code === "ticketAcquisition") return { ...card, value: "support summary/read config 연결됨" };
+    return card;
+  });
+}
+
 export const gachaReadOnlySections: GachaReadOnlySection[] = [
   {
     title: "배너 상태",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "운영 중인 요원 모집 배너와 픽업/비픽업 설정을 확인합니다.",
     fields: ["배너 ID", "배너 유형", "시작/종료 시각", "확률표 버전", "활성 여부"]
   },
   {
     title: "계정별 천장 상태",
-    status: "Admin 조회 API 대기",
+    status: "계정 ID 필요",
     description: "계정과 배너별 pity/guarantee state를 문의 대응용으로 조회합니다.",
     fields: ["총 모집 횟수", "정예 천장 카운트", "픽업 정예 천장 카운트", "희귀 이상 천장 카운트"]
   },
   {
     title: "뽑기 이력",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "pull batch/request와 개별 pull result를 순서대로 추적합니다.",
     fields: [
       "batch ID",
@@ -192,7 +279,7 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "보장 발동",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "서버가 확정한 guaranteeType을 표시하고 클라이언트 계산값은 사용하지 않습니다.",
     fields: [
       labeledCode(gachaGuaranteeTypeLabel("RARE_OR_HIGHER_10"), "RARE_OR_HIGHER_10"),
@@ -203,7 +290,7 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "거절/오류 코드",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "문의 대응과 진단에 필요한 gacha errorCode를 한국어로 표시합니다.",
     fields: [
       labeledCode(gachaErrorCodeLabel("insufficient_command_ticket"), "insufficient_command_ticket"),
@@ -218,19 +305,54 @@ export const gachaReadOnlySections: GachaReadOnlySection[] = [
   },
   {
     title: "중복/조각 변환",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "중복 요원 여부와 조각 변환 결과를 확인합니다.",
     fields: ["요원 ID", "중복 여부", "변환 조각", "duplicate_conversion_json"]
   },
   {
     title: "아이템 원장 연결",
-    status: "Admin 조회 API 대기",
+    status: "조회 가능",
     description: "지휘권 소모와 조각/증표/재료 지급을 item ledger 기준으로 추적합니다.",
     fields: ["item_ledger ID", "소모/지급 수량", "연결 batch", "복구/문의 참조"]
   }
 ];
 
 export function GachaPage() {
+  const [searchParams] = useSearchParams();
+  const accountId = searchParams.get("accountId") ?? "";
+  const bannerId = searchParams.get("bannerId") ?? "";
+  const bannersQuery = useQuery({
+    queryKey: ["gacha-banners"],
+    queryFn: () => adminApi.gachaBanners(),
+    retry: false
+  });
+  const batchesQuery = useQuery({
+    queryKey: ["gacha-pull-batches"],
+    queryFn: () => adminApi.gachaPullBatches({ limit: "10" }),
+    retry: false
+  });
+  const latestBatchId = batchesQuery.data?.items[0]?.batchId ?? "";
+  const batchDetailQuery = useQuery({
+    queryKey: ["gacha-pull-batch-detail", latestBatchId],
+    queryFn: () => adminApi.gachaPullBatchDetail(latestBatchId),
+    enabled: latestBatchId.length > 0,
+    retry: false
+  });
+  const pityQuery = useQuery({
+    queryKey: ["gacha-account-pity", accountId, bannerId],
+    queryFn: () => adminApi.gachaAccountPity(accountId, bannerId.length > 0 ? bannerId : undefined),
+    enabled: accountId.length > 0,
+    retry: false
+  });
+  const launchSupportCards = gachaLaunchSupportCardsForReadState({
+    banners: bannersQuery.data,
+    pity: pityQuery.data,
+    batches: batchesQuery.data,
+    detail: batchDetailQuery.data ?? null,
+    isLoading: bannersQuery.isLoading || batchesQuery.isLoading || batchDetailQuery.isLoading || pityQuery.isLoading,
+    error: bannersQuery.error ?? batchesQuery.error ?? batchDetailQuery.error ?? pityQuery.error
+  });
+
   return (
     <main className="content">
       <header>
@@ -255,8 +377,8 @@ export function GachaPage() {
         </div>
         <div>
           <span>상태</span>
-          <strong>Admin 조회 API 대기</strong>
-          <small>Game API smoke 완료, Admin read summary endpoint 대기</small>
+          <strong>{bannersQuery.data || batchesQuery.data ? "조회 가능" : bannersQuery.isLoading ? "조회 중" : "연동 대기"}</strong>
+          <small>Admin gacha read-only API</small>
         </div>
       </section>
       <section className="admin-panel">
@@ -265,7 +387,7 @@ export function GachaPage() {
           <p>Gacha launch 문의 대응에 필요한 read-only 후보만 표시하고 수동 복구/재추첨은 제공하지 않습니다</p>
         </header>
         <div className="metric-grid">
-          {gachaLaunchSupportVisibilityCards.map((card) => (
+          {launchSupportCards.map((card) => (
             <div key={card.code} className="metric-card">
               <span>{card.label}</span>
               <strong>{card.value}</strong>

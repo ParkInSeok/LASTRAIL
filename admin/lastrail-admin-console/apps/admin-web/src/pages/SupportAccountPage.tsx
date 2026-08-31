@@ -376,7 +376,7 @@ export const supportGachaLaunchEvidenceCards: SupportCard[] = customerSupportGac
       ? customerSupportGachaLaunchPolicy.scopeStatus
       : field === "pityThresholds" || field === "ticketAcquisition"
         ? "정책 기준"
-        : "Admin gacha 조회 API 대기",
+        : "Gacha read model 연동됨",
   note:
     field === "pityThresholds"
       ? "rare 10 / elite 30 / pickup 60 draft/contract candidate"

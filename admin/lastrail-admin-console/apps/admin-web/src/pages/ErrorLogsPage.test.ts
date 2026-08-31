@@ -7,6 +7,7 @@ import {
   errorLogFilterStatus,
   errorLogListColumns,
   errorLogReadOnlyFilters,
+  errorLogSummaryCardsForReadState,
   errorLogSummaryCards
 } from "./ErrorLogsPage";
 
@@ -39,6 +40,35 @@ describe("ErrorLogsPage configuration", () => {
       "ops label/filter 준비",
       "ops label/filter 준비",
       "ops label/filter 준비"
+    ]);
+  });
+
+  it("maps ops error summary API values into summary cards", () => {
+    const cards = errorLogSummaryCardsForReadState({
+      data: {
+        permission: "OPS_ERROR_LOG_READ",
+        permissionMode: "ROLE_PERMISSION",
+        recentErrorCount: "9",
+        warningCount: "2",
+        criticalCount: "3",
+        retryableCount: "4",
+        maskedCount: "8",
+        openCount: "5",
+        acknowledgedCount: "1",
+        latestCriticalAt: "없음",
+        serverCalculatedAt: "2026-08-25T11:56:40.000Z",
+        detailAvailable: false
+      },
+      isLoading: false,
+      error: null
+    });
+
+    expect(cards.map((card) => [card.label, card.value])).toEqual([
+      ["최근 오류", "9"],
+      ["경고", "2"],
+      ["치명 오류", "3"],
+      ["재시도 가능 이벤트", "4"],
+      ["마스킹 필요 이벤트", "8"]
     ]);
   });
 

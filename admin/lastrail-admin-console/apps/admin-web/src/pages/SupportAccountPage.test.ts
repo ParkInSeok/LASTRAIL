@@ -168,14 +168,14 @@ describe("SupportAccountPage configuration", () => {
       "actOneEliteVisualScope"
     ]);
     expect(supportGachaLaunchEvidenceCards.map((card) => card.value)).toEqual([
-      "Admin gacha 조회 API 대기",
-      "Admin gacha 조회 API 대기",
-      "Admin gacha 조회 API 대기",
-      "Admin gacha 조회 API 대기",
+      "Gacha read model 연동됨",
+      "Gacha read model 연동됨",
+      "Gacha read model 연동됨",
+      "Gacha read model 연동됨",
       "정책 기준",
-      "Admin gacha 조회 API 대기",
-      "Admin gacha 조회 API 대기",
-      "Admin gacha 조회 API 대기",
+      "Gacha read model 연동됨",
+      "Gacha read model 연동됨",
+      "Gacha read model 연동됨",
       "정책 기준",
       "TESTING_TUNING_DRAFT"
     ]);

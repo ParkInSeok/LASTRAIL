@@ -64,6 +64,21 @@ export type OpsErrorLogDetailResponse = {
   detail: unknown | null;
 };
 
+export type OpsErrorLogSummaryResponse = {
+  permission: "OPS_ERROR_LOG_READ" | string;
+  permissionMode: "ROLE_PERMISSION" | string;
+  recentErrorCount: string;
+  warningCount: string;
+  criticalCount: string;
+  retryableCount: string;
+  maskedCount: string;
+  openCount: string;
+  acknowledgedCount: string;
+  latestCriticalAt: string;
+  serverCalculatedAt: string;
+  detailAvailable: boolean;
+};
+
 export const opsErrorLogReadFilterFields = [
   "environment",
   "severity",
@@ -96,6 +111,10 @@ function stringValue(value: unknown, fallback: string): string {
 
 function readStringValue(value: unknown, fallback: string): string {
   return adminReadValueLabel({ kind: "success", value, emptyLabel: fallback });
+}
+
+function countDisplay(value: unknown): string {
+  return typeof value === "number" && Number.isFinite(value) ? String(value) : "0";
 }
 
 function nullableStringValue(value: unknown): string | null {
@@ -188,6 +207,24 @@ export function mapOpsErrorLogDetailResponse(response: unknown, fallbackId = "�
     permissionMode: stringValue(record.permissionMode, "ROLE_PERMISSION"),
     item: mapOpsErrorLogItem(record.item ?? response, fallbackId),
     detail: record.detail ?? null
+  };
+}
+
+export function mapOpsErrorLogSummaryResponse(response: unknown): OpsErrorLogSummaryResponse {
+  const record = asRecord(response) ?? {};
+  return {
+    permission: stringValue(record.permission, "OPS_ERROR_LOG_READ"),
+    permissionMode: stringValue(record.permissionMode, "ROLE_PERMISSION"),
+    recentErrorCount: countDisplay(record.recentErrorCount),
+    warningCount: countDisplay(record.warningCount),
+    criticalCount: countDisplay(record.criticalCount),
+    retryableCount: countDisplay(record.retryableCount),
+    maskedCount: countDisplay(record.maskedCount),
+    openCount: countDisplay(record.openCount),
+    acknowledgedCount: countDisplay(record.acknowledgedCount),
+    latestCriticalAt: readStringValue(record.latestCriticalAt, "없음"),
+    serverCalculatedAt: readStringValue(record.serverCalculatedAt, "없음"),
+    detailAvailable: record.detailAvailable === true
   };
 }
 

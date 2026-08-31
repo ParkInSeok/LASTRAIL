@@ -4,7 +4,9 @@ import {
   encounterTypePlaceholders,
   forbiddenRunCombatEvidenceExamplesOutOfScope,
   raidBossResultPlaceholders,
+  runRiskRewardCardsForLaunchEvidence,
   storyRaidLaunchResultPolicyPlaceholders,
+  storyRaidPolicyCardsForLaunchEvidence,
   storyProgressDetailToReadContractPlaceholders,
   raidNarrativeObjectivePlaceholders,
   runStartMetadataEvidenceFrom,
@@ -287,6 +289,8 @@ describe("RunDetailPage risk reward skeleton", () => {
       ["contentVersion", "act1.content.001"],
       ["balanceVersion", "balance.dev.001"],
       ["allowedOperatorSlots", "없음"],
+      ["selectedAugmentIds", "없음"],
+      ["selectedTacticIds", "없음"],
       ["source", "run_start"]
     ]);
     expect(cards.find((card) => card.field === "startAugmentPackageRef")?.note).toContain(
@@ -299,6 +303,149 @@ describe("RunDetailPage risk reward skeleton", () => {
     expect(serialized).not.toContain("rawRng");
     expect(serialized).not.toContain("animationTimeline");
     expect(serialized).not.toContain("token");
+  });
+
+  it("maps expanded run launch evidence into risk/reward read-only cards", () => {
+    const cards = runRiskRewardCardsForLaunchEvidence({
+      operationId: "raid_raider_king_engine",
+      outcome: "FAILED",
+      clearedWaves: null,
+      rewardPreviewId: "preview-1",
+      rewardClaimId: null,
+      appliedMultiplierLabel: "server-calculated",
+      calculationMetadataStatus: "ready",
+      firstClearConsumed: false,
+      integrityDisposition: {
+        status: "CLEAR",
+        openSignals: 0,
+        hardViolations: 0,
+        primaryReason: null
+      },
+      encounterType: "RAID_BOSS",
+      raidId: "raid_raider_king_engine",
+      bossId: "boss_raider_king_engine",
+      bossPhaseRefs: ["phase-1"],
+      bossDefeated: false,
+      completedPhaseCount: 2,
+      encounterDurationSeconds: 180,
+      allowedOperatorSlots: 5,
+      startAugmentPackageRef: "augment_pkg_act1_raid_v1",
+      startTacticPackageRef: "tactic_pkg_act1_raid_v1",
+      selectedAugmentIds: ["aug-a"],
+      selectedTacticIds: ["tac-a"],
+      staminaRefund: {
+        status: "COMMITTED",
+        resource: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyId: "act1_story_raid_failure_stamina_refund_v1",
+        serverOwnedMutation: true,
+        fuelLedgerReason: "STORY_RAID_FAILURE_REFUND",
+        fuelLedgerRefs: ["fuel-ledger-1"]
+      },
+      supportContext: {
+        readOnly: true,
+        mutationEndpointsEnabled: false,
+        repairEndpointsEnabled: false,
+        source: "admin_run_read_model"
+      }
+    });
+
+    expect(cards.map((card) => [card.label, card.value])).toEqual([
+      ["위험도", "없음"],
+      ["작전 ID", "약탈왕 기관차 / raid_raider_king_engine"],
+      ["결과", "실패 / FAILED"],
+      ["클리어 공세", "없음"],
+      ["rewardPreviewId / rewardClaimId", "preview-1 / 없음"],
+      ["적용 배율", "server-calculated"],
+      ["first clear", "첫 클리어 보너스 없음"],
+      ["무결성 판정", "CLEAR / open=0 / hard=0"],
+      ["계산 메타데이터 상태", "준비 완료 / ready"]
+    ]);
+  });
+
+  it("maps committed story raid stamina refund launch evidence", () => {
+    const cards = storyRaidPolicyCardsForLaunchEvidence({
+      operationId: "raid_raider_king_engine",
+      outcome: "FAILED",
+      clearedWaves: null,
+      rewardPreviewId: null,
+      rewardClaimId: null,
+      appliedMultiplierLabel: null,
+      calculationMetadataStatus: null,
+      firstClearConsumed: null,
+      integrityDisposition: {
+        status: null,
+        openSignals: null,
+        hardViolations: null,
+        primaryReason: null
+      },
+      encounterType: "RAID_BOSS",
+      raidId: "raid_raider_king_engine",
+      bossId: "boss_raider_king_engine",
+      bossPhaseRefs: [],
+      bossDefeated: false,
+      completedPhaseCount: 2,
+      encounterDurationSeconds: 180,
+      allowedOperatorSlots: 5,
+      startAugmentPackageRef: null,
+      startTacticPackageRef: null,
+      selectedAugmentIds: [],
+      selectedTacticIds: [],
+      staminaRefund: {
+        status: "COMMITTED",
+        resource: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyId: "act1_story_raid_failure_stamina_refund_v1",
+        serverOwnedMutation: true,
+        fuelLedgerReason: "STORY_RAID_FAILURE_REFUND",
+        fuelLedgerRefs: ["fuel-ledger-1"]
+      },
+      supportContext: {
+        readOnly: true,
+        mutationEndpointsEnabled: false,
+        repairEndpointsEnabled: false,
+        source: "admin_run_read_model"
+      }
+    });
+
+    expect(cards.find((card) => card.field === "failureStaminaRefund")?.value).toBe("있음");
+    expect(cards.find((card) => card.field === "failureStaminaRefundStatus")?.value).toBe("COMMITTED");
+    expect(cards.find((card) => card.field === "serverOwnedMutation")?.value).toBe(
+      "스토리 레이드 stamina 환급 / STORY_RAID_STAMINA_REFUND"
+    );
+    expect(cards.find((card) => card.field === "fuelLedgerReason")?.value).toBe(
+      "스토리 레이드 실패 환급 / STORY_RAID_FAILURE_REFUND"
+    );
+  });
+
+  it("maps launchEvidence start package refs without raw payload fields", () => {
+    const cards = runStartMetadataEvidenceFrom({
+      launchEvidence: {
+        encounterType: "ORDINARY_15_WAVE",
+        raidId: null,
+        bossId: null,
+        bossPhaseRefs: [],
+        startAugmentPackageRef: "augment_pkg_act1_opn_v1",
+        startTacticPackageRef: "tactic_pkg_act1_opn_v1",
+        contentVersion: "act1.content.001",
+        balanceVersion: "balance.dev.001",
+        allowedOperatorSlots: 5,
+        selectedAugmentIds: ["aug-1", "aug-2"],
+        selectedTacticIds: ["tac-1"],
+        rawRng: "must-not-copy",
+        animationTimeline: "must-not-copy"
+      }
+    });
+
+    expect(cards.find((card) => card.field === "encounterType")?.value).toBe("일반 15공세 작전 / ORDINARY_15_WAVE");
+    expect(cards.find((card) => card.field === "startAugmentPackageRef")?.value).toBe("augment_pkg_act1_opn_v1");
+    expect(cards.find((card) => card.field === "selectedAugmentIds")?.value).toBe("aug-1 / aug-2");
+    expect(cards.find((card) => card.field === "selectedTacticIds")?.value).toBe("tac-1");
+
+    const serialized = JSON.stringify(cards);
+    expect(serialized).not.toContain("must-not-copy");
+    expect(serialized).not.toContain("rawRng");
+    expect(serialized).not.toContain("animationTimeline");
   });
 
   it("keeps run start metadata fail-soft for older run detail responses", () => {

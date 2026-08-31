@@ -1,5 +1,14 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { storyProgressLabel } from "../shared/labels/adminLabels";
+import { adminApi } from "../shared/api/client";
+import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
+import {
+  dashboardLaunchSummaryMetricCards,
+  emptyDashboardLaunchSummary,
+  type DashboardLaunchSection,
+  type DashboardLaunchSummary
+} from "../shared/dashboard/launchSummaryContract";
 import {
   offlineRewardClaimContractFields,
   offlineRewardPreviewContractFields,
@@ -142,6 +151,53 @@ export const launchDashboardSections: DashboardSection[] = [
   }
 ];
 
+export function dashboardLaunchSectionsForReadState(state: {
+  data?: DashboardLaunchSummary;
+  isLoading: boolean;
+  error: unknown;
+}): DashboardLaunchSection[] {
+  if (state.data) return dashboardLaunchSummaryMetricCards(state.data);
+  if (state.isLoading) {
+    return dashboardLaunchSummaryMetricCards({
+      ...emptyDashboardLaunchSummary(),
+      activeSessions: "조회 중",
+      lastLoginAtLatest: "조회 중",
+      lastLoginAgeSeconds: "조회 중",
+      supportReviewNeededCount: "조회 중",
+      accountRecoveryCandidateCount: "조회 중",
+      integrityHighRiskCount: "조회 중",
+      rewardClaimFailureCount: "조회 중",
+      offlineRewardIssueCount: "조회 중",
+      gachaSupportIssueCount: "조회 중",
+      duplicateReplayCount: "조회 중",
+      criticalOpenOpsErrorCount: "조회 중",
+      unacknowledgedCoreFailureCount: "조회 중"
+    });
+  }
+  if (state.error) {
+    const failure = adminRequestFailureDisplay(state.error, {
+      resourceLabel: "대시보드 요약",
+      resourceId: "/api/dashboard/launch-summary"
+    });
+    return dashboardLaunchSummaryMetricCards({
+      ...emptyDashboardLaunchSummary(),
+      activeSessions: failure.reason,
+      lastLoginAtLatest: failure.reason,
+      lastLoginAgeSeconds: failure.reason,
+      supportReviewNeededCount: failure.reason,
+      accountRecoveryCandidateCount: failure.reason,
+      integrityHighRiskCount: failure.reason,
+      rewardClaimFailureCount: failure.reason,
+      offlineRewardIssueCount: failure.reason,
+      gachaSupportIssueCount: failure.reason,
+      duplicateReplayCount: failure.reason,
+      criticalOpenOpsErrorCount: failure.reason,
+      unacknowledgedCoreFailureCount: failure.reason
+    });
+  }
+  return launchDashboardSections;
+}
+
 export const dashboardDetailSections: DashboardSection[] = [
   {
     title: "광고/보상형 광고",
@@ -231,13 +287,13 @@ export const launchDetailSupportCandidates: LaunchDetailSupportCandidate[] = [
   {
     label: "Google provider/link visibility",
     target: "Support/Player detail",
-    status: "Support 연동됨 / Player read model 대기",
+    status: "Support/Player read model 연동됨",
     note: "support summary는 provider/link/session 표시 가능, Player detail 직접 표시는 read model 후보"
   },
   {
     label: "Gacha support visibility",
     target: "Support/Gacha detail",
-    status: "Admin gacha 조회 API 대기",
+    status: "Gacha read model 연동됨",
     note: "pity, batch, resultStatus, guaranteeType, duplicate replay refs 후보"
   },
   {
@@ -255,7 +311,7 @@ export const launchDetailSupportCandidates: LaunchDetailSupportCandidate[] = [
   {
     label: "Player/support login session detail",
     target: "Support/Player detail",
-    status: "Support 연동됨 / Player read model 대기",
+    status: "Support/Player read model 연동됨",
     note: "support summary는 lastLoginAt/lastLoginAge/activeSessionCount 표시 가능, Player detail 직접 표시는 read model 후보"
   }
 ];
@@ -284,6 +340,17 @@ export const dashboardShortcuts: DashboardShortcut[] = [
 ];
 
 export function DashboardPage() {
+  const launchSummaryQuery = useQuery({
+    queryKey: ["dashboard-launch-summary"],
+    queryFn: adminApi.dashboardLaunchSummary,
+    retry: false
+  });
+  const launchSections = dashboardLaunchSectionsForReadState({
+    data: launchSummaryQuery.data,
+    isLoading: launchSummaryQuery.isLoading,
+    error: launchSummaryQuery.error
+  });
+
   return (
     <main className="content">
       <header>
@@ -291,7 +358,7 @@ export function DashboardPage() {
         <p>출시 운영 판단에 필요한 핵심 신호를 먼저 보는 읽기 전용 대시보드</p>
       </header>
       <div className="dashboard-sections">
-        {launchDashboardSections.map((section) => (
+        {launchSections.map((section) => (
           <section key={section.title} className="admin-panel">
             <header>
               <h2>{section.title}</h2>

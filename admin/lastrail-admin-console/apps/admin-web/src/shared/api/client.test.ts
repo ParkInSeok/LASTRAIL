@@ -498,4 +498,123 @@ describe("admin web API client", () => {
       }
     });
   });
+
+  it("reads launch dashboard summary from the Admin read-only endpoint", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "SUPPORT_READ",
+        permissionMode: "ROLE_PERMISSION",
+        activeSessions: 2,
+        concurrentUsers: null,
+        concurrentUsersPrecision: "UNAVAILABLE",
+        lastLoginAtLatest: null,
+        supportReviewNeededCount: 0,
+        accountRecoveryCandidateCount: 0,
+        integrityHighRiskCount: 0,
+        rewardClaimFailureCount: 0,
+        offlineRewardIssueCount: 0,
+        gachaSupportIssueCount: 0,
+        duplicateReplayCount: 0,
+        criticalOpenOpsErrorCount: 0,
+        unacknowledgedCoreFailureCount: 0
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.dashboardLaunchSummary();
+
+    expect(result.activeSessions).toBe("2");
+    expect(result.concurrentUsers).toBe("정밀 동접자 백로그 (UNAVAILABLE)");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/dashboard/launch-summary", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
+
+  it("reads gacha banner, pity, pull batch list, and detail read-only endpoints", async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValueOnce(
+        Response.json({
+          permission: "SUPPORT_READ",
+          permissionMode: "ROLE_PERMISSION",
+          activeBannerId: "banner-1",
+          items: [],
+          nextCursor: null
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          permission: "SUPPORT_READ",
+          permissionMode: "ROLE_PERMISSION",
+          accountId: "account-1",
+          bannerId: "banner-1",
+          pityState: { totalPullCount: 0, elitePityCount: 0, pickupElitePityCount: 0, rareOrHigherPityCount: 0 },
+          detailAvailable: false
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          permission: "SUPPORT_READ",
+          permissionMode: "ROLE_PERMISSION",
+          items: [],
+          nextCursor: null
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          item: { batchId: "batch-1" },
+          detailAvailable: true
+        })
+      );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    await adminApi.gachaBanners();
+    await adminApi.gachaAccountPity("account-1", "banner-1");
+    await adminApi.gachaPullBatches({ accountId: "account-1", bannerId: "banner-1", limit: "10" });
+    const detail = await adminApi.gachaPullBatchDetail("batch-1");
+
+    expect(detail.detailAvailable).toBe(true);
+    expect(fetchSpy).toHaveBeenNthCalledWith(1, "/api/gacha/banners", {
+      headers: { accept: "application/json" }
+    });
+    expect(fetchSpy).toHaveBeenNthCalledWith(2, "/api/gacha/accounts/account-1/pity?bannerId=banner-1", {
+      headers: { accept: "application/json" }
+    });
+    expect(fetchSpy).toHaveBeenNthCalledWith(3, "/api/gacha/pull-batches?accountId=account-1&bannerId=banner-1&limit=10", {
+      headers: { accept: "application/json" }
+    });
+    expect(fetchSpy).toHaveBeenNthCalledWith(4, "/api/gacha/pull-batches/batch-1", {
+      headers: { accept: "application/json" }
+    });
+  });
+
+  it("reads ops error log aggregate summary", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        permission: "OPS_ERROR_LOG_READ",
+        permissionMode: "ROLE_PERMISSION",
+        recentErrorCount: 9,
+        warningCount: 2,
+        criticalCount: 3,
+        retryableCount: 4,
+        maskedCount: 8,
+        openCount: 5,
+        acknowledgedCount: 1,
+        latestCriticalAt: null
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.opsErrorLogSummary();
+
+    expect(result.criticalCount).toBe("3");
+    expect(result.latestCriticalAt).toBe("없음");
+    expect(fetchSpy).toHaveBeenCalledWith("/api/ops/error-logs/summary", {
+      headers: {
+        accept: "application/json"
+      }
+    });
+  });
 });
