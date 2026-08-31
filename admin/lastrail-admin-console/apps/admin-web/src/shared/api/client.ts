@@ -23,6 +23,8 @@ import {
 } from "../opsErrorLogs/opsErrorLogContract";
 
 import { mapPlayerLaunchEvidence } from "../players/playerLaunchEvidenceContract";
+import { mapPlayerDetailResponse } from "../players/playerDetailContract";
+import { mapRunDetailResponse } from "../runs/runDetailContract";
 import { mapRunLaunchEvidence } from "../runs/runLaunchEvidenceContract";
 
 import {
@@ -39,10 +41,8 @@ import {
   CreatePlayerNoteRequestSchema,
   CreatePlayerNoteResponseSchema,
   IntegrityEventsResponseSchema,
-  PlayerDetailSchema,
   PlayerNotesResponseSchema,
   PlayerSearchResponseSchema,
-  RunDetailSchema,
   RunSearchResponseSchema,
   SuspiciousPlayerDetailSchema,
   SuspiciousPlayersResponseSchema
@@ -113,6 +113,16 @@ async function readJson(path: string): Promise<unknown> {
     throw await adminApiErrorFrom(response, path);
   }
 
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    throw new AdminApiError({
+      status: response.status,
+      path,
+      errorCode: "ADMIN_API_NON_JSON_RESPONSE",
+      upstreamMessage: "Admin API returned a non-JSON response."
+    });
+  }
+
   return response.json();
 }
 
@@ -174,10 +184,7 @@ export const adminApi = {
   },
   async playerDetail(accountId: string) {
     const raw = await readJson(`/api/players/${encodeURIComponent(accountId)}`);
-    return {
-      ...PlayerDetailSchema.parse(raw),
-      launchEvidence: mapPlayerLaunchEvidence(raw)
-    };
+    return mapPlayerDetailResponse(raw, accountId, mapPlayerLaunchEvidence(raw));
   },
   async createPlayerNote(accountId: string, note: string) {
     const body = CreatePlayerNoteRequestSchema.parse({ note });
@@ -236,10 +243,7 @@ export const adminApi = {
   },
   async runDetail(runId: string) {
     const raw = await readJson(`/api/runs/${encodeURIComponent(runId)}`);
-    return {
-      ...RunDetailSchema.parse(raw),
-      launchEvidence: mapRunLaunchEvidence(raw)
-    };
+    return mapRunDetailResponse(raw, runId, mapRunLaunchEvidence(raw));
   },
   async storyProgressList(filters: Partial<StoryProgressFiltersPreview>) {
     return mapStoryProgressListResponse(await readJson(`/api/story-progress${storyProgressQuery(filters)}`));

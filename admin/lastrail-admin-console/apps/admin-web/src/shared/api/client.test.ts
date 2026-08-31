@@ -99,6 +99,113 @@ describe("admin web API client", () => {
     });
   });
 
+  it("classifies non-JSON successful responses as proxy or Access response mismatch", async () => {
+    const fetchSpy = vi.fn(async () =>
+      new Response("<html>Access login</html>", {
+        status: 200,
+        headers: { "content-type": "text/html" }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const error = await adminApi.runDetail("run-html").catch((caught: unknown) => caught);
+
+    expect(error).toBeInstanceOf(AdminApiError);
+    expect(error).toMatchObject({
+      status: 200,
+      errorCode: "ADMIN_API_NON_JSON_RESPONSE",
+      path: "/api/runs/run-html"
+    });
+  });
+
+  it("reads expanded player detail without failing legacy training core length assumptions", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        accountId: "account-dev",
+        displayName: "DEV Account",
+        status: "ACTIVE",
+        createdAt: "2026-08-31T08:00:00.000Z",
+        progression: {
+          operatorExp: 0,
+          syncLevel: 1,
+          coreLevelSpread: 0,
+          trainingCore: [],
+          operators: []
+        },
+        auth: {
+          providerNames: ["GOOGLE", "GUEST"],
+          hasGoogleLink: true,
+          activeSessionCount: 1,
+          lastLoginAt: "2026-08-31T08:05:00.000Z",
+          concurrentUsers: null,
+          concurrentUsersPrecision: "UNAVAILABLE"
+        },
+        opsErrors: [],
+        supportContext: {
+          readOnly: true,
+          mutationEndpointsEnabled: false,
+          source: "admin_player_detail"
+        }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.playerDetail("account-dev");
+
+    expect(result.accountId).toBe("account-dev");
+    expect(result.progression.trainingCore).toEqual([]);
+    expect(result.launchEvidence.authSession.items.find((item) => item.field === "hasGoogleLink")?.value).toBe("연동됨");
+  });
+
+  it("reads expanded run detail without failing legacy snapshot shape assumptions", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        runId: "run-dev",
+        accountId: "account-dev",
+        startedAt: "2026-08-31T08:00:00.000Z",
+        completedAt: "2026-08-31T08:03:00.000Z",
+        result: "FAILED",
+        riskTier: "V",
+        balanceVersion: "7",
+        currentActiveBalanceVersion: "8",
+        clientBuild: "build-dev",
+        contentVersion: "4",
+        validatorRuntimeRevision: "12",
+        snapshot: { operatorIds: ["op_vex"] },
+        operationId: "raid_raider_king_engine",
+        outcome: "FAILURE",
+        rewardPreviewId: "reward-preview-1",
+        encounterType: "RAID_BOSS",
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "augment-pkg",
+        startTacticPackageRef: "tactic-pkg",
+        staminaRefund: {
+          status: "COMMITTED",
+          resource: "STAMINA",
+          reason: "STORY_RAID_FAILURE",
+          policyId: "act1_story_raid_failure_stamina_refund_v1",
+          serverOwnedMutation: true,
+          fuelLedgerReason: "STORY_RAID_FAILURE_REFUND",
+          fuelLedgerRefs: []
+        },
+        supportContext: {
+          readOnly: true,
+          mutationEndpointsEnabled: false,
+          source: "admin_run_detail"
+        }
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.runDetail("run-dev");
+
+    expect(result.runId).toBe("run-dev");
+    expect(result.snapshot.operatorIds).toEqual(["op_vex"]);
+    expect(result.snapshot.operators).toEqual([]);
+    expect(result.launchEvidence.encounterType).toBe("RAID_BOSS");
+    expect(result.launchEvidence.staminaRefund?.status).toBe("COMMITTED");
+  });
+
   it("reads audit logs with optional filters", async () => {
     const fetchSpy = vi.fn(async () =>
       Response.json({

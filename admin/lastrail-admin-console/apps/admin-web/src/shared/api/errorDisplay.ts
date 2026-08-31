@@ -34,6 +34,12 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.errorCode === "ADMIN_API_NON_JSON_RESPONSE") {
+      return {
+        reason: "Access redirect 또는 프록시 응답 확인 필요",
+        nextStep: "Cloudflare Access 로그인 상태와 Pages proxy가 JSON Admin API 응답을 받고 있는지 확인하세요."
+      };
+    }
     if (error.status === 401 || error.status === 403) {
       return {
         reason: "Access/admin credential 확인 필요",

@@ -47,6 +47,22 @@ describe("admin request failure display", () => {
     expect(JSON.stringify(display)).not.toContain("token");
   });
 
+  it("classifies non-JSON proxy or Access responses separately from zod shape failures", () => {
+    const display = adminRequestFailureDisplay(
+      new AdminApiError({
+        status: 200,
+        path: "/api/runs/run-html",
+        errorCode: "ADMIN_API_NON_JSON_RESPONSE",
+        upstreamMessage: "Admin API returned a non-JSON response."
+      }),
+      { resourceLabel: "출격", resourceId: "run-html" }
+    );
+
+    expect(display.reason).toBe("Access redirect 또는 프록시 응답 확인 필요");
+    expect(display.errorCode).toBe("ADMIN_API_NON_JSON_RESPONSE");
+    expect(JSON.stringify(display)).not.toContain("Access login");
+  });
+
   it("labels read status separately from generic pending state", () => {
     expect(adminReadStatusLabel({ hasData: true, isError: false, isLoading: false })).toBe("조회 가능");
     expect(adminReadStatusLabel({ hasData: false, isError: true, isLoading: false })).toBe(
