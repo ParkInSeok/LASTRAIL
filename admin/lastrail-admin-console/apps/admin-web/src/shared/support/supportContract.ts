@@ -1,3 +1,5 @@
+import { adminReadValueLabel } from "../api/errorDisplay";
+
 export type CustomerSupportCaseType =
   | "account_auth"
   | "run_completion"
@@ -156,7 +158,7 @@ export type SupportSummarySectionCode =
 export type SupportSummarySection = {
   code: SupportSummarySectionCode;
   label: string;
-  value: "연동 대기" | "연결됨";
+  value: "연동 대기" | "연결됨" | "없음";
   referenceCount: number | "연동 대기";
 };
 
@@ -952,14 +954,14 @@ function normalizeProvider(provider: string): "GOOGLE" | "GUEST" | string {
   return provider;
 }
 
-function providerListValue(value: unknown): string {
-  if (!Array.isArray(value)) return "연동 대기";
+function providerListValue(value: unknown, emptyLabel = "없음"): string {
+  if (!Array.isArray(value)) return emptyLabel;
   const normalized = value.filter((provider): provider is string => typeof provider === "string").map(normalizeProvider);
   const ordered = [
     ...accountAuthProviderDisplayOrder.filter((provider) => normalized.includes(provider)),
     ...normalized.filter((provider) => !accountAuthProviderDisplayOrder.includes(provider as "GOOGLE" | "GUEST"))
   ];
-  return ordered.length > 0 ? ordered.map(accountAuthProviderLabel).join(" / ") : "연동 대기";
+  return ordered.length > 0 ? ordered.map(accountAuthProviderLabel).join(" / ") : emptyLabel;
 }
 
 export function formatConcurrentUsersDisplay(value: unknown, precision: unknown): string {
@@ -1073,6 +1075,10 @@ function stringValue(value: unknown, fallback = "연동 대기"): string {
   return typeof value === "string" && value ? value : fallback;
 }
 
+function readStringValue(value: unknown, emptyLabel = "없음"): string {
+  return adminReadValueLabel({ kind: "success", value, emptyLabel });
+}
+
 function countReferences(value: unknown): number {
   if (Array.isArray(value)) return value.length;
   const record = asRecord(value);
@@ -1090,26 +1096,26 @@ function authSessionValue(field: AccountAuthSessionField, auth: Record<string, u
     return providerListValue(value);
   }
   if (field === "primaryProvider") {
-    return typeof value === "string" ? accountAuthProviderLabel(value) : "연동 대기";
+    return typeof value === "string" ? accountAuthProviderLabel(value) : "없음";
   }
   if (field === "hasGoogleLink") {
     if (value === true) return "연동됨";
     if (value === false) return "미연동";
-    return "연동 대기";
+    return "없음";
   }
   if (field === "lastLoginAgeSeconds") {
-    return typeof value === "number" ? `${value}초` : "연동 대기";
+    return typeof value === "number" ? `${value}초` : "없음";
   }
   if (field === "activeSessionCount") {
-    return typeof value === "number" ? `${value}` : "연동 대기";
+    return typeof value === "number" ? `${value}` : "없음";
   }
   if (field === "concurrentUsers") {
     return formatConcurrentUsersDisplay(value, auth.concurrentUsersPrecision);
   }
   if (field === "concurrentUsersPrecision") {
-    return typeof value === "string" && value ? value : "연동 대기";
+    return typeof value === "string" && value ? value : "없음";
   }
-  return typeof value === "string" && value ? value : "연동 대기";
+  return readStringValue(value);
 }
 
 function authSessionItems(auth: Record<string, unknown> | null): SupportAuthSessionItem[] {
@@ -1129,7 +1135,7 @@ function sectionFrom(code: SupportSummarySectionCode, value: unknown): SupportSu
   return {
     code,
     label: customerSupportSummarySectionLabel(code),
-    value: referenceCount > 0 ? "연결됨" : "연동 대기",
+    value: referenceCount > 0 ? "연결됨" : "없음",
     referenceCount
   };
 }
@@ -1154,16 +1160,16 @@ function supportOpsErrorEvidence(value: unknown): SupportOpsErrorEvidence | null
   const record = asRecord(value);
   if (!record) return null;
   return {
-    errorLogId: stringValue(record.errorLogId),
-    occurredAt: stringValue(record.occurredAt),
-    environment: stringValue(record.environment),
-    service: stringValue(record.service),
-    severity: stringValue(record.severity),
-    errorCode: stringValue(record.errorCode),
-    messageSummary: stringValue(record.messageSummary),
-    status: stringValue(record.status),
-    source: stringValue(record.source),
-    requestId: stringValue(record.requestId),
+    errorLogId: readStringValue(record.errorLogId),
+    occurredAt: readStringValue(record.occurredAt),
+    environment: readStringValue(record.environment),
+    service: readStringValue(record.service),
+    severity: readStringValue(record.severity),
+    errorCode: readStringValue(record.errorCode),
+    messageSummary: readStringValue(record.messageSummary),
+    status: readStringValue(record.status),
+    source: readStringValue(record.source),
+    requestId: readStringValue(record.requestId),
     correlationIds: {
       accountId: stringOrNull(record.accountId),
       runId: stringOrNull(record.runId),
@@ -1209,11 +1215,12 @@ function supportLoginBonusRewardLines(value: unknown): SupportLoginBonusRewardLi
 
 function supportLoginBonusSummary(value: unknown): SupportLoginBonusSummary {
   const record = asRecord(value);
+  const fallback = record ? "없음" : "연동 대기";
   return {
-    bonusId: stringValue(record?.bonusId),
-    claimStatus: stringValue(record?.claimStatus),
-    claimedAt: stringValue(record?.claimedAt),
-    rewardTransactionId: stringValue(record?.rewardTransactionId),
+    bonusId: stringValue(record?.bonusId, fallback),
+    claimStatus: stringValue(record?.claimStatus, fallback),
+    claimedAt: stringValue(record?.claimedAt, fallback),
+    rewardTransactionId: stringValue(record?.rewardTransactionId, fallback),
     expectedRewardLines: supportLoginBonusRewardLines(record?.expectedRewardLines),
     rewardLineSummary: supportLoginBonusRewardLines(record?.rewardLineSummary),
     idempotencyReplayKnown: record?.idempotencyReplayKnown === true,
@@ -1228,29 +1235,29 @@ function stringListValue(value: unknown): string[] {
 
 function nullableStringValue(value: unknown): string {
   if (typeof value === "number") return String(value);
-  return stringValue(value);
+  return readStringValue(value);
 }
 
 function supportRunStartMetadata(record: Record<string, unknown>): SupportRecentRunStartMetadata {
   const metadata = asRecord(record.serverPreviewMetadata) ?? asRecord(record.metadata) ?? {};
   const failureStaminaRefundMarker = asRecord(metadata.failureStaminaRefundMarker);
   return {
-    encounterType: stringValue(metadata.encounterType),
-    raidId: stringValue(metadata.raidId),
-    bossId: stringValue(metadata.bossId),
+    encounterType: readStringValue(metadata.encounterType),
+    raidId: readStringValue(metadata.raidId),
+    bossId: readStringValue(metadata.bossId),
     bossPhaseRefs: stringListValue(metadata.bossPhaseRefs),
-    startAugmentPackageRef: stringValue(metadata.startAugmentPackageRef),
-    startTacticPackageRef: stringValue(metadata.startTacticPackageRef),
-    contentVersion: stringValue(metadata.contentVersion),
-    balanceVersion: stringValue(metadata.balanceVersion),
+    startAugmentPackageRef: readStringValue(metadata.startAugmentPackageRef),
+    startTacticPackageRef: readStringValue(metadata.startTacticPackageRef),
+    contentVersion: readStringValue(metadata.contentVersion),
+    balanceVersion: readStringValue(metadata.balanceVersion),
     allowedOperatorSlots: nullableStringValue(metadata.allowedOperatorSlots),
     failureStaminaRefundMarker: {
-      status: stringValue(failureStaminaRefundMarker?.status),
-      resource: stringValue(failureStaminaRefundMarker?.resource),
-      reason: stringValue(failureStaminaRefundMarker?.reason),
-      policyId: stringValue(failureStaminaRefundMarker?.policyId),
-      serverOwnedMutation: stringValue(failureStaminaRefundMarker?.serverOwnedMutation),
-      fuelLedgerReason: stringValue(failureStaminaRefundMarker?.fuelLedgerReason)
+      status: readStringValue(failureStaminaRefundMarker?.status),
+      resource: readStringValue(failureStaminaRefundMarker?.resource),
+      reason: readStringValue(failureStaminaRefundMarker?.reason),
+      policyId: readStringValue(failureStaminaRefundMarker?.policyId),
+      serverOwnedMutation: readStringValue(failureStaminaRefundMarker?.serverOwnedMutation),
+      fuelLedgerReason: readStringValue(failureStaminaRefundMarker?.fuelLedgerReason)
     },
     source: "run_start"
   };
@@ -1260,11 +1267,11 @@ function supportRecentRunEvidence(value: unknown): SupportRecentRunEvidence | nu
   const record = asRecord(value);
   if (!record) return null;
   return {
-    runId: stringValue(record.runId),
-    operationId: stringValue(record.operationId),
-    risk: stringValue(record.risk),
-    outcome: stringValue(record.outcome),
-    rewardPreviewId: stringValue(record.rewardPreviewId),
+    runId: readStringValue(record.runId),
+    operationId: readStringValue(record.operationId),
+    risk: readStringValue(record.risk),
+    outcome: readStringValue(record.outcome),
+    rewardPreviewId: readStringValue(record.rewardPreviewId),
     startMetadata: supportRunStartMetadata(record)
   };
 }
@@ -1317,8 +1324,8 @@ export function mapSupportAccountSummaryResponse(response: unknown, fallbackAcco
     permissionMode: "ROLE_PERMISSION",
     account: {
       accountId: stringValue(account?.accountId, fallbackAccountId),
-      displayName: stringValue(account?.displayName),
-      accountStatus: stringValue(account?.accountStatus)
+      displayName: readStringValue(account?.displayName),
+      accountStatus: readStringValue(account?.accountStatus)
     },
     authSession: {
       providerOrder: accountAuthProviderDisplayOrder,

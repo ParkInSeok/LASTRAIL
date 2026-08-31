@@ -17,6 +17,12 @@ export type AdminReadStatusState = {
   isLoading: boolean;
 };
 
+export type AdminReadValueState =
+  | { kind: "integration_pending"; pendingLabel?: string }
+  | { kind: "loading" }
+  | { kind: "success"; value: unknown; emptyLabel?: string }
+  | { kind: "error"; error: unknown; resourceLabel: string; resourceId: string };
+
 type FailureContext = {
   resourceLabel: string;
   resourceId: string;
@@ -86,4 +92,30 @@ export function adminReadStatusLabel(state: AdminReadStatusState): string {
   if (state.isError) return "Access/admin credential 확인 필요";
   if (state.isLoading) return "조회 중";
   return "연동 대기";
+}
+
+export function adminReadValueLabel(state: AdminReadValueState): string {
+  if (state.kind === "integration_pending") return state.pendingLabel ?? "연동 대기";
+  if (state.kind === "loading") return "조회 중";
+  if (state.kind === "error") {
+    return adminRequestFailureDisplay(state.error, {
+      resourceLabel: state.resourceLabel,
+      resourceId: state.resourceId
+    }).reason;
+  }
+
+  const emptyLabel = state.emptyLabel ?? "없음";
+  if (state.value === null || state.value === undefined) return emptyLabel;
+  if (typeof state.value === "string") return state.value.length > 0 ? state.value : emptyLabel;
+  if (typeof state.value === "number") return Number.isFinite(state.value) ? String(state.value) : emptyLabel;
+  if (typeof state.value === "boolean") return state.value ? "true" : "false";
+  if (Array.isArray(state.value)) {
+    const values = state.value.filter((item): item is string | number => {
+      if (typeof item === "string") return item.length > 0;
+      return typeof item === "number" && Number.isFinite(item);
+    });
+    return values.length > 0 ? values.join(" / ") : emptyLabel;
+  }
+
+  return emptyLabel;
 }

@@ -684,6 +684,57 @@ describe("supportContract", () => {
     expect(JSON.stringify(result)).not.toContain("animationTimeline");
   });
 
+  it("maps successful empty support auth and login bonus fields as absent instead of pending", () => {
+    const result = mapSupportAccountSummaryResponse({
+      account: {
+        accountId: "account-empty",
+        displayName: null,
+        accountStatus: "ACTIVE"
+      },
+      auth: {
+        identityProviders: [],
+        providerNames: [],
+        linkedProviders: [],
+        primaryProvider: null,
+        hasGoogleLink: false,
+        activeSessionCount: 0,
+        lastLoginAt: null,
+        lastLoginAgeSeconds: null,
+        concurrentUsers: null,
+        concurrentUsersPrecision: "UNAVAILABLE"
+      },
+      loginBonus: {
+        bonusId: "launch_login_bonus_act1_v1",
+        claimStatus: "UNCLAIMED",
+        claimedAt: null,
+        rewardTransactionId: null,
+        expectedRewardLines: [{ kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" }],
+        rewardLineSummary: [],
+        idempotencyReplayKnown: false,
+        readOnly: true
+      },
+      supportContext: {
+        readOnly: true,
+        repairEnabled: false,
+        mutationEndpointsEnabled: false
+      }
+    });
+
+    expect(result.account.displayName).toBe("없음");
+    expect(result.authSession.items.find((item) => item.field === "identityProviders")?.value).toBe("없음");
+    expect(result.authSession.items.find((item) => item.field === "primaryProvider")?.value).toBe("없음");
+    expect(result.authSession.items.find((item) => item.field === "lastLoginAt")?.value).toBe("없음");
+    expect(result.authSession.items.find((item) => item.field === "concurrentUsers")?.value).toBe(
+      "집계 불가 (UNAVAILABLE)"
+    );
+    expect(result.loginBonus.claimedAt).toBe("없음");
+    expect(result.loginBonus.rewardTransactionId).toBe("없음");
+    expect(result.loginBonus.rewardLineSummary).toEqual([]);
+    expect(result.sections.find((section) => section.code === "recentRuns")?.value).toBe("없음");
+    expect(result.sections.find((section) => section.code === "loginBonus")?.value).toBe("연결됨");
+    expect(emptySupportAccountSummary("account-empty").authSession.items[0]?.value).toBe("연동 대기");
+  });
+
   it("maps null support summary response to placeholder fallback", () => {
     const result = mapSupportAccountSummaryResponse(null, "account-missing");
 

@@ -4,6 +4,7 @@ import {
   emptyOpsErrorLogListItem,
   mapOpsErrorLogDetailResponse,
   mapOpsErrorLogListResponse,
+  noDataOpsErrorLogListItem,
   opsErrorLogReadFilterFields
 } from "./opsErrorLogContract";
 
@@ -167,6 +168,44 @@ describe("opsErrorLogContract", () => {
     expect(result.detail).toBeNull();
     expect(result.item.payloadRef).toBe("r2://sanitized/payload");
     expect(result.item.traceRef).toBeNull();
+  });
+
+  it("keeps empty values from successful ops log responses distinct from integration pending placeholders", () => {
+    const result = mapOpsErrorLogListResponse({
+      items: [
+        {
+          id: "ops-empty-1",
+          occurredAt: "2026-08-29T04:00:00.000Z",
+          severity: "info",
+          status: "open",
+          source: "admin_api",
+          service: "admin_api",
+          errorCode: "contract_violation",
+          messageSummary: "sanitized summary",
+          requestId: null,
+          retryable: null,
+          masked: null
+        }
+      ]
+    });
+
+    expect(result.items[0]).toMatchObject({
+      id: "ops-empty-1",
+      requestId: "없음",
+      retryable: "없음",
+      masked: "없음"
+    });
+    expect(emptyOpsErrorLogListItem().requestId).toBe("연동 대기");
+  });
+
+  it("prepares a no-data row for successful empty ops log lists", () => {
+    expect(noDataOpsErrorLogListItem()).toMatchObject({
+      id: "데이터 없음",
+      occurredAt: "없음",
+      requestId: "없음",
+      retryable: "없음",
+      masked: "없음"
+    });
   });
 
   it("keeps filters aligned with server contract and preserves empty fallback", () => {

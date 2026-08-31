@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AdminApiError } from "./client";
-import { adminReadStatusLabel, adminRequestFailureDisplay } from "./errorDisplay";
+import { adminReadStatusLabel, adminReadValueLabel, adminRequestFailureDisplay } from "./errorDisplay";
 
 describe("admin request failure display", () => {
   it("classifies missing detail ids as DEV fixture or id wait", () => {
@@ -54,5 +54,26 @@ describe("admin request failure display", () => {
     );
     expect(adminReadStatusLabel({ hasData: false, isError: false, isLoading: true })).toBe("조회 중");
     expect(adminReadStatusLabel({ hasData: false, isError: false, isLoading: false })).toBe("연동 대기");
+  });
+
+  it("labels field read values by query state instead of treating empty success as integration pending", () => {
+    expect(adminReadValueLabel({ kind: "integration_pending" })).toBe("연동 대기");
+    expect(adminReadValueLabel({ kind: "loading" })).toBe("조회 중");
+    expect(adminReadValueLabel({ kind: "success", value: "account-1" })).toBe("account-1");
+    expect(adminReadValueLabel({ kind: "success", value: "" })).toBe("없음");
+    expect(adminReadValueLabel({ kind: "success", value: [] })).toBe("없음");
+    expect(adminReadValueLabel({ kind: "success", value: null, emptyLabel: "데이터 없음" })).toBe("데이터 없음");
+    expect(
+      adminReadValueLabel({
+        kind: "error",
+        error: new AdminApiError({
+          status: 404,
+          path: "/api/support/accounts/missing",
+          errorCode: "account_not_found"
+        }),
+        resourceLabel: "CS 계정",
+        resourceId: "missing"
+      })
+    ).toBe("DEV fixture/ID 없음");
   });
 });

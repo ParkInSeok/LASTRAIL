@@ -9,8 +9,10 @@ import {
 } from "../shared/labels/adminLabels";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
+import { adminReadStatusLabel, adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   emptyOpsErrorLogListItem,
+  noDataOpsErrorLogListItem,
   opsErrorLogReadFilterFields,
   type OpsErrorLogListItem
 } from "../shared/opsErrorLogs/opsErrorLogContract";
@@ -187,7 +189,7 @@ export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
 ];
 
 function relatedResources(item: OpsErrorLogListItem): string {
-  return [
+  const resources = [
     item.accountId,
     item.runId,
     item.rewardPreviewId,
@@ -200,22 +202,29 @@ function relatedResources(item: OpsErrorLogListItem): string {
     item.supportTicketId
   ]
     .filter(Boolean)
-    .join(" / ") || "연동 대기";
+    .join(" / ");
+
+  if (resources.length > 0) return resources;
+  return item.id === "연동 대기" ? "연동 대기" : "없음";
 }
 
 function maskedLabel(masked: OpsErrorLogListItem["masked"]): string {
   if (masked === true) return "마스킹됨";
   if (masked === false) return "확인 필요";
-  return "연동 대기";
+  return masked;
 }
 
 export function ErrorLogsPage() {
-  const { data } = useQuery({
+  const query = useQuery({
     queryKey: ["ops-error-logs"],
     queryFn: () => adminApi.opsErrorLogs({}),
     retry: false
   });
-  const rows = data?.items.length ? data.items : [emptyOpsErrorLogListItem()];
+  const { data } = query;
+  const rows = data?.items.length ? data.items : data ? [noDataOpsErrorLogListItem()] : [emptyOpsErrorLogListItem()];
+  const failure = query.error
+    ? adminRequestFailureDisplay(query.error, { resourceLabel: "시스템 에러 로그", resourceId: "list" })
+    : null;
 
   return (
     <main className="content">
@@ -240,6 +249,18 @@ export function ErrorLogsPage() {
           <span>권한 모드</span>
           <strong>{data?.permissionMode ?? "ROLE_PERMISSION"}</strong>
           <small>mutation 없이 조회만 허용합니다</small>
+        </div>
+        <div>
+          <span>조회 상태</span>
+          <strong>
+            {failure?.reason ??
+              adminReadStatusLabel({
+                hasData: Boolean(data),
+                isError: query.isError,
+                isLoading: query.isLoading
+              })}
+          </strong>
+          <small>{failure?.nextStep ?? "빈 결과는 목록에서 데이터 없음으로 표시합니다"}</small>
         </div>
       </section>
       <section className="admin-panel">

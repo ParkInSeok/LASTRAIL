@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
+import { adminReadValueLabel, adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   encounterTypeLabel,
   levelSourceLabel,
@@ -247,7 +247,7 @@ function asRecord(value: unknown): Record<string, unknown> | null {
 }
 
 function stringValue(value: unknown): string {
-  return typeof value === "string" && value.length > 0 ? value : "연동 대기";
+  return adminReadValueLabel({ kind: "success", value });
 }
 
 function nullableStringValue(value: unknown): string {
@@ -256,9 +256,9 @@ function nullableStringValue(value: unknown): string {
 }
 
 function stringListValue(value: unknown): string {
-  if (!Array.isArray(value)) return "연동 대기";
+  if (!Array.isArray(value)) return "없음";
   const values = value.filter((item): item is string => typeof item === "string" && item.length > 0);
-  return values.length > 0 ? values.join(" / ") : "연동 대기";
+  return values.length > 0 ? values.join(" / ") : "없음";
 }
 
 function startMetadataRecord(source: unknown): Record<string, unknown> | null {
@@ -270,7 +270,7 @@ export function runStartMetadataEvidenceFrom(source: unknown): RunCombatEvidence
   const metadata = startMetadataRecord(source);
   const encounterType = stringValue(metadata?.encounterType);
   const encounterValue =
-    encounterType === "연동 대기" ? encounterType : labelWithCode(encounterTypeLabel(encounterType), encounterType);
+    encounterType === "없음" ? encounterType : labelWithCode(encounterTypeLabel(encounterType), encounterType);
 
   return [
     {

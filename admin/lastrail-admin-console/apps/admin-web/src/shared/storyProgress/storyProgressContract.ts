@@ -1,3 +1,5 @@
+import { adminReadValueLabel } from "../api/errorDisplay";
+
 export type StoryProgressStatus =
   | "draft_exists"
   | "localization_pending"
@@ -148,6 +150,10 @@ function stringValue(value: unknown, fallback: string): string {
   return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
+function readStringValue(value: unknown, emptyLabel = "없음"): string {
+  return adminReadValueLabel({ kind: "success", value, emptyLabel });
+}
+
 function numberValue(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
@@ -162,8 +168,8 @@ function mapSupportContext(
 ): StoryProgressSupportContext {
   const record = asRecord(value);
   return {
-    lastProgressRunId: stringValue(record?.lastProgressRunId ?? fallback.lastProgressRunId, "연동 대기"),
-    updatedAt: stringValue(record?.updatedAt ?? fallback.updatedAt, "연동 대기"),
+    lastProgressRunId: readStringValue(record?.lastProgressRunId ?? fallback.lastProgressRunId),
+    updatedAt: readStringValue(record?.updatedAt ?? fallback.updatedAt),
     permission: stringValue(record?.permission ?? fallback.permission, "STORY_PROGRESS_READ"),
     permissionMode: stringValue(record?.permissionMode ?? fallback.permissionMode, "ROLE_PERMISSION"),
     readOnly: true
@@ -192,7 +198,7 @@ function mapStoryProgressItem(
     order: numberValue(storyProgress?.order ?? record.order, 0),
     clearedOperationIds: stringArrayValue(record.clearedOperationIds),
     unlockedOperations: stringArrayValue(record.unlockedOperations),
-    narrativeVersion: stringValue(narrative?.narrativeVersion ?? record.narrativeVersion, "연동 대기"),
+    narrativeVersion: readStringValue(narrative?.narrativeVersion ?? record.narrativeVersion),
     contentStatus: stringValue(narrative?.contentStatus ?? record.contentStatus, "content_missing"),
     localizationStatus: stringValue(narrative?.localizationStatus ?? record.localizationStatus, "localization_pending"),
     fixtureStatus: stringValue(narrative?.fixtureStatus ?? record.fixtureStatus, "fixture_pending"),

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { adminReadStatusLabel } from "../shared/api/errorDisplay";
+import { adminReadStatusLabel, adminReadValueLabel } from "../shared/api/errorDisplay";
 import {
   encounterTypeLabel,
   opsErrorCodeLabel,
@@ -95,15 +95,34 @@ function correlationSummary(correlationIds: SupportOpsErrorEvidence["correlation
   const parts = Object.entries(correlationIds)
     .filter((entry): entry is [string, string] => typeof entry[1] === "string" && entry[1].length > 0)
     .map(([key, value]) => `${key}=${value}`);
-  return parts.length > 0 ? parts.join(" / ") : "safe correlation ids 연동 대기";
+  return parts.length > 0 ? parts.join(" / ") : "safe correlation ids 없음";
 }
 
 function linkSummary(links: SupportOpsErrorEvidence["links"]): string {
-  return links.length > 0 ? links.map((link) => `${link.label}: ${link.href}`).join(" / ") : "연동 대기";
+  return links.length > 0 ? links.map((link) => `${link.label}: ${link.href}`).join(" / ") : "없음";
 }
 
-export function supportOpsErrorEvidenceRows(items: SupportOpsErrorEvidence[]): SupportOpsErrorEvidenceRow[] {
+export function supportOpsErrorEvidenceRows(
+  items: SupportOpsErrorEvidence[],
+  integrationPending = true
+): SupportOpsErrorEvidenceRow[] {
   if (items.length === 0) {
+    if (!integrationPending) {
+      return [
+        {
+          id: "데이터 없음",
+          summary: "없음",
+          occurredAt: "없음",
+          service: "없음",
+          status: "없음",
+          source: "없음",
+          requestId: "없음",
+          messageSummary: "최근 시스템 에러 근거 없음",
+          correlations: "safe correlation ids 없음",
+          links: "없음"
+        }
+      ];
+    }
     return [
       {
         id: "연동 대기",
@@ -121,30 +140,31 @@ export function supportOpsErrorEvidenceRows(items: SupportOpsErrorEvidence[]): S
   }
 
   return items.map((item) => ({
-    id: item.errorLogId,
+    id: adminReadValueLabel({ kind: "success", value: item.errorLogId }),
     summary: `${labelWithCode(opsSeverityLabel(item.severity), item.severity)} / ${labelWithCode(
       opsErrorCodeLabel(item.errorCode),
       item.errorCode
     )}`,
-    occurredAt: item.occurredAt,
+    occurredAt: adminReadValueLabel({ kind: "success", value: item.occurredAt }),
     service: labelWithCode(opsErrorLogSourceLabel(item.service), item.service),
     status: labelWithCode(opsErrorLogStatusLabel(item.status), item.status),
     source: labelWithCode(opsErrorLogSourceLabel(item.source), item.source),
-    requestId: item.requestId,
-    messageSummary: item.messageSummary,
+    requestId: adminReadValueLabel({ kind: "success", value: item.requestId }),
+    messageSummary: adminReadValueLabel({ kind: "success", value: item.messageSummary }),
     correlations: correlationSummary(item.correlationIds),
     links: linkSummary(item.links)
   }));
 }
 
 function listSummary(values: string[]): string {
-  return values.length > 0 ? values.join(" / ") : "연동 대기";
+  return values.length > 0 ? values.join(" / ") : "없음";
 }
 
 function rewardLineSummary(
-  lines: SupportLoginBonusSummary["expectedRewardLines"] | SupportLoginBonusSummary["rewardLineSummary"]
+  lines: SupportLoginBonusSummary["expectedRewardLines"] | SupportLoginBonusSummary["rewardLineSummary"],
+  emptyLabel = "없음"
 ): string {
-  if (lines.length === 0) return "연동 대기";
+  if (lines.length === 0) return emptyLabel;
   return lines
     .map((line) =>
       [
@@ -175,15 +195,18 @@ export function supportAccountReadStatusLabel(state: {
 }
 
 export function supportLoginBonusEvidenceRows(summary: SupportLoginBonusSummary): SupportLoginBonusEvidenceRow[] {
+  const isPending = summary.bonusId === "연동 대기" && summary.claimStatus === "연동 대기";
   return [
     {
       bonusId: summary.bonusId,
       claimStatus: labelWithCode(loginBonusClaimStatusLabel(summary.claimStatus), summary.claimStatus),
       claimedAt: summary.claimedAt,
       rewardTransactionId: summary.rewardTransactionId,
-      expectedReward: rewardLineSummary(summary.expectedRewardLines),
-      rewardLineSummary: rewardLineSummary(summary.rewardLineSummary),
-      idempotencyReplayKnown: summary.idempotencyReplayKnown ? "재생 기록 확인됨" : "연동 대기",
+      expectedReward: rewardLineSummary(summary.expectedRewardLines, isPending ? "연동 대기" : "없음"),
+      rewardLineSummary: rewardLineSummary(summary.rewardLineSummary, isPending ? "연동 대기" : "없음"),
+      idempotencyReplayKnown: summary.idempotencyReplayKnown
+        ? "재생 기록 확인됨"
+        : adminReadValueLabel({ kind: "success", value: isPending ? null : "재생 기록 없음", emptyLabel: "연동 대기" }),
       readOnly: "읽기 전용"
     }
   ];
@@ -200,11 +223,39 @@ function storyRaidRefundSummary(marker: SupportRecentRunEvidence["startMetadata"
   ) {
     return "연동 대기";
   }
+  if (
+    marker.status === "없음" &&
+    marker.resource === "없음" &&
+    marker.reason === "없음" &&
+    marker.policyId === "없음" &&
+    marker.serverOwnedMutation === "없음" &&
+    marker.fuelLedgerReason === "없음"
+  ) {
+    return "없음";
+  }
   return `status=${marker.status} / resource=${marker.resource} / reason=${marker.reason} / policyId=${marker.policyId} / mutation=${marker.serverOwnedMutation} / ledgerReason=${marker.fuelLedgerReason}`;
 }
 
-export function supportRecentRunEvidenceRows(items: SupportRecentRunEvidence[]): SupportRecentRunEvidenceRow[] {
+export function supportRecentRunEvidenceRows(
+  items: SupportRecentRunEvidence[],
+  integrationPending = true
+): SupportRecentRunEvidenceRow[] {
   if (items.length === 0) {
+    if (!integrationPending) {
+      return [
+        {
+          id: "데이터 없음",
+          operation: "없음",
+          riskOutcome: "없음",
+          encounter: "없음",
+          raidRefs: "없음",
+          packageRefs: "없음",
+          versions: "없음",
+          storyRaidRefund: "없음",
+          rewardPreviewId: "없음"
+        }
+      ];
+    }
     return [
       {
         id: "연동 대기",
@@ -454,8 +505,9 @@ export function SupportAccountPage() {
     enabled: !isPlaceholderAccountId
   });
   const summary = query.data ?? emptySupportAccountSummary(isPlaceholderAccountId ? "계정 ID 선택 필요" : accountId);
-  const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors);
-  const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns);
+  const hasSummaryData = Boolean(query.data);
+  const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors, !hasSummaryData);
+  const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns, !hasSummaryData);
   const loginBonusRows = supportLoginBonusEvidenceRows(summary.loginBonus);
 
   return (

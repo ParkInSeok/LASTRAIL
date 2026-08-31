@@ -10,6 +10,7 @@ import {
   offlineRewardOperationsSeverityMappings,
   mapOfflineRewardDetailResponse,
   mapOfflineRewardListResponse,
+  noDataOfflineRewardDetail,
   offlineRewardStateContractFieldLabel,
   offlineRewardStateContractFields,
   offlineRewardStateContractPreview
@@ -243,6 +244,70 @@ describe("offlineRewardContract", () => {
       mutationEndpointsEnabled: false
     });
     expect(JSON.stringify(result)).not.toContain("raw body");
+  });
+
+  it("maps successful empty offline reward fields as absent instead of integration pending", () => {
+    const result = mapOfflineRewardListResponse({
+      items: [
+        {
+          accountId: "account-empty",
+          displayName: null,
+          accountStatus: "ACTIVE",
+          storyProgressId: "none",
+          narrativeVersion: null,
+          offlineRewardState: {
+            source: "state_row",
+            lastOfflineRewardClaimAt: null,
+            lastStoryProgressId: "none",
+            lastBalanceConfigVersion: null,
+            lastNarrativeVersion: null,
+            lastPreviewedAt: null,
+            revision: null,
+            updatedAt: null
+          },
+          lastClaim: null,
+          supportContext: {
+            readOnly: true,
+            claimMutationEnabled: false,
+            mutationEndpointsEnabled: false
+          }
+        }
+      ]
+    });
+
+    expect(result.items[0]).toMatchObject({
+      accountId: "account-empty",
+      displayName: "없음",
+      narrativeVersion: "없음",
+      offlineRewardState: {
+        source: "state_row",
+        lastOfflineRewardClaimAt: "없음",
+        lastNarrativeVersion: "없음",
+        revision: "없음",
+        updatedAt: "없음"
+      },
+      lastClaim: {
+        offlineRewardClaimId: "없음",
+        claimedAt: "없음"
+      }
+    });
+    expect(mapOfflineRewardDetailResponse(null, "account-no-row").displayName).toBe("연동 대기");
+  });
+
+  it("prepares a no-data row for successful empty offline reward lists", () => {
+    expect(noDataOfflineRewardDetail()).toMatchObject({
+      accountId: "데이터 없음",
+      displayName: "없음",
+      accountStatus: "없음",
+      offlineRewardState: {
+        source: "없음",
+        revision: "없음"
+      },
+      lastClaim: {
+        offlineRewardClaimId: "없음",
+        claimedAt: "없음"
+      }
+    });
   });
 
   it("maps null Admin API offline reward detail to read-only placeholders", () => {

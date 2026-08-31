@@ -375,11 +375,72 @@ describe("SupportAccountPage configuration", () => {
       }
     ]);
 
+    expect(supportOpsErrorEvidenceRows([], false)[0]).toMatchObject({
+      id: "데이터 없음",
+      summary: "없음",
+      correlations: "safe correlation ids 없음",
+      links: "없음"
+    });
+
     const serialized = JSON.stringify(rows);
     expect(serialized).not.toContain("raw body");
     expect(serialized).not.toContain("raw auth header");
     expect(serialized).not.toContain("stack dump");
     expect(serialized).not.toContain("animation timeline");
+  });
+
+  it("formats successful empty support evidence as absent while preserving placeholder pending rows", () => {
+    const opsRows = supportOpsErrorEvidenceRows([
+      {
+        errorLogId: "err-empty",
+        occurredAt: "2026-08-29T00:00:00.000Z",
+        environment: "DEV",
+        service: "game_api",
+        severity: "info",
+        errorCode: "duplicate_replay",
+        messageSummary: "duplicate replay observed",
+        status: "open",
+        source: "game_api",
+        requestId: "",
+        correlationIds: {
+          accountId: null,
+          runId: null,
+          rewardPreviewId: null,
+          rewardClaimId: null,
+          offlineRewardClaimId: null,
+          gachaBatchId: null,
+          gachaBannerId: null,
+          storyProgressId: null,
+          integrityEventId: null,
+          supportTicketId: null
+        },
+        links: []
+      }
+    ]);
+
+    expect(opsRows[0]).toMatchObject({
+      requestId: "없음",
+      correlations: "safe correlation ids 없음",
+      links: "없음"
+    });
+
+    const loginBonusRows = supportLoginBonusEvidenceRows({
+      bonusId: "launch_login_bonus_act1_v1",
+      claimStatus: "UNCLAIMED",
+      claimedAt: "없음",
+      rewardTransactionId: "없음",
+      expectedRewardLines: [{ kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" }],
+      rewardLineSummary: [],
+      idempotencyReplayKnown: false,
+      readOnly: true
+    });
+
+    expect(loginBonusRows[0]).toMatchObject({
+      claimedAt: "없음",
+      rewardTransactionId: "없음",
+      rewardLineSummary: "없음",
+      idempotencyReplayKnown: "재생 기록 없음"
+    });
   });
 
   it("formats support recent runs with server start metadata without raw combat internals", () => {
@@ -433,6 +494,12 @@ describe("SupportAccountPage configuration", () => {
     expect(fallbackRows[0].encounter).toBe("연동 대기");
     expect(fallbackRows[0].packageRefs).toContain("server-authored run start package");
     expect(fallbackRows[0].storyRaidRefund).toContain("연동 대기");
+
+    expect(supportRecentRunEvidenceRows([], false)[0]).toMatchObject({
+      id: "데이터 없음",
+      operation: "없음",
+      storyRaidRefund: "없음"
+    });
 
     const serialized = JSON.stringify(rows);
     expect(serialized).not.toContain("raw RNG");

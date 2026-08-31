@@ -286,7 +286,7 @@ describe("RunDetailPage risk reward skeleton", () => {
       ["startTacticPackageRef", "tactic_pkg_act1_raid_v1"],
       ["contentVersion", "act1.content.001"],
       ["balanceVersion", "balance.dev.001"],
-      ["allowedOperatorSlots", "연동 대기"],
+      ["allowedOperatorSlots", "없음"],
       ["source", "run_start"]
     ]);
     expect(cards.find((card) => card.field === "startAugmentPackageRef")?.note).toContain(
@@ -304,8 +304,8 @@ describe("RunDetailPage risk reward skeleton", () => {
   it("keeps run start metadata fail-soft for older run detail responses", () => {
     const cards = runStartMetadataEvidenceFrom({});
 
-    expect(cards.find((card) => card.field === "encounterType")?.value).toBe("연동 대기");
-    expect(cards.find((card) => card.field === "bossPhaseRefs")?.value).toBe("연동 대기");
+    expect(cards.find((card) => card.field === "encounterType")?.value).toBe("없음");
+    expect(cards.find((card) => card.field === "bossPhaseRefs")?.value).toBe("없음");
     expect(cards.find((card) => card.field === "source")?.value).toBe("run_start");
   });
 });

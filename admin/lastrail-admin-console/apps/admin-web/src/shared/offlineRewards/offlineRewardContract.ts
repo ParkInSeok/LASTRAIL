@@ -1,3 +1,5 @@
+import { adminReadValueLabel } from "../api/errorDisplay";
+
 export type OfflineRewardPreviewStatus = "AVAILABLE" | "EMPTY" | "REJECTED";
 
 export type OfflineRewardPreviewRewardLine = {
@@ -410,8 +412,12 @@ function stringValue(value: unknown, fallback: string): string {
   return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
-function numberOrPending(value: unknown): number | string {
-  return typeof value === "number" && Number.isFinite(value) ? value : "연동 대기";
+function readStringValue(value: unknown, emptyLabel = "없음"): string {
+  return adminReadValueLabel({ kind: "success", value, emptyLabel });
+}
+
+function numberOrEmpty(value: unknown): number | string {
+  return typeof value === "number" && Number.isFinite(value) ? value : "없음";
 }
 
 function nullableStringValue(value: unknown): string | null {
@@ -421,22 +427,22 @@ function nullableStringValue(value: unknown): string | null {
 function mapOfflineRewardState(value: unknown): OfflineRewardReadModelState {
   const record = asRecord(value);
   return {
-    source: stringValue(record?.source, "연동 대기"),
-    lastOfflineRewardClaimAt: stringValue(record?.lastOfflineRewardClaimAt, "연동 대기"),
-    lastStoryProgressId: stringValue(record?.lastStoryProgressId, "연동 대기"),
+    source: readStringValue(record?.source),
+    lastOfflineRewardClaimAt: readStringValue(record?.lastOfflineRewardClaimAt),
+    lastStoryProgressId: readStringValue(record?.lastStoryProgressId),
     lastBalanceConfigVersion: nullableStringValue(record?.lastBalanceConfigVersion),
-    lastNarrativeVersion: stringValue(record?.lastNarrativeVersion, "연동 대기"),
+    lastNarrativeVersion: readStringValue(record?.lastNarrativeVersion),
     lastPreviewedAt: nullableStringValue(record?.lastPreviewedAt),
-    revision: numberOrPending(record?.revision),
-    updatedAt: stringValue(record?.updatedAt, "연동 대기")
+    revision: numberOrEmpty(record?.revision),
+    updatedAt: readStringValue(record?.updatedAt)
   };
 }
 
 function mapLastClaim(value: unknown): OfflineRewardReadModelLastClaim {
   const record = asRecord(value);
   return {
-    offlineRewardClaimId: stringValue(record?.offlineRewardClaimId, "연동 대기"),
-    claimedAt: stringValue(record?.claimedAt, "연동 대기")
+    offlineRewardClaimId: readStringValue(record?.offlineRewardClaimId),
+    claimedAt: readStringValue(record?.claimedAt)
   };
 }
 
@@ -455,10 +461,10 @@ function mapOfflineRewardItem(value: unknown, fallbackAccountId = "연동 대기
 
   return {
     accountId: stringValue(record.accountId, fallbackAccountId),
-    displayName: stringValue(record.displayName, "연동 대기"),
-    accountStatus: stringValue(record.accountStatus, "연동 대기"),
-    storyProgressId: stringValue(record.storyProgressId, "연동 대기"),
-    narrativeVersion: stringValue(record.narrativeVersion, "연동 대기"),
+    displayName: readStringValue(record.displayName),
+    accountStatus: readStringValue(record.accountStatus),
+    storyProgressId: readStringValue(record.storyProgressId),
+    narrativeVersion: readStringValue(record.narrativeVersion),
     offlineRewardState: mapOfflineRewardState(record.offlineRewardState),
     lastClaim: mapLastClaim(record.lastClaim),
     supportContext: mapSupportContext(record.supportContext)
@@ -485,6 +491,31 @@ export function emptyOfflineRewardDetail(accountId = "연동 대기"): OfflineRe
     lastClaim: {
       offlineRewardClaimId: "연동 대기",
       claimedAt: "연동 대기"
+    },
+    supportContext: pendingSupportContext
+  };
+}
+
+export function noDataOfflineRewardDetail(accountId = "데이터 없음"): OfflineRewardReadModelItem {
+  return {
+    accountId,
+    displayName: "없음",
+    accountStatus: "없음",
+    storyProgressId: "none",
+    narrativeVersion: "없음",
+    offlineRewardState: {
+      source: "없음",
+      lastOfflineRewardClaimAt: "없음",
+      lastStoryProgressId: "none",
+      lastBalanceConfigVersion: null,
+      lastNarrativeVersion: "없음",
+      lastPreviewedAt: null,
+      revision: "없음",
+      updatedAt: "없음"
+    },
+    lastClaim: {
+      offlineRewardClaimId: "없음",
+      claimedAt: "없음"
     },
     supportContext: pendingSupportContext
   };

@@ -11,6 +11,7 @@ import {
 } from "../shared/labels/adminLabels";
 import {
   emptyOfflineRewardDetail,
+  noDataOfflineRewardDetail,
   offlineRewardOperationsPolicy,
   offlineRewardOperationsSeverityMappings,
   offlineRewardReadFilterFields,
@@ -63,8 +64,8 @@ export const offlineRewardOperationsSeverityCards = offlineRewardOperationsSever
   value: "연동 대기" as const
 }));
 
-function nullableDisplay(value: string | null): string {
-  return value ?? "연동 대기";
+function nullableDisplay(value: string | null, fallback = "없음"): string {
+  return value ?? fallback;
 }
 
 function accountStatusDisplay(status: string): string {
@@ -83,7 +84,10 @@ export function OfflineRewardsPage() {
     queryFn: () => adminApi.offlineRewardList({}),
     retry: false
   });
-  const items = query.data?.items.length ? query.data.items.map(displayItem) : [emptyOfflineRewardDetail()];
+  const hasReadItems = Boolean(query.data?.items.length);
+  const items = hasReadItems
+    ? query.data?.items.map(displayItem) ?? []
+    : [query.data ? noDataOfflineRewardDetail() : emptyOfflineRewardDetail()];
 
   return (
     <main className="content">
@@ -183,7 +187,7 @@ export function OfflineRewardsPage() {
           ))}
           <div className="metric-card">
             <span>lastPreviewedAt</span>
-            <strong>{nullableDisplay(items[0]?.offlineRewardState.lastPreviewedAt ?? null)}</strong>
+            <strong>{nullableDisplay(items[0]?.offlineRewardState.lastPreviewedAt ?? null, hasReadItems ? "없음" : "연동 대기")}</strong>
             <small>현재 route 갱신 없음</small>
           </div>
         </div>

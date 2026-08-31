@@ -131,7 +131,7 @@ describe("storyProgressContract", () => {
       fixtureStatus: "PARTIAL",
       missingContentStatus: "UNKNOWN",
       supportContext: {
-        lastProgressRunId: "연동 대기",
+        lastProgressRunId: "없음",
         updatedAt: "2026-08-28T03:00:00.000Z",
         permission: "STORY_PROGRESS_READ",
         permissionMode: "ROLE_PERMISSION",

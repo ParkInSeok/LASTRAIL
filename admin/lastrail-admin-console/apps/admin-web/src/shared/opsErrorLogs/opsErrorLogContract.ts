@@ -1,3 +1,5 @@
+import { adminReadValueLabel } from "../api/errorDisplay";
+
 export type OpsErrorLogReadFiltersPreview = {
   environment: string;
   severity: string;
@@ -44,8 +46,8 @@ export type OpsErrorLogListItem = {
   idempotencyKeyHash: string | null;
   payloadRef: string | null;
   traceRef: string | null;
-  retryable: boolean | "연동 대기";
-  masked: boolean | "연동 대기";
+  retryable: boolean | "연동 대기" | "없음";
+  masked: boolean | "연동 대기" | "없음";
 };
 
 export type OpsErrorLogListResponse = {
@@ -92,12 +94,16 @@ function stringValue(value: unknown, fallback: string): string {
   return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
+function readStringValue(value: unknown, fallback: string): string {
+  return adminReadValueLabel({ kind: "success", value, emptyLabel: fallback });
+}
+
 function nullableStringValue(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
 }
 
-function booleanOrPending(value: unknown): boolean | "연동 대기" {
-  return typeof value === "boolean" ? value : "연동 대기";
+function booleanOrReadState(value: unknown, fallback: "연동 대기" | "없음"): boolean | "연동 대기" | "없음" {
+  return typeof value === "boolean" ? value : fallback;
 }
 
 function pick(record: Record<string, unknown> | null, camel: string, snake?: string): unknown {
@@ -115,18 +121,19 @@ function correlationString(record: Record<string, unknown> | null, key: string):
 
 function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsErrorLogListItem {
   const record = asRecord(value);
+  const fieldFallback = record ? "없음" : "연동 대기";
 
   return {
     id: stringValue(record?.id, fallbackId),
-    occurredAt: stringValue(pick(record, "occurredAt", "occurred_at"), "연동 대기"),
-    environment: stringValue(record?.environment, "연동 대기"),
-    severity: stringValue(record?.severity, "연동 대기"),
-    status: stringValue(record?.status, "연동 대기"),
-    source: stringValue(record?.source, "연동 대기"),
-    service: stringValue(record?.service, "연동 대기"),
-    errorCode: stringValue(pick(record, "errorCode", "error_code"), "연동 대기"),
-    messageSummary: stringValue(pick(record, "messageSummary", "message_summary"), "연동 대기"),
-    requestId: stringValue(pick(record, "requestId", "request_id"), "연동 대기"),
+    occurredAt: readStringValue(pick(record, "occurredAt", "occurred_at"), fieldFallback),
+    environment: readStringValue(record?.environment, fieldFallback),
+    severity: readStringValue(record?.severity, fieldFallback),
+    status: readStringValue(record?.status, fieldFallback),
+    source: readStringValue(record?.source, fieldFallback),
+    service: readStringValue(record?.service, fieldFallback),
+    errorCode: readStringValue(pick(record, "errorCode", "error_code"), fieldFallback),
+    messageSummary: readStringValue(pick(record, "messageSummary", "message_summary"), fieldFallback),
+    requestId: readStringValue(pick(record, "requestId", "request_id"), fieldFallback),
     accountId: correlationString(record, "accountId"),
     runId: correlationString(record, "runId"),
     rewardPreviewId: correlationString(record, "rewardPreviewId"),
@@ -140,13 +147,17 @@ function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsEr
     idempotencyKeyHash: nullableStringValue(pick(record, "idempotencyKeyHash", "idempotency_key_hash")),
     payloadRef: nullableStringValue(pick(record, "payloadRef", "payload_ref")),
     traceRef: nullableStringValue(pick(record, "traceRef", "trace_ref")),
-    retryable: booleanOrPending(record?.retryable),
-    masked: booleanOrPending(record?.masked)
+    retryable: booleanOrReadState(record?.retryable, fieldFallback),
+    masked: booleanOrReadState(record?.masked, fieldFallback)
   };
 }
 
 export function emptyOpsErrorLogListItem(id = "연동 대기"): OpsErrorLogListItem {
   return mapOpsErrorLogItem(null, id);
+}
+
+export function noDataOpsErrorLogListItem(id = "데이터 없음"): OpsErrorLogListItem {
+  return mapOpsErrorLogItem({ id });
 }
 
 export function emptyOpsErrorLogDetail(errorLogId = "연동 대기"): OpsErrorLogDetailResponse {
