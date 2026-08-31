@@ -19,7 +19,7 @@ import {
 
 type ErrorLogSummaryCard = {
   label: string;
-  value: "연동 대기";
+  value: "집계 API 대기";
   note: string;
 };
 
@@ -30,7 +30,7 @@ type ErrorLogFilterGroup = {
 
 type ErrorLogDetailPlaceholder = {
   title: string;
-  status: "연동 대기";
+  status: string;
   description: string;
 };
 
@@ -41,12 +41,16 @@ export const errorLogEndpointCandidates = [
   "GET /v1/admin/ops/error-logs/:id"
 ];
 
+export const errorLogFilterStatus = "필터 기준 준비";
+
+export const errorLogEndpointStatus = "read-only API 연결됨";
+
 export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
-  { label: "최근 오류", value: "연동 대기", note: "최근 런타임 error 이벤트" },
-  { label: "경고", value: "연동 대기", note: "warn 심각도 이벤트" },
-  { label: "치명 오류", value: "연동 대기", note: "fatal 심각도 이벤트" },
-  { label: "재시도 가능 이벤트", value: "연동 대기", note: "retry later 후보" },
-  { label: "마스킹 필요 이벤트", value: "연동 대기", note: "민감정보 보호 검토" }
+  { label: "최근 오류", value: "집계 API 대기", note: "최근 런타임 error 이벤트" },
+  { label: "경고", value: "집계 API 대기", note: "warn 심각도 이벤트" },
+  { label: "치명 오류", value: "집계 API 대기", note: "fatal 심각도 이벤트" },
+  { label: "재시도 가능 이벤트", value: "집계 API 대기", note: "retry later 후보" },
+  { label: "마스킹 필요 이벤트", value: "집계 API 대기", note: "민감정보 보호 검토" }
 ];
 
 export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
@@ -140,49 +144,49 @@ export const errorLogListColumns = [
 export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
   {
     title: "stack/trace 요약",
-    status: "연동 대기",
+    status: "R2/trace 상세 대기",
     description: "서버 로그 수집 API 확정 후 마스킹된 trace 요약을 표시합니다."
   },
   {
     title: "request metadata",
-    status: "연동 대기",
+    status: "request metadata 상세 대기",
     description: "method, route, status, requestId 등 민감정보를 제외한 요청 메타데이터를 표시합니다."
   },
   {
     title: "관련 운영 링크",
-    status: "연동 대기",
+    status: "관련 링크 API 대기",
     description: "audit log, ledger, reward claim, gacha batch 연결 조회 후보입니다."
   },
   {
     title: "민감정보 마스킹 상태",
-    status: "연동 대기",
+    status: "마스킹 정책 기준 준비",
     description: "token, secret, raw request body, raw RNG material 저장/표시 금지 기준을 확인합니다."
   },
   {
     title: "클라이언트 진단 payload",
-    status: "연동 대기",
+    status: "클라이언트 진단 연동 대기",
     description: "Unity diagnostic snapshot은 fail-soft/non-blocking 별도 소스 후보로만 취급합니다."
   },
   {
     title: "지원 근거",
-    status: "연동 대기",
+    status: "support compose 연동됨",
     description: "support summary opsErrors는 최근 open/acknowledged latest 5, critical first 후보이며 복구 수단이 아닙니다."
   },
   {
     title: "Google 인증 검증기 장애",
-    status: "연동 대기",
+    status: "ops label/filter 준비",
     description:
       "Google JWKS/fetch/parse 계열 운영 장애는 retryable=true, masked=true, severity=error, source/service=game_api 기준으로 표시합니다."
   },
   {
     title: "출격 시작 상태 충돌",
-    status: "연동 대기",
+    status: "ops label/filter 준비",
     description:
       "run_start_state_conflict는 retryable=true, masked=true 기준이며 run id FK가 없을 수 있어 safe correlation only로 표시합니다."
   },
   {
     title: "스토리 레이드 stamina 환급",
-    status: "연동 대기",
+    status: "ops label/filter 준비",
     description:
       "story_raid_stamina_refund_state_conflict / story_raid_stamina_refund_policy_missing은 story raid failure refund read-only evidence로만 표시합니다."
   }
@@ -272,7 +276,7 @@ export function ErrorLogsPage() {
           {errorLogFilterGroups.map((group) => (
             <div key={group.label} className="metric-card">
               <span>{group.label}</span>
-              <strong>연동 대기</strong>
+              <strong>{errorLogFilterStatus}</strong>
               <small>{group.options.join(" / ")}</small>
             </div>
           ))}
@@ -326,7 +330,7 @@ export function ErrorLogsPage() {
           {errorLogEndpointCandidates.map((endpoint) => (
             <div key={endpoint} className="metric-card">
               <span>endpoint 후보</span>
-              <strong>연동 대기</strong>
+              <strong>{errorLogEndpointStatus}</strong>
               <small>{endpoint}</small>
             </div>
           ))}

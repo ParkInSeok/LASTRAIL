@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   offlineRewardDetailPlaceholders,
+  offlineRewardFilterStatus,
   offlineRewardListColumns,
   offlineRewardOperationsPolicyCards,
   offlineRewardOperationsSeverityCards,
@@ -43,7 +44,7 @@ describe("OfflineRewardsPage configuration", () => {
       "lastClaim.offlineRewardClaimId",
       "lastClaim.claimedAt"
     ]);
-    expect(offlineRewardDetailPlaceholders.every((item) => item.value === "연동 대기")).toBe(true);
+    expect(offlineRewardDetailPlaceholders.every((item) => item.value === "계정 선택 대기")).toBe(true);
   });
 
   it("shows mutation flags as disabled support context", () => {
@@ -65,7 +66,9 @@ describe("OfflineRewardsPage configuration", () => {
       "duplicate_replay_no_revision",
       "no_row_fallback_expected_before_first_claim"
     ]);
-    expect(offlineRewardOperationsPolicyCards.every((card) => card.value === "연동 대기")).toBe(true);
+    expect(offlineRewardFilterStatus).toBe("필터 기준 준비");
+    expect(offlineRewardOperationsPolicyCards.every((card) => card.value === "정책 기준")).toBe(true);
+    expect(offlineRewardOperationsSeverityCards.every((card) => card.value === "운영 분류 기준")).toBe(true);
     expect(offlineRewardOperationsSeverityCards.map((card) => `${card.errorCode}:${card.severity}`)).toContain(
       "offline_reward_not_claimable:info"
     );

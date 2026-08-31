@@ -21,10 +21,12 @@ import {
 type OfflineRewardDetailPlaceholder = {
   label: string;
   field: string;
-  value: "연동 대기";
+  value: "계정 선택 대기";
 };
 
 export const offlineRewardReadOnlyFilters = [...offlineRewardReadFilterFields];
+
+export const offlineRewardFilterStatus = "필터 기준 준비";
 
 export const offlineRewardListColumns = [
   "계정",
@@ -38,16 +40,16 @@ export const offlineRewardListColumns = [
 ];
 
 export const offlineRewardDetailPlaceholders: OfflineRewardDetailPlaceholder[] = [
-  { label: "상태 출처", field: "offlineRewardState.source", value: "연동 대기" },
-  { label: "마지막 수령 기준", field: "offlineRewardState.lastOfflineRewardClaimAt", value: "연동 대기" },
-  { label: "마지막 스토리 진행도", field: "offlineRewardState.lastStoryProgressId", value: "연동 대기" },
-  { label: "마지막 밸런스 설정 버전", field: "offlineRewardState.lastBalanceConfigVersion", value: "연동 대기" },
-  { label: "마지막 내러티브 버전", field: "offlineRewardState.lastNarrativeVersion", value: "연동 대기" },
-  { label: "마지막 미리보기 시각", field: "offlineRewardState.lastPreviewedAt", value: "연동 대기" },
-  { label: "리비전", field: "offlineRewardState.revision", value: "연동 대기" },
-  { label: "갱신 시각", field: "offlineRewardState.updatedAt", value: "연동 대기" },
-  { label: "오프라인 보상 수령 ID", field: "lastClaim.offlineRewardClaimId", value: "연동 대기" },
-  { label: "수령 시각", field: "lastClaim.claimedAt", value: "연동 대기" }
+  { label: "상태 출처", field: "offlineRewardState.source", value: "계정 선택 대기" },
+  { label: "마지막 수령 기준", field: "offlineRewardState.lastOfflineRewardClaimAt", value: "계정 선택 대기" },
+  { label: "마지막 스토리 진행도", field: "offlineRewardState.lastStoryProgressId", value: "계정 선택 대기" },
+  { label: "마지막 밸런스 설정 버전", field: "offlineRewardState.lastBalanceConfigVersion", value: "계정 선택 대기" },
+  { label: "마지막 내러티브 버전", field: "offlineRewardState.lastNarrativeVersion", value: "계정 선택 대기" },
+  { label: "마지막 미리보기 시각", field: "offlineRewardState.lastPreviewedAt", value: "계정 선택 대기" },
+  { label: "리비전", field: "offlineRewardState.revision", value: "계정 선택 대기" },
+  { label: "갱신 시각", field: "offlineRewardState.updatedAt", value: "계정 선택 대기" },
+  { label: "오프라인 보상 수령 ID", field: "lastClaim.offlineRewardClaimId", value: "계정 선택 대기" },
+  { label: "수령 시각", field: "lastClaim.claimedAt", value: "계정 선택 대기" }
 ];
 
 export const offlineRewardSupportFlags = [
@@ -56,12 +58,15 @@ export const offlineRewardSupportFlags = [
   "supportContext.mutationEndpointsEnabled=false"
 ];
 
-export const offlineRewardOperationsPolicyCards = [...offlineRewardOperationsPolicy];
+export const offlineRewardOperationsPolicyCards = offlineRewardOperationsPolicy.map((policy) => ({
+  ...policy,
+  value: "정책 기준" as const
+}));
 
 export const offlineRewardOperationsSeverityCards = offlineRewardOperationsSeverityMappings.map((mapping) => ({
   ...mapping,
   label: opsErrorCodeLabel(mapping.errorCode),
-  value: "연동 대기" as const
+  value: "운영 분류 기준" as const
 }));
 
 function nullableDisplay(value: string | null, fallback = "없음"): string {
@@ -132,7 +137,7 @@ export function OfflineRewardsPage() {
           {offlineRewardReadOnlyFilters.map((filter) => (
             <div key={filter} className="metric-card">
               <span>{filter}</span>
-              <strong>연동 대기</strong>
+              <strong>{offlineRewardFilterStatus}</strong>
               <small>read-only query parameter</small>
             </div>
           ))}
@@ -175,7 +180,7 @@ export function OfflineRewardsPage() {
       <section className="admin-panel">
         <header>
           <h2>상세 placeholder</h2>
-          <p>계정 상세 endpoint 연결 전까지 필드 구조만 표시합니다</p>
+          <p>목록에서 계정을 선택하기 전까지 상세 필드 구조만 표시합니다</p>
         </header>
         <div className="metric-grid">
           {offlineRewardDetailPlaceholders.map((placeholder) => (

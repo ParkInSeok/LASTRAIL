@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   errorLogDetailPlaceholders,
   errorLogEndpointCandidates,
+  errorLogEndpointStatus,
   errorLogFilterGroups,
+  errorLogFilterStatus,
   errorLogListColumns,
   errorLogReadOnlyFilters,
   errorLogSummaryCards
@@ -23,9 +25,21 @@ describe("ErrorLogsPage configuration", () => {
     expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("민감정보 마스킹 상태");
   });
 
-  it("keeps every displayed metric pending until the server log API is available", () => {
-    expect(errorLogSummaryCards.every((card) => card.value === "연동 대기")).toBe(true);
-    expect(errorLogDetailPlaceholders.every((placeholder) => placeholder.status === "연동 대기")).toBe(true);
+  it("labels ops log waiting states by source instead of generic integration pending", () => {
+    expect(errorLogSummaryCards.every((card) => card.value === "집계 API 대기")).toBe(true);
+    expect(errorLogFilterStatus).toBe("필터 기준 준비");
+    expect(errorLogEndpointStatus).toBe("read-only API 연결됨");
+    expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.status)).toEqual([
+      "R2/trace 상세 대기",
+      "request metadata 상세 대기",
+      "관련 링크 API 대기",
+      "마스킹 정책 기준 준비",
+      "클라이언트 진단 연동 대기",
+      "support compose 연동됨",
+      "ops label/filter 준비",
+      "ops label/filter 준비",
+      "ops label/filter 준비"
+    ]);
   });
 
   it("uses Korean labels while keeping ops log stable codes visible", () => {

@@ -66,6 +66,13 @@ describe("DashboardPage configuration", () => {
       "Augment-at-start visibility",
       "Player/support login session detail"
     ]);
+    expect(launchDetailSupportCandidates.map((candidate) => candidate.status)).toEqual([
+      "Support 연동됨 / Player read model 대기",
+      "Admin gacha 조회 API 대기",
+      "Run/Support 표시 준비",
+      "Run/Support 표시 준비",
+      "Support 연동됨 / Player read model 대기"
+    ]);
     expect(JSON.stringify(launchDashboardSections)).not.toContain("Boss-only raid label/status");
     expect(JSON.stringify(launchDashboardSections)).not.toContain("Augment-at-start visibility");
   });

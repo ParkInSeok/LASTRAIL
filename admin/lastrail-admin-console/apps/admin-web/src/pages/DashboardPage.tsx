@@ -27,7 +27,7 @@ type DashboardShortcut = {
 type LaunchDetailSupportCandidate = {
   label: string;
   target: string;
-  status: "연동 대기";
+  status: string;
   note: string;
 };
 
@@ -231,32 +231,32 @@ export const launchDetailSupportCandidates: LaunchDetailSupportCandidate[] = [
   {
     label: "Google provider/link visibility",
     target: "Support/Player detail",
-    status: "연동 대기",
-    note: "guest/google provider, linked state, recovery evidence read-only 후보"
+    status: "Support 연동됨 / Player read model 대기",
+    note: "support summary는 provider/link/session 표시 가능, Player detail 직접 표시는 read model 후보"
   },
   {
     label: "Gacha support visibility",
     target: "Support/Gacha detail",
-    status: "연동 대기",
+    status: "Admin gacha 조회 API 대기",
     note: "pity, batch, resultStatus, guaranteeType, duplicate replay refs 후보"
   },
   {
     label: "Boss-only raid label/status",
     target: "Run/Raid detail",
-    status: "연동 대기",
+    status: "Run/Support 표시 준비",
     note: "raid는 15-wave가 아닌 boss-only encounter로 분리 표시"
   },
   {
     label: "Augment-at-start visibility",
     target: "Run detail",
-    status: "연동 대기",
+    status: "Run/Support 표시 준비",
     note: "일반 Act 1 작전 증강은 시작 시점 획득 상태로 표시"
   },
   {
     label: "Player/support login session detail",
     target: "Support/Player detail",
-    status: "연동 대기",
-    note: "lastLoginAt, lastLoginAge, activeSessionCount, latestSessionAt 후보"
+    status: "Support 연동됨 / Player read model 대기",
+    note: "support summary는 lastLoginAt/lastLoginAge/activeSessionCount 표시 가능, Player detail 직접 표시는 read model 후보"
   }
 ];
 
