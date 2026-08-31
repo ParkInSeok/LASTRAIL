@@ -163,6 +163,17 @@ function loginBonusClaimStatusLabel(status: string): string {
   return status;
 }
 
+export function supportAccountReadStatusLabel(state: {
+  hasData: boolean;
+  isError: boolean;
+  isLoading: boolean;
+}): string {
+  if (state.hasData) return "조회 가능";
+  if (state.isError) return "Access/admin credential 확인 필요";
+  if (state.isLoading) return "조회 중";
+  return "연동 대기";
+}
+
 export function supportLoginBonusEvidenceRows(summary: SupportLoginBonusSummary): SupportLoginBonusEvidenceRow[] {
   return [
     {
@@ -464,7 +475,13 @@ export function SupportAccountPage() {
         </div>
         <div>
           <span>연동 상태</span>
-          <strong>{query.isError ? "연동 대기" : "연동 대기"}</strong>
+          <strong>
+            {supportAccountReadStatusLabel({
+              hasData: Boolean(query.data),
+              isError: query.isError,
+              isLoading: query.isLoading
+            })}
+          </strong>
           <small>{customerSupportContractPreview.endpointCandidate}</small>
         </div>
         <div>

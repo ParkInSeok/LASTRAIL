@@ -18,10 +18,20 @@ import {
   supportSuggestionCards,
   supportOpsErrorEvidenceRows,
   supportLoginBonusEvidenceRows,
-  supportRecentRunEvidenceRows
+  supportRecentRunEvidenceRows,
+  supportAccountReadStatusLabel
 } from "./SupportAccountPage";
 
 describe("SupportAccountPage configuration", () => {
+  it("labels support read status without implying the server is still undeployed", () => {
+    expect(supportAccountReadStatusLabel({ hasData: true, isError: false, isLoading: false })).toBe("조회 가능");
+    expect(supportAccountReadStatusLabel({ hasData: false, isError: true, isLoading: false })).toBe(
+      "Access/admin credential 확인 필요"
+    );
+    expect(supportAccountReadStatusLabel({ hasData: false, isError: false, isLoading: true })).toBe("조회 중");
+    expect(supportAccountReadStatusLabel({ hasData: false, isError: false, isLoading: false })).toBe("연동 대기");
+  });
+
   it("prepares launch customer support case cards", () => {
     expect(supportCaseTypeCards.map((card) => card.code)).toEqual([
       "account_auth",
