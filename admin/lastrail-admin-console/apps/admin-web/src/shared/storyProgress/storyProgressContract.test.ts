@@ -164,14 +164,14 @@ describe("storyProgressContract", () => {
       order: 0,
       clearedOperationIds: [],
       unlockedOperations: [],
-      narrativeVersion: "연동 대기",
+      narrativeVersion: "없음",
       contentStatus: "content_missing",
       localizationStatus: "localization_pending",
       fixtureStatus: "fixture_pending",
       missingContentStatus: "content_missing",
       supportContext: {
-        lastProgressRunId: "연동 대기",
-        updatedAt: "연동 대기",
+        lastProgressRunId: "없음",
+        updatedAt: "없음",
         permission: "STORY_PROGRESS_READ",
         permissionMode: "ROLE_PERMISSION",
         readOnly: true

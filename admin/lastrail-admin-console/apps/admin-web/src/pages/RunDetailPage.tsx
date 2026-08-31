@@ -476,7 +476,49 @@ function statusLabelWithCode(status: string): string {
 }
 
 function missionListLabel(missionIds: string[]): string {
-  return missionIds.length > 0 ? missionIds.map(missionLabelWithCode).join(", ") : "연동 대기";
+  return missionIds.length > 0 ? missionIds.map(missionLabelWithCode).join(", ") : "없음";
+}
+
+function storySupportContextValue(detail: StoryProgressDetail): string {
+  const values = [detail.supportContext.lastProgressRunId, detail.supportContext.updatedAt].filter(
+    (value) => value !== "없음" && value !== "연동 대기"
+  );
+  return values.length > 0 ? values.join(" / ") : "없음";
+}
+
+export function runStoryNarrativeCardsForStoryProgressDetail(
+  detail: StoryProgressDetail,
+  evidence?: RunLaunchEvidence | null
+): RunRiskRewardPlaceholder[] {
+  const operationId = evidence?.operationId ?? detail.highestClearedOperationId;
+
+  return [
+    { ...runStoryNarrativePlaceholders[0], value: missionLabelWithCode(operationId) },
+    { ...runStoryNarrativePlaceholders[1], value: missionLabelWithCode(detail.highestStoryProgressId) },
+    {
+      ...runStoryNarrativePlaceholders[2],
+      value: evidence?.firstClearConsumed === undefined || evidence.firstClearConsumed === null
+        ? "없음"
+        : firstClearLabel(evidence.firstClearConsumed)
+    },
+    { ...runStoryNarrativePlaceholders[3], value: statusLabelWithCode(detail.contentStatus) },
+    { ...runStoryNarrativePlaceholders[4], value: statusLabelWithCode(detail.localizationStatus) },
+    { ...runStoryNarrativePlaceholders[5], value: statusLabelWithCode(detail.missingContentStatus) },
+    { ...runStoryNarrativePlaceholders[6], value: storySupportContextValue(detail) }
+  ];
+}
+
+function runStoryNarrativeCardsForLoading(): RunRiskRewardPlaceholder[] {
+  return runStoryNarrativePlaceholders.map((placeholder) => ({ ...placeholder, value: "조회 중" }));
+}
+
+function runStoryNarrativeCardsForError(error: unknown, accountId: string): RunRiskRewardPlaceholder[] {
+  const failure = adminRequestFailureDisplay(error, { resourceLabel: "스토리 진행도", resourceId: accountId });
+
+  return runStoryNarrativePlaceholders.map((placeholder, index) => ({
+    ...placeholder,
+    value: index === 0 ? accountId : failure.reason
+  }));
 }
 
 export function storyProgressDetailToReadContractPlaceholders(
@@ -632,6 +674,13 @@ export function RunDetailPage() {
   const storyProgressCards = storyProgressQuery.data
     ? storyProgressDetailToReadContractPlaceholders(storyProgressQuery.data)
     : storyProgressReadContractPlaceholders;
+  const storyNarrativeCards = storyProgressQuery.data
+    ? runStoryNarrativeCardsForStoryProgressDetail(storyProgressQuery.data, run.launchEvidence)
+    : storyProgressQuery.isLoading
+      ? runStoryNarrativeCardsForLoading()
+      : storyProgressQuery.error
+        ? runStoryNarrativeCardsForError(storyProgressQuery.error, storyProgressAccountId)
+        : runStoryNarrativePlaceholders;
   const startMetadataCards = runStartMetadataEvidenceFrom(run);
   const riskRewardCards = runRiskRewardCardsForLaunchEvidence(run.launchEvidence);
   const storyRaidPolicyCards = storyRaidPolicyCardsForLaunchEvidence(run.launchEvidence);
@@ -681,7 +730,7 @@ export function RunDetailPage() {
           <p>스토리 진행과 현지화/내러티브 데이터 상태를 읽기 전용으로 볼 준비만 합니다</p>
         </header>
         <div className="metric-grid">
-          {runStoryNarrativePlaceholders.map((placeholder) => (
+          {storyNarrativeCards.map((placeholder) => (
             <div key={placeholder.label} className="metric-card">
               <span>{placeholder.label}</span>
               <strong>{placeholder.value}</strong>

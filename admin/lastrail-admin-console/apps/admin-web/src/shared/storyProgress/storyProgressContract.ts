@@ -108,6 +108,12 @@ const pendingSupportContext: StoryProgressSupportContext = {
   readOnly: true
 };
 
+const emptySupportContext: StoryProgressSupportContext = {
+  ...pendingSupportContext,
+  lastProgressRunId: "없음",
+  updatedAt: "없음"
+};
+
 export function emptyStoryProgressDetail(accountId = "연동 대기"): StoryProgressDetail {
   return {
     accountId,
@@ -117,12 +123,12 @@ export function emptyStoryProgressDetail(accountId = "연동 대기"): StoryProg
     order: 0,
     clearedOperationIds: [],
     unlockedOperations: [],
-    narrativeVersion: "연동 대기",
+    narrativeVersion: "없음",
     contentStatus: "content_missing",
     localizationStatus: "localization_pending",
     fixtureStatus: "fixture_pending",
     missingContentStatus: "content_missing",
-    supportContext: pendingSupportContext
+    supportContext: emptySupportContext
   };
 }
 

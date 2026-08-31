@@ -5,6 +5,7 @@ import {
   forbiddenRunCombatEvidenceExamplesOutOfScope,
   raidBossResultPlaceholders,
   runRiskRewardCardsForLaunchEvidence,
+  runStoryNarrativeCardsForStoryProgressDetail,
   storyRaidLaunchResultPolicyPlaceholders,
   storyRaidPolicyCardsForLaunchEvidence,
   storyProgressDetailToReadContractPlaceholders,
@@ -127,6 +128,78 @@ describe("RunDetailPage risk reward skeleton", () => {
       ["permissionMode", "ROLE_PERMISSION"],
       ["readOnly", "읽기 전용"]
     ]);
+  });
+
+  it("maps story progress detail data into the top narrative summary cards", () => {
+    const cards = runStoryNarrativeCardsForStoryProgressDetail(
+      {
+        accountId: "account-1",
+        actId: "act_01_wasteland_railway",
+        highestStoryProgressId: "opn_03_water_stop",
+        highestClearedOperationId: "opn_03_water_stop",
+        order: 3,
+        clearedOperationIds: ["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"],
+        unlockedOperations: ["opn_04_scrapstar_show"],
+        narrativeVersion: "act1.2026-08-27.001",
+        contentStatus: "ready",
+        localizationStatus: "localization_pending",
+        fixtureStatus: "ready",
+        missingContentStatus: "content_missing",
+        supportContext: {
+          lastProgressRunId: "run-opn-03",
+          updatedAt: "2026-08-28T06:00:00.000Z",
+          permission: "STORY_PROGRESS_READ",
+          permissionMode: "ROLE_PERMISSION",
+          readOnly: true
+        }
+      },
+      {
+        operationId: "opn_03_water_stop",
+        outcome: "CLEARED",
+        clearedWaves: 15,
+        rewardPreviewId: null,
+        rewardClaimId: null,
+        appliedMultiplierLabel: null,
+        calculationMetadataStatus: "ready",
+        firstClearConsumed: true,
+        integrityDisposition: {
+          status: "CLEAR",
+          openSignals: 0,
+          hardViolations: 0,
+          primaryReason: null
+        },
+        encounterType: "ORDINARY_15_WAVE",
+        raidId: null,
+        bossId: null,
+        bossDefeated: null,
+        completedPhaseCount: null,
+        encounterDurationSeconds: null,
+        allowedOperatorSlots: 5,
+        bossPhaseRefs: [],
+        startAugmentPackageRef: "augment_pkg_opn_03_v1",
+        startTacticPackageRef: "tactic_pkg_opn_03_v1",
+        selectedAugmentIds: [],
+        selectedTacticIds: [],
+        staminaRefund: null,
+        supportContext: {
+          readOnly: true,
+          mutationEndpointsEnabled: false,
+          repairEndpointsEnabled: false,
+          source: "run_detail"
+        }
+      }
+    );
+
+    expect(cards.map((card) => [card.label, card.value])).toEqual([
+      ["작전 ID", "급수 정차 / opn_03_water_stop"],
+      ["스토리 진행도", "급수 정차 / opn_03_water_stop"],
+      ["첫 클리어 상태", "첫 클리어 보너스"],
+      ["미션 내러티브 상태", "준비 완료 / ready"],
+      ["현지화 데이터 상태", "현지화 대기 / localization_pending"],
+      ["누락 데이터 상태", "콘텐츠 누락 / content_missing"],
+      ["플레이어 문의 지원 문맥", "run-opn-03 / 2026-08-28T06:00:00.000Z"]
+    ]);
+    expect(cards.every((card) => card.value !== "연동 대기")).toBe(true);
   });
 
   it("prepares story progress read-only filter skeleton fields", () => {
