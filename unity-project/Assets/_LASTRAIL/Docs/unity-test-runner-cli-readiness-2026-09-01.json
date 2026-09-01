@@ -4,6 +4,7 @@
   "rootCause": "runTests_with_quit_exits_before_command_line_test_runner",
   "stableCommandRule": "omit_quit_for_runTests",
   "wrapperWaitsForXmlFlush": true,
+  "wrapperFailsOnXmlFailureCount": true,
   "focusedXmlGenerated": true,
   "focusedTotal": 7,
   "focusedPassed": 7,

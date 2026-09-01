@@ -70,11 +70,12 @@ $passed = [int]$testRun.passed
 Write-Host "Unity EditMode tests: total=$total passed=$passed failed=$failed xml=$TestResults"
 
 if ($unityExitCode -ne 0) {
-    exit $unityExitCode
+    [Environment]::Exit($unityExitCode)
 }
 
 if ($failed -ne 0) {
-    exit 1
+    Write-Error "Unity EditMode tests failed: total=$total passed=$passed failed=$failed xml=$TestResults"
+    [Environment]::Exit(1)
 }
 
-exit 0
+[Environment]::Exit(0)

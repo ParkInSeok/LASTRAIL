@@ -56,3 +56,4 @@ Full example:
 - ExecuteMethod validation/screenshot commands: `-quit` is still acceptable because those methods are not Test Framework command-line runs.
 - A launch verification run is valid only when the requested XML exists and contains a `/test-run` node with nonzero `total`.
 - The wrapper waits briefly for the XML file and parseable `/test-run` node because Unity can log `Saving results to` before the file is visible to the caller.
+- The wrapper reports nonzero failure counts from XML as command failure for launch verification.
