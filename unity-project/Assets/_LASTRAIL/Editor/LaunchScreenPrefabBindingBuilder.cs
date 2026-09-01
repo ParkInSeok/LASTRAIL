@@ -34,6 +34,14 @@ namespace LastRail.Editor
         private const string RewardOfflineMetersRoot = RewardOfflineRoot + "/Meters";
         private const string RewardOfflineEmptyRoot = RewardOfflineRoot + "/Empty";
         private const string RewardOfflineAccentsRoot = RewardOfflineRoot + "/Accents";
+        private const string SystemFeedbackRoot = "Assets/_LASTRAIL/UI/SystemFeedbackResources";
+        private const string SystemFeedbackLoadingRoot = SystemFeedbackRoot + "/Loading";
+        private const string SystemFeedbackBadgesRoot = SystemFeedbackRoot + "/Badges";
+        private const string SystemFeedbackNoticesRoot = SystemFeedbackRoot + "/Notices";
+        private const string SystemFeedbackRetryRoot = SystemFeedbackRoot + "/Retry";
+        private const string SystemFeedbackWarningRoot = SystemFeedbackRoot + "/Warning";
+        private const string SystemFeedbackDisabledRoot = SystemFeedbackRoot + "/Disabled";
+        private const string SystemFeedbackStatusRoot = SystemFeedbackRoot + "/Status";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -79,6 +87,21 @@ namespace LastRail.Editor
             AssetDatabase.Refresh();
         }
 
+        [MenuItem("LASTRAIL/Launch/Build System Feedback Polish Prefabs")]
+        public static void BuildSystemFeedbackPolishPrefabs()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateMissionShellPrefab();
+            CreateGachaPrefab();
+            CreateRewardStoryPrefab("RewardReviewScreen", "작전 보상");
+            CreateRewardStoryPrefab("OfflineRewardScreen", "오프라인 보상");
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
         private static void CreateMissionShellPrefab()
         {
             var root = CreateScreenRoot("MissionShellScreen");
@@ -86,6 +109,7 @@ namespace LastRail.Editor
             {
                 var behaviour = root.AddComponent<MissionShellScreenRootBehaviour>();
                 var safeArea = CreateSafeArea(root.transform);
+                CreateMissionShellSystemFeedbackPolish(safeArea);
                 var title = CreateText(safeArea, "TitleText", "작전 선택");
                 var subtitle = CreateText(safeArea, "SubtitleText", "Act 1");
                 var body = CreateText(safeArea, "BodyText", "브리핑");
@@ -261,6 +285,7 @@ namespace LastRail.Editor
             {
                 var behaviour = root.AddComponent<GachaScreenRootBehaviour>();
                 var safeArea = CreateSafeArea(root.transform);
+                CreateGachaSystemFeedbackPolish(safeArea);
                 var bannerKeyVisual = CreateImage(
                     safeArea,
                     "BannerKeyVisualImage",
@@ -545,6 +570,7 @@ namespace LastRail.Editor
                 else if (string.Equals(prefabName, "RewardReviewScreen", StringComparison.Ordinal))
                 {
                     CreateRewardReviewVisualPolish(safeArea);
+                    CreateRewardReviewSystemFeedbackPolish(safeArea);
                     Place(body, 0f, 545f, 960f, 128f);
                     Place(rewardLines, 110f, 120f, 720f, 330f);
                     Place(status, 0f, -335f, 960f, 128f);
@@ -552,6 +578,7 @@ namespace LastRail.Editor
                 else if (string.Equals(prefabName, "OfflineRewardScreen", StringComparison.Ordinal))
                 {
                     CreateOfflineRewardVisualPolish(safeArea);
+                    CreateOfflineRewardSystemFeedbackPolish(safeArea);
                     Place(body, 0f, 545f, 960f, 128f);
                     Place(rewardLines, 110f, 115f, 720f, 330f);
                     Place(status, 0f, -335f, 960f, 128f);
@@ -650,6 +677,96 @@ namespace LastRail.Editor
             Place(emptyState, -305f, 5f, 260f, 174f);
             Place(claimableAccent, 278f, 15f, 220f, 84f);
             CreateRewardLineFrame(layer, "OfflineRewardLineItemFrameImage", 125f, -70f);
+        }
+
+        private static void CreateMissionShellSystemFeedbackPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "MissionShellSystemFeedbackLayer");
+            var loading = CreateImage(
+                layer,
+                "LoadingRailIndicatorImage",
+                SystemFeedbackLoadingRoot + "/loading_rail_indicator.png",
+                new Color(1f, 1f, 1f, 0.88f));
+            var warning = CreateImage(
+                layer,
+                "WarningStripBannerAccentImage",
+                SystemFeedbackWarningRoot + "/warning_strip_banner_accent.png",
+                new Color(1f, 1f, 1f, 0.58f));
+            var dots = CreateImage(
+                layer,
+                "InlineStatusDotSetImage",
+                SystemFeedbackStatusRoot + "/inline_status_dot_set.png",
+                new Color(1f, 1f, 1f, 0.7f));
+
+            Place(loading, 0f, 535f, 560f, 132f);
+            Place(warning, 0f, -600f, 760f, 92f);
+            Place(dots, 310f, 692f, 180f, 45f);
+        }
+
+        private static void CreateGachaSystemFeedbackPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "GachaSystemFeedbackLayer");
+            var connectionBadge = CreateImage(
+                layer,
+                "NetworkErrorBadgeImage",
+                SystemFeedbackBadgesRoot + "/feedback_network_error_badge.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            var retry = CreateImage(
+                layer,
+                "RetryRefreshAccentImage",
+                SystemFeedbackRetryRoot + "/retry_refresh_accent.png",
+                new Color(1f, 1f, 1f, 0.62f));
+            var disabled = CreateImage(
+                layer,
+                "DisabledUnavailableOverlayImage",
+                SystemFeedbackDisabledRoot + "/disabled_unavailable_overlay.png",
+                new Color(1f, 1f, 1f, 0.34f));
+
+            Place(connectionBadge, 292f, -356f, 230f, 86f);
+            Place(retry, 398f, -566f, 96f, 96f);
+            Place(disabled, 0f, -112f, 730f, 470f);
+        }
+
+        private static void CreateRewardReviewSystemFeedbackPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "RewardReviewSystemFeedbackLayer");
+            var success = CreateImage(
+                layer,
+                "FeedbackSuccessBadgeImage",
+                SystemFeedbackBadgesRoot + "/feedback_success_badge.png",
+                new Color(1f, 1f, 1f, 0.78f));
+            var dots = CreateImage(
+                layer,
+                "InlineStatusDotSetImage",
+                SystemFeedbackStatusRoot + "/inline_status_dot_set.png",
+                new Color(1f, 1f, 1f, 0.7f));
+
+            Place(success, -320f, -334f, 188f, 70f);
+            Place(dots, 330f, -336f, 190f, 48f);
+        }
+
+        private static void CreateOfflineRewardSystemFeedbackPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "OfflineRewardSystemFeedbackLayer");
+            var maintenance = CreateImage(
+                layer,
+                "MaintenanceNoticePanelImage",
+                SystemFeedbackNoticesRoot + "/maintenance_notice_panel.png",
+                new Color(1f, 1f, 1f, 0.38f));
+            var disabled = CreateImage(
+                layer,
+                "DisabledUnavailableOverlayImage",
+                SystemFeedbackDisabledRoot + "/disabled_unavailable_overlay.png",
+                new Color(1f, 1f, 1f, 0.34f));
+            var retry = CreateImage(
+                layer,
+                "RetryRefreshAccentImage",
+                SystemFeedbackRetryRoot + "/retry_refresh_accent.png",
+                new Color(1f, 1f, 1f, 0.56f));
+
+            Place(maintenance, 0f, 198f, 750f, 300f);
+            Place(disabled, -305f, 5f, 240f, 160f);
+            Place(retry, 390f, -338f, 88f, 88f);
         }
 
         private static void CreateRewardLineFrame(Transform parent, string name, float x, float y)
