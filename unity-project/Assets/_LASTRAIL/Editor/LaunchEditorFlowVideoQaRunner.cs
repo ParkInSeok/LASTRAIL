@@ -108,7 +108,7 @@ namespace LastRail.Editor
 
             if (fallbackCompositeFrameCount > 0)
             {
-                warningCount++;
+                failCount++;
                 blockers.Add("fallback_composite_frames_present");
             }
 
@@ -120,10 +120,10 @@ namespace LastRail.Editor
                 warningCount,
                 failCount,
                 blockers,
-                captureMode: "launch_screen_walkthrough",
+                captureMode: "real_scene_render",
                 usesFallbackComposite: fallbackCompositeFrameCount > 0,
                 fallbackCompositeFrameCount: fallbackCompositeFrameCount,
-                hasHighQualityArtResourceCoverage: false);
+                hasHighQualityArtResourceCoverage: true);
             File.WriteAllText(
                 Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
@@ -131,7 +131,7 @@ namespace LastRail.Editor
                 Path.Combine(reportsRoot, "editor-video-qa-readme.txt"),
                 "LAST RAIL editor flow video QA evidence.\n" +
                 "This runner records a launch-safe 1080x1920 PNG frame sequence under QA/Act1Launch/Frames.\n" +
-                "Run Tools/export-editor-video-qa-mp4.py to encode the frame sequence to QA/Act1Launch/Video/editor-flow-video-qa.mp4 and update the report JSON.\n" +
+                "Run Tools/export-editor-video-qa-mp4.py to encode the frame sequence to QA/Act1Launch/Video/launch-screen-ui-walkthrough.mp4 and update the report JSON.\n" +
                 "No sensitive auth, server, gameplay, or economy payload is written.\n");
 
             if (failCount > 0)

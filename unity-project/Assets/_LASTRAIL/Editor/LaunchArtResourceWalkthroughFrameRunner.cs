@@ -155,6 +155,10 @@ namespace LastRail.Editor
             }
 
             Debug.Log("LASTRAIL art resource walkthrough captured " + framePaths.Count.ToString(CultureInfo.InvariantCulture) + " Unity-rendered frames to " + outputRoot);
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         private static void CaptureBackgroundFrame(
@@ -202,7 +206,7 @@ namespace LastRail.Editor
                 AddHeader(root.transform, "LAST RAIL launch art resources", surfaceKey);
 
                 var startX = -((columns - 1) * cellWidth) * 0.5f;
-                var startY = 620f;
+                var startY = 560f;
                 for (var i = 0; i < assetPaths.Count; i++)
                 {
                     var column = i % columns;
