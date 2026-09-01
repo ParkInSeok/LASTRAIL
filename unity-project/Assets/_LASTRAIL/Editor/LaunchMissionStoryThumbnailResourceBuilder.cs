@@ -202,7 +202,7 @@ namespace LastRail.Editor
             b.AppendLine("  \"durableProgressionIncluded\": false,");
             b.AppendLine("  \"operationAccessIncluded\": false,");
             b.AppendLine("  \"rewardCalculationIncluded\": false,");
-            b.AppendLine("  \"economyGrantIncluded\": false,");
+            b.AppendLine("  \"economyMutationIncluded\": false,");
             b.AppendLine("  \"missions\": [");
             for (var i = 0; i < Missions.Length; i++)
             {

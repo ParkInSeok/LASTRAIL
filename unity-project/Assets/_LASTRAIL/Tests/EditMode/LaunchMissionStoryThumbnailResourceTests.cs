@@ -16,6 +16,8 @@ namespace LastRail.Tests.EditMode
         private const string ReadmePath = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/README.md";
         private const string ShowcasePrefabPath = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Showcase/LRLaunchMissionStoryThumbnailShowcase.prefab";
         private const string MissionShellPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab";
+        private const string StoryProgressPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab";
+        private const string CodexArchivePrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab";
 
         private static readonly MissionThumbnailSpec[] Missions =
         {
@@ -63,7 +65,8 @@ namespace LastRail.Tests.EditMode
 
             foreach (var overlay in OverlayIds)
             {
-                AssertSprite("Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/" + overlay + ".png", overlay.EndsWith("_overlay", StringComparison.Ordinal) || overlay.EndsWith("_accent", StringComparison.Ordinal) ? 1024 : 256, overlay.EndsWith("_overlay", StringComparison.Ordinal) || overlay.EndsWith("_accent", StringComparison.Ordinal) ? 576 : 96);
+                var isFullThumbnailOverlay = overlay == "mission_state_locked_overlay" || overlay == "mission_state_available_accent";
+                AssertSprite("Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/" + overlay + ".png", isFullThumbnailOverlay ? 1024 : 256, isFullThumbnailOverlay ? 576 : 96);
             }
         }
 
@@ -99,6 +102,27 @@ namespace LastRail.Tests.EditMode
             {
                 Assert.That(ContainsSprite(prefab, mission.MissionId + "_thumbnail"), Is.True, mission.MissionId);
             }
+        }
+
+        [Test]
+        public void StoryProgressAndCodexArchiveConsumeThumbnailsAsVisualOnlyResources()
+        {
+            var storyProgress = AssetDatabase.LoadAssetAtPath<GameObject>(StoryProgressPrefabPath);
+            var codexArchive = AssetDatabase.LoadAssetAtPath<GameObject>(CodexArchivePrefabPath);
+            Assert.That(storyProgress, Is.Not.Null);
+            Assert.That(codexArchive, Is.Not.Null);
+
+            foreach (var mission in Missions)
+            {
+                Assert.That(ContainsSprite(storyProgress, mission.MissionId + "_thumbnail"), Is.True, mission.MissionId);
+                Assert.That(ContainsSprite(codexArchive, mission.MissionId + "_thumbnail"), Is.True, mission.MissionId);
+            }
+
+            Assert.That(ContainsSprite(storyProgress, "mission_state_available_accent"), Is.True);
+            Assert.That(ContainsSprite(storyProgress, "mission_state_cleared_stamp"), Is.True);
+            Assert.That(ContainsSprite(storyProgress, "mission_state_first_clear_badge"), Is.True);
+            Assert.That(ContainsSprite(codexArchive, "mission_state_locked_overlay"), Is.True);
+            Assert.That(ContainsSprite(codexArchive, "mission_state_boss_only_badge"), Is.True);
         }
 
         [Test]

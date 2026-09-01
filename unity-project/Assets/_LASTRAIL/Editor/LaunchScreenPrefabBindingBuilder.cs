@@ -22,6 +22,7 @@ namespace LastRail.Editor
         private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
         private const string GachaFxRoot = "Assets/_LASTRAIL/UI/GachaResources/GachaFx";
         private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
+        private const string MissionThumbnailOverlayRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays";
         private const string OperatorCardPolishRoot = "Assets/_LASTRAIL/UI/Operators/CardPolish";
         private const string OperatorCardPolishFramesRoot = OperatorCardPolishRoot + "/Frames";
         private const string OperatorCardPolishBadgesRoot = OperatorCardPolishRoot + "/Badges";
@@ -40,6 +41,19 @@ namespace LastRail.Editor
             CreateCodexPrefab();
             CreateRewardStoryPrefab("RewardReviewScreen", "작전 보상");
             CreateRewardStoryPrefab("OfflineRewardScreen", "오프라인 보상");
+            CreateRewardStoryPrefab("StoryProgressSummaryScreen", "스토리 진행");
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build Story Progress And Codex Thumbnail Prefabs")]
+        public static void BuildStoryProgressAndCodexThumbnailPrefabs()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateCodexPrefab();
             CreateRewardStoryPrefab("StoryProgressSummaryScreen", "스토리 진행");
 
             AssetDatabase.SaveAssets();
@@ -107,6 +121,118 @@ namespace LastRail.Editor
                     new Color(1f, 1f, 1f, 0.82f));
                 Place(image, -420f + i * 140f, 390f, 124f, 70f);
             }
+        }
+
+        private static void CreateStoryProgressThumbnailTimeline(Transform parent)
+        {
+            var missions = ActOneMissionThumbnailEntries();
+            var startX = -360f;
+            for (var i = 0; i < missions.Length; i++)
+            {
+                var column = i % 4;
+                var row = i / 4;
+                var x = startX + column * 240f;
+                var y = 390f - row * 150f;
+                CreateMissionThumbnailCard(parent, "StoryProgress", missions[i], x, y, 208f, 118f, "mission_state_available_accent");
+
+                if (i < 3)
+                {
+                    CreateMissionThumbnailOverlay(parent, "StoryProgressCleared_" + missions[i].MissionId, "mission_state_cleared_stamp", x + 48f, y - 40f, 104f, 38f);
+                }
+                else if (i == 3)
+                {
+                    CreateMissionThumbnailOverlay(parent, "StoryProgressFirstClear_" + missions[i].MissionId, "mission_state_first_clear_badge", x + 44f, y - 40f, 112f, 38f);
+                }
+                else if (missions[i].IsRaid)
+                {
+                    CreateMissionThumbnailOverlay(parent, "StoryProgressBossOnly_" + missions[i].MissionId, "mission_state_boss_only_badge", x + 46f, y - 40f, 114f, 38f);
+                }
+            }
+
+            var emptyState = CreateText(parent, "StoryProgressNoneStateText", "스토리 진행 없음");
+            ConfigureText(emptyState, "스토리 진행 없음", 22f, TextAlignmentOptions.Center);
+            Place(emptyState, 0f, 140f, 960f, 64f);
+        }
+
+        private static void CreateCodexArchiveThumbnailCards(Transform parent)
+        {
+            var missions = ActOneMissionThumbnailEntries();
+            for (var i = 0; i < missions.Length; i++)
+            {
+                var isRaid = missions[i].IsRaid;
+                var column = i % 2;
+                var row = i / 2;
+                var x = isRaid ? 0f : -235f + column * 470f;
+                var y = isRaid ? 65f : 545f - row * 148f;
+                var width = isRaid ? 910f : 430f;
+                var height = isRaid ? 128f : 118f;
+                var overlay = i == 0 ? "mission_state_locked_overlay" : "mission_state_available_accent";
+                CreateMissionThumbnailCard(parent, "CodexArchive", missions[i], x, y, width, height, overlay);
+
+                if (i > 0 && i < 4)
+                {
+                    CreateMissionThumbnailOverlay(parent, "CodexArchiveCleared_" + missions[i].MissionId, "mission_state_cleared_stamp", x + width * 0.32f, y - height * 0.34f, 104f, 38f);
+                }
+
+                if (isRaid)
+                {
+                    CreateMissionThumbnailOverlay(parent, "CodexArchiveBossOnly_" + missions[i].MissionId, "mission_state_boss_only_badge", x + 150f, y - 44f, 120f, 40f);
+                }
+            }
+        }
+
+        private static MissionThumbnailEntry[] ActOneMissionThumbnailEntries()
+        {
+            return new[]
+            {
+                new MissionThumbnailEntry("opn_01_last_departure", false),
+                new MissionThumbnailEntry("opn_02_first_signal", false),
+                new MissionThumbnailEntry("opn_03_water_stop", false),
+                new MissionThumbnailEntry("opn_04_scrapstar_show", false),
+                new MissionThumbnailEntry("opn_05_night_boarders", false),
+                new MissionThumbnailEntry("opn_06_broken_line", false),
+                new MissionThumbnailEntry("raid_raider_king_engine", true)
+            };
+        }
+
+        private static void CreateMissionThumbnailCard(
+            Transform parent,
+            string namePrefix,
+            MissionThumbnailEntry entry,
+            float x,
+            float y,
+            float width,
+            float height,
+            string overlayId)
+        {
+            var thumbnail = CreateImage(
+                parent,
+                namePrefix + "Thumbnail_" + entry.MissionId,
+                MissionThumbnailRoot + "/" + entry.MissionId + "_thumbnail.png",
+                Color.white);
+            Place(thumbnail, x, y, width, height);
+
+            if (!string.IsNullOrWhiteSpace(overlayId))
+            {
+                CreateMissionThumbnailOverlay(parent, namePrefix + "Overlay_" + entry.MissionId + "_" + overlayId, overlayId, x, y, width, height);
+            }
+        }
+
+        private static void CreateMissionThumbnailOverlay(
+            Transform parent,
+            string name,
+            string overlayId,
+            float x,
+            float y,
+            float width,
+            float height)
+        {
+            var overlay = CreateImage(
+                parent,
+                name,
+                MissionThumbnailOverlayRoot + "/" + overlayId + ".png",
+                Color.white);
+            Place(overlay, x, y, width, height);
         }
 
         private static void CreateGachaPrefab()
@@ -346,8 +472,9 @@ namespace LastRail.Editor
                 var rewardReview = CreateButton(safeArea, "RewardReviewButton", "보상", out var rewardReviewText);
                 Place(title, 0f, 800f, 960f, 96f);
                 Place(subtitle, 0f, 720f, 960f, 72f);
-                Place(entries, 0f, 170f, 960f, 940f);
-                Place(overflow, 0f, -370f, 960f, 96f);
+                CreateCodexArchiveThumbnailCards(safeArea);
+                Place(entries, 0f, -305f, 960f, 260f);
+                Place(overflow, 0f, -500f, 960f, 72f);
                 Place(missionSelect.GetComponent<RectTransform>(), -300f, -720f, 280f, 64f);
                 Place(result.GetComponent<RectTransform>(), 0f, -720f, 240f, 64f);
                 Place(rewardReview.GetComponent<RectTransform>(), 300f, -720f, 240f, 64f);
@@ -389,9 +516,19 @@ namespace LastRail.Editor
                 var codex = CreateButton(safeArea, "CodexButton", "기록 보관소", out var codexText);
                 Place(title, 0f, 800f, 960f, 96f);
                 Place(subtitle, 0f, 720f, 960f, 72f);
-                Place(body, 0f, 520f, 960f, 220f);
-                Place(rewardLines, 0f, 140f, 960f, 380f);
-                Place(status, 0f, -300f, 960f, 160f);
+                if (string.Equals(prefabName, "StoryProgressSummaryScreen", StringComparison.Ordinal))
+                {
+                    Place(body, 0f, 610f, 960f, 92f);
+                    CreateStoryProgressThumbnailTimeline(safeArea);
+                    Place(rewardLines, 0f, -60f, 960f, 260f);
+                    Place(status, 0f, -365f, 960f, 120f);
+                }
+                else
+                {
+                    Place(body, 0f, 520f, 960f, 220f);
+                    Place(rewardLines, 0f, 140f, 960f, 380f);
+                    Place(status, 0f, -300f, 960f, 160f);
+                }
                 Place(primary.GetComponent<RectTransform>(), -300f, -720f, 280f, 64f);
                 Place(secondary.GetComponent<RectTransform>(), 0f, -720f, 240f, 64f);
                 Place(codex.GetComponent<RectTransform>(), 300f, -720f, 280f, 64f);
@@ -581,6 +718,19 @@ namespace LastRail.Editor
                 var folder = Path.GetFileName(path);
                 AssetDatabase.CreateFolder(parent, folder);
             }
+        }
+
+        private readonly struct MissionThumbnailEntry
+        {
+            public MissionThumbnailEntry(string missionId, bool isRaid)
+            {
+                MissionId = missionId;
+                IsRaid = isRaid;
+            }
+
+            public string MissionId { get; }
+
+            public bool IsRaid { get; }
         }
     }
 }

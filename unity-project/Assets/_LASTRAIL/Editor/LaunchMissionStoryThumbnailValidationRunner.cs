@@ -17,6 +17,8 @@ namespace LastRail.Editor
         private const string ManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-mission-story-thumbnails.json";
         private const string ReadmePath = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/README.md";
         private const string MissionShellPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab";
+        private const string StoryProgressPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab";
+        private const string CodexArchivePrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab";
 
         public static void ValidateMissionStoryThumbnailResources()
         {
@@ -27,6 +29,7 @@ namespace LastRail.Editor
             ValidateTextures(failures);
             ValidateShowcase(failures);
             ValidateMissionShellBinding(failures);
+            ValidateStoryProgressAndCodexBindings(failures);
 
             var outputRoot = Path.Combine(Path.GetTempPath(), OutputDirectoryName);
             Directory.CreateDirectory(outputRoot);
@@ -127,6 +130,40 @@ namespace LastRail.Editor
             foreach (var mission in LaunchMissionStoryThumbnailResourceBuilder.Missions)
             {
                 RequireSprite(prefab, mission.MissionId + "_thumbnail", failures);
+            }
+        }
+
+        private static void ValidateStoryProgressAndCodexBindings(List<string> failures)
+        {
+            ValidateMissionThumbnailConsumer(StoryProgressPrefabPath, "story progress", failures, true);
+            ValidateMissionThumbnailConsumer(CodexArchivePrefabPath, "codex archive", failures, false);
+        }
+
+        private static void ValidateMissionThumbnailConsumer(string prefabPath, string label, List<string> failures, bool expectsProgressOverlays)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefab == null)
+            {
+                failures.Add("missing " + label + " prefab");
+                return;
+            }
+
+            ValidateCommonUiBoundaries(prefab, label, failures);
+            foreach (var mission in LaunchMissionStoryThumbnailResourceBuilder.Missions)
+            {
+                RequireSprite(prefab, mission.MissionId + "_thumbnail", failures);
+            }
+
+            if (expectsProgressOverlays)
+            {
+                RequireSprite(prefab, "mission_state_available_accent", failures);
+                RequireSprite(prefab, "mission_state_cleared_stamp", failures);
+                RequireSprite(prefab, "mission_state_first_clear_badge", failures);
+            }
+            else
+            {
+                RequireSprite(prefab, "mission_state_locked_overlay", failures);
+                RequireSprite(prefab, "mission_state_boss_only_badge", failures);
             }
         }
 

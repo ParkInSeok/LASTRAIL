@@ -13,7 +13,7 @@
   "durableProgressionIncluded": false,
   "operationAccessIncluded": false,
   "rewardCalculationIncluded": false,
-  "economyGrantIncluded": false,
+  "economyMutationIncluded": false,
   "missions": [
     { "missionId": "opn_01_last_departure", "category": "ordinary", "displayLabel": "마지막 출발", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_01_last_departure_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
     { "missionId": "opn_02_first_signal", "category": "ordinary", "displayLabel": "첫 신호", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_02_first_signal_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
