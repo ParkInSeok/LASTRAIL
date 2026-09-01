@@ -140,6 +140,10 @@ namespace LastRail.Editor
             }
 
             Debug.Log("LASTRAIL editor flow video QA captured " + framePaths.Count.ToString(CultureInfo.InvariantCulture) + " frames to " + outputRoot);
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         private static bool CapturePrefabFrame(

@@ -17,6 +17,7 @@ namespace LastRail.Tests.EditMode
     public sealed class LaunchScreenPrefabBindingTests
     {
         private const string ScreenPrefabRoot = "Assets/_LASTRAIL/Prefabs/Screens/";
+        private const string CommonSkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
 
         [Test]
         public void LaunchScreenPrefabs_ExistForSevenPlayerFacingScreens()
@@ -196,6 +197,17 @@ namespace LastRail.Tests.EditMode
             AssertButtonsMeetMinimumTouchTarget("RewardReviewScreen.prefab");
             AssertButtonsMeetMinimumTouchTarget("OfflineRewardScreen.prefab");
             AssertButtonsMeetMinimumTouchTarget("StoryProgressSummaryScreen.prefab");
+        }
+
+        [Test]
+        public void LaunchScreenButtons_UseCommonHighQualitySlicedSkins()
+        {
+            AssertButtonsUseCommonSkins("MissionShellScreen.prefab");
+            AssertButtonsUseCommonSkins("GachaScreen.prefab");
+            AssertButtonsUseCommonSkins("CodexArchiveScreen.prefab");
+            AssertButtonsUseCommonSkins("RewardReviewScreen.prefab");
+            AssertButtonsUseCommonSkins("OfflineRewardScreen.prefab");
+            AssertButtonsUseCommonSkins("StoryProgressSummaryScreen.prefab");
         }
 
         [Test]
@@ -464,6 +476,21 @@ namespace LastRail.Tests.EditMode
                 Assert.That(rectTransform, Is.Not.Null, button.name);
                 Assert.That(rectTransform.sizeDelta.x, Is.GreaterThanOrEqualTo(48f), button.name);
                 Assert.That(rectTransform.sizeDelta.y, Is.GreaterThanOrEqualTo(48f), button.name);
+            }
+        }
+
+        private static void AssertButtonsUseCommonSkins(string prefabName)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + prefabName);
+            Assert.That(prefab, Is.Not.Null, prefabName);
+
+            foreach (var button in prefab.GetComponentsInChildren<Button>(includeInactive: true))
+            {
+                var image = button.GetComponent<Image>();
+                Assert.That(image, Is.Not.Null, prefabName + ":" + button.name);
+                Assert.That(image.sprite, Is.Not.Null, prefabName + ":" + button.name);
+                Assert.That(AssetDatabase.GetAssetPath(image.sprite), Does.StartWith(CommonSkinRoot), prefabName + ":" + button.name);
+                Assert.That(image.type, Is.EqualTo(Image.Type.Sliced), prefabName + ":" + button.name);
             }
         }
 

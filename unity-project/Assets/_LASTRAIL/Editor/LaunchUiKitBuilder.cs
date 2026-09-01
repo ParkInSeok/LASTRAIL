@@ -17,6 +17,9 @@ namespace LastRail.Editor
     {
         private const string UiRoot = "Assets/_LASTRAIL/UI";
         private const string CommonRoot = UiRoot + "/Common";
+        private const string SkinRoot = CommonRoot + "/Skins";
+        private const string SkinSourceRoot = SkinRoot + "/Sources";
+        private const string SkinSourcePath = SkinSourceRoot + "/lastrail_common_ui_skin_atlas_generated.png";
         private const string IconRoot = UiRoot + "/Icons";
         private const string StyleRoot = UiRoot + "/Style";
         private const string SceneRoot = "Assets/_LASTRAIL/Scenes";
@@ -52,17 +55,24 @@ namespace LastRail.Editor
             Ensure(CommonRoot + "/InputFields");
             Ensure(CommonRoot + "/Rows");
             Ensure(CommonRoot + "/Showcase");
+            Ensure(SkinRoot);
+            Ensure(SkinSourceRoot);
 
             EnsureTmpEssentialResources();
             WriteJson();
             NormalizeFontMaterial();
             CreateIcons();
+            CreateSkinSprites();
             CreatePrefabs();
             CreateShowcasePrefab();
             CreateShowcaseScene();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("LASTRAIL common UI kit build complete.");
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         private static void EnsureTmpEssentialResources()
@@ -131,6 +141,12 @@ namespace LastRail.Editor
   ""minimumTouchDp"": 48,
   ""componentPrefabCount"": 20,
   ""iconCount"": 16,
+  ""qualityClass"": ""HIGH_QUALITY_2D_UI_SKIN"",
+  ""sourceKind"": ""image_gen_contact_sheet_crops"",
+  ""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_generated.png"",
+  ""nineSliceSpriteCount"": 23,
+  ""appliedPrefabCount"": 20,
+  ""launchScreenConsumerCount"": 7,
   ""fontPolicy"": ""Pretendard TMP SDF with UI material preset"",
   ""eventPolicy"": ""Root components expose callbacks; parents bind to public events only"",
   ""railsChoiceIncluded"": false,
@@ -166,7 +182,7 @@ namespace LastRail.Editor
         {
             var root = Obj(name, iconOnly ? new Vector2(56, 56) : new Vector2(240, 64));
             var image = root.AddComponent<Image>();
-            image.color = color;
+            ApplySkin(image, ButtonSkinFor(name), color);
             var button = root.AddComponent<Button>();
             button.targetGraphic = image;
             button.interactable = interactable;
@@ -204,14 +220,17 @@ namespace LastRail.Editor
             slider.value = 0.62f;
             root.AddComponent<LastRailUiStyleTag>();
             var width = root.GetComponent<RectTransform>().sizeDelta.x;
-            var bg = Img(root.transform, "Track", new Vector2(width, 10), null, C(52, 60, 64, 255));
-            var fill = Img(root.transform, "Fill", new Vector2(width * 0.62f, 10), null, interactable ? Copper : Disabled);
+            var bg = Img(root.transform, "Track", new Vector2(width, 18), Skin("ui_slider_track_9slice"), Color.white);
+            var fill = Img(root.transform, "Fill", new Vector2(width * 0.62f, 18), Skin("ui_slider_fill_9slice"), interactable ? Color.white : C(145, 145, 145, 180));
             fill.rectTransform.anchorMin = new Vector2(0, 0.5f);
             fill.rectTransform.anchorMax = new Vector2(0, 0.5f);
             fill.rectTransform.pivot = new Vector2(0, 0.5f);
             fill.rectTransform.anchoredPosition = new Vector2(-width * 0.5f, 0);
+            var handle = Img(root.transform, "Handle", compact ? new Vector2(38, 38) : new Vector2(46, 46), Skin("ui_slider_handle_9slice"), interactable ? Color.white : C(145, 145, 145, 180));
+            handle.rectTransform.anchoredPosition = new Vector2(width * 0.12f, 0);
             slider.targetGraphic = bg;
             slider.fillRect = fill.rectTransform;
+            slider.handleRect = handle.rectTransform;
             Tag(root, "slider", name);
             return root;
         }
@@ -219,7 +238,7 @@ namespace LastRail.Editor
         private static GameObject InputPrefab(string name, string label, bool error, bool interactable)
         {
             var root = Obj(name, new Vector2(420, 76));
-            root.AddComponent<Image>().color = error ? C(61, 34, 35, 255) : PanelAlt;
+            ApplySkin(root.AddComponent<Image>(), error ? "ui_input_error_9slice" : name.Contains("Focused") ? "ui_input_focused_9slice" : "ui_input_normal_9slice", error ? C(61, 34, 35, 255) : PanelAlt);
             var input = root.AddComponent<TMP_InputField>();
             input.interactable = interactable;
             input.textViewport = root.GetComponent<RectTransform>();
@@ -248,11 +267,11 @@ namespace LastRail.Editor
             var toggle = root.AddComponent<Toggle>();
             var wrapper = root.AddComponent<LastRailUiToggle>();
             root.AddComponent<LastRailUiStyleTag>();
-            var box = Img(root.transform, "Box", new Vector2(36, 36), null, RailBlue);
+            var box = Img(root.transform, "Box", new Vector2(42, 42), Skin("ui_toggle_off_9slice"), Color.white);
             box.rectTransform.anchorMin = new Vector2(0, 0.5f);
             box.rectTransform.anchorMax = new Vector2(0, 0.5f);
             box.rectTransform.anchoredPosition = new Vector2(24, 0);
-            var mark = Txt(box.transform, "Mark", "✓", 22, TextMain, TextAlignmentOptions.Center, new Vector2(36, 36));
+            var mark = Img(box.transform, "Mark", new Vector2(42, 42), Skin("ui_toggle_on_9slice"), Color.white);
             var label = Txt(root.transform, "Label", "진동 사용", 22, TextMain, TextAlignmentOptions.Left, new Vector2(200, 38));
             label.rectTransform.anchoredPosition = new Vector2(48, 0);
             toggle.targetGraphic = box;
@@ -288,7 +307,7 @@ namespace LastRail.Editor
         private static GameObject PanelPrefab(string name, Vector2 size, string title, string body)
         {
             var root = Obj(name, size);
-            root.AddComponent<Image>().color = Panel;
+            ApplySkin(root.AddComponent<Image>(), "ui_modal_panel_9slice", Panel);
             root.AddComponent<LastRailUiStyleTag>();
             var titleText = Txt(root.transform, "Title", title, 32, TextMain, TextAlignmentOptions.Left, new Vector2(size.x - 80, 46));
             titleText.rectTransform.anchoredPosition = new Vector2(0, size.y * 0.5f - 58);
@@ -304,7 +323,7 @@ namespace LastRail.Editor
         private static GameObject ToastPrefab()
         {
             var root = Obj("LRToastNotification", new Vector2(740, 76));
-            root.AddComponent<Image>().color = C(28, 37, 38, 245);
+            ApplySkin(root.AddComponent<Image>(), "ui_toast_panel_9slice", C(28, 37, 38, 245));
             root.AddComponent<LastRailUiStyleTag>();
             var icon = Img(root.transform, "Icon", new Vector2(32, 32), Icon("info"), Signal);
             icon.rectTransform.anchoredPosition = new Vector2(-330, 0);
@@ -317,7 +336,7 @@ namespace LastRail.Editor
         private static GameObject TooltipPrefab()
         {
             var root = Obj("LRTooltipCallout", new Vector2(420, 88));
-            root.AddComponent<Image>().color = C(18, 24, 29, 246);
+            ApplySkin(root.AddComponent<Image>(), "ui_tooltip_panel_9slice", C(18, 24, 29, 246));
             root.AddComponent<LastRailUiStyleTag>();
             Txt(root.transform, "Message", "아이콘 설명 또는 짧은 안내", 20, TextMain, TextAlignmentOptions.Center, new Vector2(360, 48));
             Tag(root, "tooltip", "default");
@@ -327,7 +346,7 @@ namespace LastRail.Editor
         private static GameObject RowPrefab(string name, string title, string status, string iconName)
         {
             var root = Obj(name, new Vector2(860, 84));
-            root.AddComponent<Image>().color = PanelAlt;
+            ApplySkin(root.AddComponent<Image>(), name == "LRRewardRow" ? "ui_reward_row_9slice" : "ui_list_row_9slice", PanelAlt);
             root.AddComponent<LastRailUiStyleTag>();
             var icon = Img(root.transform, "Icon", new Vector2(36, 36), Icon(iconName), TextMain);
             icon.rectTransform.anchoredPosition = new Vector2(-390, 0);
@@ -446,13 +465,50 @@ namespace LastRail.Editor
             var image = child.AddComponent<Image>();
             image.sprite = sprite;
             image.color = color;
-            image.preserveAspect = sprite != null;
+            if (IsSkinSprite(sprite))
+            {
+                image.type = Image.Type.Sliced;
+                image.preserveAspect = false;
+            }
+            else
+            {
+                image.preserveAspect = sprite != null;
+            }
             return image;
+        }
+
+        private static void ApplySkin(Image image, string skinName, Color fallbackColor)
+        {
+            var sprite = Skin(skinName);
+            image.sprite = sprite;
+            image.color = sprite == null ? fallbackColor : Color.white;
+            image.type = sprite == null ? Image.Type.Simple : Image.Type.Sliced;
+            image.preserveAspect = false;
         }
 
         private static Sprite Icon(string name)
         {
             return AssetDatabase.LoadAssetAtPath<Sprite>(IconRoot + "/ic_" + name + ".png");
+        }
+
+        private static Sprite Skin(string name)
+        {
+            return AssetDatabase.LoadAssetAtPath<Sprite>(SkinRoot + "/" + name + ".png");
+        }
+
+        private static string ButtonSkinFor(string name)
+        {
+            if (name.Contains("Danger")) return "ui_button_danger_9slice";
+            if (name.Contains("Disabled")) return "ui_button_disabled_9slice";
+            if (name.Contains("Icon")) return "ui_button_icon_9slice";
+            if (name.Contains("Segment1") || name.Contains("Primary")) return "ui_button_primary_9slice";
+            if (name.Contains("Segment")) return "ui_button_secondary_9slice";
+            return "ui_button_secondary_9slice";
+        }
+
+        private static bool IsSkinSprite(Sprite sprite)
+        {
+            return sprite != null && AssetDatabase.GetAssetPath(sprite).StartsWith(SkinRoot, StringComparison.Ordinal);
         }
 
         private static void Place(Transform parent, string path, float x, float y)
@@ -557,6 +613,99 @@ namespace LastRail.Editor
                     importer.SaveAndReimport();
                 }
             }
+        }
+
+        private static void CreateSkinSprites()
+        {
+            var sourceFile = ProjectPath(SkinSourcePath);
+            if (!File.Exists(sourceFile))
+            {
+                throw new InvalidOperationException("Missing generated launch UI skin atlas source: " + SkinSourcePath);
+            }
+
+            var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            source.LoadImage(File.ReadAllBytes(sourceFile));
+
+            foreach (var spec in SkinSpecs())
+            {
+                var x = spec.X;
+                var y = source.height - spec.Y - spec.Height;
+                var texture = new Texture2D(spec.Width, spec.Height, TextureFormat.RGBA32, false);
+                texture.SetPixels(source.GetPixels(x, y, spec.Width, spec.Height));
+                texture.Apply();
+
+                var unityPath = SkinRoot + "/" + spec.Name + ".png";
+                File.WriteAllBytes(ProjectPath(unityPath), texture.EncodeToPNG());
+                UnityEngine.Object.DestroyImmediate(texture);
+                AssetDatabase.ImportAsset(unityPath, ImportAssetOptions.ForceUpdate);
+
+                var importer = AssetImporter.GetAtPath(unityPath) as TextureImporter;
+                if (importer != null)
+                {
+                    importer.textureType = TextureImporterType.Sprite;
+                    importer.spriteImportMode = SpriteImportMode.Single;
+                    importer.spritePixelsPerUnit = 100f;
+                    importer.maxTextureSize = spec.MaxTextureSize;
+                    importer.alphaIsTransparency = true;
+                    importer.mipmapEnabled = false;
+                    importer.spriteBorder = new Vector4(spec.Border, spec.Border, spec.Border, spec.Border);
+                    importer.SaveAndReimport();
+                }
+            }
+
+            UnityEngine.Object.DestroyImmediate(source);
+        }
+
+        private static SkinSpec[] SkinSpecs()
+        {
+            return new[]
+            {
+                new SkinSpec("ui_button_primary_9slice", 28, 44, 310, 78, 24, 512),
+                new SkinSpec("ui_button_secondary_9slice", 374, 45, 306, 78, 24, 512),
+                new SkinSpec("ui_button_danger_9slice", 714, 46, 282, 76, 24, 512),
+                new SkinSpec("ui_button_disabled_9slice", 28, 176, 306, 82, 24, 512),
+                new SkinSpec("ui_button_icon_9slice", 374, 180, 76, 76, 18, 256),
+                new SkinSpec("ui_slider_track_9slice", 36, 350, 560, 58, 18, 1024),
+                new SkinSpec("ui_slider_fill_9slice", 38, 459, 566, 52, 18, 1024),
+                new SkinSpec("ui_slider_handle_9slice", 654, 330, 76, 116, 22, 256),
+                new SkinSpec("ui_input_normal_9slice", 28, 570, 330, 58, 20, 512),
+                new SkinSpec("ui_input_focused_9slice", 380, 570, 288, 58, 20, 512),
+                new SkinSpec("ui_input_error_9slice", 706, 570, 286, 58, 20, 512),
+                new SkinSpec("ui_toggle_off_9slice", 552, 690, 58, 58, 16, 256),
+                new SkinSpec("ui_toggle_on_9slice", 624, 690, 62, 62, 16, 256),
+                new SkinSpec("ui_tab_selected_9slice", 360, 704, 142, 62, 18, 512),
+                new SkinSpec("ui_tab_unselected_9slice", 30, 704, 320, 62, 18, 512),
+                new SkinSpec("ui_modal_panel_9slice", 26, 827, 430, 486, 42, 1024),
+                new SkinSpec("ui_toast_panel_9slice", 490, 818, 405, 78, 24, 512),
+                new SkinSpec("ui_tooltip_panel_9slice", 488, 906, 416, 78, 24, 512),
+                new SkinSpec("ui_list_row_9slice", 488, 1018, 420, 86, 24, 512),
+                new SkinSpec("ui_reward_row_9slice", 490, 1220, 436, 88, 24, 512),
+                new SkinSpec("ui_scroll_track_9slice", 944, 340, 48, 850, 20, 1024),
+                new SkinSpec("ui_scroll_thumb_9slice", 950, 680, 36, 230, 18, 512),
+                new SkinSpec("ui_status_chip_9slice", 770, 1450, 58, 32, 12, 256)
+            };
+        }
+
+        private readonly struct SkinSpec
+        {
+            public SkinSpec(string name, int x, int y, int width, int height, int border, int maxTextureSize)
+            {
+                Name = name;
+                X = x;
+                Y = y;
+                Width = width;
+                Height = height;
+                Border = border;
+                MaxTextureSize = maxTextureSize;
+            }
+
+            public string Name { get; }
+            public int X { get; }
+            public int Y { get; }
+            public int Width { get; }
+            public int Height { get; }
+            public int Border { get; }
+            public int MaxTextureSize { get; }
         }
 
         private static void DrawIcon(Texture2D texture, string name, Color color)

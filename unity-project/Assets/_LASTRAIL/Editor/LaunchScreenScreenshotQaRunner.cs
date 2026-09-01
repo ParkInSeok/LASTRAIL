@@ -86,6 +86,11 @@ namespace LastRail.Editor
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             }
+
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         private static LaunchScreenshotFidelityResult CaptureScreen(string screenKey, string prefabPath, string outputRoot)

@@ -18,9 +18,11 @@ namespace LastRail.Tests.EditMode
         private const string FontPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
         private const string MaterialPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat";
         private const string StyleJsonPath = "Assets/_LASTRAIL/UI/Style/lastrail-ui-tokens.json";
+        private const string ReadinessJsonPath = "Assets/_LASTRAIL/UI/Style/lastrail-ui-kit-readiness.json";
         private const string ShowcasePrefabPath = "Assets/_LASTRAIL/UI/Common/Showcase/LRLaunchUiKitShowcase.prefab";
         private const string ShowcaseScenePath = "Assets/_LASTRAIL/Scenes/LaunchUiKitShowcase.unity";
         private const string TmpSettingsPath = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
+        private const string SkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
 
         private static readonly string[] RequiredPrefabPaths =
         {
@@ -64,6 +66,33 @@ namespace LastRail.Tests.EditMode
             "Assets/_LASTRAIL/UI/Icons/ic_vibration.png",
             "Assets/_LASTRAIL/UI/Icons/ic_lock.png",
             "Assets/_LASTRAIL/UI/Icons/ic_unlock.png"
+        };
+
+        private static readonly string[] RequiredSkinSpritePaths =
+        {
+            SkinRoot + "/ui_button_primary_9slice.png",
+            SkinRoot + "/ui_button_secondary_9slice.png",
+            SkinRoot + "/ui_button_danger_9slice.png",
+            SkinRoot + "/ui_button_disabled_9slice.png",
+            SkinRoot + "/ui_button_icon_9slice.png",
+            SkinRoot + "/ui_slider_track_9slice.png",
+            SkinRoot + "/ui_slider_fill_9slice.png",
+            SkinRoot + "/ui_slider_handle_9slice.png",
+            SkinRoot + "/ui_input_normal_9slice.png",
+            SkinRoot + "/ui_input_focused_9slice.png",
+            SkinRoot + "/ui_input_error_9slice.png",
+            SkinRoot + "/ui_toggle_off_9slice.png",
+            SkinRoot + "/ui_toggle_on_9slice.png",
+            SkinRoot + "/ui_tab_selected_9slice.png",
+            SkinRoot + "/ui_tab_unselected_9slice.png",
+            SkinRoot + "/ui_modal_panel_9slice.png",
+            SkinRoot + "/ui_toast_panel_9slice.png",
+            SkinRoot + "/ui_tooltip_panel_9slice.png",
+            SkinRoot + "/ui_list_row_9slice.png",
+            SkinRoot + "/ui_reward_row_9slice.png",
+            SkinRoot + "/ui_scroll_track_9slice.png",
+            SkinRoot + "/ui_scroll_thumb_9slice.png",
+            SkinRoot + "/ui_status_chip_9slice.png"
         };
 
         [Test]
@@ -128,6 +157,54 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CommonUiKitSkinSprites_ExistAsSlicedHighQualityMobileAssets()
+        {
+            foreach (var path in RequiredSkinSpritePaths)
+            {
+                var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                Assert.That(sprite, Is.Not.Null, path);
+
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                Assert.That(importer, Is.Not.Null, path);
+                Assert.That(importer.textureType, Is.EqualTo(TextureImporterType.Sprite), path);
+                Assert.That(importer.spriteBorder.x + importer.spriteBorder.y + importer.spriteBorder.z + importer.spriteBorder.w, Is.GreaterThan(0f), path + " must be 9-slice ready");
+                Assert.That(importer.mipmapEnabled, Is.False, path);
+                Assert.That(importer.alphaIsTransparency, Is.True, path);
+            }
+        }
+
+        [Test]
+        public void CommonUiKitPrefabs_UseHighQualitySlicedSkinSpritesOnPrimarySurfaces()
+        {
+            foreach (var path in RequiredPrefabPaths)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                Assert.That(prefab, Is.Not.Null, path);
+
+                var styledImages = 0;
+                foreach (var image in prefab.GetComponentsInChildren<Image>(includeInactive: true))
+                {
+                    if (image.sprite == null)
+                    {
+                        continue;
+                    }
+
+                    var spritePath = AssetDatabase.GetAssetPath(image.sprite);
+                    if (!spritePath.StartsWith(SkinRoot, StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    styledImages++;
+                    Assert.That(image.type, Is.EqualTo(Image.Type.Sliced), path + ":" + image.name);
+                    Assert.That(image.raycastTarget || image.transform.parent != null, Is.True, path + ":" + image.name);
+                }
+
+                Assert.That(styledImages, Is.GreaterThanOrEqualTo(1), path + " has no high-quality common skin sprite");
+            }
+        }
+
+        [Test]
         public void CommonUiKitStyleTokens_ParseAndKeepLaunchReadabilityPolicy()
         {
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), StyleJsonPath);
@@ -143,6 +220,20 @@ namespace LastRail.Tests.EditMode
             Assert.That(tokens.palette.accentCopper, Is.Not.EqualTo(tokens.palette.railBlue));
             Assert.That(tokens.policy.decorativeOrbsAllowed, Is.False);
             Assert.That(tokens.policy.serverTruthFieldsAllowed, Is.False);
+        }
+
+        [Test]
+        public void CommonUiKitReadiness_ReportIncludesSkinQualityAndLaunchApplicationCounts()
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), ReadinessJsonPath);
+            Assert.That(File.Exists(fullPath), Is.True, ReadinessJsonPath);
+
+            var json = File.ReadAllText(fullPath);
+            Assert.That(json, Does.Contain(@"""qualityClass"": ""HIGH_QUALITY_2D_UI_SKIN"""));
+            Assert.That(json, Does.Contain(@"""nineSliceSpriteCount"": 23"));
+            Assert.That(json, Does.Contain(@"""appliedPrefabCount"": 20"));
+            Assert.That(json, Does.Contain(@"""launchScreenConsumerCount"": 7"));
+            Assert.That(json, Does.Contain(@"""sourceKind"": ""image_gen_contact_sheet_crops"""));
         }
 
         [Test]

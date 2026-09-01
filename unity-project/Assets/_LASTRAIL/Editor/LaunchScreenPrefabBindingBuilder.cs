@@ -20,6 +20,7 @@ namespace LastRail.Editor
         private const string KoreanFontSourcePath = FontRoot + "/Pretendard-Regular.otf";
         private const string KoreanFontAssetPath = FontRoot + "/TMP/Pretendard-Regular SDF.asset";
         private const string KoreanFontMaterialPath = FontRoot + "/TMP/Materials/Pretendard-Regular SDF UI.mat";
+        private const string CommonSkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
         private const string BackgroundRoot = "Assets/_LASTRAIL/UI/Backgrounds";
         private const string KeyVisualRoot = "Assets/_LASTRAIL/UI/KeyVisuals";
         private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
@@ -69,6 +70,11 @@ namespace LastRail.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            Debug.Log("LASTRAIL launch screen prefabs build complete.");
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         [MenuItem("LASTRAIL/Launch/Build Story Progress And Codex Thumbnail Prefabs")]
@@ -95,6 +101,10 @@ namespace LastRail.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         [MenuItem("LASTRAIL/Launch/Build System Feedback Polish Prefabs")]
@@ -942,7 +952,8 @@ namespace LastRail.Editor
             buttonObject.transform.SetParent(parent, false);
             var rect = buttonObject.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(320f, 64f);
-            buttonObject.GetComponent<Image>().color = new Color(0.11f, 0.13f, 0.16f, 1f);
+            var buttonImage = buttonObject.GetComponent<Image>();
+            ApplyButtonSkin(buttonImage, name);
 
             var labelObject = new GameObject(name + "Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             labelObject.transform.SetParent(buttonObject.transform, false);
@@ -955,6 +966,36 @@ namespace LastRail.Editor
             labelText = labelObject.GetComponent<TextMeshProUGUI>();
             ConfigureText(labelText, label, 28f, TextAlignmentOptions.Center);
             return buttonObject.GetComponent<Button>();
+        }
+
+        private static void ApplyButtonSkin(Image image, string name)
+        {
+            image.sprite = LoadSprite(CommonSkinRoot + "/" + ButtonSkinFor(name) + ".png");
+            image.color = Color.white;
+            image.type = Image.Type.Sliced;
+            image.preserveAspect = false;
+        }
+
+        private static string ButtonSkinFor(string name)
+        {
+            if (name.IndexOf("Danger", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "ui_button_danger_9slice";
+            }
+
+            if (name.IndexOf("Disabled", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "ui_button_disabled_9slice";
+            }
+
+            if (name.IndexOf("Primary", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                name.IndexOf("OnePull", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                name.IndexOf("MissionSelect", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return "ui_button_primary_9slice";
+            }
+
+            return "ui_button_secondary_9slice";
         }
 
         private static Sprite LoadSprite(string assetPath)
