@@ -20,9 +20,15 @@ namespace LastRail.Editor
         private const string KoreanFontSourcePath = FontRoot + "/Pretendard-Regular.otf";
         private const string KoreanFontAssetPath = FontRoot + "/TMP/Pretendard-Regular SDF.asset";
         private const string KoreanFontMaterialPath = FontRoot + "/TMP/Materials/Pretendard-Regular SDF UI.mat";
+        private const string BackgroundRoot = "Assets/_LASTRAIL/UI/Backgrounds";
         private const string KeyVisualRoot = "Assets/_LASTRAIL/UI/KeyVisuals";
         private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
         private const string GachaFxRoot = "Assets/_LASTRAIL/UI/GachaResources/GachaFx";
+        private const string CombatEnemyRoot = "Assets/_LASTRAIL/UI/CombatResources/Enemies";
+        private const string CombatEliteRoot = "Assets/_LASTRAIL/UI/CombatResources/Elites";
+        private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
+        private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
+        private const string OperatorCardRoot = "Assets/_LASTRAIL/UI/Operators/Cards";
         private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
         private const string MissionThumbnailOverlayRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays";
         private const string OperatorCardPolishRoot = "Assets/_LASTRAIL/UI/Operators/CardPolish";
@@ -477,6 +483,7 @@ namespace LastRail.Editor
                 var behaviour = root.AddComponent<FullyAnimatedCombatHudRootBehaviour>();
                 var audio = AttachAudioCuePlayer(root, CombatCueIds());
                 var safeArea = CreateSafeArea(root.transform);
+                CreateCombatHudVisualPolish(safeArea);
                 var encounterTitle = CreateText(safeArea, "EncounterTitleText", "전투");
                 var waveCounter = CreateText(safeArea, "WaveCounterText", "Wave 1/15");
                 var bossStatus = CreateText(safeArea, "BossStatusText", "Boss");
@@ -508,6 +515,65 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static void CreateCombatHudVisualPolish(Transform safeArea)
+        {
+            var background = CreateImage(
+                safeArea,
+                "CombatWastelandRailBackgroundImage",
+                BackgroundRoot + "/bg_combat_wasteland_rail.png",
+                new Color(1f, 1f, 1f, 0.95f));
+            Place(background, 0f, 0f, 1000f, 1770f);
+
+            var readabilityScrim = new GameObject("CombatHudReadabilityScrim", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            readabilityScrim.transform.SetParent(safeArea, false);
+            var scrimImage = readabilityScrim.GetComponent<Image>();
+            scrimImage.color = new Color(0.02f, 0.025f, 0.03f, 0.48f);
+            scrimImage.raycastTarget = false;
+            Place(readabilityScrim.GetComponent<RectTransform>(), 0f, -170f, 1000f, 1420f);
+
+            var operatorCard = CreateImage(
+                safeArea,
+                "OperatorBattleCardPreviewImage",
+                OperatorCardRoot + "/op_vex_card.png",
+                new Color(1f, 1f, 1f, 0.95f));
+            Place(operatorCard, -285f, -165f, 245f, 326f);
+
+            var enemyScout = CreateImage(
+                safeArea,
+                "EnemyBattlePreviewImage",
+                CombatEnemyRoot + "/enemy_raider_scout.png",
+                new Color(1f, 1f, 1f, 0.95f));
+            Place(enemyScout, 135f, -125f, 245f, 245f);
+
+            var enemyElite = CreateImage(
+                safeArea,
+                "EliteBattlePreviewImage",
+                CombatEliteRoot + "/elite_ironclad_boarder.png",
+                new Color(1f, 1f, 1f, 0.95f));
+            Place(enemyElite, 355f, -80f, 290f, 290f);
+
+            var bossPreview = CreateImage(
+                safeArea,
+                "StoryRaidBossPreviewImage",
+                CombatBossRoot + "/boss_raider_king_engine.png",
+                new Color(1f, 1f, 1f, 0.72f));
+            Place(bossPreview, 0f, 350f, 760f, 506f);
+
+            var skillVfx = CreateImage(
+                safeArea,
+                "CombatSkillVfxPreviewImage",
+                CombatVfxRoot + "/vfx_skill_activation.png",
+                new Color(1f, 1f, 1f, 0.72f));
+            Place(skillVfx, -365f, 260f, 190f, 190f);
+
+            var hitVfx = CreateImage(
+                safeArea,
+                "CombatHitSparkPreviewImage",
+                CombatVfxRoot + "/vfx_basic_hit_spark.png",
+                new Color(1f, 1f, 1f, 0.75f));
+            Place(hitVfx, 365f, 220f, 150f, 150f);
         }
 
         private static void CreateCodexPrefab()

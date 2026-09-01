@@ -1,6 +1,6 @@
 # LAST RAIL Act 1 Mission Story Thumbnails
 
-These mission/story thumbnail and overlay files are procedurally generated local launch UI assets for LAST RAIL Act 1.
+These mission/story thumbnail and overlay files are local launch UI assets for LAST RAIL Act 1.
 
 ## Resources
 
@@ -10,7 +10,10 @@ These mission/story thumbnail and overlay files are procedurally generated local
 
 ## Source And Usage
 
-Source: Unity procedural texture builder in `LaunchMissionStoryThumbnailResourceBuilder`.
+Source:
+
+- Thumbnails: generated 2D illustration contact sheet copied into `Sources/act1_mission_story_thumbnail_contact_sheet_generated_v2.png`, then cropped into the seven launch mission/story raid thumbnail PNGs.
+- State overlays: Unity procedural texture builder in `LaunchMissionStoryThumbnailResourceBuilder`.
 
 License note: no external paid or third-party art asset was introduced by this slice.
 

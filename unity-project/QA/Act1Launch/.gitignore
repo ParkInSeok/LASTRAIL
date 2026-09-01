@@ -12,3 +12,4 @@ Video/**/*.webm
 Video/**/*.gif
 Reports/frame-sequence.txt
 Reports/editor-video-qa-readme.txt
+Reports/*representative-frame.png

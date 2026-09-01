@@ -14,6 +14,7 @@ namespace LastRail.Presentation
             string status,
             string outputRoot,
             string videoFormat,
+            string captureMode,
             bool hasMp4Artifact,
             bool hasRecorderPackage,
             string mp4Path,
@@ -23,6 +24,10 @@ namespace LastRail.Presentation
             int height,
             int frameCount,
             int estimatedDurationSeconds,
+            int encodedFps,
+            bool usesFallbackComposite,
+            int fallbackCompositeFrameCount,
+            bool hasHighQualityArtResourceCoverage,
             IEnumerable<string> checkedSurfaces,
             int warningCount,
             int failCount,
@@ -31,6 +36,7 @@ namespace LastRail.Presentation
             Status = RequireText(status, nameof(status));
             OutputRoot = RequireText(outputRoot, nameof(outputRoot));
             VideoFormat = RequireText(videoFormat, nameof(videoFormat));
+            CaptureMode = RequireText(captureMode, nameof(captureMode));
             HasMp4Artifact = hasMp4Artifact;
             HasRecorderPackage = hasRecorderPackage;
             Mp4Path = OptionalText(mp4Path);
@@ -40,6 +46,10 @@ namespace LastRail.Presentation
             Height = height;
             FrameCount = frameCount;
             EstimatedDurationSeconds = estimatedDurationSeconds;
+            EncodedFps = encodedFps;
+            UsesFallbackComposite = usesFallbackComposite;
+            FallbackCompositeFrameCount = fallbackCompositeFrameCount;
+            HasHighQualityArtResourceCoverage = hasHighQualityArtResourceCoverage;
             CheckedSurfaces = CopyTextList(checkedSurfaces, nameof(checkedSurfaces));
             CheckedSurfaceCount = CheckedSurfaces.Count;
             WarningCount = warningCount;
@@ -50,6 +60,7 @@ namespace LastRail.Presentation
         public string Status { get; }
         public string OutputRoot { get; }
         public string VideoFormat { get; }
+        public string CaptureMode { get; }
         public bool HasMp4Artifact { get; }
         public bool HasRecorderPackage { get; }
         public string Mp4Path { get; }
@@ -59,6 +70,10 @@ namespace LastRail.Presentation
         public int Height { get; }
         public int FrameCount { get; }
         public int EstimatedDurationSeconds { get; }
+        public int EncodedFps { get; }
+        public bool UsesFallbackComposite { get; }
+        public int FallbackCompositeFrameCount { get; }
+        public bool HasHighQualityArtResourceCoverage { get; }
         public IReadOnlyList<string> CheckedSurfaces { get; }
         public int CheckedSurfaceCount { get; }
         public int WarningCount { get; }
@@ -80,13 +95,18 @@ namespace LastRail.Presentation
             int frameCount,
             int warningCount,
             int failCount,
-            IEnumerable<string> blockers)
+            IEnumerable<string> blockers,
+            string captureMode = "png_frame_sequence",
+            bool usesFallbackComposite = false,
+            int fallbackCompositeFrameCount = 0,
+            bool hasHighQualityArtResourceCoverage = false)
         {
             var status = failCount == 0 ? "PASS" : "FAIL";
             return new LaunchEditorFlowVideoQaReport(
                 status,
                 outputRoot,
                 "png_frame_sequence",
+                captureMode,
                 hasMp4Artifact: false,
                 hasRecorderPackage: false,
                 mp4Path: null,
@@ -96,6 +116,10 @@ namespace LastRail.Presentation
                 height: DefaultHeight,
                 frameCount: frameCount,
                 estimatedDurationSeconds: Math.Max(60, frameCount * 5),
+                encodedFps: 0,
+                usesFallbackComposite: usesFallbackComposite,
+                fallbackCompositeFrameCount: fallbackCompositeFrameCount,
+                hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
                 failCount: failCount,
@@ -113,7 +137,12 @@ namespace LastRail.Presentation
             bool hasRecorderPackage,
             int warningCount,
             int failCount,
-            IEnumerable<string> blockers)
+            IEnumerable<string> blockers,
+            string captureMode = "frame_sequence_encode",
+            bool usesFallbackComposite = false,
+            int fallbackCompositeFrameCount = 0,
+            int encodedFps = 1,
+            bool hasHighQualityArtResourceCoverage = false)
         {
             if (durationSeconds <= 0)
             {
@@ -130,6 +159,7 @@ namespace LastRail.Presentation
                 status,
                 outputRoot,
                 "mp4",
+                captureMode,
                 hasMp4Artifact: true,
                 hasRecorderPackage: hasRecorderPackage,
                 mp4Path: mp4Path,
@@ -139,6 +169,10 @@ namespace LastRail.Presentation
                 height: DefaultHeight,
                 frameCount: frameCount,
                 estimatedDurationSeconds: durationSeconds,
+                encodedFps: encodedFps,
+                usesFallbackComposite: usesFallbackComposite,
+                fallbackCompositeFrameCount: fallbackCompositeFrameCount,
+                hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
                 failCount: failCount,
@@ -191,6 +225,7 @@ namespace LastRail.Presentation
             Field(b, "status", report.Status).Append(',');
             Field(b, "outputRoot", report.OutputRoot).Append(',');
             Field(b, "videoFormat", report.VideoFormat).Append(',');
+            Field(b, "captureMode", report.CaptureMode).Append(',');
             b.Append("\"hasMp4Artifact\":").Append(Bool(report.HasMp4Artifact)).Append(',');
             b.Append("\"hasRecorderPackage\":").Append(Bool(report.HasRecorderPackage)).Append(',');
             OptionalField(b, "mp4Path", report.Mp4Path).Append(',');
@@ -200,6 +235,10 @@ namespace LastRail.Presentation
             b.Append("\"height\":").Append(report.Height.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"frameCount\":").Append(report.FrameCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"estimatedDurationSeconds\":").Append(report.EstimatedDurationSeconds.ToString(CultureInfo.InvariantCulture)).Append(',');
+            b.Append("\"encodedFps\":").Append(report.EncodedFps.ToString(CultureInfo.InvariantCulture)).Append(',');
+            b.Append("\"usesFallbackComposite\":").Append(Bool(report.UsesFallbackComposite)).Append(',');
+            b.Append("\"fallbackCompositeFrameCount\":").Append(report.FallbackCompositeFrameCount.ToString(CultureInfo.InvariantCulture)).Append(',');
+            b.Append("\"hasHighQualityArtResourceCoverage\":").Append(Bool(report.HasHighQualityArtResourceCoverage)).Append(',');
             b.Append("\"checkedSurfaceCount\":").Append(report.CheckedSurfaceCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"checkedSurfaces\":[");
             for (var i = 0; i < report.CheckedSurfaces.Count; i++)

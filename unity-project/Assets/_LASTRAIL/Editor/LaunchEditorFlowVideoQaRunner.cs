@@ -65,6 +65,7 @@ namespace LastRail.Editor
             var blockers = new List<string>();
             var failCount = 0;
             var warningCount = HasRecorderPackage() ? 0 : 1;
+            var fallbackCompositeFrameCount = 0;
 
             try
             {
@@ -72,17 +73,26 @@ namespace LastRail.Editor
 
                 foreach (var screen in LaunchScreens)
                 {
-                    CapturePrefabFrame(screen.ScreenKey, screen.PrefabPath, framesRoot, checkedSurfaces, framePaths);
+                    if (CapturePrefabFrame(screen.ScreenKey, screen.PrefabPath, framesRoot, checkedSurfaces, framePaths))
+                    {
+                        fallbackCompositeFrameCount++;
+                    }
                 }
 
                 foreach (var state in GachaStates)
                 {
-                    CaptureGachaStateFrame(state.ScreenKey, state.CreateState(), framesRoot, checkedSurfaces, framePaths);
+                    if (CaptureGachaStateFrame(state.ScreenKey, state.CreateState(), framesRoot, checkedSurfaces, framePaths))
+                    {
+                        fallbackCompositeFrameCount++;
+                    }
                 }
 
                 foreach (var showcase in ShowcaseScreens)
                 {
-                    CapturePrefabFrame(showcase.ScreenKey, showcase.PrefabPath, framesRoot, checkedSurfaces, framePaths);
+                    if (CapturePrefabFrame(showcase.ScreenKey, showcase.PrefabPath, framesRoot, checkedSurfaces, framePaths))
+                    {
+                        fallbackCompositeFrameCount++;
+                    }
                 }
             }
             catch (Exception ex)
@@ -96,6 +106,12 @@ namespace LastRail.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             }
 
+            if (fallbackCompositeFrameCount > 0)
+            {
+                warningCount++;
+                blockers.Add("fallback_composite_frames_present");
+            }
+
             WriteFrameManifest(reportsRoot, framePaths);
             var report = LaunchEditorFlowVideoQaReport.ForPngFrameSequence(
                 outputRoot,
@@ -103,7 +119,11 @@ namespace LastRail.Editor
                 framePaths.Count,
                 warningCount,
                 failCount,
-                blockers);
+                blockers,
+                captureMode: "launch_screen_walkthrough",
+                usesFallbackComposite: fallbackCompositeFrameCount > 0,
+                fallbackCompositeFrameCount: fallbackCompositeFrameCount,
+                hasHighQualityArtResourceCoverage: false);
             File.WriteAllText(
                 Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
@@ -122,7 +142,7 @@ namespace LastRail.Editor
             Debug.Log("LASTRAIL editor flow video QA captured " + framePaths.Count.ToString(CultureInfo.InvariantCulture) + " frames to " + outputRoot);
         }
 
-        private static void CapturePrefabFrame(
+        private static bool CapturePrefabFrame(
             string screenKey,
             string prefabPath,
             string framesRoot,
@@ -145,10 +165,11 @@ namespace LastRail.Editor
             {
                 ValidatePresentationOnlyFrameRoot(root, screenKey);
                 var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
-                CaptureRootToPng(root, path);
+                var usedFallbackComposite = CaptureRootToPng(root, path);
                 ValidateFrameFile(path, screenKey);
                 checkedSurfaces.Add(screenKey);
                 framePaths.Add(path);
+                return usedFallbackComposite;
             }
             finally
             {
@@ -156,7 +177,7 @@ namespace LastRail.Editor
             }
         }
 
-        private static void CaptureGachaStateFrame(
+        private static bool CaptureGachaStateFrame(
             string screenKey,
             GachaScreenViewState state,
             string framesRoot,
@@ -186,10 +207,11 @@ namespace LastRail.Editor
                 behaviour.Render(state);
                 ValidatePresentationOnlyFrameRoot(root, screenKey);
                 var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
-                CaptureRootToPng(root, path);
+                var usedFallbackComposite = CaptureRootToPng(root, path);
                 ValidateFrameFile(path, screenKey);
                 checkedSurfaces.Add(screenKey);
                 framePaths.Add(path);
+                return usedFallbackComposite;
             }
             finally
             {
@@ -197,7 +219,7 @@ namespace LastRail.Editor
             }
         }
 
-        private static void CaptureRootToPng(GameObject root, string outputPath)
+        private static bool CaptureRootToPng(GameObject root, string outputPath)
         {
             var cameraObject = new GameObject(root.name + "_EditorVideoQaCamera", typeof(Camera));
             var camera = cameraObject.GetComponent<Camera>();
@@ -211,15 +233,19 @@ namespace LastRail.Editor
             {
                 PrepareCanvasForCamera(root, camera);
                 var pixels = Render(camera, outputPath);
+                var usedFallbackComposite = false;
                 if (!PixelsLookNonBlank(pixels))
                 {
                     pixels = RenderPrefabLayoutComposite(root, outputPath);
+                    usedFallbackComposite = true;
                 }
 
                 if (!PixelsLookNonBlank(pixels))
                 {
                     throw new InvalidOperationException("Editor video QA frame appears blank or uniformly dark.");
                 }
+
+                return usedFallbackComposite;
             }
             finally
             {

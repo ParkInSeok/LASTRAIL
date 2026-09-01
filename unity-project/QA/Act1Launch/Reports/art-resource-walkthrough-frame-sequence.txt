@@ -1,0 +1,6 @@
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_001_background_key_visuals_1080x1920.png
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_002_operator_portrait_cards_1080x1920.png
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_003_combat_enemy_boss_vfx_1080x1920.png
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_004_gacha_recruitment_visuals_1080x1920.png
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_005_mission_story_thumbnails_1080x1920.png
+E:\Projects\LASTRAIL\unity-project\QA/Act1Launch\Frames/ArtResourceWalkthrough\frame_006_reward_offline_visuals_1080x1920.png

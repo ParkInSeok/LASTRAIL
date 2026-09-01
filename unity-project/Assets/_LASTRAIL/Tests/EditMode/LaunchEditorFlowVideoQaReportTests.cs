@@ -143,6 +143,49 @@ namespace LastRail.Tests.EditMode
                 Assert.That(json, Does.Not.Contain(forbidden), forbidden);
             }
         }
+
+        [Test]
+        public void CreateMp4ArtifactReport_RecordsRealResourceCaptureModeAndRejectsHiddenFallbackEvidence()
+        {
+            var report = LaunchEditorFlowVideoQaReport.ForMp4Artifact(
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch",
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch/Video/launch-art-resource-walkthrough.mp4",
+                "unity_rendered_frames_ffmpeg",
+                new[]
+                {
+                    "background_key_visuals",
+                    "operator_portrait_cards",
+                    "combat_enemy_boss_vfx",
+                    "gacha_recruitment_visuals",
+                    "mission_story_thumbnails",
+                    "reward_offline_visuals"
+                },
+                frameCount: 1800,
+                durationSeconds: 60,
+                mp4SizeBytes: 987654,
+                hasRecorderPackage: true,
+                warningCount: 0,
+                failCount: 0,
+                blockers: Array.Empty<string>(),
+                captureMode: "resource_showcase_render",
+                usesFallbackComposite: false,
+                fallbackCompositeFrameCount: 0,
+                encodedFps: 30,
+                hasHighQualityArtResourceCoverage: true);
+
+            Assert.That(report.CaptureMode, Is.EqualTo("resource_showcase_render"));
+            Assert.That(report.UsesFallbackComposite, Is.False);
+            Assert.That(report.FallbackCompositeFrameCount, Is.EqualTo(0));
+            Assert.That(report.EncodedFps, Is.EqualTo(30));
+            Assert.That(report.HasHighQualityArtResourceCoverage, Is.True);
+
+            var json = LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report);
+            Assert.That(json, Does.Contain("\"captureMode\":\"resource_showcase_render\""));
+            Assert.That(json, Does.Contain("\"usesFallbackComposite\":false"));
+            Assert.That(json, Does.Contain("\"fallbackCompositeFrameCount\":0"));
+            Assert.That(json, Does.Contain("\"encodedFps\":30"));
+            Assert.That(json, Does.Contain("\"hasHighQualityArtResourceCoverage\":true"));
+        }
     }
 }
 #endif
