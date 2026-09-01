@@ -18,6 +18,13 @@ This checklist moves the Unity code-readiness slices into Editor/package/device 
 - Pure readiness/debug gates exist for UI safe area, touch targets, text overflow, VFX budgets, audio cues, vibration cues, secure storage, Google SDK readiness, and Android vibration bridge readiness.
 - Debug outputs are ids, status, counts, and blockers only.
 
+## Unity Test Runner CLI Rule
+
+- For Unity `6000.3.22f1`, do not combine `-runTests` with `-quit`.
+- Unity Test Framework exits the Editor after completing command-line tests. Adding `-quit` can stop the process after compilation before `CommandLineTest.Executer.InitializeAndExecuteRun` starts, leaving no requested XML result.
+- Use `Tools/run-editmode-tests.ps1` or the documented no-quit command in `Assets/_LASTRAIL/Docs/unity-test-runner-cli-readiness-2026-09-01.md`.
+- ExecuteMethod validation and screenshot QA commands may still use `-quit`; this rule is specific to `-runTests`.
+
 ## Approval Or Device Blockers
 
 - `scene_prefab_binding_pending`

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "unityVersion": "6000.3.22f1",
+  "rootCause": "runTests_with_quit_exits_before_command_line_test_runner",
+  "stableCommandRule": "omit_quit_for_runTests",
+  "wrapperWaitsForXmlFlush": true,
+  "focusedXmlGenerated": true,
+  "focusedTotal": 7,
+  "focusedPassed": 7,
+  "focusedFailed": 0,
+  "fullXmlGenerated": true,
+  "fullTotal": 588,
+  "fullPassed": 588,
+  "fullFailed": 0,
+  "executeMethodQuitAllowed": true,
+  "serverContractChanged": false,
+  "gameplayChanged": false,
+  "oauthValuesIncluded": false,
+  "secretsIncluded": false
+}
