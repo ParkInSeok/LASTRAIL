@@ -33,6 +33,14 @@ namespace LastRail.Gacha
         [SerializeField] private Image duplicateConversionImage;
         [SerializeField] private Image ticketSpendImage;
         [SerializeField] private Image resultCardFrameImage;
+        [SerializeField] private Image operatorCardSlotBackgroundImage;
+        [SerializeField] private Image operatorRarityAccentImage;
+        [SerializeField] private Image operatorSelectedFrameImage;
+        [SerializeField] private Image operatorNewBadgeImage;
+        [SerializeField] private Image operatorOwnedBadgeImage;
+        [SerializeField] private Image operatorLevelBadgeImage;
+        [SerializeField] private Image operatorDuplicateTokenBadgeImage;
+        [SerializeField] private Image operatorGridSafeMaskImage;
 
         public GachaScreenViewState CurrentState { get; private set; }
         public event Action OnePullRequested;
@@ -132,6 +140,11 @@ namespace LastRail.Gacha
             }
 
             var safeArea = Screen.safeArea;
+            if (Screen.width <= 0 || Screen.height <= 0 || safeArea.width <= 0f || safeArea.height <= 0f)
+            {
+                return;
+            }
+
             var min = safeArea.position;
             var max = safeArea.position + safeArea.size;
             min.x /= Screen.width;
@@ -299,6 +312,14 @@ namespace LastRail.Gacha
             SetGraphicVisible(singlePullRevealPlateImage, !isTenPull);
             SetGraphicVisible(tenPullGridFrameImage, isTenPull);
             SetGraphicVisible(resultCardFrameImage, hasResults && !isTenPull);
+            SetGraphicVisible(operatorCardSlotBackgroundImage, hasResults && !isTenPull);
+            SetGraphicVisible(operatorRarityAccentImage, hasResults && !isTenPull);
+            SetGraphicVisible(operatorSelectedFrameImage, hasResults && !isTenPull && hasElite);
+            SetGraphicVisible(operatorNewBadgeImage, hasResults && !isTenPull && !hasDuplicate);
+            SetGraphicVisible(operatorOwnedBadgeImage, false);
+            SetGraphicVisible(operatorLevelBadgeImage, false);
+            SetGraphicVisible(operatorDuplicateTokenBadgeImage, hasDuplicate);
+            SetGraphicVisible(operatorGridSafeMaskImage, isTenPull);
             SetGraphicVisible(duplicateConversionImage, hasDuplicate);
             SetGraphicVisible(ticketSpendImage, hasResults);
             SetGraphicVisible(rareGlowImage, !isTenPull && hasRare && !hasElite);

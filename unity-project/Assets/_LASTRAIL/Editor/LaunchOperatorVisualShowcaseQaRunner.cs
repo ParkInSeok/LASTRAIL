@@ -15,6 +15,13 @@ namespace LastRail.Editor
         private const int Height = 1920;
         private const string FontPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
         private const string MaterialPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat";
+        private const string PolishRoot = "Assets/_LASTRAIL/UI/Operators/CardPolish";
+        private const string PolishFramesRoot = PolishRoot + "/Frames";
+        private const string PolishBadgesRoot = PolishRoot + "/Badges";
+        private const string PolishRarityRoot = PolishRoot + "/Rarity";
+        private const string PolishRoleIconsRoot = PolishRoot + "/RoleIcons";
+        private const string PolishOverlaysRoot = PolishRoot + "/Overlays";
+        private const string PolishAccentsRoot = PolishRoot + "/Accents";
 
         [MenuItem("LASTRAIL/Launch/Capture Operator Visual Showcase QA")]
         public static void CaptureOperatorVisualShowcase()
@@ -72,6 +79,11 @@ namespace LastRail.Editor
             var backdrop = Image(canvasObject.transform, "Backdrop", new Vector2(1080, 1920), new Color32(5, 7, 10, 255));
             backdrop.rectTransform.anchoredPosition = Vector2.zero;
 
+            var rail = Image(canvasObject.transform, "OperatorGridSectionRail", new Vector2(940, 82), new Color32(255, 255, 255, 170));
+            rail.sprite = LoadSprite(PolishAccentsRoot + "/operator_grid_section_rail.png");
+            rail.preserveAspect = true;
+            rail.rectTransform.anchoredPosition = new Vector2(0, 650);
+
             var title = Text(canvasObject.transform, "Title", "ACT 1 OPERATOR CARDS", 38, new Color32(238, 241, 234, 255), new Vector2(860, 70));
             title.rectTransform.anchoredPosition = new Vector2(0, 780);
             var note = Text(canvasObject.transform, "Note", "15 launch visual operators / 5 initial / 10 gacha elite", 24, new Color32(176, 188, 188, 255), new Vector2(860, 54));
@@ -127,17 +139,66 @@ namespace LastRail.Editor
             var y = 390 - row * 460;
 
             var card = Image(parent, "Card_" + op.OperatorId, new Vector2(178, 237), Color.white);
-            card.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(op.CardPath);
+            card.sprite = LoadSprite(PolishFramesRoot + "/operator_card_slot_background.png");
             card.preserveAspect = true;
             card.rectTransform.anchoredPosition = new Vector2(x, y);
 
-            var frame = Image(card.transform, "Frame", new Vector2(178, 237), Color.white);
-            frame.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(op.FramePath);
-            frame.preserveAspect = true;
-            frame.rectTransform.anchoredPosition = Vector2.zero;
+            var portrait = Image(card.transform, "Portrait", new Vector2(150, 200), new Color32(255, 255, 255, 235));
+            portrait.sprite = LoadSprite(op.CardPath);
+            portrait.preserveAspect = true;
+            portrait.rectTransform.anchoredPosition = new Vector2(0, 18);
 
-            var label = Text(card.transform, "Label", op.OperatorId, 15, new Color32(238, 241, 234, 255), new Vector2(154, 26));
-            label.rectTransform.anchoredPosition = new Vector2(0, -94);
+            var rarity = Image(card.transform, "Rarity", new Vector2(132, 34), Color.white);
+            rarity.sprite = LoadSprite(RarityPath(op));
+            rarity.preserveAspect = true;
+            rarity.rectTransform.anchoredPosition = new Vector2(0, -104);
+
+            var role = Image(card.transform, "Role", new Vector2(42, 42), Color.white);
+            role.sprite = LoadSprite(RolePath(op));
+            role.preserveAspect = true;
+            role.rectTransform.anchoredPosition = new Vector2(-58, 92);
+
+            if (op.IsPickup)
+            {
+                var selected = Image(card.transform, "Selected", new Vector2(178, 237), Color.white);
+                selected.sprite = LoadSprite(PolishFramesRoot + "/operator_card_selected_frame.png");
+                selected.preserveAspect = true;
+                selected.rectTransform.anchoredPosition = Vector2.zero;
+
+                var newBadge = Image(card.transform, "NewBadge", new Vector2(78, 30), Color.white);
+                newBadge.sprite = LoadSprite(PolishBadgesRoot + "/operator_badge_new.png");
+                newBadge.preserveAspect = true;
+                newBadge.rectTransform.anchoredPosition = new Vector2(48, 62);
+            }
+
+            if (op.Acquisition == "initial_free")
+            {
+                var owned = Image(card.transform, "OwnedBadge", new Vector2(78, 30), Color.white);
+                owned.sprite = LoadSprite(PolishBadgesRoot + "/operator_badge_owned.png");
+                owned.preserveAspect = true;
+                owned.rectTransform.anchoredPosition = new Vector2(48, 94);
+            }
+
+            if (op.OperatorId == "op_sable" || op.OperatorId == "op_anchor" || op.OperatorId == "op_cinder")
+            {
+                var locked = Image(card.transform, "Locked", new Vector2(178, 237), new Color32(255, 255, 255, 220));
+                locked.sprite = LoadSprite(PolishFramesRoot + "/operator_card_locked_overlay.png");
+                locked.preserveAspect = true;
+                locked.rectTransform.anchoredPosition = Vector2.zero;
+
+                var plate = Image(card.transform, "LockedPlate", new Vector2(104, 38), Color.white);
+                plate.sprite = LoadSprite(PolishOverlaysRoot + "/operator_state_locked_label_plate.png");
+                plate.preserveAspect = true;
+                plate.rectTransform.anchoredPosition = new Vector2(0, -16);
+            }
+
+            var level = Image(card.transform, "LevelBadge", new Vector2(76, 28), new Color32(255, 255, 255, 235));
+            level.sprite = LoadSprite(PolishBadgesRoot + "/operator_badge_level.png");
+            level.preserveAspect = true;
+            level.rectTransform.anchoredPosition = new Vector2(-52, -58);
+
+            var label = Text(card.transform, "Label", op.OperatorId, 15, new Color32(238, 241, 234, 255), new Vector2(154, 24));
+            label.rectTransform.anchoredPosition = new Vector2(0, -76);
         }
 
         private static Image Image(Transform parent, string name, Vector2 size, Color color)
@@ -169,6 +230,58 @@ namespace LastRail.Editor
             text.raycastTarget = false;
             text.rectTransform.sizeDelta = dimensions;
             return text;
+        }
+
+        private static string RarityPath(LaunchOperatorVisualResourceSpec op)
+        {
+            if (op.IsPickup)
+            {
+                return PolishRarityRoot + "/operator_rarity_pickup_elite.png";
+            }
+
+            return op.Acquisition == "initial_free"
+                ? PolishRarityRoot + "/operator_rarity_initial_free.png"
+                : PolishRarityRoot + "/operator_rarity_elite.png";
+        }
+
+        private static string RolePath(LaunchOperatorVisualResourceSpec op)
+        {
+            return PolishRoleIconsRoot + "/operator_role_" + RoleFor(op.OperatorId) + ".png";
+        }
+
+        private static string RoleFor(string operatorId)
+        {
+            switch (operatorId)
+            {
+                case "op_kyle":
+                case "op_vex":
+                case "op_rail":
+                    return "striker";
+                case "op_reina":
+                case "op_anchor":
+                case "op_warden":
+                    return "guard";
+                case "op_sera":
+                case "op_marrow":
+                    return "medic";
+                case "op_eve":
+                case "op_iris":
+                case "op_cinder":
+                    return "engineer";
+                default:
+                    return "support";
+            }
+        }
+
+        private static Sprite LoadSprite(string path)
+        {
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+            {
+                throw new FileNotFoundException("Missing operator polish screenshot sprite: " + path);
+            }
+
+            return sprite;
         }
     }
 }

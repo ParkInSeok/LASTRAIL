@@ -109,6 +109,34 @@ namespace LastRail.Editor
             {
                 failures.Add("showcase has too few image surfaces: " + images.Length);
             }
+
+            RequireSprite(prefab, "operator_card_slot_background", failures);
+            RequireSprite(prefab, "operator_card_selected_frame", failures);
+            RequireSprite(prefab, "operator_card_locked_overlay", failures);
+            RequireSprite(prefab, "operator_badge_new", failures);
+            RequireSprite(prefab, "operator_badge_owned", failures);
+            RequireSprite(prefab, "operator_badge_level", failures);
+            RequireSprite(prefab, "operator_rarity_pickup_elite", failures);
+            RequireSprite(prefab, "operator_role_striker", failures);
+            RequireSprite(prefab, "operator_grid_section_rail", failures);
+        }
+
+        private static void RequireSprite(GameObject prefab, string spriteName, List<string> failures)
+        {
+            foreach (var image in prefab.GetComponentsInChildren<UnityEngine.UI.Image>(true))
+            {
+                if (image.sprite != null && image.sprite.name == spriteName)
+                {
+                    if (image.raycastTarget)
+                    {
+                        failures.Add("polish sprite blocks touch: " + spriteName);
+                    }
+
+                    return;
+                }
+            }
+
+            failures.Add("showcase missing polish sprite: " + spriteName);
         }
 
         private static void ValidateSprite(string assetPath, int width, int height, List<string> failures)

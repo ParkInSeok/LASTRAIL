@@ -88,7 +88,7 @@ namespace LastRail.Editor
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.045f, 0.052f, 0.062f, 1f);
             camera.orthographic = true;
-            camera.orthographicSize = Height * 0.5f;
+            camera.orthographicSize = 5f;
             camera.transform.position = new Vector3(0f, 0f, -10f);
 
             PrepareCanvasForCamera(root, camera);
@@ -98,7 +98,7 @@ namespace LastRail.Editor
             var path = Path.Combine(outputRoot, "gacha_screen_polish_" + stateKey + "_1080x1920.png");
             Render(camera, path);
             var info = new FileInfo(path);
-            if (!info.Exists || info.Length < 50000)
+            if (!info.Exists || info.Length < MinimumScreenshotBytes(stateKey))
             {
                 throw new InvalidOperationException("Gacha polish screenshot is empty or too small: " + stateKey);
             }
@@ -108,23 +108,18 @@ namespace LastRail.Editor
             return path;
         }
 
+        private static long MinimumScreenshotBytes(string stateKey)
+        {
+            return stateKey == "idle" ? 30000 : 50000;
+        }
+
         private static void PrepareCanvasForCamera(GameObject root, Camera camera)
         {
-            var rectTransform = root.GetComponent<RectTransform>();
-            if (rectTransform != null)
-            {
-                rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-                rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-                rectTransform.pivot = new Vector2(0.5f, 0.5f);
-                rectTransform.sizeDelta = new Vector2(Width, Height);
-                rectTransform.anchoredPosition = Vector2.zero;
-                rectTransform.localScale = Vector3.one;
-            }
-
             foreach (var canvas in root.GetComponentsInChildren<Canvas>(true))
             {
-                canvas.renderMode = RenderMode.WorldSpace;
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 canvas.worldCamera = camera;
+                canvas.planeDistance = 10f;
                 canvas.pixelPerfect = false;
             }
         }

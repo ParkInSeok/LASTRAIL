@@ -28,7 +28,15 @@ namespace LastRail.Editor
             ("pickupEliteGlowImage", "gacha_pickup_elite_glow"),
             ("duplicateConversionImage", "gacha_duplicate_conversion_visual"),
             ("ticketSpendImage", "gacha_ticket_spend_pieces"),
-            ("resultCardFrameImage", "gacha_result_card_frame")
+            ("resultCardFrameImage", "gacha_result_card_frame"),
+            ("operatorCardSlotBackgroundImage", "operator_card_slot_background"),
+            ("operatorRarityAccentImage", "operator_rarity_pickup_elite"),
+            ("operatorSelectedFrameImage", "operator_card_selected_frame"),
+            ("operatorNewBadgeImage", "operator_badge_new"),
+            ("operatorOwnedBadgeImage", "operator_badge_owned"),
+            ("operatorLevelBadgeImage", "operator_badge_level"),
+            ("operatorDuplicateTokenBadgeImage", "ui_operator_duplicate_token"),
+            ("operatorGridSafeMaskImage", "operator_grid_safe_mask")
         };
 
         [MenuItem("LASTRAIL/Launch/Validate Gacha Screen Polish")]

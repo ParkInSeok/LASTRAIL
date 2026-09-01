@@ -66,6 +66,23 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void ShowcaseConsumesOperatorCardPolishLayerResources()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShowcasePrefabPath);
+            Assert.That(prefab, Is.Not.Null);
+
+            Assert.That(ContainsSprite(prefab, "operator_card_slot_background"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_card_selected_frame"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_card_locked_overlay"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_badge_new"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_badge_owned"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_badge_level"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_rarity_pickup_elite"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_role_striker"), Is.EqualTo(true));
+            Assert.That(ContainsSprite(prefab, "operator_grid_section_rail"), Is.EqualTo(true));
+        }
+
+        [Test]
         public void ManifestAndReadmeKeepSourceLicenseAndNoTruthPayloads()
         {
             var manifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-operator-visual-resources.json";
@@ -131,6 +148,19 @@ namespace LastRail.Tests.EditMode
         private static void AssertForbidden(string value, string token)
         {
             Assert.That(value.Contains(token), Is.EqualTo(false), token);
+        }
+
+        private static bool ContainsSprite(GameObject root, string spriteName)
+        {
+            foreach (var image in root.GetComponentsInChildren<UnityEngine.UI.Image>(true))
+            {
+                if (image.sprite != null && image.sprite.name == spriteName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static string ProjectPath(string assetPath)

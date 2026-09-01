@@ -22,6 +22,13 @@ namespace LastRail.Editor
         private const string FramesRoot = OperatorRoot + "/Frames";
         private const string SourcesRoot = OperatorRoot + "/Sources";
         private const string ShowcaseRoot = OperatorRoot + "/Showcase";
+        private const string PolishRoot = OperatorRoot + "/CardPolish";
+        private const string PolishFramesRoot = PolishRoot + "/Frames";
+        private const string PolishBadgesRoot = PolishRoot + "/Badges";
+        private const string PolishRarityRoot = PolishRoot + "/Rarity";
+        private const string PolishRoleIconsRoot = PolishRoot + "/RoleIcons";
+        private const string PolishOverlaysRoot = PolishRoot + "/Overlays";
+        private const string PolishAccentsRoot = PolishRoot + "/Accents";
         private const string StyleRoot = UiRoot + "/Style";
         private const string SceneRoot = "Assets/_LASTRAIL/Scenes";
         private const string FontPath = UiRoot + "/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
@@ -223,6 +230,18 @@ Usage:
             Stretch(go.GetComponent<RectTransform>());
             var image = go.GetComponent<Image>();
             image.color = C(7, 9, 12, 255);
+
+            var rail = UiObject("OperatorGridSectionRail", root, typeof(Image));
+            var railRect = rail.GetComponent<RectTransform>();
+            railRect.anchorMin = new Vector2(0.06f, 0.84f);
+            railRect.anchorMax = new Vector2(0.94f, 0.885f);
+            railRect.offsetMin = Vector2.zero;
+            railRect.offsetMax = Vector2.zero;
+            var railImage = rail.GetComponent<Image>();
+            railImage.sprite = LoadSprite(PolishAccentsRoot + "/operator_grid_section_rail.png");
+            railImage.preserveAspect = true;
+            railImage.raycastTarget = false;
+            railImage.color = C(255, 255, 255, 170);
         }
 
         private static void AddHeader(Transform root)
@@ -263,20 +282,39 @@ Usage:
         private static void AddOperatorCard(Transform parent, LaunchOperatorVisualResourceSpec op)
         {
             var card = UiObject("OperatorCard_" + op.OperatorId, parent, typeof(Image));
-            card.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(op.CardPath);
-            card.GetComponent<Image>().preserveAspect = true;
+            var background = card.GetComponent<Image>();
+            background.sprite = LoadSprite(PolishFramesRoot + "/operator_card_slot_background.png");
+            background.preserveAspect = true;
+            background.raycastTarget = false;
 
-            var stroke = UiObject("Frame_" + op.OperatorId, card.transform, typeof(Image));
-            Stretch(stroke.GetComponent<RectTransform>());
-            stroke.GetComponent<Image>().sprite = AssetDatabase.LoadAssetAtPath<Sprite>(op.FramePath);
-            stroke.GetComponent<Image>().preserveAspect = true;
-            stroke.GetComponent<Image>().raycastTarget = false;
+            AddLayer(card.transform, "Portrait_" + op.OperatorId, op.CardPath, new Vector2(0f, 18f), new Vector2(150f, 200f), C(255, 255, 255, 235));
+            AddLayer(card.transform, "Rarity_" + op.OperatorId, RarityPath(op), new Vector2(0f, -102f), new Vector2(132f, 34f), C(255, 255, 255, 240));
+            AddLayer(card.transform, "Role_" + op.OperatorId, RolePath(op), new Vector2(-58f, 92f), new Vector2(42f, 42f), C(255, 255, 255, 245));
+
+            if (op.IsPickup)
+            {
+                AddLayer(card.transform, "Selected_" + op.OperatorId, PolishFramesRoot + "/operator_card_selected_frame.png", Vector2.zero, new Vector2(178f, 252f), C(255, 255, 255, 250));
+                AddLayer(card.transform, "New_" + op.OperatorId, PolishBadgesRoot + "/operator_badge_new.png", new Vector2(48f, 62f), new Vector2(78f, 30f), C(255, 255, 255, 245));
+            }
+
+            if (op.Acquisition == "initial_free")
+            {
+                AddLayer(card.transform, "Owned_" + op.OperatorId, PolishBadgesRoot + "/operator_badge_owned.png", new Vector2(48f, 94f), new Vector2(78f, 30f), C(255, 255, 255, 245));
+            }
+
+            if (IsVisualLockedPreview(op))
+            {
+                AddLayer(card.transform, "Locked_" + op.OperatorId, PolishFramesRoot + "/operator_card_locked_overlay.png", Vector2.zero, new Vector2(178f, 252f), C(255, 255, 255, 220));
+                AddLayer(card.transform, "LockedPlate_" + op.OperatorId, PolishOverlaysRoot + "/operator_state_locked_label_plate.png", new Vector2(0f, -16f), new Vector2(104f, 38f), C(255, 255, 255, 235));
+            }
+
+            AddLayer(card.transform, "Level_" + op.OperatorId, PolishBadgesRoot + "/operator_badge_level.png", new Vector2(-52f, -58f), new Vector2(72f, 26f), C(255, 255, 255, 235));
 
             var tag = op.IsPickup ? "PICKUP ELITE" : (op.Acquisition == "initial_free" ? "INITIAL" : "ELITE");
             var tagColor = op.IsPickup ? Pickup : (op.Acquisition == "initial_free" ? Initial : Elite);
-            AddText(card.transform, "OperatorId", op.OperatorId, 22, TextMain, new Vector2(0.08f, 0.09f), new Vector2(0.92f, 0.18f));
-            AddText(card.transform, "DisplayLabel", op.DisplayLabel, 25, TextMain, new Vector2(0.08f, 0.02f), new Vector2(0.5f, 0.1f));
-            AddText(card.transform, "Acquisition", tag, 18, tagColor, new Vector2(0.5f, 0.02f), new Vector2(0.92f, 0.1f));
+            AddText(card.transform, "OperatorId", op.OperatorId, 18, TextMain, new Vector2(0.08f, 0.19f), new Vector2(0.92f, 0.29f));
+            AddText(card.transform, "DisplayLabel", op.DisplayLabel, 19, TextMain, new Vector2(0.08f, 0.11f), new Vector2(0.48f, 0.19f));
+            AddText(card.transform, "Acquisition", tag, 15, tagColor, new Vector2(0.5f, 0.11f), new Vector2(0.92f, 0.19f));
         }
 
         private static TMP_Text AddText(Transform parent, string name, string text, int size, Color color, Vector2 anchorMin, Vector2 anchorMax)
@@ -310,6 +348,77 @@ Usage:
             }
 
             return tmp;
+        }
+
+        private static Image AddLayer(Transform parent, string name, string spritePath, Vector2 anchoredPosition, Vector2 size, Color color)
+        {
+            var go = UiObject(name, parent, typeof(Image));
+            var rect = go.GetComponent<RectTransform>();
+            rect.sizeDelta = size;
+            rect.anchoredPosition = anchoredPosition;
+            var image = go.GetComponent<Image>();
+            image.sprite = LoadSprite(spritePath);
+            image.preserveAspect = true;
+            image.color = color;
+            image.raycastTarget = false;
+            return image;
+        }
+
+        private static string RarityPath(LaunchOperatorVisualResourceSpec op)
+        {
+            if (op.IsPickup)
+            {
+                return PolishRarityRoot + "/operator_rarity_pickup_elite.png";
+            }
+
+            return op.Acquisition == "initial_free"
+                ? PolishRarityRoot + "/operator_rarity_initial_free.png"
+                : PolishRarityRoot + "/operator_rarity_elite.png";
+        }
+
+        private static string RolePath(LaunchOperatorVisualResourceSpec op)
+        {
+            return PolishRoleIconsRoot + "/operator_role_" + RoleFor(op.OperatorId) + ".png";
+        }
+
+        private static string RoleFor(string operatorId)
+        {
+            switch (operatorId)
+            {
+                case "op_kyle":
+                case "op_vex":
+                case "op_rail":
+                    return "striker";
+                case "op_reina":
+                case "op_anchor":
+                case "op_warden":
+                    return "guard";
+                case "op_sera":
+                case "op_marrow":
+                    return "medic";
+                case "op_eve":
+                case "op_iris":
+                case "op_cinder":
+                    return "engineer";
+                default:
+                    return "support";
+            }
+        }
+
+        private static bool IsVisualLockedPreview(LaunchOperatorVisualResourceSpec op)
+        {
+            return op.OperatorId == "op_sable" || op.OperatorId == "op_anchor" || op.OperatorId == "op_cinder";
+        }
+
+        private static Sprite LoadSprite(string assetPath)
+        {
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+            if (sprite == null)
+            {
+                throw new FileNotFoundException("Missing operator visual polish sprite: " + assetPath);
+            }
+
+            return sprite;
         }
 
         private static void AddEventSystem(Transform root)

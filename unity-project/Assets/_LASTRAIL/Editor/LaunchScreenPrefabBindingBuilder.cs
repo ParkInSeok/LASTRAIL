@@ -21,6 +21,11 @@ namespace LastRail.Editor
         private const string KeyVisualRoot = "Assets/_LASTRAIL/UI/KeyVisuals";
         private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
         private const string GachaFxRoot = "Assets/_LASTRAIL/UI/GachaResources/GachaFx";
+        private const string OperatorCardPolishRoot = "Assets/_LASTRAIL/UI/Operators/CardPolish";
+        private const string OperatorCardPolishFramesRoot = OperatorCardPolishRoot + "/Frames";
+        private const string OperatorCardPolishBadgesRoot = OperatorCardPolishRoot + "/Badges";
+        private const string OperatorCardPolishRarityRoot = OperatorCardPolishRoot + "/Rarity";
+        private const string OperatorCardPolishOverlaysRoot = OperatorCardPolishRoot + "/Overlays";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -125,11 +130,51 @@ namespace LastRail.Editor
                     "TicketSpendImage",
                     GachaFxRoot + "/gacha_ticket_spend_pieces.png",
                     new Color(1f, 1f, 1f, 0.8f));
+                var operatorCardSlotBackground = CreateImage(
+                    safeArea,
+                    "OperatorCardSlotBackgroundImage",
+                    OperatorCardPolishFramesRoot + "/operator_card_slot_background.png",
+                    new Color(1f, 1f, 1f, 0.92f));
                 var resultCardFrame = CreateImage(
                     safeArea,
                     "ResultCardFrameImage",
                     GachaFxRoot + "/gacha_result_card_frame.png",
                     new Color(1f, 1f, 1f, 0.78f));
+                var operatorRarityAccent = CreateImage(
+                    safeArea,
+                    "OperatorRarityAccentImage",
+                    OperatorCardPolishRarityRoot + "/operator_rarity_pickup_elite.png",
+                    new Color(1f, 1f, 1f, 0.95f));
+                var operatorSelectedFrame = CreateImage(
+                    safeArea,
+                    "OperatorSelectedFrameImage",
+                    OperatorCardPolishFramesRoot + "/operator_card_selected_frame.png",
+                    new Color(1f, 1f, 1f, 0.9f));
+                var operatorNewBadge = CreateImage(
+                    safeArea,
+                    "OperatorNewBadgeImage",
+                    OperatorCardPolishBadgesRoot + "/operator_badge_new.png",
+                    new Color(1f, 1f, 1f, 0.95f));
+                var operatorOwnedBadge = CreateImage(
+                    safeArea,
+                    "OperatorOwnedBadgeImage",
+                    OperatorCardPolishBadgesRoot + "/operator_badge_owned.png",
+                    new Color(1f, 1f, 1f, 0.95f));
+                var operatorLevelBadge = CreateImage(
+                    safeArea,
+                    "OperatorLevelBadgeImage",
+                    OperatorCardPolishBadgesRoot + "/operator_badge_level.png",
+                    new Color(1f, 1f, 1f, 0.95f));
+                var operatorDuplicateTokenBadge = CreateImage(
+                    safeArea,
+                    "OperatorDuplicateTokenBadgeImage",
+                    GachaIconRoot + "/ui_operator_duplicate_token.png",
+                    new Color(1f, 1f, 1f, 0.96f));
+                var operatorGridSafeMask = CreateImage(
+                    safeArea,
+                    "OperatorGridSafeMaskImage",
+                    OperatorCardPolishOverlaysRoot + "/operator_grid_safe_mask.png",
+                    new Color(1f, 1f, 1f, 0.42f));
                 var ticketIcon = CreateImage(
                     safeArea,
                     "TicketIconImage",
@@ -155,8 +200,16 @@ namespace LastRail.Editor
                 Place(rareGlow, -240f, 165f, 380f, 380f);
                 Place(eliteGlow, 0f, 165f, 410f, 410f);
                 Place(pickupEliteGlow, 240f, 165f, 420f, 420f);
+                Place(operatorCardSlotBackground, 0f, 5f, 318f, 426f);
                 Place(resultCardFrame, 0f, 5f, 320f, 426f);
-                Place(duplicateConversion, 318f, -398f, 160f, 160f);
+                Place(operatorSelectedFrame, 0f, 5f, 322f, 428f);
+                Place(operatorRarityAccent, 0f, -168f, 168f, 62f);
+                Place(operatorNewBadge, 116f, 168f, 94f, 36f);
+                Place(operatorOwnedBadge, 116f, 130f, 94f, 36f);
+                Place(operatorLevelBadge, -112f, -166f, 86f, 32f);
+                Place(operatorDuplicateTokenBadge, 242f, -322f, 92f, 92f);
+                Place(operatorGridSafeMask, 0f, -112f, 770f, 500f);
+                Place(duplicateConversion, 356f, -430f, 144f, 144f);
                 Place(ticketSpend, -318f, -398f, 160f, 160f);
                 Place(ticketIcon, -420f, 500f, 72f, 72f);
                 Place(title, 0f, 800f, 960f, 96f);
@@ -195,7 +248,15 @@ namespace LastRail.Editor
                     ("pickupEliteGlowImage", pickupEliteGlow),
                     ("duplicateConversionImage", duplicateConversion),
                     ("ticketSpendImage", ticketSpend),
-                    ("resultCardFrameImage", resultCardFrame));
+                    ("resultCardFrameImage", resultCardFrame),
+                    ("operatorCardSlotBackgroundImage", operatorCardSlotBackground),
+                    ("operatorRarityAccentImage", operatorRarityAccent),
+                    ("operatorSelectedFrameImage", operatorSelectedFrame),
+                    ("operatorNewBadgeImage", operatorNewBadge),
+                    ("operatorOwnedBadgeImage", operatorOwnedBadge),
+                    ("operatorLevelBadgeImage", operatorLevelBadge),
+                    ("operatorDuplicateTokenBadgeImage", operatorDuplicateTokenBadge),
+                    ("operatorGridSafeMaskImage", operatorGridSafeMask));
                 SavePrefab(root, "GachaScreen");
             }
             finally

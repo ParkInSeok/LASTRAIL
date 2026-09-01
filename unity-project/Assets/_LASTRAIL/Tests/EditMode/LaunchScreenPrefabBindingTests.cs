@@ -116,6 +116,30 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void GachaScreenPrefab_UsesOperatorCardPolishLayersForResultCards()
+        {
+            AssertBoundFields<GachaScreenRootBehaviour>(
+                "GachaScreen.prefab",
+                "operatorCardSlotBackgroundImage",
+                "operatorRarityAccentImage",
+                "operatorSelectedFrameImage",
+                "operatorNewBadgeImage",
+                "operatorOwnedBadgeImage",
+                "operatorLevelBadgeImage",
+                "operatorDuplicateTokenBadgeImage",
+                "operatorGridSafeMaskImage");
+
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorCardSlotBackgroundImage", "operator_card_slot_background");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorRarityAccentImage", "operator_rarity_pickup_elite");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorSelectedFrameImage", "operator_card_selected_frame");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorNewBadgeImage", "operator_badge_new");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorOwnedBadgeImage", "operator_badge_owned");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorLevelBadgeImage", "operator_badge_level");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorDuplicateTokenBadgeImage", "ui_operator_duplicate_token");
+            AssertImageUsesSprite("GachaScreen.prefab", "operatorGridSafeMaskImage", "operator_grid_safe_mask");
+        }
+
+        [Test]
         public void GachaScreenRoot_RenderSwitchesVisualSkinForTenPullAndDuplicateStates()
         {
             var root = InstantiateScreenRoot<GachaScreenRootBehaviour>("GachaScreen.prefab");
@@ -131,6 +155,9 @@ namespace LastRail.Tests.EditMode
                 Assert.That(GetSerializedObjectReference<Image>(root, "duplicateConversionImage").enabled, Is.True);
                 Assert.That(GetSerializedObjectReference<Image>(root, "singlePullRevealPlateImage").enabled, Is.False);
                 Assert.That(GetSerializedObjectReference<Image>(root, "resultCardFrameImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorGridSafeMaskImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorCardSlotBackgroundImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorDuplicateTokenBadgeImage").enabled, Is.True);
                 var resultGridText = GetSerializedObjectReference<TMP_Text>(root, "resultGridText").text;
                 Assert.That(resultGridText, Does.Contain("결과 10개"));
                 Assert.That(resultGridText, Does.Contain("정예 1 / 희귀 1 / 일반 8"));
@@ -146,6 +173,13 @@ namespace LastRail.Tests.EditMode
                 Assert.That(GetSerializedObjectReference<Image>(root, "resultCardFrameImage").enabled, Is.True);
                 Assert.That(GetSerializedObjectReference<Image>(root, "pickupEliteGlowImage").enabled, Is.True);
                 Assert.That(GetSerializedObjectReference<Image>(root, "tenPullGridFrameImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorCardSlotBackgroundImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorRarityAccentImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorSelectedFrameImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorNewBadgeImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorOwnedBadgeImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorLevelBadgeImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "operatorGridSafeMaskImage").enabled, Is.False);
             }
             finally
             {
