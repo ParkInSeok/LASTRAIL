@@ -10,14 +10,14 @@ namespace LastRail.Presentation
             int codeLayoutPassCount,
             int codeLayoutFailCount,
             bool screenshotCaptureAttempted,
-            IEnumerable<string> screenshotPaths,
+            IEnumerable<LaunchScreenshotFidelityResult> fidelityResults,
             IEnumerable<string> blockers)
         {
             ScreenKeys = CopyText(screenKeys, nameof(screenKeys));
             CodeLayoutPassCount = RequireNonNegative(codeLayoutPassCount, nameof(codeLayoutPassCount));
             CodeLayoutFailCount = RequireNonNegative(codeLayoutFailCount, nameof(codeLayoutFailCount));
             ScreenshotCaptureAttempted = screenshotCaptureAttempted;
-            ScreenshotPaths = CopyText(screenshotPaths, nameof(screenshotPaths));
+            FidelityResults = CopyFidelityResults(fidelityResults, nameof(fidelityResults));
             Blockers = CopyText(blockers, nameof(blockers));
         }
 
@@ -26,10 +26,13 @@ namespace LastRail.Presentation
         public int CodeLayoutPassCount { get; }
         public int CodeLayoutFailCount { get; }
         public bool ScreenshotCaptureAttempted { get; }
-        public IReadOnlyList<string> ScreenshotPaths { get; }
-        public int ScreenshotPassCount => ScreenshotPaths.Count;
+        public IReadOnlyList<LaunchScreenshotFidelityResult> FidelityResults { get; }
+        public IReadOnlyList<string> ScreenshotPaths => BuildScreenshotPaths(FidelityResults);
+        public int ScreenshotPassCount => CountScreenshotResults(passed: true);
+        public int ScreenshotFailCount => CountScreenshotResults(passed: false);
+        public IReadOnlyList<string> FidelityReasons => BuildFidelityReasons(FidelityResults);
         public int WarningCount => Blockers.Count;
-        public int FailCount => CodeLayoutFailCount;
+        public int FailCount => CodeLayoutFailCount + ScreenshotFailCount;
         public IReadOnlyList<string> Blockers { get; }
         public int BlockerCount => Blockers.Count;
         public bool IsReadyForDeviceScreenshotQa => ScreenshotCaptureAttempted && ScreenshotPassCount == ScreenCount && BlockerCount == 0 && FailCount == 0;
@@ -56,7 +59,7 @@ namespace LastRail.Presentation
                 codeLayoutPassCount,
                 codeLayoutFailCount,
                 screenshotCaptureAttempted: false,
-                screenshotPaths: Array.Empty<string>(),
+                fidelityResults: Array.Empty<LaunchScreenshotFidelityResult>(),
                 blockers: new[] { "editor_device_screenshot_qa_unavailable" });
         }
 
@@ -73,12 +76,34 @@ namespace LastRail.Presentation
                 throw new ArgumentException("Screenshot count must match screen count.", nameof(screenshotPaths));
             }
 
+            var results = new List<LaunchScreenshotFidelityResult>();
+            for (var i = 0; i < keys.Count; i++)
+            {
+                results.Add(LaunchScreenshotFidelityResult.Pass(keys[i], paths[i], 256, 1f, 1, 1));
+            }
+
+            return ForCapturedScreens(keys, codeLayoutPassCount, codeLayoutFailCount, results);
+        }
+
+        public static LaunchScreenScreenshotQaReport ForCapturedScreens(
+            IEnumerable<string> screenKeys,
+            int codeLayoutPassCount,
+            int codeLayoutFailCount,
+            IEnumerable<LaunchScreenshotFidelityResult> fidelityResults)
+        {
+            var keys = CopyText(screenKeys, nameof(screenKeys));
+            var results = CopyFidelityResults(fidelityResults, nameof(fidelityResults));
+            if (results.Count != keys.Count)
+            {
+                throw new ArgumentException("Screenshot fidelity result count must match screen count.", nameof(fidelityResults));
+            }
+
             return new LaunchScreenScreenshotQaReport(
                 keys,
                 codeLayoutPassCount,
                 codeLayoutFailCount,
                 screenshotCaptureAttempted: true,
-                screenshotPaths: paths,
+                fidelityResults: results,
                 blockers: Array.Empty<string>());
         }
 
@@ -106,6 +131,68 @@ namespace LastRail.Presentation
             }
 
             return copied.AsReadOnly();
+        }
+
+        private static IReadOnlyList<LaunchScreenshotFidelityResult> CopyFidelityResults(
+            IEnumerable<LaunchScreenshotFidelityResult> values,
+            string name)
+        {
+            if (values == null)
+            {
+                throw new ArgumentNullException(name);
+            }
+
+            var copied = new List<LaunchScreenshotFidelityResult>();
+            foreach (var value in values)
+            {
+                if (value == null)
+                {
+                    throw new ArgumentException("Fidelity result cannot be null.", name);
+                }
+
+                copied.Add(value);
+            }
+
+            return copied.AsReadOnly();
+        }
+
+        private int CountScreenshotResults(bool passed)
+        {
+            var count = 0;
+            foreach (var result in FidelityResults)
+            {
+                if (result.Passed == passed)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private static IReadOnlyList<string> BuildScreenshotPaths(IReadOnlyList<LaunchScreenshotFidelityResult> results)
+        {
+            var paths = new List<string>();
+            foreach (var result in results)
+            {
+                paths.Add(result.ScreenshotPath);
+            }
+
+            return paths.AsReadOnly();
+        }
+
+        private static IReadOnlyList<string> BuildFidelityReasons(IReadOnlyList<LaunchScreenshotFidelityResult> results)
+        {
+            var reasons = new List<string>();
+            foreach (var result in results)
+            {
+                foreach (var reason in result.Reasons)
+                {
+                    reasons.Add(result.ScreenKey + ":" + reason);
+                }
+            }
+
+            return reasons.AsReadOnly();
         }
 
         private static string RequireText(string value, string name)

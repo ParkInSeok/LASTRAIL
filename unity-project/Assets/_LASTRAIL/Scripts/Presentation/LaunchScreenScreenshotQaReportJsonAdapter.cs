@@ -19,9 +19,11 @@ namespace LastRail.Presentation
             AppendInt(builder, "codeLayoutFailCount", report.CodeLayoutFailCount).Append(',');
             AppendBool(builder, "screenshotCaptureAttempted", report.ScreenshotCaptureAttempted).Append(',');
             AppendInt(builder, "screenshotPassCount", report.ScreenshotPassCount).Append(',');
+            AppendInt(builder, "screenshotFailCount", report.ScreenshotFailCount).Append(',');
             AppendInt(builder, "warningCount", report.WarningCount).Append(',');
             AppendInt(builder, "failCount", report.FailCount).Append(',');
             AppendStringArray(builder, "screenKeys", report.ScreenKeys).Append(',');
+            AppendStringArray(builder, "fidelityReasons", report.FidelityReasons).Append(',');
             AppendStringArray(builder, "blockers", report.Blockers).Append(',');
             AppendBool(builder, "isReadyForDeviceScreenshotQa", report.IsReadyForDeviceScreenshotQa).Append(',');
             AppendBool(builder, "usesPortraitSafeArea", report.UsesPortraitSafeArea).Append(',');
