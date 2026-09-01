@@ -66,7 +66,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(json.Contains("\"isComplete\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"player_facing_screenshot_qa_7_screens\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"google_sign_in_sdk_pass_after_app_registration\""), Is.EqualTo(true));
-            Assert.That(json.Contains("\"openBlockers\":[\"android_vibration_device_validation_pending\",\"android_keystore_device_validation_pending\",\"google_sdk_oauth_app_registration_pending\",\"android_build_smoke_pending\"]"), Is.EqualTo(true));
+            Assert.That(json.Contains("\"openBlockers\":[\"android_vibration_device_validation_pending\",\"android_keystore_device_validation_pending\",\"google_sdk_oauth_app_registration_pending\",\"android_internal_testing_build_or_play_internal_track_pending\"]"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewServerScope\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewAdminScope\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNewNarrativeScope\":false"), Is.EqualTo(true));

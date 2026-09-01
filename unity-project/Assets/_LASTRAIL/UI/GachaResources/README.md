@@ -14,4 +14,4 @@ Scope:
 Usage:
 - Use the manifest at `Assets/_LASTRAIL/UI/Style/lastrail-item-gacha-resources.json` for QA and resource readiness.
 - These are presentation resources only. They do not encode item grants, rewards, economy grants, offline rewards, gacha odds, rates, weights, pity state, or ledger state.
-- External paid asset dependency: none.
+- External paid asset dependency: none. No external paid asset dependency is required for these generated launch resources.

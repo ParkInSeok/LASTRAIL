@@ -15,4 +15,4 @@ Scope:
 Usage:
 - Use the manifest at `Assets/_LASTRAIL/UI/Style/lastrail-combat-art-resources.json` for QA and resource readiness.
 - These are presentation resources only. They do not encode combat formulas, rewards, economy grants, story progress, unlocks, offline rewards, gacha odds, or ledger state.
-- External paid asset dependency: none.
+- External paid asset dependency: none. No external paid asset dependency is required for these generated launch resources.
