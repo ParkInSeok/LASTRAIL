@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "outputRoot": "E:\\Projects\\LASTRAIL\\unity-project\\QA\\Act1Launch",
+  "videoFormat": "mp4",
+  "hasMp4Artifact": true,
+  "hasRecorderPackage": true,
+  "mp4Path": "E:\\Projects\\LASTRAIL\\unity-project\\QA\\Act1Launch\\Video\\editor-flow-video-qa.mp4",
+  "mp4Encoder": "imageio_ffmpeg",
+  "mp4SizeBytes": 168847,
+  "width": 1080,
+  "height": 1920,
+  "frameCount": 13,
+  "estimatedDurationSeconds": 65,
+  "checkedSurfaceCount": 13,
+  "checkedSurfaces": [
+    {
+      "screenKey": "mission_shell"
+    },
+    {
+      "screenKey": "gacha_screen"
+    },
+    {
+      "screenKey": "fully_animated_combat_hud"
+    },
+    {
+      "screenKey": "codex_archive"
+    },
+    {
+      "screenKey": "reward_review"
+    },
+    {
+      "screenKey": "offline_reward"
+    },
+    {
+      "screenKey": "story_progress_summary"
+    },
+    {
+      "screenKey": "gacha_single_pull"
+    },
+    {
+      "screenKey": "gacha_ten_pull"
+    },
+    {
+      "screenKey": "gacha_duplicate_conversion"
+    },
+    {
+      "screenKey": "system_feedback_showcase"
+    },
+    {
+      "screenKey": "operator_card_polish_showcase"
+    },
+    {
+      "screenKey": "audio_showcase"
+    }
+  ],
+  "warningCount": 0,
+  "failCount": 0,
+  "blockers": [],
+  "usesPortraitSafeArea": true,
+  "minimumTouchTargetDp": 48,
+  "requiresTmpKoreanReadability": true,
+  "hasServerTransport": false,
+  "hasRewardCalculation": false,
+  "hasEconomyMutation": false,
+  "hasStoryTruthCalculation": false,
+  "hasOfflineRewardCalculation": false,
+  "hasClientSideRng": false,
+  "mp4Width": 1080,
+  "mp4Height": 1920,
+  "mp4DurationSeconds": 65,
+  "mp4SourceFrameCount": 13
+}

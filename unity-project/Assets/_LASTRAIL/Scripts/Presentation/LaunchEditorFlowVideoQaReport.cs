@@ -16,6 +16,9 @@ namespace LastRail.Presentation
             string videoFormat,
             bool hasMp4Artifact,
             bool hasRecorderPackage,
+            string mp4Path,
+            string mp4Encoder,
+            long mp4SizeBytes,
             int width,
             int height,
             int frameCount,
@@ -30,6 +33,9 @@ namespace LastRail.Presentation
             VideoFormat = RequireText(videoFormat, nameof(videoFormat));
             HasMp4Artifact = hasMp4Artifact;
             HasRecorderPackage = hasRecorderPackage;
+            Mp4Path = OptionalText(mp4Path);
+            Mp4Encoder = OptionalText(mp4Encoder);
+            Mp4SizeBytes = mp4SizeBytes;
             Width = width;
             Height = height;
             FrameCount = frameCount;
@@ -46,6 +52,9 @@ namespace LastRail.Presentation
         public string VideoFormat { get; }
         public bool HasMp4Artifact { get; }
         public bool HasRecorderPackage { get; }
+        public string Mp4Path { get; }
+        public string Mp4Encoder { get; }
+        public long Mp4SizeBytes { get; }
         public int Width { get; }
         public int Height { get; }
         public int FrameCount { get; }
@@ -80,10 +89,56 @@ namespace LastRail.Presentation
                 "png_frame_sequence",
                 hasMp4Artifact: false,
                 hasRecorderPackage: false,
+                mp4Path: null,
+                mp4Encoder: null,
+                mp4SizeBytes: 0,
                 width: DefaultWidth,
                 height: DefaultHeight,
                 frameCount: frameCount,
                 estimatedDurationSeconds: Math.Max(60, frameCount * 5),
+                checkedSurfaces: checkedSurfaces,
+                warningCount: warningCount,
+                failCount: failCount,
+                blockers: blockers);
+        }
+
+        public static LaunchEditorFlowVideoQaReport ForMp4Artifact(
+            string outputRoot,
+            string mp4Path,
+            string mp4Encoder,
+            IEnumerable<string> checkedSurfaces,
+            int frameCount,
+            int durationSeconds,
+            long mp4SizeBytes,
+            bool hasRecorderPackage,
+            int warningCount,
+            int failCount,
+            IEnumerable<string> blockers)
+        {
+            if (durationSeconds <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(durationSeconds));
+            }
+
+            if (mp4SizeBytes <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(mp4SizeBytes));
+            }
+
+            var status = failCount == 0 ? "PASS" : "FAIL";
+            return new LaunchEditorFlowVideoQaReport(
+                status,
+                outputRoot,
+                "mp4",
+                hasMp4Artifact: true,
+                hasRecorderPackage: hasRecorderPackage,
+                mp4Path: mp4Path,
+                mp4Encoder: mp4Encoder,
+                mp4SizeBytes: mp4SizeBytes,
+                width: DefaultWidth,
+                height: DefaultHeight,
+                frameCount: frameCount,
+                estimatedDurationSeconds: durationSeconds,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
                 failCount: failCount,
@@ -115,6 +170,11 @@ namespace LastRail.Presentation
 
             return value.Trim();
         }
+
+        private static string OptionalText(string value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
     }
 
     public static class LaunchEditorFlowVideoQaReportJsonAdapter
@@ -133,6 +193,9 @@ namespace LastRail.Presentation
             Field(b, "videoFormat", report.VideoFormat).Append(',');
             b.Append("\"hasMp4Artifact\":").Append(Bool(report.HasMp4Artifact)).Append(',');
             b.Append("\"hasRecorderPackage\":").Append(Bool(report.HasRecorderPackage)).Append(',');
+            OptionalField(b, "mp4Path", report.Mp4Path).Append(',');
+            OptionalField(b, "mp4Encoder", report.Mp4Encoder).Append(',');
+            b.Append("\"mp4SizeBytes\":").Append(report.Mp4SizeBytes.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"width\":").Append(report.Width.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"height\":").Append(report.Height.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"frameCount\":").Append(report.FrameCount.ToString(CultureInfo.InvariantCulture)).Append(',');
@@ -184,6 +247,22 @@ namespace LastRail.Presentation
             StringValue(b, name);
             b.Append(':');
             StringValue(b, value);
+            return b;
+        }
+
+        private static StringBuilder OptionalField(StringBuilder b, string name, string value)
+        {
+            StringValue(b, name);
+            b.Append(':');
+            if (value == null)
+            {
+                b.Append("null");
+            }
+            else
+            {
+                StringValue(b, value);
+            }
+
             return b;
         }
 

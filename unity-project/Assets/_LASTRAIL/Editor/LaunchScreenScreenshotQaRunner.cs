@@ -16,7 +16,9 @@ namespace LastRail.Editor
     {
         private const int Width = 1080;
         private const int Height = 1920;
-        private const string OutputDirectoryName = "LastRailScreenQa";
+        private const string QaRootRelativePath = "QA/Act1Launch";
+        private const string ScreenshotsRelativePath = "Screenshots/SevenScreen";
+        private const string ReportsRelativePath = "Reports";
 
         private static readonly (string ScreenKey, string PrefabPath)[] Screens =
         {
@@ -32,8 +34,12 @@ namespace LastRail.Editor
         [MenuItem("LASTRAIL/Launch/Capture Screen QA")]
         public static void CaptureSevenScreenPortraitQa()
         {
-            var outputRoot = Path.Combine(Path.GetTempPath(), OutputDirectoryName);
+            var projectRoot = Directory.GetParent(Application.dataPath).FullName;
+            var qaRoot = Path.Combine(projectRoot, QaRootRelativePath);
+            var outputRoot = Path.Combine(qaRoot, ScreenshotsRelativePath);
+            var reportsRoot = Path.Combine(qaRoot, ReportsRelativePath);
             Directory.CreateDirectory(outputRoot);
+            Directory.CreateDirectory(reportsRoot);
 
             var screenKeys = new List<string>();
             var fidelityResults = new List<LaunchScreenshotFidelityResult>();
@@ -53,7 +59,7 @@ namespace LastRail.Editor
                     codeLayoutPassCount: Screens.Length,
                     codeLayoutFailCount: 0,
                     fidelityResults: fidelityResults);
-                WriteReport(outputRoot, report);
+                WriteReport(reportsRoot, report);
                 wroteReport = true;
                 if (!report.IsReadyForDeviceScreenshotQa)
                 {
@@ -70,7 +76,7 @@ namespace LastRail.Editor
                         screenKeys.Count > 0 ? screenKeys : AllScreenKeys(),
                         codeLayoutPassCount: Screens.Length,
                         codeLayoutFailCount: 0);
-                    WriteReport(outputRoot, report);
+                    WriteReport(reportsRoot, report);
                 }
 
                 Debug.LogError("LASTRAIL screen screenshot QA unavailable: " + ex.GetType().Name + ": " + ex.Message);

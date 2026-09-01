@@ -1,0 +1,14 @@
+# Local QA media artifacts are generated on demand and can be large.
+Frames/**/*.png
+Frames/**/*.txt
+Screenshots/**/*.png
+Screenshots/**/*.jpg
+Screenshots/**/*.jpeg
+Showcases/**/*.png
+Showcases/**/*.jpg
+Showcases/**/*.jpeg
+Video/**/*.mp4
+Video/**/*.webm
+Video/**/*.gif
+Reports/frame-sequence.txt
+Reports/editor-video-qa-readme.txt

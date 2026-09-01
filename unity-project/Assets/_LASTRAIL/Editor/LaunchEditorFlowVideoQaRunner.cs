@@ -20,7 +20,9 @@ namespace LastRail.Editor
     {
         private const int Width = 1080;
         private const int Height = 1920;
-        private const string OutputDirectoryName = "LastRailEditorVideoQa";
+        private const string QaRootRelativePath = "QA/Act1Launch";
+        private const string FramesRelativePath = "Frames/EditorFlowVideoQa";
+        private const string ReportsRelativePath = "Reports";
 
         private static readonly (string ScreenKey, string PrefabPath)[] LaunchScreens =
         {
@@ -50,10 +52,13 @@ namespace LastRail.Editor
         [MenuItem("LASTRAIL/Launch/Capture Editor Flow Video QA")]
         public static void CaptureEditorFlowVideoQa()
         {
-            var outputRoot = Path.Combine(Path.GetTempPath(), OutputDirectoryName);
+            var projectRoot = Directory.GetParent(Application.dataPath).FullName;
+            var outputRoot = Path.Combine(projectRoot, QaRootRelativePath);
+            var framesRoot = Path.Combine(outputRoot, FramesRelativePath);
+            var reportsRoot = Path.Combine(outputRoot, ReportsRelativePath);
             Directory.CreateDirectory(outputRoot);
-            var framesRoot = Path.Combine(outputRoot, "frames");
             Directory.CreateDirectory(framesRoot);
+            Directory.CreateDirectory(reportsRoot);
 
             var checkedSurfaces = new List<string>();
             var framePaths = new List<string>();
@@ -91,7 +96,7 @@ namespace LastRail.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             }
 
-            WriteFrameManifest(outputRoot, framePaths);
+            WriteFrameManifest(reportsRoot, framePaths);
             var report = LaunchEditorFlowVideoQaReport.ForPngFrameSequence(
                 outputRoot,
                 checkedSurfaces,
@@ -100,13 +105,14 @@ namespace LastRail.Editor
                 failCount,
                 blockers);
             File.WriteAllText(
-                Path.Combine(outputRoot, "editor-video-qa-report.json"),
+                Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
             File.WriteAllText(
-                Path.Combine(outputRoot, "README.txt"),
+                Path.Combine(reportsRoot, "editor-video-qa-readme.txt"),
                 "LAST RAIL editor flow video QA evidence.\n" +
-                "Unity Recorder/mp4 package is not present in this project, so this run records a launch-safe 1080x1920 PNG frame sequence instead of an mp4 artifact.\n" +
-                "Use the files in frames/ as the walkthrough evidence. No sensitive auth, server, gameplay, or economy payload is written.\n");
+                "This runner records a launch-safe 1080x1920 PNG frame sequence under QA/Act1Launch/Frames.\n" +
+                "Run Tools/export-editor-video-qa-mp4.py to encode the frame sequence to QA/Act1Launch/Video/editor-flow-video-qa.mp4 and update the report JSON.\n" +
+                "No sensitive auth, server, gameplay, or economy payload is written.\n");
 
             if (failCount > 0)
             {
