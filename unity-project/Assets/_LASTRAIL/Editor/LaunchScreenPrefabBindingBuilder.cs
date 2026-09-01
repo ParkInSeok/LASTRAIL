@@ -28,6 +28,12 @@ namespace LastRail.Editor
         private const string OperatorCardPolishBadgesRoot = OperatorCardPolishRoot + "/Badges";
         private const string OperatorCardPolishRarityRoot = OperatorCardPolishRoot + "/Rarity";
         private const string OperatorCardPolishOverlaysRoot = OperatorCardPolishRoot + "/Overlays";
+        private const string RewardOfflineRoot = "Assets/_LASTRAIL/UI/RewardOfflineResources";
+        private const string RewardOfflineFramesRoot = RewardOfflineRoot + "/Frames";
+        private const string RewardOfflineBadgesRoot = RewardOfflineRoot + "/Badges";
+        private const string RewardOfflineMetersRoot = RewardOfflineRoot + "/Meters";
+        private const string RewardOfflineEmptyRoot = RewardOfflineRoot + "/Empty";
+        private const string RewardOfflineAccentsRoot = RewardOfflineRoot + "/Accents";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -55,6 +61,19 @@ namespace LastRail.Editor
 
             CreateCodexPrefab();
             CreateRewardStoryPrefab("StoryProgressSummaryScreen", "스토리 진행");
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build Reward And Offline Polish Prefabs")]
+        public static void BuildRewardAndOfflinePolishPrefabs()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateRewardStoryPrefab("RewardReviewScreen", "작전 보상");
+            CreateRewardStoryPrefab("OfflineRewardScreen", "오프라인 보상");
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -523,6 +542,20 @@ namespace LastRail.Editor
                     Place(rewardLines, 0f, -60f, 960f, 260f);
                     Place(status, 0f, -365f, 960f, 120f);
                 }
+                else if (string.Equals(prefabName, "RewardReviewScreen", StringComparison.Ordinal))
+                {
+                    CreateRewardReviewVisualPolish(safeArea);
+                    Place(body, 0f, 545f, 960f, 128f);
+                    Place(rewardLines, 110f, 120f, 720f, 330f);
+                    Place(status, 0f, -335f, 960f, 128f);
+                }
+                else if (string.Equals(prefabName, "OfflineRewardScreen", StringComparison.Ordinal))
+                {
+                    CreateOfflineRewardVisualPolish(safeArea);
+                    Place(body, 0f, 545f, 960f, 128f);
+                    Place(rewardLines, 110f, 115f, 720f, 330f);
+                    Place(status, 0f, -335f, 960f, 128f);
+                }
                 else
                 {
                     Place(body, 0f, 520f, 960f, 220f);
@@ -552,6 +585,93 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static void CreateRewardReviewVisualPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "RewardReviewVisualPolishLayer");
+            var resultPlate = CreateImage(
+                layer,
+                "RewardResultPlateImage",
+                RewardOfflineFramesRoot + "/reward_result_plate.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            var chestAccent = CreateImage(
+                layer,
+                "RewardChestSupplyCrateAccentImage",
+                RewardOfflineAccentsRoot + "/reward_chest_supply_crate_accent.png",
+                new Color(1f, 1f, 1f, 0.94f));
+            var materialGlow = CreateImage(
+                layer,
+                "RewardMaterialGlowImage",
+                RewardOfflineAccentsRoot + "/reward_material_glow.png",
+                new Color(1f, 1f, 1f, 0.56f));
+            var successBadge = CreateImage(
+                layer,
+                "ClaimSuccessBadgeImage",
+                RewardOfflineBadgesRoot + "/claim_success_badge.png",
+                new Color(1f, 1f, 1f, 0.94f));
+
+            Place(resultPlate, 0f, 190f, 900f, 450f);
+            Place(chestAccent, -345f, 260f, 150f, 150f);
+            Place(materialGlow, 344f, 260f, 168f, 168f);
+            Place(successBadge, 310f, 405f, 190f, 72f);
+
+            CreateRewardLineFrame(layer, "RewardLineItemFrameTopImage", 0f, 215f);
+            CreateRewardLineFrame(layer, "RewardLineItemFrameMiddleImage", 0f, 105f);
+            CreateRewardLineFrame(layer, "RewardLineItemFrameBottomImage", 0f, -5f);
+        }
+
+        private static void CreateOfflineRewardVisualPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "OfflineRewardVisualPolishLayer");
+            var settlementMeter = CreateImage(
+                layer,
+                "OfflineSettlementMeterImage",
+                RewardOfflineMetersRoot + "/offline_settlement_meter.png",
+                new Color(1f, 1f, 1f, 0.93f));
+            var durationStrip = CreateImage(
+                layer,
+                "OfflineDurationAccumulationStripImage",
+                RewardOfflineMetersRoot + "/offline_duration_accumulation_strip.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            var emptyState = CreateImage(
+                layer,
+                "OfflineEmptyStateVisualImage",
+                RewardOfflineEmptyRoot + "/offline_empty_state_visual.png",
+                new Color(1f, 1f, 1f, 0.86f));
+            var claimableAccent = CreateImage(
+                layer,
+                "ClaimPendingClaimableAccentImage",
+                RewardOfflineBadgesRoot + "/claim_pending_claimable_accent.png",
+                new Color(1f, 1f, 1f, 0.92f));
+
+            Place(settlementMeter, 0f, 310f, 860f, 216f);
+            Place(durationStrip, 0f, 150f, 860f, 126f);
+            Place(emptyState, -305f, 5f, 260f, 174f);
+            Place(claimableAccent, 278f, 15f, 220f, 84f);
+            CreateRewardLineFrame(layer, "OfflineRewardLineItemFrameImage", 125f, -70f);
+        }
+
+        private static void CreateRewardLineFrame(Transform parent, string name, float x, float y)
+        {
+            var frame = CreateImage(
+                parent,
+                name,
+                RewardOfflineFramesRoot + "/reward_line_item_frame.png",
+                new Color(1f, 1f, 1f, 0.9f));
+            Place(frame, x, y, 790f, 98f);
+        }
+
+        private static Transform CreateVisualLayer(Transform parent, string name)
+        {
+            var layer = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+            layer.SetParent(parent, false);
+            layer.anchorMin = Vector2.zero;
+            layer.anchorMax = Vector2.one;
+            layer.offsetMin = Vector2.zero;
+            layer.offsetMax = Vector2.zero;
+            layer.SetAsFirstSibling();
+            return layer;
         }
 
         private static GameObject CreateScreenRoot(string name)
