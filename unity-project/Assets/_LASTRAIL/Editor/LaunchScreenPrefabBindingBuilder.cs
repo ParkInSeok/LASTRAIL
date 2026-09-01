@@ -21,6 +21,7 @@ namespace LastRail.Editor
         private const string KeyVisualRoot = "Assets/_LASTRAIL/UI/KeyVisuals";
         private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
         private const string GachaFxRoot = "Assets/_LASTRAIL/UI/GachaResources/GachaFx";
+        private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
         private const string OperatorCardPolishRoot = "Assets/_LASTRAIL/UI/Operators/CardPolish";
         private const string OperatorCardPolishFramesRoot = OperatorCardPolishRoot + "/Frames";
         private const string OperatorCardPolishBadgesRoot = OperatorCardPolishRoot + "/Badges";
@@ -60,8 +61,9 @@ namespace LastRail.Editor
                 var secondary = CreateButton(safeArea, "SecondaryButton", "돌아가기", out var secondaryText);
                 Place(title, 0f, 780f, 960f, 96f);
                 Place(subtitle, 0f, 700f, 960f, 72f);
-                Place(body, 0f, 520f, 960f, 220f);
-                Place(missionRows, 0f, 260f, 960f, 260f);
+                Place(body, 0f, 560f, 960f, 160f);
+                CreateMissionThumbnailStrip(safeArea);
+                Place(missionRows, 0f, 210f, 960f, 220f);
                 Place(primary.GetComponent<RectTransform>(), -190f, -720f, 320f, 64f);
                 Place(secondary.GetComponent<RectTransform>(), 190f, -720f, 320f, 64f);
 
@@ -80,6 +82,30 @@ namespace LastRail.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static void CreateMissionThumbnailStrip(Transform parent)
+        {
+            var missionIds = new[]
+            {
+                "opn_01_last_departure",
+                "opn_02_first_signal",
+                "opn_03_water_stop",
+                "opn_04_scrapstar_show",
+                "opn_05_night_boarders",
+                "opn_06_broken_line",
+                "raid_raider_king_engine"
+            };
+
+            for (var i = 0; i < missionIds.Length; i++)
+            {
+                var image = CreateImage(
+                    parent,
+                    "MissionThumbnail_" + missionIds[i],
+                    MissionThumbnailRoot + "/" + missionIds[i] + "_thumbnail.png",
+                    new Color(1f, 1f, 1f, 0.82f));
+                Place(image, -420f + i * 140f, 390f, 124f, 70f);
             }
         }
 
