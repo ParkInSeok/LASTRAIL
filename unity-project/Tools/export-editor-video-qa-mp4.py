@@ -16,6 +16,7 @@ DEFAULT_WIDTH = 1080
 DEFAULT_HEIGHT = 1920
 DEFAULT_SECONDS = 60
 DEFAULT_FPS = 30
+LATEST_VIDEO_NAME = "act1-launch-latest-qa.mp4"
 
 
 def main() -> int:
@@ -32,7 +33,7 @@ def main() -> int:
     qa_root = project_root / "QA" / "Act1Launch"
     frames_root = Path(args.frames).resolve() if args.frames else qa_root / "Frames" / "EditorFlowVideoQa"
     report_path = Path(args.report).resolve() if args.report else qa_root / "Reports" / "editor-video-qa-report.json"
-    output_path = Path(args.output).resolve() if args.output else qa_root / "Video" / "launch-screen-ui-walkthrough.mp4"
+    output_path = Path(args.output).resolve() if args.output else qa_root / "Video" / LATEST_VIDEO_NAME
 
     frames = sorted(frames_root.glob("frame_*_1080x1920.png"))
     if not frames:
@@ -42,7 +43,7 @@ def main() -> int:
     duration_seconds = max(30, min(120, args.seconds))
     fps = max(24, min(60, args.fps))
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    prepare_single_latest_output(output_path)
     encoded_frame_count, encoder = encode_with_imageio_ffmpeg(frames, output_path, duration_seconds, fps)
 
     size = output_path.stat().st_size
@@ -207,6 +208,8 @@ def update_report(
             "usesFallbackComposite": False,
             "fallbackCompositeFrameCount": 0,
             "hasHighQualityArtResourceCoverage": True,
+            "latestVideoPolicy": "single_project_local_mp4",
+            "retainedMp4Count": count_mp4_files(output_path.parent),
             "checkedSurfaceCount": checked_surface_count,
         }
     )
@@ -224,6 +227,22 @@ def has_recorder_package(project_root: Path) -> bool:
         return False
 
     return "com.unity.recorder" in manifest_path.read_text(encoding="utf-8")
+
+
+def prepare_single_latest_output(output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    for candidate in output_path.parent.glob("*.mp4"):
+        try:
+            candidate.unlink()
+        except PermissionError as exc:
+            raise SystemExit(
+                "Cannot clean previous QA mp4 because it is open in another process. "
+                f"Close video players or Explorer previews using this file, then retry: {candidate}"
+            ) from exc
+
+
+def count_mp4_files(video_root: Path) -> int:
+    return len(list(video_root.glob("*.mp4"))) if video_root.exists() else 0
 
 
 if __name__ == "__main__":

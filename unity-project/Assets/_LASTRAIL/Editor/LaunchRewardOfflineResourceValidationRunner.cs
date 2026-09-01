@@ -14,6 +14,7 @@ namespace LastRail.Editor
     {
         private const string ManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-reward-offline-resources.json";
         private const string ReadmePath = "Assets/_LASTRAIL/UI/RewardOfflineResources/README.md";
+        private const string SourceReportPath = "Assets/_LASTRAIL/UI/RewardOfflineResources/high-quality-replacement-sources.json";
         private const string RewardReviewPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/RewardReviewScreen.prefab";
         private const string OfflineRewardPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/OfflineRewardScreen.prefab";
         private const string FontPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
@@ -31,6 +32,8 @@ namespace LastRail.Editor
             {
                 RequireFile(ManifestPath);
                 RequireFile(ReadmePath);
+                RequireFile(SourceReportPath);
+                ValidateHighQualityMetadata();
                 foreach (var resource in LaunchRewardOfflineResourceBuilder.Resources)
                 {
                     ValidateTexture(resource);
@@ -81,6 +84,44 @@ namespace LastRail.Editor
             if (importer == null || importer.textureType != TextureImporterType.Sprite || importer.mipmapEnabled)
             {
                 throw new InvalidOperationException("Reward/offline texture importer is not launch ready: " + resource.Path);
+            }
+
+            if (resource.QualityClass != "HIGH_QUALITY_2D_ILLUSTRATION")
+            {
+                throw new InvalidOperationException("Reward/offline resource is not marked high quality: " + resource.Path);
+            }
+
+            if (resource.ReplacementStatus != "REPLACED_HIGH_QUALITY_2D")
+            {
+                throw new InvalidOperationException("Reward/offline resource replacement status is not launch ready: " + resource.Path);
+            }
+        }
+
+        private static void ValidateHighQualityMetadata()
+        {
+            var manifest = File.ReadAllText(ProjectPath(ManifestPath));
+            if (manifest.Contains("Unity procedural texture builder"))
+            {
+                throw new InvalidOperationException("Reward/offline manifest still points at procedural placeholder generation.");
+            }
+
+            if (!manifest.Contains("\"qualityClass\": \"HIGH_QUALITY_2D_ILLUSTRATION\""))
+            {
+                throw new InvalidOperationException("Reward/offline manifest is missing high-quality qualityClass entries.");
+            }
+
+            if (!manifest.Contains("\"replacementStatus\": \"REPLACED_HIGH_QUALITY_2D\""))
+            {
+                throw new InvalidOperationException("Reward/offline manifest is missing replacement status entries.");
+            }
+
+            var sourceReport = File.ReadAllText(ProjectPath(SourceReportPath));
+            foreach (var resource in LaunchRewardOfflineResourceBuilder.Resources)
+            {
+                if (!sourceReport.Contains("\"id\": \"" + resource.Id + "\""))
+                {
+                    throw new InvalidOperationException("Reward/offline source report is missing " + resource.Id);
+                }
             }
         }
 

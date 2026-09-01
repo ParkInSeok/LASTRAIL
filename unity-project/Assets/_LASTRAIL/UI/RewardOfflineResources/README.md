@@ -1,10 +1,16 @@
 # LAST RAIL Act 1 Reward / Offline Reward Visual Resources
 
-These reward and offline settlement files are Unity procedural texture builder outputs for the Act 1 launch UI.
+These reward and offline settlement files are high-quality 2D UI illustration replacements for the Act 1 launch UI.
 
 Source:
-- Generated locally inside the Unity Editor from `LaunchRewardOfflineResourceBuilder`.
+- Generated with the built-in image generation tool, then resized/padded into Unity sprite assets at the stable paths listed below.
+- The source mapping lives in `Assets/_LASTRAIL/UI/RewardOfflineResources/high-quality-replacement-sources.json`.
+- `LaunchRewardOfflineResourceBuilder` now preserves these replacement PNGs and only regenerates manifest/showcase/import settings.
 - No external paid asset dependency.
+
+Quality audit:
+- Before: `PROCEDURAL_PLACEHOLDER`; the previous builder drew line/rectangle-based Unity textures.
+- After: `HIGH_QUALITY_2D_ILLUSTRATION`; each player-facing reward/offline visual is a generated 2D rail UI asset.
 
 Scope:
 - `reward_result_plate`

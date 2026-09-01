@@ -1,9 +1,9 @@
 {
   "name": "LAST RAIL Act 1 Reward Offline Visual Resources",
   "referenceResolution": "1080x1920",
-  "resourceCount":
-9,
-  "generatedBy": "Unity procedural texture builder",
+  "resourceCount": 9,
+  "generatedBy": "image_gen high-quality 2D replacement import plus Unity validation",
+  "sourceReport": "Assets/_LASTRAIL/UI/RewardOfflineResources/high-quality-replacement-sources.json",
   "presentationOnly": true,
   "serverContractChanged": false,
   "rewardGrantIncluded": false,
@@ -11,14 +11,14 @@
   "offlineAccumulationTruthIncluded": false,
   "economyMutationIncluded": false,
   "resources": [
-    { "id": "reward_result_plate", "category": "frame", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_result_plate.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "reward_line_item_frame", "category": "frame", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_line_item_frame.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "claim_success_badge", "category": "badge", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_success_badge.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "claim_pending_claimable_accent", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_pending_claimable_accent.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "offline_settlement_meter", "category": "meter", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_settlement_meter.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "offline_duration_accumulation_strip", "category": "meter", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_duration_accumulation_strip.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "offline_empty_state_visual", "category": "empty", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "reward_chest_supply_crate_accent", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_chest_supply_crate_accent.png", "sourceType": "generated_local_launch_asset" },
-    { "id": "reward_material_glow", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_material_glow.png", "sourceType": "generated_local_launch_asset" }
+    { "id": "reward_result_plate", "category": "frame", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_result_plate.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "reward_line_item_frame", "category": "frame", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_line_item_frame.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "claim_success_badge", "category": "badge", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_success_badge.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "claim_pending_claimable_accent", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_pending_claimable_accent.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "offline_settlement_meter", "category": "meter", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_settlement_meter.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "offline_duration_accumulation_strip", "category": "meter", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_duration_accumulation_strip.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "offline_empty_state_visual", "category": "empty", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "reward_chest_supply_crate_accent", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_chest_supply_crate_accent.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" },
+    { "id": "reward_material_glow", "category": "accent", "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_material_glow.png", "sourceType": "image_gen_generated_launch_asset", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "replacementStatus": "REPLACED_HIGH_QUALITY_2D" }
   ]
 }

@@ -92,8 +92,14 @@ namespace LastRail.Editor
             "Assets/_LASTRAIL/UI/Backgrounds/bg_reward_result_supply_bay.png",
             "Assets/_LASTRAIL/UI/Backgrounds/bg_offline_reward_settlement.png",
             "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_result_plate.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_line_item_frame.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_success_badge.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_pending_claimable_accent.png",
             "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_settlement_meter.png",
-            "Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png"
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_duration_accumulation_strip.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_chest_supply_crate_accent.png",
+            "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_material_glow.png"
         };
 
         [MenuItem("LASTRAIL/Launch/Capture Art Resource Walkthrough Frames")]
@@ -120,7 +126,7 @@ namespace LastRail.Editor
                 CaptureGridFrame("combat_enemy_boss_vfx", CombatArtPaths, framesRoot, checkedSurfaces, framePaths, 3, 3, 286, 286);
                 CaptureGridFrame("gacha_recruitment_visuals", GachaArtPaths, framesRoot, checkedSurfaces, framePaths, 2, 3, 380, 380);
                 CaptureGridFrame("mission_story_thumbnails", MissionThumbnailPaths, framesRoot, checkedSurfaces, framePaths, 1, 7, 910, 512);
-                CaptureGridFrame("reward_offline_visuals", RewardOfflinePaths, framesRoot, checkedSurfaces, framePaths, 1, 5, 880, 420);
+                CaptureGridFrame("reward_offline_visuals", RewardOfflinePaths, framesRoot, checkedSurfaces, framePaths, 2, 6, 440, 270);
             }
             catch (Exception ex)
             {

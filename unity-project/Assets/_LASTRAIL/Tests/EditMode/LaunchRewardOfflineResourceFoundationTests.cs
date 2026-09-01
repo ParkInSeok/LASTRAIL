@@ -16,6 +16,7 @@ namespace LastRail.Tests.EditMode
     {
         private const string ManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-reward-offline-resources.json";
         private const string ReadmePath = "Assets/_LASTRAIL/UI/RewardOfflineResources/README.md";
+        private const string SourceReportPath = "Assets/_LASTRAIL/UI/RewardOfflineResources/high-quality-replacement-sources.json";
         private const string ShowcasePrefabPath = "Assets/_LASTRAIL/UI/RewardOfflineResources/Showcase/LRLaunchRewardOfflineResourceShowcase.prefab";
         private const string ShowcaseScenePath = "Assets/_LASTRAIL/Scenes/LaunchRewardOfflineResourceShowcase.unity";
         private const string RewardReviewPrefabPath = "Assets/_LASTRAIL/Prefabs/Screens/RewardReviewScreen.prefab";
@@ -55,7 +56,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(manifest.name, Is.EqualTo("LAST RAIL Act 1 Reward Offline Visual Resources"));
             Assert.That(manifest.referenceResolution, Is.EqualTo("1080x1920"));
             Assert.That(manifest.resourceCount, Is.EqualTo(Resources.Length));
-            Assert.That(manifest.generatedBy, Is.EqualTo("Unity procedural texture builder"));
+            Assert.That(manifest.generatedBy, Is.EqualTo("image_gen high-quality 2D replacement import plus Unity validation"));
+            Assert.That(manifest.sourceReport, Is.EqualTo(SourceReportPath));
             Assert.That(manifest.presentationOnly, Is.True);
             Assert.That(manifest.serverContractChanged, Is.False);
             Assert.That(manifest.rewardGrantIncluded, Is.False);
@@ -70,7 +72,26 @@ namespace LastRail.Tests.EditMode
                 Assert.That(match, Is.Not.Null, expected.Id);
                 Assert.That(match.category, Is.EqualTo(expected.Category), expected.Id);
                 Assert.That(match.path, Is.EqualTo(expected.Path), expected.Id);
-                Assert.That(match.sourceType, Is.EqualTo("generated_local_launch_asset"), expected.Id);
+                Assert.That(match.sourceType, Is.EqualTo("image_gen_generated_launch_asset"), expected.Id);
+                Assert.That(match.qualityClass, Is.EqualTo("HIGH_QUALITY_2D_ILLUSTRATION"), expected.Id);
+                Assert.That(match.replacementStatus, Is.EqualTo("REPLACED_HIGH_QUALITY_2D"), expected.Id);
+            }
+        }
+
+        [Test]
+        public void SourceReport_RecordsHighQualityReplacementAuditForEveryResource()
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), SourceReportPath);
+            Assert.That(File.Exists(fullPath), Is.True, SourceReportPath);
+            var sourceReport = File.ReadAllText(fullPath);
+            Assert.That(sourceReport, Does.Contain("\"sourceKind\": \"image_gen_generated_launch_assets\""));
+            Assert.That(sourceReport, Does.Contain("\"qualityClass\": \"HIGH_QUALITY_2D_ILLUSTRATION\""));
+            Assert.That(sourceReport, Does.Contain("\"externalPaidAssetDependency\": false"));
+
+            foreach (var expected in Resources)
+            {
+                Assert.That(sourceReport, Does.Contain("\"id\": \"" + expected.Id + "\""), expected.Id);
+                Assert.That(sourceReport, Does.Contain("\"path\": \"" + expected.Path + "\""), expected.Id);
             }
         }
 
@@ -80,7 +101,9 @@ namespace LastRail.Tests.EditMode
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), ReadmePath);
             Assert.That(File.Exists(fullPath), Is.True, ReadmePath);
             var readme = File.ReadAllText(fullPath);
-            Assert.That(readme, Does.Contain("Unity procedural texture builder"));
+            Assert.That(readme, Does.Contain("high-quality 2D UI illustration replacements"));
+            Assert.That(readme, Does.Contain("Before: `PROCEDURAL_PLACEHOLDER`"));
+            Assert.That(readme, Does.Contain("After: `HIGH_QUALITY_2D_ILLUSTRATION`"));
             Assert.That(readme, Does.Contain("presentation resources only"));
             Assert.That(readme, Does.Contain("No external paid asset dependency"));
         }
@@ -149,7 +172,8 @@ namespace LastRail.Tests.EditMode
             var roots = new[]
             {
                 Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "RewardOfflineResources"),
-                Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "Style", "lastrail-reward-offline-resources.json")
+                Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "Style", "lastrail-reward-offline-resources.json"),
+                Path.Combine(Directory.GetCurrentDirectory(), "Assets", "_LASTRAIL", "UI", "RewardOfflineResources", "high-quality-replacement-sources.json")
             };
             var forbidden = new[]
             {
@@ -255,6 +279,7 @@ namespace LastRail.Tests.EditMode
             public string referenceResolution;
             public int resourceCount;
             public string generatedBy;
+            public string sourceReport;
             public bool presentationOnly;
             public bool serverContractChanged;
             public bool rewardGrantIncluded;
@@ -271,6 +296,8 @@ namespace LastRail.Tests.EditMode
             public string category;
             public string path;
             public string sourceType;
+            public string qualityClass;
+            public string replacementStatus;
         }
     }
 }

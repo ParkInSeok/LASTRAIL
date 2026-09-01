@@ -28,6 +28,7 @@ namespace LastRail.Editor
         private const string MaterialPath = UiRoot + "/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat";
         private const string ManifestPath = StyleRoot + "/lastrail-reward-offline-resources.json";
         private const string ReadmePath = RewardOfflineRoot + "/README.md";
+        private const string HighQualitySourceReportPath = RewardOfflineRoot + "/high-quality-replacement-sources.json";
         private const string ShowcaseScenePath = SceneRoot + "/LaunchRewardOfflineResourceShowcase.unity";
         public const string ShowcasePrefabPath = ShowcaseRoot + "/LRLaunchRewardOfflineResourceShowcase.prefab";
 
@@ -86,11 +87,31 @@ namespace LastRail.Editor
 
         private static LaunchRewardOfflineResourceSpec Spec(string id, string category, string path, int width, int height, string usage)
         {
-            return new LaunchRewardOfflineResourceSpec(id, category, path, width, height, usage);
+            return new LaunchRewardOfflineResourceSpec(
+                id,
+                category,
+                path,
+                width,
+                height,
+                usage,
+                "HIGH_QUALITY_2D_ILLUSTRATION",
+                "image_gen_generated_launch_asset",
+                "REPLACED_HIGH_QUALITY_2D");
         }
 
         private static void WriteResource(LaunchRewardOfflineResourceSpec resource)
         {
+            if (resource.ReplacementStatus == "REPLACED_HIGH_QUALITY_2D")
+            {
+                var highQualityPath = ProjectPath(resource.Path);
+                if (File.Exists(highQualityPath))
+                {
+                    return;
+                }
+
+                throw new FileNotFoundException("Missing high-quality reward/offline replacement asset: " + resource.Path);
+            }
+
             var texture = new Texture2D(resource.Width, resource.Height, TextureFormat.RGBA32, false);
             try
             {
@@ -286,8 +307,9 @@ namespace LastRail.Editor
             b.AppendLine("{");
             b.AppendLine("  \"name\": \"LAST RAIL Act 1 Reward Offline Visual Resources\",");
             b.AppendLine("  \"referenceResolution\": \"1080x1920\",");
-            b.AppendLine("  \"resourceCount\": ").Append(Resources.Length).AppendLine(",");
-            b.AppendLine("  \"generatedBy\": \"Unity procedural texture builder\",");
+            b.Append("  \"resourceCount\": ").Append(Resources.Length).AppendLine(",");
+            b.AppendLine("  \"generatedBy\": \"image_gen high-quality 2D replacement import plus Unity validation\",");
+            b.Append("  \"sourceReport\": \"").Append(HighQualitySourceReportPath).AppendLine("\",");
             b.AppendLine("  \"presentationOnly\": true,");
             b.AppendLine("  \"serverContractChanged\": false,");
             b.AppendLine("  \"rewardGrantIncluded\": false,");
@@ -298,7 +320,7 @@ namespace LastRail.Editor
             for (var i = 0; i < Resources.Length; i++)
             {
                 var r = Resources[i];
-                b.Append("    { \"id\": \"").Append(r.Id).Append("\", \"category\": \"").Append(r.Category).Append("\", \"path\": \"").Append(r.Path).Append("\", \"sourceType\": \"generated_local_launch_asset\" }");
+                b.Append("    { \"id\": \"").Append(r.Id).Append("\", \"category\": \"").Append(r.Category).Append("\", \"path\": \"").Append(r.Path).Append("\", \"sourceType\": \"").Append(r.SourceType).Append("\", \"qualityClass\": \"").Append(r.QualityClass).Append("\", \"replacementStatus\": \"").Append(r.ReplacementStatus).Append("\" }");
                 b.AppendLine(i == Resources.Length - 1 ? string.Empty : ",");
             }
             b.AppendLine("  ]");
@@ -310,11 +332,17 @@ namespace LastRail.Editor
         {
             File.WriteAllText(ProjectPath(ReadmePath), @"# LAST RAIL Act 1 Reward / Offline Reward Visual Resources
 
-These reward and offline settlement files are Unity procedural texture builder outputs for the Act 1 launch UI.
+These reward and offline settlement files are high-quality 2D UI illustration replacements for the Act 1 launch UI.
 
 Source:
-- Generated locally inside the Unity Editor from `LaunchRewardOfflineResourceBuilder`.
+- Generated with the built-in image generation tool, then resized/padded into Unity sprite assets at the stable paths listed below.
+- The source mapping lives in `Assets/_LASTRAIL/UI/RewardOfflineResources/high-quality-replacement-sources.json`.
+- `LaunchRewardOfflineResourceBuilder` now preserves these replacement PNGs and only regenerates manifest/showcase/import settings.
 - No external paid asset dependency.
+
+Quality audit:
+- Before: `PROCEDURAL_PLACEHOLDER`; the previous builder drew line/rectangle-based Unity textures.
+- After: `HIGH_QUALITY_2D_ILLUSTRATION`; each player-facing reward/offline visual is a generated 2D rail UI asset.
 
 Scope:
 - `reward_result_plate`
@@ -578,7 +606,16 @@ Usage:
 
     public sealed class LaunchRewardOfflineResourceSpec
     {
-        public LaunchRewardOfflineResourceSpec(string id, string category, string path, int width, int height, string intendedUsage)
+        public LaunchRewardOfflineResourceSpec(
+            string id,
+            string category,
+            string path,
+            int width,
+            int height,
+            string intendedUsage,
+            string qualityClass,
+            string sourceType,
+            string replacementStatus)
         {
             Id = id;
             Category = category;
@@ -586,6 +623,9 @@ Usage:
             Width = width;
             Height = height;
             IntendedUsage = intendedUsage;
+            QualityClass = qualityClass;
+            SourceType = sourceType;
+            ReplacementStatus = replacementStatus;
         }
 
         public string Id { get; }
@@ -594,6 +634,9 @@ Usage:
         public int Width { get; }
         public int Height { get; }
         public string IntendedUsage { get; }
+        public string QualityClass { get; }
+        public string SourceType { get; }
+        public string ReplacementStatus { get; }
     }
 }
 #endif
