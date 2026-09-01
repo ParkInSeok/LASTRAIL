@@ -24,7 +24,7 @@ namespace LastRail.Gacha
                 : null;
             GuaranteeBadgeCueId = OptionalText(entry.GuaranteeBadgeCueId);
             DuplicateConversionLabel = entry.HasDuplicateConversionCue
-                ? "중복 전환: " + entry.ConversionItemId + " x" + entry.ConversionQuantity.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                ? "중복 전환: " + UnityDisplayLabels.ForItemCode(entry.ConversionItemId, entry.ConversionItemId) + " x" + entry.ConversionQuantity.ToString(System.Globalization.CultureInfo.InvariantCulture)
                 : null;
             DuplicateConversionCueId = OptionalText(entry.DuplicateConversionCueId);
             ResultCardCueId = RequireText(entry.ResultCardCueId, nameof(entry.ResultCardCueId));

@@ -89,6 +89,71 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void GachaScreenPrefab_UsesLaunchItemGachaVisualResourcesAsSkinBindings()
+        {
+            AssertBoundFields<GachaScreenRootBehaviour>(
+                "GachaScreen.prefab",
+                "bannerKeyVisualImage",
+                "ticketIconImage",
+                "singlePullRevealPlateImage",
+                "tenPullGridFrameImage",
+                "rareGlowImage",
+                "eliteGlowImage",
+                "pickupEliteGlowImage",
+                "duplicateConversionImage",
+                "ticketSpendImage",
+                "resultCardFrameImage");
+
+            AssertImageUsesSprite("GachaScreen.prefab", "ticketIconImage", "cur_command_ticket");
+            AssertImageUsesSprite("GachaScreen.prefab", "singlePullRevealPlateImage", "gacha_single_pull_reveal_plate");
+            AssertImageUsesSprite("GachaScreen.prefab", "tenPullGridFrameImage", "gacha_ten_pull_result_grid_frame");
+            AssertImageUsesSprite("GachaScreen.prefab", "rareGlowImage", "gacha_rare_glow");
+            AssertImageUsesSprite("GachaScreen.prefab", "eliteGlowImage", "gacha_elite_glow");
+            AssertImageUsesSprite("GachaScreen.prefab", "pickupEliteGlowImage", "gacha_pickup_elite_glow");
+            AssertImageUsesSprite("GachaScreen.prefab", "duplicateConversionImage", "gacha_duplicate_conversion_visual");
+            AssertImageUsesSprite("GachaScreen.prefab", "ticketSpendImage", "gacha_ticket_spend_pieces");
+            AssertImageUsesSprite("GachaScreen.prefab", "resultCardFrameImage", "gacha_result_card_frame");
+        }
+
+        [Test]
+        public void GachaScreenRoot_RenderSwitchesVisualSkinForTenPullAndDuplicateStates()
+        {
+            var root = InstantiateScreenRoot<GachaScreenRootBehaviour>("GachaScreen.prefab");
+            try
+            {
+                root.Render(new GachaScreenViewState(GachaScreenPresentationState.FromUxState(
+                    GachaPullUxState.FromClientResult(GachaPullClientResult.Accepted(TenPullResponse())),
+                    "Act 1 구조 신호")));
+
+                Assert.That(GetSerializedObjectReference<Image>(root, "ticketIconImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "tenPullGridFrameImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "pickupEliteGlowImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "duplicateConversionImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "singlePullRevealPlateImage").enabled, Is.False);
+                Assert.That(GetSerializedObjectReference<Image>(root, "resultCardFrameImage").enabled, Is.False);
+                var resultGridText = GetSerializedObjectReference<TMP_Text>(root, "resultGridText").text;
+                Assert.That(resultGridText, Does.Contain("결과 10개"));
+                Assert.That(resultGridText, Does.Contain("정예 1 / 희귀 1 / 일반 8"));
+                Assert.That(resultGridText, Does.Not.Contain("item_scrap"));
+                Assert.That(root.CurrentState.HasEconomyMutation, Is.False);
+                Assert.That(root.CurrentState.HasClientSideRng, Is.False);
+
+                root.Render(new GachaScreenViewState(GachaScreenPresentationState.FromUxState(
+                    GachaPullUxState.FromClientResult(GachaPullClientResult.Accepted(SinglePullResponse())),
+                    "Act 1 구조 신호")));
+
+                Assert.That(GetSerializedObjectReference<Image>(root, "singlePullRevealPlateImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "resultCardFrameImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "pickupEliteGlowImage").enabled, Is.True);
+                Assert.That(GetSerializedObjectReference<Image>(root, "tenPullGridFrameImage").enabled, Is.False);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
+        }
+
+        [Test]
         public void LaunchScreenPrefabs_KeepTouchTargetsAtLeastFortyEightDp()
         {
             AssertButtonsMeetMinimumTouchTarget("MissionShellScreen.prefab");
@@ -446,6 +511,112 @@ namespace LastRail.Tests.EditMode
             var value = property.objectReferenceValue as TReference;
             Assert.That(value, Is.Not.Null, fieldName);
             return value;
+        }
+
+        private static GachaPullResponseDto TenPullResponse()
+        {
+            return new GachaPullResponseDto(
+                "banner_act1_launch",
+                true,
+                "batch_gacha_skin",
+                GachaPullResultStatus.Accepted,
+                GachaPullCount.FromValue(10),
+                "1",
+                new GachaPullCostDto("cur_command_ticket", 10),
+                new GachaPostPityStateDto(42, 12, 22, 2, 4),
+                new[]
+                {
+                    new GachaPullResultDto(
+                        1,
+                        GachaRarity.Elite,
+                        GachaPullResultKind.Operator,
+                        "result_001",
+                        new GachaRewardDto("OPERATOR", "op_vex", 1),
+                        true,
+                        "PICKUP_ELITE_60",
+                        false,
+                        null),
+                    new GachaPullResultDto(
+                        2,
+                        GachaRarity.Rare,
+                        GachaPullResultKind.OperatorToken,
+                        "result_002",
+                        new GachaRewardDto("OPERATOR_TOKEN", "cur_operator_token", 50),
+                        false,
+                        "RARE_OR_HIGHER_10",
+                        true,
+                        new GachaDuplicateConversionDto("op_vex", "cur_operator_token", 50)),
+                    CommonGachaResult(3),
+                    CommonGachaResult(4),
+                    CommonGachaResult(5),
+                    CommonGachaResult(6),
+                    CommonGachaResult(7),
+                    CommonGachaResult(8),
+                    CommonGachaResult(9),
+                    CommonGachaResult(10)
+                },
+                new System.DateTime(2026, 9, 1, 1, 0, 0, System.DateTimeKind.Utc),
+                null,
+                null);
+        }
+
+        private static GachaPullResponseDto SinglePullResponse()
+        {
+            return new GachaPullResponseDto(
+                "banner_act1_launch",
+                true,
+                "batch_gacha_skin_single",
+                GachaPullResultStatus.Accepted,
+                GachaPullCount.FromValue(1),
+                "1",
+                new GachaPullCostDto("cur_command_ticket", 1),
+                new GachaPostPityStateDto(42, 12, 22, 2, 4),
+                new[]
+                {
+                    new GachaPullResultDto(
+                        1,
+                        GachaRarity.Elite,
+                        GachaPullResultKind.Operator,
+                        "result_001",
+                        new GachaRewardDto("OPERATOR", "op_vex", 1),
+                        true,
+                        "PICKUP_ELITE_60",
+                        false,
+                        null)
+                },
+                new System.DateTime(2026, 9, 1, 1, 0, 0, System.DateTimeKind.Utc),
+                null,
+                null);
+        }
+
+        private static GachaPullResultDto CommonGachaResult(int pullSequence)
+        {
+            return new GachaPullResultDto(
+                pullSequence,
+                GachaRarity.Common,
+                GachaPullResultKind.Item,
+                "result_" + pullSequence.ToString("000"),
+                new GachaRewardDto("ITEM", "item_scrap", 1),
+                false,
+                "NONE",
+                false,
+                null);
+        }
+
+        private static void AssertImageUsesSprite(string prefabName, string fieldName, string expectedSpriteName)
+        {
+            var root = InstantiateScreenRoot<GachaScreenRootBehaviour>(prefabName);
+            try
+            {
+                var image = GetSerializedObjectReference<Image>(root, fieldName);
+                Assert.That(image.sprite, Is.Not.Null, prefabName + ":" + fieldName);
+                Assert.That(image.sprite.name, Is.EqualTo(expectedSpriteName), prefabName + ":" + fieldName);
+                Assert.That(image.raycastTarget, Is.False, prefabName + ":" + fieldName);
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+            }
         }
     }
 }

@@ -103,7 +103,7 @@ namespace LastRail.Gacha
                 return "비용 정보 없음";
             }
 
-            return cost.ItemId + " x" + cost.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return UnityDisplayLabels.ForItemCode(cost.ItemId, cost.ItemId) + " x" + cost.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         private static string BuildPullButtonLabel(GachaScreenPullButtonState button)

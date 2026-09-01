@@ -18,6 +18,9 @@ namespace LastRail.Editor
         private const string KoreanFontSourcePath = FontRoot + "/Pretendard-Regular.otf";
         private const string KoreanFontAssetPath = FontRoot + "/TMP/Pretendard-Regular SDF.asset";
         private const string KoreanFontMaterialPath = FontRoot + "/TMP/Materials/Pretendard-Regular SDF UI.mat";
+        private const string KeyVisualRoot = "Assets/_LASTRAIL/UI/KeyVisuals";
+        private const string GachaIconRoot = "Assets/_LASTRAIL/UI/GachaResources/Icons";
+        private const string GachaFxRoot = "Assets/_LASTRAIL/UI/GachaResources/GachaFx";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -77,11 +80,61 @@ namespace LastRail.Editor
 
         private static void CreateGachaPrefab()
         {
-            var root = CreateScreenRoot("GachaScreen");
+                var root = CreateScreenRoot("GachaScreen");
             try
             {
                 var behaviour = root.AddComponent<GachaScreenRootBehaviour>();
                 var safeArea = CreateSafeArea(root.transform);
+                var bannerKeyVisual = CreateImage(
+                    safeArea,
+                    "BannerKeyVisualImage",
+                    KeyVisualRoot + "/kv_gacha_recruitment_chamber.png",
+                    new Color(0.72f, 0.78f, 0.82f, 0.46f));
+                var singlePullRevealPlate = CreateImage(
+                    safeArea,
+                    "SinglePullRevealPlateImage",
+                    GachaFxRoot + "/gacha_single_pull_reveal_plate.png",
+                    new Color(1f, 1f, 1f, 0.88f));
+                var tenPullGridFrame = CreateImage(
+                    safeArea,
+                    "TenPullGridFrameImage",
+                    GachaFxRoot + "/gacha_ten_pull_result_grid_frame.png",
+                    new Color(1f, 1f, 1f, 0.92f));
+                var rareGlow = CreateImage(
+                    safeArea,
+                    "RareGlowImage",
+                    GachaFxRoot + "/gacha_rare_glow.png",
+                    new Color(0.55f, 0.75f, 1f, 0.55f));
+                var eliteGlow = CreateImage(
+                    safeArea,
+                    "EliteGlowImage",
+                    GachaFxRoot + "/gacha_elite_glow.png",
+                    new Color(1f, 0.86f, 0.42f, 0.55f));
+                var pickupEliteGlow = CreateImage(
+                    safeArea,
+                    "PickupEliteGlowImage",
+                    GachaFxRoot + "/gacha_pickup_elite_glow.png",
+                    new Color(0.82f, 1f, 0.72f, 0.55f));
+                var duplicateConversion = CreateImage(
+                    safeArea,
+                    "DuplicateConversionImage",
+                    GachaFxRoot + "/gacha_duplicate_conversion_visual.png",
+                    new Color(1f, 1f, 1f, 0.9f));
+                var ticketSpend = CreateImage(
+                    safeArea,
+                    "TicketSpendImage",
+                    GachaFxRoot + "/gacha_ticket_spend_pieces.png",
+                    new Color(1f, 1f, 1f, 0.8f));
+                var resultCardFrame = CreateImage(
+                    safeArea,
+                    "ResultCardFrameImage",
+                    GachaFxRoot + "/gacha_result_card_frame.png",
+                    new Color(1f, 1f, 1f, 0.78f));
+                var ticketIcon = CreateImage(
+                    safeArea,
+                    "TicketIconImage",
+                    GachaIconRoot + "/cur_command_ticket.png",
+                    Color.white);
                 var title = CreateText(safeArea, "TitleText", "요원 모집");
                 var banner = CreateText(safeArea, "BannerText", "Act 1 픽업");
                 var status = CreateText(safeArea, "StatusText", "모집 대기");
@@ -93,13 +146,26 @@ namespace LastRail.Editor
                 var onePull = CreateButton(safeArea, "OnePullButton", "1회 모집", out var onePullText);
                 var tenPull = CreateButton(safeArea, "TenPullButton", "10회 모집", out var tenPullText);
                 var primaryAction = CreateText(safeArea, "PrimaryActionText", "결과 확인");
+                ConfigureText(resultGrid, "결과", 21f, TextAlignmentOptions.TopLeft);
+                resultGrid.margin = new Vector4(24f, 12f, 24f, 12f);
+                resultGrid.lineSpacing = -14f;
+                Place(bannerKeyVisual, 0f, 335f, 960f, 760f);
+                Place(singlePullRevealPlate, 0f, 130f, 560f, 560f);
+                Place(tenPullGridFrame, 0f, -112f, 840f, 520f);
+                Place(rareGlow, -240f, 165f, 380f, 380f);
+                Place(eliteGlow, 0f, 165f, 410f, 410f);
+                Place(pickupEliteGlow, 240f, 165f, 420f, 420f);
+                Place(resultCardFrame, 0f, 5f, 320f, 426f);
+                Place(duplicateConversion, 318f, -398f, 160f, 160f);
+                Place(ticketSpend, -318f, -398f, 160f, 160f);
+                Place(ticketIcon, -420f, 500f, 72f, 72f);
                 Place(title, 0f, 800f, 960f, 96f);
                 Place(banner, 0f, 690f, 960f, 96f);
                 Place(status, 0f, 590f, 960f, 72f);
-                Place(cost, 0f, 500f, 960f, 72f);
+                Place(cost, 46f, 500f, 840f, 72f);
                 Place(pity, 0f, 410f, 960f, 72f);
                 Place(revealMode, 0f, 300f, 960f, 96f);
-                Place(resultGrid, 0f, -30f, 960f, 520f);
+                Place(resultGrid, 0f, 110f, 880f, 300f);
                 Place(error, 0f, -360f, 960f, 96f);
                 Place(primaryAction, 0f, -585f, 960f, 72f);
                 Place(onePull.GetComponent<RectTransform>(), -190f, -720f, 320f, 64f);
@@ -119,7 +185,17 @@ namespace LastRail.Editor
                     ("onePullButton", onePull),
                     ("tenPullButtonText", tenPullText),
                     ("tenPullButton", tenPull),
-                    ("primaryActionText", primaryAction));
+                    ("primaryActionText", primaryAction),
+                    ("bannerKeyVisualImage", bannerKeyVisual),
+                    ("ticketIconImage", ticketIcon),
+                    ("singlePullRevealPlateImage", singlePullRevealPlate),
+                    ("tenPullGridFrameImage", tenPullGridFrame),
+                    ("rareGlowImage", rareGlow),
+                    ("eliteGlowImage", eliteGlow),
+                    ("pickupEliteGlowImage", pickupEliteGlow),
+                    ("duplicateConversionImage", duplicateConversion),
+                    ("ticketSpendImage", ticketSpend),
+                    ("resultCardFrameImage", resultCardFrame));
                 SavePrefab(root, "GachaScreen");
             }
             finally
@@ -293,6 +369,18 @@ namespace LastRail.Editor
             return text;
         }
 
+        private static Image CreateImage(Transform parent, string name, string spritePath, Color color)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            gameObject.transform.SetParent(parent, false);
+            var image = gameObject.GetComponent<Image>();
+            image.sprite = LoadSprite(spritePath);
+            image.color = color;
+            image.raycastTarget = false;
+            image.preserveAspect = true;
+            return image;
+        }
+
         private static void Place(Component component, float x, float y, float width, float height)
         {
             Place(component.GetComponent<RectTransform>(), x, y, width, height);
@@ -326,6 +414,17 @@ namespace LastRail.Editor
             labelText = labelObject.GetComponent<TextMeshProUGUI>();
             ConfigureText(labelText, label, 28f, TextAlignmentOptions.Center);
             return buttonObject.GetComponent<Button>();
+        }
+
+        private static Sprite LoadSprite(string assetPath)
+        {
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+            if (sprite == null)
+            {
+                throw new InvalidOperationException("Missing launch sprite asset: " + assetPath);
+            }
+
+            return sprite;
         }
 
         private static void ConfigureText(TMP_Text text, string value, float maxFontSize, TextAlignmentOptions alignment)

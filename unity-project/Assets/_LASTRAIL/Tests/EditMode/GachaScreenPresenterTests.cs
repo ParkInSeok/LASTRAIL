@@ -21,7 +21,7 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(view.LastState.Title, Is.EqualTo("요원 모집"));
             Assert.That(view.LastState.BannerDisplayName, Is.EqualTo("Act 1 구조 신호"));
-            Assert.That(view.LastState.CostLabel, Is.EqualTo("cur_command_ticket x1"));
+            Assert.That(view.LastState.CostLabel, Is.EqualTo("지휘권 x1"));
             Assert.That(view.LastState.OnePullButtonLabel, Is.EqualTo("1회 모집"));
             Assert.That(view.LastState.TenPullButtonLabel, Is.EqualTo("10회 모집"));
             Assert.That(view.LastState.IsOnePullEnabled, Is.EqualTo(true));
@@ -58,7 +58,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(view.LastState.ResultGridEntries[0].ResultKindLabel, Is.EqualTo("요원"));
             Assert.That(view.LastState.ResultGridEntries[0].GuaranteeBadgeLabel, Is.EqualTo("60뽑 픽업 정예 확정"));
             Assert.That(view.LastState.ResultGridEntries[0].GuaranteeBadgeCueId, Is.EqualTo("gacha_badge_pickup_elite_60"));
-            Assert.That(view.LastState.ResultGridEntries[1].DuplicateConversionLabel, Is.EqualTo("중복 전환: cur_operator_token x50"));
+            Assert.That(view.LastState.ResultGridEntries[1].DuplicateConversionLabel, Is.EqualTo("중복 전환: 요원 증표 x50"));
             Assert.That(view.LastState.ResultGridEntries[1].DuplicateConversionCueId, Is.EqualTo("gacha_duplicate_conversion"));
             Assert.That(view.LastState.UsesServerResultDisplayFallback, Is.EqualTo(true));
             Assert.That(view.LastState.HasOperatorRosterTruth, Is.EqualTo(false));

@@ -23,6 +23,16 @@ namespace LastRail.Gacha
         [SerializeField] private TMP_Text tenPullButtonText;
         [SerializeField] private Button tenPullButton;
         [SerializeField] private TMP_Text primaryActionText;
+        [SerializeField] private Image bannerKeyVisualImage;
+        [SerializeField] private Image ticketIconImage;
+        [SerializeField] private Image singlePullRevealPlateImage;
+        [SerializeField] private Image tenPullGridFrameImage;
+        [SerializeField] private Image rareGlowImage;
+        [SerializeField] private Image eliteGlowImage;
+        [SerializeField] private Image pickupEliteGlowImage;
+        [SerializeField] private Image duplicateConversionImage;
+        [SerializeField] private Image ticketSpendImage;
+        [SerializeField] private Image resultCardFrameImage;
 
         public GachaScreenViewState CurrentState { get; private set; }
         public event Action OnePullRequested;
@@ -58,7 +68,7 @@ namespace LastRail.Gacha
             SetText(statusText, state.StatusLabel);
             SetText(costText, state.CostLabel);
             SetText(pityText, JoinLines(state.PitySummaryLines));
-            SetText(revealModeText, state.RevealMode);
+            SetText(revealModeText, FormatRevealModeLabel(state.RevealMode));
             SetText(resultGridText, FormatResultGrid(state));
             SetText(errorText, state.ErrorLabel ?? state.ErrorMessage);
             SetText(onePullButtonText, state.OnePullButtonLabel);
@@ -66,6 +76,7 @@ namespace LastRail.Gacha
             SetText(tenPullButtonText, state.TenPullButtonLabel);
             SetButton(tenPullButton, state.IsTenPullEnabled);
             SetText(primaryActionText, state.PrimaryActionLabel);
+            ApplyVisualSkin(state);
             BindInteractionCallbacks();
         }
 
@@ -168,11 +179,33 @@ namespace LastRail.Gacha
             return builder.ToString();
         }
 
+        private static string FormatRevealModeLabel(string revealMode)
+        {
+            switch (revealMode)
+            {
+                case "Idle":
+                    return "모집 준비";
+                case "SingleCardReveal":
+                    return "단일 모집 결과";
+                case "QuickTenPullGrid":
+                    return "10연차 빠른 결과";
+                case "NoReveal":
+                    return "결과 없음";
+                default:
+                    return string.IsNullOrWhiteSpace(revealMode) ? string.Empty : revealMode;
+            }
+        }
+
         private static string FormatResultGrid(GachaScreenViewState state)
         {
             if (state.ResultGridEntries.Count == 0)
             {
                 return string.Empty;
+            }
+
+            if (state.RevealMode == "QuickTenPullGrid")
+            {
+                return FormatTenPullResultSummary(state);
             }
 
             var builder = new StringBuilder();
@@ -185,21 +218,139 @@ namespace LastRail.Gacha
                 }
 
                 builder.Append(entry.PullIndex).Append(". ");
-                builder.Append(entry.RarityLabel).Append(" / ");
-                builder.Append(entry.ResultKindLabel).Append(" / ");
+                builder.Append(entry.RarityLabel).Append(' ');
+                builder.Append(entry.ResultKindLabel).Append(' ');
                 builder.Append(entry.DisplayName);
                 if (entry.GuaranteeBadgeLabel != null)
                 {
-                    builder.Append(" / ").Append(entry.GuaranteeBadgeLabel);
+                    builder.Append(" / 보장");
                 }
 
                 if (entry.DuplicateConversionLabel != null)
                 {
-                    builder.Append(" / ").Append(entry.DuplicateConversionLabel);
+                    builder.Append(" / 중복 전환");
                 }
             }
 
             return builder.ToString();
+        }
+
+        private static string FormatTenPullResultSummary(GachaScreenViewState state)
+        {
+            var eliteCount = 0;
+            var rareCount = 0;
+            var commonCount = 0;
+            var guaranteeCount = 0;
+            var duplicateCount = 0;
+
+            foreach (var entry in state.ResultGridEntries)
+            {
+                if (entry.RarityLabel == "정예")
+                {
+                    eliteCount++;
+                }
+                else if (entry.RarityLabel == "희귀")
+                {
+                    rareCount++;
+                }
+                else
+                {
+                    commonCount++;
+                }
+
+                if (entry.GuaranteeBadgeLabel != null)
+                {
+                    guaranteeCount++;
+                }
+
+                if (entry.DuplicateConversionLabel != null)
+                {
+                    duplicateCount++;
+                }
+            }
+
+            var builder = new StringBuilder();
+            builder.Append("결과 ").Append(state.ResultGridEntries.Count).Append("개");
+            builder.Append('\n').Append("정예 ").Append(eliteCount);
+            builder.Append(" / 희귀 ").Append(rareCount);
+            builder.Append(" / 일반 ").Append(commonCount);
+            if (guaranteeCount > 0 || duplicateCount > 0)
+            {
+                builder.Append('\n').Append("보장 ").Append(guaranteeCount);
+                builder.Append(" / 중복 전환 ").Append(duplicateCount);
+            }
+
+            return builder.ToString();
+        }
+
+        private void ApplyVisualSkin(GachaScreenViewState state)
+        {
+            SetGraphicVisible(bannerKeyVisualImage, true);
+            SetGraphicVisible(ticketIconImage, true);
+
+            var hasResults = state.ResultGridEntries.Count > 0;
+            var isTenPull = state.RevealMode == "QuickTenPullGrid";
+            var isSinglePull = state.RevealMode == "SingleCardReveal";
+            var hasDuplicate = HasDuplicateConversion(state);
+            var hasPickupGuarantee = HasGuaranteeType(state, "PICKUP_ELITE_60");
+            var hasElite = HasRarityLabel(state, "정예") || hasPickupGuarantee;
+            var hasRare = HasRarityLabel(state, "희귀") || HasGuaranteeType(state, "RARE_OR_HIGHER_10");
+
+            SetGraphicVisible(singlePullRevealPlateImage, !isTenPull);
+            SetGraphicVisible(tenPullGridFrameImage, isTenPull);
+            SetGraphicVisible(resultCardFrameImage, hasResults && !isTenPull);
+            SetGraphicVisible(duplicateConversionImage, hasDuplicate);
+            SetGraphicVisible(ticketSpendImage, hasResults);
+            SetGraphicVisible(rareGlowImage, !isTenPull && hasRare && !hasElite);
+            SetGraphicVisible(eliteGlowImage, !isTenPull && hasElite && !hasPickupGuarantee);
+            SetGraphicVisible(pickupEliteGlowImage, !isTenPull && (hasPickupGuarantee || (isSinglePull && hasElite)));
+        }
+
+        private static bool HasDuplicateConversion(GachaScreenViewState state)
+        {
+            foreach (var entry in state.ResultGridEntries)
+            {
+                if (!string.IsNullOrEmpty(entry.DuplicateConversionCueId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool HasGuaranteeType(GachaScreenViewState state, string guaranteeType)
+        {
+            foreach (var entry in state.ResultGridEntries)
+            {
+                if (entry.GuaranteeType == guaranteeType)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool HasRarityLabel(GachaScreenViewState state, string rarityLabel)
+        {
+            foreach (var entry in state.ResultGridEntries)
+            {
+                if (entry.RarityLabel == rarityLabel)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void SetGraphicVisible(Graphic target, bool visible)
+        {
+            if (target != null)
+            {
+                target.enabled = visible;
+            }
         }
     }
 }
