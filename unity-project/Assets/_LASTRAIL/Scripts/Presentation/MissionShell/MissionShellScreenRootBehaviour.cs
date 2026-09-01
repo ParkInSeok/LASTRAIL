@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using TMPro;
+using LastRail.Presentation.Audio;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +19,7 @@ namespace LastRail.Presentation.MissionShell
         [SerializeField] private Button primaryButton;
         [SerializeField] private TMP_Text secondaryButtonText;
         [SerializeField] private Button secondaryButton;
+        [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public MissionShellScreenViewState CurrentState { get; private set; }
         public event Action PrimaryActionRequested;
@@ -67,6 +69,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             PrimaryActionRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_confirm");
         }
 
         private void OnSecondaryActionClicked()
@@ -77,6 +80,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             SecondaryActionRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_back");
         }
 
         private static void BindButton(Button target, UnityEngine.Events.UnityAction action)

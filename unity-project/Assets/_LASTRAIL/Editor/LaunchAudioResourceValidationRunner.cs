@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace LastRail.Editor
     {
         private const string ManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-resources.json";
         private const string ReadmePath = "Assets/_LASTRAIL/Audio/README.md";
+        private const string IntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
         private const string FontPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
         private const string MaterialPath = "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat";
 
@@ -27,6 +29,7 @@ namespace LastRail.Editor
             {
                 RequireFile(ManifestPath);
                 RequireFile(ReadmePath);
+                RequireFile(IntegrationManifestPath);
 
                 foreach (var clip in LaunchAudioResourceBuilder.Clips)
                 {
@@ -65,6 +68,11 @@ namespace LastRail.Editor
             if (prefab == null) throw new FileNotFoundException("Missing audio showcase prefab.");
             if (prefab.GetComponentsInChildren<Text>(true).Length != 0) throw new InvalidOperationException("Legacy UI Text found in audio showcase.");
             if (prefab.GetComponentsInChildren<AudioSource>(true).Length < LaunchAudioResourceBuilder.Clips.Length) throw new InvalidOperationException("Audio showcase source coverage too low.");
+            var player = prefab.GetComponent<LastRailAudioCuePlayer>();
+            if (player == null) throw new InvalidOperationException("Audio showcase requires LastRailAudioCuePlayer.");
+            if (player.BindingCount != LaunchAudioResourceBuilder.Clips.Length) throw new InvalidOperationException("Audio showcase cue player binding coverage mismatch.");
+            if (player.HasMissingClipBinding) throw new InvalidOperationException("Audio showcase has missing cue player clip binding.");
+            if (player.HasUnintendedAutoplay) throw new InvalidOperationException("Audio showcase has unintended autoplay.");
 
             var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
             var material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);

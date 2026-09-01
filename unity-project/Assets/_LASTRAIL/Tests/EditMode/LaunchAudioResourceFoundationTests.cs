@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using TMPro;
+using LastRail.Presentation.Audio;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -114,6 +115,11 @@ namespace LastRail.Tests.EditMode
             Assert.That(scaler, Is.Not.Null);
             Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(1080f, 1920f)));
             Assert.That(prefab.GetComponentsInChildren<AudioSource>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(Clips.Length));
+            var cuePlayer = prefab.GetComponentInChildren<LastRailAudioCuePlayer>(includeInactive: true);
+            Assert.That(cuePlayer, Is.Not.Null);
+            Assert.That(cuePlayer.BindingCount, Is.EqualTo(Clips.Length));
+            Assert.That(cuePlayer.HasMissingClipBinding, Is.False);
+            Assert.That(cuePlayer.HasUnintendedAutoplay, Is.False);
             Assert.That(prefab.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(12));
             Assert.That(prefab.GetComponentsInChildren<Text>(includeInactive: true), Is.Empty);
 
@@ -131,7 +137,10 @@ namespace LastRail.Tests.EditMode
             foreach (var source in prefab.GetComponentsInChildren<AudioSource>(includeInactive: true))
             {
                 Assert.That(source.playOnAwake, Is.False, source.name);
-                Assert.That(source.clip, Is.Not.Null, source.name);
+                if (source.GetComponent<LastRailAudioCuePlayer>() == null)
+                {
+                    Assert.That(source.clip, Is.Not.Null, source.name);
+                }
             }
 
             var sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(ShowcaseScenePath);

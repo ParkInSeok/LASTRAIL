@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +42,7 @@ namespace LastRail.Gacha
         [SerializeField] private Image operatorLevelBadgeImage;
         [SerializeField] private Image operatorDuplicateTokenBadgeImage;
         [SerializeField] private Image operatorGridSafeMaskImage;
+        [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public GachaScreenViewState CurrentState { get; private set; }
         public event Action OnePullRequested;
@@ -96,6 +98,8 @@ namespace LastRail.Gacha
             }
 
             OnePullRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_confirm");
+            audioCuePlayer?.TryPlayCue("gacha_reveal_start");
         }
 
         private void OnTenPullClicked()
@@ -106,6 +110,26 @@ namespace LastRail.Gacha
             }
 
             TenPullRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_confirm");
+            audioCuePlayer?.TryPlayCue("gacha_reveal_start");
+        }
+
+        public void PlayCurrentRevealAudioCues()
+        {
+            if (CurrentState == null || audioCuePlayer == null)
+            {
+                return;
+            }
+
+            audioCuePlayer.TryPlayCue("gacha_reveal_start");
+            foreach (var entry in CurrentState.ResultGridEntries)
+            {
+                audioCuePlayer.TryPlayCue(entry.SoundCueId);
+                if (!string.IsNullOrEmpty(entry.DuplicateConversionCueId))
+                {
+                    audioCuePlayer.TryPlayCue("gacha_duplicate_conversion");
+                }
+            }
         }
 
         private static void BindButton(Button target, UnityEngine.Events.UnityAction action)

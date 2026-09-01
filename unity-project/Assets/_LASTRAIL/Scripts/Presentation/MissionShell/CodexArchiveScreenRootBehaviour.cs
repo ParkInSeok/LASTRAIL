@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ namespace LastRail.Presentation.MissionShell
         [SerializeField] private Button resultButton;
         [SerializeField] private TMP_Text rewardReviewButtonText;
         [SerializeField] private Button rewardReviewButton;
+        [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public CodexArchiveScreenViewState CurrentState { get; private set; }
         public event Action MissionSelectRequested;
@@ -73,6 +75,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             MissionSelectRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_back");
         }
 
         private void OnResultClicked()
@@ -83,6 +86,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             ResultRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_toggle_or_tab");
         }
 
         private void OnRewardReviewClicked()
@@ -93,6 +97,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             RewardReviewRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_toggle_or_tab");
         }
 
         private static void BindButton(Button target, UnityEngine.Events.UnityAction action)

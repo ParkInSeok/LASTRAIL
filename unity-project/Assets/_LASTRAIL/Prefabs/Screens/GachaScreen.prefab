@@ -1553,6 +1553,9 @@ GameObject:
   - component: {fileID: 5303633833335153629}
   - component: {fileID: 5214151178424093014}
   - component: {fileID: 6949168982358515207}
+  - component: {fileID: 5365875294227600104}
+  - component: {fileID: 2631402174376133285}
+  - component: {fileID: 702043417752864585}
   m_Layer: 0
   m_Name: GachaScreen
   m_TagString: Untagged
@@ -1687,6 +1690,256 @@ MonoBehaviour:
   operatorLevelBadgeImage: {fileID: 5897427126712171245}
   operatorDuplicateTokenBadgeImage: {fileID: 6070520297539526204}
   operatorGridSafeMaskImage: {fileID: 2281344079057618082}
+  audioCuePlayer: {fileID: 702043417752864585}
+--- !u!82 &5365875294227600104
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3030368306624279846}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.8
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &2631402174376133285
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3030368306624279846}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.35
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &702043417752864585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3030368306624279846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600b2a95b21705a4bb8a6837ae52f381, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.Presentation.Audio.LastRailAudioCuePlayer
+  sfxSource: {fileID: 5365875294227600104}
+  bgmSource: {fileID: 2631402174376133285}
+  clipBindings:
+  - cueId: ui_tap
+    clip: {fileID: 8300000, guid: a5c1c7e2fdc9b544c80ae799b8a7f8e8, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: ui_back
+    clip: {fileID: 8300000, guid: d3acfd44aba0da448a0ba9534a63203f, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: ui_confirm
+    clip: {fileID: 8300000, guid: da1a67253a6f2b14689d6e5fca742375, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: ui_error
+    clip: {fileID: 8300000, guid: 13ddfd8e3e0f22b49a567e67cc69e95c, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: gacha_reveal_start
+    clip: {fileID: 8300000, guid: 32e567054cd10954a99225e5c0e10c66, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: gacha_result_rare
+    clip: {fileID: 8300000, guid: efe672c57ace1e24696b147a81c43a5f, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: gacha_result_elite
+    clip: {fileID: 8300000, guid: cf6b47f8e970b4e458ace628b1d75010, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: gacha_result_pickup_elite
+    clip: {fileID: 8300000, guid: d57bba05ab7030b40a4b5a428852c001, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: gacha_duplicate_conversion
+    clip: {fileID: 8300000, guid: 42088fe99cd5025459f35024ec308d02, type: 3}
+    loop: 0
+    volume: 0.8
+  - cueId: bgm_act1_rail_loop
+    clip: {fileID: 8300000, guid: 8235aeb40bd8bcd4ab3c1c5508557443, type: 3}
+    loop: 1
+    volume: 0.35
 --- !u!1 &3107042362565102755
 GameObject:
   m_ObjectHideFlags: 0

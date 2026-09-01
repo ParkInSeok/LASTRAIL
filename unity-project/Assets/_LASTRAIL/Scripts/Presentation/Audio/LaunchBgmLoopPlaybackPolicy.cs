@@ -4,7 +4,7 @@ namespace LastRail.Presentation.Audio
 {
     public sealed class LaunchBgmLoopPlaybackPolicy
     {
-        public const string LaunchBgmLoopCueId = "bgm_act1_loop";
+        public const string LaunchBgmLoopCueId = "bgm_act1_rail_loop";
 
         private LaunchBgmLoopPlaybackPolicy(string currentLoopCueId, bool isPlaying)
         {

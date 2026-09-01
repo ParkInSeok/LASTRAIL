@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Text;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ namespace LastRail.Presentation.MissionShell
         [SerializeField] private Button secondaryButton;
         [SerializeField] private TMP_Text codexButtonText;
         [SerializeField] private Button codexButton;
+        [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public RewardStoryScreenViewState CurrentState { get; private set; }
         public event Action PrimaryActionRequested;
@@ -75,6 +77,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             PrimaryActionRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue(PrimaryCueId());
         }
 
         private void OnSecondaryActionClicked()
@@ -85,6 +88,7 @@ namespace LastRail.Presentation.MissionShell
             }
 
             SecondaryActionRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_back");
         }
 
         private void OnCodexArchiveClicked()
@@ -95,6 +99,27 @@ namespace LastRail.Presentation.MissionShell
             }
 
             CodexArchiveRequested?.Invoke();
+            audioCuePlayer?.TryPlayCue("ui_toggle_or_tab");
+        }
+
+        private string PrimaryCueId()
+        {
+            if (CurrentState == null)
+            {
+                return "ui_confirm";
+            }
+
+            if (CurrentState.Surface == MissionShellSurface.RewardReview ||
+                CurrentState.Surface == MissionShellSurface.OfflineReward)
+            {
+                return "reward_claim";
+            }
+
+            return CurrentState.RequiresAuthRefreshOrGuestLogin ||
+                   CurrentState.CanRetryNetwork ||
+                   CurrentState.CanRetryWithSameIdempotencyKey
+                ? "ui_error"
+                : "ui_confirm";
         }
 
         private static void BindButton(Button target, UnityEngine.Events.UnityAction action)

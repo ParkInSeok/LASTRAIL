@@ -1,5 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 using System.Text;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ namespace LastRail.Presentation.Battle
         [SerializeField] private TMP_Text refundHintText;
         [SerializeField] private TMP_Text unitRefsText;
         [SerializeField] private TMP_Text cueRefsText;
+        [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public FullyAnimatedCombatHudViewState CurrentState { get; private set; }
 
@@ -35,6 +37,31 @@ namespace LastRail.Presentation.Battle
             SetText(refundHintText, state.FailureStaminaRefundHint);
             SetText(unitRefsText, FormatUnitRefs(state));
             SetText(cueRefsText, FormatCueRefs(state));
+        }
+
+        public void PlayHitCue()
+        {
+            audioCuePlayer?.TryPlayCue(CurrentState != null ? CurrentState.SfxCueId : "combat_hit");
+        }
+
+        public void PlaySkillCue()
+        {
+            audioCuePlayer?.TryPlayCue("combat_skill");
+        }
+
+        public void PlayUltimateCue()
+        {
+            audioCuePlayer?.TryPlayCue("combat_ultimate");
+        }
+
+        public void PlayBossPhaseCue()
+        {
+            audioCuePlayer?.TryPlayCue("story_raid_warning");
+        }
+
+        public void PlayBossDefeatCue()
+        {
+            audioCuePlayer?.TryPlayCue("boss_defeat");
         }
 
         private void ApplySafeArea()

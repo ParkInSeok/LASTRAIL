@@ -3,8 +3,10 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using LastRail.Presentation.Audio;
 using TMPro;
 using UnityEditor;
+using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -261,6 +263,7 @@ Boundary:
             PanelImage(root.transform, "Backdrop", new Vector2(0, 0), new Vector2(1080, 1920), new Color32(5, 8, 12, 255));
             Text(root.transform, "Title", "LAST RAIL Audio Resource Foundation", 34, TextMain, new Vector2(0, 842), new Vector2(920, 60));
             Text(root.transform, "Subtitle", "SFX + single BGM loop / manifest-driven launch placeholders", 22, TextMuted, new Vector2(0, 794), new Vector2(920, 44));
+            var audioPlayer = AttachAudioCuePlayer(root);
 
             var startY = 700f;
             var row = 0;
@@ -268,7 +271,7 @@ Boundary:
             {
                 var x = row % 2 == 0 ? -268f : 268f;
                 var y = startY - (row / 2) * 134f;
-                CreateClipRow(root.transform, clip, new Vector2(x, y));
+                CreateClipRow(root.transform, clip, new Vector2(x, y), audioPlayer);
                 row++;
             }
 
@@ -280,7 +283,7 @@ Boundary:
             UnityEngine.Object.DestroyImmediate(root);
         }
 
-        private static void CreateClipRow(Transform parent, LaunchAudioResourceSpec clip, Vector2 position)
+        private static void CreateClipRow(Transform parent, LaunchAudioResourceSpec clip, Vector2 position, LastRailAudioCuePlayer audioPlayer)
         {
             var row = PanelImage(parent, "AudioRow_" + clip.Id, position, new Vector2(480, 104), PanelSoft);
             Border(row.GetComponent<Image>(), clip.Loop ? Amber : Teal);
@@ -288,6 +291,8 @@ Boundary:
             Text(row.transform, "Meta", clip.Category + " / " + clip.DurationSeconds.ToString("0.00", CultureInfo.InvariantCulture) + "s" + (clip.Loop ? " / loop" : ""), 14, TextMuted, new Vector2(-56, -18), new Vector2(330, 28));
 
             var button = PanelImage(row.transform, "PreviewButton", new Vector2(-186, 0), new Vector2(74, 64), clip.Loop ? Amber : Teal);
+            var buttonComponent = button.AddComponent<Button>();
+            UnityEventTools.AddStringPersistentListener(buttonComponent.onClick, audioPlayer.PlayCueFromUnityEvent, clip.Id);
             Text(button.transform, "Label", "PLAY", 14, new Color32(5, 8, 12, 255), Vector2.zero, new Vector2(64, 28));
 
             var sourceObject = new GameObject("AudioSource_" + clip.Id, typeof(AudioSource));
@@ -297,6 +302,38 @@ Boundary:
             source.playOnAwake = false;
             source.loop = clip.Loop;
             source.volume = clip.Loop ? 0.35f : 0.8f;
+        }
+
+        private static LastRailAudioCuePlayer AttachAudioCuePlayer(GameObject root)
+        {
+            var sfxSource = root.AddComponent<AudioSource>();
+            sfxSource.playOnAwake = false;
+            sfxSource.loop = false;
+            sfxSource.volume = 0.8f;
+
+            var bgmSource = root.AddComponent<AudioSource>();
+            bgmSource.playOnAwake = false;
+            bgmSource.loop = true;
+            bgmSource.volume = 0.35f;
+
+            var player = root.AddComponent<LastRailAudioCuePlayer>();
+            var serialized = new SerializedObject(player);
+            serialized.FindProperty("sfxSource").objectReferenceValue = sfxSource;
+            serialized.FindProperty("bgmSource").objectReferenceValue = bgmSource;
+            var bindings = serialized.FindProperty("clipBindings");
+            bindings.arraySize = Clips.Length;
+            for (var i = 0; i < Clips.Length; i++)
+            {
+                var clip = Clips[i];
+                var element = bindings.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("cueId").stringValue = clip.Id;
+                element.FindPropertyRelative("clip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>(clip.Path);
+                element.FindPropertyRelative("loop").boolValue = clip.Loop;
+                element.FindPropertyRelative("volume").floatValue = clip.Loop ? 0.35f : 0.8f;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return player;
         }
 
         private static GameObject PanelImage(Transform parent, string name, Vector2 anchoredPosition, Vector2 size, Color32 color)

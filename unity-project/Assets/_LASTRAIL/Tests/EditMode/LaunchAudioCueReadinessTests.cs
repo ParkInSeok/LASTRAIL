@@ -24,14 +24,14 @@ namespace LastRail.Tests.EditMode
 
             var report = LaunchAudioCueReadinessReport.FromViewStates(mission, gacha, combat);
 
-            Assert.That(report.BgmLoopCueId, Is.EqualTo("bgm_act1_loop"));
+            Assert.That(report.BgmLoopCueId, Is.EqualTo("bgm_act1_rail_loop"));
             Assert.That(report.UsesSingleBgmLoop, Is.EqualTo(true));
             Assert.That(report.PreventsBgmOverlap, Is.EqualTo(true));
-            Assert.That(report.Mission.SoundCueIds, Does.Contain("sfx_mission_start_confirm"));
+            Assert.That(report.Mission.SoundCueIds, Does.Contain("ui_confirm"));
             Assert.That(report.Mission.VibrationCueIds, Does.Contain("vibration_mission_start"));
-            Assert.That(report.Gacha.SoundCueIds, Does.Contain("sfx_gacha_elite"));
+            Assert.That(report.Gacha.SoundCueIds, Does.Contain("gacha_result_elite"));
             Assert.That(report.Gacha.VibrationCueIds, Does.Contain("vibration_gacha_heavy"));
-            Assert.That(report.Combat.SoundCueIds, Does.Contain("sfx_boss_phase"));
+            Assert.That(report.Combat.SoundCueIds, Does.Contain("story_raid_warning"));
             Assert.That(report.Combat.VibrationCueIds, Does.Contain("vibration_boss_phase"));
             Assert.That(report.Combat.PresentationCueIds, Does.Contain("boss_phase_transition"));
             Assert.That(report.RequiresNativeVibrationBridge, Is.EqualTo(true));
@@ -48,8 +48,8 @@ namespace LastRail.Tests.EditMode
         {
             var stopped = LaunchBgmLoopPlaybackPolicy.Stopped();
 
-            var first = stopped.RequestLoop("bgm_act1_loop");
-            var same = first.NextPolicy.RequestLoop("bgm_act1_loop");
+            var first = stopped.RequestLoop("bgm_act1_rail_loop");
+            var same = first.NextPolicy.RequestLoop("bgm_act1_rail_loop");
 
             Assert.That(first.ShouldStartLoop, Is.EqualTo(true));
             Assert.That(first.ShouldStopCurrentLoop, Is.EqualTo(false));
@@ -57,7 +57,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(same.ShouldStartLoop, Is.EqualTo(false));
             Assert.That(same.ShouldStopCurrentLoop, Is.EqualTo(false));
             Assert.That(same.DecisionReason, Is.EqualTo("already_playing_single_loop"));
-            Assert.That(same.NextPolicy.CurrentLoopCueId, Is.EqualTo("bgm_act1_loop"));
+            Assert.That(same.NextPolicy.CurrentLoopCueId, Is.EqualTo("bgm_act1_rail_loop"));
             Assert.That(same.NextPolicy.IsPlaying, Is.EqualTo(true));
         }
 
@@ -77,12 +77,12 @@ namespace LastRail.Tests.EditMode
 
             var json = LaunchAudioCueReadinessJsonAdapter.ToJson(report);
 
-            Assert.That(json.Contains("\"bgmLoopCueId\":\"bgm_act1_loop\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"bgmLoopCueId\":\"bgm_act1_rail_loop\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"usesSingleBgmLoop\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"preventsBgmOverlap\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"surfaceKey\":\"mission_result\""), Is.EqualTo(true));
-            Assert.That(json.Contains("\"sfx_mission_result\""), Is.EqualTo(true));
-            Assert.That(json.Contains("\"sfx_gacha_elite\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"ui_confirm\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"gacha_result_elite\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"vibration_boss_phase\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"requiresNativeVibrationBridge\":true"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasExternalAudioAsset\":false"), Is.EqualTo(true));

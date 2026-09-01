@@ -1,7 +1,9 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using LastRail.Gacha;
+using LastRail.Presentation.Audio;
 using LastRail.Presentation.Battle;
 using LastRail.Presentation.MissionShell;
 using TMPro;
@@ -42,6 +44,7 @@ namespace LastRail.Editor
         private const string SystemFeedbackWarningRoot = SystemFeedbackRoot + "/Warning";
         private const string SystemFeedbackDisabledRoot = SystemFeedbackRoot + "/Disabled";
         private const string SystemFeedbackStatusRoot = SystemFeedbackRoot + "/Status";
+        private const string AudioIntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
         public static void BuildLaunchScreenPrefabs()
@@ -56,6 +59,7 @@ namespace LastRail.Editor
             CreateRewardStoryPrefab("RewardReviewScreen", "작전 보상");
             CreateRewardStoryPrefab("OfflineRewardScreen", "오프라인 보상");
             CreateRewardStoryPrefab("StoryProgressSummaryScreen", "스토리 진행");
+            WriteAudioIntegrationManifest();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -108,6 +112,7 @@ namespace LastRail.Editor
             try
             {
                 var behaviour = root.AddComponent<MissionShellScreenRootBehaviour>();
+                var audio = AttachAudioCuePlayer(root, CommonUiCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 CreateMissionShellSystemFeedbackPolish(safeArea);
                 var title = CreateText(safeArea, "TitleText", "작전 선택");
@@ -133,7 +138,8 @@ namespace LastRail.Editor
                     ("primaryButtonText", primaryText),
                     ("primaryButton", primary),
                     ("secondaryButtonText", secondaryText),
-                    ("secondaryButton", secondary));
+                    ("secondaryButton", secondary),
+                    ("audioCuePlayer", audio));
                 SavePrefab(root, "MissionShellScreen");
             }
             finally
@@ -284,6 +290,7 @@ namespace LastRail.Editor
             try
             {
                 var behaviour = root.AddComponent<GachaScreenRootBehaviour>();
+                var audio = AttachAudioCuePlayer(root, GachaCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 CreateGachaSystemFeedbackPolish(safeArea);
                 var bannerKeyVisual = CreateImage(
@@ -452,7 +459,8 @@ namespace LastRail.Editor
                     ("operatorOwnedBadgeImage", operatorOwnedBadge),
                     ("operatorLevelBadgeImage", operatorLevelBadge),
                     ("operatorDuplicateTokenBadgeImage", operatorDuplicateTokenBadge),
-                    ("operatorGridSafeMaskImage", operatorGridSafeMask));
+                    ("operatorGridSafeMaskImage", operatorGridSafeMask),
+                    ("audioCuePlayer", audio));
                 SavePrefab(root, "GachaScreen");
             }
             finally
@@ -467,6 +475,7 @@ namespace LastRail.Editor
             try
             {
                 var behaviour = root.AddComponent<FullyAnimatedCombatHudRootBehaviour>();
+                var audio = AttachAudioCuePlayer(root, CombatCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 var encounterTitle = CreateText(safeArea, "EncounterTitleText", "전투");
                 var waveCounter = CreateText(safeArea, "WaveCounterText", "Wave 1/15");
@@ -491,7 +500,8 @@ namespace LastRail.Editor
                     ("objectiveText", objective),
                     ("refundHintText", refundHint),
                     ("unitRefsText", unitRefs),
-                    ("cueRefsText", cueRefs));
+                    ("cueRefsText", cueRefs),
+                    ("audioCuePlayer", audio));
                 SavePrefab(root, "FullyAnimatedCombatHud");
             }
             finally
@@ -506,6 +516,7 @@ namespace LastRail.Editor
             try
             {
                 var behaviour = root.AddComponent<CodexArchiveScreenRootBehaviour>();
+                var audio = AttachAudioCuePlayer(root, CommonUiCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 var title = CreateText(safeArea, "TitleText", "기록 보관소");
                 var subtitle = CreateText(safeArea, "SubtitleText", "Act 1");
@@ -534,7 +545,8 @@ namespace LastRail.Editor
                     ("resultButtonText", resultText),
                     ("resultButton", result),
                     ("rewardReviewButtonText", rewardReviewText),
-                    ("rewardReviewButton", rewardReview));
+                    ("rewardReviewButton", rewardReview),
+                    ("audioCuePlayer", audio));
                 SavePrefab(root, "CodexArchiveScreen");
             }
             finally
@@ -549,6 +561,7 @@ namespace LastRail.Editor
             try
             {
                 var behaviour = root.AddComponent<RewardStoryScreenRootBehaviour>();
+                var audio = AttachAudioCuePlayer(root, RewardCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 var title = CreateText(safeArea, "TitleText", titleTextValue);
                 var subtitle = CreateText(safeArea, "SubtitleText", "서버 응답 표시");
@@ -605,7 +618,8 @@ namespace LastRail.Editor
                     ("secondaryButtonText", secondaryText),
                     ("secondaryButton", secondary),
                     ("codexButtonText", codexText),
-                    ("codexButton", codex));
+                    ("codexButton", codex),
+                    ("audioCuePlayer", audio));
                 SavePrefab(root, prefabName);
             }
             finally
@@ -945,6 +959,155 @@ namespace LastRail.Editor
         private static void SavePrefab(GameObject root, string prefabName)
         {
             PrefabUtility.SaveAsPrefabAsset(root, Path.Combine(PrefabRoot, prefabName + ".prefab").Replace('\\', '/'));
+        }
+
+        private static LastRailAudioCuePlayer AttachAudioCuePlayer(GameObject root, IReadOnlyList<string> cueIds)
+        {
+            var sfxSource = root.AddComponent<AudioSource>();
+            sfxSource.playOnAwake = false;
+            sfxSource.loop = false;
+            sfxSource.volume = 0.8f;
+
+            var bgmSource = root.AddComponent<AudioSource>();
+            bgmSource.playOnAwake = false;
+            bgmSource.loop = true;
+            bgmSource.volume = 0.35f;
+
+            var player = root.AddComponent<LastRailAudioCuePlayer>();
+            var serialized = new SerializedObject(player);
+            serialized.FindProperty("sfxSource").objectReferenceValue = sfxSource;
+            serialized.FindProperty("bgmSource").objectReferenceValue = bgmSource;
+
+            var bindings = serialized.FindProperty("clipBindings");
+            bindings.arraySize = cueIds.Count;
+            for (var i = 0; i < cueIds.Count; i++)
+            {
+                var cueId = cueIds[i];
+                var element = bindings.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("cueId").stringValue = cueId;
+                element.FindPropertyRelative("clip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>(AudioClipPath(cueId));
+                element.FindPropertyRelative("loop").boolValue = string.Equals(cueId, "bgm_act1_rail_loop", StringComparison.Ordinal);
+                element.FindPropertyRelative("volume").floatValue = string.Equals(cueId, "bgm_act1_rail_loop", StringComparison.Ordinal) ? 0.35f : 0.8f;
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            return player;
+        }
+
+        private static IReadOnlyList<string> CommonUiCueIds()
+        {
+            return new[]
+            {
+                "ui_tap",
+                "ui_back",
+                "ui_confirm",
+                "ui_error",
+                "ui_toggle_or_tab",
+                "bgm_act1_rail_loop"
+            };
+        }
+
+        private static IReadOnlyList<string> GachaCueIds()
+        {
+            return new[]
+            {
+                "ui_tap",
+                "ui_back",
+                "ui_confirm",
+                "ui_error",
+                "gacha_reveal_start",
+                "gacha_result_rare",
+                "gacha_result_elite",
+                "gacha_result_pickup_elite",
+                "gacha_duplicate_conversion",
+                "bgm_act1_rail_loop"
+            };
+        }
+
+        private static IReadOnlyList<string> CombatCueIds()
+        {
+            return new[]
+            {
+                "combat_hit",
+                "combat_skill",
+                "combat_ultimate",
+                "combat_shield",
+                "combat_heal",
+                "combat_buff",
+                "combat_debuff",
+                "story_raid_warning",
+                "boss_defeat",
+                "bgm_act1_rail_loop"
+            };
+        }
+
+        private static IReadOnlyList<string> RewardCueIds()
+        {
+            return new[]
+            {
+                "ui_tap",
+                "ui_back",
+                "ui_confirm",
+                "ui_error",
+                "ui_toggle_or_tab",
+                "reward_claim",
+                "reward_line_tick",
+                "bgm_act1_rail_loop"
+            };
+        }
+
+        private static string AudioClipPath(string cueId)
+        {
+            switch (cueId)
+            {
+                case "ui_tap": return "Assets/_LASTRAIL/Audio/Sfx/UI/ui_tap.wav";
+                case "ui_back": return "Assets/_LASTRAIL/Audio/Sfx/UI/ui_back.wav";
+                case "ui_confirm": return "Assets/_LASTRAIL/Audio/Sfx/UI/ui_confirm.wav";
+                case "ui_error": return "Assets/_LASTRAIL/Audio/Sfx/UI/ui_error.wav";
+                case "ui_toggle_or_tab": return "Assets/_LASTRAIL/Audio/Sfx/UI/ui_toggle_or_tab.wav";
+                case "gacha_reveal_start": return "Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_reveal_start.wav";
+                case "gacha_result_rare": return "Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_rare.wav";
+                case "gacha_result_elite": return "Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_elite.wav";
+                case "gacha_result_pickup_elite": return "Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_pickup_elite.wav";
+                case "gacha_duplicate_conversion": return "Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_duplicate_conversion.wav";
+                case "reward_claim": return "Assets/_LASTRAIL/Audio/Sfx/Reward/reward_claim.wav";
+                case "reward_line_tick": return "Assets/_LASTRAIL/Audio/Sfx/Reward/reward_line_tick.wav";
+                case "combat_hit": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_hit.wav";
+                case "combat_skill": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_skill.wav";
+                case "combat_ultimate": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_ultimate.wav";
+                case "combat_shield": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_shield.wav";
+                case "combat_heal": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_heal.wav";
+                case "combat_buff": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_buff.wav";
+                case "combat_debuff": return "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_debuff.wav";
+                case "story_raid_warning": return "Assets/_LASTRAIL/Audio/Sfx/StoryRaid/story_raid_warning.wav";
+                case "boss_defeat": return "Assets/_LASTRAIL/Audio/Sfx/StoryRaid/boss_defeat.wav";
+                case "bgm_act1_rail_loop": return "Assets/_LASTRAIL/Audio/Bgm/bgm_act1_rail_loop.wav";
+                default:
+                    throw new InvalidOperationException("Unknown launch audio cue id: " + cueId);
+            }
+        }
+
+        private static void WriteAudioIntegrationManifest()
+        {
+            File.WriteAllText(Path.Combine(Directory.GetParent(Application.dataPath).FullName, AudioIntegrationManifestPath), @"{
+  ""name"": ""LAST RAIL Act 1 Launch Audio Event Integration"",
+  ""presentationOnly"": true,
+  ""serverContractChanged"": false,
+  ""gameplayTimingChanged"": false,
+  ""rewardCalculationIncluded"": false,
+  ""economyMutationIncluded"": false,
+  ""connectedCueCount"": 22,
+  ""bgmAct1RailLoopAutoplay"": false,
+  ""surfaces"": [
+    { ""surface"": ""common_ui"", ""events"": [""button_tap"", ""back"", ""confirm"", ""error"", ""tab_toggle""], ""cueIds"": [""ui_tap"", ""ui_back"", ""ui_confirm"", ""ui_error"", ""ui_toggle_or_tab""] },
+    { ""surface"": ""gacha_screen"", ""events"": [""reveal_start"", ""rare_result"", ""elite_result"", ""pickup_elite_result"", ""duplicate_conversion""], ""cueIds"": [""gacha_reveal_start"", ""gacha_result_rare"", ""gacha_result_elite"", ""gacha_result_pickup_elite"", ""gacha_duplicate_conversion""] },
+    { ""surface"": ""reward_offline"", ""events"": [""claim"", ""line_tick""], ""cueIds"": [""reward_claim"", ""reward_line_tick""] },
+    { ""surface"": ""combat_hud"", ""events"": [""hit"", ""skill"", ""ultimate"", ""shield"", ""heal"", ""buff"", ""debuff""], ""cueIds"": [""combat_hit"", ""combat_skill"", ""combat_ultimate"", ""combat_shield"", ""combat_heal"", ""combat_buff"", ""combat_debuff""] },
+    { ""surface"": ""story_raid"", ""events"": [""warning"", ""boss_defeat""], ""cueIds"": [""story_raid_warning"", ""boss_defeat""] },
+    { ""surface"": ""launch_bgm"", ""events"": [""opt_in_single_loop""], ""cueIds"": [""bgm_act1_rail_loop""] }
+  ]
+}
+");
         }
 
         private static void EnsureDirectory(string path)
