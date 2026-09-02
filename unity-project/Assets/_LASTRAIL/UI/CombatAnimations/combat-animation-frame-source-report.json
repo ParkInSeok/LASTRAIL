@@ -1,0 +1,299 @@
+{
+  "name": "LAST RAIL Act 1 Combat Animation Frame Source Report",
+  "generatedBy": "local deterministic frame derivation from project launch art",
+  "resourceCount": 19,
+  "sourceArtCount": 19,
+  "frameCount": 380,
+  "frameResolution": "512x512",
+  "presentationOnly": true,
+  "hasCombatMath": false,
+  "hasServerTransport": false,
+  "hasRewardEconomyStoryOfflineGachaTruth": false,
+  "resources": [
+    {
+      "id": "op_vex",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_vex_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_nyx",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_nyx_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_sable",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sable_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_marrow",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_marrow_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_iris",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_iris_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_rail",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_rail_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_anchor",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_anchor_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_lumen",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_lumen_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_cinder",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_cinder_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_warden",
+      "kind": "operator_elite",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_warden_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_raider_scout",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_raider_scout.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_railbike_marauder",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_railbike_marauder.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_scrapshield_brute",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_scrapshield_brute.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_signal_jammer_drone",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_signal_jammer_drone.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_spike_cart_gunner",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "enemy_cinder_hound_mech",
+      "kind": "enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_cinder_hound_mech.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "elite_broadcast_executioner",
+      "kind": "elite_enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_broadcast_executioner.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "elite_ironclad_boarder",
+      "kind": "elite_enemy",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_ironclad_boarder.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "boss_raider_king_engine",
+      "kind": "boss",
+      "states": [
+        "idle",
+        "warning",
+        "attack",
+        "hit",
+        "defeat"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/CombatResources/Bosses/boss_raider_king_engine.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    }
+  ]
+}

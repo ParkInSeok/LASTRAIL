@@ -46,6 +46,7 @@ namespace LastRail.Editor
         {
             ("system_feedback_showcase", "Assets/_LASTRAIL/UI/SystemFeedbackResources/Showcase/LRLaunchSystemFeedbackResourceShowcase.prefab"),
             ("operator_card_polish_showcase", "Assets/_LASTRAIL/UI/Operators/CardPolish/Showcase/LRLaunchOperatorCardPolishShowcase.prefab"),
+            ("combat_animation_showcase", "Assets/_LASTRAIL/UI/CombatAnimations/Showcase/LRLaunchCombatAnimationShowcase.prefab"),
             ("audio_showcase", "Assets/_LASTRAIL/Audio/Showcase/LRLaunchAudioResourceShowcase.prefab")
         };
 
