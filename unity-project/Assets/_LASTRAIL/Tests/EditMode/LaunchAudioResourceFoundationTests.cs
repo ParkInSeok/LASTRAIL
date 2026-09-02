@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using TMPro;
@@ -91,6 +92,11 @@ namespace LastRail.Tests.EditMode
                 Assert.That(match.path, Is.EqualTo(expected.Path), expected.Id);
                 Assert.That(match.loop, Is.EqualTo(expected.Loop), expected.Id);
                 Assert.That(match.sourceType, Is.EqualTo("generated_local_launch_audio"), expected.Id);
+                Assert.That(match.thumbnailPath, Does.StartWith("Assets/_LASTRAIL/"), expected.Id + " thumbnail path");
+                Assert.That(match.sourceArtPath, Does.StartWith("Assets/_LASTRAIL/"), expected.Id + " source art path");
+                Assert.That(match.qualityClass, Is.EqualTo("ACCEPTABLE_UI_ICON_OR_DECORATION"), expected.Id + " quality class");
+                Assert.That(match.showcaseVisible, Is.True, expected.Id + " showcase visibility");
+                Assert.That(AssetDatabase.LoadAssetAtPath<Sprite>(match.thumbnailPath), Is.Not.Null, expected.Id + " thumbnail sprite");
                 Assert.That(match.durationSeconds, Is.GreaterThan(expected.Loop ? 8f : 0.04f), expected.Id);
             }
         }
@@ -115,6 +121,17 @@ namespace LastRail.Tests.EditMode
             Assert.That(scaler, Is.Not.Null);
             Assert.That(scaler.referenceResolution, Is.EqualTo(new Vector2(1080f, 1920f)));
             Assert.That(prefab.GetComponentsInChildren<AudioSource>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(Clips.Length));
+            var thumbnailImages = new List<Image>();
+            foreach (var image in prefab.GetComponentsInChildren<Image>(includeInactive: true))
+            {
+                if (image.name == "SourceArtThumbnail") thumbnailImages.Add(image);
+            }
+            Assert.That(thumbnailImages.Count, Is.EqualTo(Clips.Length));
+            foreach (var image in thumbnailImages)
+            {
+                Assert.That(image.sprite, Is.Not.Null, image.transform.parent.name + " missing launch art thumbnail");
+                Assert.That(image.sprite.texture.width, Is.GreaterThanOrEqualTo(256), image.transform.parent.name + " thumbnail width");
+            }
             var cuePlayer = prefab.GetComponentInChildren<LastRailAudioCuePlayer>(includeInactive: true);
             Assert.That(cuePlayer, Is.Not.Null);
             Assert.That(cuePlayer.BindingCount, Is.EqualTo(Clips.Length));
@@ -245,6 +262,10 @@ namespace LastRail.Tests.EditMode
             public bool loop;
             public float durationSeconds;
             public string sourceType;
+            public string thumbnailPath;
+            public string sourceArtPath;
+            public string qualityClass;
+            public bool showcaseVisible;
         }
 
         private readonly struct ExpectedAudio

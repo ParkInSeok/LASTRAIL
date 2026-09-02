@@ -10,6 +10,11 @@ namespace LastRail.Presentation.Battle
     public sealed class FullyAnimatedCombatHudRootBehaviour : MonoBehaviour, IFullyAnimatedCombatHudView
     {
         [SerializeField] private RectTransform safeAreaRoot;
+        [SerializeField] private RectTransform exteriorTrainAdvanceLane;
+        [SerializeField] private RectTransform interiorBoardingCombatLane;
+        [SerializeField] private RectTransform playerSquadSlots;
+        [SerializeField] private RectTransform invadingEnemySlots;
+        [SerializeField] private RectTransform engagementZoneRoot;
         [SerializeField] private TMP_Text encounterTitleText;
         [SerializeField] private TMP_Text waveCounterText;
         [SerializeField] private TMP_Text bossStatusText;

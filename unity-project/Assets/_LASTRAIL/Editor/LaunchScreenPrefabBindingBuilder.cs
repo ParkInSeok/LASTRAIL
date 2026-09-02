@@ -29,6 +29,7 @@ namespace LastRail.Editor
         private const string CombatEliteRoot = "Assets/_LASTRAIL/UI/CombatResources/Elites";
         private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
         private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
+        private const string CombatLaneRoot = "Assets/_LASTRAIL/UI/CombatResources/Lanes";
         private const string OperatorCardRoot = "Assets/_LASTRAIL/UI/Operators/Cards";
         private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
         private const string MissionThumbnailOverlayRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays";
@@ -77,6 +78,22 @@ namespace LastRail.Editor
             }
         }
 
+        [MenuItem("LASTRAIL/Launch/Build Combat HUD Prefab")]
+        public static void BuildCombatHudPrefabOnly()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateCombatHudPrefab();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("LASTRAIL combat HUD prefab build complete.");
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
+        }
         [MenuItem("LASTRAIL/Launch/Build Story Progress And Codex Thumbnail Prefabs")]
         public static void BuildStoryProgressAndCodexThumbnailPrefabs()
         {
@@ -490,27 +507,33 @@ namespace LastRail.Editor
             var root = CreateScreenRoot("FullyAnimatedCombatHud");
             try
             {
+                EnsureCombatLaneResourceImportSettings();
                 var behaviour = root.AddComponent<FullyAnimatedCombatHudRootBehaviour>();
                 var audio = AttachAudioCuePlayer(root, CombatCueIds());
                 var safeArea = CreateSafeArea(root.transform);
-                CreateCombatHudVisualPolish(safeArea);
-                var encounterTitle = CreateText(safeArea, "EncounterTitleText", "전투");
-                var waveCounter = CreateText(safeArea, "WaveCounterText", "Wave 1/15");
-                var bossStatus = CreateText(safeArea, "BossStatusText", "Boss");
-                var objective = CreateText(safeArea, "ObjectiveText", "목표");
-                var refundHint = CreateText(safeArea, "RefundHintText", string.Empty);
-                var unitRefs = CreateText(safeArea, "UnitRefsText", "Unit refs");
-                var cueRefs = CreateText(safeArea, "CueRefsText", "Cue refs");
-                Place(encounterTitle, 0f, 800f, 960f, 96f);
-                Place(waveCounter, 0f, 710f, 960f, 72f);
-                Place(bossStatus, 0f, 615f, 960f, 96f);
-                Place(objective, 0f, 500f, 960f, 96f);
-                Place(unitRefs, 0f, 80f, 960f, 560f);
-                Place(cueRefs, 0f, -360f, 960f, 240f);
-                Place(refundHint, 0f, -700f, 960f, 96f);
+                var layout = CreateCombatHudVisualPolish(safeArea);
+                var encounterTitle = CreateText(layout.TopStatusPanel, "EncounterTitleText", "전투");
+                var waveCounter = CreateText(layout.TopStatusPanel, "WaveCounterText", "Wave 1/15");
+                var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "Boss");
+                var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표");
+                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", string.Empty);
+                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "Unit refs");
+                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "Cue refs");
+                Place(encounterTitle, 0f, 34f, 860f, 68f);
+                Place(waveCounter, 0f, -34f, 860f, 64f);
+                Place(bossStatus, 0f, -225f, 860f, 68f);
+                Place(objective, 0f, 300f, 860f, 68f);
+                Place(unitRefs, 0f, -235f, 860f, 116f);
+                Place(cueRefs, 0f, -340f, 860f, 100f);
+                Place(refundHint, 0f, -430f, 860f, 68f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
+                    ("exteriorTrainAdvanceLane", layout.ExteriorLane),
+                    ("interiorBoardingCombatLane", layout.InteriorLane),
+                    ("playerSquadSlots", layout.PlayerSquadSlots),
+                    ("invadingEnemySlots", layout.InvadingEnemySlots),
+                    ("engagementZoneRoot", layout.EngagementZone),
                     ("encounterTitleText", encounterTitle),
                     ("waveCounterText", waveCounter),
                     ("bossStatusText", bossStatus),
@@ -527,65 +550,248 @@ namespace LastRail.Editor
             }
         }
 
-        private static void CreateCombatHudVisualPolish(Transform safeArea)
+        private static void EnsureCombatLaneResourceImportSettings()
         {
-            var background = CreateImage(
-                safeArea,
-                "CombatWastelandRailBackgroundImage",
-                BackgroundRoot + "/bg_combat_wasteland_rail.png",
-                new Color(1f, 1f, 1f, 0.95f));
-            Place(background, 0f, 0f, 1000f, 1770f);
-
-            var readabilityScrim = new GameObject("CombatHudReadabilityScrim", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            readabilityScrim.transform.SetParent(safeArea, false);
-            var scrimImage = readabilityScrim.GetComponent<Image>();
-            scrimImage.color = new Color(0.02f, 0.025f, 0.03f, 0.48f);
-            scrimImage.raycastTarget = false;
-            Place(readabilityScrim.GetComponent<RectTransform>(), 0f, -170f, 1000f, 1420f);
-
-            var operatorCard = CreateImage(
-                safeArea,
-                "OperatorBattleCardPreviewImage",
-                OperatorCardRoot + "/op_vex_card.png",
-                new Color(1f, 1f, 1f, 0.95f));
-            Place(operatorCard, -285f, -165f, 245f, 326f);
-
-            var enemyScout = CreateImage(
-                safeArea,
-                "EnemyBattlePreviewImage",
-                CombatEnemyRoot + "/enemy_raider_scout.png",
-                new Color(1f, 1f, 1f, 0.95f));
-            Place(enemyScout, 135f, -125f, 245f, 245f);
-
-            var enemyElite = CreateImage(
-                safeArea,
-                "EliteBattlePreviewImage",
-                CombatEliteRoot + "/elite_ironclad_boarder.png",
-                new Color(1f, 1f, 1f, 0.95f));
-            Place(enemyElite, 355f, -80f, 290f, 290f);
-
-            var bossPreview = CreateImage(
-                safeArea,
-                "StoryRaidBossPreviewImage",
-                CombatBossRoot + "/boss_raider_king_engine.png",
-                new Color(1f, 1f, 1f, 0.72f));
-            Place(bossPreview, 0f, 350f, 760f, 506f);
-
-            var skillVfx = CreateImage(
-                safeArea,
-                "CombatSkillVfxPreviewImage",
-                CombatVfxRoot + "/vfx_skill_activation.png",
-                new Color(1f, 1f, 1f, 0.72f));
-            Place(skillVfx, -365f, 260f, 190f, 190f);
-
-            var hitVfx = CreateImage(
-                safeArea,
-                "CombatHitSparkPreviewImage",
-                CombatVfxRoot + "/vfx_basic_hit_spark.png",
-                new Color(1f, 1f, 1f, 0.75f));
-            Place(hitVfx, 365f, 220f, 150f, 150f);
+            EnsureSpriteImporter(CombatLaneRoot + "/combat_train_exterior_advance_lane.png");
+            EnsureSpriteImporter(CombatLaneRoot + "/combat_train_interior_boarding_lane.png");
         }
 
+        private static void EnsureSpriteImporter(string assetPath)
+        {
+            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer == null)
+            {
+                throw new InvalidOperationException("Missing launch texture importer: " + assetPath);
+            }
+
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 100f;
+            importer.mipmapEnabled = false;
+            importer.alphaIsTransparency = true;
+            importer.maxTextureSize = 2048;
+            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.SaveAndReimport();
+        }
+        private static CombatHudLayoutBindings CreateCombatHudVisualPolish(Transform safeArea)
+        {
+            var backdrop = CreateSlicedImage(
+                safeArea,
+                "CombatHudBackdropPanel",
+                CommonSkinRoot + "/ui_modal_panel_9slice.png",
+                new Color(0.10f, 0.14f, 0.15f, 0.98f));
+            Place(backdrop, 0f, 0f, 1000f, 1770f);
+
+            var exteriorLaneImage = CreateImage(
+                safeArea,
+                "ExteriorTrainAdvanceLane",
+                CombatLaneRoot + "/combat_train_exterior_advance_lane.png",
+                Color.white);
+            exteriorLaneImage.preserveAspect = false;
+            Place(exteriorLaneImage, 0f, 520f, 1000f, 610f);
+            var exteriorLane = exteriorLaneImage.GetComponent<RectTransform>();
+
+            var topStatusPanel = CreateSlicedImage(
+                exteriorLane,
+                "CombatHudTopStatusPanel",
+                CommonSkinRoot + "/ui_status_chip_9slice.png",
+                new Color(1f, 1f, 1f, 0.96f));
+            Place(topStatusPanel, 0f, 222f, 910f, 120f);
+
+            var railParallax = CreateImage(
+                exteriorLane,
+                "ExteriorRailParallaxImage",
+                RewardOfflineMetersRoot + "/offline_duration_accumulation_strip.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            railParallax.preserveAspect = false;
+            Place(railParallax, 0f, -230f, 920f, 92f);
+
+            var trainAdvanceStrip = CreateImage(
+                exteriorLane,
+                "TrainAdvanceStripImage",
+                BackgroundRoot + "/bg_main_lobby_train_interior.png",
+                new Color(1f, 1f, 1f, 0.74f));
+            trainAdvanceStrip.preserveAspect = false;
+            Place(trainAdvanceStrip, 210f, -142f, 520f, 136f);
+
+            var interiorLaneImage = CreateImage(
+                safeArea,
+                "InteriorBoardingCombatLane",
+                CombatLaneRoot + "/combat_train_interior_boarding_lane.png",
+                Color.white);
+            interiorLaneImage.preserveAspect = false;
+            Place(interiorLaneImage, 0f, -340f, 1000f, 1050f);
+            var interiorLane = interiorLaneImage.GetComponent<RectTransform>();
+
+            var interiorBackground = CreateImage(
+                interiorLane,
+                "InteriorTrainCarBackgroundImage",
+                CombatLaneRoot + "/combat_train_interior_boarding_lane.png",
+                new Color(1f, 1f, 1f, 0.36f));
+            interiorBackground.preserveAspect = false;
+            Place(interiorBackground, 0f, 0f, 940f, 630f);
+
+            var squadSlots = CreateTransparentGroup(interiorLane, "PlayerSquadSlots");
+            Place(squadSlots, -290f, -10f, 360f, 710f);
+            var enemySlots = CreateTransparentGroup(interiorLane, "InvadingEnemySlots");
+            Place(enemySlots, 300f, -8f, 360f, 660f);
+            var engagementZone = CreateSlicedImage(
+                interiorLane,
+                "EngagementZoneMarkerImage",
+                CommonSkinRoot + "/ui_status_chip_9slice.png",
+                new Color(1f, 0.78f, 0.36f, 0.52f));
+            Place(engagementZone, 0f, -20f, 235f, 520f);
+
+            CreateOperatorCombatSlots(squadSlots);
+            CreateEnemyBoardingSlots(enemySlots);
+            CreateCombatPreviewSprites(interiorLane, squadSlots, enemySlots);
+
+            var skillVfx = CreateImage(
+                interiorLane,
+                "CombatSkillVfxPreviewImage",
+                CombatVfxRoot + "/vfx_skill_activation.png",
+                new Color(1f, 1f, 1f, 0.68f));
+            Place(skillVfx, -62f, 32f, 188f, 188f);
+
+            var hitVfx = CreateImage(
+                interiorLane,
+                "CombatHitSparkPreviewImage",
+                CombatVfxRoot + "/vfx_basic_hit_spark.png",
+                new Color(1f, 1f, 1f, 0.78f));
+            Place(hitVfx, 98f, 40f, 150f, 150f);
+
+            var bossPreview = CreateImage(
+                exteriorLane,
+                "StoryRaidBossExternalThreatImage",
+                CombatBossRoot + "/boss_raider_king_engine.png",
+                new Color(1f, 1f, 1f, 0.62f));
+            Place(bossPreview, 335f, 10f, 270f, 180f);
+
+            return new CombatHudLayoutBindings(
+                exteriorLane,
+                interiorLane,
+                squadSlots,
+                enemySlots,
+                engagementZone.GetComponent<RectTransform>(),
+                topStatusPanel.GetComponent<RectTransform>());
+        }
+
+        private static void CreateOperatorCombatSlots(Transform squadSlots)
+        {
+            var xPositions = new[] { -74f, 74f, -74f, 74f, 0f };
+            var yPositions = new[] { 226f, 226f, 55f, 55f, -116f };
+            var operatorCards = new[] { "op_vex_card", "op_iris_card", "op_nyx_card", "op_rail_card", "op_mira_card" };
+            for (var i = 0; i < 5; i++)
+            {
+                var slot = CreateSlicedImage(
+                    squadSlots,
+                    "OperatorSlotFrame" + (i + 1).ToString("00"),
+                    OperatorCardPolishFramesRoot + "/operator_card_slot_background.png",
+                    Color.white);
+                Place(slot, xPositions[i], yPositions[i], 142f, 164f);
+
+                var portrait = CreateImage(
+                    slot.transform,
+                    "OperatorCombatSprite" + (i + 1).ToString("00"),
+                    OperatorCardRoot + "/" + operatorCards[i] + ".png",
+                    new Color(1f, 1f, 1f, 0.94f));
+                Place(portrait, 0f, 10f, 106f, 132f);
+            }
+        }
+
+        private static void CreateEnemyBoardingSlots(Transform enemySlots)
+        {
+            var enemySprites = new[]
+            {
+                CombatEnemyRoot + "/enemy_raider_scout.png",
+                CombatEnemyRoot + "/enemy_spike_cart_gunner.png",
+                CombatEnemyRoot + "/enemy_scrapshield_brute.png",
+                CombatEliteRoot + "/elite_ironclad_boarder.png"
+            };
+            var yPositions = new[] { 218f, 74f, -70f, -214f };
+            for (var i = 0; i < enemySprites.Length; i++)
+            {
+                var slot = CreateSlicedImage(
+                    enemySlots,
+                    "EnemyBoardingSlotFrame" + (i + 1).ToString("00"),
+                    CommonSkinRoot + "/ui_list_row_9slice.png",
+                    new Color(1f, 1f, 1f, 0.88f));
+                Place(slot, 0f, yPositions[i], 260f, 126f);
+
+                var sprite = CreateImage(
+                    slot.transform,
+                    "EnemyBoardingSprite" + (i + 1).ToString("00"),
+                    enemySprites[i],
+                    new Color(1f, 1f, 1f, 0.98f));
+                Place(sprite, 0f, 0f, 118f, 118f);
+            }
+        }
+
+        private static void CreateCombatPreviewSprites(Transform interiorLane, Transform squadSlots, Transform enemySlots)
+        {
+            var squadLabelPlate = CreateSlicedImage(
+                squadSlots,
+                "PlayerSquadLabelPlate",
+                CommonSkinRoot + "/ui_status_chip_9slice.png",
+                new Color(0.62f, 0.92f, 1f, 0.72f));
+            Place(squadLabelPlate, 0f, 335f, 300f, 48f);
+
+            var enemyLabelPlate = CreateSlicedImage(
+                enemySlots,
+                "EnemyBoardingLabelPlate",
+                CommonSkinRoot + "/ui_status_chip_9slice.png",
+                new Color(1f, 0.48f, 0.34f, 0.72f));
+            Place(enemyLabelPlate, 0f, 315f, 300f, 48f);
+
+            var dangerCue = CreateImage(
+                interiorLane,
+                "StoryRaidDangerCueImage",
+                CombatVfxRoot + "/vfx_story_raid_danger.png",
+                new Color(1f, 1f, 1f, 0.48f));
+            Place(dangerCue, 0f, 180f, 190f, 190f);
+        }
+
+        private static RectTransform CreateTransparentGroup(Transform parent, string name)
+        {
+            var group = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+            group.SetParent(parent, false);
+            return group;
+        }
+
+        private static Image CreateSlicedImage(Transform parent, string name, string spritePath, Color color)
+        {
+            var image = CreateImage(parent, name, spritePath, color);
+            image.type = Image.Type.Sliced;
+            image.preserveAspect = false;
+            return image;
+        }
+
+        private sealed class CombatHudLayoutBindings
+        {
+            public CombatHudLayoutBindings(
+                RectTransform exteriorLane,
+                RectTransform interiorLane,
+                RectTransform playerSquadSlots,
+                RectTransform invadingEnemySlots,
+                RectTransform engagementZone,
+                RectTransform topStatusPanel)
+            {
+                ExteriorLane = exteriorLane;
+                InteriorLane = interiorLane;
+                PlayerSquadSlots = playerSquadSlots;
+                InvadingEnemySlots = invadingEnemySlots;
+                EngagementZone = engagementZone;
+                TopStatusPanel = topStatusPanel;
+            }
+
+            public RectTransform ExteriorLane { get; }
+            public RectTransform InteriorLane { get; }
+            public RectTransform PlayerSquadSlots { get; }
+            public RectTransform InvadingEnemySlots { get; }
+            public RectTransform EngagementZone { get; }
+            public RectTransform TopStatusPanel { get; }
+        }
         private static void CreateCodexPrefab()
         {
             var root = CreateScreenRoot("CodexArchiveScreen");

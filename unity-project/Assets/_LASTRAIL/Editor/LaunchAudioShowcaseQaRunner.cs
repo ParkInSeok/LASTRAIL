@@ -1,9 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace LastRail.Editor
 {
@@ -22,20 +25,8 @@ namespace LastRail.Editor
 
             try
             {
-                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LaunchAudioResourceBuilder.ShowcasePrefabPath);
-                if (prefab == null) throw new InvalidOperationException("Missing audio showcase prefab.");
-
-                var texture = ComposeShowcase();
-                try
-                {
-                    ValidateCapturedPixels(texture);
-                    File.WriteAllBytes(screenshotPath, texture.EncodeToPNG());
-                }
-                finally
-                {
-                    UnityEngine.Object.DestroyImmediate(texture);
-                }
-
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                CapturePrefab(screenshotPath);
                 var info = new FileInfo(screenshotPath);
                 if (!info.Exists || info.Length < 20000) throw new InvalidOperationException("Audio showcase screenshot is empty or too small.");
                 File.WriteAllText(reportPath, "{\"status\":\"PASS\",\"width\":1080,\"height\":1920,\"clipCount\":" + LaunchAudioResourceBuilder.Clips.Length + ",\"screenshotCount\":1,\"warningCount\":0,\"failCount\":0,\"blockers\":[]}");
@@ -50,6 +41,87 @@ namespace LastRail.Editor
             finally
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+        }
+
+
+        private static void CapturePrefab(string outputPath)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(LaunchAudioResourceBuilder.ShowcasePrefabPath);
+            if (prefab == null) throw new InvalidOperationException("Missing audio showcase prefab.");
+
+            var root = (GameObject)PrefabUtility.InstantiatePrefab(prefab, SceneManager.GetActiveScene());
+            var cameraObject = new GameObject("AudioShowcaseCamera", typeof(Camera));
+            var camera = cameraObject.GetComponent<Camera>();
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = new Color(0.05f, 0.06f, 0.08f, 1f);
+            camera.orthographic = true;
+            camera.orthographicSize = Height * 0.5f;
+            camera.transform.position = new Vector3(0f, 0f, -10f);
+
+            try
+            {
+                foreach (var canvas in root.GetComponentsInChildren<Canvas>(true))
+                {
+                    canvas.renderMode = RenderMode.WorldSpace;
+                    canvas.worldCamera = camera;
+                    canvas.pixelPerfect = false;
+                }
+
+                var rect = root.GetComponent<RectTransform>();
+                if (rect != null)
+                {
+                    rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+                    rect.sizeDelta = new Vector2(Width, Height);
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.localScale = Vector3.one;
+                }
+
+                var tmpCount = 0;
+                var thumbnailCount = 0;
+                foreach (var text in root.GetComponentsInChildren<TMP_Text>(true))
+                {
+                    text.ForceMeshUpdate(ignoreActiveState: true, forceTextReparsing: true);
+                    if (!string.IsNullOrWhiteSpace(text.text)) tmpCount++;
+                }
+
+                foreach (var image in root.GetComponentsInChildren<Image>(true))
+                {
+                    if (image.name == "SourceArtThumbnail" && image.sprite != null) thumbnailCount++;
+                }
+
+                if (tmpCount == 0 || thumbnailCount < LaunchAudioResourceBuilder.Clips.Length)
+                {
+                    throw new InvalidOperationException("Audio showcase prefab is missing visible TMP text or launch art thumbnails.");
+                }
+
+                Canvas.ForceUpdateCanvases();
+                var previous = RenderTexture.active;
+                var target = new RenderTexture(Width, Height, 24, RenderTextureFormat.ARGB32);
+                var texture = new Texture2D(Width, Height, TextureFormat.RGBA32, false);
+                try
+                {
+                    camera.targetTexture = target;
+                    RenderTexture.active = target;
+                    camera.Render();
+                    texture.ReadPixels(new Rect(0, 0, Width, Height), 0, 0);
+                    texture.Apply();
+                    ValidateCapturedPixels(texture);
+                    File.WriteAllBytes(outputPath, texture.EncodeToPNG());
+                }
+                finally
+                {
+                    camera.targetTexture = null;
+                    RenderTexture.active = previous;
+                    target.Release();
+                    UnityEngine.Object.DestroyImmediate(texture);
+                    UnityEngine.Object.DestroyImmediate(target);
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(cameraObject);
+                UnityEngine.Object.DestroyImmediate(root);
             }
         }
 

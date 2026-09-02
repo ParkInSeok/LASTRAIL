@@ -189,6 +189,38 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CombatHudPrefab_UsesTrainAdvanceAndInteriorBoardingCombatLayout()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + "FullyAnimatedCombatHud.prefab");
+            Assert.That(prefab, Is.Not.Null, "FullyAnimatedCombatHud.prefab");
+
+            var safeArea = AssertChild(prefab.transform, "SafeArea");
+            var exteriorLane = AssertChild(safeArea, "ExteriorTrainAdvanceLane");
+            var interiorLane = AssertChild(safeArea, "InteriorBoardingCombatLane");
+            var topStatusPanel = AssertChild(exteriorLane, "CombatHudTopStatusPanel");
+            var squadSlots = AssertChild(interiorLane, "PlayerSquadSlots");
+            var enemySlots = AssertChild(interiorLane, "InvadingEnemySlots");
+            var engagementZone = AssertChild(interiorLane, "EngagementZoneMarkerImage");
+
+            AssertHasImage(exteriorLane, "ExteriorTrainAdvanceLane");
+            AssertHasImage(AssertChild(exteriorLane, "ExteriorRailParallaxImage"), "ExteriorRailParallaxImage");
+            AssertHasImage(AssertChild(exteriorLane, "TrainAdvanceStripImage"), "TrainAdvanceStripImage");
+            AssertHasImage(interiorLane, "InteriorBoardingCombatLane");
+            AssertHasImage(AssertChild(interiorLane, "InteriorTrainCarBackgroundImage"), "InteriorTrainCarBackgroundImage");
+            AssertHasImage(engagementZone, "EngagementZoneMarkerImage");
+            Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(5));
+            Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.GreaterThanOrEqualTo(3));
+            Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
+
+            AssertBoundFields<FullyAnimatedCombatHudRootBehaviour>(
+                "FullyAnimatedCombatHud.prefab",
+                "exteriorTrainAdvanceLane",
+                "interiorBoardingCombatLane",
+                "playerSquadSlots",
+                "invadingEnemySlots",
+                "engagementZoneRoot");
+        }
+        [Test]
         public void LaunchScreenPrefabs_KeepTouchTargetsAtLeastFortyEightDp()
         {
             AssertButtonsMeetMinimumTouchTarget("MissionShellScreen.prefab");
@@ -324,6 +356,33 @@ namespace LastRail.Tests.EditMode
             }
         }
 
+        private static Transform AssertChild(Transform parent, string name)
+        {
+            var child = parent.Find(name);
+            Assert.That(child, Is.Not.Null, parent.name + " missing child " + name);
+            return child;
+        }
+
+        private static void AssertHasImage(Transform target, string context)
+        {
+            var image = target.GetComponent<Image>();
+            Assert.That(image, Is.Not.Null, context);
+            Assert.That(image.sprite, Is.Not.Null, context);
+        }
+
+        private static int CountChildrenWithPrefix(Transform parent, string prefix)
+        {
+            var count = 0;
+            foreach (Transform child in parent)
+            {
+                if (child.name.StartsWith(prefix, System.StringComparison.Ordinal))
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
         private static void AssertRewardStoryBindings(string prefabName)
         {
             AssertBoundFields<RewardStoryScreenRootBehaviour>(

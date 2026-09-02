@@ -63,7 +63,9 @@ namespace LastRail.Editor
             "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png",
             "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_broadcast_executioner.png",
             "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_ironclad_boarder.png",
-            "Assets/_LASTRAIL/UI/CombatResources/Bosses/boss_raider_king_engine.png"
+            "Assets/_LASTRAIL/UI/CombatResources/Bosses/boss_raider_king_engine.png",
+            "Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_exterior_advance_lane.png",
+            "Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_interior_boarding_lane.png"
         };
 
         private static readonly string[] GachaArtPaths =
@@ -123,7 +125,7 @@ namespace LastRail.Editor
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
                 CaptureBackgroundFrame("background_key_visuals", BackgroundPaths, framesRoot, checkedSurfaces, framePaths);
                 CaptureGridFrame("operator_portrait_cards", OperatorCardPaths, framesRoot, checkedSurfaces, framePaths, 3, 5, 250, 332);
-                CaptureGridFrame("combat_enemy_boss_vfx", CombatArtPaths, framesRoot, checkedSurfaces, framePaths, 3, 3, 286, 286);
+                CaptureGridFrame("combat_enemy_boss_vfx", CombatArtPaths, framesRoot, checkedSurfaces, framePaths, 3, 4, 286, 250);
                 CaptureGridFrame("gacha_recruitment_visuals", GachaArtPaths, framesRoot, checkedSurfaces, framePaths, 2, 3, 380, 380);
                 CaptureGridFrame("mission_story_thumbnails", MissionThumbnailPaths, framesRoot, checkedSurfaces, framePaths, 1, 7, 910, 512);
                 CaptureGridFrame("reward_offline_visuals", RewardOfflinePaths, framesRoot, checkedSurfaces, framePaths, 2, 6, 440, 270);
