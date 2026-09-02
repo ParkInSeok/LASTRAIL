@@ -71,7 +71,7 @@ namespace LastRail.Presentation.Battle
 
         private void ApplySafeArea()
         {
-            if (safeAreaRoot == null)
+            if (safeAreaRoot == null || Screen.width <= 0 || Screen.height <= 0)
             {
                 return;
             }
@@ -102,40 +102,23 @@ namespace LastRail.Presentation.Battle
                 return string.Empty;
             }
 
-            var builder = new StringBuilder();
-            for (var i = 0; i < state.UnitAnimationRefs.Count; i++)
-            {
-                var unitRef = state.UnitAnimationRefs[i];
-                if (i > 0)
-                {
-                    builder.Append('\n');
-                }
-
-                builder.Append(unitRef.UnitRole).Append(" / ");
-                builder.Append(unitRef.UnitId).Append(" / ");
-                builder.Append(unitRef.AnimationKey).Append(" / ");
-                builder.Append(unitRef.AnimationCueId);
-            }
-
-            return builder.ToString();
+            return state.EncounterType == LastRail.Run.RunEncounterType.RaidBoss
+                ? "보스전 분대 " + state.OperatorSlotCount + " / 보스 1"
+                : "초기 분대 " + state.OperatorSlotCount + " / 침입 적 " + state.EnemyUnitCount;
         }
 
         private static string FormatCueRefs(FullyAnimatedCombatHudViewState state)
         {
             var builder = new StringBuilder();
-            builder.Append("damage=").Append(state.DamageCueId);
-            builder.Append('\n').Append("hitStop=").Append(state.HitStopCueId);
-            builder.Append('\n').Append("vfx=").Append(state.VfxCueId);
-            builder.Append('\n').Append("sfx=").Append(state.SfxCueId);
-            builder.Append('\n').Append("vibration=").Append(state.VibrationCueId);
+            builder.Append("피격 / 히트스톱 / VFX / SFX / 진동 준비");
             if (state.WaveTransitionCueId != null)
             {
-                builder.Append('\n').Append("wave=").Append(state.WaveTransitionCueId);
+                builder.Append(" / 공세 전환");
             }
 
             if (state.BossPhaseTransitionCueId != null)
             {
-                builder.Append('\n').Append("bossPhase=").Append(state.BossPhaseTransitionCueId);
+                builder.Append(" / 보스 페이즈");
             }
 
             return builder.ToString();

@@ -1,15 +1,90 @@
 {
   "name": "LAST RAIL Act 1 Combat Animation Frame Source Report",
   "generatedBy": "local deterministic frame derivation from project launch art",
-  "resourceCount": 19,
-  "sourceArtCount": 19,
-  "frameCount": 380,
+  "resourceCount": 24,
+  "sourceArtCount": 24,
+  "frameCount": 480,
   "frameResolution": "512x512",
   "presentationOnly": true,
   "hasCombatMath": false,
   "hasServerTransport": false,
   "hasRewardEconomyStoryOfflineGachaTruth": false,
   "resources": [
+    {
+      "id": "op_kyle",
+      "kind": "operator_initial_free",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_kyle_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_reina",
+      "kind": "operator_initial_free",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_reina_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_eve",
+      "kind": "operator_initial_free",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_eve_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_sera",
+      "kind": "operator_initial_free",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sera_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
+    {
+      "id": "op_mira",
+      "kind": "operator_initial_free",
+      "states": [
+        "idle",
+        "attack",
+        "skill_or_special",
+        "hit",
+        "down_or_defeated"
+      ],
+      "frameCount": 20,
+      "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_mira_portrait.png",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+      "presentationOnly": true
+    },
     {
       "id": "op_vex",
       "kind": "operator_elite",

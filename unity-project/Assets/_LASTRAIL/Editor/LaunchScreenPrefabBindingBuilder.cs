@@ -30,6 +30,7 @@ namespace LastRail.Editor
         private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
         private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
         private const string CombatLaneRoot = "Assets/_LASTRAIL/UI/CombatResources/Lanes";
+        private const string CombatAnimationRoot = "Assets/_LASTRAIL/UI/CombatAnimations";
         private const string OperatorCardRoot = "Assets/_LASTRAIL/UI/Operators/Cards";
         private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
         private const string MissionThumbnailOverlayRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays";
@@ -514,18 +515,18 @@ namespace LastRail.Editor
                 var layout = CreateCombatHudVisualPolish(safeArea);
                 var encounterTitle = CreateText(layout.TopStatusPanel, "EncounterTitleText", "전투");
                 var waveCounter = CreateText(layout.TopStatusPanel, "WaveCounterText", "Wave 1/15");
-                var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "Boss");
-                var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표");
-                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", string.Empty);
-                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "Unit refs");
-                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "Cue refs");
+                var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "보스 위협 감지");
+                var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표: 열차 방어");
+                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "스토리 레이드 실패 시 스태미나 환급 표시");
+                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "초기 분대 5인 애니메이션 배치");
+                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "스킬 / 피격 / 궁극기 / 진동 큐 연결");
                 Place(encounterTitle, 0f, 34f, 860f, 68f);
                 Place(waveCounter, 0f, -34f, 860f, 64f);
                 Place(bossStatus, 0f, -225f, 860f, 68f);
-                Place(objective, 0f, 300f, 860f, 68f);
-                Place(unitRefs, 0f, -235f, 860f, 116f);
-                Place(cueRefs, 0f, -340f, 860f, 100f);
-                Place(refundHint, 0f, -430f, 860f, 68f);
+                Place(objective, 0f, 286f, 860f, 68f);
+                Place(unitRefs, 0f, -310f, 860f, 64f);
+                Place(cueRefs, 0f, -382f, 860f, 64f);
+                Place(refundHint, 0f, -456f, 860f, 68f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -574,6 +575,7 @@ namespace LastRail.Editor
             importer.textureCompression = TextureImporterCompression.CompressedHQ;
             importer.SaveAndReimport();
         }
+
         private static CombatHudLayoutBindings CreateCombatHudVisualPolish(Transform safeArea)
         {
             var backdrop = CreateSlicedImage(
@@ -615,6 +617,38 @@ namespace LastRail.Editor
             trainAdvanceStrip.preserveAspect = false;
             Place(trainAdvanceStrip, 210f, -142f, 520f, 136f);
 
+            var bossPreview = CreateAnimatedImage(
+                exteriorLane,
+                "StoryRaidBossAnimated_boss_raider_king_engine",
+                "Bosses",
+                "boss_raider_king_engine",
+                "idle",
+                new Color(1f, 1f, 1f, 0.78f));
+            Place(bossPreview, 335f, 12f, 270f, 180f);
+
+            var raidSurface = CreateTransparentGroup(exteriorLane, "CombatStoryRaidBossDemoSurface");
+            Place(raidSurface, 0f, -52f, 940f, 340f);
+            var raidFrame = CreateSlicedImage(
+                raidSurface,
+                "StoryRaidBossDangerFrame",
+                CommonSkinRoot + "/ui_modal_panel_9slice.png",
+                new Color(0.72f, 0.20f, 0.16f, 0.42f));
+            Place(raidFrame, 0f, 0f, 920f, 315f);
+            var raidBoss = CreateAnimatedImage(
+                raidSurface,
+                "StoryRaidBossLaneAnimated_boss_raider_king_engine",
+                "Bosses",
+                "boss_raider_king_engine",
+                "warning",
+                new Color(1f, 1f, 1f, 0.84f));
+            Place(raidBoss, 248f, -8f, 330f, 230f);
+            var raidBadge = CreateImage(
+                raidSurface,
+                "StoryRaidBossOnlyBadgeImage",
+                MissionThumbnailOverlayRoot + "/mission_state_boss_only_badge.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            Place(raidBadge, -258f, 96f, 190f, 58f);
+
             var interiorLaneImage = CreateImage(
                 safeArea,
                 "InteriorBoardingCombatLane",
@@ -623,6 +657,9 @@ namespace LastRail.Editor
             interiorLaneImage.preserveAspect = false;
             Place(interiorLaneImage, 0f, -340f, 1000f, 1050f);
             var interiorLane = interiorLaneImage.GetComponent<RectTransform>();
+
+            var ordinarySurface = CreateTransparentGroup(interiorLane, "CombatOrdinaryWaveDemoSurface");
+            Place(ordinarySurface, 0f, 0f, 960f, 980f);
 
             var interiorBackground = CreateImage(
                 interiorLane,
@@ -661,13 +698,6 @@ namespace LastRail.Editor
                 new Color(1f, 1f, 1f, 0.78f));
             Place(hitVfx, 98f, 40f, 150f, 150f);
 
-            var bossPreview = CreateImage(
-                exteriorLane,
-                "StoryRaidBossExternalThreatImage",
-                CombatBossRoot + "/boss_raider_king_engine.png",
-                new Color(1f, 1f, 1f, 0.62f));
-            Place(bossPreview, 335f, 10f, 270f, 180f);
-
             return new CombatHudLayoutBindings(
                 exteriorLane,
                 interiorLane,
@@ -681,7 +711,7 @@ namespace LastRail.Editor
         {
             var xPositions = new[] { -74f, 74f, -74f, 74f, 0f };
             var yPositions = new[] { 226f, 226f, 55f, 55f, -116f };
-            var operatorCards = new[] { "op_vex_card", "op_iris_card", "op_nyx_card", "op_rail_card", "op_mira_card" };
+            var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
                 var slot = CreateSlicedImage(
@@ -691,26 +721,28 @@ namespace LastRail.Editor
                     Color.white);
                 Place(slot, xPositions[i], yPositions[i], 142f, 164f);
 
-                var portrait = CreateImage(
+                var portrait = CreateAnimatedImage(
                     slot.transform,
-                    "OperatorCombatSprite" + (i + 1).ToString("00"),
-                    OperatorCardRoot + "/" + operatorCards[i] + ".png",
-                    new Color(1f, 1f, 1f, 0.94f));
-                Place(portrait, 0f, 10f, 106f, 132f);
+                    "OperatorAnimated_" + operatorIds[i],
+                    "Operators",
+                    operatorIds[i],
+                    "idle",
+                    new Color(1f, 1f, 1f, 0.96f));
+                Place(portrait, 0f, 10f, 112f, 138f);
             }
         }
 
         private static void CreateEnemyBoardingSlots(Transform enemySlots)
         {
-            var enemySprites = new[]
+            var enemySpecs = new[]
             {
-                CombatEnemyRoot + "/enemy_raider_scout.png",
-                CombatEnemyRoot + "/enemy_spike_cart_gunner.png",
-                CombatEnemyRoot + "/enemy_scrapshield_brute.png",
-                CombatEliteRoot + "/elite_ironclad_boarder.png"
+                new CombatAnimatedSpriteSpec("Enemies", "enemy_raider_scout", "attack"),
+                new CombatAnimatedSpriteSpec("Enemies", "enemy_spike_cart_gunner", "attack"),
+                new CombatAnimatedSpriteSpec("Enemies", "enemy_scrapshield_brute", "hit"),
+                new CombatAnimatedSpriteSpec("EliteEnemies", "elite_ironclad_boarder", "skill_or_special")
             };
             var yPositions = new[] { 218f, 74f, -70f, -214f };
-            for (var i = 0; i < enemySprites.Length; i++)
+            for (var i = 0; i < enemySpecs.Length; i++)
             {
                 var slot = CreateSlicedImage(
                     enemySlots,
@@ -719,10 +751,13 @@ namespace LastRail.Editor
                     new Color(1f, 1f, 1f, 0.88f));
                 Place(slot, 0f, yPositions[i], 260f, 126f);
 
-                var sprite = CreateImage(
+                var spec = enemySpecs[i];
+                var sprite = CreateAnimatedImage(
                     slot.transform,
-                    "EnemyBoardingSprite" + (i + 1).ToString("00"),
-                    enemySprites[i],
+                    "EnemyBoardingAnimated_" + spec.Id,
+                    spec.Folder,
+                    spec.Id,
+                    spec.State,
                     new Color(1f, 1f, 1f, 0.98f));
                 Place(sprite, 0f, 0f, 118f, 118f);
             }
@@ -752,6 +787,37 @@ namespace LastRail.Editor
             Place(dangerCue, 0f, 180f, 190f, 190f);
         }
 
+        private static Image CreateAnimatedImage(Transform parent, string name, string folder, string id, string state, Color color)
+        {
+            var image = CreateImage(
+                parent,
+                name,
+                CombatAnimationRoot + "/" + folder + "/" + id + "/" + state + "/" + id + "_" + state + "_001.png",
+                color);
+            var animator = image.gameObject.AddComponent<Animator>();
+            animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                CombatAnimationRoot + "/Animators/" + folder + "/" + id + ".controller");
+            if (animator.runtimeAnimatorController == null)
+            {
+                throw new InvalidOperationException("Missing launch combat animator controller: " + folder + "/" + id);
+            }
+
+            return image;
+        }
+
+        private readonly struct CombatAnimatedSpriteSpec
+        {
+            public CombatAnimatedSpriteSpec(string folder, string id, string state)
+            {
+                Folder = folder;
+                Id = id;
+                State = state;
+            }
+
+            public string Folder { get; }
+            public string Id { get; }
+            public string State { get; }
+        }
         private static RectTransform CreateTransparentGroup(Transform parent, string name)
         {
             var group = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();

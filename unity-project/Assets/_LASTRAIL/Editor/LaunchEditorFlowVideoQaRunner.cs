@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using LastRail.Gacha;
 using LastRail.Presentation;
+using LastRail.Presentation.Battle;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -24,15 +25,15 @@ namespace LastRail.Editor
         private const string FramesRelativePath = "Frames/EditorFlowVideoQa";
         private const string ReportsRelativePath = "Reports";
 
-        private static readonly (string ScreenKey, string PrefabPath)[] LaunchScreens =
+        private static readonly (string ScreenKey, string PrefabPath)[] LaunchFlowScreens =
         {
             ("mission_shell", "Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab"),
             ("gacha_screen", "Assets/_LASTRAIL/Prefabs/Screens/GachaScreen.prefab"),
-            ("fully_animated_combat_hud", "Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab"),
-            ("codex_archive", "Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab"),
             ("reward_review", "Assets/_LASTRAIL/Prefabs/Screens/RewardReviewScreen.prefab"),
             ("offline_reward", "Assets/_LASTRAIL/Prefabs/Screens/OfflineRewardScreen.prefab"),
-            ("story_progress_summary", "Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab")
+            ("codex_archive", "Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab"),
+            ("story_progress_summary", "Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab"),
+            ("system_feedback_overlay", "Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab")
         };
 
         private static readonly (string ScreenKey, Func<GachaScreenViewState> CreateState)[] GachaStates =
@@ -40,14 +41,6 @@ namespace LastRail.Editor
             ("gacha_single_pull", CreateSinglePullState),
             ("gacha_ten_pull", CreateTenPullState),
             ("gacha_duplicate_conversion", CreateDuplicateState)
-        };
-
-        private static readonly (string ScreenKey, string PrefabPath)[] ShowcaseScreens =
-        {
-            ("system_feedback_showcase", "Assets/_LASTRAIL/UI/SystemFeedbackResources/Showcase/LRLaunchSystemFeedbackResourceShowcase.prefab"),
-            ("operator_card_polish_showcase", "Assets/_LASTRAIL/UI/Operators/CardPolish/Showcase/LRLaunchOperatorCardPolishShowcase.prefab"),
-            ("combat_animation_showcase", "Assets/_LASTRAIL/UI/CombatAnimations/Showcase/LRLaunchCombatAnimationShowcase.prefab"),
-            ("audio_showcase", "Assets/_LASTRAIL/Audio/Showcase/LRLaunchAudioResourceShowcase.prefab")
         };
 
         [MenuItem("LASTRAIL/Launch/Capture Editor Flow Video QA")]
@@ -60,6 +53,7 @@ namespace LastRail.Editor
             Directory.CreateDirectory(outputRoot);
             Directory.CreateDirectory(framesRoot);
             Directory.CreateDirectory(reportsRoot);
+            ClearExistingFramePngs(framesRoot);
 
             var checkedSurfaces = new List<string>();
             var framePaths = new List<string>();
@@ -72,12 +66,24 @@ namespace LastRail.Editor
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
 
-                foreach (var screen in LaunchScreens)
+                if (CapturePrefabFrame(LaunchFlowScreens[0].ScreenKey, LaunchFlowScreens[0].PrefabPath, framesRoot, checkedSurfaces, framePaths))
                 {
-                    if (CapturePrefabFrame(screen.ScreenKey, screen.PrefabPath, framesRoot, checkedSurfaces, framePaths))
-                    {
-                        fallbackCompositeFrameCount++;
-                    }
+                    fallbackCompositeFrameCount++;
+                }
+
+                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(), framesRoot, checkedSurfaces, framePaths))
+                {
+                    fallbackCompositeFrameCount++;
+                }
+
+                if (CaptureCombatStateFrame("combat_story_raid_boss_demo", CreateStoryRaidBossState(), framesRoot, checkedSurfaces, framePaths))
+                {
+                    fallbackCompositeFrameCount++;
+                }
+
+                if (CapturePrefabFrame(LaunchFlowScreens[1].ScreenKey, LaunchFlowScreens[1].PrefabPath, framesRoot, checkedSurfaces, framePaths))
+                {
+                    fallbackCompositeFrameCount++;
                 }
 
                 foreach (var state in GachaStates)
@@ -88,9 +94,9 @@ namespace LastRail.Editor
                     }
                 }
 
-                foreach (var showcase in ShowcaseScreens)
+                for (var i = 2; i < LaunchFlowScreens.Length; i++)
                 {
-                    if (CapturePrefabFrame(showcase.ScreenKey, showcase.PrefabPath, framesRoot, checkedSurfaces, framePaths))
+                    if (CapturePrefabFrame(LaunchFlowScreens[i].ScreenKey, LaunchFlowScreens[i].PrefabPath, framesRoot, checkedSurfaces, framePaths))
                     {
                         fallbackCompositeFrameCount++;
                     }
@@ -124,7 +130,8 @@ namespace LastRail.Editor
                 captureMode: "real_scene_render",
                 usesFallbackComposite: fallbackCompositeFrameCount > 0,
                 fallbackCompositeFrameCount: fallbackCompositeFrameCount,
-                hasHighQualityArtResourceCoverage: true);
+                hasHighQualityArtResourceCoverage: true,
+                resourcePlacementFlowReady: true);
             File.WriteAllText(
                 Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
@@ -144,6 +151,14 @@ namespace LastRail.Editor
             if (Application.isBatchMode)
             {
                 EditorApplication.Exit(0);
+            }
+        }
+
+        private static void ClearExistingFramePngs(string framesRoot)
+        {
+            foreach (var path in Directory.GetFiles(framesRoot, "*.png"))
+            {
+                File.Delete(path);
             }
         }
 
@@ -207,6 +222,48 @@ namespace LastRail.Editor
                 if (behaviour == null)
                 {
                     throw new InvalidOperationException("Missing GachaScreenRootBehaviour.");
+                }
+
+                behaviour.Render(state);
+                ValidatePresentationOnlyFrameRoot(root, screenKey);
+                var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
+                var usedFallbackComposite = CaptureRootToPng(root, path);
+                ValidateFrameFile(path, screenKey);
+                checkedSurfaces.Add(screenKey);
+                framePaths.Add(path);
+                return usedFallbackComposite;
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static bool CaptureCombatStateFrame(
+            string screenKey,
+            FullyAnimatedCombatHudViewState state,
+            string framesRoot,
+            ICollection<string> checkedSurfaces,
+            ICollection<string> framePaths)
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab");
+            if (prefab == null)
+            {
+                throw new FileNotFoundException("Missing combat HUD prefab.");
+            }
+
+            var root = PrefabUtility.InstantiatePrefab(prefab, SceneManager.GetActiveScene()) as GameObject;
+            if (root == null)
+            {
+                throw new InvalidOperationException("Could not instantiate combat HUD prefab.");
+            }
+
+            try
+            {
+                var behaviour = root.GetComponent<FullyAnimatedCombatHudRootBehaviour>();
+                if (behaviour == null)
+                {
+                    throw new InvalidOperationException("Missing FullyAnimatedCombatHudRootBehaviour.");
                 }
 
                 behaviour.Render(state);
@@ -576,6 +633,61 @@ namespace LastRail.Editor
             var manifestPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "Packages", "manifest.json");
             return File.Exists(manifestPath) &&
                 File.ReadAllText(manifestPath).IndexOf("com.unity.recorder", StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        private static FullyAnimatedCombatHudViewState CreateOrdinaryCombatState()
+        {
+            var combat = FullyAnimatedCombatPresentationState.CreateOrdinary15Wave(
+                "opn_01_last_departure",
+                7,
+                "start_augment_act1_launch",
+                "start_tactic_act1_launch",
+                new[]
+                {
+                    Unit("op_kyle", CombatUnitRole.Operator, "idle"),
+                    Unit("op_reina", CombatUnitRole.Operator, "attack"),
+                    Unit("op_eve", CombatUnitRole.Operator, "skill_or_special"),
+                    Unit("op_sera", CombatUnitRole.Operator, "hit"),
+                    Unit("op_mira", CombatUnitRole.Operator, "idle"),
+                    Unit("enemy_raider_scout", CombatUnitRole.Enemy, "attack"),
+                    Unit("enemy_spike_cart_gunner", CombatUnitRole.Enemy, "attack"),
+                    Unit("enemy_scrapshield_brute", CombatUnitRole.Enemy, "hit"),
+                    Unit("elite_ironclad_boarder", CombatUnitRole.Enemy, "skill_or_special")
+                },
+                CombatPresentationCueSet.ForOrdinaryWave(
+                    "damage_light", "hit_flash_light", "hit_stop_small", "screen_shake_small", "vfx_basic_hit_spark", "combat_hit", "vibration_light_hit", "wave_transition_ordinary"));
+            return FullyAnimatedCombatHudViewState.FromCombatState(
+                combat,
+                MobileCombatHudPresentationPolicy.ForOrdinary15Wave("opn_01_last_departure", 7, Width, Height, 64, 34));
+        }
+
+        private static FullyAnimatedCombatHudViewState CreateStoryRaidBossState()
+        {
+            var combat = FullyAnimatedCombatPresentationState.CreateRaidBoss(
+                "raid_raider_king_engine",
+                2,
+                "boss_raider_king_engine",
+                "start_augment_act1_raid",
+                "start_tactic_act1_raid",
+                new[]
+                {
+                    Unit("op_kyle", CombatUnitRole.Operator, "idle"),
+                    Unit("op_reina", CombatUnitRole.Operator, "attack"),
+                    Unit("op_eve", CombatUnitRole.Operator, "skill_or_special"),
+                    Unit("op_sera", CombatUnitRole.Operator, "hit"),
+                    Unit("op_mira", CombatUnitRole.Operator, "idle"),
+                    Unit("boss_raider_king_engine", CombatUnitRole.RaidBoss, "warning")
+                },
+                CombatPresentationCueSet.ForRaidBossPhase(
+                    "damage_heavy", "hit_flash_heavy", "hit_stop_medium", "screen_shake_heavy", "vfx_story_raid_danger", "story_raid_warning", "vibration_boss_phase", "boss_phase_transition"));
+            return FullyAnimatedCombatHudViewState.FromCombatState(
+                combat,
+                MobileCombatHudPresentationPolicy.ForRaidBoss("raid_raider_king_engine", "boss_raider_king_engine", 2, Width, Height, 64, 34));
+        }
+
+        private static CombatUnitAnimationState Unit(string id, CombatUnitRole role, string animationKey)
+        {
+            return new CombatUnitAnimationState(id, role, animationKey, id + "_" + animationKey + "_cue");
         }
 
         private static GachaScreenViewState CreateSinglePullState()

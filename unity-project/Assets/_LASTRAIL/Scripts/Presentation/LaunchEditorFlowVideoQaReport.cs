@@ -28,6 +28,7 @@ namespace LastRail.Presentation
             bool usesFallbackComposite,
             int fallbackCompositeFrameCount,
             bool hasHighQualityArtResourceCoverage,
+            bool resourcePlacementFlowReady,
             IEnumerable<string> checkedSurfaces,
             int warningCount,
             int failCount,
@@ -50,6 +51,7 @@ namespace LastRail.Presentation
             UsesFallbackComposite = usesFallbackComposite;
             FallbackCompositeFrameCount = fallbackCompositeFrameCount;
             HasHighQualityArtResourceCoverage = hasHighQualityArtResourceCoverage;
+            ResourcePlacementFlowReady = resourcePlacementFlowReady;
             CheckedSurfaces = CopyTextList(checkedSurfaces, nameof(checkedSurfaces));
             CheckedSurfaceCount = CheckedSurfaces.Count;
             WarningCount = warningCount;
@@ -74,6 +76,7 @@ namespace LastRail.Presentation
         public bool UsesFallbackComposite { get; }
         public int FallbackCompositeFrameCount { get; }
         public bool HasHighQualityArtResourceCoverage { get; }
+        public bool ResourcePlacementFlowReady { get; }
         public IReadOnlyList<string> CheckedSurfaces { get; }
         public int CheckedSurfaceCount { get; }
         public int WarningCount { get; }
@@ -99,7 +102,8 @@ namespace LastRail.Presentation
             string captureMode = "png_frame_sequence",
             bool usesFallbackComposite = false,
             int fallbackCompositeFrameCount = 0,
-            bool hasHighQualityArtResourceCoverage = false)
+            bool hasHighQualityArtResourceCoverage = false,
+            bool resourcePlacementFlowReady = false)
         {
             var status = failCount == 0 ? "PASS" : "FAIL";
             return new LaunchEditorFlowVideoQaReport(
@@ -120,6 +124,7 @@ namespace LastRail.Presentation
                 usesFallbackComposite: usesFallbackComposite,
                 fallbackCompositeFrameCount: fallbackCompositeFrameCount,
                 hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
+                resourcePlacementFlowReady: resourcePlacementFlowReady,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
                 failCount: failCount,
@@ -142,7 +147,8 @@ namespace LastRail.Presentation
             bool usesFallbackComposite = false,
             int fallbackCompositeFrameCount = 0,
             int encodedFps = 1,
-            bool hasHighQualityArtResourceCoverage = false)
+            bool hasHighQualityArtResourceCoverage = false,
+            bool resourcePlacementFlowReady = false)
         {
             if (durationSeconds <= 0)
             {
@@ -173,6 +179,7 @@ namespace LastRail.Presentation
                 usesFallbackComposite: usesFallbackComposite,
                 fallbackCompositeFrameCount: fallbackCompositeFrameCount,
                 hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
+                resourcePlacementFlowReady: resourcePlacementFlowReady,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
                 failCount: failCount,
@@ -239,6 +246,7 @@ namespace LastRail.Presentation
             b.Append("\"usesFallbackComposite\":").Append(Bool(report.UsesFallbackComposite)).Append(',');
             b.Append("\"fallbackCompositeFrameCount\":").Append(report.FallbackCompositeFrameCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"hasHighQualityArtResourceCoverage\":").Append(Bool(report.HasHighQualityArtResourceCoverage)).Append(',');
+            b.Append("\"resourcePlacementFlowReady\":").Append(Bool(report.ResourcePlacementFlowReady)).Append(',');
             b.Append("\"checkedSurfaceCount\":").Append(report.CheckedSurfaceCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"checkedSurfaces\":[");
             for (var i = 0; i < report.CheckedSurfaces.Count; i++)

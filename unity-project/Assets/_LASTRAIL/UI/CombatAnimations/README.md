@@ -3,6 +3,7 @@
 These launch combat animation resources are visual-only derivatives of the existing LAST RAIL operator, enemy, and story raid boss art.
 
 Coverage:
+- 5 initial/free operators.
 - 10 gacha elite operators.
 - 6 normal Act 1 enemies.
 - 2 elite Act 1 enemies.

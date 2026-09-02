@@ -1,7 +1,9 @@
 {
   "name": "LAST RAIL Act 1 Combat Animation Resources",
   "referenceResolution": "1080x1920",
+  "operatorInitialFreeCount": 5,
   "operatorEliteCount": 10,
+  "operatorTotalCount": 15,
   "enemyCount": 6,
   "eliteEnemyCount": 2,
   "bossCount": 1,
@@ -14,6 +16,11 @@
   "railChoiceIncluded": false,
   "worldRaidIncluded": false,
   "resources": [
+    { "id": "op_kyle", "kind": "operator_initial_free", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_kyle_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
+    { "id": "op_reina", "kind": "operator_initial_free", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_reina_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
+    { "id": "op_eve", "kind": "operator_initial_free", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_eve_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
+    { "id": "op_sera", "kind": "operator_initial_free", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sera_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
+    { "id": "op_mira", "kind": "operator_initial_free", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_mira_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
     { "id": "op_vex", "kind": "operator_elite", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_vex_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
     { "id": "op_nyx", "kind": "operator_elite", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_nyx_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },
     { "id": "op_sable", "kind": "operator_elite", "states": ["idle", "attack", "skill_or_special", "hit", "down_or_defeated"], "frameCount": 20, "resolution": "512x512", "sourceArtPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sable_portrait.png", "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION", "showcaseVisible": true, "presentationOnly": true },

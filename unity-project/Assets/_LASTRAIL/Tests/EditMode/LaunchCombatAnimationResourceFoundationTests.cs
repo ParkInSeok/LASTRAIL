@@ -27,6 +27,11 @@ namespace LastRail.Tests.EditMode
 
         private static readonly ExpectedAnimatedResource[] Resources =
         {
+            Resource("op_kyle", "operator_initial_free"),
+            Resource("op_reina", "operator_initial_free"),
+            Resource("op_eve", "operator_initial_free"),
+            Resource("op_sera", "operator_initial_free"),
+            Resource("op_mira", "operator_initial_free"),
             Resource("op_vex", "operator_elite"),
             Resource("op_nyx", "operator_elite"),
             Resource("op_sable", "operator_elite"),
@@ -49,7 +54,7 @@ namespace LastRail.Tests.EditMode
         };
 
         [Test]
-        public void CombatAnimationManifest_CoversEliteOperatorsEnemiesAndBossAsPresentationOnly()
+        public void CombatAnimationManifest_CoversLaunchOperatorsEnemiesAndBossAsPresentationOnly()
         {
             var manifestFile = ProjectPath(ManifestPath);
             Assert.That(File.Exists(manifestFile), Is.True, ManifestPath);
@@ -57,7 +62,9 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(manifest.name, Is.EqualTo("LAST RAIL Act 1 Combat Animation Resources"));
             Assert.That(manifest.referenceResolution, Is.EqualTo("1080x1920"));
+            Assert.That(manifest.operatorInitialFreeCount, Is.EqualTo(5));
             Assert.That(manifest.operatorEliteCount, Is.EqualTo(10));
+            Assert.That(manifest.operatorTotalCount, Is.EqualTo(15));
             Assert.That(manifest.enemyCount, Is.EqualTo(6));
             Assert.That(manifest.eliteEnemyCount, Is.EqualTo(2));
             Assert.That(manifest.bossCount, Is.EqualTo(1));
@@ -258,6 +265,7 @@ namespace LastRail.Tests.EditMode
         {
             switch (kind)
             {
+                case "operator_initial_free": return "Operators";
                 case "operator_elite": return "Operators";
                 case "enemy": return "Enemies";
                 case "elite_enemy": return "EliteEnemies";
@@ -287,7 +295,9 @@ namespace LastRail.Tests.EditMode
         {
             public string name;
             public string referenceResolution;
+            public int operatorInitialFreeCount;
             public int operatorEliteCount;
+            public int operatorTotalCount;
             public int enemyCount;
             public int eliteEnemyCount;
             public int bossCount;

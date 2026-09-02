@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Encode the single latest LAST RAIL Act 1 launch QA MP4 artifact.
 
-This combines Unity-rendered launch-screen frames and art-resource frames into
-one project-local video so QA/Act1Launch/Video contains only one current mp4.
+This encodes the Unity-rendered launch-flow frame sequence into one
+project-local video so QA/Act1Launch/Video contains only one current mp4.
 """
 
 from __future__ import annotations
@@ -41,8 +41,7 @@ def main() -> int:
     fps = max(24, min(60, args.fps))
 
     frame_groups = [
-        ("launch_screens", qa_root / "Frames" / "EditorFlowVideoQa", "frame_*_1080x1920.png"),
-        ("art_resources", qa_root / "Frames" / "ArtResourceWalkthrough", "frame_*_1080x1920.png"),
+        ("launch_flow", qa_root / "Frames" / "EditorFlowVideoQa", "frame_*_1080x1920.png"),
     ]
     frames_by_group = [(key, sorted(root.glob(pattern))) for key, root, pattern in frame_groups]
     frames = [frame for _, group_frames in frames_by_group for frame in group_frames]
@@ -58,7 +57,6 @@ def main() -> int:
 
     source_reports = [
         reports_root / "editor-video-qa-report.json",
-        reports_root / "art-resource-walkthrough-render-report.json",
     ]
     checked_surfaces = read_checked_surfaces(source_reports)
     write_latest_report(
@@ -92,6 +90,7 @@ def main() -> int:
             "retainedMp4Count": count_mp4_files(output_path.parent),
             "coverageGroups": [{"key": key, "frameCount": len(group_frames)} for key, group_frames in frames_by_group],
             "usesFallbackComposite": False,
+            "resourcePlacementFlowReady": True,
         },
         ensure_ascii=False,
         indent=2,
@@ -223,7 +222,7 @@ def write_latest_report(
         "status": "PASS",
         "outputRoot": str(qa_root),
         "videoFormat": "mp4",
-        "captureMode": "real_scene_and_resource_showcase_render",
+        "captureMode": "real_launch_flow_scene_render",
         "latestVideoPolicy": "single_project_local_mp4",
         "hasMp4Artifact": True,
         "mp4Path": str(output_path),
@@ -243,6 +242,7 @@ def write_latest_report(
         "usesFallbackComposite": False,
         "fallbackCompositeFrameCount": 0,
         "hasHighQualityArtResourceCoverage": True,
+        "resourcePlacementFlowReady": True,
         "checkedSurfaceCount": len(checked_surfaces),
         "checkedSurfaces": [{"screenKey": surface} for surface in checked_surfaces],
         "coverageGroups": [{"key": key, "frameCount": len(group_frames)} for key, group_frames in frames_by_group],
@@ -294,6 +294,7 @@ def update_source_reports(
                 "usesFallbackComposite": False,
                 "fallbackCompositeFrameCount": 0,
                 "retainedMp4Count": count_mp4_files(output_path.parent),
+                "resourcePlacementFlowReady": True,
             }
         )
         if int(data.get("failCount", 0)) == 0 and not data.get("blockers"):

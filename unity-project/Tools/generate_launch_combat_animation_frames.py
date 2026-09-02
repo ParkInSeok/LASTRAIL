@@ -31,7 +31,14 @@ class Spec:
 
 
 def specs() -> list[Spec]:
-    operators = [
+    initial_operators = [
+        "op_kyle",
+        "op_reina",
+        "op_eve",
+        "op_sera",
+        "op_mira",
+    ]
+    elite_operators = [
         "op_vex",
         "op_nyx",
         "op_sable",
@@ -53,9 +60,13 @@ def specs() -> list[Spec]:
     ]
     elites = ["elite_broadcast_executioner", "elite_ironclad_boarder"]
     result = [
-        Spec(op, "operator_elite", "Operators", f"Assets/_LASTRAIL/UI/Operators/Portraits/{op}_portrait.png", UNIT_STATES)
-        for op in operators
+        Spec(op, "operator_initial_free", "Operators", f"Assets/_LASTRAIL/UI/Operators/Portraits/{op}_portrait.png", UNIT_STATES)
+        for op in initial_operators
     ]
+    result.extend(
+        Spec(op, "operator_elite", "Operators", f"Assets/_LASTRAIL/UI/Operators/Portraits/{op}_portrait.png", UNIT_STATES)
+        for op in elite_operators
+    )
     result.extend(
         Spec(enemy, "enemy", "Enemies", f"Assets/_LASTRAIL/UI/CombatResources/Enemies/{enemy}.png", UNIT_STATES)
         for enemy in enemies

@@ -36,8 +36,9 @@ namespace LastRail.Editor
 
         private static readonly CombatAnimationSpec[] Specs =
         {
-            Operator("op_vex"), Operator("op_nyx"), Operator("op_sable"), Operator("op_marrow"), Operator("op_iris"),
-            Operator("op_rail"), Operator("op_anchor"), Operator("op_lumen"), Operator("op_cinder"), Operator("op_warden"),
+            InitialOperator("op_kyle"), InitialOperator("op_reina"), InitialOperator("op_eve"), InitialOperator("op_sera"), InitialOperator("op_mira"),
+            EliteOperator("op_vex"), EliteOperator("op_nyx"), EliteOperator("op_sable"), EliteOperator("op_marrow"), EliteOperator("op_iris"),
+            EliteOperator("op_rail"), EliteOperator("op_anchor"), EliteOperator("op_lumen"), EliteOperator("op_cinder"), EliteOperator("op_warden"),
             Enemy("enemy_raider_scout"), Enemy("enemy_railbike_marauder"), Enemy("enemy_scrapshield_brute"),
             Enemy("enemy_signal_jammer_drone"), Enemy("enemy_spike_cart_gunner"), Enemy("enemy_cinder_hound_mech"),
             EliteEnemy("elite_broadcast_executioner"), EliteEnemy("elite_ironclad_boarder"),
@@ -72,7 +73,8 @@ namespace LastRail.Editor
             }
         }
 
-        private static CombatAnimationSpec Operator(string id) => new CombatAnimationSpec(id, "operator_elite", "Operators", UiRoot + "/Operators/Portraits/" + id + "_portrait.png", UnitStates);
+        private static CombatAnimationSpec InitialOperator(string id) => new CombatAnimationSpec(id, "operator_initial_free", "Operators", UiRoot + "/Operators/Portraits/" + id + "_portrait.png", UnitStates);
+        private static CombatAnimationSpec EliteOperator(string id) => new CombatAnimationSpec(id, "operator_elite", "Operators", UiRoot + "/Operators/Portraits/" + id + "_portrait.png", UnitStates);
         private static CombatAnimationSpec Enemy(string id) => new CombatAnimationSpec(id, "enemy", "Enemies", UiRoot + "/CombatResources/Enemies/" + id + ".png", UnitStates);
         private static CombatAnimationSpec EliteEnemy(string id) => new CombatAnimationSpec(id, "elite_enemy", "EliteEnemies", UiRoot + "/CombatResources/Elites/" + id + ".png", UnitStates);
         private static CombatAnimationSpec Boss(string id) => new CombatAnimationSpec(id, "boss", "Bosses", UiRoot + "/CombatResources/Bosses/" + id + ".png", BossStates);
@@ -192,7 +194,9 @@ namespace LastRail.Editor
             b.AppendLine("{");
             b.AppendLine("  \"name\": \"LAST RAIL Act 1 Combat Animation Resources\",");
             b.AppendLine("  \"referenceResolution\": \"1080x1920\",");
+            b.AppendLine("  \"operatorInitialFreeCount\": 5,");
             b.AppendLine("  \"operatorEliteCount\": 10,");
+            b.AppendLine("  \"operatorTotalCount\": 15,");
             b.AppendLine("  \"enemyCount\": 6,");
             b.AppendLine("  \"eliteEnemyCount\": 2,");
             b.AppendLine("  \"bossCount\": 1,");
@@ -235,6 +239,7 @@ namespace LastRail.Editor
 These launch combat animation resources are visual-only derivatives of the existing LAST RAIL operator, enemy, and story raid boss art.
 
 Coverage:
+- 5 initial/free operators.
 - 10 gacha elite operators.
 - 6 normal Act 1 enemies.
 - 2 elite Act 1 enemies.
@@ -283,7 +288,7 @@ Usage:
         private static void AddHeader(Transform root)
         {
             AddText(root, "Title", "LAST RAIL COMBAT ANIMATION", 34, C(240, 238, 226, 255), new Vector2(0.07f, 0.93f), new Vector2(0.93f, 0.98f), TextAlignmentOptions.MidlineLeft);
-            AddText(root, "Subtitle", "10 elite operators / 8 enemies / story raid boss / visual-only clips", 20, C(178, 196, 198, 255), new Vector2(0.07f, 0.895f), new Vector2(0.93f, 0.93f), TextAlignmentOptions.MidlineLeft);
+            AddText(root, "Subtitle", "15 launch operators / 8 enemies / story raid boss / visual-only clips", 20, C(178, 196, 198, 255), new Vector2(0.07f, 0.895f), new Vector2(0.93f, 0.93f), TextAlignmentOptions.MidlineLeft);
         }
 
         private static void AddAnimatedGrid(Transform root)
@@ -306,7 +311,7 @@ Usage:
             var card = UiObject(spec.Id + "Card", root, typeof(Image));
             var cardRect = card.GetComponent<RectTransform>();
             Anchor(cardRect, anchorMin, anchorMax);
-            card.GetComponent<Image>().color = spec.Kind == "boss" ? C(50, 18, 18, 230) : spec.Kind == "operator_elite" ? C(18, 31, 43, 226) : C(22, 26, 27, 226);
+            card.GetComponent<Image>().color = spec.Kind == "boss" ? C(50, 18, 18, 230) : spec.Kind == "operator_elite" ? C(18, 31, 43, 226) : spec.Kind == "operator_initial_free" ? C(28, 42, 38, 226) : C(22, 26, 27, 226);
 
             var image = UiObject(spec.Id + "AnimatedImage", card.transform, typeof(Image), typeof(Animator));
             Anchor(image.GetComponent<RectTransform>(), new Vector2(0.08f, 0.26f), new Vector2(0.92f, 0.94f));
