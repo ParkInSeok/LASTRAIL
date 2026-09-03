@@ -140,8 +140,9 @@ namespace LastRail.Tests.EditMode
             Assert.That(reward, Is.Not.Null);
             Assert.That(offline, Is.Not.Null);
 
-            Assert.That(ContainsSprite(mission, "loading_rail_indicator"), Is.True);
-            Assert.That(ContainsSprite(mission, "warning_strip_banner_accent"), Is.True);
+            Assert.That(ContainsSprite(mission, "inline_status_dot_set"), Is.True);
+            Assert.That(ContainsSprite(mission, "loading_rail_indicator"), Is.False);
+            Assert.That(ContainsSprite(mission, "warning_strip_banner_accent"), Is.False);
             Assert.That(ContainsSprite(gacha, "feedback_network_error_badge"), Is.True);
             Assert.That(ContainsSprite(gacha, "retry_refresh_accent"), Is.True);
             Assert.That(ContainsSprite(reward, "feedback_success_badge"), Is.True);

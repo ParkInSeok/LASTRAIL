@@ -189,6 +189,22 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void MissionShellPrefab_UsesIllustratedMissionSelectSurfaceInsteadOfPlaceholderRails()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + "MissionShellScreen.prefab");
+            Assert.That(prefab, Is.Not.Null, "MissionShellScreen.prefab");
+
+            var safeArea = AssertChild(prefab.transform, "SafeArea");
+            AssertChildImageUsesSprite(safeArea, "MissionSelectBackgroundImage", "bg_mission_select_rail_map");
+            AssertHasImage(AssertChild(safeArea, "MissionBriefingPanelImage"), "MissionBriefingPanelImage");
+            AssertHasImage(AssertChild(safeArea, "MissionRosterPanelImage"), "MissionRosterPanelImage");
+            AssertHasImage(AssertChild(safeArea, "MissionProgressHudImage"), "MissionProgressHudImage");
+            Assert.That(CountChildrenWithPrefix(safeArea, "MissionCardSurface_"), Is.EqualTo(7));
+            Assert.That(FindChildRecursive(prefab.transform, "WarningStripBannerAccentImage"), Is.Null, "MissionShell should not expose the large placeholder warning barrier.");
+            Assert.That(FindChildRecursive(prefab.transform, "LoadingRailIndicatorImage"), Is.Null, "MissionShell should not expose the large placeholder loading rail.");
+        }
+
+        [Test]
         public void CombatHudPrefab_UsesTrainAdvanceAndInteriorBoardingCombatLayout()
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + "FullyAnimatedCombatHud.prefab");
@@ -419,6 +435,34 @@ namespace LastRail.Tests.EditMode
             var child = parent.Find(name);
             Assert.That(child, Is.Not.Null, parent.name + " missing child " + name);
             return child;
+        }
+
+        private static Transform FindChildRecursive(Transform parent, string name)
+        {
+            foreach (Transform child in parent)
+            {
+                if (string.Equals(child.name, name, System.StringComparison.Ordinal))
+                {
+                    return child;
+                }
+
+                var nested = FindChildRecursive(child, name);
+                if (nested != null)
+                {
+                    return nested;
+                }
+            }
+
+            return null;
+        }
+
+        private static void AssertChildImageUsesSprite(Transform parent, string childName, string expectedSpriteName)
+        {
+            var image = AssertChild(parent, childName).GetComponent<Image>();
+            Assert.That(image, Is.Not.Null, childName);
+            Assert.That(image.sprite, Is.Not.Null, childName);
+            Assert.That(image.sprite.name, Is.EqualTo(expectedSpriteName), childName);
+            Assert.That(image.raycastTarget, Is.False, childName);
         }
 
         private static void AssertHasImage(Transform target, string context)

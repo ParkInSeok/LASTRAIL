@@ -150,6 +150,7 @@ namespace LastRail.Editor
                 var behaviour = root.AddComponent<MissionShellScreenRootBehaviour>();
                 var audio = AttachAudioCuePlayer(root, CommonUiCueIds());
                 var safeArea = CreateSafeArea(root.transform);
+                CreateMissionSelectSurface(safeArea);
                 CreateMissionShellSystemFeedbackPolish(safeArea);
                 var title = CreateText(safeArea, "TitleText", "작전 선택");
                 var subtitle = CreateText(safeArea, "SubtitleText", "Act 1");
@@ -159,9 +160,9 @@ namespace LastRail.Editor
                 var secondary = CreateButton(safeArea, "SecondaryButton", "돌아가기", out var secondaryText);
                 Place(title, 0f, 780f, 960f, 96f);
                 Place(subtitle, 0f, 700f, 960f, 72f);
-                Place(body, 0f, 560f, 960f, 160f);
+                Place(body, 0f, 500f, 900f, 72f);
                 CreateMissionThumbnailStrip(safeArea);
-                Place(missionRows, 0f, 210f, 960f, 220f);
+                Place(missionRows, 0f, 245f, 900f, 72f);
                 Place(primary.GetComponent<RectTransform>(), -190f, -720f, 320f, 64f);
                 Place(secondary.GetComponent<RectTransform>(), 190f, -720f, 320f, 64f);
 
@@ -184,6 +185,36 @@ namespace LastRail.Editor
             }
         }
 
+        private static void CreateMissionSelectSurface(Transform parent)
+        {
+            var background = CreateImage(
+                parent,
+                "MissionSelectBackgroundImage",
+                BackgroundRoot + "/bg_mission_select_rail_map.png",
+                new Color(0.62f, 0.70f, 0.76f, 0.34f));
+            background.preserveAspect = false;
+            Place(background, 0f, 0f, 1080f, 1920f);
+
+            var shade = CreateSolidImage(parent, "MissionSelectBackgroundShade", new Color(0.02f, 0.04f, 0.045f, 0.68f));
+            Place(shade, 0f, 0f, 1080f, 1920f);
+
+            var briefing = CreateImage(
+                parent,
+                "MissionBriefingPanelImage",
+                CommonSkinRoot + "/ui_modal_panel_9slice.png",
+                new Color(0.09f, 0.14f, 0.16f, 0.86f));
+            briefing.type = Image.Type.Sliced;
+            Place(briefing, 0f, 438f, 940f, 310f);
+
+            var roster = CreateImage(
+                parent,
+                "MissionRosterPanelImage",
+                CommonSkinRoot + "/ui_modal_panel_9slice.png",
+                new Color(0.08f, 0.12f, 0.14f, 0.82f));
+            roster.type = Image.Type.Sliced;
+            Place(roster, 0f, 102f, 940f, 270f);
+        }
+
         private static void CreateMissionThumbnailStrip(Transform parent)
         {
             var missionIds = new[]
@@ -199,12 +230,21 @@ namespace LastRail.Editor
 
             for (var i = 0; i < missionIds.Length; i++)
             {
+                var x = -384f + i * 128f;
+                var surface = CreateImage(
+                    parent,
+                    "MissionCardSurface_" + missionIds[i],
+                    CommonSkinRoot + "/ui_modal_panel_9slice.png",
+                    new Color(0.07f, 0.10f, 0.11f, 0.92f));
+                surface.type = Image.Type.Sliced;
+                Place(surface, x, 388f, 118f, 92f);
+
                 var image = CreateImage(
                     parent,
                     "MissionThumbnail_" + missionIds[i],
                     MissionThumbnailRoot + "/" + missionIds[i] + "_thumbnail.png",
-                    new Color(1f, 1f, 1f, 0.82f));
-                Place(image, -420f + i * 140f, 390f, 124f, 70f);
+                    new Color(1f, 1f, 1f, 0.92f));
+                Place(image, x, 390f, 104f, 60f);
             }
         }
 
@@ -1028,26 +1068,13 @@ namespace LastRail.Editor
 
         private static void CreateMissionShellSystemFeedbackPolish(Transform parent)
         {
-            var layer = CreateVisualLayer(parent, "MissionShellSystemFeedbackLayer");
-            var loading = CreateImage(
-                layer,
-                "LoadingRailIndicatorImage",
-                SystemFeedbackLoadingRoot + "/loading_rail_indicator.png",
-                new Color(1f, 1f, 1f, 0.88f));
-            var warning = CreateImage(
-                layer,
-                "WarningStripBannerAccentImage",
-                SystemFeedbackWarningRoot + "/warning_strip_banner_accent.png",
-                new Color(1f, 1f, 1f, 0.58f));
-            var dots = CreateImage(
-                layer,
-                "InlineStatusDotSetImage",
+            var progress = CreateImage(
+                parent,
+                "MissionProgressHudImage",
                 SystemFeedbackStatusRoot + "/inline_status_dot_set.png",
-                new Color(1f, 1f, 1f, 0.7f));
+                new Color(1f, 1f, 1f, 0.82f));
 
-            Place(loading, 0f, 535f, 560f, 132f);
-            Place(warning, 0f, -600f, 760f, 92f);
-            Place(dots, 310f, 692f, 180f, 45f);
+            Place(progress, 315f, 646f, 190f, 48f);
         }
 
         private static void CreateGachaSystemFeedbackPolish(Transform parent)
