@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using LastRail.Gacha;
 using LastRail.Presentation;
 using LastRail.Presentation.Battle;
@@ -61,6 +63,7 @@ namespace LastRail.Editor
 
             var checkedSurfaces = new List<string>();
             var framePaths = new List<string>();
+            var combatEvidence = new List<LaunchEditorFlowCombatSurfaceEvidence>();
             var blockers = new List<string>();
             var failCount = 0;
             var warningCount = HasRecorderPackage() ? 0 : 1;
@@ -75,22 +78,22 @@ namespace LastRail.Editor
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(InitialSquadOperatorIds), framesRoot, checkedSurfaces, framePaths, InitialSquadOperatorIds))
+                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(InitialSquadOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, InitialSquadOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_elite_squad_a_demo", CreateOrdinaryCombatState(EliteSquadAOperatorIds), framesRoot, checkedSurfaces, framePaths, EliteSquadAOperatorIds))
+                if (CaptureCombatStateFrame("combat_elite_squad_a_demo", CreateOrdinaryCombatState(EliteSquadAOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, EliteSquadAOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_elite_squad_b_demo", CreateOrdinaryCombatState(EliteSquadBOperatorIds), framesRoot, checkedSurfaces, framePaths, EliteSquadBOperatorIds))
+                if (CaptureCombatStateFrame("combat_elite_squad_b_demo", CreateOrdinaryCombatState(EliteSquadBOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, EliteSquadBOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_story_raid_boss_demo", CreateStoryRaidBossState(), framesRoot, checkedSurfaces, framePaths))
+                if (CaptureCombatStateFrame("combat_story_raid_boss_demo", CreateStoryRaidBossState(), framesRoot, checkedSurfaces, framePaths, combatEvidence))
                 {
                     fallbackCompositeFrameCount++;
                 }
@@ -133,6 +136,13 @@ namespace LastRail.Editor
                 blockers.Add("fallback_composite_frames_present");
             }
 
+            var combatSegmentFrameHashesDiffer = CombatSegmentHashesDiffer(combatEvidence);
+            if (!combatSegmentFrameHashesDiffer)
+            {
+                failCount++;
+                blockers.Add("combat_segment_frame_hashes_identical");
+            }
+
             WriteFrameManifest(reportsRoot, framePaths);
             var report = LaunchEditorFlowVideoQaReport.ForPngFrameSequence(
                 outputRoot,
@@ -145,7 +155,9 @@ namespace LastRail.Editor
                 usesFallbackComposite: fallbackCompositeFrameCount > 0,
                 fallbackCompositeFrameCount: fallbackCompositeFrameCount,
                 hasHighQualityArtResourceCoverage: true,
-                resourcePlacementFlowReady: true);
+                resourcePlacementFlowReady: true,
+                actualFlowVisibleOperatorIdsBySurface: combatEvidence,
+                combatSegmentFrameHashesDiffer: combatSegmentFrameHashesDiffer);
             File.WriteAllText(
                 Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
@@ -259,6 +271,7 @@ namespace LastRail.Editor
             string framesRoot,
             ICollection<string> checkedSurfaces,
             ICollection<string> framePaths,
+            ICollection<LaunchEditorFlowCombatSurfaceEvidence> combatEvidence,
             IReadOnlyList<string> operatorSpriteIds = null)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab");
@@ -287,10 +300,25 @@ namespace LastRail.Editor
                     ApplyOperatorCombatUnitSprites(root, operatorSpriteIds);
                 }
 
+                var actualOperatorIds = CollectVisibleOperatorIds(root);
+                if (operatorSpriteIds != null && !SequenceEquals(operatorSpriteIds, actualOperatorIds))
+                {
+                    throw new InvalidOperationException("Combat video QA actual-flow operator ids mismatch for " + screenKey);
+                }
+
                 ValidatePresentationOnlyFrameRoot(root, screenKey);
                 var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
                 var usedFallbackComposite = CaptureRootToPng(root, path);
                 ValidateFrameFile(path, screenKey);
+                if (operatorSpriteIds != null)
+                {
+                    combatEvidence.Add(LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                        screenKey,
+                        operatorSpriteIds,
+                        actualOperatorIds,
+                        Sha256(path)));
+                }
+
                 checkedSurfaces.Add(screenKey);
                 framePaths.Add(path);
                 return usedFallbackComposite;
@@ -324,6 +352,11 @@ namespace LastRail.Editor
                 image.name = "OperatorAnimated_" + operatorId;
                 image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
                     "Assets/_LASTRAIL/UI/CombatAnimations/Operators/" + operatorId + "/idle/" + operatorId + "_idle_001.png");
+                if (image.sprite == null)
+                {
+                    throw new InvalidOperationException("Missing combat unit sprite for actual-flow operator: " + operatorId);
+                }
+
                 image.preserveAspect = true;
 
                 var animator = image.GetComponent<Animator>();
@@ -331,7 +364,80 @@ namespace LastRail.Editor
                 {
                     animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
                         "Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/" + operatorId + ".controller");
+                    animator.Rebind();
+                    animator.Update(0f);
                 }
+            }
+        }
+
+        private static IReadOnlyList<string> CollectVisibleOperatorIds(GameObject root)
+        {
+            var operatorIds = new List<string>();
+            foreach (var image in root.GetComponentsInChildren<Image>(true))
+            {
+                if (!image.gameObject.activeInHierarchy ||
+                    image.color.a <= 0.01f ||
+                    !image.name.StartsWith("OperatorAnimated_", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                operatorIds.Add(image.name.Substring("OperatorAnimated_".Length));
+            }
+
+            return operatorIds.AsReadOnly();
+        }
+
+        private static bool SequenceEquals(IReadOnlyList<string> expected, IReadOnlyList<string> actual)
+        {
+            if (expected.Count != actual.Count)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < expected.Count; i++)
+            {
+                if (!string.Equals(expected[i], actual[i], StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool CombatSegmentHashesDiffer(IReadOnlyCollection<LaunchEditorFlowCombatSurfaceEvidence> evidence)
+        {
+            var hashes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var count = 0;
+            foreach (var surface in evidence)
+            {
+                if (!surface.ScreenKey.StartsWith("combat_", StringComparison.Ordinal) ||
+                    surface.FrameSha256 == null)
+                {
+                    continue;
+                }
+
+                count++;
+                hashes.Add(surface.FrameSha256);
+            }
+
+            return count == 3 && hashes.Count == 3;
+        }
+
+        private static string Sha256(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            using (var sha = SHA256.Create())
+            {
+                var hash = sha.ComputeHash(stream);
+                var builder = new StringBuilder(hash.Length * 2);
+                foreach (var b in hash)
+                {
+                    builder.Append(b.ToString("X2", CultureInfo.InvariantCulture));
+                }
+
+                return builder.ToString();
             }
         }
 
@@ -374,6 +480,7 @@ namespace LastRail.Editor
             var rectTransform = root.GetComponent<RectTransform>();
             if (rectTransform != null)
             {
+                rectTransform.SetParent(null, false);
                 rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
                 rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
                 rectTransform.pivot = new Vector2(0.5f, 0.5f);
@@ -382,10 +489,15 @@ namespace LastRail.Editor
                 rectTransform.localScale = Vector3.one;
             }
 
+            root.transform.position = Vector3.zero;
+            root.transform.rotation = Quaternion.identity;
+            root.transform.localScale = Vector3.one;
+
             foreach (var canvas in root.GetComponentsInChildren<Canvas>(true))
             {
-                canvas.renderMode = RenderMode.WorldSpace;
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 canvas.worldCamera = camera;
+                canvas.planeDistance = 10f;
                 canvas.pixelPerfect = false;
             }
 

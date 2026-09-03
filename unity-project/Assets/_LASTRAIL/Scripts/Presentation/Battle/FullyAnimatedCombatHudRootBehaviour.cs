@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System.Text;
 using LastRail.Presentation.Audio;
+using LastRail.Run;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -102,9 +103,47 @@ namespace LastRail.Presentation.Battle
                 return string.Empty;
             }
 
-            return state.EncounterType == LastRail.Run.RunEncounterType.RaidBoss
+            if (state.EncounterType == RunEncounterType.RaidBoss)
+            {
+                return "보스전 분대 " + state.OperatorSlotCount + " / 보스 1";
+            }
+
+            if (ContainsOperatorIds(state, "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris"))
+            {
+                return "정예 분대 A " + state.OperatorSlotCount + " / 침입 적 " + state.EnemyUnitCount;
+            }
+
+            if (ContainsOperatorIds(state, "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden"))
+            {
+                return "정예 분대 B " + state.OperatorSlotCount + " / 침입 적 " + state.EnemyUnitCount;
+            }
+
+            return state.EncounterType == RunEncounterType.RaidBoss
                 ? "보스전 분대 " + state.OperatorSlotCount + " / 보스 1"
                 : "초기 분대 " + state.OperatorSlotCount + " / 침입 적 " + state.EnemyUnitCount;
+        }
+
+        private static bool ContainsOperatorIds(FullyAnimatedCombatHudViewState state, params string[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var found = false;
+                foreach (var unit in state.UnitAnimationRefs)
+                {
+                    if (unit.UnitRole == CombatUnitRole.Operator && unit.UnitId == id)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private static string FormatCueRefs(FullyAnimatedCombatHudViewState state)

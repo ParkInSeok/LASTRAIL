@@ -186,6 +186,64 @@ namespace LastRail.Tests.EditMode
             Assert.That(json, Does.Contain("\"encodedFps\":30"));
             Assert.That(json, Does.Contain("\"hasHighQualityArtResourceCoverage\":true"));
         }
+
+        [Test]
+        public void CreateMp4ArtifactReport_FailsWhenCombatActualFlowIdsOrFrameHashesDoNotProveUniqueSquads()
+        {
+            var report = LaunchEditorFlowVideoQaReport.ForMp4Artifact(
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch",
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch/Video/act1-launch-latest-qa.mp4",
+                "imageio_ffmpeg",
+                new[] { "combat_ordinary_wave_demo", "combat_elite_squad_a_demo", "combat_elite_squad_b_demo" },
+                frameCount: 3,
+                durationSeconds: 65,
+                mp4SizeBytes: 123456,
+                hasRecorderPackage: false,
+                warningCount: 0,
+                failCount: 0,
+                blockers: Array.Empty<string>(),
+                actualFlowVisibleOperatorIdsBySurface: new[]
+                {
+                    LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                        "combat_ordinary_wave_demo",
+                        new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                        new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                        "same_hash"),
+                    LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                        "combat_elite_squad_a_demo",
+                        new[] { "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris" },
+                        new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                        "same_hash"),
+                    LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                        "combat_elite_squad_b_demo",
+                        new[] { "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden" },
+                        new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                        "same_hash")
+                },
+                combatSegmentFrameHashesDiffer: false,
+                retainedMp4Count: 1);
+
+            Assert.That(report.Status, Is.EqualTo("FAIL"));
+            Assert.That(report.ManifestOnlyAnimationCoverageAllowed, Is.False);
+            Assert.That(report.OperatorAnimationResourceCoverageCount, Is.EqualTo(15));
+            Assert.That(report.OperatorAnimationActualFlowCoverageCount, Is.EqualTo(5));
+            Assert.That(report.InitialOperatorActualFlowCoverageCount, Is.EqualTo(5));
+            Assert.That(report.EliteOperatorActualFlowCoverageCount, Is.EqualTo(0));
+            Assert.That(report.CombatSegmentFrameHashesDiffer, Is.False);
+            Assert.That(report.Blockers, Does.Contain("combat_actual_flow_operator_ids_mismatch"));
+            Assert.That(report.Blockers, Does.Contain("combat_segment_frame_hashes_identical"));
+
+            var json = LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report);
+            Assert.That(json, Does.Contain("\"actualFlowVisibleOperatorIdsBySurface\""));
+            Assert.That(json, Does.Contain("\"expectedOperatorIds\""));
+            Assert.That(json, Does.Contain("\"actualVisibleOperatorIds\""));
+            Assert.That(json, Does.Contain("\"operatorAnimationResourceCoverageCount\":15"));
+            Assert.That(json, Does.Contain("\"operatorAnimationActualFlowCoverageCount\":5"));
+            Assert.That(json, Does.Contain("\"eliteOperatorActualFlowCoverageCount\":0"));
+            Assert.That(json, Does.Contain("\"manifestOnlyAnimationCoverageAllowed\":false"));
+            Assert.That(json, Does.Contain("\"combatSegmentFrameHashesDiffer\":false"));
+            Assert.That(json, Does.Contain("\"retainedMp4Count\":1"));
+        }
     }
 }
 #endif

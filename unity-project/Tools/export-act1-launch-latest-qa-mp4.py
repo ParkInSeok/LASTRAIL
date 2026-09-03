@@ -8,6 +8,7 @@ project-local video so QA/Act1Launch/Video contains only one current mp4.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -49,16 +50,19 @@ def main() -> int:
         raise SystemExit(f"No QA frames found under {qa_root / 'Frames'}")
 
     width, height = validate_frame_dimensions(frames)
+    source_reports = [
+        reports_root / "editor-video-qa-report.json",
+    ]
+    editor_report = read_first_report(source_reports)
+    actual_flow_evidence = editor_report.get("actualFlowVisibleOperatorIdsBySurface", {})
+    combat_hashes_differ = validate_combat_actual_flow(frames, actual_flow_evidence)
+    checked_surfaces = read_checked_surfaces(source_reports)
+
     prepare_single_latest_output(output_path)
     encoded_frame_count, encoder = encode_with_motion(frames, output_path, seconds, fps)
     size = output_path.stat().st_size
     if size <= 0:
         raise SystemExit(f"MP4 artifact is empty: {output_path}")
-
-    source_reports = [
-        reports_root / "editor-video-qa-report.json",
-    ]
-    checked_surfaces = read_checked_surfaces(source_reports)
     write_latest_report(
         report_path,
         qa_root,
@@ -72,8 +76,10 @@ def main() -> int:
         encoded_frame_count,
         fps,
         seconds,
+        actual_flow_evidence,
+        combat_hashes_differ,
     )
-    update_source_reports(source_reports, output_path, encoder, size, width, height, encoded_frame_count, fps, seconds)
+    update_source_reports(source_reports, output_path, encoder, size, width, height, encoded_frame_count, fps, seconds, actual_flow_evidence, combat_hashes_differ)
 
     print(json.dumps(
         {
@@ -91,6 +97,8 @@ def main() -> int:
             "coverageGroups": [{"key": key, "frameCount": len(group_frames)} for key, group_frames in frames_by_group],
             "usesFallbackComposite": False,
             "resourcePlacementFlowReady": True,
+            "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
+            "combatSegmentFrameHashesDiffer": combat_hashes_differ,
         },
         ensure_ascii=False,
         indent=2,
@@ -203,6 +211,82 @@ def read_checked_surfaces(report_paths: list[Path]) -> list[str]:
     return surfaces
 
 
+def read_first_report(report_paths: list[Path]) -> dict[str, Any]:
+    for report_path in report_paths:
+        if report_path.exists():
+            return json.loads(report_path.read_text(encoding="utf-8-sig"))
+    return {}
+
+
+def validate_combat_actual_flow(frames: list[Path], evidence: dict[str, Any]) -> bool:
+    expected_by_surface = {
+        "combat_ordinary_wave_demo": ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira"],
+        "combat_elite_squad_a_demo": ["op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris"],
+        "combat_elite_squad_b_demo": ["op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden"],
+    }
+
+    visible_union: set[str] = set()
+    for surface, expected_ids in expected_by_surface.items():
+        surface_evidence = evidence.get(surface)
+        if not isinstance(surface_evidence, dict):
+            raise SystemExit(f"Missing actual-flow combat evidence for {surface}")
+        actual_ids = surface_evidence.get("actualVisibleOperatorIds")
+        if actual_ids != expected_ids:
+            raise SystemExit(f"Actual-flow operator id mismatch for {surface}: {actual_ids} expected {expected_ids}")
+        visible_union.update(actual_ids)
+
+    if len(visible_union) != 15:
+        raise SystemExit(f"Actual-flow operator coverage is {len(visible_union)}, expected 15")
+
+    combat_hashes: list[str] = []
+    for surface in expected_by_surface:
+        frame = next((candidate for candidate in frames if surface in candidate.name), None)
+        if frame is None:
+            raise SystemExit(f"Missing combat frame for {surface}")
+        digest = sha256(frame)
+        combat_hashes.append(digest)
+        surface_evidence = evidence[surface]
+        recorded_digest = surface_evidence.get("frameSha256")
+        if isinstance(recorded_digest, str) and recorded_digest.upper() != digest:
+            raise SystemExit(f"Combat frame hash mismatch for {surface}: {digest} expected report hash {recorded_digest}")
+
+    hashes_differ = len(set(combat_hashes)) == len(combat_hashes)
+    if not hashes_differ:
+        raise SystemExit("Combat segment frame hashes are identical; actual-flow evidence is not valid")
+
+    return hashes_differ
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
+
+
+def count_actual_flow_operators(evidence: dict[str, Any]) -> int:
+    ids: set[str] = set()
+    for surface_evidence in evidence.values():
+        if not isinstance(surface_evidence, dict):
+            continue
+        actual_ids = surface_evidence.get("actualVisibleOperatorIds", [])
+        if isinstance(actual_ids, list):
+            ids.update(item for item in actual_ids if isinstance(item, str))
+    return len(ids)
+
+
+def count_expected_subset(evidence: dict[str, Any], expected: list[str]) -> int:
+    ids: set[str] = set()
+    for surface_evidence in evidence.values():
+        if not isinstance(surface_evidence, dict):
+            continue
+        actual_ids = surface_evidence.get("actualVisibleOperatorIds", [])
+        if isinstance(actual_ids, list):
+            ids.update(item for item in actual_ids if isinstance(item, str))
+    return sum(1 for item in expected if item in ids)
+
+
 def write_latest_report(
     report_path: Path,
     qa_root: Path,
@@ -216,6 +300,8 @@ def write_latest_report(
     encoded_frame_count: int,
     fps: int,
     seconds: int,
+    actual_flow_evidence: dict[str, Any],
+    combat_hashes_differ: bool,
 ) -> None:
     video_root = output_path.parent
     data: dict[str, Any] = {
@@ -243,6 +329,19 @@ def write_latest_report(
         "fallbackCompositeFrameCount": 0,
         "hasHighQualityArtResourceCoverage": True,
         "resourcePlacementFlowReady": True,
+        "actualFlowVisibleOperatorIdsBySurface": actual_flow_evidence,
+        "operatorAnimationResourceCoverageCount": 15,
+        "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
+        "eliteOperatorActualFlowCoverageCount": count_expected_subset(
+            actual_flow_evidence,
+            ["op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris", "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden"],
+        ),
+        "initialOperatorActualFlowCoverageCount": count_expected_subset(
+            actual_flow_evidence,
+            ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira"],
+        ),
+        "manifestOnlyAnimationCoverageAllowed": False,
+        "combatSegmentFrameHashesDiffer": combat_hashes_differ,
         "checkedSurfaceCount": len(checked_surfaces),
         "checkedSurfaces": [{"screenKey": surface} for surface in checked_surfaces],
         "coverageGroups": [{"key": key, "frameCount": len(group_frames)} for key, group_frames in frames_by_group],
@@ -271,6 +370,8 @@ def update_source_reports(
     encoded_frame_count: int,
     fps: int,
     seconds: int,
+    actual_flow_evidence: dict[str, Any],
+    combat_hashes_differ: bool,
 ) -> None:
     for report_path in report_paths:
         if not report_path.exists():
@@ -295,6 +396,19 @@ def update_source_reports(
                 "fallbackCompositeFrameCount": 0,
                 "retainedMp4Count": count_mp4_files(output_path.parent),
                 "resourcePlacementFlowReady": True,
+                "actualFlowVisibleOperatorIdsBySurface": actual_flow_evidence,
+                "operatorAnimationResourceCoverageCount": 15,
+                "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
+                "eliteOperatorActualFlowCoverageCount": count_expected_subset(
+                    actual_flow_evidence,
+                    ["op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris", "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden"],
+                ),
+                "initialOperatorActualFlowCoverageCount": count_expected_subset(
+                    actual_flow_evidence,
+                    ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira"],
+                ),
+                "manifestOnlyAnimationCoverageAllowed": False,
+                "combatSegmentFrameHashesDiffer": combat_hashes_differ,
             }
         )
         if int(data.get("failCount", 0)) == 0 and not data.get("blockers"):
