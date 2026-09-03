@@ -2,7 +2,7 @@
 
 Status: BLOCKED
 
-Commit: this commit; final hash is reported in the task response. Unity editor verification and regenerated QA evidence are blocked by local Unity startup failures.
+Commit: `9590c035abe2c7fb395dd3b6f353591334aaf0ea` contains the safe source/art/report changes. Capture/video regeneration remains blocked by Unity startup failures and Unity Licensing Client crash popups.
 
 Root cause found:
 - Combat operator actual-flow validation had already been partially strengthened in `74f5030`, and current `frame_002`/`frame_003`/`frame_004` hashes now differ.
@@ -58,6 +58,9 @@ Latest MP4:
 
 Verification results:
 - RED: Added background-evidence regression test; first Unity run could not write XML because Unity exited before compilation. The production API was missing `LaunchEditorFlowCombatInteriorEvidence`/`combatInteriorBackgroundBySurface` at that point.
+- Main-thread retry: `Tools/run-editmode-tests.ps1` focused `LaunchEditorFlowVideoQaReportTests` passed with `total=1 passed=1 failed=0`.
+- Main-thread exporter check: `python Tools\export-act1-launch-latest-qa-mp4.py` failed with `Missing combat interior background evidence for combat_ordinary_wave_demo`, confirming the new latest-video validation is active and the current editor report is stale/missing background evidence.
+- Capture command ordering issue found: `Unity-CombatInterior-Capture-Retry.log` had `-quit` before `-executeMethod`, and Unity exited before logging `LaunchEditorFlowVideoQaRunner.CaptureEditorFlowVideoQa` completion.
 - PASS: `python -m py_compile E:\Projects\LASTRAIL\unity-project\Tools\export-act1-launch-latest-qa-mp4.py`
 - PASS: `git diff --check` for the touched code/script/assets.
 - BLOCKED: Focused EditMode test, capture runner, 7-screen screenshot QA, latest-video QA regeneration, visual spot check, and full EditMode wrapper. Unity exits before running tests/capture with Package Manager IPC failure:
@@ -72,4 +75,6 @@ Next required command once Unity is healthy:
 - Run focused report tests, then `LastRail.Editor.LaunchEditorFlowVideoQaRunner.CaptureEditorFlowVideoQa`, then `Tools/export-act1-launch-latest-qa-mp4.py`, then screenshot/full EditMode QA. The resulting reports should include `combatInteriorBackgroundBySurface` with four distinct background ids/paths and `combatInteriorBackgroundsDiffer: true`.
 
 Blockers:
-- Local Unity 6000.3.22f1 batch startup cannot currently reach Package Manager IPC, and the `-noUpm` workaround stalls on licensing/headless initialization.
+- STOP requested after user saw repeated `Unity.Licensing.Client.exe - Application Error` popups with unknown software exception `0xe0434352`.
+- No further Unity launches are allowed in this task until instructed.
+- Current capture/video regeneration is blocked by Unity Licensing Client crash popups plus the Package Manager IPC/startup failure. Process cleanup is being handled from the main thread.
