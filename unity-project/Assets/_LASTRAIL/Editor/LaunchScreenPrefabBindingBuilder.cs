@@ -556,9 +556,7 @@ namespace LastRail.Editor
         private static void EnsureCombatLaneResourceImportSettings()
         {
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_exterior_advance_lane.png");
-            EnsureSpriteImporter(CombatLaneRoot + "/combat_train_interior_boarding_lane.png");
             EnsureSpriteImporter(CombatInteriorRoot + "/combat_train_interior_initial_squad.png");
-            EnsureSpriteImporter(CombatAccentRoot + "/combat_unit_contact_shadow.png");
         }
 
         private static void EnsureSpriteImporter(string assetPath)
@@ -622,14 +620,8 @@ namespace LastRail.Editor
                 new Color(1f, 1f, 1f, 0.24f));
             Place(raidWake, 268f, -12f, 260f, 260f);
 
-            var interiorLaneImage = CreateImage(
-                safeArea,
-                "InteriorBoardingCombatLane",
-                CombatLaneRoot + "/combat_train_interior_boarding_lane.png",
-                Color.white);
-            interiorLaneImage.preserveAspect = false;
-            Place(interiorLaneImage, 0f, -348f, 1000f, 1080f);
-            var interiorLane = interiorLaneImage.GetComponent<RectTransform>();
+            var interiorLane = CreateTransparentGroup(safeArea, "InteriorBoardingCombatLane");
+            Place(interiorLane, 0f, -348f, 1000f, 1080f);
 
             var ordinarySurface = CreateTransparentGroup(interiorLane, "CombatOrdinaryWaveDemoSurface");
             Place(ordinarySurface, 0f, 0f, 960f, 1010f);
@@ -707,7 +699,6 @@ namespace LastRail.Editor
             var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
-                CreateCombatContactShadow(squadSlots, "OperatorContactShadow_" + operatorIds[i], xPositions[i], yPositions[i] - 82f, 188f, 46f, 0.42f);
                 var unit = CreateAnimatedImage(
                     squadSlots,
                     "OperatorAnimated_" + operatorIds[i],
@@ -733,7 +724,6 @@ namespace LastRail.Editor
             for (var i = 0; i < enemySpecs.Length; i++)
             {
                 var spec = enemySpecs[i];
-                CreateCombatContactShadow(enemySlots, "EnemyContactShadow_" + spec.Id, xPositions[i], yPositions[i] - 68f, 158f, 40f, 0.38f);
                 var sprite = CreateAnimatedImage(
                     enemySlots,
                     "EnemyBoardingAnimated_" + spec.Id,
@@ -743,24 +733,6 @@ namespace LastRail.Editor
                     new Color(1f, 1f, 1f, 0.98f));
                 Place(sprite, xPositions[i], yPositions[i], 140f, 140f);
             }
-        }
-
-        private static void CreateCombatContactShadow(
-            Transform parent,
-            string name,
-            float x,
-            float y,
-            float width,
-            float height,
-            float alpha)
-        {
-            var shadow = CreateImage(
-                parent,
-                name,
-                CombatAccentRoot + "/combat_unit_contact_shadow.png",
-                new Color(1f, 1f, 1f, alpha));
-            shadow.preserveAspect = false;
-            Place(shadow, x, y, width, height);
         }
 
         private static void CreateCombatPreviewSprites(Transform interiorLane, Transform squadSlots, Transform enemySlots)

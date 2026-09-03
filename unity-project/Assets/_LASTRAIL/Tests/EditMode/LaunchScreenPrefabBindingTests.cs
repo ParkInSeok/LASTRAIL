@@ -204,13 +204,15 @@ namespace LastRail.Tests.EditMode
 
             AssertHasImage(exteriorLane, "ExteriorTrainAdvanceLane");
             AssertHasImage(AssertChild(exteriorLane, "ExteriorThreatVfxImage"), "ExteriorThreatVfxImage");
-            AssertHasImage(interiorLane, "InteriorBoardingCombatLane");
+            AssertHasNoImage(interiorLane, "InteriorBoardingCombatLane");
             AssertHasImage(AssertChild(interiorLane, "InteriorTrainCarBackgroundImage"), "InteriorTrainCarBackgroundImage");
             AssertHasImage(AssertChild(engagementZone, "EngagementContactBurstImage"), "EngagementContactBurstImage");
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorAnimated_"), Is.EqualTo(5));
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(0));
+            Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorContactShadow_"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingAnimated_"), Is.GreaterThanOrEqualTo(3));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.EqualTo(0));
+            Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyContactShadow_"), Is.EqualTo(0));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
             AssertCombatHudDoesNotExposeQaCopy(prefab);
 
@@ -385,6 +387,11 @@ namespace LastRail.Tests.EditMode
             var image = target.GetComponent<Image>();
             Assert.That(image, Is.Not.Null, context);
             Assert.That(image.sprite, Is.Not.Null, context);
+        }
+
+        private static void AssertHasNoImage(Transform target, string context)
+        {
+            Assert.That(target.GetComponent<Image>(), Is.Null, context + " should be a transparent layout container.");
         }
 
         private static int CountChildrenWithPrefix(Transform parent, string prefix)
