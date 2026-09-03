@@ -198,6 +198,7 @@ namespace LastRail.Tests.EditMode
             var exteriorLane = AssertChild(safeArea, "ExteriorTrainAdvanceLane");
             var interiorLane = AssertChild(safeArea, "InteriorBoardingCombatLane");
             var topStatusPanel = AssertChild(exteriorLane, "CombatHudTopStatusPanel");
+            var bottomStatusPanel = AssertChild(interiorLane, "CombatBottomStatusHudPanel");
             var squadSlots = AssertChild(interiorLane, "PlayerSquadSlots");
             var enemySlots = AssertChild(interiorLane, "InvadingEnemySlots");
             var engagementZone = AssertChild(interiorLane, "EngagementZoneMarkerImage");
@@ -214,6 +215,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyContactShadow_"), Is.EqualTo(0));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
+            AssertCombatHudUsesCompactReadableHudChips(prefab, topStatusPanel, bottomStatusPanel, interiorLane);
             AssertCombatHudDoesNotExposeQaCopy(prefab);
 
             AssertBoundFields<FullyAnimatedCombatHudRootBehaviour>(
@@ -237,6 +239,43 @@ namespace LastRail.Tests.EditMode
             Assert.That(text, Does.Not.Contain("히트스톱"));
             Assert.That(text, Does.Not.Contain("VFX / SFX"));
             Assert.That(text, Does.Not.Contain("진동 준비"));
+        }
+
+        private static void AssertCombatHudUsesCompactReadableHudChips(GameObject prefab, Transform topStatusPanel, Transform bottomStatusPanel, Transform interiorLane)
+        {
+            var topImage = topStatusPanel.GetComponent<Image>();
+            Assert.That(topImage, Is.Not.Null, "CombatHudTopStatusPanel image");
+            Assert.That(topImage.color.r, Is.LessThan(0.20f), "Top combat HUD chip should not wash out over bright sky.");
+            Assert.That(topImage.color.a, Is.GreaterThanOrEqualTo(0.72f), "Top combat HUD chip should carry readable contrast.");
+
+            var bottomImage = bottomStatusPanel.GetComponent<Image>();
+            Assert.That(bottomImage, Is.Not.Null, "CombatBottomStatusHudPanel image");
+            Assert.That(bottomImage.color.r, Is.LessThan(0.16f), "Bottom combat HUD chip should read as a dark game HUD surface.");
+            Assert.That(bottomImage.color.a, Is.GreaterThanOrEqualTo(0.72f), "Bottom combat HUD chip should carry readable contrast.");
+
+            var title = AssertChild(topStatusPanel, "EncounterTitleText").GetComponent<TMP_Text>();
+            var wave = AssertChild(topStatusPanel, "WaveCounterText").GetComponent<TMP_Text>();
+            Assert.That(title.fontSizeMax, Is.LessThanOrEqualTo(28f));
+            Assert.That(wave.fontSizeMax, Is.LessThanOrEqualTo(24f));
+            Assert.That(title.alignment, Is.EqualTo(TextAlignmentOptions.MidlineLeft));
+            Assert.That(wave.alignment, Is.EqualTo(TextAlignmentOptions.MidlineRight));
+
+            AssertHudTextIsCompact(AssertChild(interiorLane, "ObjectiveText"), 24f);
+            AssertHudTextIsCompact(AssertChild(bottomStatusPanel, "UnitRefsText"), 24f);
+            AssertHudTextIsCompact(AssertChild(bottomStatusPanel, "CueRefsText"), 22f);
+            AssertHudTextIsCompact(AssertChild(interiorLane, "RefundHintText"), 22f);
+        }
+
+        private static void AssertHudTextIsCompact(Transform target, float maxFontSize)
+        {
+            var text = target.GetComponent<TMP_Text>();
+            Assert.That(text, Is.Not.Null, target.name);
+            Assert.That(text.fontSizeMax, Is.LessThanOrEqualTo(maxFontSize), target.name);
+            Assert.That(text.alignment, Is.EqualTo(TextAlignmentOptions.MidlineLeft), target.name);
+
+            var rectTransform = target.GetComponent<RectTransform>();
+            Assert.That(rectTransform, Is.Not.Null, target.name);
+            Assert.That(Mathf.Abs(rectTransform.anchoredPosition.x), Is.LessThanOrEqualTo(260f), target.name + " should stay inside its HUD panel");
         }
 
         [Test]
@@ -266,7 +305,7 @@ namespace LastRail.Tests.EditMode
         {
             AssertReadableTextSlotsAreDistributed("MissionShellScreen.prefab", 4);
             AssertReadableTextSlotsAreDistributed("GachaScreen.prefab", 7);
-            AssertReadableTextSlotsAreDistributed("FullyAnimatedCombatHud.prefab", 7);
+            AssertReadableTextSlotsAreDistributed("FullyAnimatedCombatHud.prefab", 6);
             AssertReadableTextSlotsAreDistributed("CodexArchiveScreen.prefab", 4);
             AssertReadableTextSlotsAreDistributed("RewardReviewScreen.prefab", 5);
             AssertReadableTextSlotsAreDistributed("OfflineRewardScreen.prefab", 5);
@@ -592,6 +631,13 @@ namespace LastRail.Tests.EditMode
                 var rectTransform = text.GetComponent<RectTransform>();
                 Assert.That(rectTransform, Is.Not.Null, text.name);
                 yPositions.Add(Mathf.RoundToInt(rectTransform.anchoredPosition.y));
+                if (IsCompactCombatHudText(prefabName, text.name))
+                {
+                    Assert.That(rectTransform.sizeDelta.x, Is.GreaterThanOrEqualTo(280f), prefabName + ":" + text.name);
+                    Assert.That(rectTransform.sizeDelta.y, Is.GreaterThanOrEqualTo(48f), prefabName + ":" + text.name);
+                    continue;
+                }
+
                 Assert.That(rectTransform.sizeDelta.x, Is.GreaterThanOrEqualTo(720f), prefabName + ":" + text.name);
                 Assert.That(rectTransform.sizeDelta.y, Is.GreaterThanOrEqualTo(64f), prefabName + ":" + text.name);
             }
@@ -600,6 +646,22 @@ namespace LastRail.Tests.EditMode
                 yPositions.Count,
                 Is.GreaterThanOrEqualTo(minimumDistinctY),
                 prefabName + " text slots overlap instead of using the portrait safe area.");
+        }
+
+        private static bool IsCompactCombatHudText(string prefabName, string textName)
+        {
+            if (!string.Equals(prefabName, "FullyAnimatedCombatHud.prefab", System.StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            return string.Equals(textName, "EncounterTitleText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "WaveCounterText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "BossStatusText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "ObjectiveText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "UnitRefsText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "CueRefsText", System.StringComparison.Ordinal) ||
+                string.Equals(textName, "RefundHintText", System.StringComparison.Ordinal);
         }
 
         private static void AssertUsesTextMeshProWithoutLegacyText(string prefabName)

@@ -520,15 +520,22 @@ namespace LastRail.Editor
                 var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "보스 위협 감지");
                 var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표: 열차 방어");
                 var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "철수 시 연료 보호");
-                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "분대 5 / 침입 4");
-                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "스킬 대기 / 충돌 감지");
-                Place(encounterTitle, 0f, 34f, 860f, 68f);
-                Place(waveCounter, 0f, -34f, 860f, 64f);
-                Place(bossStatus, 0f, -252f, 860f, 64f);
-                Place(objective, 0f, 404f, 860f, 64f);
-                Place(unitRefs, 0f, -416f, 860f, 64f);
-                Place(cueRefs, 0f, -486f, 860f, 64f);
-                Place(refundHint, 0f, -556f, 860f, 64f);
+                var unitRefs = CreateText(layout.BottomStatusPanel, "UnitRefsText", "분대 5 / 침입 4");
+                var cueRefs = CreateText(layout.BottomStatusPanel, "CueRefsText", "스킬 대기 / 충돌 감지");
+                ConfigureText(encounterTitle, "전투", 28f, TextAlignmentOptions.MidlineLeft);
+                ConfigureText(waveCounter, "웨이브 1/15", 24f, TextAlignmentOptions.MidlineRight);
+                ConfigureText(bossStatus, "보스 위협 감지", 22f, TextAlignmentOptions.MidlineRight);
+                ConfigureText(objective, "목표: 열차 방어", 24f, TextAlignmentOptions.MidlineLeft);
+                ConfigureText(unitRefs, "분대 5 / 침입 4", 24f, TextAlignmentOptions.MidlineLeft);
+                ConfigureText(cueRefs, "스킬 대기 / 충돌 감지", 22f, TextAlignmentOptions.MidlineLeft);
+                ConfigureText(refundHint, "철수 시 연료 보호", 22f, TextAlignmentOptions.MidlineLeft);
+                Place(encounterTitle, -292f, 0f, 330f, 58f);
+                Place(waveCounter, 292f, 0f, 330f, 58f);
+                Place(bossStatus, 284f, -254f, 360f, 54f);
+                Place(objective, -244f, 404f, 390f, 52f);
+                Place(unitRefs, 0f, 30f, 430f, 48f);
+                Place(cueRefs, 0f, -26f, 430f, 48f);
+                Place(refundHint, -188f, -496f, 480f, 50f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -597,12 +604,11 @@ namespace LastRail.Editor
             Place(exteriorLaneImage, 0f, 530f, 1000f, 650f);
             var exteriorLane = exteriorLaneImage.GetComponent<RectTransform>();
 
-            var topStatusPanel = CreateSlicedImage(
+            var topStatusPanel = CreateSolidImage(
                 exteriorLane,
                 "CombatHudTopStatusPanel",
-                CommonSkinRoot + "/ui_status_chip_9slice.png",
-                new Color(0.92f, 0.98f, 1f, 0.88f));
-            Place(topStatusPanel, 0f, 245f, 908f, 108f);
+                new Color(0.04f, 0.07f, 0.08f, 0.78f));
+            Place(topStatusPanel, 0f, 248f, 874f, 72f);
 
             var exteriorThreatVfx = CreateImage(
                 exteriorLane,
@@ -665,6 +671,12 @@ namespace LastRail.Editor
                 new Color(0.08f, 0.13f, 0.15f, 0.58f));
             Place(objectiveBand, 0f, 404f, 900f, 82f);
 
+            var bottomStatusPanel = CreateSolidImage(
+                interiorLane,
+                "CombatBottomStatusHudPanel",
+                new Color(0.03f, 0.05f, 0.06f, 0.76f));
+            Place(bottomStatusPanel, -210f, -458f, 520f, 140f);
+
             CreateOperatorCombatSlots(squadSlots);
             CreateEnemyBoardingSlots(enemySlots);
             CreateCombatPreviewSprites(interiorLane, squadSlots, enemySlots);
@@ -689,7 +701,8 @@ namespace LastRail.Editor
                 squadSlots,
                 enemySlots,
                 engagementZone,
-                topStatusPanel.GetComponent<RectTransform>());
+                topStatusPanel.GetComponent<RectTransform>(),
+                bottomStatusPanel.GetComponent<RectTransform>());
         }
 
         private static void CreateOperatorCombatSlots(Transform squadSlots)
@@ -791,6 +804,17 @@ namespace LastRail.Editor
             return image;
         }
 
+        private static Image CreateSolidImage(Transform parent, string name, Color color)
+        {
+            var gameObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            gameObject.transform.SetParent(parent, false);
+            var image = gameObject.GetComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false;
+            image.preserveAspect = false;
+            return image;
+        }
+
         private sealed class CombatHudLayoutBindings
         {
             public CombatHudLayoutBindings(
@@ -799,7 +823,8 @@ namespace LastRail.Editor
                 RectTransform playerSquadSlots,
                 RectTransform invadingEnemySlots,
                 RectTransform engagementZone,
-                RectTransform topStatusPanel)
+                RectTransform topStatusPanel,
+                RectTransform bottomStatusPanel)
             {
                 ExteriorLane = exteriorLane;
                 InteriorLane = interiorLane;
@@ -807,6 +832,7 @@ namespace LastRail.Editor
                 InvadingEnemySlots = invadingEnemySlots;
                 EngagementZone = engagementZone;
                 TopStatusPanel = topStatusPanel;
+                BottomStatusPanel = bottomStatusPanel;
             }
 
             public RectTransform ExteriorLane { get; }
@@ -815,6 +841,7 @@ namespace LastRail.Editor
             public RectTransform InvadingEnemySlots { get; }
             public RectTransform EngagementZone { get; }
             public RectTransform TopStatusPanel { get; }
+            public RectTransform BottomStatusPanel { get; }
         }
         private static void CreateCodexPrefab()
         {
