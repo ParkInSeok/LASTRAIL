@@ -203,14 +203,14 @@ namespace LastRail.Tests.EditMode
             var engagementZone = AssertChild(interiorLane, "EngagementZoneMarkerImage");
 
             AssertHasImage(exteriorLane, "ExteriorTrainAdvanceLane");
-            AssertHasImage(AssertChild(exteriorLane, "ExteriorRailParallaxImage"), "ExteriorRailParallaxImage");
-            AssertHasImage(AssertChild(exteriorLane, "TrainAdvanceStripImage"), "TrainAdvanceStripImage");
+            AssertHasImage(AssertChild(exteriorLane, "ExteriorThreatVfxImage"), "ExteriorThreatVfxImage");
             AssertHasImage(interiorLane, "InteriorBoardingCombatLane");
             AssertHasImage(AssertChild(interiorLane, "InteriorTrainCarBackgroundImage"), "InteriorTrainCarBackgroundImage");
-            AssertHasImage(engagementZone, "EngagementZoneMarkerImage");
+            AssertHasImage(AssertChild(engagementZone, "EngagementContactBurstImage"), "EngagementContactBurstImage");
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorAnimated_"), Is.EqualTo(5));
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(0));
-            Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.GreaterThanOrEqualTo(3));
+            Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingAnimated_"), Is.GreaterThanOrEqualTo(3));
+            Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.EqualTo(0));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
 
             AssertBoundFields<FullyAnimatedCombatHudRootBehaviour>(

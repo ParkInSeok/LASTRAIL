@@ -30,6 +30,7 @@ namespace LastRail.Editor
         private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
         private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
         private const string CombatLaneRoot = "Assets/_LASTRAIL/UI/CombatResources/Lanes";
+        private const string CombatInteriorRoot = "Assets/_LASTRAIL/UI/CombatResources/Interiors";
         private const string CombatAnimationRoot = "Assets/_LASTRAIL/UI/CombatAnimations";
         private const string OperatorCardRoot = "Assets/_LASTRAIL/UI/Operators/Cards";
         private const string MissionThumbnailRoot = "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails";
@@ -522,11 +523,11 @@ namespace LastRail.Editor
                 var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "스킬 / 피격 / 궁극기 / 진동 큐 연결");
                 Place(encounterTitle, 0f, 34f, 860f, 68f);
                 Place(waveCounter, 0f, -34f, 860f, 64f);
-                Place(bossStatus, 0f, -225f, 860f, 68f);
-                Place(objective, 0f, 286f, 860f, 68f);
-                Place(unitRefs, 0f, -310f, 860f, 64f);
-                Place(cueRefs, 0f, -382f, 860f, 64f);
-                Place(refundHint, 0f, -456f, 860f, 68f);
+                Place(bossStatus, 0f, -252f, 860f, 64f);
+                Place(objective, 0f, 404f, 860f, 64f);
+                Place(unitRefs, 0f, -416f, 860f, 64f);
+                Place(cueRefs, 0f, -486f, 860f, 64f);
+                Place(refundHint, 0f, -556f, 860f, 64f);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -555,6 +556,7 @@ namespace LastRail.Editor
         {
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_exterior_advance_lane.png");
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_interior_boarding_lane.png");
+            EnsureSpriteImporter(CombatInteriorRoot + "/combat_train_interior_initial_squad.png");
         }
 
         private static void EnsureSpriteImporter(string assetPath)
@@ -578,11 +580,12 @@ namespace LastRail.Editor
 
         private static CombatHudLayoutBindings CreateCombatHudVisualPolish(Transform safeArea)
         {
-            var backdrop = CreateSlicedImage(
+            var backdrop = CreateImage(
                 safeArea,
                 "CombatHudBackdropPanel",
-                CommonSkinRoot + "/ui_modal_panel_9slice.png",
-                new Color(0.10f, 0.14f, 0.15f, 0.98f));
+                BackgroundRoot + "/bg_main_lobby_train_interior.png",
+                new Color(0.38f, 0.44f, 0.48f, 0.44f));
+            backdrop.preserveAspect = false;
             Place(backdrop, 0f, 0f, 1000f, 1770f);
 
             var exteriorLaneImage = CreateImage(
@@ -591,63 +594,31 @@ namespace LastRail.Editor
                 CombatLaneRoot + "/combat_train_exterior_advance_lane.png",
                 Color.white);
             exteriorLaneImage.preserveAspect = false;
-            Place(exteriorLaneImage, 0f, 520f, 1000f, 610f);
+            Place(exteriorLaneImage, 0f, 530f, 1000f, 650f);
             var exteriorLane = exteriorLaneImage.GetComponent<RectTransform>();
 
             var topStatusPanel = CreateSlicedImage(
                 exteriorLane,
                 "CombatHudTopStatusPanel",
                 CommonSkinRoot + "/ui_status_chip_9slice.png",
-                new Color(1f, 1f, 1f, 0.96f));
-            Place(topStatusPanel, 0f, 222f, 910f, 120f);
+                new Color(0.92f, 0.98f, 1f, 0.88f));
+            Place(topStatusPanel, 0f, 245f, 908f, 108f);
 
-            var railParallax = CreateImage(
+            var exteriorThreatVfx = CreateImage(
                 exteriorLane,
-                "ExteriorRailParallaxImage",
-                RewardOfflineMetersRoot + "/offline_duration_accumulation_strip.png",
-                new Color(1f, 1f, 1f, 0.82f));
-            railParallax.preserveAspect = false;
-            Place(railParallax, 0f, -230f, 920f, 92f);
-
-            var trainAdvanceStrip = CreateImage(
-                exteriorLane,
-                "TrainAdvanceStripImage",
-                BackgroundRoot + "/bg_main_lobby_train_interior.png",
-                new Color(1f, 1f, 1f, 0.74f));
-            trainAdvanceStrip.preserveAspect = false;
-            Place(trainAdvanceStrip, 210f, -142f, 520f, 136f);
-
-            var bossPreview = CreateAnimatedImage(
-                exteriorLane,
-                "StoryRaidBossAnimated_boss_raider_king_engine",
-                "Bosses",
-                "boss_raider_king_engine",
-                "idle",
-                new Color(1f, 1f, 1f, 0.78f));
-            Place(bossPreview, 335f, 12f, 270f, 180f);
+                "ExteriorThreatVfxImage",
+                CombatVfxRoot + "/vfx_story_raid_danger.png",
+                new Color(1f, 1f, 1f, 0.30f));
+            Place(exteriorThreatVfx, 326f, 30f, 190f, 190f);
 
             var raidSurface = CreateTransparentGroup(exteriorLane, "CombatStoryRaidBossDemoSurface");
-            Place(raidSurface, 0f, -52f, 940f, 340f);
-            var raidFrame = CreateSlicedImage(
+            Place(raidSurface, 0f, -42f, 940f, 360f);
+            var raidWake = CreateImage(
                 raidSurface,
-                "StoryRaidBossDangerFrame",
-                CommonSkinRoot + "/ui_modal_panel_9slice.png",
-                new Color(0.72f, 0.20f, 0.16f, 0.42f));
-            Place(raidFrame, 0f, 0f, 920f, 315f);
-            var raidBoss = CreateAnimatedImage(
-                raidSurface,
-                "StoryRaidBossLaneAnimated_boss_raider_king_engine",
-                "Bosses",
-                "boss_raider_king_engine",
-                "warning",
-                new Color(1f, 1f, 1f, 0.84f));
-            Place(raidBoss, 248f, -8f, 330f, 230f);
-            var raidBadge = CreateImage(
-                raidSurface,
-                "StoryRaidBossOnlyBadgeImage",
-                MissionThumbnailOverlayRoot + "/mission_state_boss_only_badge.png",
-                new Color(1f, 1f, 1f, 0.92f));
-            Place(raidBadge, -258f, 96f, 190f, 58f);
+                "StoryRaidThreatWakeImage",
+                CombatVfxRoot + "/vfx_ultimate_activation.png",
+                new Color(1f, 1f, 1f, 0.24f));
+            Place(raidWake, 268f, -12f, 260f, 260f);
 
             var interiorLaneImage = CreateImage(
                 safeArea,
@@ -655,30 +626,50 @@ namespace LastRail.Editor
                 CombatLaneRoot + "/combat_train_interior_boarding_lane.png",
                 Color.white);
             interiorLaneImage.preserveAspect = false;
-            Place(interiorLaneImage, 0f, -340f, 1000f, 1050f);
+            Place(interiorLaneImage, 0f, -348f, 1000f, 1080f);
             var interiorLane = interiorLaneImage.GetComponent<RectTransform>();
 
             var ordinarySurface = CreateTransparentGroup(interiorLane, "CombatOrdinaryWaveDemoSurface");
-            Place(ordinarySurface, 0f, 0f, 960f, 980f);
+            Place(ordinarySurface, 0f, 0f, 960f, 1010f);
 
             var interiorBackground = CreateImage(
                 interiorLane,
                 "InteriorTrainCarBackgroundImage",
-                CombatLaneRoot + "/combat_train_interior_boarding_lane.png",
-                new Color(1f, 1f, 1f, 0.36f));
+                CombatInteriorRoot + "/combat_train_interior_initial_squad.png",
+                Color.white);
             interiorBackground.preserveAspect = false;
-            Place(interiorBackground, 0f, 0f, 940f, 630f);
+            Place(interiorBackground, 0f, 8f, 958f, 704f);
 
             var squadSlots = CreateTransparentGroup(interiorLane, "PlayerSquadSlots");
-            Place(squadSlots, -290f, -10f, 360f, 710f);
+            Place(squadSlots, -250f, -8f, 420f, 690f);
             var enemySlots = CreateTransparentGroup(interiorLane, "InvadingEnemySlots");
-            Place(enemySlots, 300f, -8f, 360f, 660f);
-            var engagementZone = CreateSlicedImage(
+            Place(enemySlots, 292f, -12f, 360f, 620f);
+            var engagementZone = CreateTransparentGroup(interiorLane, "EngagementZoneMarkerImage");
+            var engagementBurst = CreateImage(
+                engagementZone,
+                "EngagementContactBurstImage",
+                CombatVfxRoot + "/vfx_basic_hit_spark.png",
+                new Color(1f, 1f, 1f, 0.46f));
+            Place(engagementBurst, 0f, 18f, 214f, 214f);
+            var engagementSkill = CreateImage(
+                engagementZone,
+                "EngagementSkillWakeImage",
+                CombatVfxRoot + "/vfx_skill_activation.png",
+                new Color(1f, 1f, 1f, 0.34f));
+            Place(engagementSkill, -42f, -70f, 210f, 210f);
+            Place(
+                engagementZone,
+                22f,
+                -18f,
+                260f,
+                520f);
+
+            var objectiveBand = CreateSlicedImage(
                 interiorLane,
-                "EngagementZoneMarkerImage",
+                "CombatObjectiveHudBand",
                 CommonSkinRoot + "/ui_status_chip_9slice.png",
-                new Color(1f, 0.78f, 0.36f, 0.52f));
-            Place(engagementZone, 0f, -20f, 235f, 520f);
+                new Color(0.08f, 0.13f, 0.15f, 0.58f));
+            Place(objectiveBand, 0f, 404f, 900f, 82f);
 
             CreateOperatorCombatSlots(squadSlots);
             CreateEnemyBoardingSlots(enemySlots);
@@ -689,28 +680,29 @@ namespace LastRail.Editor
                 "CombatSkillVfxPreviewImage",
                 CombatVfxRoot + "/vfx_skill_activation.png",
                 new Color(1f, 1f, 1f, 0.68f));
-            Place(skillVfx, -62f, 32f, 188f, 188f);
+            Place(skillVfx, -26f, 36f, 188f, 188f);
 
             var hitVfx = CreateImage(
                 interiorLane,
                 "CombatHitSparkPreviewImage",
                 CombatVfxRoot + "/vfx_basic_hit_spark.png",
                 new Color(1f, 1f, 1f, 0.78f));
-            Place(hitVfx, 98f, 40f, 150f, 150f);
+            Place(hitVfx, 110f, 40f, 150f, 150f);
 
             return new CombatHudLayoutBindings(
                 exteriorLane,
                 interiorLane,
                 squadSlots,
                 enemySlots,
-                engagementZone.GetComponent<RectTransform>(),
+                engagementZone,
                 topStatusPanel.GetComponent<RectTransform>());
         }
 
         private static void CreateOperatorCombatSlots(Transform squadSlots)
         {
-            var xPositions = new[] { -74f, 74f, -74f, 74f, 0f };
-            var yPositions = new[] { 226f, 226f, 55f, 55f, -116f };
+            var xPositions = new[] { -92f, 68f, -136f, 28f, -80f };
+            var yPositions = new[] { 230f, 132f, 18f, -82f, -218f };
+            var rotations = new[] { 0f, 0f, 0f, 0f, 0f };
             var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
@@ -721,7 +713,8 @@ namespace LastRail.Editor
                     operatorIds[i],
                     "idle",
                     new Color(1f, 1f, 1f, 0.96f));
-                Place(unit, xPositions[i], yPositions[i], 174f, 174f);
+                Place(unit, xPositions[i], yPositions[i], 198f, 198f);
+                unit.rectTransform.localRotation = Quaternion.Euler(0f, 0f, rotations[i]);
             }
         }
 
@@ -737,47 +730,26 @@ namespace LastRail.Editor
             var yPositions = new[] { 218f, 74f, -70f, -214f };
             for (var i = 0; i < enemySpecs.Length; i++)
             {
-                var slot = CreateSlicedImage(
-                    enemySlots,
-                    "EnemyBoardingSlotFrame" + (i + 1).ToString("00"),
-                    CommonSkinRoot + "/ui_list_row_9slice.png",
-                    new Color(1f, 1f, 1f, 0.88f));
-                Place(slot, 0f, yPositions[i], 260f, 126f);
-
                 var spec = enemySpecs[i];
                 var sprite = CreateAnimatedImage(
-                    slot.transform,
+                    enemySlots,
                     "EnemyBoardingAnimated_" + spec.Id,
                     spec.Folder,
                     spec.Id,
                     spec.State,
                     new Color(1f, 1f, 1f, 0.98f));
-                Place(sprite, 0f, 0f, 118f, 118f);
+                Place(sprite, i % 2 == 0 ? -8f : 54f, yPositions[i], 166f, 166f);
             }
         }
 
         private static void CreateCombatPreviewSprites(Transform interiorLane, Transform squadSlots, Transform enemySlots)
         {
-            var squadLabelPlate = CreateSlicedImage(
-                squadSlots,
-                "PlayerSquadLabelPlate",
-                CommonSkinRoot + "/ui_status_chip_9slice.png",
-                new Color(0.62f, 0.92f, 1f, 0.72f));
-            Place(squadLabelPlate, 0f, 335f, 300f, 48f);
-
-            var enemyLabelPlate = CreateSlicedImage(
-                enemySlots,
-                "EnemyBoardingLabelPlate",
-                CommonSkinRoot + "/ui_status_chip_9slice.png",
-                new Color(1f, 0.48f, 0.34f, 0.72f));
-            Place(enemyLabelPlate, 0f, 315f, 300f, 48f);
-
             var dangerCue = CreateImage(
                 interiorLane,
                 "StoryRaidDangerCueImage",
                 CombatVfxRoot + "/vfx_story_raid_danger.png",
-                new Color(1f, 1f, 1f, 0.48f));
-            Place(dangerCue, 0f, 180f, 190f, 190f);
+                new Color(1f, 1f, 1f, 0.34f));
+            Place(dangerCue, 170f, 220f, 160f, 160f);
         }
 
         private static Image CreateAnimatedImage(Transform parent, string name, string folder, string id, string state, Color color)

@@ -149,6 +149,7 @@ namespace LastRail.Editor
                 blockers.Add("fallback_composite_frames_present");
             }
 
+            combatEvidence = RehashCombatSurfaceEvidence(combatEvidence, framePaths);
             var combatSegmentFrameHashesDiffer = CombatSegmentHashesDiffer(combatEvidence);
             if (!combatSegmentFrameHashesDiffer)
             {
@@ -333,6 +334,7 @@ namespace LastRail.Editor
                 }
 
                 ValidatePresentationOnlyFrameRoot(root, screenKey);
+                ValidateCombatActualFlowFrameAssets(root, screenKey);
                 var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
                 var usedFallbackComposite = CaptureRootToPng(root, path);
                 ValidateFrameFile(path, screenKey);
@@ -506,6 +508,47 @@ namespace LastRail.Editor
             }
 
             return count == 3 && hashes.Count == 3;
+        }
+
+        private static List<LaunchEditorFlowCombatSurfaceEvidence> RehashCombatSurfaceEvidence(
+            IEnumerable<LaunchEditorFlowCombatSurfaceEvidence> evidence,
+            IEnumerable<string> framePaths)
+        {
+            var pathsBySurface = new Dictionary<string, string>(StringComparer.Ordinal);
+            foreach (var framePath in framePaths)
+            {
+                var fileName = Path.GetFileName(framePath);
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    continue;
+                }
+
+                foreach (var surface in new[] { "combat_ordinary_wave_demo", "combat_elite_squad_a_demo", "combat_elite_squad_b_demo" })
+                {
+                    if (fileName.IndexOf("_" + surface + "_", StringComparison.Ordinal) >= 0)
+                    {
+                        pathsBySurface[surface] = framePath;
+                    }
+                }
+            }
+
+            var rehashed = new List<LaunchEditorFlowCombatSurfaceEvidence>();
+            foreach (var surfaceEvidence in evidence)
+            {
+                if (!pathsBySurface.TryGetValue(surfaceEvidence.ScreenKey, out var framePath))
+                {
+                    rehashed.Add(surfaceEvidence);
+                    continue;
+                }
+
+                rehashed.Add(LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                    surfaceEvidence.ScreenKey,
+                    surfaceEvidence.ExpectedOperatorIds,
+                    surfaceEvidence.ActualVisibleOperatorIds,
+                    Sha256(framePath)));
+            }
+
+            return rehashed;
         }
 
         private static bool CombatInteriorBackgroundsDiffer(IReadOnlyCollection<LaunchEditorFlowCombatInteriorEvidence> evidence)
@@ -744,6 +787,31 @@ namespace LastRail.Editor
                 if (LooksLikeSpriteBackedUi(image.gameObject.name) && image.sprite == null)
                 {
                     throw new InvalidOperationException("Editor video QA frame has missing sprite reference: " + screenKey + "/" + image.gameObject.name);
+                }
+            }
+        }
+
+        private static void ValidateCombatActualFlowFrameAssets(GameObject root, string screenKey)
+        {
+            if (!screenKey.StartsWith("combat_", StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            foreach (var image in root.GetComponentsInChildren<Image>(true))
+            {
+                if (!image.gameObject.activeInHierarchy || image.color.a <= 0.01f || image.sprite == null)
+                {
+                    continue;
+                }
+
+                var assetPath = AssetDatabase.GetAssetPath(image.sprite).Replace('\\', '/');
+                if (assetPath.IndexOf("/Operators/CardPolish/Frames/", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    assetPath.IndexOf("operator_card_slot_background", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    assetPath.IndexOf("operator_card_selected_frame", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    throw new InvalidOperationException(
+                        "Combat actual-flow frame contains card/debug frame art: " + screenKey + "/" + image.gameObject.name + " -> " + assetPath);
                 }
             }
         }

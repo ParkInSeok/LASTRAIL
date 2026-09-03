@@ -97,7 +97,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(PrefabContainsSprite(prefab, "operator_card_slot_background"), Is.False);
             Assert.That(FindChildRecursive(prefab.transform, "CombatOrdinaryWaveDemoSurface"), Is.Not.Null);
             Assert.That(FindChildRecursive(prefab.transform, "CombatStoryRaidBossDemoSurface"), Is.Not.Null);
-            Assert.That(FindChildRecursive(prefab.transform, "StoryRaidBossAnimated_boss_raider_king_engine"), Is.Not.Null);
+            Assert.That(FindChildRecursive(prefab.transform, "ExteriorThreatVfxImage"), Is.Not.Null);
         }
 
         [Test]

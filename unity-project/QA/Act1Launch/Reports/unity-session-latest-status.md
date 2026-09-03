@@ -1,80 +1,51 @@
 # LAST RAIL Unity Session Status
 
-Status: BLOCKED
+Status: COMPLETE
 
-Commit: `9590c035abe2c7fb395dd3b6f353591334aaf0ea` contains the safe source/art/report changes. Capture/video regeneration remains blocked by Unity startup failures and Unity Licensing Client crash popups.
+Latest commit message: `fix(unity): polish combat QA flow`.
 
-Root cause found:
-- Combat operator actual-flow validation had already been partially strengthened in `74f5030`, and current `frame_002`/`frame_003`/`frame_004` hashes now differ.
-- The remaining false-positive gap is the train-interior background: `FullyAnimatedCombatHud.prefab` uses a single fixed `InteriorTrainCarBackgroundImage` sprite from `CombatResources/Lanes`, and the latest report has no `combatInteriorBackgroundBySurface` or `combatInteriorBackgroundsDiffer` fields.
-- The MP4 export script also preserved operator evidence but did not validate or preserve combat-interior background evidence, so the latest report could still pass without proving deployment-specific interior art.
-
-Implemented before the Unity blocker:
-- Generated four illustrated train-interior background PNGs under `Assets/_LASTRAIL/UI/CombatResources/Interiors/`.
-- Added Unity `.meta` files for the new interior folder/assets using sprite importer settings.
-- Updated `LaunchEditorFlowVideoQaRunner` to bind a different `InteriorTrainCarBackgroundImage` sprite per combat segment and record actual background id/path evidence.
-- Updated `LaunchEditorFlowVideoQaReport` and JSON serialization to include `combatInteriorBackgroundBySurface`, `combatInteriorBackgroundsDiffer`, and blockers for duplicate or incomplete combat-interior evidence.
-- Updated `export-act1-launch-latest-qa-mp4.py` so latest MP4 export validates and preserves combat-interior evidence before writing `latest-video-qa-report.json`.
-- Added a report regression test for missing/duplicated combat-interior evidence.
-
-Changed files:
-- `Assets/_LASTRAIL/Editor/LaunchEditorFlowVideoQaRunner.cs`
-- `Assets/_LASTRAIL/Scripts/Presentation/LaunchEditorFlowVideoQaReport.cs`
-- `Assets/_LASTRAIL/Tests/EditMode/LaunchEditorFlowVideoQaReportTests.cs`
-- `Tools/export-act1-launch-latest-qa-mp4.py`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors.meta`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png.meta`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_a.png`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_a.png.meta`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_b.png`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_b.png.meta`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_story_raid_boss.png`
-- `Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_story_raid_boss.png.meta`
-- `QA/Act1Launch/Reports/unity-session-latest-status.md`
-
-Current stale combat frame evidence:
-- `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Frames\EditorFlowVideoQa\frame_002_combat_ordinary_wave_demo_1080x1920.png`
-  - SHA256: `E845CAFCA63BE9E620E1C8A43F796443897DFB6570FD591BD24A71760F4E07B8`
-  - Visible IDs in current stale report: `op_kyle`, `op_reina`, `op_eve`, `op_sera`, `op_mira`
-  - Background id/path: not present in current stale report.
-- `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Frames\EditorFlowVideoQa\frame_003_combat_elite_squad_a_demo_1080x1920.png`
-  - SHA256: `4A8E75C4081033383A64277C87F8EEF30D9783048A0243795B7BF9A7D24092CF`
-  - Visible IDs in current stale report: `op_vex`, `op_nyx`, `op_sable`, `op_marrow`, `op_iris`
-  - Background id/path: not present in current stale report.
-- `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Frames\EditorFlowVideoQa\frame_004_combat_elite_squad_b_demo_1080x1920.png`
-  - SHA256: `18BFD201A0E56F5D1AD662A8CDCC636C725AF24DF519A4FE0DBDD41B723702E0`
-  - Visible IDs in current stale report: `op_rail`, `op_anchor`, `op_lumen`, `op_cinder`, `op_warden`
-  - Background id/path: not present in current stale report.
-- `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Frames\EditorFlowVideoQa\frame_005_combat_story_raid_boss_demo_1080x1920.png`
-  - SHA256: `C5D27D1B133FE3C8A2863B8C5001F5A292E690A6BB99347F074DED0053A5D854`
-  - Visible IDs in current stale report: not tracked for boss frame.
-  - Background id/path: not present in current stale report.
+Completed:
+- Polished `FullyAnimatedCombatHud.prefab` so Act 1 combat QA frames read as actual gameplay flow: exterior train/progression/threat layer on top, illustrated train interior battle layer below.
+- Removed combat-frame showcase furniture from the battle presentation: no operator card frames, no enemy slot row frames, no CardPolish/Frames art in combat evidence.
+- Preserved the four combat interior backgrounds by surface:
+  - `combat_ordinary_wave_demo` -> `combat_train_interior_initial_squad`
+  - `combat_elite_squad_a_demo` -> `combat_train_interior_elite_squad_a`
+  - `combat_elite_squad_b_demo` -> `combat_train_interior_elite_squad_b`
+  - `combat_story_raid_boss_demo` -> `combat_train_interior_story_raid_boss`
+- Added a capture-time validator that rejects combat surfaces containing `Operators/CardPolish/Frames` sprites.
+- Rehashed final combat PNG files immediately before writing the QA report so MP4 export validates the actual bytes on disk.
+- Updated tests to assert the new actual-flow combat layout contract.
+- Regenerated only `QA/Act1Launch/Video/act1-launch-latest-qa.mp4`.
 
 Latest MP4:
-- Path: `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Video\act1-launch-latest-qa.mp4`
-- Retained MP4 count in current stale report: 1
-- Not regenerated in this task because Unity could not start the capture method.
+- `E:\Projects\LASTRAIL\unity-project\QA\Act1Launch\Video\act1-launch-latest-qa.mp4`
+- Size: 132,958,710 bytes
+- 1080x1920, 90 seconds, 30 fps
+- Source frame count: 14
+- Encoded frame count: 2688
+- Retained MP4 count: 1
 
-Verification results:
-- RED: Added background-evidence regression test; first Unity run could not write XML because Unity exited before compilation. The production API was missing `LaunchEditorFlowCombatInteriorEvidence`/`combatInteriorBackgroundBySurface` at that point.
-- Main-thread retry: `Tools/run-editmode-tests.ps1` focused `LaunchEditorFlowVideoQaReportTests` passed with `total=1 passed=1 failed=0`.
-- Main-thread exporter check: `python Tools\export-act1-launch-latest-qa-mp4.py` failed with `Missing combat interior background evidence for combat_ordinary_wave_demo`, confirming the new latest-video validation is active and the current editor report is stale/missing background evidence.
-- Capture command ordering issue found: `Unity-CombatInterior-Capture-Retry.log` had `-quit` before `-executeMethod`, and Unity exited before logging `LaunchEditorFlowVideoQaRunner.CaptureEditorFlowVideoQa` completion.
+Actual-flow combat evidence:
+- Initial/free operators: 5
+  - `op_kyle`, `op_reina`, `op_eve`, `op_sera`, `op_mira`
+  - Frame SHA256: `C08CE0B67719A195D0115DF11EF2BA87593C1D492732A3B7842F24E58453ABDB`
+- Elite operators: 10
+  - Elite A: `op_vex`, `op_nyx`, `op_sable`, `op_marrow`, `op_iris`
+  - Frame SHA256: `082CAB8284A781167BDBFB634729B911A30A82D640BE4BB61573ECE0754F43E8`
+  - Elite B: `op_rail`, `op_anchor`, `op_lumen`, `op_cinder`, `op_warden`
+  - Frame SHA256: `DF2861C2B9A42DCB2B8534264254DD09AE42803E9E5725C668B0576411F9AB34`
+- `combatSegmentFrameHashesDiffer`: true
+- `combatInteriorBackgroundsDiffer`: true
+- `usesFallbackComposite`: false
+
+Verification:
 - PASS: `python -m py_compile E:\Projects\LASTRAIL\unity-project\Tools\export-act1-launch-latest-qa-mp4.py`
-- PASS: `git diff --check` for the touched code/script/assets.
-- BLOCKED: Focused EditMode test, capture runner, 7-screen screenshot QA, latest-video QA regeneration, visual spot check, and full EditMode wrapper. Unity exits before running tests/capture with Package Manager IPC failure:
-  - `[Package Manager] Could not connect to IPC stream "Upm-7672" after 30.0 seconds.`
-  - `[Package Manager] Could not establish a connection with the Unity Package Manager local server process.`
-- BLOCKED: `-noUpm` avoided the Package Manager exit but hung in licensing/headless startup and had to be stopped:
-  - `[Licensing::Module] Error: Licensing initialization failed after 74.82s`
-  - `[Licensing::Module] The re-connection attempt was UN-successful.`
-  - `[Licensing::Module] Error: 'com.unity.editor.headless' was not found.`
+- PASS: focused `LaunchEditorFlowVideoQaReportTests`, 5/5
+- PASS: focused `LaunchScreenPrefabBindingTests`, 16/16
+- PASS: full Unity EditMode suite, 619/619
+- PASS: `python Tools\export-act1-launch-latest-qa-mp4.py --project-root E:\Projects\LASTRAIL\unity-project`
+- Visual spot check: combat ordinary, elite B, and story raid boss frames show exterior train/progression above and interior battle composition below, with operators left/center-left and enemies right.
 
-Next required command once Unity is healthy:
-- Run focused report tests, then `LastRail.Editor.LaunchEditorFlowVideoQaRunner.CaptureEditorFlowVideoQa`, then `Tools/export-act1-launch-latest-qa-mp4.py`, then screenshot/full EditMode QA. The resulting reports should include `combatInteriorBackgroundBySurface` with four distinct background ids/paths and `combatInteriorBackgroundsDiffer: true`.
-
-Blockers:
-- STOP requested after user saw repeated `Unity.Licensing.Client.exe - Application Error` popups with unknown software exception `0xe0434352`.
-- No further Unity launches are allowed in this task until instructed.
-- Current capture/video regeneration is blocked by Unity Licensing Client crash popups plus the Package Manager IPC/startup failure. Process cleanup is being handled from the main thread.
+Unity startup notes:
+- Earlier blocker was transient in this run. Unity still logged non-fatal licensing validation noise, but Package Manager connected and tests/capture completed.
+- Two immediate test starts hit a temporary project-lock race after prefab rebuilds; retrying after Unity fully exited succeeded.
