@@ -28,6 +28,7 @@ namespace LastRail.Editor
         private const string CombatEnemyRoot = "Assets/_LASTRAIL/UI/CombatResources/Enemies";
         private const string CombatEliteRoot = "Assets/_LASTRAIL/UI/CombatResources/Elites";
         private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
+        private const string CombatAccentRoot = "Assets/_LASTRAIL/UI/CombatResources/Accents";
         private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
         private const string CombatLaneRoot = "Assets/_LASTRAIL/UI/CombatResources/Lanes";
         private const string CombatInteriorRoot = "Assets/_LASTRAIL/UI/CombatResources/Interiors";
@@ -557,6 +558,7 @@ namespace LastRail.Editor
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_exterior_advance_lane.png");
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_interior_boarding_lane.png");
             EnsureSpriteImporter(CombatInteriorRoot + "/combat_train_interior_initial_squad.png");
+            EnsureSpriteImporter(CombatAccentRoot + "/combat_unit_contact_shadow.png");
         }
 
         private static void EnsureSpriteImporter(string assetPath)
@@ -641,9 +643,9 @@ namespace LastRail.Editor
             Place(interiorBackground, 0f, 8f, 958f, 704f);
 
             var squadSlots = CreateTransparentGroup(interiorLane, "PlayerSquadSlots");
-            Place(squadSlots, -250f, -8f, 420f, 690f);
+            Place(squadSlots, -218f, 138f, 420f, 690f);
             var enemySlots = CreateTransparentGroup(interiorLane, "InvadingEnemySlots");
-            Place(enemySlots, 292f, -12f, 360f, 620f);
+            Place(enemySlots, 292f, 118f, 360f, 620f);
             var engagementZone = CreateTransparentGroup(interiorLane, "EngagementZoneMarkerImage");
             var engagementBurst = CreateImage(
                 engagementZone,
@@ -700,12 +702,12 @@ namespace LastRail.Editor
 
         private static void CreateOperatorCombatSlots(Transform squadSlots)
         {
-            var xPositions = new[] { -92f, 68f, -136f, 28f, -80f };
-            var yPositions = new[] { 230f, 132f, 18f, -82f, -218f };
-            var rotations = new[] { 0f, 0f, 0f, 0f, 0f };
+            var xPositions = new[] { -126f, -28f, -170f, -74f, 38f };
+            var yPositions = new[] { -112f, -138f, -198f, -222f, -238f };
             var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
+                CreateCombatContactShadow(squadSlots, "OperatorContactShadow_" + operatorIds[i], xPositions[i], yPositions[i] - 82f, 188f, 46f, 0.42f);
                 var unit = CreateAnimatedImage(
                     squadSlots,
                     "OperatorAnimated_" + operatorIds[i],
@@ -713,8 +715,7 @@ namespace LastRail.Editor
                     operatorIds[i],
                     "idle",
                     new Color(1f, 1f, 1f, 0.96f));
-                Place(unit, xPositions[i], yPositions[i], 198f, 198f);
-                unit.rectTransform.localRotation = Quaternion.Euler(0f, 0f, rotations[i]);
+                Place(unit, xPositions[i], yPositions[i], 164f, 164f);
             }
         }
 
@@ -727,10 +728,12 @@ namespace LastRail.Editor
                 new CombatAnimatedSpriteSpec("Enemies", "enemy_scrapshield_brute", "hit"),
                 new CombatAnimatedSpriteSpec("EliteEnemies", "elite_ironclad_boarder", "skill_or_special")
             };
-            var yPositions = new[] { 218f, 74f, -70f, -214f };
+            var xPositions = new[] { -12f, 74f, -8f, 86f };
+            var yPositions = new[] { -104f, -156f, -210f, -238f };
             for (var i = 0; i < enemySpecs.Length; i++)
             {
                 var spec = enemySpecs[i];
+                CreateCombatContactShadow(enemySlots, "EnemyContactShadow_" + spec.Id, xPositions[i], yPositions[i] - 68f, 158f, 40f, 0.38f);
                 var sprite = CreateAnimatedImage(
                     enemySlots,
                     "EnemyBoardingAnimated_" + spec.Id,
@@ -738,8 +741,26 @@ namespace LastRail.Editor
                     spec.Id,
                     spec.State,
                     new Color(1f, 1f, 1f, 0.98f));
-                Place(sprite, i % 2 == 0 ? -8f : 54f, yPositions[i], 166f, 166f);
+                Place(sprite, xPositions[i], yPositions[i], 140f, 140f);
             }
+        }
+
+        private static void CreateCombatContactShadow(
+            Transform parent,
+            string name,
+            float x,
+            float y,
+            float width,
+            float height,
+            float alpha)
+        {
+            var shadow = CreateImage(
+                parent,
+                name,
+                CombatAccentRoot + "/combat_unit_contact_shadow.png",
+                new Color(1f, 1f, 1f, alpha));
+            shadow.preserveAspect = false;
+            Place(shadow, x, y, width, height);
         }
 
         private static void CreateCombatPreviewSprites(Transform interiorLane, Transform squadSlots, Transform enemySlots)
