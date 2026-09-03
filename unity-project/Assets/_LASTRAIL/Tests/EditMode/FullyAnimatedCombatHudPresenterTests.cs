@@ -26,7 +26,7 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(view.LastState.Surface, Is.EqualTo(MobileCombatHudSurface.Ordinary15Wave));
             Assert.That(view.LastState.EncounterTitle, Is.EqualTo("15공세 작전"));
-            Assert.That(view.LastState.WaveCounterLabel, Is.EqualTo("7 / 15"));
+            Assert.That(view.LastState.WaveCounterLabel, Is.EqualTo("웨이브 7/15"));
             Assert.That(view.LastState.BossObjectiveLabel, Is.EqualTo(null));
             Assert.That(view.LastState.OperatorSlotCount, Is.EqualTo(2));
             Assert.That(view.LastState.EnemyUnitCount, Is.EqualTo(1));
@@ -70,9 +70,9 @@ namespace LastRail.Tests.EditMode
             Assert.That(view.LastState.WaveCounterLabel, Is.EqualTo(null));
             Assert.That(view.LastState.BossId, Is.EqualTo("boss_crown_engine"));
             Assert.That(view.LastState.BossPhaseLabel, Is.EqualTo("Phase 2"));
-            Assert.That(view.LastState.BossStatusPlaceholder, Is.EqualTo("보스 HP/상태 연동 대기"));
+            Assert.That(view.LastState.BossStatusPlaceholder, Is.EqualTo("보스: Phase 2"));
             Assert.That(view.LastState.BossObjectiveLabel, Is.EqualTo("목표: 보스 격파"));
-            Assert.That(view.LastState.FailureStaminaRefundHint, Is.EqualTo("실패 시 스태미나 환급 표시 후보"));
+            Assert.That(view.LastState.FailureStaminaRefundHint, Is.EqualTo("철수 시 연료 보호"));
             Assert.That(view.LastState.OperatorSlotCount, Is.EqualTo(5));
             Assert.That(view.LastState.RaidBossUnitCount, Is.EqualTo(1));
             Assert.That(view.LastState.BossPhaseTransitionCueId, Is.EqualTo("boss_phase_transition"));

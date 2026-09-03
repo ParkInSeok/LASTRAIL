@@ -212,6 +212,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingAnimated_"), Is.GreaterThanOrEqualTo(3));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.EqualTo(0));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
+            AssertCombatHudDoesNotExposeQaCopy(prefab);
 
             AssertBoundFields<FullyAnimatedCombatHudRootBehaviour>(
                 "FullyAnimatedCombatHud.prefab",
@@ -221,6 +222,21 @@ namespace LastRail.Tests.EditMode
                 "invadingEnemySlots",
                 "engagementZoneRoot");
         }
+
+        private static void AssertCombatHudDoesNotExposeQaCopy(GameObject prefab)
+        {
+            var text = string.Join("\n", System.Array.ConvertAll(
+                prefab.GetComponentsInChildren<TMP_Text>(includeInactive: true),
+                item => item.text ?? string.Empty));
+            Assert.That(text, Does.Not.Contain("연동 대기"));
+            Assert.That(text, Does.Not.Contain("표시 후보"));
+            Assert.That(text, Does.Not.Contain("애니메이션 배치"));
+            Assert.That(text, Does.Not.Contain("큐 연결"));
+            Assert.That(text, Does.Not.Contain("히트스톱"));
+            Assert.That(text, Does.Not.Contain("VFX / SFX"));
+            Assert.That(text, Does.Not.Contain("진동 준비"));
+        }
+
         [Test]
         public void LaunchScreenPrefabs_KeepTouchTargetsAtLeastFortyEightDp()
         {

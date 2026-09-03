@@ -7,7 +7,7 @@
   "hasRecorderPackage": false,
   "mp4Path": "E:\\Projects\\LASTRAIL\\unity-project\\QA\\Act1Launch\\Video\\act1-launch-latest-qa.mp4",
   "mp4Encoder": "unity_rendered_frames_imageio_ffmpeg",
-  "mp4SizeBytes": 129035466,
+  "mp4SizeBytes": 128772518,
   "width": 1080,
   "height": 1920,
   "frameCount": 14,
@@ -33,7 +33,7 @@
         "op_sera",
         "op_mira"
       ],
-      "frameSha256": "75B57708151CF90C0FAF976908C0D7E40FCCF66A885505752E2E4ADAA61D6B91",
+      "frameSha256": "003258B5D8B77E8F88114D8C0FE2A6B4491DA96C67CABCF5E17F05E0B265AA53",
       "expectedIdsMatchActualIds": true
     },
     "combat_elite_squad_a_demo": {
@@ -51,7 +51,7 @@
         "op_marrow",
         "op_iris"
       ],
-      "frameSha256": "26E03D8350950A3FF52E1543AADDD5DE581E8E66335CDE06A77CBF0BA4102A8B",
+      "frameSha256": "1998BCB6CB07F7E055B3AA891C518CCF102BC2AD2CA6CD3A5D6620B063368379",
       "expectedIdsMatchActualIds": true
     },
     "combat_elite_squad_b_demo": {
@@ -69,7 +69,7 @@
         "op_cinder",
         "op_warden"
       ],
-      "frameSha256": "9E3F6AD0F9CEA7DFE6D42A8DE33C148B4BF0C62E0B0CE68F92C9EEFA8B6BB18F",
+      "frameSha256": "11978F91B7E9E296725A1E717DC1B37AE5B0F7ADB0143AD5564848CEC2D5A6A5",
       "expectedIdsMatchActualIds": true
     }
   },

@@ -516,12 +516,12 @@ namespace LastRail.Editor
                 var safeArea = CreateSafeArea(root.transform);
                 var layout = CreateCombatHudVisualPolish(safeArea);
                 var encounterTitle = CreateText(layout.TopStatusPanel, "EncounterTitleText", "전투");
-                var waveCounter = CreateText(layout.TopStatusPanel, "WaveCounterText", "Wave 1/15");
+                var waveCounter = CreateText(layout.TopStatusPanel, "WaveCounterText", "웨이브 1/15");
                 var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "보스 위협 감지");
                 var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표: 열차 방어");
-                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "스토리 레이드 실패 시 스태미나 환급 표시");
-                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "초기 분대 5인 애니메이션 배치");
-                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "스킬 / 피격 / 궁극기 / 진동 큐 연결");
+                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "철수 시 연료 보호");
+                var unitRefs = CreateText(layout.InteriorLane, "UnitRefsText", "분대 5 / 침입 4");
+                var cueRefs = CreateText(layout.InteriorLane, "CueRefsText", "스킬 대기 / 충돌 감지");
                 Place(encounterTitle, 0f, 34f, 860f, 68f);
                 Place(waveCounter, 0f, -34f, 860f, 64f);
                 Place(bossStatus, 0f, -252f, 860f, 64f);

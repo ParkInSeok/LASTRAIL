@@ -149,15 +149,15 @@ namespace LastRail.Presentation.Battle
         private static string FormatCueRefs(FullyAnimatedCombatHudViewState state)
         {
             var builder = new StringBuilder();
-            builder.Append("피격 / 히트스톱 / VFX / SFX / 진동 준비");
+            builder.Append("스킬 대기 / 충돌 감지");
             if (state.WaveTransitionCueId != null)
             {
-                builder.Append(" / 공세 전환");
+                builder.Append(" / 다음 공세");
             }
 
             if (state.BossPhaseTransitionCueId != null)
             {
-                builder.Append(" / 보스 페이즈");
+                builder.Append(" / 위험 단계");
             }
 
             return builder.ToString();

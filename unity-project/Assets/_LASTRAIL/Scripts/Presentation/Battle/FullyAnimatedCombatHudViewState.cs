@@ -35,13 +35,13 @@ namespace LastRail.Presentation.Battle
             MissionId = combatState.MissionId;
             EncounterTitle = combatState.EncounterType == RunEncounterType.RaidBoss ? "스토리 레이드 보스전" : "15공세 작전";
             WaveCounterLabel = combatState.EncounterType == RunEncounterType.Ordinary15Wave
-                ? combatState.CurrentWaveNumber + " / 15"
+                ? "웨이브 " + combatState.CurrentWaveNumber + "/15"
                 : null;
             BossId = combatState.BossId;
             BossPhaseLabel = combatState.HasBossPhase ? "Phase " + combatState.BossPhase.Value : null;
-            BossStatusPlaceholder = combatState.EncounterType == RunEncounterType.RaidBoss ? "보스 HP/상태 연동 대기" : null;
+            BossStatusPlaceholder = combatState.EncounterType == RunEncounterType.RaidBoss ? "보스: Phase " + (combatState.HasBossPhase ? combatState.BossPhase.Value.ToString() : "1") : null;
             BossObjectiveLabel = combatState.EncounterType == RunEncounterType.RaidBoss ? "목표: 보스 격파" : null;
-            FailureStaminaRefundHint = combatState.EncounterType == RunEncounterType.RaidBoss ? "실패 시 스태미나 환급 표시 후보" : null;
+            FailureStaminaRefundHint = combatState.EncounterType == RunEncounterType.RaidBoss ? "철수 시 연료 보호" : null;
 
             UnitAnimationRefs = CopyUnitRefs(combatState.UnitAnimationStates);
             OperatorSlotCount = CountRole(UnitAnimationRefs, CombatUnitRole.Operator);
