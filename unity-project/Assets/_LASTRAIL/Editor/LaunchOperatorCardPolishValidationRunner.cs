@@ -71,8 +71,21 @@ namespace LastRail.Editor
             RequireContains(combined, "\"initialFreeCount\": 5", "initial/free scope", failures);
             RequireContains(combined, "\"gachaEliteCount\": 10", "gacha elite scope", failures);
             RequireContains(combined, "\"presentationOnly\": true", "presentation boundary", failures);
-            RequireContains(combined, "procedurally generated local launch UI assets", "source note", failures);
+            RequireContains(combined, "\"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\"", "high fidelity quality class", failures);
+            RequireContains(combined, "\"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\"", "high fidelity source note", failures);
+            RequireContains(combined, "low-fidelity", "replacement note", failures);
             RequireContains(combined, "External paid asset dependency: none", "external asset note", failures);
+
+            if (combined.Contains("procedurally generated local launch UI assets", StringComparison.OrdinalIgnoreCase))
+            {
+                failures.Add("operator card polish still uses old procedural placeholder source note");
+            }
+
+            if (combined.Contains("PROCEDURAL_PLACEHOLDER", StringComparison.OrdinalIgnoreCase) ||
+                combined.Contains("LOW_FIDELITY", StringComparison.OrdinalIgnoreCase))
+            {
+                failures.Add("operator card polish still contains placeholder/low-fidelity quality class");
+            }
         }
 
         private static void ValidateResources(List<string> failures)
@@ -228,6 +241,92 @@ namespace LastRail.Editor
             if (importer.maxTextureSize > 2048)
             {
                 failures.Add(assetPath + " max texture size exceeds 2048");
+            }
+
+            if (assetPath.EndsWith("operator_card_slot_background.png", StringComparison.Ordinal) ||
+                assetPath.EndsWith("operator_card_detail_panel_accent.png", StringComparison.Ordinal) ||
+                assetPath.EndsWith("operator_grid_section_rail.png", StringComparison.Ordinal))
+            {
+                ValidateHighFidelityTexture(assetPath, failures);
+            }
+        }
+
+        private static void ValidateHighFidelityTexture(string assetPath, List<string> failures)
+        {
+            var absolutePath = ProjectPath(assetPath);
+            if (!File.Exists(absolutePath))
+            {
+                failures.Add("missing high fidelity texture: " + assetPath);
+                return;
+            }
+
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                if (!ImageConversion.LoadImage(texture, File.ReadAllBytes(absolutePath)))
+                {
+                    failures.Add("could not decode high fidelity texture: " + assetPath);
+                    return;
+                }
+
+                var pixels = texture.GetPixels32();
+                var opaqueCount = 0;
+                var vividCount = 0;
+                var transitions = 0;
+                var colors = new HashSet<int>();
+                var previous = default(Color32);
+                for (var i = 0; i < pixels.Length; i++)
+                {
+                    var pixel = pixels[i];
+                    if (pixel.a < 32)
+                    {
+                        continue;
+                    }
+
+                    opaqueCount++;
+                    var max = Math.Max(pixel.r, Math.Max(pixel.g, pixel.b));
+                    var min = Math.Min(pixel.r, Math.Min(pixel.g, pixel.b));
+                    if (max - min > 42)
+                    {
+                        vividCount++;
+                    }
+
+                    colors.Add((pixel.r / 8 << 16) | (pixel.g / 8 << 8) | (pixel.b / 8));
+                    if (i > 0)
+                    {
+                        var delta = Math.Abs(pixel.r - previous.r) + Math.Abs(pixel.g - previous.g) + Math.Abs(pixel.b - previous.b);
+                        if (delta > 54)
+                        {
+                            transitions++;
+                        }
+                    }
+
+                    previous = pixel;
+                }
+
+                if (opaqueCount <= texture.width * texture.height / 3)
+                {
+                    failures.Add(assetPath + " has too little opaque detail coverage");
+                }
+
+                if (colors.Count <= 120)
+                {
+                    failures.Add(assetPath + " has low quantized color variety");
+                }
+
+                if (vividCount <= opaqueCount / 32)
+                {
+                    failures.Add(assetPath + " has weak accent/detail coverage");
+                }
+
+                if (transitions <= Math.Min(texture.width * 6, (texture.width + texture.height) * 2))
+                {
+                    failures.Add(assetPath + " has too few edge/detail transitions");
+                }
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
             }
         }
 

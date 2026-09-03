@@ -147,13 +147,15 @@ namespace LastRail.Editor
             builder.AppendLine("  \"gachaEliteCount\": 10,");
             builder.AppendLine("  \"generatedBy\": \"OpenAI image_gen built-in tool\",");
             builder.AppendLine("  \"sourceType\": \"project_generated_launch_asset\",");
+            builder.AppendLine("  \"cardFrameSourceType\": \"generated_high_fidelity_local_launch_ui_skin\",");
+            builder.AppendLine("  \"cardFrameQualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\",");
             builder.AppendLine("  \"serverTruthFieldsAllowed\": false,");
             builder.AppendLine("  \"railsChoiceIncluded\": false,");
             builder.AppendLine("  \"worldRaidIncluded\": false,");
             builder.AppendLine("  \"frames\": [");
-            builder.AppendLine("    { \"id\": \"operator_card_initial_free\", \"displayScope\": \"initial_free\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png\" },");
-            builder.AppendLine("    { \"id\": \"operator_card_elite\", \"displayScope\": \"gacha_elite\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png\" },");
-            builder.AppendLine("    { \"id\": \"operator_card_pickup_elite\", \"displayScope\": \"pickup_elite\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png\" }");
+            builder.AppendLine("    { \"id\": \"operator_card_initial_free\", \"displayScope\": \"initial_free\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png\", \"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\", \"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\" },");
+            builder.AppendLine("    { \"id\": \"operator_card_elite\", \"displayScope\": \"gacha_elite\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png\", \"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\", \"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\" },");
+            builder.AppendLine("    { \"id\": \"operator_card_pickup_elite\", \"displayScope\": \"pickup_elite\", \"path\": \"Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png\", \"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\", \"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\" }");
             builder.AppendLine("  ],");
             builder.AppendLine("  \"operators\": [");
             for (var i = 0; i < Operators.Length; i++)
@@ -186,6 +188,9 @@ Scope:
 - 15 visual operators for Act 1 launch: 5 initial/free operators and 10 gacha elite display candidates.
 - `op_vex` uses the pickup-elite display frame candidate.
 - Card, portrait, icon, and frame files are presentation resources only.
+- `Assets/_LASTRAIL/UI/Operators/Frames` contains card UI display frames, not character animation frames.
+- Card display frames use `HIGH_QUALITY_2D_UI_SKIN` generated local UI skin assets with bevels, rail hardware accents, grime/noise detail, and glow trims.
+- Character animation frames live under `Assets/_LASTRAIL/UI/CombatAnimations/Operators`.
 - These files are not gameplay roster truth, reward truth, story progress truth, economy truth, unlock truth, or gacha odds truth.
 
 Usage:

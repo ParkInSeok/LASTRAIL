@@ -6,13 +6,15 @@
   "gachaEliteCount": 10,
   "generatedBy": "OpenAI image_gen built-in tool",
   "sourceType": "project_generated_launch_asset",
+  "cardFrameSourceType": "generated_high_fidelity_local_launch_ui_skin",
+  "cardFrameQualityClass": "HIGH_QUALITY_2D_UI_SKIN",
   "serverTruthFieldsAllowed": false,
   "railsChoiceIncluded": false,
   "worldRaidIncluded": false,
   "frames": [
-    { "id": "operator_card_initial_free", "displayScope": "initial_free", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png" },
-    { "id": "operator_card_elite", "displayScope": "gacha_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png" },
-    { "id": "operator_card_pickup_elite", "displayScope": "pickup_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png" }
+    { "id": "operator_card_initial_free", "displayScope": "initial_free", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" },
+    { "id": "operator_card_elite", "displayScope": "gacha_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" },
+    { "id": "operator_card_pickup_elite", "displayScope": "pickup_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" }
   ],
   "operators": [
     { "operatorId": "op_kyle", "displayLabel": "Kyle", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_kyle_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_kyle_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_kyle_icon.png", "frameId": "operator_card_initial_free" },

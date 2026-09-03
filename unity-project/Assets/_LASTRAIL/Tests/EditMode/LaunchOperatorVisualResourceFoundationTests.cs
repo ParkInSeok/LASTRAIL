@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEditor;
@@ -83,6 +85,29 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void OperatorCardPolishSkinResourcesAreHighFidelityAndNotPlaceholderGeometry()
+        {
+            var manifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-operator-card-polish-resources.json";
+            var readmePath = "Assets/_LASTRAIL/UI/Operators/CardPolish/README.md";
+            Assert.That(File.Exists(ProjectPath(manifestPath)), Is.True);
+            Assert.That(File.Exists(ProjectPath(readmePath)), Is.True);
+
+            var combined = File.ReadAllText(ProjectPath(manifestPath)) + "\n" + File.ReadAllText(ProjectPath(readmePath));
+            Assert.That(combined, Does.Contain(@"""qualityClass"": ""HIGH_QUALITY_2D_UI_SKIN"""));
+            Assert.That(combined, Does.Contain(@"""sourceType"": ""generated_high_fidelity_local_launch_ui_skin"""));
+            Assert.That(combined, Does.Not.Contain("procedurally generated local launch UI assets"));
+            Assert.That(combined, Does.Not.Contain("PROCEDURAL_PLACEHOLDER"));
+            Assert.That(combined, Does.Not.Contain("LOW_FIDELITY"));
+
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png");
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png");
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png");
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/CardPolish/Frames/operator_card_slot_background.png");
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/CardPolish/Accents/operator_card_detail_panel_accent.png");
+            AssertHighFidelityTexture("Assets/_LASTRAIL/UI/Operators/CardPolish/Accents/operator_grid_section_rail.png");
+        }
+
+        [Test]
         public void ManifestAndReadmeKeepSourceLicenseAndNoTruthPayloads()
         {
             var manifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-operator-visual-resources.json";
@@ -161,6 +186,60 @@ namespace LastRail.Tests.EditMode
             }
 
             return false;
+        }
+
+        private static void AssertHighFidelityTexture(string path)
+        {
+            var absolutePath = ProjectPath(path);
+            Assert.That(File.Exists(absolutePath), Is.True, path);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try
+            {
+                Assert.That(ImageConversion.LoadImage(texture, File.ReadAllBytes(absolutePath)), Is.True, path);
+                var pixels = texture.GetPixels32();
+                var opaqueCount = 0;
+                var vividCount = 0;
+                var uniqueColors = new HashSet<int>();
+                var edgeTransitions = 0;
+                var previous = default(Color32);
+                for (var i = 0; i < pixels.Length; i++)
+                {
+                    var pixel = pixels[i];
+                    if (pixel.a < 32)
+                    {
+                        continue;
+                    }
+
+                    opaqueCount++;
+                    var max = Math.Max(pixel.r, Math.Max(pixel.g, pixel.b));
+                    var min = Math.Min(pixel.r, Math.Min(pixel.g, pixel.b));
+                    if (max - min > 42)
+                    {
+                        vividCount++;
+                    }
+
+                    uniqueColors.Add((pixel.r / 8 << 16) | (pixel.g / 8 << 8) | (pixel.b / 8));
+                    if (i > 0)
+                    {
+                        var delta = Math.Abs(pixel.r - previous.r) + Math.Abs(pixel.g - previous.g) + Math.Abs(pixel.b - previous.b);
+                        if (delta > 54)
+                        {
+                            edgeTransitions++;
+                        }
+                    }
+
+                    previous = pixel;
+                }
+
+                Assert.That(opaqueCount, Is.GreaterThan(texture.width * texture.height / 3), path + " opaque coverage");
+                Assert.That(uniqueColors.Count, Is.GreaterThan(120), path + " quantized color variety");
+                Assert.That(vividCount, Is.GreaterThan(opaqueCount / 32), path + " accent detail");
+                Assert.That(edgeTransitions, Is.GreaterThan(Math.Min(texture.width * 6, (texture.width + texture.height) * 2)), path + " edge/detail transitions");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
         }
 
         private static string ProjectPath(string assetPath)

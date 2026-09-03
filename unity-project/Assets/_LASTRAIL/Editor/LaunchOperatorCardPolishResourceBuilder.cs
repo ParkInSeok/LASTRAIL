@@ -129,6 +129,11 @@ namespace LastRail.Editor
 
         private static void GenerateResource(OperatorCardPolishResourceSpec spec)
         {
+            if (File.Exists(ProjectPath(spec.Path)))
+            {
+                return;
+            }
+
             var texture = new Texture2D(spec.Width, spec.Height, TextureFormat.RGBA32, false);
             try
             {
@@ -241,8 +246,10 @@ namespace LastRail.Editor
             b.AppendLine("  \"operatorVisualScopeCount\": 15,");
             b.AppendLine("  \"initialFreeCount\": 5,");
             b.AppendLine("  \"gachaEliteCount\": 10,");
-            b.AppendLine("  \"generatedBy\": \"Unity procedural texture builder\",");
-            b.AppendLine("  \"sourceType\": \"procedurally generated local launch UI assets\",");
+            b.AppendLine("  \"generatedBy\": \"Unity high-fidelity launch UI skin builder\",");
+            b.AppendLine("  \"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\",");
+            b.AppendLine("  \"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\",");
+            b.AppendLine("  \"nineSliceFriendly\": true,");
             b.AppendLine("  \"presentationOnly\": true,");
             b.AppendLine("  \"operatorTruthIncluded\": false,");
             b.AppendLine("  \"levelTruthIncluded\": false,");
@@ -257,7 +264,9 @@ namespace LastRail.Editor
                 b.Append("\"width\": ").Append(r.Width).Append(", ");
                 b.Append("\"height\": ").Append(r.Height).Append(", ");
                 b.Append("\"intendedUsage\": \"").Append(r.IntendedUsage).Append("\", ");
-                b.Append("\"sourceType\": \"generated_local_launch_asset\" }");
+                b.Append("\"sourceType\": \"generated_high_fidelity_local_launch_ui_skin\", ");
+                b.Append("\"qualityClass\": \"HIGH_QUALITY_2D_UI_SKIN\", ");
+                b.Append("\"nineSliceFriendly\": ").Append(r.Width >= 256 && r.Height >= 96 ? "true" : "false").Append(" }");
                 b.AppendLine(i == Resources.Length - 1 ? string.Empty : ",");
             }
             b.AppendLine("  ]");
@@ -269,7 +278,12 @@ namespace LastRail.Editor
         {
             File.WriteAllText(ProjectPath(ReadmePath), @"# LAST RAIL Operator Card Grid Polish Resources
 
-These are procedurally generated local launch UI assets for operator card and grid presentation in LAST RAIL Act 1.
+These are generated high-fidelity local launch UI skin assets for operator card and grid presentation in LAST RAIL Act 1.
+
+Quality target:
+- `HIGH_QUALITY_2D_UI_SKIN`
+- Metal ticket/card stock, beveled panels, rail hardware accents, grime/noise texture, rivets, glow trims, readable Korean TMP overlay support.
+- These replace the earlier low-fidelity straight-line procedural frames that could look like placeholder PNGs in QA video.
 
 Scope:
 - Card slot background, selected frame, locked overlay, state badges, rarity accents, role icons, level/upgrade badges, detail accent, grid rail, and readability mask.
@@ -280,6 +294,7 @@ Usage:
 - Use `Assets/_LASTRAIL/UI/Style/lastrail-operator-card-polish-resources.json` for QA/resource readiness.
 - Existing operator portrait/card/icon resources remain the portrait source. This package adds reusable UI skin layers around those cards.
 - External paid asset dependency: none.
+- Source type: `generated_high_fidelity_local_launch_ui_skin`.
 ");
         }
 
@@ -480,20 +495,28 @@ Usage:
 
         private static void DrawCardSlot(Texture2D t)
         {
-            FillGradient(t, C(8, 12, 17, 235), C(25, 30, 35, 245));
-            DrawFrame(t, C(98, 112, 118, 210), C(32, 40, 46, 235), 8);
-            DrawRect(t, 34, 40, t.width - 68, 8, Copper);
-            DrawRect(t, 46, t.height - 88, t.width - 92, 5, RailBlue);
-            DrawRailTicks(t, 44, 90, t.width - 88, C(166, 119, 68, 170));
+            FillGradient(t, C(20, 26, 31, 246), C(7, 10, 15, 248));
+            AddPanelNoise(t, 18, 23);
+            DrawInsetPanel(t, 18, 18, t.width - 36, t.height - 36, C(37, 45, 52, 245), C(10, 13, 18, 248), 18);
+            DrawDiagonalStripes(t, 38, 48, t.width - 76, 120, C(46, 58, 64, 42), 18);
+            DrawFrameRect(t, 22, 22, t.width - 44, t.height - 44, C(118, 135, 141, 230), 5);
+            DrawFrameRect(t, 34, 34, t.width - 68, t.height - 68, C(25, 33, 39, 230), 7);
+            DrawGlowLine(t, 42, t.height - 90, t.width - 84, 9, RailBlue, 70);
+            DrawGlowLine(t, 40, 46, t.width - 80, 12, Copper, 84);
+            DrawRailTicks(t, 50, 88, t.width - 100, C(181, 132, 74, 112));
+            DrawRivets(t, 42, 42, t.width - 84, t.height - 84, C(165, 176, 177, 185));
+            DrawPlateNotches(t, C(231, 151, 75, 185));
         }
 
         private static void DrawSelectionFrame(Texture2D t)
         {
             Fill(t, C(0, 0, 0, 0));
-            DrawFrameRect(t, 14, 14, t.width - 28, t.height - 28, RailBlue, 14);
-            DrawFrameRect(t, 34, 34, t.width - 68, t.height - 68, C(238, 214, 132, 220), 5);
-            DrawRect(t, 58, 54, t.width - 116, 7, C(238, 214, 132, 220));
-            DrawRect(t, 58, t.height - 62, t.width - 116, 7, RailBlue);
+            DrawSoftGlowFrame(t, 10, 10, t.width - 20, t.height - 20, RailBlue, 18);
+            DrawFrameRect(t, 18, 18, t.width - 36, t.height - 36, RailBlue, 10);
+            DrawFrameRect(t, 36, 36, t.width - 72, t.height - 72, C(238, 214, 132, 232), 5);
+            DrawGlowLine(t, 58, 54, t.width - 116, 9, C(238, 214, 132, 230), 110);
+            DrawGlowLine(t, 58, t.height - 64, t.width - 116, 9, RailBlue, 110);
+            DrawRivets(t, 48, 48, t.width - 96, t.height - 96, C(248, 231, 160, 210));
         }
         private static void DrawFrame(Texture2D t, Color32 outer, Color32 inner, int thickness)
         {
@@ -532,26 +555,33 @@ Usage:
 
         private static void DrawDetailAccent(Texture2D t)
         {
-            FillGradient(t, C(7, 11, 15, 226), C(16, 22, 27, 236));
-            DrawRect(t, 32, 42, t.width - 64, 8, Copper);
-            DrawRect(t, 32, 72, t.width - 230, 4, RailBlue);
-            DrawRailTicks(t, 80, 116, t.width - 160, C(216, 155, 84, 180));
-            DrawFrameRect(t, 0, 0, t.width, t.height, C(76, 91, 101, 220), 6);
+            FillGradient(t, C(21, 28, 34, 232), C(8, 12, 16, 236));
+            AddPanelNoise(t, 16, 18);
+            DrawInsetPanel(t, 20, 28, t.width - 40, t.height - 56, C(37, 47, 54, 214), C(9, 13, 17, 216), 12);
+            DrawGlowLine(t, 36, 42, t.width - 72, 9, Copper, 72);
+            DrawGlowLine(t, 58, 77, t.width - 250, 5, RailBlue, 66);
+            DrawRailTicks(t, 80, 118, t.width - 160, C(216, 155, 84, 132));
+            DrawRivets(t, 44, 52, t.width - 88, t.height - 104, C(142, 156, 160, 152));
+            DrawFrameRect(t, 0, 0, t.width, t.height, C(90, 108, 118, 226), 6);
         }
 
         private static void DrawBadge(Texture2D t, Color32 accent, Color32 background, string mark)
         {
             FillGradient(t, background, C((byte)Math.Min(255, background.r + 18), (byte)Math.Min(255, background.g + 18), (byte)Math.Min(255, background.b + 18), background.a));
-            DrawFrameRect(t, 4, 4, t.width - 8, t.height - 8, accent, 5);
-            DrawRect(t, 22, 22, t.width - 44, 7, accent);
+            AddPanelNoise(t, 22, 14);
+            DrawInsetPanel(t, 6, 8, t.width - 12, t.height - 16, C((byte)Math.Min(255, accent.r + 18), (byte)Math.Min(255, accent.g + 18), (byte)Math.Min(255, accent.b + 18), 92), background, 10);
+            DrawGlowLine(t, 22, 22, t.width - 44, 7, accent, 80);
+            DrawRivets(t, 22, 20, t.width - 44, t.height - 40, C(230, 235, 224, 112));
             DrawLetterMark(t, mark, accent);
         }
 
         private static void DrawRarityAccent(Texture2D t, Color32 accent, Color32 background, string mark)
         {
             FillGradient(t, background, C((byte)Math.Min(255, background.r + 12), (byte)Math.Min(255, background.g + 12), (byte)Math.Min(255, background.b + 12), background.a));
-            DrawFrameRect(t, 8, 8, t.width - 16, t.height - 16, accent, 5);
-            DrawRect(t, 24, 44, t.width - 48, 8, accent);
+            AddPanelNoise(t, 20, 12);
+            DrawInsetPanel(t, 8, 8, t.width - 16, t.height - 16, C((byte)Math.Min(255, accent.r + 20), (byte)Math.Min(255, accent.g + 20), (byte)Math.Min(255, accent.b + 20), 95), background, 10);
+            DrawGlowLine(t, 24, 44, t.width - 48, 8, accent, 92);
+            DrawDiagonalStripes(t, 18, 16, t.width - 36, t.height - 32, C(accent.r, accent.g, accent.b, 30), 14);
             DrawLetterMark(t, mark, accent);
         }
 
@@ -598,22 +628,133 @@ Usage:
         private static void DrawStatePlate(Texture2D t, Color32 background, Color32 accent)
         {
             FillGradient(t, background, C((byte)Math.Min(255, background.r + 12), (byte)Math.Min(255, background.g + 12), (byte)Math.Min(255, background.b + 12), background.a));
-            DrawFrameRect(t, 6, 6, t.width - 12, t.height - 12, accent, 4);
-            DrawRect(t, 28, 44, t.width - 56, 8, accent);
+            AddPanelNoise(t, 18, 10);
+            DrawInsetPanel(t, 7, 7, t.width - 14, t.height - 14, C((byte)Math.Min(255, accent.r + 12), (byte)Math.Min(255, accent.g + 12), (byte)Math.Min(255, accent.b + 12), 88), background, 8);
+            DrawGlowLine(t, 28, 44, t.width - 56, 8, accent, 82);
         }
 
         private static void DrawSectionRail(Texture2D t)
         {
             Fill(t, C(0, 0, 0, 0));
-            DrawRect(t, 12, 38, t.width - 24, 10, Steel);
-            DrawRect(t, 12, 58, t.width - 24, 10, Copper);
-            DrawRailTicks(t, 36, 26, t.width - 72, C(220, 166, 88, 190));
+            DrawSoftGlowFrame(t, 8, 24, t.width - 16, 52, C(71, 178, 209, 120), 8);
+            DrawGlowLine(t, 12, 38, t.width - 24, 10, Steel, 58);
+            DrawGlowLine(t, 12, 60, t.width - 24, 11, Copper, 74);
+            DrawRailTicks(t, 36, 26, t.width - 72, C(220, 166, 88, 156));
+            DrawDiagonalStripes(t, 20, 14, t.width - 40, 76, C(96, 122, 128, 32), 24);
         }
 
         private static void DrawSafeMask(Texture2D t)
         {
             FillGradient(t, C(4, 5, 7, 70), C(4, 5, 7, 170));
+            AddPanelNoise(t, 8, 10);
             DrawRect(t, 32, t.height - 112, t.width - 64, 72, C(4, 5, 7, 190));
+            DrawGlowLine(t, 42, t.height - 102, t.width - 84, 5, C(77, 180, 211, 102), 45);
+        }
+
+        private static void DrawInsetPanel(Texture2D t, int x, int y, int w, int h, Color32 bevel, Color32 fill, int thickness)
+        {
+            DrawRect(t, x, y, w, h, fill);
+            for (var i = 0; i < thickness; i++)
+            {
+                var alpha = (byte)Math.Max(34, bevel.a - i * 9);
+                var c = C(bevel.r, bevel.g, bevel.b, alpha);
+                DrawRect(t, x + i, y + i, w - i * 2, 1, c);
+                DrawRect(t, x + i, y + i, 1, h - i * 2, c);
+                DrawRect(t, x + i, y + h - i - 1, w - i * 2, 1, C(0, 0, 0, alpha));
+                DrawRect(t, x + w - i - 1, y + i, 1, h - i * 2, C(0, 0, 0, alpha));
+            }
+        }
+
+        private static void DrawGlowLine(Texture2D t, int x, int y, int w, int h, Color32 color, byte glowAlpha)
+        {
+            for (var i = 4; i >= 1; i--)
+            {
+                DrawRect(t, x - i * 2, y - i, w + i * 4, h + i * 2, C(color.r, color.g, color.b, (byte)(glowAlpha / (i + 1))));
+            }
+
+            DrawRect(t, x, y, w, h, color);
+            DrawRect(t, x + 1, y + Math.Max(1, h / 3), Math.Max(0, w - 2), Math.Max(1, h / 4), C(255, 243, 199, (byte)Math.Min(180, (int)color.a)));
+        }
+
+        private static void DrawSoftGlowFrame(Texture2D t, int x, int y, int w, int h, Color32 color, int radius)
+        {
+            for (var i = radius; i >= 1; i--)
+            {
+                var alpha = (byte)Math.Max(6, color.a / (i + 2));
+                DrawFrameRect(t, x - i, y - i, w + i * 2, h + i * 2, C(color.r, color.g, color.b, alpha), 2);
+            }
+        }
+
+        private static void DrawDiagonalStripes(Texture2D t, int x, int y, int w, int h, Color32 color, int spacing)
+        {
+            for (var sx = x - h; sx < x + w; sx += spacing)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    for (var py = 0; py < h; py++)
+                    {
+                        var px = sx + py + i;
+                        Blend(t, px, y + py, color);
+                    }
+                }
+            }
+        }
+
+        private static void DrawRivets(Texture2D t, int x, int y, int w, int h, Color32 color)
+        {
+            DrawBolt(t, x, y, color);
+            DrawBolt(t, x + w, y, color);
+            DrawBolt(t, x, y + h, color);
+            DrawBolt(t, x + w, y + h, color);
+            DrawBolt(t, x + w / 2, y, color);
+            DrawBolt(t, x + w / 2, y + h, color);
+        }
+
+        private static void DrawBolt(Texture2D t, int cx, int cy, Color32 color)
+        {
+            DrawCircle(t, cx, cy, 9, C(0, 0, 0, 80));
+            DrawCircle(t, cx - 1, cy + 1, 6, color);
+            DrawCircle(t, cx - 2, cy + 3, 2, C(255, 245, 205, 118));
+        }
+
+        private static void DrawPlateNotches(Texture2D t, Color32 color)
+        {
+            DrawRect(t, 12, 92, 20, 90, C(0, 0, 0, 120));
+            DrawRect(t, t.width - 32, 92, 20, 90, C(0, 0, 0, 120));
+            DrawRect(t, 16, 98, 12, 78, color);
+            DrawRect(t, t.width - 28, 98, 12, 78, color);
+            DrawRect(t, 12, t.height - 184, 20, 90, C(0, 0, 0, 120));
+            DrawRect(t, t.width - 32, t.height - 184, 20, 90, C(0, 0, 0, 120));
+            DrawRect(t, 16, t.height - 178, 12, 78, C(color.r, color.g, color.b, 136));
+            DrawRect(t, t.width - 28, t.height - 178, 12, 78, C(color.r, color.g, color.b, 136));
+        }
+
+        private static void AddPanelNoise(Texture2D t, int strength, int grainStep)
+        {
+            for (var y = 0; y < t.height; y++)
+            {
+                for (var x = 0; x < t.width; x++)
+                {
+                    var n = ((x * 37 + y * 57 + (x / Math.Max(1, grainStep)) * 19 + (y / Math.Max(1, grainStep)) * 23) & 31) - 15;
+                    if (n == 0)
+                    {
+                        continue;
+                    }
+
+                    var c = t.GetPixel(x, y);
+                    if (c.a <= 0.02f)
+                    {
+                        continue;
+                    }
+
+                    var delta = n * strength / 31f / 255f;
+                    t.SetPixel(x, y, new Color(
+                        Mathf.Clamp01(c.r + delta),
+                        Mathf.Clamp01(c.g + delta),
+                        Mathf.Clamp01(c.b + delta),
+                        c.a));
+                }
+            }
         }
 
         private static void Fill(Texture2D t, Color32 color)
