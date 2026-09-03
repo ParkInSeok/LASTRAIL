@@ -126,6 +126,36 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CombatAnimationResources_AreCombatUnitSpritesNotPortraitOrCardDerived()
+        {
+            var manifestFile = ProjectPath(ManifestPath);
+            Assert.That(File.Exists(manifestFile), Is.True, ManifestPath);
+            var manifest = JsonUtility.FromJson<CombatAnimationManifestFixture>(File.ReadAllText(manifestFile));
+
+            foreach (var entry in manifest.resources)
+            {
+                Assert.That(entry.spriteType, Is.EqualTo("combat_unit"), entry.id);
+                Assert.That(entry.portraitDerived, Is.False, entry.id);
+                Assert.That(entry.hasCardFrame, Is.False, entry.id);
+                Assert.That(entry.transparentOrSceneCompatible, Is.True, entry.id);
+                Assert.That(entry.sourceArtPath, Does.Contain("/CombatAnimations/Sources/"), entry.id);
+                Assert.That(entry.sourceArtPath, Does.Not.Contain("/Operators/Portraits/"), entry.id);
+                Assert.That(entry.sourceArtPath, Does.Not.Contain("/Operators/Cards/"), entry.id);
+                Assert.That(entry.sourceArtPath, Does.Not.Contain("/Operators/Icons/"), entry.id);
+                Assert.That(File.Exists(ProjectPath(entry.sourceArtPath)), Is.True, entry.id + " source cutout missing");
+
+                foreach (var state in entry.states)
+                {
+                    for (var frame = 1; frame <= 4; frame++)
+                    {
+                        var framePath = "Assets/_LASTRAIL/UI/CombatAnimations/" + FolderFor(entry.kind) + "/" + entry.id + "/" + state + "/" + entry.id + "_" + state + "_" + frame.ToString("000") + ".png";
+                        AssertFrameHasTransparentUnitPadding(framePath);
+                    }
+                }
+            }
+        }
+
+        [Test]
         public void CombatAnimationClipsAndControllers_ExistForEveryAnimatedResource()
         {
             foreach (var resource in Resources)
@@ -274,6 +304,36 @@ namespace LastRail.Tests.EditMode
             }
         }
 
+
+        private static void AssertFrameHasTransparentUnitPadding(string assetPath)
+        {
+            var fullPath = ProjectPath(assetPath);
+            Assert.That(File.Exists(fullPath), Is.True, assetPath);
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            Assert.That(texture.LoadImage(File.ReadAllBytes(fullPath)), Is.True, assetPath);
+            var pixels = texture.GetPixels32();
+            var transparentBorderPixels = 0;
+            var sampledBorderPixels = 0;
+            for (var y = 0; y < texture.height; y += Math.Max(1, texture.height / 16))
+            {
+                for (var x = 0; x < texture.width; x += Math.Max(1, texture.width / 16))
+                {
+                    var isBorder = x < texture.width / 10 || x > texture.width - texture.width / 10 || y < texture.height / 10 || y > texture.height - texture.height / 10;
+                    if (!isBorder)
+                    {
+                        continue;
+                    }
+
+                    sampledBorderPixels++;
+                    if (pixels[y * texture.width + x].a < 32)
+                    {
+                        transparentBorderPixels++;
+                    }
+                }
+            }
+
+            Assert.That(transparentBorderPixels, Is.GreaterThan(sampledBorderPixels / 3), assetPath + " should have transparent/scene-compatible unit padding, not an opaque portrait/card background.");
+        }
         private static ExpectedAnimatedResource Resource(string id, string kind) => new ExpectedAnimatedResource(id, kind);
         private static string[] StatesFor(ExpectedAnimatedResource resource) => resource.Kind == "boss" ? BossStates : UnitStates;
         private static string ProjectPath(string assetPath) => Path.Combine(Directory.GetCurrentDirectory(), assetPath);
@@ -304,6 +364,10 @@ namespace LastRail.Tests.EditMode
             public int stateCountPerResource;
             public int framesPerState;
             public bool presentationOnly;
+            public string spriteType;
+            public bool portraitDerived;
+            public bool hasCardFrame;
+            public bool transparentOrSceneCompatible;
             public bool hasCombatMath;
             public bool hasServerSubmitPayload;
             public bool hasGachaTruth;
@@ -324,6 +388,10 @@ namespace LastRail.Tests.EditMode
             public string qualityClass;
             public bool showcaseVisible;
             public bool presentationOnly;
+            public string spriteType;
+            public bool portraitDerived;
+            public bool hasCardFrame;
+            public bool transparentOrSceneCompatible;
         }
     }
 }

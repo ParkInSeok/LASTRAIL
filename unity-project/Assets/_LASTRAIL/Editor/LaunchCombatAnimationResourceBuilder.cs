@@ -19,6 +19,7 @@ namespace LastRail.Editor
     {
         private const string UiRoot = "Assets/_LASTRAIL/UI";
         private const string Root = UiRoot + "/CombatAnimations";
+        private const string SourceRoot = Root + "/Sources";
         private const string ClipsRoot = Root + "/Clips";
         private const string AnimatorsRoot = Root + "/Animators";
         private const string ShowcaseRoot = Root + "/Showcase";
@@ -50,6 +51,7 @@ namespace LastRail.Editor
         {
             Ensure(Root); Ensure(StyleRoot); Ensure(SceneRoot); Ensure(ShowcaseRoot);
             Ensure(Root + "/Operators"); Ensure(Root + "/Enemies"); Ensure(Root + "/EliteEnemies"); Ensure(Root + "/Bosses");
+            Ensure(SourceRoot); Ensure(SourceRoot + "/Operators"); Ensure(SourceRoot + "/Enemies"); Ensure(SourceRoot + "/EliteEnemies"); Ensure(SourceRoot + "/Bosses");
             Ensure(ClipsRoot); Ensure(AnimatorsRoot);
             Ensure(ClipsRoot + "/Operators"); Ensure(ClipsRoot + "/Enemies"); Ensure(ClipsRoot + "/EliteEnemies"); Ensure(ClipsRoot + "/Bosses");
             Ensure(AnimatorsRoot + "/Operators"); Ensure(AnimatorsRoot + "/Enemies"); Ensure(AnimatorsRoot + "/EliteEnemies"); Ensure(AnimatorsRoot + "/Bosses");
@@ -73,11 +75,11 @@ namespace LastRail.Editor
             }
         }
 
-        private static CombatAnimationSpec InitialOperator(string id) => new CombatAnimationSpec(id, "operator_initial_free", "Operators", UiRoot + "/Operators/Portraits/" + id + "_portrait.png", UnitStates);
-        private static CombatAnimationSpec EliteOperator(string id) => new CombatAnimationSpec(id, "operator_elite", "Operators", UiRoot + "/Operators/Portraits/" + id + "_portrait.png", UnitStates);
-        private static CombatAnimationSpec Enemy(string id) => new CombatAnimationSpec(id, "enemy", "Enemies", UiRoot + "/CombatResources/Enemies/" + id + ".png", UnitStates);
-        private static CombatAnimationSpec EliteEnemy(string id) => new CombatAnimationSpec(id, "elite_enemy", "EliteEnemies", UiRoot + "/CombatResources/Elites/" + id + ".png", UnitStates);
-        private static CombatAnimationSpec Boss(string id) => new CombatAnimationSpec(id, "boss", "Bosses", UiRoot + "/CombatResources/Bosses/" + id + ".png", BossStates);
+        private static CombatAnimationSpec InitialOperator(string id) => new CombatAnimationSpec(id, "operator_initial_free", "Operators", SourceRoot + "/Operators/" + id + "/" + id + "_combat_unit_source.png", UnitStates);
+        private static CombatAnimationSpec EliteOperator(string id) => new CombatAnimationSpec(id, "operator_elite", "Operators", SourceRoot + "/Operators/" + id + "/" + id + "_combat_unit_source.png", UnitStates);
+        private static CombatAnimationSpec Enemy(string id) => new CombatAnimationSpec(id, "enemy", "Enemies", SourceRoot + "/Enemies/" + id + "/" + id + "_combat_unit_source.png", UnitStates);
+        private static CombatAnimationSpec EliteEnemy(string id) => new CombatAnimationSpec(id, "elite_enemy", "EliteEnemies", SourceRoot + "/EliteEnemies/" + id + "/" + id + "_combat_unit_source.png", UnitStates);
+        private static CombatAnimationSpec Boss(string id) => new CombatAnimationSpec(id, "boss", "Bosses", SourceRoot + "/Bosses/" + id + "/" + id + "_combat_unit_source.png", BossStates);
 
         private static void ConfigureFrameTextures(CombatAnimationSpec spec)
         {
@@ -223,7 +225,7 @@ namespace LastRail.Editor
 
                 b.Append("], \"frameCount\": ").Append((spec.States.Length * 4).ToString(CultureInfo.InvariantCulture))
                     .Append(", \"resolution\": \"512x512\", \"sourceArtPath\": \"").Append(spec.SourceArtPath)
-                    .Append("\", \"qualityClass\": \"HIGH_QUALITY_2D_ILLUSTRATION\", \"showcaseVisible\": true, \"presentationOnly\": true }");
+                    .Append("\", \"qualityClass\": \"HIGH_QUALITY_2D_ILLUSTRATION\", \"spriteType\": \"combat_unit\", \"portraitDerived\": false, \"hasCardFrame\": false, \"transparentOrSceneCompatible\": true, \"showcaseVisible\": true, \"presentationOnly\": true }");
                 b.AppendLine(i == Specs.Length - 1 ? string.Empty : ",");
             }
 
@@ -236,7 +238,7 @@ namespace LastRail.Editor
         {
             File.WriteAllText(ProjectPath(ReadmePath), @"# LAST RAIL Act 1 Combat Animation Resources
 
-These launch combat animation resources are visual-only derivatives of the existing LAST RAIL operator, enemy, and story raid boss art.
+These launch combat animation resources are visual-only combat unit sprites for LAST RAIL operators, enemies, and the story raid boss.
 
 Coverage:
 - 5 initial/free operators.
@@ -248,6 +250,9 @@ Coverage:
 
 Usage:
 - Frame sequences live under `Assets/_LASTRAIL/UI/CombatAnimations/`.
+- Source contact sheets and per-unit combat source cutouts live under `Assets/_LASTRAIL/UI/CombatAnimations/Sources/`.
+- Operator frames must be `spriteType=combat_unit`, `portraitDerived=false`, `hasCardFrame=false`, and `transparentOrSceneCompatible=true`.
+- These frames are not portrait/card/icon crops. Card and portrait resources stay under `Assets/_LASTRAIL/UI/Operators/`.
 - Animation clips and Animator Controllers are generated beside the frames for Editor-verifiable playback.
 - The showcase prefab is `Assets/_LASTRAIL/UI/CombatAnimations/Showcase/LRLaunchCombatAnimationShowcase.prefab`.
 - These resources are presentation-only and do not encode combat formulas, rewards, economy grants, story progress, unlocks, offline rewards, gacha odds, or ledger state.

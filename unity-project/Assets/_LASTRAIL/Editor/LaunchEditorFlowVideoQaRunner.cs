@@ -43,6 +43,10 @@ namespace LastRail.Editor
             ("gacha_duplicate_conversion", CreateDuplicateState)
         };
 
+        private static readonly string[] InitialSquadOperatorIds = { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
+        private static readonly string[] EliteSquadAOperatorIds = { "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris" };
+        private static readonly string[] EliteSquadBOperatorIds = { "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden" };
+
         [MenuItem("LASTRAIL/Launch/Capture Editor Flow Video QA")]
         public static void CaptureEditorFlowVideoQa()
         {
@@ -71,7 +75,17 @@ namespace LastRail.Editor
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(), framesRoot, checkedSurfaces, framePaths))
+                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(InitialSquadOperatorIds), framesRoot, checkedSurfaces, framePaths, InitialSquadOperatorIds))
+                {
+                    fallbackCompositeFrameCount++;
+                }
+
+                if (CaptureCombatStateFrame("combat_elite_squad_a_demo", CreateOrdinaryCombatState(EliteSquadAOperatorIds), framesRoot, checkedSurfaces, framePaths, EliteSquadAOperatorIds))
+                {
+                    fallbackCompositeFrameCount++;
+                }
+
+                if (CaptureCombatStateFrame("combat_elite_squad_b_demo", CreateOrdinaryCombatState(EliteSquadBOperatorIds), framesRoot, checkedSurfaces, framePaths, EliteSquadBOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
@@ -244,7 +258,8 @@ namespace LastRail.Editor
             FullyAnimatedCombatHudViewState state,
             string framesRoot,
             ICollection<string> checkedSurfaces,
-            ICollection<string> framePaths)
+            ICollection<string> framePaths,
+            IReadOnlyList<string> operatorSpriteIds = null)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab");
             if (prefab == null)
@@ -267,6 +282,11 @@ namespace LastRail.Editor
                 }
 
                 behaviour.Render(state);
+                if (operatorSpriteIds != null)
+                {
+                    ApplyOperatorCombatUnitSprites(root, operatorSpriteIds);
+                }
+
                 ValidatePresentationOnlyFrameRoot(root, screenKey);
                 var path = Path.Combine(framesRoot, NextFrameFileName(framePaths.Count, screenKey));
                 var usedFallbackComposite = CaptureRootToPng(root, path);
@@ -278,6 +298,40 @@ namespace LastRail.Editor
             finally
             {
                 UnityEngine.Object.DestroyImmediate(root);
+            }
+        }
+
+        private static void ApplyOperatorCombatUnitSprites(GameObject root, IReadOnlyList<string> operatorIds)
+        {
+            var operatorImages = new List<Image>();
+            foreach (var image in root.GetComponentsInChildren<Image>(true))
+            {
+                if (image.name.StartsWith("OperatorAnimated_", StringComparison.Ordinal))
+                {
+                    operatorImages.Add(image);
+                }
+            }
+
+            if (operatorImages.Count < operatorIds.Count)
+            {
+                throw new InvalidOperationException("Combat video QA missing operator image slots.");
+            }
+
+            for (var i = 0; i < operatorIds.Count; i++)
+            {
+                var operatorId = operatorIds[i];
+                var image = operatorImages[i];
+                image.name = "OperatorAnimated_" + operatorId;
+                image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
+                    "Assets/_LASTRAIL/UI/CombatAnimations/Operators/" + operatorId + "/idle/" + operatorId + "_idle_001.png");
+                image.preserveAspect = true;
+
+                var animator = image.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(
+                        "Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/" + operatorId + ".controller");
+                }
             }
         }
 
@@ -635,7 +689,7 @@ namespace LastRail.Editor
                 File.ReadAllText(manifestPath).IndexOf("com.unity.recorder", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        private static FullyAnimatedCombatHudViewState CreateOrdinaryCombatState()
+        private static FullyAnimatedCombatHudViewState CreateOrdinaryCombatState(IReadOnlyList<string> operatorIds)
         {
             var combat = FullyAnimatedCombatPresentationState.CreateOrdinary15Wave(
                 "opn_01_last_departure",
@@ -644,11 +698,11 @@ namespace LastRail.Editor
                 "start_tactic_act1_launch",
                 new[]
                 {
-                    Unit("op_kyle", CombatUnitRole.Operator, "idle"),
-                    Unit("op_reina", CombatUnitRole.Operator, "attack"),
-                    Unit("op_eve", CombatUnitRole.Operator, "skill_or_special"),
-                    Unit("op_sera", CombatUnitRole.Operator, "hit"),
-                    Unit("op_mira", CombatUnitRole.Operator, "idle"),
+                    Unit(operatorIds[0], CombatUnitRole.Operator, "idle"),
+                    Unit(operatorIds[1], CombatUnitRole.Operator, "attack"),
+                    Unit(operatorIds[2], CombatUnitRole.Operator, "skill_or_special"),
+                    Unit(operatorIds[3], CombatUnitRole.Operator, "hit"),
+                    Unit(operatorIds[4], CombatUnitRole.Operator, "idle"),
                     Unit("enemy_raider_scout", CombatUnitRole.Enemy, "attack"),
                     Unit("enemy_spike_cart_gunner", CombatUnitRole.Enemy, "attack"),
                     Unit("enemy_scrapshield_brute", CombatUnitRole.Enemy, "hit"),

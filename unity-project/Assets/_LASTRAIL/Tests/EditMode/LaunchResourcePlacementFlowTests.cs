@@ -90,11 +90,28 @@ namespace LastRail.Tests.EditMode
                 Assert.That(transform.GetComponent<Image>().sprite.name, Does.StartWith(operatorId + "_idle_"), operatorId);
                 Assert.That(transform.GetComponent<Animator>().runtimeAnimatorController, Is.Not.Null, operatorId);
                 Assert.That(AssetDatabase.GetAssetPath(transform.GetComponent<Animator>().runtimeAnimatorController), Does.Contain("/CombatAnimations/Animators/Operators/" + operatorId + ".controller"), operatorId);
+                Assert.That(transform.parent.name, Does.Not.StartWith("OperatorSlotFrame"), operatorId + " should be placed as a combat unit, not inside a card frame.");
             }
 
+            Assert.That(FindChildRecursive(prefab.transform, "OperatorSlotFrame01"), Is.Null);
+            Assert.That(PrefabContainsSprite(prefab, "operator_card_slot_background"), Is.False);
             Assert.That(FindChildRecursive(prefab.transform, "CombatOrdinaryWaveDemoSurface"), Is.Not.Null);
             Assert.That(FindChildRecursive(prefab.transform, "CombatStoryRaidBossDemoSurface"), Is.Not.Null);
             Assert.That(FindChildRecursive(prefab.transform, "StoryRaidBossAnimated_boss_raider_king_engine"), Is.Not.Null);
+        }
+
+        [Test]
+        public void CombatAnimationManifest_RejectsPortraitDerivedSourcesForActualFlow()
+        {
+            var manifest = ReadFile(CombatAnimationManifestPath);
+            Assert.That(manifest, Does.Contain("\"spriteType\": \"combat_unit\""));
+            Assert.That(manifest, Does.Contain("\"portraitDerived\": false"));
+            Assert.That(manifest, Does.Contain("\"hasCardFrame\": false"));
+            Assert.That(manifest, Does.Contain("\"transparentOrSceneCompatible\": true"));
+            Assert.That(manifest, Does.Contain("/CombatAnimations/Sources/"));
+            Assert.That(manifest, Does.Not.Contain("/Operators/Portraits/"));
+            Assert.That(manifest, Does.Not.Contain("/Operators/Cards/"));
+            Assert.That(manifest, Does.Not.Contain("/Operators/Icons/"));
         }
 
         [Test]
@@ -102,7 +119,10 @@ namespace LastRail.Tests.EditMode
         {
             var runner = ReadFile(EditorVideoQaRunnerPath);
             Assert.That(runner, Does.Contain("combat_ordinary_wave_demo"));
+            Assert.That(runner, Does.Contain("combat_elite_squad_a_demo"));
+            Assert.That(runner, Does.Contain("combat_elite_squad_b_demo"));
             Assert.That(runner, Does.Contain("combat_story_raid_boss_demo"));
+            Assert.That(runner, Does.Contain("ApplyOperatorCombatUnitSprites"));
             Assert.That(runner, Does.Not.Contain("ShowcaseScreens"));
             Assert.That(runner, Does.Not.Contain("combat_animation_showcase"));
             Assert.That(runner, Does.Not.Contain("audio_showcase"));
@@ -132,6 +152,19 @@ namespace LastRail.Tests.EditMode
             }
 
             return null;
+        }
+
+        private static bool PrefabContainsSprite(GameObject prefab, string spriteName)
+        {
+            foreach (var image in prefab.GetComponentsInChildren<Image>(true))
+            {
+                if (image.sprite != null && string.Equals(image.sprite.name, spriteName, StringComparison.Ordinal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static string ReadFile(string path)

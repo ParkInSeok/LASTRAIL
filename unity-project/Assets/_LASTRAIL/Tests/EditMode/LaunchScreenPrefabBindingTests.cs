@@ -208,7 +208,8 @@ namespace LastRail.Tests.EditMode
             AssertHasImage(interiorLane, "InteriorBoardingCombatLane");
             AssertHasImage(AssertChild(interiorLane, "InteriorTrainCarBackgroundImage"), "InteriorTrainCarBackgroundImage");
             AssertHasImage(engagementZone, "EngagementZoneMarkerImage");
-            Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(5));
+            Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorAnimated_"), Is.EqualTo(5));
+            Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.GreaterThanOrEqualTo(3));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
 

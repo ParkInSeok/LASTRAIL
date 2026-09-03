@@ -714,21 +714,14 @@ namespace LastRail.Editor
             var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
-                var slot = CreateSlicedImage(
+                var unit = CreateAnimatedImage(
                     squadSlots,
-                    "OperatorSlotFrame" + (i + 1).ToString("00"),
-                    OperatorCardPolishFramesRoot + "/operator_card_slot_background.png",
-                    Color.white);
-                Place(slot, xPositions[i], yPositions[i], 142f, 164f);
-
-                var portrait = CreateAnimatedImage(
-                    slot.transform,
                     "OperatorAnimated_" + operatorIds[i],
                     "Operators",
                     operatorIds[i],
                     "idle",
                     new Color(1f, 1f, 1f, 0.96f));
-                Place(portrait, 0f, 10f, 112f, 138f);
+                Place(unit, xPositions[i], yPositions[i], 174f, 174f);
             }
         }
 
