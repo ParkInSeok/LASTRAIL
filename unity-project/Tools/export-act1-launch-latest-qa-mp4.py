@@ -55,7 +55,9 @@ def main() -> int:
     ]
     editor_report = read_first_report(source_reports)
     actual_flow_evidence = editor_report.get("actualFlowVisibleOperatorIdsBySurface", {})
+    combat_interior_evidence = editor_report.get("combatInteriorBackgroundBySurface", {})
     combat_hashes_differ = validate_combat_actual_flow(frames, actual_flow_evidence)
+    combat_interiors_differ = validate_combat_interiors(combat_interior_evidence)
     checked_surfaces = read_checked_surfaces(source_reports)
 
     prepare_single_latest_output(output_path)
@@ -78,8 +80,10 @@ def main() -> int:
         seconds,
         actual_flow_evidence,
         combat_hashes_differ,
+        combat_interior_evidence,
+        combat_interiors_differ,
     )
-    update_source_reports(source_reports, output_path, encoder, size, width, height, encoded_frame_count, fps, seconds, actual_flow_evidence, combat_hashes_differ)
+    update_source_reports(source_reports, output_path, encoder, size, width, height, encoded_frame_count, fps, seconds, actual_flow_evidence, combat_hashes_differ, combat_interior_evidence, combat_interiors_differ)
 
     print(json.dumps(
         {
@@ -99,6 +103,7 @@ def main() -> int:
             "resourcePlacementFlowReady": True,
             "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
             "combatSegmentFrameHashesDiffer": combat_hashes_differ,
+            "combatInteriorBackgroundsDiffer": combat_interiors_differ,
         },
         ensure_ascii=False,
         indent=2,
@@ -257,6 +262,39 @@ def validate_combat_actual_flow(frames: list[Path], evidence: dict[str, Any]) ->
     return hashes_differ
 
 
+def validate_combat_interiors(evidence: dict[str, Any]) -> bool:
+    expected_by_surface = {
+        "combat_ordinary_wave_demo": "combat_train_interior_initial_squad",
+        "combat_elite_squad_a_demo": "combat_train_interior_elite_squad_a",
+        "combat_elite_squad_b_demo": "combat_train_interior_elite_squad_b",
+        "combat_story_raid_boss_demo": "combat_train_interior_story_raid_boss",
+    }
+
+    background_ids: set[str] = set()
+    background_paths: set[str] = set()
+    for surface, expected_background_id in expected_by_surface.items():
+        surface_evidence = evidence.get(surface)
+        if not isinstance(surface_evidence, dict):
+            raise SystemExit(f"Missing combat interior background evidence for {surface}")
+        background_id = surface_evidence.get("backgroundId")
+        if background_id != expected_background_id:
+            raise SystemExit(
+                f"Combat interior background id mismatch for {surface}: "
+                f"{background_id} expected {expected_background_id}"
+            )
+        background_path = surface_evidence.get("backgroundPath")
+        if not isinstance(background_path, str) or not background_path.endswith(".png"):
+            raise SystemExit(f"Combat interior background path is invalid for {surface}: {background_path}")
+        background_ids.add(background_id)
+        background_paths.add(background_path.lower())
+
+    interiors_differ = len(background_ids) == len(expected_by_surface) and len(background_paths) == len(expected_by_surface)
+    if not interiors_differ:
+        raise SystemExit("Combat interior backgrounds are duplicated; segment evidence is not valid")
+
+    return interiors_differ
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as stream:
@@ -302,6 +340,8 @@ def write_latest_report(
     seconds: int,
     actual_flow_evidence: dict[str, Any],
     combat_hashes_differ: bool,
+    combat_interior_evidence: dict[str, Any],
+    combat_interiors_differ: bool,
 ) -> None:
     video_root = output_path.parent
     data: dict[str, Any] = {
@@ -330,6 +370,7 @@ def write_latest_report(
         "hasHighQualityArtResourceCoverage": True,
         "resourcePlacementFlowReady": True,
         "actualFlowVisibleOperatorIdsBySurface": actual_flow_evidence,
+        "combatInteriorBackgroundBySurface": combat_interior_evidence,
         "operatorAnimationResourceCoverageCount": 15,
         "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
         "eliteOperatorActualFlowCoverageCount": count_expected_subset(
@@ -342,6 +383,7 @@ def write_latest_report(
         ),
         "manifestOnlyAnimationCoverageAllowed": False,
         "combatSegmentFrameHashesDiffer": combat_hashes_differ,
+        "combatInteriorBackgroundsDiffer": combat_interiors_differ,
         "checkedSurfaceCount": len(checked_surfaces),
         "checkedSurfaces": [{"screenKey": surface} for surface in checked_surfaces],
         "coverageGroups": [{"key": key, "frameCount": len(group_frames)} for key, group_frames in frames_by_group],
@@ -372,6 +414,8 @@ def update_source_reports(
     seconds: int,
     actual_flow_evidence: dict[str, Any],
     combat_hashes_differ: bool,
+    combat_interior_evidence: dict[str, Any],
+    combat_interiors_differ: bool,
 ) -> None:
     for report_path in report_paths:
         if not report_path.exists():
@@ -397,6 +441,7 @@ def update_source_reports(
                 "retainedMp4Count": count_mp4_files(output_path.parent),
                 "resourcePlacementFlowReady": True,
                 "actualFlowVisibleOperatorIdsBySurface": actual_flow_evidence,
+                "combatInteriorBackgroundBySurface": combat_interior_evidence,
                 "operatorAnimationResourceCoverageCount": 15,
                 "operatorAnimationActualFlowCoverageCount": count_actual_flow_operators(actual_flow_evidence),
                 "eliteOperatorActualFlowCoverageCount": count_expected_subset(
@@ -409,6 +454,7 @@ def update_source_reports(
                 ),
                 "manifestOnlyAnimationCoverageAllowed": False,
                 "combatSegmentFrameHashesDiffer": combat_hashes_differ,
+                "combatInteriorBackgroundsDiffer": combat_interiors_differ,
             }
         )
         if int(data.get("failCount", 0)) == 0 and not data.get("blockers"):

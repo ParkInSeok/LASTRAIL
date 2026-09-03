@@ -30,8 +30,10 @@ namespace LastRail.Presentation
             bool hasHighQualityArtResourceCoverage,
             bool resourcePlacementFlowReady,
             IEnumerable<LaunchEditorFlowCombatSurfaceEvidence> actualFlowVisibleOperatorIdsBySurface,
+            IEnumerable<LaunchEditorFlowCombatInteriorEvidence> combatInteriorBackgroundBySurface,
             bool manifestOnlyAnimationCoverageAllowed,
             bool combatSegmentFrameHashesDiffer,
+            bool combatInteriorBackgroundsDiffer,
             int retainedMp4Count,
             IEnumerable<string> checkedSurfaces,
             int warningCount,
@@ -57,6 +59,7 @@ namespace LastRail.Presentation
             HasHighQualityArtResourceCoverage = hasHighQualityArtResourceCoverage;
             ResourcePlacementFlowReady = resourcePlacementFlowReady;
             ActualFlowVisibleOperatorIdsBySurface = CopyCombatEvidence(actualFlowVisibleOperatorIdsBySurface);
+            CombatInteriorBackgroundBySurface = CopyInteriorEvidence(combatInteriorBackgroundBySurface);
             OperatorAnimationResourceCoverageCount = 15;
             OperatorAnimationActualFlowCoverageCount = CountUniqueVisibleOperators(ActualFlowVisibleOperatorIdsBySurface);
             InitialOperatorActualFlowCoverageCount = CountVisibleOperators(
@@ -71,6 +74,7 @@ namespace LastRail.Presentation
                 });
             ManifestOnlyAnimationCoverageAllowed = manifestOnlyAnimationCoverageAllowed;
             CombatSegmentFrameHashesDiffer = combatSegmentFrameHashesDiffer;
+            CombatInteriorBackgroundsDiffer = combatInteriorBackgroundsDiffer;
             RetainedMp4Count = retainedMp4Count;
             CheckedSurfaces = CopyTextList(checkedSurfaces, nameof(checkedSurfaces));
             CheckedSurfaceCount = CheckedSurfaces.Count;
@@ -98,12 +102,14 @@ namespace LastRail.Presentation
         public bool HasHighQualityArtResourceCoverage { get; }
         public bool ResourcePlacementFlowReady { get; }
         public IReadOnlyList<LaunchEditorFlowCombatSurfaceEvidence> ActualFlowVisibleOperatorIdsBySurface { get; }
+        public IReadOnlyList<LaunchEditorFlowCombatInteriorEvidence> CombatInteriorBackgroundBySurface { get; }
         public int OperatorAnimationResourceCoverageCount { get; }
         public int OperatorAnimationActualFlowCoverageCount { get; }
         public int EliteOperatorActualFlowCoverageCount { get; }
         public int InitialOperatorActualFlowCoverageCount { get; }
         public bool ManifestOnlyAnimationCoverageAllowed { get; }
         public bool CombatSegmentFrameHashesDiffer { get; }
+        public bool CombatInteriorBackgroundsDiffer { get; }
         public int RetainedMp4Count { get; }
         public IReadOnlyList<string> CheckedSurfaces { get; }
         public int CheckedSurfaceCount { get; }
@@ -134,13 +140,18 @@ namespace LastRail.Presentation
             bool resourcePlacementFlowReady = false,
             IEnumerable<LaunchEditorFlowCombatSurfaceEvidence> actualFlowVisibleOperatorIdsBySurface = null,
             bool combatSegmentFrameHashesDiffer = true,
+            IEnumerable<LaunchEditorFlowCombatInteriorEvidence> combatInteriorBackgroundBySurface = null,
+            bool combatInteriorBackgroundsDiffer = true,
             int retainedMp4Count = 0)
         {
             var resolvedEvidence = CopyCombatEvidence(actualFlowVisibleOperatorIdsBySurface);
+            var resolvedInteriorEvidence = CopyInteriorEvidence(combatInteriorBackgroundBySurface);
             var resolvedBlockers = BuildValidatedBlockers(
                 blockers,
                 resolvedEvidence,
-                combatSegmentFrameHashesDiffer);
+                combatSegmentFrameHashesDiffer,
+                resolvedInteriorEvidence,
+                combatInteriorBackgroundsDiffer);
             failCount += resolvedBlockers.Count - CountTextList(blockers);
             var status = failCount == 0 ? "PASS" : "FAIL";
             return new LaunchEditorFlowVideoQaReport(
@@ -163,8 +174,10 @@ namespace LastRail.Presentation
                 hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
                 resourcePlacementFlowReady: resourcePlacementFlowReady,
                 actualFlowVisibleOperatorIdsBySurface: resolvedEvidence,
+                combatInteriorBackgroundBySurface: resolvedInteriorEvidence,
                 manifestOnlyAnimationCoverageAllowed: false,
                 combatSegmentFrameHashesDiffer: combatSegmentFrameHashesDiffer,
+                combatInteriorBackgroundsDiffer: combatInteriorBackgroundsDiffer,
                 retainedMp4Count: retainedMp4Count,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
@@ -192,6 +205,8 @@ namespace LastRail.Presentation
             bool resourcePlacementFlowReady = false,
             IEnumerable<LaunchEditorFlowCombatSurfaceEvidence> actualFlowVisibleOperatorIdsBySurface = null,
             bool combatSegmentFrameHashesDiffer = true,
+            IEnumerable<LaunchEditorFlowCombatInteriorEvidence> combatInteriorBackgroundBySurface = null,
+            bool combatInteriorBackgroundsDiffer = true,
             int retainedMp4Count = 0)
         {
             if (durationSeconds <= 0)
@@ -205,10 +220,13 @@ namespace LastRail.Presentation
             }
 
             var resolvedEvidence = CopyCombatEvidence(actualFlowVisibleOperatorIdsBySurface);
+            var resolvedInteriorEvidence = CopyInteriorEvidence(combatInteriorBackgroundBySurface);
             var resolvedBlockers = BuildValidatedBlockers(
                 blockers,
                 resolvedEvidence,
-                combatSegmentFrameHashesDiffer);
+                combatSegmentFrameHashesDiffer,
+                resolvedInteriorEvidence,
+                combatInteriorBackgroundsDiffer);
             failCount += resolvedBlockers.Count - CountTextList(blockers);
             var status = failCount == 0 ? "PASS" : "FAIL";
             return new LaunchEditorFlowVideoQaReport(
@@ -231,8 +249,10 @@ namespace LastRail.Presentation
                 hasHighQualityArtResourceCoverage: hasHighQualityArtResourceCoverage,
                 resourcePlacementFlowReady: resourcePlacementFlowReady,
                 actualFlowVisibleOperatorIdsBySurface: resolvedEvidence,
+                combatInteriorBackgroundBySurface: resolvedInteriorEvidence,
                 manifestOnlyAnimationCoverageAllowed: false,
                 combatSegmentFrameHashesDiffer: combatSegmentFrameHashesDiffer,
+                combatInteriorBackgroundsDiffer: combatInteriorBackgroundsDiffer,
                 retainedMp4Count: retainedMp4Count,
                 checkedSurfaces: checkedSurfaces,
                 warningCount: warningCount,
@@ -262,10 +282,34 @@ namespace LastRail.Presentation
             return copy.AsReadOnly();
         }
 
+        private static IReadOnlyList<LaunchEditorFlowCombatInteriorEvidence> CopyInteriorEvidence(
+            IEnumerable<LaunchEditorFlowCombatInteriorEvidence> values)
+        {
+            var copy = new List<LaunchEditorFlowCombatInteriorEvidence>();
+            if (values == null)
+            {
+                return copy.AsReadOnly();
+            }
+
+            foreach (var value in values)
+            {
+                if (value == null)
+                {
+                    throw new ArgumentException("Combat interior evidence cannot contain null.", nameof(values));
+                }
+
+                copy.Add(value);
+            }
+
+            return copy.AsReadOnly();
+        }
+
         private static IReadOnlyList<string> BuildValidatedBlockers(
             IEnumerable<string> blockers,
             IReadOnlyList<LaunchEditorFlowCombatSurfaceEvidence> evidence,
-            bool combatSegmentFrameHashesDiffer)
+            bool combatSegmentFrameHashesDiffer,
+            IReadOnlyList<LaunchEditorFlowCombatInteriorEvidence> interiorEvidence,
+            bool combatInteriorBackgroundsDiffer)
         {
             var copy = new List<string>(CopyTextList(blockers, nameof(blockers)));
             var hasMismatch = false;
@@ -293,7 +337,35 @@ namespace LastRail.Presentation
                 copy.Add("combat_actual_flow_operator_coverage_incomplete");
             }
 
+            if (!combatInteriorBackgroundsDiffer && !copy.Contains("combat_interior_backgrounds_not_unique"))
+            {
+                copy.Add("combat_interior_backgrounds_not_unique");
+            }
+
+            if (interiorEvidence.Count > 0 && !HasRequiredCombatInteriorEvidence(interiorEvidence) && !copy.Contains("combat_interior_background_evidence_incomplete"))
+            {
+                copy.Add("combat_interior_background_evidence_incomplete");
+            }
+
             return copy.AsReadOnly();
+        }
+
+        private static bool HasRequiredCombatInteriorEvidence(IEnumerable<LaunchEditorFlowCombatInteriorEvidence> evidence)
+        {
+            var required = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "combat_ordinary_wave_demo",
+                "combat_elite_squad_a_demo",
+                "combat_elite_squad_b_demo",
+                "combat_story_raid_boss_demo"
+            };
+
+            foreach (var item in evidence)
+            {
+                required.Remove(item.ScreenKey);
+            }
+
+            return required.Count == 0;
         }
 
         private static int CountTextList(IEnumerable<string> values)
@@ -424,12 +496,30 @@ namespace LastRail.Presentation
             }
 
             b.Append("},");
+            b.Append("\"combatInteriorBackgroundBySurface\":{");
+            for (var i = 0; i < report.CombatInteriorBackgroundBySurface.Count; i++)
+            {
+                if (i > 0)
+                {
+                    b.Append(',');
+                }
+
+                var evidence = report.CombatInteriorBackgroundBySurface[i];
+                StringValue(b, evidence.ScreenKey);
+                b.Append(":{");
+                Field(b, "backgroundId", evidence.BackgroundId).Append(',');
+                Field(b, "backgroundPath", evidence.BackgroundPath);
+                b.Append('}');
+            }
+
+            b.Append("},");
             b.Append("\"operatorAnimationResourceCoverageCount\":").Append(report.OperatorAnimationResourceCoverageCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"operatorAnimationActualFlowCoverageCount\":").Append(report.OperatorAnimationActualFlowCoverageCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"eliteOperatorActualFlowCoverageCount\":").Append(report.EliteOperatorActualFlowCoverageCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"initialOperatorActualFlowCoverageCount\":").Append(report.InitialOperatorActualFlowCoverageCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"manifestOnlyAnimationCoverageAllowed\":").Append(Bool(report.ManifestOnlyAnimationCoverageAllowed)).Append(',');
             b.Append("\"combatSegmentFrameHashesDiffer\":").Append(Bool(report.CombatSegmentFrameHashesDiffer)).Append(',');
+            b.Append("\"combatInteriorBackgroundsDiffer\":").Append(Bool(report.CombatInteriorBackgroundsDiffer)).Append(',');
             b.Append("\"retainedMp4Count\":").Append(report.RetainedMp4Count.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"checkedSurfaceCount\":").Append(report.CheckedSurfaceCount.ToString(CultureInfo.InvariantCulture)).Append(',');
             b.Append("\"checkedSurfaces\":[");
@@ -634,6 +724,41 @@ namespace LastRail.Presentation
         private static string OptionalText(string value)
         {
             return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
+    }
+
+    public sealed class LaunchEditorFlowCombatInteriorEvidence
+    {
+        private LaunchEditorFlowCombatInteriorEvidence(
+            string screenKey,
+            string backgroundId,
+            string backgroundPath)
+        {
+            ScreenKey = RequireText(screenKey, nameof(screenKey));
+            BackgroundId = RequireText(backgroundId, nameof(backgroundId));
+            BackgroundPath = RequireText(backgroundPath, nameof(backgroundPath));
+        }
+
+        public string ScreenKey { get; }
+        public string BackgroundId { get; }
+        public string BackgroundPath { get; }
+
+        public static LaunchEditorFlowCombatInteriorEvidence ForSurface(
+            string screenKey,
+            string backgroundId,
+            string backgroundPath)
+        {
+            return new LaunchEditorFlowCombatInteriorEvidence(screenKey, backgroundId, backgroundPath);
+        }
+
+        private static string RequireText(string value, string name)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("Value cannot be empty.", name);
+            }
+
+            return value.Trim();
         }
     }
 }

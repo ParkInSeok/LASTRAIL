@@ -48,6 +48,18 @@ namespace LastRail.Editor
         private static readonly string[] InitialSquadOperatorIds = { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
         private static readonly string[] EliteSquadAOperatorIds = { "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris" };
         private static readonly string[] EliteSquadBOperatorIds = { "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden" };
+        private static readonly LaunchEditorFlowCombatInteriorSpec InitialSquadInterior = new LaunchEditorFlowCombatInteriorSpec(
+            "combat_train_interior_initial_squad",
+            "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png");
+        private static readonly LaunchEditorFlowCombatInteriorSpec EliteSquadAInterior = new LaunchEditorFlowCombatInteriorSpec(
+            "combat_train_interior_elite_squad_a",
+            "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_a.png");
+        private static readonly LaunchEditorFlowCombatInteriorSpec EliteSquadBInterior = new LaunchEditorFlowCombatInteriorSpec(
+            "combat_train_interior_elite_squad_b",
+            "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_b.png");
+        private static readonly LaunchEditorFlowCombatInteriorSpec StoryRaidBossInterior = new LaunchEditorFlowCombatInteriorSpec(
+            "combat_train_interior_story_raid_boss",
+            "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_story_raid_boss.png");
 
         [MenuItem("LASTRAIL/Launch/Capture Editor Flow Video QA")]
         public static void CaptureEditorFlowVideoQa()
@@ -64,6 +76,7 @@ namespace LastRail.Editor
             var checkedSurfaces = new List<string>();
             var framePaths = new List<string>();
             var combatEvidence = new List<LaunchEditorFlowCombatSurfaceEvidence>();
+            var combatInteriorEvidence = new List<LaunchEditorFlowCombatInteriorEvidence>();
             var blockers = new List<string>();
             var failCount = 0;
             var warningCount = HasRecorderPackage() ? 0 : 1;
@@ -78,22 +91,22 @@ namespace LastRail.Editor
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(InitialSquadOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, InitialSquadOperatorIds))
+                if (CaptureCombatStateFrame("combat_ordinary_wave_demo", CreateOrdinaryCombatState(InitialSquadOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, combatInteriorEvidence, InitialSquadInterior, InitialSquadOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_elite_squad_a_demo", CreateOrdinaryCombatState(EliteSquadAOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, EliteSquadAOperatorIds))
+                if (CaptureCombatStateFrame("combat_elite_squad_a_demo", CreateOrdinaryCombatState(EliteSquadAOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, combatInteriorEvidence, EliteSquadAInterior, EliteSquadAOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_elite_squad_b_demo", CreateOrdinaryCombatState(EliteSquadBOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, EliteSquadBOperatorIds))
+                if (CaptureCombatStateFrame("combat_elite_squad_b_demo", CreateOrdinaryCombatState(EliteSquadBOperatorIds), framesRoot, checkedSurfaces, framePaths, combatEvidence, combatInteriorEvidence, EliteSquadBInterior, EliteSquadBOperatorIds))
                 {
                     fallbackCompositeFrameCount++;
                 }
 
-                if (CaptureCombatStateFrame("combat_story_raid_boss_demo", CreateStoryRaidBossState(), framesRoot, checkedSurfaces, framePaths, combatEvidence))
+                if (CaptureCombatStateFrame("combat_story_raid_boss_demo", CreateStoryRaidBossState(), framesRoot, checkedSurfaces, framePaths, combatEvidence, combatInteriorEvidence, StoryRaidBossInterior))
                 {
                     fallbackCompositeFrameCount++;
                 }
@@ -143,6 +156,13 @@ namespace LastRail.Editor
                 blockers.Add("combat_segment_frame_hashes_identical");
             }
 
+            var combatInteriorBackgroundsDiffer = CombatInteriorBackgroundsDiffer(combatInteriorEvidence);
+            if (!combatInteriorBackgroundsDiffer)
+            {
+                failCount++;
+                blockers.Add("combat_interior_backgrounds_not_unique");
+            }
+
             WriteFrameManifest(reportsRoot, framePaths);
             var report = LaunchEditorFlowVideoQaReport.ForPngFrameSequence(
                 outputRoot,
@@ -157,7 +177,9 @@ namespace LastRail.Editor
                 hasHighQualityArtResourceCoverage: true,
                 resourcePlacementFlowReady: true,
                 actualFlowVisibleOperatorIdsBySurface: combatEvidence,
-                combatSegmentFrameHashesDiffer: combatSegmentFrameHashesDiffer);
+                combatSegmentFrameHashesDiffer: combatSegmentFrameHashesDiffer,
+                combatInteriorBackgroundBySurface: combatInteriorEvidence,
+                combatInteriorBackgroundsDiffer: combatInteriorBackgroundsDiffer);
             File.WriteAllText(
                 Path.Combine(reportsRoot, "editor-video-qa-report.json"),
                 LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report));
@@ -272,6 +294,8 @@ namespace LastRail.Editor
             ICollection<string> checkedSurfaces,
             ICollection<string> framePaths,
             ICollection<LaunchEditorFlowCombatSurfaceEvidence> combatEvidence,
+            ICollection<LaunchEditorFlowCombatInteriorEvidence> combatInteriorEvidence,
+            LaunchEditorFlowCombatInteriorSpec interiorSpec,
             IReadOnlyList<string> operatorSpriteIds = null)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab");
@@ -300,6 +324,8 @@ namespace LastRail.Editor
                     ApplyOperatorCombatUnitSprites(root, operatorSpriteIds);
                 }
 
+                var actualInterior = ApplyCombatInteriorBackground(root, interiorSpec);
+
                 var actualOperatorIds = CollectVisibleOperatorIds(root);
                 if (operatorSpriteIds != null && !SequenceEquals(operatorSpriteIds, actualOperatorIds))
                 {
@@ -319,6 +345,11 @@ namespace LastRail.Editor
                         Sha256(path)));
                 }
 
+                combatInteriorEvidence.Add(LaunchEditorFlowCombatInteriorEvidence.ForSurface(
+                    screenKey,
+                    actualInterior.BackgroundId,
+                    actualInterior.BackgroundPath));
+
                 checkedSurfaces.Add(screenKey);
                 framePaths.Add(path);
                 return usedFallbackComposite;
@@ -327,6 +358,58 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static LaunchEditorFlowCombatInteriorSpec ApplyCombatInteriorBackground(
+            GameObject root,
+            LaunchEditorFlowCombatInteriorSpec interiorSpec)
+        {
+            EnsureSpriteImporter(interiorSpec.BackgroundPath);
+            var target = FindImage(root, "InteriorTrainCarBackgroundImage");
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(interiorSpec.BackgroundPath);
+            if (sprite == null)
+            {
+                throw new InvalidOperationException("Missing combat interior background: " + interiorSpec.BackgroundPath);
+            }
+
+            target.name = "InteriorTrainCarBackgroundImage_" + interiorSpec.BackgroundId;
+            target.sprite = sprite;
+            target.color = Color.white;
+            target.preserveAspect = false;
+            return new LaunchEditorFlowCombatInteriorSpec(interiorSpec.BackgroundId, AssetDatabase.GetAssetPath(sprite));
+        }
+
+        private static void EnsureSpriteImporter(string assetPath)
+        {
+            AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer == null)
+            {
+                throw new InvalidOperationException("Missing texture importer: " + assetPath);
+            }
+
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 100f;
+            importer.mipmapEnabled = false;
+            importer.alphaIsTransparency = false;
+            importer.maxTextureSize = 2048;
+            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.SaveAndReimport();
+        }
+
+        private static Image FindImage(GameObject root, string imageName)
+        {
+            foreach (var image in root.GetComponentsInChildren<Image>(true))
+            {
+                if (string.Equals(image.name, imageName, StringComparison.Ordinal) ||
+                    image.name.StartsWith(imageName + "_", StringComparison.Ordinal))
+                {
+                    return image;
+                }
+            }
+
+            throw new InvalidOperationException("Missing combat image binding: " + imageName);
         }
 
         private static void ApplyOperatorCombatUnitSprites(GameObject root, IReadOnlyList<string> operatorIds)
@@ -423,6 +506,36 @@ namespace LastRail.Editor
             }
 
             return count == 3 && hashes.Count == 3;
+        }
+
+        private static bool CombatInteriorBackgroundsDiffer(IReadOnlyCollection<LaunchEditorFlowCombatInteriorEvidence> evidence)
+        {
+            var backgroundIds = new HashSet<string>(StringComparer.Ordinal);
+            var backgroundPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var surface in evidence)
+            {
+                if (!surface.ScreenKey.StartsWith("combat_", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                backgroundIds.Add(surface.BackgroundId);
+                backgroundPaths.Add(surface.BackgroundPath);
+            }
+
+            return evidence.Count == 4 && backgroundIds.Count == 4 && backgroundPaths.Count == 4;
+        }
+
+        private readonly struct LaunchEditorFlowCombatInteriorSpec
+        {
+            public LaunchEditorFlowCombatInteriorSpec(string backgroundId, string backgroundPath)
+            {
+                BackgroundId = backgroundId;
+                BackgroundPath = backgroundPath;
+            }
+
+            public string BackgroundId { get; }
+            public string BackgroundPath { get; }
         }
 
         private static string Sha256(string path)

@@ -244,6 +244,67 @@ namespace LastRail.Tests.EditMode
             Assert.That(json, Does.Contain("\"combatSegmentFrameHashesDiffer\":false"));
             Assert.That(json, Does.Contain("\"retainedMp4Count\":1"));
         }
+
+        [Test]
+        public void CreateMp4ArtifactReport_FailsWhenCombatInteriorBackgroundsAreMissingOrDuplicated()
+        {
+            var evidence = new[]
+            {
+                LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                    "combat_ordinary_wave_demo",
+                    new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                    new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" },
+                    "hash_ordinary"),
+                LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                    "combat_elite_squad_a_demo",
+                    new[] { "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris" },
+                    new[] { "op_vex", "op_nyx", "op_sable", "op_marrow", "op_iris" },
+                    "hash_elite_a"),
+                LaunchEditorFlowCombatSurfaceEvidence.ForSurface(
+                    "combat_elite_squad_b_demo",
+                    new[] { "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden" },
+                    new[] { "op_rail", "op_anchor", "op_lumen", "op_cinder", "op_warden" },
+                    "hash_elite_b")
+            };
+
+            var report = LaunchEditorFlowVideoQaReport.ForMp4Artifact(
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch",
+                "E:/Projects/LASTRAIL/unity-project/QA/Act1Launch/Video/act1-launch-latest-qa.mp4",
+                "imageio_ffmpeg",
+                new[] { "combat_ordinary_wave_demo", "combat_elite_squad_a_demo", "combat_elite_squad_b_demo", "combat_story_raid_boss_demo" },
+                frameCount: 4,
+                durationSeconds: 65,
+                mp4SizeBytes: 123456,
+                hasRecorderPackage: false,
+                warningCount: 0,
+                failCount: 0,
+                blockers: Array.Empty<string>(),
+                actualFlowVisibleOperatorIdsBySurface: evidence,
+                combatSegmentFrameHashesDiffer: true,
+                combatInteriorBackgroundBySurface: new[]
+                {
+                    LaunchEditorFlowCombatInteriorEvidence.ForSurface(
+                        "combat_ordinary_wave_demo",
+                        "combat_train_interior_initial_squad",
+                        "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png"),
+                    LaunchEditorFlowCombatInteriorEvidence.ForSurface(
+                        "combat_elite_squad_a_demo",
+                        "combat_train_interior_initial_squad",
+                        "Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png")
+                },
+                combatInteriorBackgroundsDiffer: false,
+                retainedMp4Count: 1);
+
+            Assert.That(report.Status, Is.EqualTo("FAIL"));
+            Assert.That(report.CombatInteriorBackgroundsDiffer, Is.False);
+            Assert.That(report.Blockers, Does.Contain("combat_interior_backgrounds_not_unique"));
+            Assert.That(report.Blockers, Does.Contain("combat_interior_background_evidence_incomplete"));
+
+            var json = LaunchEditorFlowVideoQaReportJsonAdapter.ToJson(report);
+            Assert.That(json, Does.Contain("\"combatInteriorBackgroundBySurface\""));
+            Assert.That(json, Does.Contain("\"backgroundId\":\"combat_train_interior_initial_squad\""));
+            Assert.That(json, Does.Contain("\"combatInteriorBackgroundsDiffer\":false"));
+        }
     }
 }
 #endif
