@@ -23,6 +23,7 @@ namespace LastRail.Tests.EditMode
         private const string ShowcaseScenePath = "Assets/_LASTRAIL/Scenes/LaunchUiKitShowcase.unity";
         private const string TmpSettingsPath = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
         private const string SkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
+        private const string IconRoot = "Assets/_LASTRAIL/UI/Icons";
 
         private static readonly string[] RequiredPrefabPaths =
         {
@@ -157,6 +158,22 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CommonUiKitIcons_UseHifiV2ProjectLocalSourceAndDoNotRegressToTinyPlaceholders()
+        {
+            var hifiAtlas = AssetDatabase.LoadAssetAtPath<Texture2D>(IconRoot + "/Sources/lastrail_common_icon_atlas_hifi_v2.png");
+            Assert.That(hifiAtlas, Is.Not.Null, "Common UI hifi v2 icon source atlas must be preserved project-locally.");
+            Assert.That(hifiAtlas.width, Is.GreaterThanOrEqualTo(1024));
+            Assert.That(hifiAtlas.height, Is.GreaterThanOrEqualTo(1024));
+
+            foreach (var path in RequiredIconPaths)
+            {
+                var file = new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), path));
+                Assert.That(file.Exists, Is.True, path);
+                Assert.That(file.Length, Is.GreaterThan(4096), path + " should not regress to tiny line-art placeholder icons.");
+            }
+        }
+
+        [Test]
         public void CommonUiKitSkinSprites_ExistAsSlicedHighQualityMobileAssets()
         {
             foreach (var path in RequiredSkinSpritePaths)
@@ -220,6 +237,28 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CommonUiKitPrefabsAndShowcase_BindActualIconSpritesInsteadOfBlankImagePlaceholders()
+        {
+            var paths = new List<string>(RequiredPrefabPaths) { ShowcasePrefabPath };
+            foreach (var path in paths)
+            {
+                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                Assert.That(prefab, Is.Not.Null, path);
+
+                foreach (var image in prefab.GetComponentsInChildren<Image>(includeInactive: true))
+                {
+                    if (!image.name.StartsWith("Icon", StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    Assert.That(image.sprite, Is.Not.Null, path + ":" + image.name + " must bind an actual icon sprite.");
+                    Assert.That(AssetDatabase.GetAssetPath(image.sprite), Does.StartWith(IconRoot), path + ":" + image.name);
+                }
+            }
+        }
+
+        [Test]
         public void CommonUiKitStyleTokens_ParseAndKeepLaunchReadabilityPolicy()
         {
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), StyleJsonPath);
@@ -250,6 +289,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(json, Does.Contain(@"""launchScreenConsumerCount"": 7"));
             Assert.That(json, Does.Contain(@"""sourceKind"": ""image_gen_hifi_v2_canonical_replacements"""));
             Assert.That(json, Does.Contain(@"""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_hifi_v2.png"""));
+            Assert.That(json, Does.Contain(@"""iconSource"": ""Assets/_LASTRAIL/UI/Icons/Sources/lastrail_common_icon_atlas_hifi_v2.png"""));
+            Assert.That(json, Does.Contain(@"""iconReplacementStatus"": ""canonical_common_icons_replaced"""));
             Assert.That(json, Does.Contain(@"""replacementStatus"": ""canonical_common_skins_replaced"""));
         }
 

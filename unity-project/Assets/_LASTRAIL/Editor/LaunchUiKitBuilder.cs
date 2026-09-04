@@ -21,6 +21,8 @@ namespace LastRail.Editor
         private const string SkinSourceRoot = SkinRoot + "/Sources";
         private const string SkinSourcePath = SkinSourceRoot + "/lastrail_common_ui_skin_atlas_hifi_v2.png";
         private const string IconRoot = UiRoot + "/Icons";
+        private const string IconSourceRoot = IconRoot + "/Sources";
+        private const string IconSourcePath = IconSourceRoot + "/lastrail_common_icon_atlas_hifi_v2.png";
         private const string StyleRoot = UiRoot + "/Style";
         private const string SceneRoot = "Assets/_LASTRAIL/Scenes";
         private const string FontPath = UiRoot + "/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset";
@@ -57,12 +59,15 @@ namespace LastRail.Editor
             Ensure(CommonRoot + "/Showcase");
             Ensure(SkinRoot);
             Ensure(SkinSourceRoot);
+            Ensure(IconSourceRoot);
 
             EnsureTmpEssentialResources();
             WriteJson();
             NormalizeFontMaterial();
             CreateIcons();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             CreateSkinSprites();
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
             CreatePrefabs();
             CreateShowcasePrefab();
             CreateShowcaseScene();
@@ -144,7 +149,9 @@ namespace LastRail.Editor
   ""qualityClass"": ""HIGH_QUALITY_2D_UI_SKIN"",
   ""sourceKind"": ""image_gen_hifi_v2_canonical_replacements"",
   ""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_hifi_v2.png"",
+  ""iconSource"": ""Assets/_LASTRAIL/UI/Icons/Sources/lastrail_common_icon_atlas_hifi_v2.png"",
   ""replacementStatus"": ""canonical_common_skins_replaced"",
+  ""iconReplacementStatus"": ""canonical_common_icons_replaced"",
   ""nineSliceSpriteCount"": 23,
   ""appliedPrefabCount"": 20,
   ""launchScreenConsumerCount"": 7,
@@ -489,7 +496,22 @@ namespace LastRail.Editor
 
         private static Sprite Icon(string name)
         {
-            return AssetDatabase.LoadAssetAtPath<Sprite>(IconRoot + "/ic_" + name + ".png");
+            var path = IconRoot + "/ic_" + name + ".png";
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite != null)
+            {
+                return sprite;
+            }
+
+            foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
+            {
+                if (asset is Sprite nestedSprite)
+                {
+                    return nestedSprite;
+                }
+            }
+
+            return null;
         }
 
         private static Sprite Skin(string name)
@@ -591,22 +613,37 @@ namespace LastRail.Editor
 
         private static void CreateIcons()
         {
-            foreach (var name in IconNames)
+            var sourceFile = ProjectPath(IconSourcePath);
+            if (!File.Exists(sourceFile))
             {
-                var texture = new Texture2D(128, 128, TextureFormat.RGBA32, false);
-                var clear = new Color[128 * 128];
-                for (var i = 0; i < clear.Length; i++) clear[i] = Color.clear;
-                texture.SetPixels(clear);
-                DrawIcon(texture, name, TextMain);
+                throw new InvalidOperationException("Missing generated launch UI icon atlas source: " + IconSourcePath);
+            }
+
+            var source = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            source.LoadImage(File.ReadAllBytes(sourceFile));
+
+            foreach (var spec in IconSpecs())
+            {
+                var x = Mathf.RoundToInt(source.width * spec.Column / 4f);
+                var y = Mathf.RoundToInt(source.height * (3 - spec.Row) / 4f);
+                var width = Mathf.RoundToInt(source.width / 4f);
+                var height = Mathf.RoundToInt(source.height / 4f);
+                var cell = new Texture2D(width, height, TextureFormat.RGBA32, false);
+                cell.SetPixels(source.GetPixels(x, y, width, height));
+                cell.Apply();
+
+                var texture = ResizeTexture(cell, 128, 128);
                 texture.Apply();
-                var path = IconRoot + "/ic_" + name + ".png";
+                var path = IconRoot + "/ic_" + spec.Name + ".png";
                 File.WriteAllBytes(ProjectPath(path), texture.EncodeToPNG());
+                UnityEngine.Object.DestroyImmediate(cell);
                 UnityEngine.Object.DestroyImmediate(texture);
                 AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
                 var importer = AssetImporter.GetAtPath(path) as TextureImporter;
                 if (importer != null)
                 {
                     importer.textureType = TextureImporterType.Sprite;
+                    importer.spriteImportMode = SpriteImportMode.Single;
                     importer.spritePixelsPerUnit = 100f;
                     importer.maxTextureSize = 128;
                     importer.alphaIsTransparency = true;
@@ -614,6 +651,22 @@ namespace LastRail.Editor
                     importer.SaveAndReimport();
                 }
             }
+
+            UnityEngine.Object.DestroyImmediate(source);
+        }
+
+        private static Texture2D ResizeTexture(Texture2D source, int width, int height)
+        {
+            var target = new Texture2D(width, height, TextureFormat.RGBA32, false);
+            for (var y = 0; y < height; y++)
+            for (var x = 0; x < width; x++)
+            {
+                var u = (x + 0.5f) / width;
+                var v = (y + 0.5f) / height;
+                target.SetPixel(x, y, source.GetPixelBilinear(u, v));
+            }
+
+            return target;
         }
 
         private static void CreateSkinSprites()
@@ -707,6 +760,43 @@ namespace LastRail.Editor
             public int Height { get; }
             public int Border { get; }
             public int MaxTextureSize { get; }
+        }
+
+        private static IconSpec[] IconSpecs()
+        {
+            return new[]
+            {
+                new IconSpec("back", 0, 0),
+                new IconSpec("close", 1, 0),
+                new IconSpec("settings", 2, 0),
+                new IconSpec("retry", 3, 0),
+                new IconSpec("info", 0, 1),
+                new IconSpec("warning", 1, 1),
+                new IconSpec("ticket", 2, 1),
+                new IconSpec("reward", 3, 1),
+                new IconSpec("codex", 0, 2),
+                new IconSpec("operator", 1, 2),
+                new IconSpec("mission", 2, 2),
+                new IconSpec("gacha", 3, 2),
+                new IconSpec("sound", 0, 3),
+                new IconSpec("vibration", 1, 3),
+                new IconSpec("lock", 2, 3),
+                new IconSpec("unlock", 3, 3)
+            };
+        }
+
+        private readonly struct IconSpec
+        {
+            public IconSpec(string name, int column, int row)
+            {
+                Name = name;
+                Column = column;
+                Row = row;
+            }
+
+            public string Name { get; }
+            public int Column { get; }
+            public int Row { get; }
         }
 
         private static void DrawIcon(Texture2D texture, string name, Color color)

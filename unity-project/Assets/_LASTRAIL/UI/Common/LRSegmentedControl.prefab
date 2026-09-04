@@ -188,7 +188,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3690223511830528331}
+  - {fileID: 2797038577743450495}
   m_Father: {fileID: 6840513620997341769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -293,7 +293,7 @@ MonoBehaviour:
   button: {fileID: 6105614325564546153}
   backgroundImage: {fileID: 8018115639159146106}
   iconImage: {fileID: 0}
-  labelText: {fileID: 3584384303240084397}
+  labelText: {fileID: 1844609788264519985}
   actionKey: Segment3
 --- !u!114 &338006601844801309
 MonoBehaviour:
@@ -310,7 +310,7 @@ MonoBehaviour:
   componentKey: Segment3
   componentRole: button
   styleVariant: Segment3
---- !u!1 &5218884718971982366
+--- !u!1 &3671497306909955934
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -318,85 +318,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6840513620997341769}
-  - component: {fileID: 7865663079149995964}
-  - component: {fileID: 6264713135921216826}
-  m_Layer: 0
-  m_Name: LRSegmentedControl
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6840513620997341769
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5218884718971982366}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1757972356649274320}
-  - {fileID: 4078147223044460647}
-  - {fileID: 2229370399150814845}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 520, y: 64}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7865663079149995964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5218884718971982366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be80e213a42c2d143b19e7fe5ee5961a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: LastRail.Runtime::LastRail.UI.LastRailUiSegmentedControl
-  segmentButtons:
-  - {fileID: 4142729069275836171}
-  - {fileID: 8175815704704236552}
-  - {fileID: 6105614325564546153}
-  segmentLabels:
-  - {fileID: 135566001848089289}
-  - {fileID: 5163397686093661250}
-  - {fileID: 3584384303240084397}
-  actionKey: LRSegmentedControl
---- !u!114 &6264713135921216826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5218884718971982366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 975e472343a18d247a2cd24c5aec5c33, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: LastRail.Runtime::LastRail.UI.LastRailUiStyleTag
-  componentKey: LRSegmentedControl
-  componentRole: segmented-control
-  styleVariant: default
---- !u!1 &7074179467338302542
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3690223511830528331}
-  - component: {fileID: 8798660397713099194}
-  - component: {fileID: 3584384303240084397}
+  - component: {fileID: 2797038577743450495}
+  - component: {fileID: 5553953222931526876}
+  - component: {fileID: 1844609788264519985}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -404,13 +328,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &3690223511830528331
+--- !u!224 &2797038577743450495
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7074179467338302542}
+  m_GameObject: {fileID: 3671497306909955934}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -423,21 +347,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8798660397713099194
+--- !u!222 &5553953222931526876
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7074179467338302542}
+  m_GameObject: {fileID: 3671497306909955934}
   m_CullTransparentMesh: 1
---- !u!114 &3584384303240084397
+--- !u!114 &1844609788264519985
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7074179467338302542}
+  m_GameObject: {fileID: 3671497306909955934}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -523,7 +447,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &7842010322125840451
+--- !u!1 &3691096484676337924
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -531,9 +455,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5820209365080825678}
-  - component: {fileID: 7189454484867495168}
-  - component: {fileID: 5163397686093661250}
+  - component: {fileID: 4580778123604861294}
+  - component: {fileID: 891074662661542017}
+  - component: {fileID: 7961661172402523735}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -541,13 +465,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &5820209365080825678
+--- !u!224 &4580778123604861294
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7842010322125840451}
+  m_GameObject: {fileID: 3691096484676337924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -560,21 +484,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7189454484867495168
+--- !u!222 &891074662661542017
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7842010322125840451}
+  m_GameObject: {fileID: 3691096484676337924}
   m_CullTransparentMesh: 1
---- !u!114 &5163397686093661250
+--- !u!114 &7961661172402523735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7842010322125840451}
+  m_GameObject: {fileID: 3691096484676337924}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -660,6 +584,82 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &5218884718971982366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6840513620997341769}
+  - component: {fileID: 7865663079149995964}
+  - component: {fileID: 6264713135921216826}
+  m_Layer: 0
+  m_Name: LRSegmentedControl
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6840513620997341769
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5218884718971982366}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1757972356649274320}
+  - {fileID: 4078147223044460647}
+  - {fileID: 2229370399150814845}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 520, y: 64}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7865663079149995964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5218884718971982366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be80e213a42c2d143b19e7fe5ee5961a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.UI.LastRailUiSegmentedControl
+  segmentButtons:
+  - {fileID: 4142729069275836171}
+  - {fileID: 8175815704704236552}
+  - {fileID: 6105614325564546153}
+  segmentLabels:
+  - {fileID: 135566001848089289}
+  - {fileID: 7961661172402523735}
+  - {fileID: 1844609788264519985}
+  actionKey: LRSegmentedControl
+--- !u!114 &6264713135921216826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5218884718971982366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 975e472343a18d247a2cd24c5aec5c33, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.UI.LastRailUiStyleTag
+  componentKey: LRSegmentedControl
+  componentRole: segmented-control
+  styleVariant: default
 --- !u!1 &8130481703463597888
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,7 +693,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5820209365080825678}
+  - {fileID: 4580778123604861294}
   m_Father: {fileID: 6840513620997341769}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -798,7 +798,7 @@ MonoBehaviour:
   button: {fileID: 8175815704704236552}
   backgroundImage: {fileID: 6102374585041453824}
   iconImage: {fileID: 0}
-  labelText: {fileID: 5163397686093661250}
+  labelText: {fileID: 7961661172402523735}
   actionKey: Segment2
 --- !u!114 &6092411206463022547
 MonoBehaviour:
