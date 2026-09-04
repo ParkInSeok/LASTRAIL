@@ -225,6 +225,7 @@ namespace LastRail.Tests.EditMode
             AssertHasImage(AssertChild(interiorLane, "InteriorTrainCarBackgroundImage"), "InteriorTrainCarBackgroundImage");
             AssertHasImage(AssertChild(engagementZone, "EngagementContactBurstImage"), "EngagementContactBurstImage");
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorAnimated_"), Is.EqualTo(5));
+            AssertSquadUsesLeftThreeRightTwoFormationInsidePlayerArea(squadSlots);
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorSlotFrame"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(squadSlots, "OperatorContactShadow_"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingAnimated_"), Is.GreaterThanOrEqualTo(3));
@@ -255,6 +256,37 @@ namespace LastRail.Tests.EditMode
             Assert.That(text, Does.Not.Contain("히트스톱"));
             Assert.That(text, Does.Not.Contain("VFX / SFX"));
             Assert.That(text, Does.Not.Contain("진동 준비"));
+        }
+
+        private static void AssertSquadUsesLeftThreeRightTwoFormationInsidePlayerArea(Transform squadSlots)
+        {
+            var leftColumn = 0;
+            var rightColumn = 0;
+            foreach (Transform child in squadSlots)
+            {
+                if (!child.name.StartsWith("OperatorAnimated_", System.StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var rect = child.GetComponent<RectTransform>();
+                Assert.That(rect, Is.Not.Null, child.name);
+                Assert.That(rect.anchoredPosition.x, Is.InRange(-210f, 90f), child.name + " should stay inside the player squad area.");
+                Assert.That(rect.anchoredPosition.y, Is.InRange(-310f, -70f), child.name + " should stay grounded inside the train interior.");
+
+                if (rect.anchoredPosition.x <= -95f)
+                {
+                    leftColumn++;
+                }
+
+                if (rect.anchoredPosition.x >= 5f)
+                {
+                    rightColumn++;
+                }
+            }
+
+            Assert.That(leftColumn, Is.EqualTo(3), "Player squad should use three operators in the left cluster inside the player area.");
+            Assert.That(rightColumn, Is.EqualTo(2), "Player squad should use two operators in the right cluster inside the player area.");
         }
 
         private static void AssertCombatHudUsesCompactReadableHudChips(GameObject prefab, Transform topStatusPanel, Transform bottomStatusPanel, Transform interiorLane)

@@ -747,8 +747,8 @@ namespace LastRail.Editor
 
         private static void CreateOperatorCombatSlots(Transform squadSlots)
         {
-            var xPositions = new[] { -126f, -28f, -170f, -74f, 38f };
-            var yPositions = new[] { -112f, -138f, -198f, -222f, -238f };
+            var xPositions = new[] { -158f, -158f, -158f, 34f, 34f };
+            var yPositions = new[] { -96f, -188f, -280f, -142f, -238f };
             var operatorIds = new[] { "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira" };
             for (var i = 0; i < 5; i++)
             {
