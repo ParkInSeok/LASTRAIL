@@ -1,6 +1,7 @@
 #if UNITY_5_3_OR_NEWER
 using System.IO;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace LastRail.Tests.EditMode
     {
         private const string ScreenPrefabRoot = "Assets/_LASTRAIL/Prefabs/Screens/";
         private const string CommonSkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
+        private const string FloatingInitialSquadInteriorHash = "A9173970796345828181C28FC14D66CC189AE47B8F30BB99E94512F5D8636896";
 
         [Test]
         public void LaunchScreenPrefabs_ExistForSevenPlayerFacingScreens()
@@ -242,6 +244,29 @@ namespace LastRail.Tests.EditMode
                 "playerSquadSlots",
                 "invadingEnemySlots",
                 "engagementZoneRoot");
+        }
+
+        [Test]
+        public void CombatHudInitialSquadInterior_DoesNotUseFloatingGroundBackground()
+        {
+            var assetPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "Assets",
+                "_LASTRAIL",
+                "UI",
+                "CombatResources",
+                "Interiors",
+                "combat_train_interior_initial_squad.png");
+
+            Assert.That(File.Exists(assetPath), Is.True, assetPath);
+            using var stream = File.OpenRead(assetPath);
+            using var sha256 = SHA256.Create();
+            var hash = System.BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", string.Empty);
+
+            Assert.That(
+                hash,
+                Is.Not.EqualTo(FloatingInitialSquadInteriorHash),
+                "Initial squad combat interior should use the grounded-floor background, not the old image that made the upper-left operator look airborne.");
         }
 
         private static void AssertCombatHudDoesNotExposeQaCopy(GameObject prefab)

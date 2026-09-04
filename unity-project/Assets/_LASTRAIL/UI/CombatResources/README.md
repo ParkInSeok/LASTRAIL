@@ -5,6 +5,7 @@ These enemy, boss, accent, VFX, and combat-interior files are project-generated 
 Source sheets:
 - `Assets/_LASTRAIL/UI/CombatResources/Sources/act1_enemy_boss_contact_sheet_generated.png`
 - `Assets/_LASTRAIL/UI/CombatResources/Sources/act1_combat_vfx_contact_sheet_generated.png`
+- `Assets/_LASTRAIL/UI/CombatResources/Sources/combat_train_interior_initial_squad_grounded_floor_source.png`
 
 Scope:
 - 6 normal enemy display resources.
@@ -19,6 +20,7 @@ Interior background note:
 - These interiors are composed for side-view / slight 3-quarter combat placement: a clear left/center-left operator deck, matching right-side enemy doorway/platform, shallow perspective, visible floor seams, and foot-contact baselines.
 - Do not add `_2` variants or duplicate generated temp assets to the project; replace these canonical paths when polishing Act 1 combat interiors.
 - The contact shadow is presentation-only and exists to ground combat sprites visually on these battle lanes.
+- `combat_train_interior_initial_squad.png` was replaced with a grounded-floor interior so the left squad cluster reads as standing on the same train-car floor plane.
 
 Usage:
 - Use the manifest at `Assets/_LASTRAIL/UI/Style/lastrail-combat-art-resources.json` for QA and resource readiness.
