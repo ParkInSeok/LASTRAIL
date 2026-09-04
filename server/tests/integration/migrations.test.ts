@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-7])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(17);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-8])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(18);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0016 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0018 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -482,6 +482,48 @@ describe("D1 migrations", () => {
          'login-bonus-key-1', '{"rewardLines":[]}'
        );`,
     );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("adds normalized display name fields and enforces unique player-facing nicknames", async () => {
+    const db = await createMigratedDb();
+
+    const columns = db.exec("PRAGMA table_info(player_profiles);");
+    const indexes = db.exec("PRAGMA index_list(player_profiles);");
+
+    expect(columns[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "display_name",
+      "commander_xp",
+      "created_at",
+      "updated_at",
+      "display_name_normalized",
+      "display_name_updated_at",
+    ]);
+    expect(indexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining(["idx_player_profiles_display_name_normalized_unique"]),
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-name-1', 'ACTIVE', 1, 1);");
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-name-2', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO player_profiles (
+         account_id, display_name, commander_xp, created_at, updated_at, display_name_normalized, display_name_updated_at
+       ) VALUES (
+         'account-name-1', 'Rail Captain', 0, 1, 2, 'rail captain', 2
+       );`,
+    );
+    expect(() =>
+      db.run(
+        `INSERT INTO player_profiles (
+           account_id, display_name, commander_xp, created_at, updated_at, display_name_normalized, display_name_updated_at
+         ) VALUES (
+           'account-name-2', 'rail captain', 0, 1, 2, 'rail captain', 2
+         );`,
+      ),
+    ).toThrow();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     db.close();

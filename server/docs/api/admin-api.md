@@ -39,6 +39,12 @@ Response:
 - `items[].syncLevel`
 - `items[].lastSeenAt`
 
+`displayName` is the player-facing nickname from `player_profiles`. The Admin
+API consumes it as read-only support/display evidence only. Nickname creation,
+duplicate checks, and cooldown enforcement belong to the Game API profile
+contract; Admin does not expose display name mutation or reservation controls
+for launch.
+
 `GET /v1/admin/players/:accountId` returns account detail with the Training
 Core / Sync progression inspector. `syncLevel` is the minimum `trained_level`
 across exactly 5 Training Core slots. Non-core operators use `levelSource:

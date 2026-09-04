@@ -65,8 +65,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-7])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(17);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-8])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(18);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -101,6 +101,7 @@ function seedSupportAccount(db: initSqlJs.Database): void {
   const offlineClaimAt = Date.parse("2026-08-27T02:00:00.000Z");
   const gachaAt = Date.parse("2026-08-27T03:00:00.000Z");
   const loginBonusAt = Date.parse("2026-08-27T00:45:00.000Z");
+  const activeSessionExpiresAt = Date.parse("2099-09-03T00:00:00.000Z");
 
   db.run(
     `INSERT INTO admin_principals (
@@ -132,10 +133,10 @@ function seedSupportAccount(db: initSqlJs.Database): void {
      VALUES
        ('session-support-1', 'account-support-1', 'hash-support-1', 'family-support-1', 0, 'ACTIVE', ?, ?, NULL),
        ('session-support-expired-1', 'account-support-1', 'hash-support-expired-1', 'family-support-expired-1', 0, 'ACTIVE', ?, ?, NULL),
-       ('session-support-rotated-1', 'account-support-1', 'hash-support-rotated-1', 'family-support-rotated-1', 0, 'ROTATED', ?, ?, ?);`,
+      ('session-support-rotated-1', 'account-support-1', 'hash-support-rotated-1', 'family-support-rotated-1', 0, 'ROTATED', ?, ?, ?);`,
     [
       now,
-      now + 7 * 24 * 60 * 60 * 1000,
+      activeSessionExpiresAt,
       now - 2 * 24 * 60 * 60 * 1000,
       now - 24 * 60 * 60 * 1000,
       now + 30 * 60 * 1000,
@@ -398,7 +399,7 @@ describe("admin-api support account summary local D1 smoke", () => {
         latestSessionAt: "2026-08-27T00:30:00.000Z",
         latestAuthAt: "2026-08-27T00:30:00.000Z",
         lastLoginAt: "2026-08-27T00:30:00.000Z",
-        latestSessionExpiresAt: "2026-09-03T00:00:00.000Z",
+        latestSessionExpiresAt: "2099-09-03T00:00:00.000Z",
         lastSeenAt: null,
         lastSeenSource: "not_available_without_activity_source",
         concurrentUsers: null,

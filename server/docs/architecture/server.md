@@ -2387,6 +2387,8 @@ GET /v1/bootstrap
 GET /v1/balance-config/:version
 
 GET /v1/profile
+GET /v1/profile/display-name/check
+POST /v1/profile/display-name
 GET /v1/economy
 GET /v1/fuel
 

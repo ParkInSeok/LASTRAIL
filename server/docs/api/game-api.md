@@ -114,6 +114,84 @@ Security notes:
 - Access token TTL is currently 15 minutes.
 - Guest refresh token/session TTL is currently 30 days.
 
+## Profile / Display Name
+
+`accountId` is the immutable server primary key. It is not the player-facing
+nickname and must not be supplied by the client in profile request bodies,
+query parameters, or shortcut headers.
+
+Current local endpoints:
+
+```text
+GET /v1/profile
+GET /v1/profile/display-name/check?displayName=<candidate>
+POST /v1/profile/display-name
+```
+
+All routes require `Authorization: Bearer <access-token>` and resolve the
+account from the authenticated session context.
+
+`GET /v1/profile` returns:
+
+```json
+{
+  "accepted": true,
+  "account": {
+    "id": "account_..."
+  },
+  "profile": {
+    "displayName": "Rail Captain",
+    "commanderXp": 120,
+    "displayNameUpdatedAt": "2026-08-27T00:00:00.000Z",
+    "nextDisplayNameChangeAvailableAt": "2026-09-03T00:00:00.000Z"
+  },
+  "errorCode": null,
+  "message": null
+}
+```
+
+Display name policy:
+
+- `player_profiles.display_name` stores the original player-facing display
+  value.
+- `player_profiles.display_name_normalized` stores the uniqueness key.
+- Normalization uses Unicode NFKC, trims leading/trailing whitespace, collapses
+  repeated whitespace to a single space, and compares case-insensitively.
+- Length is 2 to 16 Unicode code points.
+- Allowed characters are letters, numbers, space, `_`, and `-`.
+- Reserved system-like names such as `admin`, `system`, `support`, and names
+  starting with `account_`, `admin_`, `gm_`, or `system_` are rejected.
+- Display names are globally unique by normalized value.
+- Re-submitting the current normalized display name for the same account is
+  idempotent success.
+- Changing to a different display name is blocked for 7 days after the previous
+  display name update.
+
+`GET /v1/profile/display-name/check` returns `available: true` when the
+normalized candidate is unused or already belongs to the authenticated account.
+Invalid candidates return `invalid_display_name`; candidates owned by another
+account return `display_name_taken`.
+
+`POST /v1/profile/display-name` accepts:
+
+```json
+{
+  "displayName": "Rail Captain"
+}
+```
+
+Success returns `changeStatus: "UPDATED"` or `"UNCHANGED"`. Error codes:
+
+- `auth_required`
+- `access_token_invalid`
+- `auth_session_invalid`
+- `account_not_active`
+- `contract_violation`
+- `invalid_display_name`
+- `display_name_taken`
+- `display_name_change_cooldown`
+- `profile_not_found`
+
 ### Google Sign-In / Guest Link
 
 Launch includes Google Sign-In for Unity. The server verifies Google ID tokens

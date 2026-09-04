@@ -225,6 +225,20 @@ type AuthContext = {
   accountCreatedAt: number;
 };
 
+type PlayerProfileRow = {
+  account_id: string;
+  display_name: string | null;
+  display_name_normalized?: string | null;
+  display_name_updated_at?: number | null;
+  commander_xp: number;
+  created_at: number;
+  updated_at: number;
+};
+
+type DisplayNameOwnerRow = {
+  account_id: string;
+};
+
 type GachaPityState = {
   totalPullCount: number;
   elitePityCount: number;
@@ -1697,6 +1711,54 @@ function isAuthFailure(value: unknown): value is AuthFailure {
   return typeof value === "object" && value !== null && "errorCode" in value;
 }
 
+const displayNameCooldownMs = 7 * 24 * 60 * 60 * 1000;
+const reservedDisplayNamePrefixes = ["account_", "admin_", "gm_", "system_"];
+const reservedDisplayNames = new Set(["admin", "administrator", "gm", "system", "operator", "support"]);
+
+function profileError(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    errorCode,
+    message,
+  };
+}
+
+function hasNonEmptyRequestBody(c: GameApiContext): boolean {
+  const contentLength = c.req.header("content-length");
+  if (contentLength !== undefined && contentLength !== "0") return true;
+  return c.req.header("content-type") !== undefined;
+}
+
+function normalizeDisplayNameInput(input: unknown): { displayName: string; normalized: string } | AuthFailure {
+  if (typeof input !== "string") {
+    return createAuthFailure(400, "invalid_display_name", "Display name must be a string.");
+  }
+
+  const displayName = input.normalize("NFKC").trim().replace(/\s+/gu, " ");
+  const normalized = displayName.toLocaleLowerCase("en-US");
+  const length = [...displayName].length;
+  if (length < 2 || length > 16) {
+    return createAuthFailure(400, "invalid_display_name", "Display name must be between 2 and 16 characters.");
+  }
+  if (!/^[\p{L}\p{N} _-]+$/u.test(displayName)) {
+    return createAuthFailure(400, "invalid_display_name", "Display name contains unsupported characters.");
+  }
+  if (reservedDisplayNames.has(normalized) || reservedDisplayNamePrefixes.some((prefix) => normalized.startsWith(prefix))) {
+    return createAuthFailure(400, "invalid_display_name", "Display name is reserved.");
+  }
+
+  return { displayName, normalized };
+}
+
+function nextDisplayNameChangeAt(updatedAt: number | null | undefined): string | null {
+  if (typeof updatedAt !== "number") return null;
+  return toIso(updatedAt + displayNameCooldownMs);
+}
+
+function displayNameCooldownActive(updatedAt: number | null | undefined, now: number): boolean {
+  return typeof updatedAt === "number" && updatedAt + displayNameCooldownMs > now;
+}
+
 async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | AuthFailure> {
   const authorization = c.req.header("Authorization");
   if (authorization === undefined || !authorization.startsWith("Bearer ")) {
@@ -2168,6 +2230,175 @@ app.post("/v1/auth/refresh", async (c) => {
     accessTokenExpiresAt: toIso(accessTokenExpiresAt),
     refreshToken: newRefreshToken,
     refreshTokenExpiresAt: toIso(refreshTokenExpiresAt),
+  });
+});
+app.get("/v1/profile", async (c) => {
+  const hasForbiddenAccountQuery = c.req.query("accountId") !== undefined || c.req.query("account_id") !== undefined;
+  if (hasForbiddenAccountQuery || hasNonEmptyRequestBody(c)) {
+    return c.json(profileError("contract_violation", "GET /v1/profile must not include account id query parameters or a request body."), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(profileError(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const profile = await c.env.DB.prepare(
+    `SELECT account_id, display_name, display_name_normalized, display_name_updated_at,
+            commander_xp, created_at, updated_at
+     FROM player_profiles
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<PlayerProfileRow>();
+
+  if (profile === null) {
+    return c.json(profileError("profile_not_found", "Player profile was not found."), 404);
+  }
+
+  return c.json({
+    accepted: true,
+    account: {
+      id: authContext.accountId,
+    },
+    profile: {
+      displayName: profile.display_name,
+      commanderXp: profile.commander_xp,
+      displayNameUpdatedAt: typeof profile.display_name_updated_at === "number" ? toIso(profile.display_name_updated_at) : null,
+      nextDisplayNameChangeAvailableAt: nextDisplayNameChangeAt(profile.display_name_updated_at),
+    },
+    errorCode: null,
+    message: null,
+  });
+});
+app.get("/v1/profile/display-name/check", async (c) => {
+  const hasForbiddenAccountQuery = c.req.query("accountId") !== undefined || c.req.query("account_id") !== undefined;
+  if (hasForbiddenAccountQuery || hasNonEmptyRequestBody(c)) {
+    return c.json(profileError("contract_violation", "Display name check must not include account id query parameters or a request body."), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(profileError(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const parsed = normalizeDisplayNameInput(c.req.query("displayName"));
+  if (isAuthFailure(parsed)) {
+    return c.json(profileError(parsed.errorCode, parsed.message), parsed.status);
+  }
+
+  const owner = await c.env.DB.prepare(
+    `SELECT account_id
+     FROM player_profiles
+     WHERE display_name_normalized = ?`,
+  )
+    .bind(parsed.normalized)
+    .first<DisplayNameOwnerRow>();
+  const available = owner === null || owner.account_id === authContext.accountId;
+
+  return c.json({
+    accepted: true,
+    displayName: parsed.displayName,
+    available,
+    errorCode: available ? null : "display_name_taken",
+    message: available ? null : "Display name is already taken.",
+  });
+});
+app.post("/v1/profile/display-name", async (c) => {
+  const hasForbiddenAccountQuery = c.req.query("accountId") !== undefined || c.req.query("account_id") !== undefined;
+  if (hasForbiddenAccountQuery) {
+    return c.json(profileError("contract_violation", "Display name update must not include account id query parameters."), 400);
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    const parsedBody = await c.req.json();
+    body = typeof parsedBody === "object" && parsedBody !== null ? parsedBody as Record<string, unknown> : {};
+  } catch {
+    body = {};
+  }
+
+  if (Object.hasOwn(body, "accountId") || Object.hasOwn(body, "account_id")) {
+    return c.json(profileError("contract_violation", "accountId must not be supplied by the client."), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(profileError(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const parsed = normalizeDisplayNameInput(body.displayName);
+  if (isAuthFailure(parsed)) {
+    return c.json(profileError(parsed.errorCode, parsed.message), parsed.status);
+  }
+
+  const profile = await c.env.DB.prepare(
+    `SELECT account_id, display_name, display_name_normalized, display_name_updated_at,
+            commander_xp, created_at, updated_at
+     FROM player_profiles
+     WHERE account_id = ?`,
+  )
+    .bind(authContext.accountId)
+    .first<PlayerProfileRow>();
+
+  if (profile === null) {
+    return c.json(profileError("profile_not_found", "Player profile was not found."), 404);
+  }
+
+  if (profile.display_name_normalized === parsed.normalized) {
+    return c.json({
+      accepted: true,
+      displayName: profile.display_name ?? parsed.displayName,
+      changeStatus: "UNCHANGED",
+      displayNameUpdatedAt: typeof profile.display_name_updated_at === "number" ? toIso(profile.display_name_updated_at) : null,
+      nextDisplayNameChangeAvailableAt: nextDisplayNameChangeAt(profile.display_name_updated_at),
+      errorCode: null,
+      message: null,
+    });
+  }
+
+  const now = Date.now();
+  if (displayNameCooldownActive(profile.display_name_updated_at, now)) {
+    return c.json({
+      accepted: false,
+      errorCode: "display_name_change_cooldown",
+      message: "Display name can be changed after the cooldown.",
+      nextDisplayNameChangeAvailableAt: nextDisplayNameChangeAt(profile.display_name_updated_at),
+    }, 409);
+  }
+
+  const owner = await c.env.DB.prepare(
+    `SELECT account_id
+     FROM player_profiles
+     WHERE display_name_normalized = ?`,
+  )
+    .bind(parsed.normalized)
+    .first<DisplayNameOwnerRow>();
+
+  if (owner !== null && owner.account_id !== authContext.accountId) {
+    return c.json(profileError("display_name_taken", "Display name is already taken."), 409);
+  }
+
+  try {
+    await c.env.DB.prepare(
+      `UPDATE player_profiles
+       SET display_name = ?, display_name_normalized = ?, display_name_updated_at = ?, updated_at = ?
+       WHERE account_id = ?`,
+    )
+      .bind(parsed.displayName, parsed.normalized, now, now, authContext.accountId)
+      .run();
+  } catch {
+    return c.json(profileError("display_name_taken", "Display name is already taken."), 409);
+  }
+
+  return c.json({
+    accepted: true,
+    displayName: parsed.displayName,
+    changeStatus: "UPDATED",
+    displayNameUpdatedAt: toIso(now),
+    nextDisplayNameChangeAvailableAt: toIso(now + displayNameCooldownMs),
+    errorCode: null,
+    message: null,
   });
 });
 app.get("/v1/client-config", (c) =>
