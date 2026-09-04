@@ -204,10 +204,31 @@ namespace LastRail.Tests.EditMode
 
             var safeArea = AssertChild(prefab.transform, "SafeArea");
             AssertChildImageUsesSprite(safeArea, "MissionSelectBackgroundImage", "bg_mission_select_rail_map");
-            AssertHasImage(AssertChild(safeArea, "MissionBriefingPanelImage"), "MissionBriefingPanelImage");
-            AssertHasImage(AssertChild(safeArea, "MissionRosterPanelImage"), "MissionRosterPanelImage");
-            AssertHasImage(AssertChild(safeArea, "MissionProgressHudImage"), "MissionProgressHudImage");
+            AssertChildImageUsesSprite(safeArea, "MissionBriefingPanelImage", "mission_briefing_panel");
+            AssertChildImageUsesSprite(safeArea, "MissionRosterPanelImage", "mission_objective_panel");
+            AssertChildImageUsesSprite(safeArea, "MissionProgressHudImage", "mission_progress_rail_strip");
+            AssertChildImageUsesSprite(safeArea, "MissionObjectivePlateImage", "mission_objective_plate");
+            AssertChildImageUsesSprite(safeArea, "MissionWaveBadgeImage", "mission_wave_badge");
+            AssertChildImageUsesSprite(safeArea, "MissionRiskBadgeImage", "mission_risk_badge");
+            AssertChildImageUsesSprite(safeArea, "MissionFirstClearBadgeImage", "mission_first_clear_badge");
+            AssertChildImageUsesSprite(safeArea, "MissionStartButtonAccentImage", "mission_start_button_accent");
+            AssertChildImageUsesSprite(safeArea, "MissionBackButtonAccentImage", "mission_back_button_accent");
             Assert.That(CountChildrenWithPrefix(safeArea, "MissionCardSurface_"), Is.EqualTo(7));
+            foreach (Transform child in safeArea)
+            {
+                if (child.name.StartsWith("MissionCardSurface_", System.StringComparison.Ordinal))
+                {
+                    var image = child.GetComponent<Image>();
+                    Assert.That(image.sprite, Is.Not.Null, child.name);
+                    Assert.That(
+                        image.sprite.name,
+                        Is.EqualTo(child.name.EndsWith("opn_01_last_departure", System.StringComparison.Ordinal)
+                            ? "mission_operation_card_selected_frame"
+                            : "mission_operation_card_frame"),
+                        child.name);
+                }
+            }
+
             Assert.That(FindChildRecursive(prefab.transform, "WarningStripBannerAccentImage"), Is.Null, "MissionShell should not expose the large placeholder warning barrier.");
             Assert.That(FindChildRecursive(prefab.transform, "LoadingRailIndicatorImage"), Is.Null, "MissionShell should not expose the large placeholder loading rail.");
         }

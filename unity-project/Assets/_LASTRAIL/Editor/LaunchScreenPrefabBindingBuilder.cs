@@ -55,6 +55,12 @@ namespace LastRail.Editor
         private const string SystemFeedbackWarningRoot = SystemFeedbackRoot + "/Warning";
         private const string SystemFeedbackDisabledRoot = SystemFeedbackRoot + "/Disabled";
         private const string SystemFeedbackStatusRoot = SystemFeedbackRoot + "/Status";
+        private const string MissionShellPolishRoot = "Assets/_LASTRAIL/UI/MissionShellResources";
+        private const string MissionShellPolishFramesRoot = MissionShellPolishRoot + "/Frames";
+        private const string MissionShellPolishPanelsRoot = MissionShellPolishRoot + "/Panels";
+        private const string MissionShellPolishBadgesRoot = MissionShellPolishRoot + "/Badges";
+        private const string MissionShellPolishProgressRoot = MissionShellPolishRoot + "/Progress";
+        private const string MissionShellPolishButtonsRoot = MissionShellPolishRoot + "/Buttons";
         private const string AudioIntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
@@ -201,18 +207,60 @@ namespace LastRail.Editor
             var briefing = CreateImage(
                 parent,
                 "MissionBriefingPanelImage",
-                CommonSkinRoot + "/ui_modal_panel_9slice.png",
-                new Color(0.09f, 0.14f, 0.16f, 0.86f));
-            briefing.type = Image.Type.Sliced;
+                MissionShellPolishPanelsRoot + "/mission_briefing_panel.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            briefing.preserveAspect = false;
             Place(briefing, 0f, 438f, 940f, 310f);
 
             var roster = CreateImage(
                 parent,
                 "MissionRosterPanelImage",
-                CommonSkinRoot + "/ui_modal_panel_9slice.png",
-                new Color(0.08f, 0.12f, 0.14f, 0.82f));
-            roster.type = Image.Type.Sliced;
+                MissionShellPolishPanelsRoot + "/mission_objective_panel.png",
+                new Color(1f, 1f, 1f, 0.88f));
+            roster.preserveAspect = false;
             Place(roster, 0f, 102f, 940f, 270f);
+
+            var objective = CreateImage(
+                parent,
+                "MissionObjectivePlateImage",
+                MissionShellPolishBadgesRoot + "/mission_objective_plate.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            Place(objective, -270f, 514f, 310f, 92f);
+
+            var wave = CreateImage(
+                parent,
+                "MissionWaveBadgeImage",
+                MissionShellPolishBadgesRoot + "/mission_wave_badge.png",
+                new Color(1f, 1f, 1f, 0.94f));
+            Place(wave, 326f, 514f, 82f, 82f);
+
+            var risk = CreateImage(
+                parent,
+                "MissionRiskBadgeImage",
+                MissionShellPolishBadgesRoot + "/mission_risk_badge.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            Place(risk, 420f, 514f, 82f, 82f);
+
+            var firstClear = CreateImage(
+                parent,
+                "MissionFirstClearBadgeImage",
+                MissionShellPolishBadgesRoot + "/mission_first_clear_badge.png",
+                new Color(1f, 1f, 1f, 0.90f));
+            Place(firstClear, 420f, 270f, 86f, 86f);
+
+            var startAccent = CreateImage(
+                parent,
+                "MissionStartButtonAccentImage",
+                MissionShellPolishButtonsRoot + "/mission_start_button_accent.png",
+                new Color(1f, 1f, 1f, 0.86f));
+            Place(startAccent, -190f, -720f, 342f, 84f);
+
+            var backAccent = CreateImage(
+                parent,
+                "MissionBackButtonAccentImage",
+                MissionShellPolishButtonsRoot + "/mission_back_button_accent.png",
+                new Color(1f, 1f, 1f, 0.72f));
+            Place(backAccent, 190f, -720f, 342f, 84f);
         }
 
         private static void CreateMissionThumbnailStrip(Transform parent)
@@ -234,10 +282,10 @@ namespace LastRail.Editor
                 var surface = CreateImage(
                     parent,
                     "MissionCardSurface_" + missionIds[i],
-                    CommonSkinRoot + "/ui_modal_panel_9slice.png",
-                    new Color(0.07f, 0.10f, 0.11f, 0.92f));
-                surface.type = Image.Type.Sliced;
-                Place(surface, x, 388f, 118f, 92f);
+                    MissionShellPolishFramesRoot + "/" + (i == 0 ? "mission_operation_card_selected_frame" : "mission_operation_card_frame") + ".png",
+                    new Color(1f, 1f, 1f, i == 0 ? 0.94f : 0.82f));
+                surface.preserveAspect = false;
+                Place(surface, x, 388f, 128f, 106f);
 
                 var image = CreateImage(
                     parent,
@@ -1082,12 +1130,18 @@ namespace LastRail.Editor
             var progress = CreateImage(
                 parent,
                 "MissionProgressHudImage",
+                MissionShellPolishProgressRoot + "/mission_progress_rail_strip.png",
+                new Color(1f, 1f, 1f, 0.88f));
+            var dots = CreateImage(
+                parent,
+                "MissionInlineStatusDotsImage",
                 SystemFeedbackStatusRoot + "/inline_status_dot_set.png",
                 new Color(1f, 1f, 1f, 0.82f));
 
             Place(loading, -32f, -702f, 360f, 90f);
             Place(warning, -32f, -704f, 420f, 66f);
-            Place(progress, 315f, 646f, 190f, 48f);
+            Place(progress, 235f, 650f, 360f, 64f);
+            Place(dots, 365f, 646f, 190f, 48f);
         }
 
         private static void CreateGachaSystemFeedbackPolish(Transform parent)

@@ -1,0 +1,26 @@
+{
+  "name": "LAST RAIL Act 1 MissionShell Polish Resources",
+  "referenceResolution": "1080x1920",
+  "sourceType": "OpenAI image generation high-quality 2D local launch UI atlas",
+  "sourcePath": "
+Assets/_LASTRAIL/UI/MissionShellResources/Sources/mission_shell_polish_hifi_v1_source.png",
+  "resourceCount": 11,
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "progressionIncluded": false,
+  "operationAccessIncluded": false,
+  "rewardCalculationIncluded": false,
+  "resources": [
+    { "id": "mission_operation_card_frame", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Frames/mission_operation_card_frame.png", "width": 512, "height": 384, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_operation_card_selected_frame", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Frames/mission_operation_card_selected_frame.png", "width": 512, "height": 384, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_briefing_panel", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Panels/mission_briefing_panel.png", "width": 1024, "height": 512, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_objective_panel", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Panels/mission_objective_panel.png", "width": 1024, "height": 384, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_objective_plate", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_objective_plate.png", "width": 512, "height": 160, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_wave_badge", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_wave_badge.png", "width": 256, "height": 256, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_risk_badge", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_risk_badge.png", "width": 256, "height": 256, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_first_clear_badge", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_first_clear_badge.png", "width": 256, "height": 256, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_progress_rail_strip", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Progress/mission_progress_rail_strip.png", "width": 1024, "height": 192, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_start_button_accent", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Buttons/mission_start_button_accent.png", "width": 512, "height": 160, "intendedUsage": "mission_shell_operation_selection_visual_skin" },
+    { "id": "mission_back_button_accent", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Buttons/mission_back_button_accent.png", "width": 384, "height": 192, "intendedUsage": "mission_shell_operation_selection_visual_skin" }
+  ]
+}
