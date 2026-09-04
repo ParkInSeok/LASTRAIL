@@ -234,6 +234,39 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
+        public void CodexArchivePrefab_UsesIllustratedArchiveSurfaceInsteadOfPlainTextOnlyLayout()
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + "CodexArchiveScreen.prefab");
+            Assert.That(prefab, Is.Not.Null, "CodexArchiveScreen.prefab");
+
+            var safeArea = AssertChild(prefab.transform, "SafeArea");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveMainPanelImage", "codex_archive_main_panel");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveDetailPanelImage", "codex_archive_record_detail_panel");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveLoreTagImage", "codex_archive_lore_tag");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveUnlockSealImage", "codex_archive_unlock_seal");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveLockedSealImage", "codex_archive_locked_seal");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveScrollEdgeTopImage", "codex_archive_scroll_edge");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveScrollEdgeBottomImage", "codex_archive_scroll_edge");
+            AssertChildImageUsesSprite(safeArea, "CodexArchiveBottomNavAccentImage", "codex_archive_bottom_nav_accent");
+
+            Assert.That(CountChildrenWithPrefix(safeArea, "CodexArchiveEntryFrame_"), Is.EqualTo(7));
+            foreach (Transform child in safeArea)
+            {
+                if (child.name.StartsWith("CodexArchiveEntryFrame_", System.StringComparison.Ordinal))
+                {
+                    var image = child.GetComponent<Image>();
+                    Assert.That(image.sprite, Is.Not.Null, child.name);
+                    Assert.That(
+                        image.sprite.name,
+                        Is.EqualTo(child.name.EndsWith("opn_01_last_departure", System.StringComparison.Ordinal)
+                            ? "codex_archive_entry_selected_frame"
+                            : "codex_archive_entry_card_frame"),
+                        child.name);
+                }
+            }
+        }
+
+        [Test]
         public void CombatHudPrefab_UsesTrainAdvanceAndInteriorBoardingCombatLayout()
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ScreenPrefabRoot + "FullyAnimatedCombatHud.prefab");

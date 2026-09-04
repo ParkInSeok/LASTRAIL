@@ -1,0 +1,23 @@
+{
+  "name": "LAST RAIL Act 1 CodexArchive Polish Resources",
+  "referenceResolution": "1080x1920",
+  "sourceType": "OpenAI image generation high-quality 2D local launch UI atlas",
+  "sourcePath": "
+Assets/_LASTRAIL/UI/CodexArchiveResources/Sources/codex_archive_polish_hifi_v1_source.png",
+  "resourceCount": 9,
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "archiveUnlockIncluded": false,
+  "storyProgressIncluded": false,
+  "resources": [
+    { "id": "codex_archive_main_panel", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Panels/codex_archive_main_panel.png", "width": 1024, "height": 1024, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_entry_card_frame", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_entry_card_frame.png", "width": 512, "height": 384, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_entry_selected_frame", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_entry_selected_frame.png", "width": 512, "height": 384, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_record_detail_panel", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Panels/codex_archive_record_detail_panel.png", "width": 1024, "height": 512, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_unlock_seal", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_unlock_seal.png", "width": 256, "height": 256, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_locked_seal", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_locked_seal.png", "width": 256, "height": 256, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_lore_tag", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_lore_tag.png", "width": 512, "height": 160, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_scroll_edge", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_scroll_edge.png", "width": 1024, "height": 128, "intendedUsage": "codex_archive_visual_skin" },
+    { "id": "codex_archive_bottom_nav_accent", "path": "Assets/_LASTRAIL/UI/CodexArchiveResources/Buttons/codex_archive_bottom_nav_accent.png", "width": 512, "height": 160, "intendedUsage": "codex_archive_visual_skin" }
+  ]
+}

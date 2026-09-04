@@ -61,6 +61,11 @@ namespace LastRail.Editor
         private const string MissionShellPolishBadgesRoot = MissionShellPolishRoot + "/Badges";
         private const string MissionShellPolishProgressRoot = MissionShellPolishRoot + "/Progress";
         private const string MissionShellPolishButtonsRoot = MissionShellPolishRoot + "/Buttons";
+        private const string CodexArchivePolishRoot = "Assets/_LASTRAIL/UI/CodexArchiveResources";
+        private const string CodexArchivePolishPanelsRoot = CodexArchivePolishRoot + "/Panels";
+        private const string CodexArchivePolishFramesRoot = CodexArchivePolishRoot + "/Frames";
+        private const string CodexArchivePolishBadgesRoot = CodexArchivePolishRoot + "/Badges";
+        private const string CodexArchivePolishButtonsRoot = CodexArchivePolishRoot + "/Buttons";
         private const string AudioIntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
@@ -114,6 +119,22 @@ namespace LastRail.Editor
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build CodexArchive Polish Prefab")]
+        public static void BuildCodexArchivePolishPrefab()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateCodexPrefab();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
         }
 
         [MenuItem("LASTRAIL/Launch/Build Reward And Offline Polish Prefabs")]
@@ -341,6 +362,13 @@ namespace LastRail.Editor
                 var height = isRaid ? 128f : 118f;
                 var overlay = i == 0 ? "mission_state_locked_overlay" : "mission_state_available_accent";
                 CreateMissionThumbnailCard(parent, "CodexArchive", missions[i], x, y, width, height, overlay);
+                var frame = CreateImage(
+                    parent,
+                    "CodexArchiveEntryFrame_" + missions[i].MissionId,
+                    CodexArchivePolishFramesRoot + "/" + (i == 0 ? "codex_archive_entry_selected_frame" : "codex_archive_entry_card_frame") + ".png",
+                    new Color(1f, 1f, 1f, i == 0 ? 0.92f : 0.78f));
+                frame.preserveAspect = false;
+                Place(frame, x, y, width + 20f, height + 18f);
 
                 if (i > 0 && i < 4)
                 {
@@ -946,6 +974,7 @@ namespace LastRail.Editor
                 var missionSelect = CreateButton(safeArea, "MissionSelectButton", "작전 선택", out var missionSelectText);
                 var result = CreateButton(safeArea, "ResultButton", "결과", out var resultText);
                 var rewardReview = CreateButton(safeArea, "RewardReviewButton", "보상", out var rewardReviewText);
+                CreateCodexArchivePolishSurface(safeArea);
                 Place(title, 0f, 800f, 960f, 96f);
                 Place(subtitle, 0f, 720f, 960f, 72f);
                 CreateCodexArchiveThumbnailCards(safeArea);
@@ -974,6 +1003,70 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static void CreateCodexArchivePolishSurface(Transform parent)
+        {
+            var mainPanel = CreateImage(
+                parent,
+                "CodexArchiveMainPanelImage",
+                CodexArchivePolishPanelsRoot + "/codex_archive_main_panel.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            mainPanel.preserveAspect = false;
+            Place(mainPanel, 0f, 238f, 960f, 980f);
+
+            var detailPanel = CreateImage(
+                parent,
+                "CodexArchiveDetailPanelImage",
+                CodexArchivePolishPanelsRoot + "/codex_archive_record_detail_panel.png",
+                new Color(1f, 1f, 1f, 0.76f));
+            detailPanel.preserveAspect = false;
+            Place(detailPanel, 0f, -318f, 920f, 260f);
+
+            var loreTag = CreateImage(
+                parent,
+                "CodexArchiveLoreTagImage",
+                CodexArchivePolishBadgesRoot + "/codex_archive_lore_tag.png",
+                new Color(1f, 1f, 1f, 0.88f));
+            Place(loreTag, -305f, -162f, 270f, 84f);
+
+            var unlockSeal = CreateImage(
+                parent,
+                "CodexArchiveUnlockSealImage",
+                CodexArchivePolishBadgesRoot + "/codex_archive_unlock_seal.png",
+                new Color(1f, 1f, 1f, 0.88f));
+            Place(unlockSeal, 350f, 665f, 78f, 78f);
+
+            var lockedSeal = CreateImage(
+                parent,
+                "CodexArchiveLockedSealImage",
+                CodexArchivePolishBadgesRoot + "/codex_archive_locked_seal.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            Place(lockedSeal, 424f, -162f, 74f, 74f);
+
+            var topEdge = CreateImage(
+                parent,
+                "CodexArchiveScrollEdgeTopImage",
+                CodexArchivePolishFramesRoot + "/codex_archive_scroll_edge.png",
+                new Color(1f, 1f, 1f, 0.78f));
+            topEdge.preserveAspect = false;
+            Place(topEdge, 0f, 636f, 850f, 64f);
+
+            var bottomEdge = CreateImage(
+                parent,
+                "CodexArchiveScrollEdgeBottomImage",
+                CodexArchivePolishFramesRoot + "/codex_archive_scroll_edge.png",
+                new Color(1f, 1f, 1f, 0.70f));
+            bottomEdge.preserveAspect = false;
+            Place(bottomEdge, 0f, -538f, 820f, 54f);
+
+            var bottomNav = CreateImage(
+                parent,
+                "CodexArchiveBottomNavAccentImage",
+                CodexArchivePolishButtonsRoot + "/codex_archive_bottom_nav_accent.png",
+                new Color(1f, 1f, 1f, 0.62f));
+            bottomNav.preserveAspect = false;
+            Place(bottomNav, 0f, -720f, 860f, 82f);
         }
 
         private static void CreateRewardStoryPrefab(string prefabName, string titleTextValue)
