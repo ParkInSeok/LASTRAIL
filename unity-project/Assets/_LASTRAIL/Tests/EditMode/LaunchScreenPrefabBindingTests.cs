@@ -19,7 +19,13 @@ namespace LastRail.Tests.EditMode
     {
         private const string ScreenPrefabRoot = "Assets/_LASTRAIL/Prefabs/Screens/";
         private const string CommonSkinRoot = "Assets/_LASTRAIL/UI/Common/Skins";
-        private const string FloatingInitialSquadInteriorHash = "A9173970796345828181C28FC14D66CC189AE47B8F30BB99E94512F5D8636896";
+        private static readonly string[] FloatingCombatInteriorHashes =
+        {
+            "D95C3F52726B0E6F6DB516B503C54283FB75D2B69C95C61893FADC2CB7AB77B4",
+            "8AAFD700E6C0C9D59BE632878E5AFDF0877A838D6C3AC177E0EDA863954A023B",
+            "704EBE7F252ACFF77F5C665D07C75D0F278EBD205FB24DAB92C31E63B7160D88",
+            "9E5B00E1B2A387FBFA6B9B6B4AF23D8E018A1814EB6CEA36CA812E7207C7DC98",
+        };
 
         [Test]
         public void LaunchScreenPrefabs_ExistForSevenPlayerFacingScreens()
@@ -247,26 +253,37 @@ namespace LastRail.Tests.EditMode
         }
 
         [Test]
-        public void CombatHudInitialSquadInterior_DoesNotUseFloatingGroundBackground()
+        public void CombatHudInteriors_DoNotUseFloatingGroundBackgrounds()
         {
-            var assetPath = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "Assets",
-                "_LASTRAIL",
-                "UI",
-                "CombatResources",
-                "Interiors",
-                "combat_train_interior_initial_squad.png");
+            var interiorNames = new[]
+            {
+                "combat_train_interior_initial_squad.png",
+                "combat_train_interior_elite_squad_a.png",
+                "combat_train_interior_elite_squad_b.png",
+                "combat_train_interior_story_raid_boss.png",
+            };
 
-            Assert.That(File.Exists(assetPath), Is.True, assetPath);
-            using var stream = File.OpenRead(assetPath);
-            using var sha256 = SHA256.Create();
-            var hash = System.BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", string.Empty);
+            foreach (var interiorName in interiorNames)
+            {
+                var assetPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "Assets",
+                    "_LASTRAIL",
+                    "UI",
+                    "CombatResources",
+                    "Interiors",
+                    interiorName);
 
-            Assert.That(
-                hash,
-                Is.Not.EqualTo(FloatingInitialSquadInteriorHash),
-                "Initial squad combat interior should use the grounded-floor background, not the old image that made the upper-left operator look airborne.");
+                Assert.That(File.Exists(assetPath), Is.True, assetPath);
+                using var stream = File.OpenRead(assetPath);
+                using var sha256 = SHA256.Create();
+                var hash = System.BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", string.Empty);
+
+                Assert.That(
+                    FloatingCombatInteriorHashes,
+                    Does.Not.Contain(hash),
+                    interiorName + " should use a grounded-floor background, not a prior image that made the left squad cluster look airborne.");
+            }
         }
 
         private static void AssertCombatHudDoesNotExposeQaCopy(GameObject prefab)
