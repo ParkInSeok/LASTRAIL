@@ -19,7 +19,7 @@ namespace LastRail.Editor
         private const string CommonRoot = UiRoot + "/Common";
         private const string SkinRoot = CommonRoot + "/Skins";
         private const string SkinSourceRoot = SkinRoot + "/Sources";
-        private const string SkinSourcePath = SkinSourceRoot + "/lastrail_common_ui_skin_atlas_generated.png";
+        private const string SkinSourcePath = SkinSourceRoot + "/lastrail_common_ui_skin_atlas_hifi_v2.png";
         private const string IconRoot = UiRoot + "/Icons";
         private const string StyleRoot = UiRoot + "/Style";
         private const string SceneRoot = "Assets/_LASTRAIL/Scenes";
@@ -142,8 +142,9 @@ namespace LastRail.Editor
   ""componentPrefabCount"": 20,
   ""iconCount"": 16,
   ""qualityClass"": ""HIGH_QUALITY_2D_UI_SKIN"",
-  ""sourceKind"": ""image_gen_contact_sheet_crops"",
-  ""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_generated.png"",
+  ""sourceKind"": ""image_gen_hifi_v2_canonical_replacements"",
+  ""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_hifi_v2.png"",
+  ""replacementStatus"": ""canonical_common_skins_replaced"",
   ""nineSliceSpriteCount"": 23,
   ""appliedPrefabCount"": 20,
   ""launchScreenConsumerCount"": 7,

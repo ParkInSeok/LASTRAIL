@@ -172,6 +172,21 @@ namespace LastRail.Tests.EditMode
                 Assert.That(importer.alphaIsTransparency, Is.True, path);
             }
         }
+        [Test]
+        public void CommonUiKitSkinSource_UsesHifiV2AtlasAndProjectLocalSources()
+        {
+            var hifiAtlas = AssetDatabase.LoadAssetAtPath<Texture2D>(SkinRoot + "/Sources/lastrail_common_ui_skin_atlas_hifi_v2.png");
+            Assert.That(hifiAtlas, Is.Not.Null, "Common UI hifi v2 source atlas must be preserved project-locally.");
+            Assert.That(hifiAtlas.width, Is.GreaterThanOrEqualTo(1024));
+            Assert.That(hifiAtlas.height, Is.GreaterThanOrEqualTo(1536));
+
+            foreach (var path in RequiredSkinSpritePaths)
+            {
+                var file = new FileInfo(Path.Combine(Directory.GetCurrentDirectory(), path));
+                Assert.That(file.Exists, Is.True, path);
+                Assert.That(file.Length, Is.GreaterThan(4096), path + " should not regress to tiny placeholder geometry.");
+            }
+        }
 
         [Test]
         public void CommonUiKitPrefabs_UseHighQualitySlicedSkinSpritesOnPrimarySurfaces()
@@ -233,7 +248,9 @@ namespace LastRail.Tests.EditMode
             Assert.That(json, Does.Contain(@"""nineSliceSpriteCount"": 23"));
             Assert.That(json, Does.Contain(@"""appliedPrefabCount"": 20"));
             Assert.That(json, Does.Contain(@"""launchScreenConsumerCount"": 7"));
-            Assert.That(json, Does.Contain(@"""sourceKind"": ""image_gen_contact_sheet_crops"""));
+            Assert.That(json, Does.Contain(@"""sourceKind"": ""image_gen_hifi_v2_canonical_replacements"""));
+            Assert.That(json, Does.Contain(@"""skinSource"": ""Assets/_LASTRAIL/UI/Common/Skins/Sources/lastrail_common_ui_skin_atlas_hifi_v2.png"""));
+            Assert.That(json, Does.Contain(@"""replacementStatus"": ""canonical_common_skins_replaced"""));
         }
 
         [Test]
