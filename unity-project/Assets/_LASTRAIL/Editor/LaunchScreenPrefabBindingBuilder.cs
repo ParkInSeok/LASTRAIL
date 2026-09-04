@@ -72,6 +72,11 @@ namespace LastRail.Editor
         private const string StoryProgressPolishBadgesRoot = StoryProgressPolishRoot + "/Badges";
         private const string StoryProgressPolishOverlaysRoot = StoryProgressPolishRoot + "/Overlays";
         private const string StoryProgressPolishButtonsRoot = StoryProgressPolishRoot + "/Buttons";
+        private const string AuthProfileRoot = "Assets/_LASTRAIL/UI/AuthProfileResources";
+        private const string AuthProfilePanelsRoot = AuthProfileRoot + "/Panels";
+        private const string AuthProfileFramesRoot = AuthProfileRoot + "/Frames";
+        private const string AuthProfileBadgesRoot = AuthProfileRoot + "/Badges";
+        private const string AuthProfileButtonsRoot = AuthProfileRoot + "/Buttons";
         private const string AudioIntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
@@ -191,6 +196,22 @@ namespace LastRail.Editor
             AssetDatabase.Refresh();
         }
 
+        [MenuItem("LASTRAIL/Launch/Build AuthProfile MissionShell Prefab")]
+        public static void BuildAuthProfileMissionShellPrefab()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateMissionShellPrefab();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
+        }
+
         private static void CreateMissionShellPrefab()
         {
             var root = CreateScreenRoot("MissionShellScreen");
@@ -200,6 +221,7 @@ namespace LastRail.Editor
                 var audio = AttachAudioCuePlayer(root, CommonUiCueIds());
                 var safeArea = CreateSafeArea(root.transform);
                 CreateMissionSelectSurface(safeArea);
+                CreateAuthProfileVisualPolish(safeArea);
                 CreateMissionShellSystemFeedbackPolish(safeArea);
                 var title = CreateText(safeArea, "TitleText", "작전 선택");
                 var subtitle = CreateText(safeArea, "SubtitleText", "Act 1");
@@ -232,6 +254,73 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static void CreateAuthProfileVisualPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "AuthProfileVisualPolishLayer");
+
+            var statusPanel = CreateImage(
+                layer,
+                "AuthProfileStatusPanelImage",
+                AuthProfilePanelsRoot + "/auth_profile_status_panel.png",
+                new Color(1f, 1f, 1f, 0.32f));
+            statusPanel.preserveAspect = false;
+            Place(statusPanel, 300f, 760f, 430f, 86f);
+
+            var nameplate = CreateImage(
+                layer,
+                "ProfileNameplateFrameImage",
+                AuthProfileFramesRoot + "/profile_nameplate_frame.png",
+                new Color(1f, 1f, 1f, 0.44f));
+            nameplate.preserveAspect = false;
+            Place(nameplate, 232f, 756f, 255f, 45f);
+
+            Place(CreateImage(
+                layer,
+                "AuthGuestBadgeImage",
+                AuthProfileBadgesRoot + "/auth_guest_badge.png",
+                new Color(1f, 1f, 1f, 0.52f)), 90f, 756f, 44f, 44f);
+
+            Place(CreateImage(
+                layer,
+                "AuthGoogleProviderBadgeImage",
+                AuthProfileBadgesRoot + "/auth_google_provider_badge.png",
+                new Color(1f, 1f, 1f, 0.42f)), 432f, 756f, 104f, 52f);
+
+            Place(CreateImage(
+                layer,
+                "AuthKeystoreLockBadgeImage",
+                AuthProfileBadgesRoot + "/auth_keystore_lock_badge.png",
+                new Color(1f, 1f, 1f, 0.48f)), 468f, 700f, 42f, 42f);
+
+            Place(CreateImage(
+                layer,
+                "AuthSessionSafeBadgeImage",
+                AuthProfileBadgesRoot + "/auth_session_safe_badge.png",
+                new Color(1f, 1f, 1f, 0.48f)), 416f, 700f, 42f, 42f);
+
+            var settingsPanel = CreateImage(
+                layer,
+                "SettingsTogglePanelImage",
+                AuthProfilePanelsRoot + "/settings_toggle_panel.png",
+                new Color(1f, 1f, 1f, 0.34f));
+            settingsPanel.preserveAspect = false;
+            Place(settingsPanel, -405f, -590f, 150f, 112f);
+
+            Place(CreateImage(
+                layer,
+                "SettingsAudioHapticTogglesImage",
+                AuthProfileButtonsRoot + "/settings_audio_haptic_toggles.png",
+                new Color(1f, 1f, 1f, 0.48f)), -405f, -590f, 136f, 68f);
+
+            var navAccent = CreateImage(
+                layer,
+                "AuthBottomNavAccentImage",
+                AuthProfileButtonsRoot + "/auth_bottom_nav_accent.png",
+                new Color(1f, 1f, 1f, 0.28f));
+            navAccent.preserveAspect = false;
+            Place(navAccent, 0f, -815f, 720f, 54f);
         }
 
         private static void CreateMissionSelectSurface(Transform parent)
