@@ -66,6 +66,12 @@ namespace LastRail.Editor
         private const string CodexArchivePolishFramesRoot = CodexArchivePolishRoot + "/Frames";
         private const string CodexArchivePolishBadgesRoot = CodexArchivePolishRoot + "/Badges";
         private const string CodexArchivePolishButtonsRoot = CodexArchivePolishRoot + "/Buttons";
+        private const string StoryProgressPolishRoot = "Assets/_LASTRAIL/UI/StoryProgressResources";
+        private const string StoryProgressPolishPanelsRoot = StoryProgressPolishRoot + "/Panels";
+        private const string StoryProgressPolishFramesRoot = StoryProgressPolishRoot + "/Frames";
+        private const string StoryProgressPolishBadgesRoot = StoryProgressPolishRoot + "/Badges";
+        private const string StoryProgressPolishOverlaysRoot = StoryProgressPolishRoot + "/Overlays";
+        private const string StoryProgressPolishButtonsRoot = StoryProgressPolishRoot + "/Buttons";
         private const string AudioIntegrationManifestPath = "Assets/_LASTRAIL/UI/Style/lastrail-audio-integrations.json";
 
         [MenuItem("LASTRAIL/Launch/Build Screen Binding Prefabs")]
@@ -128,6 +134,22 @@ namespace LastRail.Editor
             EnsureDirectory(PrefabRoot);
 
             CreateCodexPrefab();
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            if (Application.isBatchMode)
+            {
+                EditorApplication.Exit(0);
+            }
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build StoryProgress Polish Prefab")]
+        public static void BuildStoryProgressPolishPrefab()
+        {
+            EnsureDirectory("Assets/_LASTRAIL/Prefabs");
+            EnsureDirectory(PrefabRoot);
+
+            CreateRewardStoryPrefab("StoryProgressSummaryScreen", "스토리 진행");
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -1089,6 +1111,7 @@ namespace LastRail.Editor
                 Place(subtitle, 0f, 720f, 960f, 72f);
                 if (string.Equals(prefabName, "StoryProgressSummaryScreen", StringComparison.Ordinal))
                 {
+                    CreateStoryProgressVisualPolish(safeArea);
                     Place(body, 0f, 610f, 960f, 92f);
                     CreateStoryProgressThumbnailTimeline(safeArea);
                     Place(rewardLines, 0f, -60f, 960f, 260f);
@@ -1140,6 +1163,79 @@ namespace LastRail.Editor
             {
                 UnityEngine.Object.DestroyImmediate(root);
             }
+        }
+
+        private static void CreateStoryProgressVisualPolish(Transform parent)
+        {
+            var layer = CreateVisualLayer(parent, "StoryProgressVisualPolishLayer");
+            var timelinePanel = CreateImage(
+                layer,
+                "StoryProgressTimelinePanelImage",
+                StoryProgressPolishPanelsRoot + "/story_progress_timeline_panel.png",
+                new Color(1f, 1f, 1f, 0.72f));
+            timelinePanel.preserveAspect = false;
+            Place(timelinePanel, 0f, 285f, 900f, 430f);
+
+            var routeSpine = CreateImage(
+                layer,
+                "StoryProgressRouteSpineImage",
+                StoryProgressPolishFramesRoot + "/story_progress_route_spine.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            routeSpine.preserveAspect = false;
+            Place(routeSpine, 0f, 365f, 820f, 112f);
+
+            var currentNode = CreateImage(
+                layer,
+                "StoryProgressCurrentNodeGlowImage",
+                StoryProgressPolishBadgesRoot + "/story_progress_current_node_glow.png",
+                new Color(1f, 1f, 1f, 0.92f));
+            Place(currentNode, -320f, 286f, 92f, 92f);
+
+            var clearedSeal = CreateImage(
+                layer,
+                "StoryProgressClearedNodeSealImage",
+                StoryProgressPolishBadgesRoot + "/story_progress_cleared_node_seal.png",
+                new Color(1f, 1f, 1f, 0.82f));
+            Place(clearedSeal, 305f, 282f, 86f, 86f);
+
+            var lockedMist = CreateImage(
+                layer,
+                "StoryProgressLockedNodeMistImage",
+                StoryProgressPolishOverlaysRoot + "/story_progress_locked_node_mist.png",
+                new Color(1f, 1f, 1f, 0.58f));
+            lockedMist.preserveAspect = false;
+            Place(lockedMist, 298f, 160f, 285f, 112f);
+
+            var raidGate = CreateImage(
+                layer,
+                "StoryProgressRaidGateBadgeImage",
+                StoryProgressPolishBadgesRoot + "/story_progress_raid_gate_badge.png",
+                new Color(1f, 1f, 1f, 0.86f));
+            Place(raidGate, -318f, -114f, 260f, 130f);
+
+            var statusRibbon = CreateImage(
+                layer,
+                "StoryProgressNarrativeStatusRibbonImage",
+                StoryProgressPolishBadgesRoot + "/story_progress_narrative_status_ribbon.png",
+                new Color(1f, 1f, 1f, 0.78f));
+            statusRibbon.preserveAspect = false;
+            Place(statusRibbon, 258f, -158f, 335f, 96f);
+
+            var codexHint = CreateImage(
+                layer,
+                "StoryProgressCodexUnlockHintPanelImage",
+                StoryProgressPolishPanelsRoot + "/story_progress_codex_unlock_hint_panel.png",
+                new Color(1f, 1f, 1f, 0.66f));
+            codexHint.preserveAspect = false;
+            Place(codexHint, 0f, -350f, 780f, 205f);
+
+            var bottomNav = CreateImage(
+                layer,
+                "StoryProgressBottomNavAccentImage",
+                StoryProgressPolishButtonsRoot + "/story_progress_bottom_nav_accent.png",
+                new Color(1f, 1f, 1f, 0.58f));
+            bottomNav.preserveAspect = false;
+            Place(bottomNav, 0f, -720f, 860f, 82f);
         }
 
         private static void CreateRewardReviewVisualPolish(Transform parent)

@@ -1,0 +1,22 @@
+{
+  "name": "LAST RAIL Act 1 StoryProgress Polish Resources",
+  "referenceResolution": "1080x1920",
+  "sourceType": "OpenAI image generation high-quality 2D local launch UI atlas",
+  "sourcePath": "Assets/_LASTRAIL/UI/StoryProgressResources/Sources/story_progress_polish_hifi_v1_source.png",
+  "resourceCount": 9,
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "storyProgressTruthIncluded": false,
+  "archiveUnlockTruthIncluded": false,
+  "resources": [
+    { "id": "story_progress_timeline_panel", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Panels/story_progress_timeline_panel.png", "width": 1024, "height": 512, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_route_spine", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Frames/story_progress_route_spine.png", "width": 1024, "height": 160, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_current_node_glow", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_current_node_glow.png", "width": 256, "height": 256, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_cleared_node_seal", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_cleared_node_seal.png", "width": 256, "height": 256, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_locked_node_mist", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Overlays/story_progress_locked_node_mist.png", "width": 512, "height": 256, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_raid_gate_badge", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_raid_gate_badge.png", "width": 512, "height": 256, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_narrative_status_ribbon", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_narrative_status_ribbon.png", "width": 512, "height": 160, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_codex_unlock_hint_panel", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Panels/story_progress_codex_unlock_hint_panel.png", "width": 1024, "height": 384, "intendedUsage": "story_progress_visual_skin" },
+    { "id": "story_progress_bottom_nav_accent", "path": "Assets/_LASTRAIL/UI/StoryProgressResources/Buttons/story_progress_bottom_nav_accent.png", "width": 512, "height": 160, "intendedUsage": "story_progress_visual_skin" }
+  ]
+}
