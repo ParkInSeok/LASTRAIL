@@ -1,9 +1,10 @@
 # LAST RAIL Act 1 System Feedback Visual Resources
 
-These loading, success, failure, connection, maintenance, retry, warning, disabled, and inline status files are Unity procedural texture builder outputs for the Act 1 launch UI.
+These loading, success, failure, connection, maintenance, retry, warning, disabled, and inline status files are high-quality 2D launch UI resources generated with the OpenAI image_gen built-in tool for the Act 1 launch UI.
 
 Source:
-- Generated locally inside the Unity Editor from `LaunchSystemFeedbackResourceBuilder`.
+- Generated with the OpenAI image_gen built-in tool for LAST RAIL Act 1.
+- Source contact sheets are stored under `Assets/_LASTRAIL/UI/SystemFeedbackResources/Sources/`.
 - No external paid asset dependency.
 
 Scope:

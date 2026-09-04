@@ -35,7 +35,7 @@ namespace LastRail.Editor
             ("offline_reward", "Assets/_LASTRAIL/Prefabs/Screens/OfflineRewardScreen.prefab"),
             ("codex_archive", "Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab"),
             ("story_progress_summary", "Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab"),
-            ("system_feedback_overlay", "Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab")
+            ("system_feedback_overlay", "Assets/_LASTRAIL/UI/SystemFeedbackResources/Showcase/LRLaunchSystemFeedbackResourceShowcase.prefab")
         };
 
         private static readonly (string ScreenKey, Func<GachaScreenViewState> CreateState)[] GachaStates =

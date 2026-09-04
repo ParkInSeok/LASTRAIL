@@ -1068,12 +1068,25 @@ namespace LastRail.Editor
 
         private static void CreateMissionShellSystemFeedbackPolish(Transform parent)
         {
+            var layer = CreateVisualLayer(parent, "MissionShellSystemFeedbackLayer");
+            var loading = CreateImage(
+                layer,
+                "MissionLoadingRailIndicatorImage",
+                SystemFeedbackLoadingRoot + "/loading_rail_indicator.png",
+                new Color(1f, 1f, 1f, 0.46f));
+            var warning = CreateImage(
+                layer,
+                "MissionWarningStripBannerAccentImage",
+                SystemFeedbackWarningRoot + "/warning_strip_banner_accent.png",
+                new Color(1f, 1f, 1f, 0.36f));
             var progress = CreateImage(
                 parent,
                 "MissionProgressHudImage",
                 SystemFeedbackStatusRoot + "/inline_status_dot_set.png",
                 new Color(1f, 1f, 1f, 0.82f));
 
+            Place(loading, -32f, -702f, 360f, 90f);
+            Place(warning, -32f, -704f, 420f, 66f);
             Place(progress, 315f, 646f, 190f, 48f);
         }
 

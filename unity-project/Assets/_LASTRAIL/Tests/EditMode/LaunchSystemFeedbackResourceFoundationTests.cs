@@ -57,7 +57,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(manifest.name, Is.EqualTo("LAST RAIL Act 1 System Feedback Visual Resources"));
             Assert.That(manifest.referenceResolution, Is.EqualTo("1080x1920"));
             Assert.That(manifest.resourceCount, Is.EqualTo(Resources.Length));
-            Assert.That(manifest.generatedBy, Is.EqualTo("Unity procedural texture builder"));
+            Assert.That(manifest.generatedBy, Is.EqualTo("OpenAI image_gen built-in tool"));
             Assert.That(manifest.presentationOnly, Is.True);
             Assert.That(manifest.serverContractChanged, Is.False);
             Assert.That(manifest.hasNetworkSourceOfTruth, Is.False);
@@ -73,7 +73,7 @@ namespace LastRail.Tests.EditMode
                 Assert.That(match, Is.Not.Null, expected.Id);
                 Assert.That(match.category, Is.EqualTo(expected.Category), expected.Id);
                 Assert.That(match.path, Is.EqualTo(expected.Path), expected.Id);
-                Assert.That(match.sourceType, Is.EqualTo("generated_local_launch_asset"), expected.Id);
+                Assert.That(match.sourceType, Is.EqualTo("generated_image_gen_launch_asset"), expected.Id);
             }
         }
 
@@ -83,7 +83,7 @@ namespace LastRail.Tests.EditMode
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), ReadmePath);
             Assert.That(File.Exists(fullPath), Is.True, ReadmePath);
             var readme = File.ReadAllText(fullPath);
-            Assert.That(readme, Does.Contain("Unity procedural texture builder"));
+            Assert.That(readme, Does.Contain("OpenAI image_gen built-in tool"));
             Assert.That(readme, Does.Contain("presentation resources only"));
             Assert.That(readme, Does.Contain("No external paid asset dependency"));
         }
@@ -141,8 +141,8 @@ namespace LastRail.Tests.EditMode
             Assert.That(offline, Is.Not.Null);
 
             Assert.That(ContainsSprite(mission, "inline_status_dot_set"), Is.True);
-            Assert.That(ContainsSprite(mission, "loading_rail_indicator"), Is.False);
-            Assert.That(ContainsSprite(mission, "warning_strip_banner_accent"), Is.False);
+            Assert.That(ContainsSprite(mission, "loading_rail_indicator"), Is.True);
+            Assert.That(ContainsSprite(mission, "warning_strip_banner_accent"), Is.True);
             Assert.That(ContainsSprite(gacha, "feedback_network_error_badge"), Is.True);
             Assert.That(ContainsSprite(gacha, "retry_refresh_accent"), Is.True);
             Assert.That(ContainsSprite(reward, "feedback_success_badge"), Is.True);

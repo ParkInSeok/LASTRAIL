@@ -122,6 +122,9 @@ namespace LastRail.Tests.EditMode
             Assert.That(runner, Does.Contain("combat_elite_squad_a_demo"));
             Assert.That(runner, Does.Contain("combat_elite_squad_b_demo"));
             Assert.That(runner, Does.Contain("combat_story_raid_boss_demo"));
+            Assert.That(runner, Does.Contain("system_feedback_overlay"), "latest QA video must include the high-quality system feedback art surface.");
+            Assert.That(runner, Does.Contain("LRLaunchSystemFeedbackResourceShowcase.prefab"));
+            Assert.That(runner, Does.Not.Contain("(\"system_feedback_overlay\", \"Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab\")"));
             Assert.That(runner, Does.Contain("ApplyOperatorCombatUnitSprites"));
             Assert.That(runner, Does.Not.Contain("ShowcaseScreens"));
             Assert.That(runner, Does.Not.Contain("combat_animation_showcase"));
