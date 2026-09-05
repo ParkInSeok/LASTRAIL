@@ -782,6 +782,7 @@ namespace LastRail.Editor
                     ("cueRefsText", cueRefs),
                     ("audioCuePlayer", audio));
                 BindCombatSkillIconSprites(behaviour, skillIconSlots);
+                BindCombatStatusSprites(behaviour);
                 SavePrefab(root, "FullyAnimatedCombatHud");
             }
             finally
@@ -798,6 +799,20 @@ namespace LastRail.Editor
             {
                 EnsureSpriteImporter(definition.IconPath);
             }
+        }
+
+        private static void BindCombatStatusSprites(FullyAnimatedCombatHudRootBehaviour behaviour)
+        {
+            var serialized = new SerializedObject(behaviour);
+            var sprites = serialized.FindProperty("statusIconSprites");
+            sprites.arraySize = CombatStatusIconCatalog.IconPaths.Count;
+            for (var i = 0; i < sprites.arraySize; i++)
+            {
+                var path = CombatStatusIconCatalog.IconPaths[i];
+                EnsureSpriteImporter(path);
+                sprites.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            }
+            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void EnsureSpriteImporter(string assetPath)

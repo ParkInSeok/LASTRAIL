@@ -93,3 +93,24 @@ Verification:
 - PASS: actual Unity screenshot QA, 7/7 screens, 0 failures, 0 warnings.
 - PASS: actual rendered `QA/Act1Launch/Screenshots/SevenScreen/fully_animated_combat_hud.png` visually shows five current-squad skill icons without text overlap.
 - Not run: video capture/export by request; existing QA MP4 assets were not regenerated for this task.
+
+---
+
+2026-09-05 combat status icons and gauges
+
+Status: VERIFIED PRESENTATION-CUE HUD; missing gameplay-state fields remain explicitly unconnected.
+
+- New: 6 generated 512x512 icon tiles (buff, debuff, cooldown, available, unavailable, selected target), plus one retained source atlas. Reused shield/heal VFX and common gauge track/fill (4 resources).
+- Real consumer: `FullyAnimatedCombatHudRootBehaviour.Render` creates `CombatStatusHudView` using 10 sprite references stored in the actual combat prefab. The prefab builder preserves those bindings on rebuild.
+- Shield/heal/buff/debuff are exact existing presentation-cue matches only. Labels explicitly describe an effect cue, not a lasting gameplay effect. No inferred duration, stacks, magnitude, or recipient. Unknown/ambiguous cues hide the display; a subsequent render clears stale icons.
+- Existing ordinary fixtures do not emit these four effect cues. Consumer wiring is implemented; a gameplay event producer was not invented. Render QA uses explicitly labelled input fixtures.
+- Cooldown/available/unavailable/selected-target resources and separate gauge fill/TMP layers are prepared but hidden because the current input state lacks their data. Selected-target asset is an opaque HUD icon, not a transparent battlefield reticle.
+- Preserved prior 15 skill icons and commit `1dd4fd7`, character layout, backgrounds and unrelated dirty files. No server/admin/narrative/gameplay/API changes. No video capture.
+- Manifest: `Assets/_LASTRAIL/UI/Style/lastrail-combat-status-resources.json`.
+- PASS: 6 pure presentation checks using standalone .NET/NUnit assertions after a missing-field RED failure. This is not a Unity EditMode run.
+- PASS: Runtime, Editor and EditMode assemblies compiled with installed Unity C# compiler/references. Existing TMP deprecation warnings remain.
+- PASS: 13/13 focused Unity EditMode tests in graphics batchmode without `-quit`, recorded in `TestResults-CombatStatus-Final.xml` and `Unity-CombatStatus-Final.log`.
+- PASS: `CombatStatusHudBindingTests` verifies prefab bindings, cue changes, stale icon clearing and hidden unknown states. Six actual Camera.Render fixture screenshots cover 1080x1920 and 360x640; no synthetic fallback. Status labels and distinct icons were visually inspected without overlap or text overflow.
+- Screenshots: `QA/Act1Launch/Screenshots/CombatStatus/fixture_combat_{heal,buff,debuff}_{360,1080}.png`. These are explicit presentation-cue fixtures through the real HUD consumer, not proof of a new gameplay event producer.
+- Initial license error 198 resolved on the final graphics batchmode retry; it is no longer a verification blocker.
+- Remaining data gaps: persistent shield/heal/buff/debuff state and magnitude, cooldown remaining/total, authoritative availability, selected target id/position. No local timer or guessed state was added.

@@ -36,6 +36,13 @@ namespace LastRail.Presentation.Battle
             AppendCommaString(builder, "screenShakeCueId", state.ScreenShakeCueId);
             AppendCommaString(builder, "vfxCueId", state.VfxCueId);
             AppendCommaString(builder, "sfxCueId", state.SfxCueId);
+            builder.Append(",\"statusCueIds\":[");
+            for (var i = 0; i < state.StatusCueIds.Count; i++)
+            {
+                if (i > 0) builder.Append(',');
+                AppendJsonString(builder, state.StatusCueIds[i]);
+            }
+            builder.Append(']');
             AppendCommaString(builder, "vibrationCueId", state.VibrationCueId);
             AppendCommaString(builder, "waveTransitionCueId", state.WaveTransitionCueId);
             AppendCommaString(builder, "bossPhaseTransitionCueId", state.BossPhaseTransitionCueId);

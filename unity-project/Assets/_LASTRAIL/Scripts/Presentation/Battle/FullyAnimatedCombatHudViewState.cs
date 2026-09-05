@@ -57,6 +57,7 @@ namespace LastRail.Presentation.Battle
             ScreenShakeCueId = combatState.PresentationCues.ScreenShakeCueId;
             VfxCueId = combatState.PresentationCues.VfxCueId;
             SfxCueId = combatState.PresentationCues.SfxCueId;
+            StatusCueIds = CombatStatusIconCatalog.ResolveCueIds(VfxCueId, SfxCueId);
             VibrationCueId = combatState.PresentationCues.VibrationCueId;
             WaveTransitionCueId = combatState.PresentationCues.WaveTransitionCueId;
             BossPhaseTransitionCueId = combatState.PresentationCues.BossPhaseTransitionCueId;
@@ -95,6 +96,7 @@ namespace LastRail.Presentation.Battle
         public string ScreenShakeCueId { get; }
         public string VfxCueId { get; }
         public string SfxCueId { get; }
+        public IReadOnlyList<string> StatusCueIds { get; }
         public string VibrationCueId { get; }
         public string WaveTransitionCueId { get; }
         public string BossPhaseTransitionCueId { get; }

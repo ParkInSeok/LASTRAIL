@@ -26,6 +26,8 @@ namespace LastRail.Presentation.Battle
         [SerializeField] private Image[] skillIconSlotImages = new Image[0];
         [SerializeField] private OperatorSkillIconSpriteBinding[] skillIconSprites = new OperatorSkillIconSpriteBinding[0];
         [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
+        [SerializeField] private Sprite[] statusIconSprites = new Sprite[0];
+        private CombatStatusHudView statusHud;
 
         public FullyAnimatedCombatHudViewState CurrentState { get; private set; }
 
@@ -46,6 +48,11 @@ namespace LastRail.Presentation.Battle
             SetText(unitRefsText, FormatUnitRefs(state));
             SetText(cueRefsText, FormatCueRefs(state));
             ApplySkillIconSlots(state);
+            if (interiorBoardingCombatLane != null)
+            {
+                if (statusHud == null) statusHud = new CombatStatusHudView(interiorBoardingCombatLane, cueRefsText, statusIconSprites);
+                statusHud.Render(state.StatusCueIds);
+            }
         }
 
         public void PlayHitCue()
