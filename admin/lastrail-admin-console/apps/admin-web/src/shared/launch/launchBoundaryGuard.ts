@@ -105,7 +105,7 @@ export type LaunchIntegrationRegressionSmoke = {
     | "raid_start_metadata"
     | "gacha_launch_visibility"
     | "google_verifier_ops_label"
-    | "version_management_target_registry"
+    | "version_management_r2_export_contract"
   >;
   labels: {
     googleVerifierUnavailable: string;
@@ -274,7 +274,7 @@ export function buildLaunchIntegrationRegressionSmoke(): LaunchIntegrationRegres
       "raid_start_metadata",
       "gacha_launch_visibility",
       "google_verifier_ops_label",
-      "version_management_target_registry"
+      "version_management_r2_export_contract"
     ],
     labels: {
       googleVerifierUnavailable: opsErrorCodeLabel("google_auth_verifier_unavailable"),

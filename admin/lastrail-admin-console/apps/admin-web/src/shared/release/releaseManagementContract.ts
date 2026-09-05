@@ -360,3 +360,71 @@ export function buildReleaseManagementSnapshot(): ReleaseManagementSnapshot {
     }
   };
 }
+
+export type SimpleVersionManagementCard = {
+  code: "currentServer" | "currentVersion";
+  label: string;
+  value: string;
+  note: string;
+};
+
+export type SimpleVersionInputField = {
+  key: "targetVersion";
+  label: string;
+  value: string;
+  placeholder: string;
+};
+
+export type SimpleVersionExportAction = {
+  code: "export_version_to_r2";
+  label: string;
+  enabled: false;
+  status: "R2 내보내기 API 대기";
+  note: string;
+};
+
+export type SimpleVersionManagementSnapshot = {
+  serverCards: readonly SimpleVersionManagementCard[];
+  inputFields: readonly SimpleVersionInputField[];
+  exportAction: SimpleVersionExportAction;
+};
+
+export const simpleVersionServerCards: SimpleVersionManagementCard[] = [
+  {
+    code: "currentServer",
+    label: "현재 서버",
+    value: "DEV Admin API",
+    note: "preview 환경은 dev-admin.lastrail.app을 바라봅니다."
+  },
+  {
+    code: "currentVersion",
+    label: "현재 버전",
+    value: "조회 API 대기",
+    note: "현재 버전을 읽는 서버 endpoint가 열리면 실제 값으로 교체합니다."
+  }
+];
+
+export const simpleVersionInputFields: SimpleVersionInputField[] = [
+  {
+    key: "targetVersion",
+    label: "변경할 버전",
+    value: "",
+    placeholder: "예: act1.2026-09-05.001"
+  }
+];
+
+export const simpleVersionExportAction: SimpleVersionExportAction = {
+  code: "export_version_to_r2",
+  label: "내보내기",
+  enabled: false,
+  status: "R2 내보내기 API 대기",
+  note: "입력한 버전을 서버 내보내기 API가 검증한 뒤 R2 current version JSON에 갱신합니다."
+};
+
+export function buildSimpleVersionManagementSnapshot(): SimpleVersionManagementSnapshot {
+  return {
+    serverCards: simpleVersionServerCards,
+    inputFields: simpleVersionInputFields,
+    exportAction: simpleVersionExportAction
+  };
+}

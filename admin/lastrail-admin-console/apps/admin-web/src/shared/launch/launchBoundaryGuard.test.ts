@@ -138,7 +138,7 @@ describe("launch read-only boundary guard", () => {
       "raid_start_metadata",
       "gacha_launch_visibility",
       "google_verifier_ops_label",
-      "version_management_target_registry"
+      "version_management_r2_export_contract"
     ]);
     expect(smoke.labels.googleVerifierUnavailable).toBe("Google 인증 검증기 사용 불가");
     expect(smoke.labels.raidBossOnly).toBe("보스 전용 레이드");

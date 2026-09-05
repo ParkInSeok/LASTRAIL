@@ -1,94 +1,36 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildReleaseManagementSnapshot,
-  releaseManagementActionCandidates,
-  releaseManagementCandidateFields,
-  releaseManagementReadStates,
-  releaseManagementTargetAxes,
-  releaseManagementTargetRegistryPolicy,
-  releaseManagementValidationChecks
+  buildSimpleVersionManagementSnapshot,
+  simpleVersionExportAction,
+  simpleVersionInputFields,
+  simpleVersionServerCards
 } from "./releaseManagementContract";
 
 describe("releaseManagementContract", () => {
-  it("models target-scoped release management without relying on spreadsheet sync", () => {
-    const snapshot = buildReleaseManagementSnapshot();
+  it("keeps version management focused on current server, current version, and one target version input", () => {
+    const snapshot = buildSimpleVersionManagementSnapshot();
 
-    expect(releaseManagementTargetAxes).toEqual(["targetId", "environment", "platform", "channel"]);
-    expect(snapshot.spreadsheetIntegrationEnabled).toBe(false);
-    expect(snapshot.serverContractStatus).toBe("서버 계약 대기");
-    expect(snapshot.targetRegistry.targetIsolation).toContain("targetId");
-    expect(snapshot.targetRegistry.browserSubmittedInfrastructureAllowed).toBe(false);
-    expect(snapshot.targetRegistry.globalCurrentJsonShared).toBe(false);
+    expect(simpleVersionServerCards.map((card) => card.label)).toEqual(["현재 서버", "현재 버전"]);
+    expect(simpleVersionInputFields.map((field) => field.label)).toEqual(["변경할 버전"]);
+    expect(snapshot.serverCards).toEqual(simpleVersionServerCards);
+    expect(snapshot.inputFields).toEqual(simpleVersionInputFields);
   });
 
-  it("keeps release candidate fields as form fields and separates app/content/protocol/release IDs", () => {
-    expect(releaseManagementCandidateFields.map((field) => field.key)).toEqual([
-      "releaseId",
-      "appMinimumBuild",
-      "appRecommendedBuild",
-      "contentVersion",
-      "contentCatalogId",
-      "contentCatalogHash",
-      "protocolVersion",
-      "updateNotice",
-      "storeUpdateUrl",
-      "platform",
-      "channel"
-    ]);
-    expect(releaseManagementCandidateFields.find((field) => field.key === "updateNotice")?.input).toBe("textarea");
-    expect(JSON.stringify(releaseManagementCandidateFields)).not.toContain("raw JSON editor");
-  });
-
-  it("prepares explicit target-scoped release actions as disabled until the server contract exists", () => {
-    expect(releaseManagementActionCandidates.map((action) => [action.code, action.enabled])).toEqual([
-      ["save_draft", false],
-      ["apply_internal_testing", false],
-      ["approve_candidate", false],
-      ["prestage_production", false],
-      ["promote_pointer", false],
-      ["open_release", false],
-      ["rollback_release", false]
-    ]);
-    expect(releaseManagementActionCandidates.every((action) => action.requiresTargetConfirmation)).toBe(true);
-    expect(releaseManagementActionCandidates.every((action) => action.requiresReason)).toBe(true);
-    expect(releaseManagementActionCandidates.every((action) => action.permissionStatus === "서버 계약 대기")).toBe(true);
-  });
-
-  it("lists fail-closed read states and validation checks for release publishing safety", () => {
-    expect(releaseManagementReadStates).toEqual([
-      "unset",
-      "no_permission",
-      "loading",
-      "empty",
-      "conflict",
-      "publish_failed",
-      "verification_in_progress",
-      "target_unavailable",
-      "r2_unconfigured"
-    ]);
-    expect(releaseManagementValidationChecks.map((check) => check.code)).toEqual([
-      "integer_version_compare",
-      "compatibility_range",
-      "catalog_hash_exists",
-      "allowed_target_paths",
-      "store_update_availability",
-      "approved_content_hash",
-      "public_json_redaction",
-      "etag_revision_match",
-      "target_permission_match",
-      "dev_to_prd_artifact_revalidation"
-    ]);
-    expect(JSON.stringify(releaseManagementValidationChecks)).not.toContain("token");
-    expect(JSON.stringify(releaseManagementValidationChecks)).not.toContain("secret");
-  });
-
-  it("captures target-switch and production safety requirements without executing remote actions", () => {
-    expect(releaseManagementTargetRegistryPolicy).toMatchObject({
-      serverOwned: true,
-      conditionalPointerUpdateRequired: true,
-      remoteR2WritesApproved: false,
-      productionExecutionApproved: false,
-      publicTestFlagGrantsInternalAccess: false
+  it("prepares one R2 export action without promotion, rollback, or repair controls", () => {
+    expect(simpleVersionExportAction).toEqual({
+      code: "export_version_to_r2",
+      label: "내보내기",
+      enabled: false,
+      status: "R2 내보내기 API 대기",
+      note: "입력한 버전을 서버 내보내기 API가 검증한 뒤 R2 current version JSON에 갱신합니다."
     });
+
+    const serialized = JSON.stringify(buildSimpleVersionManagementSnapshot());
+    expect(serialized).not.toContain("rollback");
+    expect(serialized).not.toContain("승급");
+    expect(serialized).not.toContain("QA 승인");
+    expect(serialized).not.toContain("manual grant");
+    expect(serialized).not.toContain("token");
+    expect(serialized).not.toContain("secret");
   });
 });
