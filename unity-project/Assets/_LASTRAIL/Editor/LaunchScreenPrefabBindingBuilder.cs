@@ -6,6 +6,8 @@ using LastRail.Gacha;
 using LastRail.Presentation.Audio;
 using LastRail.Presentation.Battle;
 using LastRail.Presentation.MissionShell;
+using LastRail.Presentation.Startup;
+using LastRail.Presentation.AuthGate;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -800,6 +802,89 @@ namespace LastRail.Editor
             {
                 EnsureSpriteImporter(definition.IconPath);
             }
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build Startup Resource Prefab")]
+        public static void BuildStartupScreenPrefab()
+        {
+            var root = CreateScreenRoot("StartupScreen");
+            try
+            {
+                var background = CreateImage(root.transform, "StartupKeyVisual",
+                    BackgroundRoot + "/bg_combat_wasteland_rail.png", Color.white);
+                Place(background, 0, 0, 1080, 1920);
+                background.preserveAspect = false;
+                var safe = CreateSafeArea(root.transform);
+                var scrim = CreateSolidImage(safe, "TitleScrim", new Color(0, 0, 0, 0.48f));
+                Place(scrim, 0, 670, 1000, 240);
+                var brand = CreateText(safe, "StartupBrand", "LAST RAIL");
+                ConfigureText(brand, "LAST RAIL", 96, TextAlignmentOptions.Center);
+                Place(brand, 0, 670, 920, 180);
+                var band = CreateSolidImage(safe, "StartupActionBand", new Color(0.025f, 0.035f, 0.04f, 0.94f));
+                var bandRect = band.rectTransform;
+                bandRect.anchorMin = bandRect.anchorMax = new Vector2(0.5f, 0);
+                bandRect.pivot = new Vector2(0.5f, 0);
+                bandRect.anchoredPosition = new Vector2(0, 36);
+                bandRect.sizeDelta = new Vector2(960, 720);
+                var status = CreateText(bandRect, "StartupStatus", "");
+                ConfigureText(status, "", 36, TextAlignmentOptions.MidlineLeft);
+                Place(status, 60, 270, 660, 88);
+                var details = CreateText(bandRect, "StartupDetails", "");
+                ConfigureText(details, "", 36, TextAlignmentOptions.Center);
+                Place(details, 0, 146, 850, 120);
+                details.richText = false;
+                details.overflowMode = TextOverflowModes.Ellipsis;
+                var statusPaths = new[] {
+                    "Assets/_LASTRAIL/UI/StartupResources/download_surface_accent.png",
+                    "Assets/_LASTRAIL/UI/Icons/ic_warning.png", "Assets/_LASTRAIL/UI/Icons/ic_retry.png",
+                    "Assets/_LASTRAIL/UI/Icons/ic_info.png", "Assets/_LASTRAIL/UI/Icons/ic_lock.png" };
+                EnsureSpriteImporter(statusPaths[0]);
+                var icon = CreateImage(bandRect, "StartupStatusIcon", statusPaths[4], Color.white);
+                Place(icon, -370, 270, 96, 96);
+                var progress = CreateText(bandRect, "StartupProgressText", "");
+                ConfigureText(progress, "", 36, TextAlignmentOptions.Center);
+                Place(progress, 0, 52, 850, 44);
+                var track = CreateSlicedImage(bandRect, "StartupProgressTrack", CommonSkinRoot + "/ui_slider_track_9slice.png", Color.white);
+                Place(track, 0, 8, 850, 26);
+                var fill = CreateImage(track.transform, "StartupProgressFill", CommonSkinRoot + "/ui_slider_fill_9slice.png", Color.white);
+                Place(fill, 0, 0, 850, 26);
+                fill.preserveAspect = false;
+                fill.type = Image.Type.Filled;
+                fill.fillMethod = Image.FillMethod.Horizontal;
+                fill.fillAmount = 0;
+                var primary = CreateStartupButton(bandRect, "StartupPrimary", -108, true);
+                var secondary = CreateStartupButton(bandRect, "StartupSecondary", -272, false);
+                var behaviour = root.AddComponent<StartupScreenRootBehaviour>();
+                Bind(behaviour, ("safeAreaRoot", safe), ("statusText", status), ("detailsText", details),
+                    ("progressText", progress), ("progressTrack", track), ("progressFill", fill), ("statusIcon", icon),
+                    ("primaryButton", primary), ("secondaryButton", secondary),
+                    ("primaryText", primary.GetComponentInChildren<TMP_Text>()), ("secondaryText", secondary.GetComponentInChildren<TMP_Text>()));
+                var serialized = new SerializedObject(behaviour);
+                var sprites = serialized.FindProperty("statusSprites");
+                sprites.arraySize = statusPaths.Length;
+                for (var i = 0; i < statusPaths.Length; i++)
+                    sprites.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(statusPaths[i]);
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                behaviour.RenderAuth(AuthGateUxState.FirstLaunch());
+                SavePrefab(root, "StartupScreen");
+                AssetDatabase.SaveAssets();
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        private static Button CreateStartupButton(Transform parent, string name, float y, bool primary)
+        {
+            var image = CreateSlicedImage(parent, name, CommonSkinRoot + (primary ? "/ui_button_primary_9slice.png" : "/ui_button_secondary_9slice.png"), Color.white);
+            Place(image, 0, y, 850, 144);
+            image.raycastTarget = true;
+            var button = image.gameObject.AddComponent<Button>();
+            button.targetGraphic = image;
+            var text = CreateText(image.transform, name + "Label", "");
+            ConfigureText(text, "", 42, TextAlignmentOptions.Center);
+            Place(text, 0, 0, 770, 120);
+            text.raycastTarget = false;
+            return button;
         }
 
         private static void BindCombatStatusSprites(FullyAnimatedCombatHudRootBehaviour behaviour)

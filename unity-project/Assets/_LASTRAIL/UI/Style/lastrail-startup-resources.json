@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "scope": "startup_resource_view_only",
+  "newArtCount": 1,
+  "reusedArtCount": 9,
+  "generatedBy": "OpenAI built-in image_gen",
+  "source": "Assets/_LASTRAIL/UI/StartupResources/Sources/download_surface_generated.png",
+  "textOrProgressInNewArtwork": false,
+  "resources": [
+    { "id": "download_accent", "path": "Assets/_LASTRAIL/UI/StartupResources/download_surface_accent.png", "reused": false, "usage": "Static waiting/download status accent, never progress" },
+    { "id": "title_background", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_combat_wasteland_rail.png", "reused": true },
+    { "id": "warning", "path": "Assets/_LASTRAIL/UI/Icons/ic_warning.png", "reused": true },
+    { "id": "retry", "path": "Assets/_LASTRAIL/UI/Icons/ic_retry.png", "reused": true, "usage": "Reserved sprite binding only; current retry uses a text button with warning status icon" },
+    { "id": "update_info", "path": "Assets/_LASTRAIL/UI/Icons/ic_info.png", "reused": true },
+    { "id": "auth_lock", "path": "Assets/_LASTRAIL/UI/Icons/ic_lock.png", "reused": true },
+    { "id": "track", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_slider_track_9slice.png", "reused": true },
+    { "id": "fill", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_slider_fill_9slice.png", "reused": true },
+    { "id": "primary", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_button_primary_9slice.png", "reused": true },
+    { "id": "secondary", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_button_secondary_9slice.png", "reused": true }
+  ],
+  "consumer": {
+    "prefab": "Assets/_LASTRAIL/Prefabs/Screens/StartupScreen.prefab",
+    "view": "StartupScreenRootBehaviour.Render",
+    "authAdapter": "RenderAuth -> StartupScreenViewState.FromAuth copies existing AuthGateUxState display labels only",
+    "download": "Only externally supplied received/total bytes; unknown total hides bar; 100 percent remains Downloading with no completion action",
+    "update": "Externally supplied version/notice only; no comparison or mandatory update policy",
+    "actions": "Owner subscribes PrimaryActionRequested/SecondaryActionRequested and routes using its own authoritative state; absent owner disables buttons",
+    "lifecycle": "One action per phase; owner renders Waiting then result to unlock a retry. Repeated same-phase render remains latched. Disable clears latch; reentry refreshes buttons. Owner manages async cancellation and subscriptions.",
+    "layout": "Portrait 1080x1920 reference, safe area inset, 144-reference-unit button height (48px at 360 width), separate TMP text and Image fill",
+    "missing": ["Startup execution orchestration", "Real auth callback owner", "Resource download producer", "Update decision producer", "Build scenes (currently empty)"],
+    "runtimeRouteInstalled": false
+  },
+  "verification": {
+    "focusedResults": "TestResults-Startup-Closeout.xml",
+    "screenshots": "QA/Act1Launch/Screenshots/Startup/fixture_{auth_start,loading,download,download_unknown,download_error,update,auth_error}_{1080,360}.png",
+    "screenshotCount": 14,
+    "method": "Actual Camera.Render through prefab with explicit state fixtures; not real authentication/download/update evidence",
+    "syntheticCompositeUsed": false,
+    "videoCaptured": false,
+    "fullSuiteRun": false
+  },
+  "packagesNetworkApiOAuthDeploymentChanged": false
+}
