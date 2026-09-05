@@ -294,6 +294,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyBoardingSlotFrame"), Is.EqualTo(0));
             Assert.That(CountChildrenWithPrefix(enemySlots, "EnemyContactShadow_"), Is.EqualTo(0));
             Assert.That(topStatusPanel.GetComponentsInChildren<TMP_Text>(includeInactive: true).Length, Is.GreaterThanOrEqualTo(2));
+            AssertCombatHudBindsOperatorSkillIcons(prefab, bottomStatusPanel);
             AssertCombatHudUsesCompactReadableHudChips(prefab, topStatusPanel, bottomStatusPanel, interiorLane);
             AssertCombatHudDoesNotExposeQaCopy(prefab);
 
@@ -408,6 +409,39 @@ namespace LastRail.Tests.EditMode
             AssertHudTextIsCompact(AssertChild(bottomStatusPanel, "UnitRefsText"), 24f);
             AssertHudTextIsCompact(AssertChild(bottomStatusPanel, "CueRefsText"), 22f);
             AssertHudTextIsCompact(AssertChild(interiorLane, "RefundHintText"), 22f);
+        }
+
+        private static void AssertCombatHudBindsOperatorSkillIcons(GameObject prefab, Transform bottomStatusPanel)
+        {
+            var skillSlots = bottomStatusPanel.GetComponentsInChildren<Image>(includeInactive: true);
+            var slotCount = 0;
+            var cueTextRect = AssertChild(bottomStatusPanel, "CueRefsText").GetComponent<RectTransform>();
+            foreach (var image in skillSlots)
+            {
+                if (image.name.StartsWith("SkillIconSlot_", System.StringComparison.Ordinal))
+                {
+                    slotCount++;
+                    Assert.That(image.sprite, Is.Not.Null, image.name);
+                    Assert.That(AssetDatabase.GetAssetPath(image.sprite), Does.StartWith("Assets/_LASTRAIL/UI/CombatResources/SkillIcons/"), image.name);
+                    var iconRect = image.GetComponent<RectTransform>();
+                    var iconTop = iconRect.anchoredPosition.y + iconRect.sizeDelta.y * 0.5f;
+                    var cueBottom = cueTextRect.anchoredPosition.y - cueTextRect.sizeDelta.y * 0.5f;
+                    Assert.That(iconTop, Is.LessThanOrEqualTo(cueBottom - 8f), image.name + " should not overlap the combat status text.");
+                }
+            }
+
+            Assert.That(slotCount, Is.EqualTo(5), "Combat HUD should expose five current-squad skill icon slots.");
+
+            var serialized = new SerializedObject(prefab.GetComponent<FullyAnimatedCombatHudRootBehaviour>());
+            var bindings = serialized.FindProperty("skillIconSprites");
+            Assert.That(bindings, Is.Not.Null);
+            Assert.That(bindings.arraySize, Is.EqualTo(15), "Combat HUD should know all Act 1 launch operator skill icons.");
+            for (var i = 0; i < bindings.arraySize; i++)
+            {
+                var element = bindings.GetArrayElementAtIndex(i);
+                Assert.That(element.FindPropertyRelative("operatorId").stringValue, Does.StartWith("op_"));
+                Assert.That(element.FindPropertyRelative("sprite").objectReferenceValue, Is.Not.Null);
+            }
         }
 
         private static void AssertHudTextIsCompact(Transform target, float maxFontSize)

@@ -104,6 +104,9 @@ namespace LastRail.Tests.EditMode
 
             Assert.That(json.Contains("\"surface\":\"RaidBoss\""), Is.EqualTo(true));
             Assert.That(json.Contains("\"bossObjectiveLabel\":\"목표: 보스 격파\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"operatorSkillIconRefs\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"skillId\":\"op_vex_skill_or_special\""), Is.EqualTo(true));
+            Assert.That(json.Contains("\"hasGameplayEffectDefinition\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"minimumTouchTargetDp\":48"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasAnimationTimelinePayload\":false"), Is.EqualTo(true));
             Assert.That(json.Contains("\"hasFramePayload\":false"), Is.EqualTo(true));

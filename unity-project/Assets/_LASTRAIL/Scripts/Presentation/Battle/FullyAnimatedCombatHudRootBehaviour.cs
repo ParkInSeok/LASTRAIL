@@ -23,6 +23,8 @@ namespace LastRail.Presentation.Battle
         [SerializeField] private TMP_Text refundHintText;
         [SerializeField] private TMP_Text unitRefsText;
         [SerializeField] private TMP_Text cueRefsText;
+        [SerializeField] private Image[] skillIconSlotImages = new Image[0];
+        [SerializeField] private OperatorSkillIconSpriteBinding[] skillIconSprites = new OperatorSkillIconSpriteBinding[0];
         [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
 
         public FullyAnimatedCombatHudViewState CurrentState { get; private set; }
@@ -43,6 +45,7 @@ namespace LastRail.Presentation.Battle
             SetText(refundHintText, state.FailureStaminaRefundHint);
             SetText(unitRefsText, FormatUnitRefs(state));
             SetText(cueRefsText, FormatCueRefs(state));
+            ApplySkillIconSlots(state);
         }
 
         public void PlayHitCue()
@@ -161,6 +164,74 @@ namespace LastRail.Presentation.Battle
             }
 
             return builder.ToString();
+        }
+
+        private void ApplySkillIconSlots(FullyAnimatedCombatHudViewState state)
+        {
+            for (var i = 0; i < skillIconSlotImages.Length; i++)
+            {
+                var slot = skillIconSlotImages[i];
+                if (slot == null)
+                {
+                    continue;
+                }
+
+                var hasIcon = i < state.OperatorSkillIconRefs.Count;
+                slot.gameObject.SetActive(hasIcon);
+                if (!hasIcon)
+                {
+                    slot.sprite = null;
+                    continue;
+                }
+
+                var iconRef = state.OperatorSkillIconRefs[i];
+                slot.sprite = ResolveSkillIcon(iconRef.OperatorId);
+                slot.color = SkillIconColor(state, iconRef.OperatorId);
+            }
+        }
+
+        private Sprite ResolveSkillIcon(string operatorId)
+        {
+            for (var i = 0; i < skillIconSprites.Length; i++)
+            {
+                var binding = skillIconSprites[i];
+                if (binding != null && binding.Sprite != null && binding.OperatorId == operatorId)
+                {
+                    return binding.Sprite;
+                }
+            }
+
+            return null;
+        }
+
+        private static Color SkillIconColor(FullyAnimatedCombatHudViewState state, string operatorId)
+        {
+            foreach (var unit in state.UnitAnimationRefs)
+            {
+                if (unit.UnitRole == CombatUnitRole.Operator
+                    && unit.UnitId == operatorId
+                    && (ContainsMarker(unit.AnimationKey, "skill") || ContainsMarker(unit.AnimationCueId, "skill")))
+                {
+                    return Color.white;
+                }
+            }
+
+            return new Color(1f, 1f, 1f, 0.72f);
+        }
+
+        private static bool ContainsMarker(string value, string marker)
+        {
+            return value != null && value.IndexOf(marker, System.StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        [System.Serializable]
+        private sealed class OperatorSkillIconSpriteBinding
+        {
+            [SerializeField] private string operatorId;
+            [SerializeField] private Sprite sprite;
+
+            public string OperatorId => operatorId;
+            public Sprite Sprite => sprite;
         }
     }
 }

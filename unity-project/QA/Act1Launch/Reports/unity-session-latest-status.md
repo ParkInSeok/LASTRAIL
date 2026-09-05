@@ -60,3 +60,36 @@ Verification:
 
 Unity startup notes:
 - Unity logged non-fatal licensing validation noise, but Package Manager connected and all requested validation completed.
+
+---
+
+Status: COMPLETE
+
+Latest commit message pending: `feat(unity): add combat skill icon HUD bindings`.
+
+Completed:
+- Confirmed the Act 1 combat operator list from `ActOneOperatorRosterRules`: initial/free `op_kyle`, `op_reina`, `op_eve`, `op_sera`, `op_mira`; elite `op_vex`, `op_nyx`, `op_sable`, `op_marrow`, `op_iris`, `op_rail`, `op_anchor`, `op_lumen`, `op_cinder`, `op_warden`.
+- Generated 15 high-quality 512x512 2D bitmap skill icons with the built-in image generation tool, sliced them into canonical `op_*_skill_or_special.png` resources, and retained the generated atlas source.
+- Added `CombatOperatorSkillIconCatalog` and `CombatOperatorSkillIconDefinition` as a presentation-only catalog. No gameplay effect, server, reward, economy, or skill-math behavior was introduced.
+- Connected current combat HUD state to current operator ids via `FullyAnimatedCombatHudViewState.OperatorSkillIconRefs`, JSON export, `FullyAnimatedCombatHudRootBehaviour`, and `Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab`.
+- Added five live HUD icon slots under the combat status panel, with active/dim visual state derived from existing combat animation/cue skill markers where available.
+- Preserved current character positions and train backgrounds.
+
+Resource paths:
+- Icons: `Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_*_skill_or_special.png`
+- Source atlas: `Assets/_LASTRAIL/UI/CombatResources/SkillIcons/Sources/act1_operator_skill_icon_atlas_generated.png`
+- Manifest: `Assets/_LASTRAIL/UI/Style/lastrail-combat-skill-icon-resources.json`
+
+Known gaps:
+- No authored per-operator skill display-name catalog was found in the project.
+- No authored gameplay skill effect/cooldown catalog was found in the project, so the new catalog explicitly marks all entries as presentation-only.
+
+Verification:
+- PASS: RED catalog test failed before production types existed.
+- PASS: RED prefab binding test failed before icon slots existed.
+- PASS: RED overlap test caught icon/text overlap before final layout.
+- PASS: focused Unity EditMode checks after implementation, including catalog, presenter JSON, prefab binding, and overlap assertions.
+- PASS: full Unity EditMode suite, 643/643.
+- PASS: actual Unity screenshot QA, 7/7 screens, 0 failures, 0 warnings.
+- PASS: actual rendered `QA/Act1Launch/Screenshots/SevenScreen/fully_animated_combat_hud.png` visually shows five current-squad skill icons without text overlap.
+- Not run: video capture/export by request; existing QA MP4 assets were not regenerated for this task.

@@ -30,6 +30,7 @@ namespace LastRail.Editor
         private const string CombatBossRoot = "Assets/_LASTRAIL/UI/CombatResources/Bosses";
         private const string CombatAccentRoot = "Assets/_LASTRAIL/UI/CombatResources/Accents";
         private const string CombatVfxRoot = "Assets/_LASTRAIL/UI/CombatResources/VFX";
+        private const string CombatSkillIconRoot = "Assets/_LASTRAIL/UI/CombatResources/SkillIcons";
         private const string CombatLaneRoot = "Assets/_LASTRAIL/UI/CombatResources/Lanes";
         private const string CombatInteriorRoot = "Assets/_LASTRAIL/UI/CombatResources/Interiors";
         private const string CombatAnimationRoot = "Assets/_LASTRAIL/UI/CombatAnimations";
@@ -746,7 +747,7 @@ namespace LastRail.Editor
                 var waveCounter = CreateText(layout.TopStatusPanel, "WaveCounterText", "웨이브 1/15");
                 var bossStatus = CreateText(layout.ExteriorLane, "BossStatusText", "보스 위협 감지");
                 var objective = CreateText(layout.InteriorLane, "ObjectiveText", "목표: 열차 방어");
-                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "철수 시 연료 보호");
+                var refundHint = CreateText(layout.InteriorLane, "RefundHintText", "");
                 var unitRefs = CreateText(layout.BottomStatusPanel, "UnitRefsText", "분대 5 / 침입 4");
                 var cueRefs = CreateText(layout.BottomStatusPanel, "CueRefsText", "스킬 대기 / 충돌 감지");
                 ConfigureText(encounterTitle, "전투", 28f, TextAlignmentOptions.MidlineLeft);
@@ -755,14 +756,15 @@ namespace LastRail.Editor
                 ConfigureText(objective, "목표: 열차 방어", 24f, TextAlignmentOptions.MidlineLeft);
                 ConfigureText(unitRefs, "분대 5 / 침입 4", 24f, TextAlignmentOptions.MidlineLeft);
                 ConfigureText(cueRefs, "스킬 대기 / 충돌 감지", 22f, TextAlignmentOptions.MidlineLeft);
-                ConfigureText(refundHint, "철수 시 연료 보호", 22f, TextAlignmentOptions.MidlineLeft);
+                ConfigureText(refundHint, "", 22f, TextAlignmentOptions.MidlineLeft);
                 Place(encounterTitle, -292f, 0f, 330f, 58f);
                 Place(waveCounter, 292f, 0f, 330f, 58f);
                 Place(bossStatus, 284f, -254f, 360f, 54f);
                 Place(objective, -244f, 404f, 390f, 52f);
-                Place(unitRefs, 0f, 30f, 430f, 48f);
-                Place(cueRefs, 0f, -26f, 430f, 48f);
+            Place(unitRefs, 0f, 70f, 430f, 48f);
+            Place(cueRefs, 0f, 28f, 430f, 48f);
                 Place(refundHint, -188f, -496f, 480f, 50f);
+                var skillIconSlots = CreateCombatSkillIconSlots(layout.BottomStatusPanel);
 
                 Bind(behaviour,
                     ("safeAreaRoot", safeArea),
@@ -779,6 +781,7 @@ namespace LastRail.Editor
                     ("unitRefsText", unitRefs),
                     ("cueRefsText", cueRefs),
                     ("audioCuePlayer", audio));
+                BindCombatSkillIconSprites(behaviour, skillIconSlots);
                 SavePrefab(root, "FullyAnimatedCombatHud");
             }
             finally
@@ -791,6 +794,10 @@ namespace LastRail.Editor
         {
             EnsureSpriteImporter(CombatLaneRoot + "/combat_train_exterior_advance_lane.png");
             EnsureSpriteImporter(CombatInteriorRoot + "/combat_train_interior_initial_squad.png");
+            foreach (var definition in CombatOperatorSkillIconCatalog.CreateLaunchDefinitions())
+            {
+                EnsureSpriteImporter(definition.IconPath);
+            }
         }
 
         private static void EnsureSpriteImporter(string assetPath)
@@ -902,7 +909,7 @@ namespace LastRail.Editor
                 interiorLane,
                 "CombatBottomStatusHudPanel",
                 new Color(0.03f, 0.05f, 0.06f, 0.76f));
-            Place(bottomStatusPanel, -210f, -458f, 520f, 140f);
+            Place(bottomStatusPanel, -210f, -432f, 520f, 190f);
 
             CreateOperatorCombatSlots(squadSlots);
             CreateEnemyBoardingSlots(enemySlots);
@@ -930,6 +937,47 @@ namespace LastRail.Editor
                 engagementZone,
                 topStatusPanel.GetComponent<RectTransform>(),
                 bottomStatusPanel.GetComponent<RectTransform>());
+        }
+
+        private static Image[] CreateCombatSkillIconSlots(Transform bottomStatusPanel)
+        {
+            var slots = new Image[5];
+            for (var i = 0; i < slots.Length; i++)
+            {
+                var slot = CreateImage(
+                    bottomStatusPanel,
+                    "SkillIconSlot_" + i,
+                    CombatOperatorSkillIconCatalog.CreateLaunchDefinitions()[i].IconPath,
+                    new Color(1f, 1f, 1f, 0.92f));
+                Place(slot, -204f + i * 102f, -66f, 64f, 64f);
+                slots[i] = slot;
+            }
+
+            return slots;
+        }
+
+        private static void BindCombatSkillIconSprites(FullyAnimatedCombatHudRootBehaviour behaviour, Image[] skillIconSlots)
+        {
+            var definitions = CombatOperatorSkillIconCatalog.CreateLaunchDefinitions();
+            var serialized = new SerializedObject(behaviour);
+            var slots = serialized.FindProperty("skillIconSlotImages");
+            slots.arraySize = skillIconSlots.Length;
+            for (var i = 0; i < skillIconSlots.Length; i++)
+            {
+                slots.GetArrayElementAtIndex(i).objectReferenceValue = skillIconSlots[i];
+            }
+
+            var sprites = serialized.FindProperty("skillIconSprites");
+            sprites.arraySize = definitions.Count;
+            for (var i = 0; i < definitions.Count; i++)
+            {
+                var definition = definitions[i];
+                var element = sprites.GetArrayElementAtIndex(i);
+                element.FindPropertyRelative("operatorId").stringValue = definition.OperatorId;
+                element.FindPropertyRelative("sprite").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(definition.IconPath);
+            }
+
+            serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void CreateOperatorCombatSlots(Transform squadSlots)

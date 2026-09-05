@@ -27,6 +27,7 @@ namespace LastRail.Presentation.Battle
             AppendCommaNumber(builder, "operatorSlotCount", state.OperatorSlotCount);
             AppendCommaNumber(builder, "enemyUnitCount", state.EnemyUnitCount);
             AppendCommaNumber(builder, "raidBossUnitCount", state.RaidBossUnitCount);
+            AppendCommaSkillIcons(builder, state.OperatorSkillIconRefs);
             AppendCommaString(builder, "skillCueId", state.SkillCueId);
             AppendCommaString(builder, "ultimateCueId", state.UltimateCueId);
             AppendCommaString(builder, "damageCueId", state.DamageCueId);
@@ -77,6 +78,28 @@ namespace LastRail.Presentation.Battle
         private static void AppendCommaBool(StringBuilder builder, string name, bool value)
         {
             builder.Append(',').Append('"').Append(name).Append("\":").Append(value ? "true" : "false");
+        }
+
+        private static void AppendCommaSkillIcons(StringBuilder builder, System.Collections.Generic.IReadOnlyList<CombatOperatorSkillIconDefinition> icons)
+        {
+            builder.Append(",\"operatorSkillIconRefs\":[");
+            for (var i = 0; i < icons.Count; i++)
+            {
+                if (i > 0)
+                {
+                    builder.Append(',');
+                }
+
+                var icon = icons[i];
+                builder.Append('{');
+                AppendString(builder, "operatorId", icon.OperatorId);
+                AppendCommaString(builder, "skillId", icon.SkillId);
+                AppendCommaString(builder, "iconPath", icon.IconPath);
+                AppendCommaBool(builder, "hasGameplayEffectDefinition", icon.HasGameplayEffectDefinition);
+                builder.Append('}');
+            }
+
+            builder.Append(']');
         }
 
         private static void AppendJsonString(StringBuilder builder, string value)

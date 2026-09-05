@@ -44,6 +44,7 @@ namespace LastRail.Presentation.Battle
             FailureStaminaRefundHint = combatState.EncounterType == RunEncounterType.RaidBoss ? "철수 시 연료 보호" : null;
 
             UnitAnimationRefs = CopyUnitRefs(combatState.UnitAnimationStates);
+            OperatorSkillIconRefs = ResolveOperatorSkillIcons(UnitAnimationRefs);
             OperatorSlotCount = CountRole(UnitAnimationRefs, CombatUnitRole.Operator);
             EnemyUnitCount = CountRole(UnitAnimationRefs, CombatUnitRole.Enemy);
             RaidBossUnitCount = CountRole(UnitAnimationRefs, CombatUnitRole.RaidBoss);
@@ -85,6 +86,7 @@ namespace LastRail.Presentation.Battle
         public int EnemyUnitCount { get; }
         public int RaidBossUnitCount { get; }
         public IReadOnlyList<CombatHudUnitAnimationRefViewState> UnitAnimationRefs { get; }
+        public IReadOnlyList<CombatOperatorSkillIconDefinition> OperatorSkillIconRefs { get; }
         public string SkillCueId { get; }
         public string UltimateCueId { get; }
         public string DamageCueId { get; }
@@ -147,6 +149,26 @@ namespace LastRail.Presentation.Battle
             }
 
             return count;
+        }
+
+        private static IReadOnlyList<CombatOperatorSkillIconDefinition> ResolveOperatorSkillIcons(
+            IEnumerable<CombatHudUnitAnimationRefViewState> refs)
+        {
+            var icons = new List<CombatOperatorSkillIconDefinition>();
+            foreach (var unitRef in refs)
+            {
+                if (unitRef.UnitRole != CombatUnitRole.Operator)
+                {
+                    continue;
+                }
+
+                if (CombatOperatorSkillIconCatalog.TryGetDefinition(unitRef.UnitId, out var definition))
+                {
+                    icons.Add(definition);
+                }
+            }
+
+            return icons.AsReadOnly();
         }
 
         private static string FirstOperatorCue(
