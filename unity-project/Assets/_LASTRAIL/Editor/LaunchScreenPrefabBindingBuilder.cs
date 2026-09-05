@@ -8,6 +8,7 @@ using LastRail.Presentation.Battle;
 using LastRail.Presentation.MissionShell;
 using LastRail.Presentation.Startup;
 using LastRail.Presentation.AuthGate;
+using LastRail.Presentation.Tutorial;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -867,6 +868,52 @@ namespace LastRail.Editor
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 behaviour.RenderAuth(AuthGateUxState.FirstLaunch());
                 SavePrefab(root, "StartupScreen");
+                AssetDatabase.SaveAssets();
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
+        [MenuItem("LASTRAIL/Launch/Build Tutorial Guide Prefab")]
+        public static void BuildTutorialGuidePrefab()
+        {
+            var root = new GameObject("TutorialGuide", typeof(RectTransform));
+            var rect = (RectTransform)root.transform;
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+            rect.sizeDelta = Vector2.zero;
+            try
+            {
+                var borders = new Image[4];
+                for (var i = 0; i < borders.Length; i++)
+                {
+                    borders[i] = CreateSolidImage(root.transform, "GuideBorder" + i, new Color(0.2f, 0.95f, 0.95f, 1));
+                    borders[i].raycastTarget = false;
+                }
+                var pointer = CreateImage(root.transform, "GuidePointer", "Assets/_LASTRAIL/UI/Icons/ic_back.png", Color.white);
+                var panel = CreateSlicedImage(root.transform, "GuidePanel", CommonSkinRoot + "/ui_tooltip_panel_9slice.png", Color.white);
+                Place(panel, 0, 0, 960, 240);
+                panel.raycastTarget = true;
+                var body = CreateText(panel.transform, "GuideBody", "");
+                ConfigureText(body, "", 36, TextAlignmentOptions.MidlineLeft);
+                Place(body, -80, 0, 300, 170);
+                body.richText = false; body.raycastTarget = false;
+                var next = CreateImage(panel.transform, "GuideNext", "Assets/_LASTRAIL/UI/Icons/ic_back.png", Color.white);
+                Place(next, 210, 0, 144, 144);
+                next.rectTransform.localRotation = Quaternion.Euler(0, 0, 180);
+                next.raycastTarget = true;
+                var nextButton = next.gameObject.AddComponent<Button>(); nextButton.targetGraphic = next;
+                var close = CreateImage(panel.transform, "GuideClose", "Assets/_LASTRAIL/UI/Icons/ic_close.png", Color.white);
+                Place(close, 380, 0, 144, 144);
+                close.raycastTarget = true;
+                var closeButton = close.gameObject.AddComponent<Button>(); closeButton.targetGraphic = close;
+                var guide = root.AddComponent<TutorialGuideView>();
+                Bind(guide, ("panel", panel.rectTransform), ("body", body), ("pointer", pointer), ("nextButton", nextButton), ("closeButton", closeButton));
+                var serialized = new SerializedObject(guide);
+                var array = serialized.FindProperty("borders"); array.arraySize = borders.Length;
+                for (var i = 0; i < borders.Length; i++) array.GetArrayElementAtIndex(i).objectReferenceValue = borders[i];
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                guide.Clear();
+                SavePrefab(root, "TutorialGuide");
                 AssetDatabase.SaveAssets();
             }
             finally { UnityEngine.Object.DestroyImmediate(root); }
