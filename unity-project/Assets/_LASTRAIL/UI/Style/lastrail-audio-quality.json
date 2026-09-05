@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "technical_placeholder_audio_improvement",
+  "sourceNotes": "Assets/_LASTRAIL/Audio/QUALITY-SOURCE-NOTES.md",
+  "originalRevision": "06a08bf",
+  "clipCount": 22,
+  "modifiedWavCount": 17,
+  "unchangedWavCount": 5,
+  "listened": false,
+  "finalHighQualityAudioComplete": false,
+  "allClipsStillProceduralPlaceholders": true,
+  "sourceLicense": "Project-local procedural synthesis; no external samples or paid dependency",
+  "processing": {
+    "samplePeakCeilingDbfs": -6,
+    "dcCorrectionThreshold": 0.001,
+    "dcCorrectedIds": ["ui_back", "combat_hit"],
+    "edgeWeightMilliseconds": 5,
+    "bgmRemovedFrequencyHz": 0.5,
+    "importFormat": "PCM / DecompressOnLoad / preserve 44100 Hz mono",
+    "clipIdsDurationsLoopFlagsPreserved": true
+  },
+  "measurements": {
+    "before": "QA/Act1Launch/Reports/audio-quality-before.json",
+    "after": "QA/Act1Launch/Reports/audio-quality-after.json",
+    "method": "16-bit PCM peak/RMS/DC, 10ms silence windows below -60dBFS, FFT energy descriptors and boundary deltas; not LUFS or reconstructed true peak",
+    "clippedSamplesBefore": 0,
+    "clippedSamplesAfter": 0,
+    "bgmSub20HzEnergyBefore": 0.0677249246,
+    "bgmSub20HzEnergyAfter": 0.0000000000178,
+    "bgmEndpointStepBeforeAndAfter": 0.0032653809,
+    "bgmLoopSlopeMismatchBeforeAndAfter": 0.0000305176,
+    "bgmRepeatCorrelation200msAfter": 0.999999978
+  },
+  "consumer": {
+    "player": "LastRailAudioCuePlayer",
+    "sfx": "PlayOneShot binding gain once, preserve source volume and mute",
+    "bgm": "Single-loop authored source gain; legacy binding volume does not override it; same clip is not reassigned; opt-in only",
+    "duplicates": "Same-frame resolved SFX ID coalescing per player, no cross-frame cooldown or distinct-cue suppression",
+    "limits": "No global polyphony limiter, hardware listening, persistent mixer or new event producer"
+  },
+  "verification": {
+    "focusedResult": "TestResults-AudioQuality-Final.xml",
+    "focusedTestsPassed": 15,
+    "unityImportedPcmAndPlayModeExercised": true,
+    "fullSuiteRun": false,
+    "screenshotsUsedAsAudioEvidence": false,
+    "videoProduced": false
+  },
+  "remainingFinalSourceIds": ["ui_tap", "ui_back", "ui_confirm", "ui_error", "ui_toggle_or_tab", "gacha_reveal_start", "gacha_result_rare", "gacha_result_elite", "gacha_result_pickup_elite", "gacha_duplicate_conversion", "reward_claim", "reward_line_tick", "combat_hit", "combat_skill", "combat_ultimate", "combat_shield", "combat_heal", "combat_buff", "combat_debuff", "story_raid_warning", "boss_defeat", "bgm_act1_rail_loop"]
+}

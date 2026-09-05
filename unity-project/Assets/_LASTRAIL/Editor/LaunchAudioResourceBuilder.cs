@@ -117,10 +117,21 @@ namespace LastRail.Editor
             return new LaunchAudioResourceSpec(id, category, path, duration, loop, usage, baseFrequency, waveKind);
         }
 
+        [MenuItem("LASTRAIL/Launch/Rebuild Audio PCM Only")]
+        public static void RebuildAudioPcmOnly()
+        {
+            foreach (var clip in Clips) WriteWav(clip);
+            AssetDatabase.Refresh();
+            foreach (var clip in Clips) ConfigureAudioImporter(clip);
+            AssetDatabase.SaveAssets();
+            if (Application.isBatchMode) EditorApplication.Exit(0);
+        }
+
         private static void WriteWav(LaunchAudioResourceSpec clip)
         {
             var sampleCount = Mathf.Max(1, Mathf.RoundToInt(clip.DurationSeconds * SampleRate));
             var samples = new short[sampleCount];
+            var values = new float[sampleCount];
             var random = new DeterministicNoise(clip.Id);
 
             for (var i = 0; i < sampleCount; i++)
@@ -128,9 +139,22 @@ namespace LastRail.Editor
                 var t = i / (float)SampleRate;
                 var p = i / (float)(sampleCount - 1);
                 var value = Sample(clip, t, p, random);
-                value = Mathf.Clamp(value, -0.92f, 0.92f);
-                samples[i] = (short)Mathf.RoundToInt(value * short.MaxValue);
+                values[i] = value;
             }
+
+            // Weighted DC removal keeps existing silent endpoints and authored duration.
+            double sum = 0, weights = 0;
+            for (var i = 0; i < sampleCount; i++)
+            {
+                sum += values[i];
+                weights += DcWeight(i, sampleCount);
+            }
+            if (!clip.Loop && Math.Abs(sum / sampleCount) > 0.001)
+                for (var i = 0; i < sampleCount; i++) values[i] -= (float)(sum / weights) * DcWeight(i, sampleCount);
+            var peak = 0f;
+            foreach (var value in values) peak = Mathf.Max(peak, Mathf.Abs(value));
+            var gain = peak > 0.5011872f ? 0.5011872f / peak : 1f;
+            for (var i = 0; i < sampleCount; i++) samples[i] = (short)Mathf.RoundToInt(values[i] * gain * short.MaxValue);
 
             using (var writer = new BinaryWriter(File.Open(ProjectPath(clip.Path), FileMode.Create, FileAccess.Write), Encoding.ASCII))
             {
@@ -149,6 +173,12 @@ namespace LastRail.Editor
                 writer.Write(samples.Length * 2);
                 foreach (var sample in samples) writer.Write(sample);
             }
+        }
+
+        private static float DcWeight(int index, int count)
+        {
+            var edge = Mathf.Min(index, count - 1 - index) / (SampleRate * 0.005f);
+            return Mathf.SmoothStep(0, 1, Mathf.Clamp01(edge));
         }
 
         private static float Sample(LaunchAudioResourceSpec clip, float t, float p, DeterministicNoise random)
@@ -173,7 +203,7 @@ namespace LastRail.Editor
                 case WaveKind.Impact:
                     return Env(p, 0.005f, 0.62f) * (Sine(f, t) * 0.42f + random.NextSigned() * 0.28f);
                 case WaveKind.Loop:
-                    return Sine(f, t) * 0.12f + Sine(f * 2f, t) * 0.08f + Sine(f * 4f, t) * 0.035f + Sine(0.5f, t) * 0.04f;
+                    return Sine(f, t) * 0.12f + Sine(f * 2f, t) * 0.08f + Sine(f * 4f, t) * 0.035f;
                 default:
                     return 0f;
             }
@@ -199,9 +229,9 @@ namespace LastRail.Editor
             importer.forceToMono = true;
             importer.loadInBackground = clip.Loop;
             var settings = importer.defaultSampleSettings;
-            settings.loadType = clip.Loop ? AudioClipLoadType.CompressedInMemory : AudioClipLoadType.DecompressOnLoad;
-            settings.compressionFormat = clip.Loop ? AudioCompressionFormat.Vorbis : AudioCompressionFormat.PCM;
-            settings.quality = clip.Loop ? 0.55f : 1f;
+            settings.loadType = AudioClipLoadType.DecompressOnLoad;
+            settings.compressionFormat = AudioCompressionFormat.PCM;
+            settings.quality = 1f;
             settings.sampleRateSetting = AudioSampleRateSetting.PreserveSampleRate;
             settings.preloadAudioData = true;
             importer.defaultSampleSettings = settings;

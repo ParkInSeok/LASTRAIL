@@ -1,5 +1,6 @@
 #if UNITY_5_3_OR_NEWER
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LastRail.Presentation.Audio
@@ -11,6 +12,8 @@ namespace LastRail.Presentation.Audio
         [SerializeField] private LastRailAudioClipBinding[] clipBindings = Array.Empty<LastRailAudioClipBinding>();
 
         private readonly LaunchAudioCueCatalog catalog = LaunchAudioCueCatalog.CreateDefault();
+        private readonly HashSet<string> frameCues = new HashSet<string>(StringComparer.Ordinal);
+        private int cueFrame = -1;
 
         public int BindingCount => clipBindings == null ? 0 : clipBindings.Length;
         public bool HasServerTransport => false;
@@ -83,6 +86,8 @@ namespace LastRail.Presentation.Audio
             sfxSource = testSfxSource;
             bgmSource = testBgmSource;
             clipBindings = testBindings ?? Array.Empty<LastRailAudioClipBinding>();
+            frameCues.Clear();
+            cueFrame = -1;
             ConfigureSourceDefaults();
         }
 
@@ -93,9 +98,15 @@ namespace LastRail.Presentation.Audio
                 return LastRailAudioCuePlayResult.NotPlayed(requested, resolved, "missing_sfx_source");
             }
 
+            if (cueFrame != Time.frameCount)
+            {
+                frameCues.Clear();
+                cueFrame = Time.frameCount;
+            }
+            if (!frameCues.Add(resolved))
+                return LastRailAudioCuePlayResult.NotPlayed(requested, resolved, "same_frame_duplicate");
             ConfigureSourceDefaults();
             sfxSource.loop = false;
-            sfxSource.volume = binding.Volume;
             if (Application.isPlaying)
             {
                 sfxSource.PlayOneShot(binding.Clip, binding.Volume);
@@ -112,9 +123,9 @@ namespace LastRail.Presentation.Audio
             }
 
             ConfigureSourceDefaults();
-            bgmSource.clip = binding.Clip;
+            if (bgmSource.clip != binding.Clip) bgmSource.clip = binding.Clip;
             bgmSource.loop = true;
-            bgmSource.volume = binding.Volume;
+            // The single loop uses its authored AudioSource gain; never reset owner volume/mute.
             if (Application.isPlaying && !bgmSource.isPlaying)
             {
                 bgmSource.Play();
