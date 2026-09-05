@@ -29,7 +29,8 @@ export const launchForbiddenActionControls = [
   "run_replay",
   "run_reprocess",
   "result_edit",
-  "reward_correction"
+  "reward_correction",
+  "release_remote_execute"
 ] as const;
 
 export const launchForbiddenSensitiveFields = [
@@ -92,6 +93,7 @@ export type LaunchIntegrationRegressionSmoke = {
       | "run_detail"
       | "gacha"
       | "ops_error_logs"
+      | "version_management"
       | "cs_template"
       | "read_only_boundary";
     readOnly: true;
@@ -103,6 +105,7 @@ export type LaunchIntegrationRegressionSmoke = {
     | "raid_start_metadata"
     | "gacha_launch_visibility"
     | "google_verifier_ops_label"
+    | "version_management_target_registry"
   >;
   labels: {
     googleVerifierUnavailable: string;
@@ -133,7 +136,8 @@ export type PreviewSmokeChecklist = {
       | "run_detail"
       | "gacha"
       | "offline_reward"
-      | "ops_error_logs";
+      | "ops_error_logs"
+      | "version_management";
     path: string;
     readOnly: true;
   }>;
@@ -190,7 +194,8 @@ export function buildPreviewSmokeChecklist(): PreviewSmokeChecklist {
       { code: "run_detail", path: "/runs/:runId", readOnly: true },
       { code: "gacha", path: "/gacha", readOnly: true },
       { code: "offline_reward", path: "/offline-rewards", readOnly: true },
-      { code: "ops_error_logs", path: "/ops/error-logs", readOnly: true }
+      { code: "ops_error_logs", path: "/ops/error-logs", readOnly: true },
+      { code: "version_management", path: "/versions", readOnly: true }
     ],
     assertions: [
       {
@@ -255,6 +260,7 @@ export function buildLaunchIntegrationRegressionSmoke(): LaunchIntegrationRegres
       "run_detail",
       "gacha",
       "ops_error_logs",
+      "version_management",
       "cs_template",
       "read_only_boundary"
     ].map((code) => ({
@@ -267,7 +273,8 @@ export function buildLaunchIntegrationRegressionSmoke(): LaunchIntegrationRegres
       "support_ops_errors",
       "raid_start_metadata",
       "gacha_launch_visibility",
-      "google_verifier_ops_label"
+      "google_verifier_ops_label",
+      "version_management_target_registry"
     ],
     labels: {
       googleVerifierUnavailable: opsErrorCodeLabel("google_auth_verifier_unavailable"),

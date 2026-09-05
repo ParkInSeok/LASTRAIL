@@ -28,6 +28,7 @@ describe("launch read-only boundary guard", () => {
       "제재",
       "지표",
       "게임 설정",
+      "버전 관리",
       "감사 로그"
     ]);
   });
@@ -54,7 +55,8 @@ describe("launch read-only boundary guard", () => {
       "run_replay",
       "run_reprocess",
       "result_edit",
-      "reward_correction"
+      "reward_correction",
+      "release_remote_execute"
     ]);
     expect(snapshot.actionControls.every((control) => control.enabled === false)).toBe(true);
     expect(snapshot.actionControls.map((control) => control.code)).toEqual(launchForbiddenActionControls);
@@ -114,6 +116,7 @@ describe("launch read-only boundary guard", () => {
       "제재",
       "지표",
       "게임 설정",
+      "버전 관리",
       "감사 로그"
     ]);
     expect(smoke.surfaces.map((surface) => surface.code)).toEqual([
@@ -123,6 +126,7 @@ describe("launch read-only boundary guard", () => {
       "run_detail",
       "gacha",
       "ops_error_logs",
+      "version_management",
       "cs_template",
       "read_only_boundary"
     ]);
@@ -133,7 +137,8 @@ describe("launch read-only boundary guard", () => {
       "support_ops_errors",
       "raid_start_metadata",
       "gacha_launch_visibility",
-      "google_verifier_ops_label"
+      "google_verifier_ops_label",
+      "version_management_target_registry"
     ]);
     expect(smoke.labels.googleVerifierUnavailable).toBe("Google 인증 검증기 사용 불가");
     expect(smoke.labels.raidBossOnly).toBe("보스 전용 레이드");
@@ -188,7 +193,8 @@ describe("launch read-only boundary guard", () => {
       ["run_detail", "/runs/:runId", true],
       ["gacha", "/gacha", true],
       ["offline_reward", "/offline-rewards", true],
-      ["ops_error_logs", "/ops/error-logs", true]
+      ["ops_error_logs", "/ops/error-logs", true],
+      ["version_management", "/versions", true]
     ]);
     expect(checklist.assertions.map((assertion) => assertion.code)).toEqual([
       "read_only_boundary",

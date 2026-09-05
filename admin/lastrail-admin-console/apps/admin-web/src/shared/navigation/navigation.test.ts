@@ -11,6 +11,7 @@ describe("admin navigation", () => {
     expect(labels).toContain("요원 모집");
     expect(labels).toContain("CS 지원");
     expect(labels).not.toContain("시스템 에러 로그");
+    expect(labels).not.toContain("버전 관리");
     expect(labels).not.toContain("밸런스 게시");
   });
 
@@ -33,6 +34,17 @@ describe("admin navigation", () => {
       label: "오프라인 보상",
       path: "/offline-rewards",
       permission: "OFFLINE_REWARD_READ"
+    });
+  });
+
+  it("shows version management for admins with balance read permission without finalizing a release permission enum", () => {
+    const nav = visibleNavigation(["BALANCE_READ"]);
+    const items = nav.flatMap((group) => group.items);
+
+    expect(items).toContainEqual({
+      label: "버전 관리",
+      path: "/versions",
+      permission: "BALANCE_READ"
     });
   });
 

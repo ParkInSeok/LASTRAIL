@@ -39,6 +39,7 @@ const navigation: NavigationGroup[] = [
     label: "시스템",
     items: [
       { label: "게임 설정", path: "/game", permission: "BALANCE_READ" },
+      { label: "버전 관리", path: "/versions", permission: "BALANCE_READ" },
       { label: "감사 로그", path: "/audit", permission: "AUDIT_READ" }
     ]
   }

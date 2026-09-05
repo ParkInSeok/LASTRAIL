@@ -16,6 +16,7 @@ import { RunsPage } from "../pages/RunsPage";
 import { SupportAccountPage } from "../pages/SupportAccountPage";
 import { SuspiciousPlayerDetailPage } from "../pages/SuspiciousPlayerDetailPage";
 import { SuspiciousPlayersPage } from "../pages/SuspiciousPlayersPage";
+import { VersionManagementPage } from "../pages/VersionManagementPage";
 
 const fallbackShellPermissions: AdminPermission[] = [
   "ACCOUNT_READ",
@@ -145,6 +146,7 @@ function Shell() {
           <Route path="/integrity/suspicious-players/:accountId" element={<SuspiciousPlayerDetailPage />} />
           <Route path="/runs" element={<RunsPage />} />
           <Route path="/runs/:runId" element={<RunDetailPage />} />
+          <Route path="/versions" element={<VersionManagementPage />} />
           <Route path="/audit" element={<AuditPage />} />
         </Routes>
       </div>
