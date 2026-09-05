@@ -39,7 +39,9 @@ PlayerSettings:
     y: 0
     width: 1
     height: 1
-  m_SplashScreenLogos: []
+  m_SplashScreenLogos:
+  - logo: {fileID: 21300000, guid: f9653a57d0dbf374c92b4c5eb786af94, type: 3}
+    duration: 2
   m_VirtualRealitySplashScreen: {fileID: 0}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1080
@@ -303,95 +305,119 @@ PlayerSettings:
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 4b22171845bb17b4daa23086d37c60bd, type: 3}
+      m_Width: 192
+      m_Height: 192
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: c3cb1f21bc09f76449e41813d3c3f7e7, type: 3}
+      m_Width: 144
+      m_Height: 144
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: c91476b0083a5a4438a840263c0d29ef, type: 3}
+      m_Width: 96
+      m_Height: 96
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: cfa9e4dca12051e4ea43a53cd2dc8b90, type: 3}
+      m_Width: 72
+      m_Height: 72
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: bce4c4d9b1c77444da7a2ccc0b640b23, type: 3}
+      m_Width: 48
+      m_Height: 48
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: edaf99b74d631404393c1bca249b8d48, type: 3}
+      m_Width: 36
+      m_Height: 36
+      m_Kind: 0
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: 3fe99bb33f30d8c4586f853016eefac4, type: 3}
+      m_Width: 192
+      m_Height: 192
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: 62acebd8530c58a488984bb30a4e8e6c, type: 3}
+      m_Width: 144
+      m_Height: 144
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: 7f4516d22bdd43b49a9852120562ebcb, type: 3}
+      m_Width: 96
+      m_Height: 96
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: d02b9cd341962054dab3b6c818938c03, type: 3}
+      m_Width: 72
+      m_Height: 72
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: 4f3024dd0d82887448c98218859ebb98, type: 3}
+      m_Width: 48
+      m_Height: 48
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: 6d1bf91dd36b29a4897bc5da22b71392, type: 3}
+      m_Width: 36
+      m_Height: 36
+      m_Kind: 1
+      m_SubKind:
+    - m_Textures:
+      - {fileID: 2800000, guid: bac9050462a0dc24187b122fa2a86aec, type: 3}
+      - {fileID: 2800000, guid: 66d5bb7f849eb6343a2f084177dfda95, type: 3}
       m_Width: 432
       m_Height: 432
       m_Kind: 2
       m_SubKind:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: d5a77885a4add8d458badbae031a88ff, type: 3}
+      - {fileID: 2800000, guid: a409577aafe980948a70a6a432b3c283, type: 3}
       m_Width: 324
       m_Height: 324
       m_Kind: 2
       m_SubKind:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: c01bca303925f844bb5dd7784958885c, type: 3}
+      - {fileID: 2800000, guid: 30a3f8e5ba4308644b25f344fe300bd3, type: 3}
       m_Width: 216
       m_Height: 216
       m_Kind: 2
       m_SubKind:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 116e96e9ef8990843bd6ea8c00a2ad7c, type: 3}
+      - {fileID: 2800000, guid: 8f5fd736bb8f2d943ad3cb72e51f9594, type: 3}
       m_Width: 162
       m_Height: 162
       m_Kind: 2
       m_SubKind:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: fbe7456d9594cc349b013c15e592a275, type: 3}
+      - {fileID: 2800000, guid: c46b08bb7547592429a095167f40c410, type: 3}
       m_Width: 108
       m_Height: 108
       m_Kind: 2
       m_SubKind:
-    - m_Textures: []
+    - m_Textures:
+      - {fileID: 2800000, guid: 4fdb539fef7c8a34a8f4db7612bfac45, type: 3}
+      - {fileID: 2800000, guid: d1284bdba5947844ca2ab4e73160dc7c, type: 3}
       m_Width: 81
       m_Height: 81
       m_Kind: 2
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 192
-      m_Height: 192
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 144
-      m_Height: 144
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 96
-      m_Height: 96
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 72
-      m_Height: 72
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 48
-      m_Height: 48
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 36
-      m_Height: 36
-      m_Kind: 1
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 192
-      m_Height: 192
-      m_Kind: 0
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 144
-      m_Height: 144
-      m_Kind: 0
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 96
-      m_Height: 96
-      m_Kind: 0
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 72
-      m_Height: 72
-      m_Kind: 0
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 48
-      m_Height: 48
-      m_Kind: 0
-      m_SubKind:
-    - m_Textures: []
-      m_Width: 36
-      m_Height: 36
-      m_Kind: 0
       m_SubKind:
   m_BuildTargetBatching: []
   m_BuildTargetShaderSettings: []

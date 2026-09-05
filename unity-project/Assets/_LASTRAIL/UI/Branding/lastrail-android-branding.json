@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "scope": "Android launcher icons and engine splash candidate",
+  "brandApproval": "pending; textless production candidate only",
+  "newSourceImageCount": 1,
+  "derivedIconTextureCount": 24,
+  "derivedSplashTextureCount": 1,
+  "reusedBackground": "existing splash background color #21272A",
+  "source": "Assets/_LASTRAIL/UI/Branding/Sources/rail_symbol_candidate_generated.png",
+  "generator": "built-in imagegen; original RGBA retained; RGB checkerboard edit rejected",
+  "exporter": "LastRail.Editor.AndroidBrandingBuilder.Build",
+  "adaptiveLayerOrder": ["Background", "Foreground"],
+  "adaptiveSizes": [432, 324, 216, 162, 108, 81],
+  "legacyAndRoundSizes": [192, 144, 96, 72, 48, 36],
+  "splash": "Assets/_LASTRAIL/UI/Branding/splash_logo_candidate.png",
+  "unityBrandingFlags": "preserved enabled",
+  "qaPreviews": "QA/Act1Launch/AndroidBranding",
+  "limitations": ["not approved brand", "mask previews only", "no device launcher or splash verification", "no APK or signing", "StartupScreen unchanged"]
+}

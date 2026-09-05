@@ -1,0 +1,30 @@
+{
+    "unityVersion": "6000.3.22f1",
+    "textures": [
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_192.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_144.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_96.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_72.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_48.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/legacy_36.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_192.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_144.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_96.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_72.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_48.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/round_36.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_432.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_432.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_324.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_324.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_216.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_216.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_162.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_162.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_108.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_108.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_background_81.png",
+        "Assets/_LASTRAIL/UI/Branding/Android/adaptive_foreground_81.png"
+    ],
+    "splash": "Assets/_LASTRAIL/UI/Branding/splash_logo_candidate.png"
+}
