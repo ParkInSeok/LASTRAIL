@@ -61,6 +61,10 @@ registration/login/link, Google link, and provider-owned-by-other-account
 conflict preview/confirm. The ID/password and account-switch endpoints are not
 implemented yet.
 
+Realtime two-player cooperative combat starts in `realtime-coop.md`. The first
+server slice exposes room creation and WebSocket connection skeletons behind a
+Durable Object binding, with server validation/judgment as the authority model.
+
 Minimal ops error write integration:
 
 - Missing Google verifier/audience config writes a scrubbed

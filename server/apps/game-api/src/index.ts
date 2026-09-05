@@ -12,6 +12,8 @@ import {
 } from "../../../packages/balance/src/index";
 import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificationError, hashRefreshToken, verifyAccessToken } from "./auth";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
+import { containsForbiddenRealtimeCoopField, createRealtimeCoopRejected, isSafeRealtimeId, RealtimeCoopRoom } from "./realtime-coop";
+import type { RealtimeCoopRoomNamespace } from "./realtime-coop";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -21,6 +23,7 @@ type GameApiEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT?: string;
   GOOGLE_AUTH_AUDIENCES?: string;
   GOOGLE_ID_TOKEN_VERIFIER?: GoogleIdTokenVerifier;
+  REALTIME_COOP_ROOMS?: RealtimeCoopRoomNamespace;
 };
 
 const apiBaseUrls = {
@@ -1729,6 +1732,53 @@ function hasNonEmptyRequestBody(c: GameApiContext): boolean {
   return c.req.header("content-type") !== undefined;
 }
 
+function getRealtimeCoopRooms(env: Env): RealtimeCoopRoomNamespace | null {
+  return (env as GameApiEnv).REALTIME_COOP_ROOMS ?? null;
+}
+
+function realtimeCoopUnavailable() {
+  return createRealtimeCoopRejected("realtime_coop_unavailable", "Realtime coop room service is not configured.");
+}
+
+async function parseRealtimeCoopRoomBody(c: GameApiContext): Promise<{ runId: string } | AuthFailure> {
+  if (new URL(c.req.url).searchParams.toString() !== "") {
+    return createAuthFailure(400, "contract_violation", "Query parameters are not accepted.");
+  }
+
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch {
+    return createAuthFailure(400, "contract_violation", "runId is required.");
+  }
+
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return createAuthFailure(400, "contract_violation", "Realtime coop room request must be an object.");
+  }
+  if (containsForbiddenRealtimeCoopField(body)) {
+    return createAuthFailure(400, "contract_violation", "Client-supplied realtime source-of-truth fields are not accepted.");
+  }
+
+  const record = body as Record<string, unknown>;
+  if (typeof record.runId !== "string" || !isSafeRealtimeId(record.runId)) {
+    return createAuthFailure(400, "contract_violation", "runId is required.");
+  }
+  if (Object.keys(record).some((key) => key !== "runId")) {
+    return createAuthFailure(400, "contract_violation", "Only runId is accepted.");
+  }
+
+  return { runId: record.runId };
+}
+
+function createRealtimeConnectionFailure(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    connectionStatus: "REJECTED",
+    errorCode,
+    message,
+  };
+}
+
 function normalizeDisplayNameInput(input: unknown): { displayName: string; normalized: string } | AuthFailure {
   if (typeof input !== "string") {
     return createAuthFailure(400, "invalid_display_name", "Display name must be a string.");
@@ -2410,6 +2460,71 @@ app.get("/v1/client-config", (c) =>
     maintenance: { enabled: false },
   }),
 );
+app.post("/v1/realtime/coop/rooms", async (c) => {
+  const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
+  if (idempotencyKey === undefined || idempotencyKey === "") {
+    return c.json(createRealtimeCoopRejected("idempotency_key_required", "Idempotency-Key is required."), 400);
+  }
+
+  const body = await parseRealtimeCoopRoomBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createRealtimeCoopRejected(body.errorCode, body.message), body.status);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createRealtimeCoopRejected(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const rooms = getRealtimeCoopRooms(c.env);
+  if (rooms === null) {
+    return c.json(realtimeCoopUnavailable(), 503);
+  }
+
+  const response = await rooms.getByName(`coop:${body.runId}`).createRoom({
+    runId: body.runId,
+    hostAccountId: authContext.accountId,
+    idempotencyKey,
+    requestId: c.req.header("X-Request-Id") ?? createRequestId(),
+  });
+
+  return c.json(response, response.accepted ? 200 : 409);
+});
+app.get("/v1/realtime/coop/rooms/:roomId/connect", async (c) => {
+  if (c.req.header("Upgrade")?.toLowerCase() !== "websocket") {
+    return c.json(createRealtimeConnectionFailure("realtime_websocket_required", "WebSocket upgrade is required."), 400);
+  }
+
+  const url = new URL(c.req.url);
+  const runId = url.searchParams.get("runId");
+  const roomId = c.req.param("roomId");
+  const allowedQuery = url.searchParams.size === 1 && runId !== null;
+  if (!allowedQuery || !isSafeRealtimeId(roomId) || runId === null || !isSafeRealtimeId(runId)) {
+    return c.json(createRealtimeConnectionFailure("contract_violation", "Only runId query is accepted for realtime coop connections."), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createRealtimeConnectionFailure(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const rooms = getRealtimeCoopRooms(c.env);
+  if (rooms === null) {
+    return c.json(createRealtimeConnectionFailure("realtime_coop_unavailable", "Realtime coop room service is not configured."), 503);
+  }
+
+  const headers = new Headers(c.req.raw.headers);
+  headers.delete("Authorization");
+  headers.set("X-Lastrail-Realtime-Account-Id", authContext.accountId);
+  headers.set("X-Lastrail-Realtime-Session-Id", authContext.sessionId);
+  headers.set("X-Lastrail-Realtime-Room-Id", roomId);
+  headers.set("X-Lastrail-Realtime-Run-Id", runId);
+
+  return rooms.getByName(`coop:${runId}`).fetch(new Request(c.req.raw.url, {
+    method: "GET",
+    headers,
+  }));
+});
 app.get("/v1/story-progress", async (c) => {
   const hasForbiddenAccountQuery = c.req.query("accountId") !== undefined || c.req.query("account_id") !== undefined;
   const contentLength = c.req.header("content-length");
@@ -4364,6 +4479,8 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     message: null,
   });
 });
+
+export { RealtimeCoopRoom };
 
 export default app;
 

@@ -6,6 +6,10 @@
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "durable_objects": {
+    "bindings": [{ "name": "REALTIME_COOP_ROOMS", "class_name": "RealtimeCoopRoom" }]
+  },
+  "migrations": [{ "tag": "v1_realtime_coop_rooms", "new_sqlite_classes": ["RealtimeCoopRoom"] }],
   "vars": {
     "ENVIRONMENT": "LOCAL",
     "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173"
