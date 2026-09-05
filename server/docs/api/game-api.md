@@ -55,6 +55,12 @@ Idempotency linkage:
 `POST /v1/auth/guest` creates a guest account and returns the initial token
 pair.
 
+The expanded three-path launch auth design is tracked in
+`auth-account-linking.md`. That draft covers guest restore, ID/password
+registration/login/link, Google link, and provider-owned-by-other-account
+conflict preview/confirm. The ID/password and account-switch endpoints are not
+implemented yet.
+
 Minimal ops error write integration:
 
 - Missing Google verifier/audience config writes a scrubbed

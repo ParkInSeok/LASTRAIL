@@ -1,0 +1,317 @@
+# Auth Account Linking Contract Draft
+
+Status: draft, local contract only. This document closes the current Unity-facing
+auth dependency without enabling remote migrations, real Google OAuth values,
+email delivery, or production account writes.
+
+## Scope
+
+Act 1 login has three player-facing entry paths:
+
+- Guest start
+- Login ID and password
+- Google Sign-In
+
+`accountId` remains the immutable server primary key. `loginId` and
+`displayName` are player-facing/account-facing identifiers with different
+purposes:
+
+- `accountId`: server-generated primary key, never chosen by the player.
+- `displayName`: nickname shown to players, globally unique by normalized value.
+- `loginId`: credential identifier for ID/password auth, not a nickname and not
+  a profile display field.
+
+Unity may store only the server-issued session secret material in secure device
+storage. It must not store raw passwords or Google ID tokens long-term.
+
+## Current Implemented Baseline
+
+Already implemented:
+
+- `POST /v1/auth/guest`
+- `POST /v1/auth/refresh`
+- `POST /v1/auth/google`
+- `POST /v1/auth/google/link`
+- `GET /v1/profile`
+- `GET /v1/profile/display-name/check`
+- `POST /v1/profile/display-name`
+
+Current schema only allows `auth_identities.provider IN ('GUEST','GOOGLE')`.
+ID/password auth therefore needs a local schema slice before implementation.
+
+## Guest Restore
+
+Guest creation returns the normal token bundle:
+
+- `tokenType`
+- `account.id`
+- `account.status`
+- `accessToken`
+- `accessTokenExpiresAt`
+- `refreshToken`
+- `refreshTokenExpiresAt`
+
+Unity should persist the refresh token using Android Keystore-backed secure
+storage. App restart should attempt `POST /v1/auth/refresh` before offering a
+new guest. Timeout/offline must not delete the stored session or create a new
+guest. Only explicit invalid/expired/reused session responses should move the
+player to recovery or login UI.
+
+## Login ID / Password Candidate Contract
+
+Candidate endpoints:
+
+```text
+POST /v1/auth/password/register
+POST /v1/auth/password/login
+POST /v1/auth/password/link
+GET /v1/auth/links
+```
+
+`POST /v1/auth/password/register` creates a new account with an ID/password
+credential. `POST /v1/auth/password/link` requires Bearer auth and attaches an
+unused login ID credential to the current account, preserving `accountId`,
+inventory, story progress, rewards, and sessions.
+
+`POST /v1/auth/password/login` signs in to the account that owns the login ID
+and returns the same token bundle shape as guest and Google auth.
+
+Candidate request:
+
+```json
+{
+  "loginId": "rail_commander",
+  "password": "player supplied secret"
+}
+```
+
+Do not accept `accountId`, `displayName`, reward fields, story progress fields,
+or provider subject shortcuts in request bodies, query parameters, or headers.
+
+Candidate response:
+
+```json
+{
+  "tokenType": "Bearer",
+  "authStatus": "SIGNED_IN",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:15:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
+}
+```
+
+Link status values:
+
+- `LINKED`: current account newly owns the login ID credential.
+- `ALREADY_LINKED`: current account already owns that credential; idempotent
+  success.
+- `CONFLICT_REQUIRES_CONFIRMATION`: credential belongs to another account and
+  account switching must use the conflict preview/confirm flow.
+
+## Login ID Policy Recommendation
+
+This is a recommendation, not a user-finalized value:
+
+- Normalize with Unicode NFKC, trim, and compare case-insensitively.
+- Length 4 to 32 code points.
+- Allow letters, numbers, `_`, `-`, and `.`.
+- Reject reserved system-like values and values that look like internal ids.
+- Return generic login failures for unknown ID or wrong password to reduce
+  account enumeration.
+
+## Password Storage Recommendation
+
+Use a proven password hashing implementation, not a custom algorithm. OWASP
+recommends Argon2id when available, or scrypt/bcrypt/PBKDF2 with appropriate
+costs. NIST requires salted password verifier storage and recommends storing
+algorithm/cost metadata so work factors can migrate over time.
+
+Candidate local schema:
+
+```sql
+CREATE TABLE auth_password_credentials (
+  account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
+  login_id_normalized TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  password_hash_algorithm TEXT NOT NULL,
+  password_hash_params_json TEXT NOT NULL,
+  password_updated_at INTEGER NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+```
+
+If Workers runtime/package constraints block Argon2id, stop and report a
+decision gate rather than weakening storage silently. PBKDF2-HMAC-SHA-256 using
+WebCrypto is a possible compatibility fallback, but its iteration count and
+latency must be measured before launch approval.
+
+## Google Link Baseline
+
+Current Google rules remain:
+
+- provider is `GOOGLE`
+- provider subject is Google `sub`
+- same account link is `ALREADY_LINKED`
+- unused provider is `LINKED`
+- provider owned by another account returns `google_identity_already_linked`
+- automatic account merge is not available
+
+Future conflict preview/confirm can generalize Google and login ID conflicts,
+but the existing Google route should not silently switch accounts.
+
+## Conflict Preview / Confirm Candidate
+
+When the current guest tries to link a login ID or Google identity that already
+belongs to another account, the server must not merge accounts or overwrite
+either account.
+
+Candidate endpoints:
+
+```text
+POST /v1/auth/account-switch/preview
+POST /v1/auth/account-switch/confirm
+```
+
+Preview requires:
+
+- current Bearer auth for the guest/current account
+- provider proof for the target credential
+- no account ID shortcut
+
+Preview response:
+
+```json
+{
+  "accepted": true,
+  "switchStatus": "PREVIEW_READY",
+  "switchRef": "account_switch_...",
+  "expiresAt": "2026-08-26T00:05:00.000Z",
+  "currentAccount": {
+    "displayName": "Guest Commander",
+    "accountType": "GUEST",
+    "storyProgressId": "opn_03_water_stop",
+    "lastLoginAt": "2026-08-26T00:00:00.000Z",
+    "hasRecoveryCredential": false
+  },
+  "targetAccount": {
+    "displayName": "Rail Captain",
+    "accountType": "GOOGLE",
+    "storyProgressId": "opn_06_broken_line",
+    "lastLoginAt": "2026-08-20T00:00:00.000Z",
+    "hasRecoveryCredential": true
+  },
+  "mergeAvailable": false,
+  "allowedActions": ["KEEP_CURRENT", "SWITCH_TO_TARGET"],
+  "warningCode": "guest_without_recovery_may_be_lost",
+  "errorCode": null,
+  "message": null
+}
+```
+
+Confirm request:
+
+```json
+{
+  "switchRef": "account_switch_...",
+  "action": "SWITCH_TO_TARGET"
+}
+```
+
+Confirm success returns:
+
+```json
+{
+  "accepted": true,
+  "switchStatus": "ACCOUNT_SWITCHED",
+  "tokenType": "Bearer",
+  "account": {
+    "id": "account_...",
+    "status": "ACTIVE"
+  },
+  "accessToken": "lst1...",
+  "accessTokenExpiresAt": "2026-08-26T00:15:00.000Z",
+  "refreshToken": "refresh_...",
+  "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z",
+  "errorCode": null,
+  "message": null
+}
+```
+
+`KEEP_CURRENT` cancels the switch and preserves the current guest session.
+`SWITCH_TO_TARGET` creates a new target-account session; Unity must replace the
+securely stored refresh token only after the new token bundle is durably stored.
+
+## Conflict Safety Rules
+
+- Progress comparison is shown only after successful target credential proof.
+- Safe summary must not expose raw `accountId`, full inventory, ledger detail,
+  raw tokens, password hashes, Google ID tokens, or full Google claims.
+- Progress is never auto-merged, max-selected, copied, or repaired.
+- If both accounts have zero progress, the provider-owned-by-other-account case
+  is still a conflict.
+- Preview refs are short-lived and bound to current account, target provider,
+  intended action, and snapshot revision.
+- Stale refs, replayed confirms, different provider proofs, or changed target
+  identity revisions return stable rejection.
+- Combat, reward claim, run finish, gacha pull, or offline reward claim in
+  progress should block account switching until the transaction is complete.
+- Timeout/cancel keeps the existing guest session.
+- Keystore save failure after confirm is a client persistence failure; Unity
+  should keep the previous session available until it can safely retry or ask
+  the player to sign in again. The server must not create another guest.
+
+Candidate error codes:
+
+- `login_id_taken`
+- `login_id_invalid`
+- `password_invalid`
+- `password_auth_failed`
+- `password_auth_unavailable`
+- `auth_identity_conflict`
+- `account_switch_preview_required`
+- `account_switch_ref_expired`
+- `account_switch_ref_invalid`
+- `account_switch_revision_conflict`
+- `account_switch_blocked_by_active_transaction`
+- `guest_recovery_missing`
+
+## Recovery / Consent Decision Queue
+
+Not finalized:
+
+- Password recovery by verified email.
+- Recovery through an already-linked Google/password credential only.
+- Whether email is required at ID/password registration.
+- Terms/privacy consent storage and minimum signup-complete gate.
+- Whether account switch requires re-authentication immediately before confirm.
+
+Do not claim the ID/password system is production-ready until these gates are
+resolved.
+
+## Unity Contract Notes
+
+Unity may implement local UI/state for:
+
+- guest restore first
+- login selection
+- link status display
+- conflict preview display
+- keep-current vs switch-to-target confirmation
+- secure session owner replacement after successful confirm
+
+Unity must not:
+
+- generate account IDs
+- infer signup completion from nickname alone
+- merge accounts
+- calculate story/reward/economy state
+- store raw passwords or Google ID tokens long-term
+- replace the active local session from preview alone
