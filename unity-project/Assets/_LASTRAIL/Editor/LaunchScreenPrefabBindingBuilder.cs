@@ -763,7 +763,7 @@ namespace LastRail.Editor
                 Place(objective, -244f, 404f, 390f, 52f);
             Place(unitRefs, 0f, 70f, 430f, 48f);
             Place(cueRefs, 0f, 28f, 430f, 48f);
-                Place(refundHint, -188f, -496f, 480f, 50f);
+                Place(refundHint, 252f, 404f, 320f, 52f);
                 var skillIconSlots = CreateCombatSkillIconSlots(layout.BottomStatusPanel);
 
                 Bind(behaviour,
@@ -783,6 +783,7 @@ namespace LastRail.Editor
                     ("audioCuePlayer", audio));
                 BindCombatSkillIconSprites(behaviour, skillIconSlots);
                 BindCombatStatusSprites(behaviour);
+                BindCombatTransitionResources(behaviour);
                 SavePrefab(root, "FullyAnimatedCombatHud");
             }
             finally
@@ -812,6 +813,24 @@ namespace LastRail.Editor
                 EnsureSpriteImporter(path);
                 sprites.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(path);
             }
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void BindCombatTransitionResources(FullyAnimatedCombatHudRootBehaviour behaviour)
+        {
+            var serialized = new SerializedObject(behaviour);
+            var sprites = serialized.FindProperty("transitionSprites");
+            sprites.arraySize = CombatTransitionResourceCatalog.SpritePaths.Count;
+            for (var i = 0; i < sprites.arraySize; i++)
+            {
+                var path = CombatTransitionResourceCatalog.SpritePaths[i];
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                sprites.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            }
+            var clips = serialized.FindProperty("transitionClips");
+            clips.arraySize = CombatTransitionResourceCatalog.AudioPaths.Count;
+            for (var i = 0; i < clips.arraySize; i++)
+                clips.GetArrayElementAtIndex(i).objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>(CombatTransitionResourceCatalog.AudioPaths[i]);
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 

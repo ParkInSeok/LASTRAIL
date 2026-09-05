@@ -261,8 +261,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -188, y: -496}
-  m_SizeDelta: {x: 480, y: 50}
+  m_AnchoredPosition: {x: 252, y: 404}
+  m_SizeDelta: {x: 320, y: 52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8569246034885831735
 CanvasRenderer:
@@ -1969,6 +1969,17 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 32e67a381c104b1b803d89b348783359, type: 3}
   - {fileID: 21300000, guid: 58aade6d9163b3844b3aec2acf48a327, type: 3}
   - {fileID: 21300000, guid: 5e91cf8db9a2dda40ae7ed4777143cb1, type: 3}
+  transitionSprites:
+  - {fileID: 21300000, guid: e719fa1d9a449414b92663a4b138dfbf, type: 3}
+  - {fileID: 21300000, guid: 10356421e3502294785b1f644502746d, type: 3}
+  - {fileID: 21300000, guid: 995efe9f90dbc0a4badfdf61012260cd, type: 3}
+  - {fileID: 21300000, guid: a0be6c60091079342aa514c8665cac0f, type: 3}
+  - {fileID: 21300000, guid: da3508e9958688543b7a36a6e38f1fc3, type: 3}
+  - {fileID: 21300000, guid: e57c5a9192684470bcf95653f7e92e2e, type: 3}
+  - {fileID: 21300000, guid: c87e708bcb9f4a149b8bcab5cf9b9a0a, type: 3}
+  transitionClips:
+  - {fileID: 8300000, guid: 898ac5a9127e53f458f156e10e991d2f, type: 3}
+  - {fileID: 8300000, guid: 8f40af5fde6c5a344b110f7a74bf0292, type: 3}
 --- !u!82 &7903665231409311324
 AudioSource:
   m_ObjectHideFlags: 0

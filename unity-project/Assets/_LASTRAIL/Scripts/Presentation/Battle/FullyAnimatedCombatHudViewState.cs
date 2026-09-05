@@ -32,6 +32,8 @@ namespace LastRail.Presentation.Battle
 
             Surface = hudPolicy.Surface;
             EncounterType = combatState.EncounterType;
+            CurrentWaveNumber = combatState.CurrentWaveNumber;
+            BossPhase = combatState.BossPhase;
             MissionId = combatState.MissionId;
             EncounterTitle = combatState.EncounterType == RunEncounterType.RaidBoss ? "스토리 레이드 보스전" : "15공세 작전";
             WaveCounterLabel = combatState.EncounterType == RunEncounterType.Ordinary15Wave
@@ -75,6 +77,8 @@ namespace LastRail.Presentation.Battle
 
         public MobileCombatHudSurface Surface { get; }
         public RunEncounterType EncounterType { get; }
+        public int CurrentWaveNumber { get; }
+        public int? BossPhase { get; }
         public string MissionId { get; }
         public string EncounterTitle { get; }
         public string WaveCounterLabel { get; }

@@ -114,3 +114,22 @@ Status: VERIFIED PRESENTATION-CUE HUD; missing gameplay-state fields remain expl
 - Screenshots: `QA/Act1Launch/Screenshots/CombatStatus/fixture_combat_{heal,buff,debuff}_{360,1080}.png`. These are explicit presentation-cue fixtures through the real HUD consumer, not proof of a new gameplay event producer.
 - Initial license error 198 resolved on the final graphics batchmode retry; it is no longer a verification blocker.
 - Remaining data gaps: persistent shield/heal/buff/debuff state and magnitude, cooldown remaining/total, authoritative availability, selected target id/position. No local timer or guessed state was added.
+
+---
+
+2026-09-05 combat transition presentation
+
+Status: VERIFIED ADJACENT-SNAPSHOT TRANSITION CONSUMER; unavailable event types remain art-only.
+
+- New art: victory/defeat, 2 x 1024x512 bitmap resources with original 1254x1254 two-row atlas retained. No baked words/numbers. Reused 5 art resources (common frame, wave badge, warning strip, boss-phase VFX, boss entrance key visual) and 2 existing audio clips.
+- Real HUD consumer: typed `CurrentWaveNumber`/`BossPhase` copied from existing combat presentation state to HUD ViewState, observed by `CombatHudTransitionTracker`, shown by `CombatHudTransitionView` from `FullyAnimatedCombatHudRootBehaviour.Render`.
+- Connected: observed ordinary wave N -> N+1 and same-boss phase N -> N+1. Existing cue fields identify presets, not event ids. Initial load, repeated Render, changed context, skipped values and rollback do not synthesize transitions. A high-water mark suppresses replay of already observed progress.
+- Missing: wave completion, enemy invasion, boss entrance, victory and defeat events in HUD state. Their art is prepared/bound but no gameplay event or outcome is fabricated. Existing source factory callers are QA fixtures; screenshots are explicitly labelled adjacent-snapshot fixtures, not proof of a new gameplay producer.
+- No run instance/event id in this presentation contract: tracking is scoped to the visible mission/encounter/boss context, not durable cross-run event deduplication.
+- 1.4-second cosmetic fade, no raycast blocking, dedicated reused-clip audio source. Cancel/expiry/OnDisable clears text/opacity/audio; reentry establishes a silent baseline. No gameplay timer/calculation.
+- Transition band occupies the gap above the tactical objective area. Existing raid fuel-protection hint moved to the right side of the objective band to remove its overlap with skill icons; no refund rule changed.
+- PASS: `TestResults-CombatTransition-Final.xml`, 11/11 focused tests. Real Play Mode entry/exit checks repeated Render, cancellation, expiration, screen disable/reentry and duplicate audio dispatch. Graphics batchmode, no `-quit` on runTests.
+- PASS: final combined transition/status/prefab/presenter regression `TestResults-CombatTransition-Verified.xml`, 46/46. `Unity-CombatTransition-Verified.log` records exit 0. The portrait row-count heuristic was adjusted for the intentional shared objective/hint row; actual label and skill-icon bounds are checked for overlap instead.
+- PASS: four actual `Camera.Render` snapshots at 1080x1920 and 360x640 under `QA/Act1Launch/Screenshots/CombatTransitions/fixture_{wave_start,boss_phase}_{1080,360}.png`. No synthetic composite fallback. TMP overflow and overlap with character/skill/background bounds checked; wave and phase screenshots visually inspected.
+- Manifest: `Assets/_LASTRAIL/UI/Style/lastrail-combat-transition-resources.json`.
+- Preserved `1dd4fd7`/`e11430b`, train backgrounds, left 3/2 ally formation and right enemies, unrelated dirty files. No per-operator ultimate definitions, server/admin/narrative/API/economy/outcome calculation or video work.

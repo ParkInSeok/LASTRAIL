@@ -28,6 +28,10 @@ namespace LastRail.Presentation.Battle
         [SerializeField] private LastRailAudioCuePlayer audioCuePlayer;
         [SerializeField] private Sprite[] statusIconSprites = new Sprite[0];
         private CombatStatusHudView statusHud;
+        [SerializeField] private Sprite[] transitionSprites = new Sprite[0];
+        [SerializeField] private AudioClip[] transitionClips = new AudioClip[0];
+        private readonly CombatHudTransitionTracker transitionTracker = new CombatHudTransitionTracker();
+        private CombatHudTransitionView transitionView;
 
         public FullyAnimatedCombatHudViewState CurrentState { get; private set; }
 
@@ -53,6 +57,31 @@ namespace LastRail.Presentation.Battle
                 if (statusHud == null) statusHud = new CombatStatusHudView(interiorBoardingCombatLane, cueRefsText, statusIconSprites);
                 statusHud.Render(state.StatusCueIds);
             }
+            RenderTransition(state);
+        }
+
+        public void CancelCombatTransition() => transitionView?.Cancel();
+
+        private void OnDisable()
+        {
+            CancelCombatTransition();
+            transitionTracker.Reset();
+        }
+
+        private void RenderTransition(FullyAnimatedCombatHudViewState state)
+        {
+            if (!isActiveAndEnabled || safeAreaRoot == null)
+            {
+                CancelCombatTransition();
+                transitionTracker.Reset();
+                return;
+            }
+            var transition = transitionTracker.Observe(state);
+            if (transitionTracker.RequiresClear) CancelCombatTransition();
+            if (transition == null) return;
+            if (transitionView == null)
+                transitionView = CombatHudTransitionView.Create(safeAreaRoot, cueRefsText, transitionSprites, transitionClips);
+            transitionView.Show(transition);
         }
 
         public void PlayHitCue()

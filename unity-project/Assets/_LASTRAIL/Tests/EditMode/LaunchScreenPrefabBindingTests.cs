@@ -483,7 +483,8 @@ namespace LastRail.Tests.EditMode
         {
             AssertReadableTextSlotsAreDistributed("MissionShellScreen.prefab", 4);
             AssertReadableTextSlotsAreDistributed("GachaScreen.prefab", 7);
-            AssertReadableTextSlotsAreDistributed("FullyAnimatedCombatHud.prefab", 6);
+            // Objective and raid hint share one row; transition QA checks their actual bounds.
+            AssertReadableTextSlotsAreDistributed("FullyAnimatedCombatHud.prefab", 5);
             AssertReadableTextSlotsAreDistributed("CodexArchiveScreen.prefab", 4);
             AssertReadableTextSlotsAreDistributed("RewardReviewScreen.prefab", 5);
             AssertReadableTextSlotsAreDistributed("OfflineRewardScreen.prefab", 5);
