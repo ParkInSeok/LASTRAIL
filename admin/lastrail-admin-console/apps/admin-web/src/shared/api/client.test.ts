@@ -38,6 +38,44 @@ describe("admin web API client", () => {
     });
   });
 
+  it("posts version export requests through the Admin API proxy without exposing R2 credentials", async () => {
+    const fetchSpy = vi.fn(async () =>
+      Response.json({
+        accepted: true,
+        version: "act1.2026-09-05.001",
+        versionCode: 100,
+        target: "dev",
+        exportedAt: "2026-09-05T15:10:00.000Z"
+      })
+    );
+    vi.stubGlobal("fetch", fetchSpy);
+
+    const result = await adminApi.exportVersionToR2({
+      version: "act1.2026-09-05.001",
+      versionCode: "100"
+    });
+
+    expect(result).toEqual({
+      accepted: true,
+      version: "act1.2026-09-05.001",
+      versionCode: "100",
+      status: "내보내기 완료"
+    });
+    expect(fetchSpy).toHaveBeenCalledWith("/api/versions/export", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        version: "act1.2026-09-05.001",
+        versionCode: "100"
+      })
+    });
+    expect(JSON.stringify(fetchSpy.mock.calls)).not.toContain("r2");
+    expect(JSON.stringify(fetchSpy.mock.calls)).not.toContain("secret");
+  });
+
   it("reads player notes from the account note endpoint", async () => {
     const fetchSpy = vi.fn(async () =>
       Response.json({

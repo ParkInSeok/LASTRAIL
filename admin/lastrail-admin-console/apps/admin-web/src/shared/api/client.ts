@@ -28,6 +28,7 @@ import { mapPlayerLaunchEvidence } from "../players/playerLaunchEvidenceContract
 import { mapPlayerDetailResponse } from "../players/playerDetailContract";
 import { mapRunDetailResponse } from "../runs/runDetailContract";
 import { mapRunLaunchEvidence } from "../runs/runLaunchEvidenceContract";
+import { mapVersionExportResult, type VersionExportRequest } from "../release/releaseManagementContract";
 
 import {
   mapStoryProgressDetailResponse,
@@ -173,6 +174,9 @@ function queryString(filters: Record<string, string | undefined>): string {
 export const adminApi = {
   async bootstrap() {
     return BootstrapResponseSchema.parse(await readJson("/api/bootstrap"));
+  },
+  async exportVersionToR2(request: VersionExportRequest) {
+    return mapVersionExportResult(await writeJson("/api/versions/export", request), request);
   },
   async dashboardLaunchSummary() {
     return mapDashboardLaunchSummaryResponse(await readJson("/api/dashboard/launch-summary"));

@@ -362,14 +362,14 @@ export function buildReleaseManagementSnapshot(): ReleaseManagementSnapshot {
 }
 
 export type SimpleVersionManagementCard = {
-  code: "currentServer" | "currentVersion";
+  code: "currentServer" | "currentVersion" | "currentVersionCode";
   label: string;
   value: string;
   note: string;
 };
 
 export type SimpleVersionInputField = {
-  key: "targetVersion";
+  key: "targetVersion" | "targetVersionCode";
   label: string;
   value: string;
   placeholder: string;
@@ -378,9 +378,21 @@ export type SimpleVersionInputField = {
 export type SimpleVersionExportAction = {
   code: "export_version_to_r2";
   label: string;
-  enabled: false;
-  status: "R2 내보내기 API 대기";
+  enabled: true;
+  status: "입력 후 내보내기 가능";
   note: string;
+};
+
+export type VersionExportRequest = {
+  version: string;
+  versionCode: string;
+};
+
+export type VersionExportResult = {
+  accepted: boolean;
+  version: string;
+  versionCode: string;
+  status: string;
 };
 
 export type SimpleVersionManagementSnapshot = {
@@ -401,23 +413,35 @@ export const simpleVersionServerCards: SimpleVersionManagementCard[] = [
     label: "현재 버전",
     value: "조회 API 대기",
     note: "현재 버전을 읽는 서버 endpoint가 열리면 실제 값으로 교체합니다."
+  },
+  {
+    code: "currentVersionCode",
+    label: "현재 버전코드",
+    value: "조회 API 대기",
+    note: "현재 versionCode를 읽는 서버 endpoint가 열리면 실제 값으로 교체합니다."
   }
 ];
 
 export const simpleVersionInputFields: SimpleVersionInputField[] = [
   {
     key: "targetVersion",
-    label: "변경할 버전",
+    label: "배포할 버전",
     value: "",
     placeholder: "예: act1.2026-09-05.001"
+  },
+  {
+    key: "targetVersionCode",
+    label: "배포할 버전코드",
+    value: "",
+    placeholder: "예: 100"
   }
 ];
 
 export const simpleVersionExportAction: SimpleVersionExportAction = {
   code: "export_version_to_r2",
   label: "내보내기",
-  enabled: false,
-  status: "R2 내보내기 API 대기",
+  enabled: true,
+  status: "입력 후 내보내기 가능",
   note: "입력한 버전을 서버 내보내기 API가 검증한 뒤 R2 current version JSON에 갱신합니다."
 };
 
@@ -426,5 +450,23 @@ export function buildSimpleVersionManagementSnapshot(): SimpleVersionManagementS
     serverCards: simpleVersionServerCards,
     inputFields: simpleVersionInputFields,
     exportAction: simpleVersionExportAction
+  };
+}
+
+function readString(value: unknown, fallback = ""): string {
+  return typeof value === "string" && value.trim() ? value : fallback;
+}
+
+function record(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+}
+
+export function mapVersionExportResult(raw: unknown, request: VersionExportRequest): VersionExportResult {
+  const response = record(raw);
+  return {
+    accepted: response.accepted === true,
+    version: readString(response.version, request.version),
+    versionCode: readString(response.versionCode, request.versionCode),
+    status: response.accepted === true ? "내보내기 완료" : readString(response.status, "내보내기 결과 확인 필요")
   };
 }
