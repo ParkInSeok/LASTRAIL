@@ -170,6 +170,17 @@ current-pointer write fails, the runtime remains live and the record must show a
 degraded evidence state until manually reconciled through the approved release
 process.
 
+The local implementation exposes a deployment-history helper that writes the
+immutable history object with an R2 conditional `If-None-Match: *` precondition
+and moves the current pointer with an `If-Match` / `If-None-Match` conditional
+write. A duplicate write with the same sanitized evidence is treated as an
+idempotent replay. A different object at the immutable history key or a stale
+current-pointer etag is a degraded evidence conflict, not a trigger for another
+deploy or a D1 rollback.
+
+The helper is covered with a local fake R2-compatible store. Real R2 writes are
+still a deploy-operation step and require explicit environment approval.
+
 ## Game API Admission
 
 Game API `GET /v1/client-config` evaluates an app build code supplied by the

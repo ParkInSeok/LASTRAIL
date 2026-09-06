@@ -92,6 +92,19 @@ compatibility class, and local regression/dry-run success. This validation is a
 local preflight; it does not create branches, tags, remote resources, secrets,
 or R2 objects by itself.
 
+The local preflight entrypoint is:
+
+```bash
+pnpm preflight:server-deploy -- --plan <plan.json> --service game-api --env prd --history <used-history.json>
+```
+
+Run it once per deployed service before Wrangler dry-run and before actual
+deploy. The optional history file is a sanitized list of prior
+`environment/service/serverVersion` tuples and is used to reject version reuse.
+The command prints only scrubbed release identity and never prints secrets,
+tokens, raw request bodies, Google tokens, RNG material, raw probability tables,
+or R2 credentials.
+
 Remote PRD checks must be value-scrubbed:
 
 ```bash

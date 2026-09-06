@@ -12,6 +12,7 @@
     "d1:dev:seed:balance": "wrangler d1 execute DB --remote --env dev --file packages/db/seeds/dev/0001_balance_config_v1.sql --config apps/game-api/wrangler.jsonc",
     "access:dev:apply-vars": "tsx scripts/cloudflare/apply-dev-admin-access-vars.ts",
     "admin:dev:upsert-principal": "tsx scripts/cloudflare/upsert-dev-admin-principal.ts",
+    "preflight:server-deploy": "tsx scripts/cloudflare/server-deploy-preflight.ts",
     "wrangler:types": "pnpm --filter @lastrail/game-api wrangler types && pnpm --filter @lastrail/admin-api wrangler types && pnpm --filter @lastrail/async-worker wrangler types",
     "dry-run:game-api:dev": "pnpm --filter @lastrail/game-api wrangler deploy --env dev --dry-run",
     "dry-run:admin-api:dev": "pnpm --filter @lastrail/admin-api wrangler deploy --env dev --dry-run",
