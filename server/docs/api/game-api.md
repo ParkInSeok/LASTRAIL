@@ -129,6 +129,10 @@ Security notes:
 - `auth_sessions.refresh_token_hash` stores only a SHA-256 hash.
 - Access token TTL is currently 15 minutes.
 - Guest refresh token/session TTL is currently 30 days.
+- Optional auth `Idempotency-Key` replay also covers same-key concurrent guest
+  creation and refresh rotation. The server collapses the losing request through
+  DB uniqueness plus replay lookup instead of creating a second guest account or
+  marking the refresh family `REUSED`.
 
 ## Profile / Display Name
 

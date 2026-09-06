@@ -1922,6 +1922,52 @@ function parseOptionalIdempotencyKey(c: GameApiContext): string | null | AuthFai
   return idempotencyKey;
 }
 
+function isUniqueConstraintError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes("UNIQUE constraint failed");
+}
+
+async function readGuestReplayRow(db: D1Database, providerSubject: string): Promise<AuthGuestReplayRow | null> {
+  return db.prepare(
+    `SELECT identities.account_id, accounts.status AS account_status,
+            sessions.id AS session_id, sessions.status AS session_status,
+            sessions.expires_at AS session_expires_at,
+            accounts.created_at
+     FROM auth_identities identities
+     JOIN accounts ON accounts.id = identities.account_id
+     JOIN auth_sessions sessions ON sessions.account_id = accounts.id
+     WHERE identities.provider = 'GUEST'
+       AND identities.provider_subject = ?
+     ORDER BY sessions.created_at ASC
+     LIMIT 1`,
+  )
+    .bind(providerSubject)
+    .first<AuthGuestReplayRow>();
+}
+
+async function readRefreshReplaySessionRow(db: D1Database, input: {
+  accountId: string;
+  familyId: string;
+  generation: number;
+  idempotencyKey: string;
+}): Promise<RefreshReplaySessionRow | null> {
+  return db.prepare(
+    `SELECT idem.result_ref, idem.created_at,
+            sessions.account_id, sessions.id AS session_id,
+            sessions.status AS session_status, sessions.expires_at AS session_expires_at,
+            accounts.status AS account_status
+     FROM idempotency_records idem
+     JOIN auth_sessions sessions ON sessions.id = idem.result_ref
+     JOIN accounts ON accounts.id = sessions.account_id
+     WHERE idem.account_id = ?
+       AND idem.operation = 'auth_refresh'
+       AND idem.idempotency_key = ?
+       AND sessions.family_id = ?
+       AND sessions.generation = ?`,
+  )
+    .bind(input.accountId, input.idempotencyKey, input.familyId, input.generation)
+    .first<RefreshReplaySessionRow>();
+}
+
 async function createAuthResponseForSession(options: {
   secret: string;
   accountId: string;
@@ -3177,21 +3223,7 @@ app.post("/v1/auth/guest", async (c) => {
     ? null
     : `auth_guest_create:${await sha256Hex(idempotencyKey)}`;
   if (guestReplayProviderSubject !== null) {
-    const replayRow = await c.env.DB.prepare(
-      `SELECT identities.account_id, accounts.status AS account_status,
-              sessions.id AS session_id, sessions.status AS session_status,
-              sessions.expires_at AS session_expires_at,
-              accounts.created_at
-       FROM auth_identities identities
-       JOIN accounts ON accounts.id = identities.account_id
-       JOIN auth_sessions sessions ON sessions.account_id = accounts.id
-       WHERE identities.provider = 'GUEST'
-         AND identities.provider_subject = ?
-       ORDER BY sessions.created_at ASC
-       LIMIT 1`,
-    )
-      .bind(guestReplayProviderSubject)
-      .first<AuthGuestReplayRow>();
+    const replayRow = await readGuestReplayRow(c.env.DB, guestReplayProviderSubject);
     if (replayRow !== null) {
       if (replayRow.account_status !== "ACTIVE") {
         return c.json(createAuthError("account_not_active", "Account is not active."), 403);
@@ -3236,44 +3268,73 @@ app.post("/v1/auth/guest", async (c) => {
     ttlMs: accessTokenTtlMs,
   });
 
-  await c.env.DB.batch([
-    c.env.DB.prepare(
-      `INSERT INTO accounts (id, status, created_at, updated_at)
-       VALUES (?, 'ACTIVE', ?, ?)`,
-    ).bind(accountId, now, now),
-    c.env.DB.prepare(
-      `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
-       VALUES (?, ?, 'GUEST', ?, ?)`,
-    ).bind(identityId, accountId, providerSubject, now),
-    c.env.DB.prepare(
-      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
-       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
-    ).bind(sessionId, accountId, refreshTokenHash, familyId, now, refreshTokenExpiresAt),
-    c.env.DB.prepare(
-      `INSERT INTO player_profiles (account_id, display_name, commander_xp, created_at, updated_at)
-       VALUES (?, NULL, 0, ?, ?)`,
-    ).bind(accountId, now, now),
-    c.env.DB.prepare(
-      `INSERT INTO account_runtime_state (account_id, protection_mode, maintenance_until, updated_at)
-       VALUES (?, 'NORMAL', NULL, ?)`,
-    ).bind(accountId, now),
-    c.env.DB.prepare(
-      `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
-       VALUES (?, 'NOT_STARTED', NULL, ?)`,
-    ).bind(accountId, now),
-    c.env.DB.prepare(
-      `INSERT INTO account_offline_reward_state (
-         account_id, last_offline_reward_claim_at, last_story_progress_id,
-         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
-       ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
-    ).bind(accountId, now, "none", actOneNarrativeVersion, now),
-    ...(idempotencyKey === null ? [] : [
+  try {
+    await c.env.DB.batch([
       c.env.DB.prepare(
-        `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
-         VALUES (?, ?, ?, 'auth_guest_create', ?, ?)`,
-      ).bind(createDomainId("idem"), accountId, idempotencyKey, sessionId, now),
-    ]),
-  ]);
+        `INSERT INTO accounts (id, status, created_at, updated_at)
+         VALUES (?, 'ACTIVE', ?, ?)`,
+      ).bind(accountId, now, now),
+      c.env.DB.prepare(
+        `INSERT INTO auth_identities (id, account_id, provider, provider_subject, linked_at)
+         VALUES (?, ?, 'GUEST', ?, ?)`,
+      ).bind(identityId, accountId, providerSubject, now),
+      c.env.DB.prepare(
+        `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+         VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+      ).bind(sessionId, accountId, refreshTokenHash, familyId, now, refreshTokenExpiresAt),
+      c.env.DB.prepare(
+        `INSERT INTO player_profiles (account_id, display_name, commander_xp, created_at, updated_at)
+         VALUES (?, NULL, 0, ?, ?)`,
+      ).bind(accountId, now, now),
+      c.env.DB.prepare(
+        `INSERT INTO account_runtime_state (account_id, protection_mode, maintenance_until, updated_at)
+         VALUES (?, 'NORMAL', NULL, ?)`,
+      ).bind(accountId, now),
+      c.env.DB.prepare(
+        `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
+         VALUES (?, 'NOT_STARTED', NULL, ?)`,
+      ).bind(accountId, now),
+      c.env.DB.prepare(
+        `INSERT INTO account_offline_reward_state (
+           account_id, last_offline_reward_claim_at, last_story_progress_id,
+           last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+         ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
+      ).bind(accountId, now, "none", actOneNarrativeVersion, now),
+      ...(idempotencyKey === null ? [] : [
+        c.env.DB.prepare(
+          `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+           VALUES (?, ?, ?, 'auth_guest_create', ?, ?)`,
+        ).bind(createDomainId("idem"), accountId, idempotencyKey, sessionId, now),
+      ]),
+    ]);
+  } catch (error) {
+    if (!isUniqueConstraintError(error) || guestReplayProviderSubject === null) {
+      throw error;
+    }
+    const replayRow = await readGuestReplayRow(c.env.DB, guestReplayProviderSubject);
+    if (replayRow === null) {
+      throw error;
+    }
+    if (replayRow.account_status !== "ACTIVE") {
+      return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+    }
+    if (replayRow.session_status !== "ACTIVE" || replayRow.session_expires_at <= now) {
+      return c.json(createAuthError("auth_replay_expired", "Auth replay window is expired."), 401);
+    }
+    const replayRefreshToken = await createReplaySafeRefreshToken(
+      secret,
+      "auth_guest_create",
+      `${guestReplayProviderSubject}:${replayRow.account_id}:${replayRow.session_id}`,
+    );
+    return c.json(await createAuthResponseForSession({
+      secret,
+      accountId: replayRow.account_id,
+      sessionId: replayRow.session_id,
+      refreshToken: replayRefreshToken,
+      refreshTokenExpiresAt: replayRow.session_expires_at,
+      now,
+    }));
+  }
 
   return c.json({
     tokenType: "Bearer",
@@ -3485,22 +3546,12 @@ app.post("/v1/auth/refresh", async (c) => {
   const now = Date.now();
   if (row.session_status === "ROTATED") {
     if (idempotencyKey !== null) {
-      const replayRow = await c.env.DB.prepare(
-        `SELECT idem.result_ref, idem.created_at,
-                sessions.account_id, sessions.id AS session_id,
-                sessions.status AS session_status, sessions.expires_at AS session_expires_at,
-                accounts.status AS account_status
-         FROM idempotency_records idem
-         JOIN auth_sessions sessions ON sessions.id = idem.result_ref
-         JOIN accounts ON accounts.id = sessions.account_id
-         WHERE idem.account_id = ?
-           AND idem.operation = 'auth_refresh'
-           AND idem.idempotency_key = ?
-           AND sessions.family_id = ?
-           AND sessions.generation = ?`,
-      )
-        .bind(row.account_id, idempotencyKey, row.family_id, row.generation + 1)
-        .first<RefreshReplaySessionRow>();
+      const replayRow = await readRefreshReplaySessionRow(c.env.DB, {
+        accountId: row.account_id,
+        familyId: row.family_id,
+        generation: row.generation + 1,
+        idempotencyKey,
+      });
       if (replayRow !== null) {
         if (replayRow.account_status !== "ACTIVE") {
           return c.json(createAuthError("account_not_active", "Account is not active."), 403);
@@ -3570,23 +3621,57 @@ app.post("/v1/auth/refresh", async (c) => {
     ttlMs: accessTokenTtlMs,
   });
 
-  await c.env.DB.batch([
-    c.env.DB.prepare(
-      `UPDATE auth_sessions
-       SET status = 'ROTATED', rotated_at = ?
-       WHERE id = ? AND status = 'ACTIVE'`,
-    ).bind(now, row.session_id),
-    c.env.DB.prepare(
-      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
-       VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, ?, NULL)`,
-    ).bind(newSessionId, row.account_id, newRefreshTokenHash, row.family_id, row.generation + 1, now, refreshTokenExpiresAt),
-    ...(idempotencyKey === null ? [] : [
+  try {
+    await c.env.DB.batch([
       c.env.DB.prepare(
-        `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
-         VALUES (?, ?, ?, 'auth_refresh', ?, ?)`,
-      ).bind(createDomainId("idem"), row.account_id, idempotencyKey, newSessionId, now),
-    ]),
-  ]);
+        `UPDATE auth_sessions
+         SET status = 'ROTATED', rotated_at = ?
+         WHERE id = ? AND status = 'ACTIVE'`,
+      ).bind(now, row.session_id),
+      c.env.DB.prepare(
+        `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+         VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, ?, NULL)`,
+      ).bind(newSessionId, row.account_id, newRefreshTokenHash, row.family_id, row.generation + 1, now, refreshTokenExpiresAt),
+      ...(idempotencyKey === null ? [] : [
+        c.env.DB.prepare(
+          `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+           VALUES (?, ?, ?, 'auth_refresh', ?, ?)`,
+        ).bind(createDomainId("idem"), row.account_id, idempotencyKey, newSessionId, now),
+      ]),
+    ]);
+  } catch (error) {
+    if (!isUniqueConstraintError(error) || idempotencyKey === null) {
+      throw error;
+    }
+    const replayRow = await readRefreshReplaySessionRow(c.env.DB, {
+      accountId: row.account_id,
+      familyId: row.family_id,
+      generation: row.generation + 1,
+      idempotencyKey,
+    });
+    if (replayRow === null) {
+      throw error;
+    }
+    if (replayRow.account_status !== "ACTIVE") {
+      return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+    }
+    if (replayRow.session_status !== "ACTIVE" || replayRow.session_expires_at <= now) {
+      return c.json(createAuthError("auth_replay_expired", "Auth replay window is expired."), 401);
+    }
+    const replayRefreshToken = await createReplaySafeRefreshToken(
+      secret,
+      "auth_refresh",
+      `${row.refresh_token_hash}:${idempotencyKey}:${replayRow.session_id}`,
+    );
+    return c.json(await createAuthResponseForSession({
+      secret,
+      accountId: replayRow.account_id,
+      sessionId: replayRow.session_id,
+      refreshToken: replayRefreshToken,
+      refreshTokenExpiresAt: replayRow.session_expires_at,
+      now,
+    }));
+  }
 
   return c.json({
     tokenType: "Bearer",

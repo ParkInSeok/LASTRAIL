@@ -143,6 +143,37 @@ describe("game-api auth response-loss replay local D1 smoke", () => {
     }
   });
 
+  it("collapses concurrent same-key guest creation into one account and one session", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const createRequest = () => ({
+        method: "POST",
+        headers: { "Idempotency-Key": "auth-guest-create-concurrent-key-1" },
+      });
+
+      const [firstResponse, secondResponse] = await Promise.all([
+        app.request("/v1/auth/guest", createRequest(), env),
+        app.request("/v1/auth/guest", createRequest(), env),
+      ]);
+
+      expect(firstResponse.status).toBe(200);
+      expect(secondResponse.status).toBe(200);
+      const first = await firstResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
+      const second = await secondResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
+      expect(second.account.id).toBe(first.account.id);
+      expect(second.accessToken).toBe(first.accessToken);
+      expect(second.refreshToken).toBe(first.refreshToken);
+      expect(scalar(db, "SELECT COUNT(*) FROM accounts;")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions;")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'auth_guest_create';")).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("does not reissue a guest replay bundle after the replay session expired", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(fixedNow);
@@ -193,6 +224,41 @@ describe("game-api auth response-loss replay local D1 smoke", () => {
       const first = await firstResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
       const second = await secondResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
       expect(second.account.id).toBe(guest.account.id);
+      expect(second.accessToken).toBe(first.accessToken);
+      expect(second.refreshToken).toBe(first.refreshToken);
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'REUSED';")).toBe(0);
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'ROTATED';")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'ACTIVE';")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'auth_refresh';")).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("collapses concurrent same-key refresh rotation into one active rotated bundle", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const guestResponse = await app.request("/v1/auth/guest", { method: "POST" }, env);
+      const guest = await guestResponse.json() as { account: { id: string }; refreshToken: string };
+      const createRequest = () => ({
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Idempotency-Key": "auth-refresh-concurrent-key-1" },
+        body: JSON.stringify({ refreshToken: guest.refreshToken }),
+      });
+
+      const [firstResponse, secondResponse] = await Promise.all([
+        app.request("/v1/auth/refresh", createRequest(), env),
+        app.request("/v1/auth/refresh", createRequest(), env),
+      ]);
+
+      expect(firstResponse.status).toBe(200);
+      expect(secondResponse.status).toBe(200);
+      const first = await firstResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
+      const second = await secondResponse.json() as { account: { id: string }; accessToken: string; refreshToken: string };
+      expect(first.account.id).toBe(guest.account.id);
       expect(second.accessToken).toBe(first.accessToken);
       expect(second.refreshToken).toBe(first.refreshToken);
       expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'REUSED';")).toBe(0);

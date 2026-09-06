@@ -74,10 +74,15 @@ Launch response-loss boundary:
   `Idempotency-Key`. When supplied, same-key retry returns the same guest account
   and token bundle instead of creating another guest. Without the header, guest
   creation remains a new-account request.
+- Concurrent same-key guest creation is collapsed by the provider-subject
+  uniqueness guard plus replay lookup, so only one account/session is committed.
 - `POST /v1/auth/refresh` accepts an optional client-generated
   `Idempotency-Key`. When the original rotation committed but the client lost
   the response, retrying the same old refresh token with the same key can recover
   the rotated token bundle without marking the refresh family `REUSED`.
+- Concurrent same-key refresh rotation is collapsed by the session generation
+  uniqueness guard plus replay lookup, so the token family is not marked
+  `REUSED` by the losing request.
 - Unity must still not create a new guest automatically for timeout, offline,
   cancelled request, 5xx, or unknown response state. Store and reuse the same
   high-entropy idempotency key until the token bundle is durably persisted.
