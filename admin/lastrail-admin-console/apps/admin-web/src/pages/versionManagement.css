@@ -1,0 +1,10 @@
+.version-tabs { display: flex; gap: 24px; border-bottom: 1px solid #cbd3dc; margin: 16px 0 24px; }
+.version-tabs a { padding: 10px 4px; text-decoration: none; color: #64717e; border-bottom: 3px solid transparent; }
+.version-tabs a[aria-current="page"] { color: #126675; border-color: #126675; font-weight: 600; }
+.version-tabs a:focus-visible { outline: 2px solid #126675; }
+.version-policy { margin: 16px 0 24px; }
+.version-policy > div { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-bottom: 1px solid #e0e5e9; }
+.version-policy dt { color: #526171; }
+.version-policy dd { margin: 0; overflow-wrap: anywhere; }
+.version-policy-warning { border-left: 3px solid #b47a1a; padding: 10px 12px; background: #fff8e8; color: #685017; }
+@media (max-width: 600px) { .version-policy > div { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
