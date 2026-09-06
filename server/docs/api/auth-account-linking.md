@@ -178,6 +178,21 @@ Password reset start response is account-existence agnostic:
 }
 ```
 
+The reset start HTTP response intentionally does not include `challengeId` or
+any proof, because it must not reveal whether the account exists. The email
+delivery payload contains two separate pieces:
+
+- `challengeId`: non-secret reset reference. It may be embedded in a deep link
+  or shown as a reference code.
+- `verificationCode`: the secret one-use code. It should be typed by the
+  player and must not be placed in app logs, diagnostics, URLs, or query
+  strings.
+
+Recommended Unity UX: open reset confirm from a deep link or pasted reference
+that carries only `challengeId`, then ask the player to enter
+`verificationCode` and the new password. Link click alone does not authenticate,
+does not rotate sessions, and does not complete the reset.
+
 Password reset confirm response does not log the player in and does not return
 tokens:
 

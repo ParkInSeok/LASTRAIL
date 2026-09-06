@@ -338,6 +338,8 @@ describe("game-api password auth and recovery email local D1 smoke", () => {
       });
       expect(messages).toHaveLength(2);
       expect(messages[1]?.purpose).toBe("PASSWORD_RESET");
+      expect(messages[1]?.challengeId).toMatch(/^email_challenge_/u);
+      expect(messages[1]?.verificationCode).toMatch(/^\d{8}$/u);
 
       const resetConfirm = await app.request(
         "/v1/auth/password/reset/confirm",
