@@ -5,7 +5,9 @@ describe("ops log category and search", () => {
     expect(opsLogSearch("frontend", "").clauses).toEqual([
       "json_extract(CASE WHEN json_valid(sanitized_context_json) THEN sanitized_context_json ELSE '{}' END, '$.clientDiagnosticCategory') = 'frontend'",
     ]);
-    expect(opsLogSearch("server", "").clauses).toEqual([]);
+    expect(opsLogSearch("server", "").clauses).toEqual([
+      "COALESCE(json_extract(CASE WHEN json_valid(sanitized_context_json) THEN sanitized_context_json ELSE '{}' END, '$.clientDiagnosticCategory'), '') != 'frontend'",
+    ]);
     expect(() => opsLogSearch("other", "")).toThrow();
   });
 
