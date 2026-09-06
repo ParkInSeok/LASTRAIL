@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest";
 import { mapCurrentVersion } from "./releaseManagementContract";
 
 describe("current version response", () => {
+  it("reads safe policy metadata without treating it as runtime enforcement proof", () => {
+    const result = mapCurrentVersion({server:"DEV",canExport:true,version:"1",versionCode:"1",contentRelease:{releaseId:"r1",contentVersion:"c1",status:"APPROVED",secret:"drop"},admissionPolicy:{status:"CONFIGURED",gameApiEnforcement:"CLIENT_CONFIG_AND_PROTECTED_ROUTES"}});
+    expect(result.contentRelease).toEqual({releaseId:"r1",contentVersion:"c1",status:"APPROVED"});
+    expect(result.admissionPolicy?.status).toBe("CONFIGURED");
+  });
   it("maps minimum policy and rejects a minimum above the current version", () => {
     const base = { server: "DEV", canExport: true, version: "1.0", versionCode: "10" };
     expect(mapCurrentVersion({ ...base, minimumVersionCode: "2" }).minimumVersionCode).toBe("2");

@@ -480,5 +480,10 @@ export function mapCurrentVersion(raw: unknown) {
     throw new Error("Invalid version response");
   }
   if (value.minimumVersionCode != null && (typeof value.minimumVersionCode !== "string" || !/^[1-9]\d{0,9}$/.test(value.minimumVersionCode) || Number(value.minimumVersionCode) > Number(value.versionCode))) throw new Error("Invalid minimum version response");
-  return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null, ...(value.minimumVersionCode != null ? { minimumVersionCode: value.minimumVersionCode as string } : {}) };
+  const content = record(value.contentRelease);
+  const policy = record(value.admissionPolicy);
+  const safe = (source: Record<string, unknown>, key: string) => typeof source[key] === "string" ? source[key] as string : null;
+  return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null, ...(value.minimumVersionCode != null ? { minimumVersionCode: value.minimumVersionCode as string } : {}),
+    ...(value.contentRelease !== undefined ? {contentRelease: value.contentRelease === null ? null : {releaseId:safe(content,"releaseId"),contentVersion:safe(content,"contentVersion"),status:safe(content,"status")}} : {}),
+    ...(value.admissionPolicy !== undefined ? {admissionPolicy: {status:safe(policy,"status"),gameApiEnforcement:safe(policy,"gameApiEnforcement")}} : {}) };
 }
