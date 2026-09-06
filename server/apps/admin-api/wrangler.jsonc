@@ -24,6 +24,7 @@
   "env": {
     "dev": {
       "name": "lastrail-admin-api-dev",
+      "r2_buckets": [{ "binding": "VERSION_BUCKET", "bucket_name": "lastrail-versions-dev" }],
       "workers_dev": false,
       "routes": [{ "pattern": "dev-admin.lastrail.app", "custom_domain": true }],
       "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED", "ADMIN_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0", "ADMIN_DELEGATED_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_DELEGATED_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0" },
