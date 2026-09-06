@@ -81,6 +81,15 @@ Launch response-loss boundary:
 - Unity must still not create a new guest automatically for timeout, offline,
   cancelled request, 5xx, or unknown response state. Store and reuse the same
   high-entropy idempotency key until the token bundle is durably persisted.
+- Auth replay keys shorter than 16 chars or longer than 128 chars are rejected
+  with `contract_violation`. Unity should still generate substantially more
+  entropy than the minimum length implies.
+- Guest replay returns `auth_replay_expired` after the committed session is no
+  longer `ACTIVE` or is past its server expiry. The same key must not create a
+  second guest after expiry.
+- Refresh replay returns `auth_replay_expired` when the committed rotated
+  session is no longer active or is past its server expiry, and this path does
+  not mark the session family `REUSED`.
 - Stable terminal auth responses are explicit `401`/`403` codes such as
   `refresh_token_invalid`, `refresh_session_invalid`, `refresh_token_reused`,
   and `account_not_active`. Network timeout, offline, and generic `5xx` are not
@@ -94,6 +103,8 @@ Remaining client integration gate:
   approval.
 - The server never stores refresh tokens in plaintext and never accepts
   account-id shortcuts as authority.
+- Wider abuse controls, retention windows, and device/account recovery policy
+  remain launch operations decisions.
 
 ## Login ID / Password Candidate Contract
 

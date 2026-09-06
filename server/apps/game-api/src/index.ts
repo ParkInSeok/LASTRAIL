@@ -137,6 +137,7 @@ type AuthGuestReplayRow = {
   account_id: string;
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
   session_id: string;
+  session_status: "ACTIVE" | "ROTATED" | "REUSED" | "REVOKED";
   session_expires_at: number;
   created_at: number;
 };
@@ -275,6 +276,7 @@ type RefreshReplaySessionRow = {
   account_id: string;
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
   session_id: string;
+  session_status: "ACTIVE" | "ROTATED" | "REUSED" | "REVOKED";
   session_expires_at: number;
 };
 
@@ -1911,6 +1913,9 @@ function createRecoveryVerificationResponse(options: {
 function parseOptionalIdempotencyKey(c: GameApiContext): string | null | AuthFailure {
   const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
   if (idempotencyKey === undefined || idempotencyKey.length === 0) return null;
+  if (idempotencyKey.length < 16) {
+    return createAuthFailure(400, "contract_violation", "Idempotency-Key header is too weak.");
+  }
   if (idempotencyKey.length > 128) {
     return createAuthFailure(400, "contract_violation", "Idempotency-Key header is too long.");
   }
@@ -3174,14 +3179,14 @@ app.post("/v1/auth/guest", async (c) => {
   if (guestReplayProviderSubject !== null) {
     const replayRow = await c.env.DB.prepare(
       `SELECT identities.account_id, accounts.status AS account_status,
-              sessions.id AS session_id, sessions.expires_at AS session_expires_at,
+              sessions.id AS session_id, sessions.status AS session_status,
+              sessions.expires_at AS session_expires_at,
               accounts.created_at
        FROM auth_identities identities
        JOIN accounts ON accounts.id = identities.account_id
        JOIN auth_sessions sessions ON sessions.account_id = accounts.id
        WHERE identities.provider = 'GUEST'
          AND identities.provider_subject = ?
-         AND sessions.status = 'ACTIVE'
        ORDER BY sessions.created_at ASC
        LIMIT 1`,
     )
@@ -3190,6 +3195,9 @@ app.post("/v1/auth/guest", async (c) => {
     if (replayRow !== null) {
       if (replayRow.account_status !== "ACTIVE") {
         return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+      }
+      if (replayRow.session_status !== "ACTIVE" || replayRow.session_expires_at <= now) {
+        return c.json(createAuthError("auth_replay_expired", "Auth replay window is expired."), 401);
       }
       const refreshToken = await createReplaySafeRefreshToken(
         secret,
@@ -3480,7 +3488,7 @@ app.post("/v1/auth/refresh", async (c) => {
       const replayRow = await c.env.DB.prepare(
         `SELECT idem.result_ref, idem.created_at,
                 sessions.account_id, sessions.id AS session_id,
-                sessions.expires_at AS session_expires_at,
+                sessions.status AS session_status, sessions.expires_at AS session_expires_at,
                 accounts.status AS account_status
          FROM idempotency_records idem
          JOIN auth_sessions sessions ON sessions.id = idem.result_ref
@@ -3489,14 +3497,16 @@ app.post("/v1/auth/refresh", async (c) => {
            AND idem.operation = 'auth_refresh'
            AND idem.idempotency_key = ?
            AND sessions.family_id = ?
-           AND sessions.generation = ?
-           AND sessions.status = 'ACTIVE'`,
+           AND sessions.generation = ?`,
       )
         .bind(row.account_id, idempotencyKey, row.family_id, row.generation + 1)
         .first<RefreshReplaySessionRow>();
       if (replayRow !== null) {
         if (replayRow.account_status !== "ACTIVE") {
           return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+        }
+        if (replayRow.session_status !== "ACTIVE" || replayRow.session_expires_at <= now) {
+          return c.json(createAuthError("auth_replay_expired", "Auth replay window is expired."), 401);
         }
         const replayRefreshToken = await createReplaySafeRefreshToken(
           secret,

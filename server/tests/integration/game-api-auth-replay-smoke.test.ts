@@ -98,6 +98,22 @@ function scalar(db: initSqlJs.Database, sql: string): number {
 }
 
 describe("game-api auth response-loss replay local D1 smoke", () => {
+  it("rejects weak auth idempotency keys before creating or rotating sessions", async () => {
+    const db = await createMigratedDb();
+    const env = createEnv(db);
+
+    const guestResponse = await app.request(
+      "/v1/auth/guest",
+      { method: "POST", headers: { "Idempotency-Key": "short-key" } },
+      env,
+    );
+    expect(guestResponse.status).toBe(400);
+    expect(await guestResponse.json()).toMatchObject({
+      errorCode: "contract_violation",
+    });
+    expect(scalar(db, "SELECT COUNT(*) FROM accounts;")).toBe(0);
+  });
+
   it("replays guest creation by Idempotency-Key without creating another guest", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(fixedNow);
@@ -122,6 +138,34 @@ describe("game-api auth response-loss replay local D1 smoke", () => {
       expect(scalar(db, "SELECT COUNT(*) FROM accounts;")).toBe(1);
       expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions;")).toBe(1);
       expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'auth_guest_create';")).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not reissue a guest replay bundle after the replay session expired", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const request = {
+        method: "POST",
+        headers: { "Idempotency-Key": "auth-guest-create-replay-expired-key-1" },
+      };
+
+      const firstResponse = await app.request("/v1/auth/guest", request, env);
+      expect(firstResponse.status).toBe(200);
+      db.run("UPDATE auth_sessions SET expires_at = ?;", [fixedNow - 1]);
+
+      const secondResponse = await app.request("/v1/auth/guest", request, env);
+
+      expect(secondResponse.status).toBe(401);
+      expect(await secondResponse.json()).toMatchObject({
+        errorCode: "auth_replay_expired",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM accounts;")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions;")).toBe(1);
     } finally {
       vi.useRealTimers();
     }
@@ -155,6 +199,36 @@ describe("game-api auth response-loss replay local D1 smoke", () => {
       expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'ROTATED';")).toBe(1);
       expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'ACTIVE';")).toBe(1);
       expect(scalar(db, "SELECT COUNT(*) FROM idempotency_records WHERE operation = 'auth_refresh';")).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not mark a refresh family reused when the committed replay session expired", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const guestResponse = await app.request("/v1/auth/guest", { method: "POST" }, env);
+      const guest = await guestResponse.json() as { refreshToken: string };
+      const request = {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Idempotency-Key": "auth-refresh-replay-expired-key-1" },
+        body: JSON.stringify({ refreshToken: guest.refreshToken }),
+      };
+
+      const firstResponse = await app.request("/v1/auth/refresh", request, env);
+      expect(firstResponse.status).toBe(200);
+      db.run("UPDATE auth_sessions SET expires_at = ? WHERE status = 'ACTIVE';", [fixedNow - 1]);
+
+      const secondResponse = await app.request("/v1/auth/refresh", request, env);
+
+      expect(secondResponse.status).toBe(401);
+      expect(await secondResponse.json()).toMatchObject({
+        errorCode: "auth_replay_expired",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_sessions WHERE status = 'REUSED';")).toBe(0);
     } finally {
       vi.useRealTimers();
     }

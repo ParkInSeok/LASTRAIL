@@ -377,6 +377,9 @@ Refresh rules:
 - The idempotency key is a replay secret for the in-flight request and must be
   high entropy, locally persisted only until the token bundle is durably stored,
   and never logged by Unity.
+- Auth idempotency keys shorter than 16 chars or longer than 128 chars return
+  `contract_violation`. A replay whose committed session is inactive or expired
+  returns `auth_replay_expired` and must not revive a revoked/expired session.
 
 ## Client Config
 
