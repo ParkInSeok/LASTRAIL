@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { buildOpsErrorLogInsertEnvelope, createRequestId } from "@lastrail/common";
+import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, sha256Hex } from "@lastrail/common";
 import {
   calculateOfflineRewardPreview,
   calculateRunRewardPreview,
@@ -151,6 +151,27 @@ type LoginBonusClaimRow = {
   reward_transaction_id: string;
   claimed_at: number;
   reward_json: string;
+};
+
+type SupportTicketCategory = "ACCOUNT_LOGIN" | "RUN_REWARD" | "GACHA_RECRUITMENT" | "STORY_PROGRESS" | "BUG_OTHER";
+
+type SupportTicketRow = {
+  id: string;
+  account_id: string;
+  category: SupportTicketCategory;
+  status: "OPEN" | "IN_REVIEW" | "CLOSED";
+  body_text: string;
+  body_preview: string;
+  body_length: number;
+  app_version: string | null;
+  app_version_code: string | null;
+  client_composed_at: number | null;
+  client_submitted_at: number | null;
+  server_received_at: number;
+  idempotency_key: string;
+  request_hash: string;
+  created_at: number;
+  updated_at: number;
 };
 
 type FirstClearRow = {
@@ -383,6 +404,13 @@ const launchLoginBonusRewardLine = {
   quantity: 5,
   source: "LAUNCH_LOGIN_BONUS",
 } as const;
+const supportTicketCategories = new Set<SupportTicketCategory>([
+  "ACCOUNT_LOGIN",
+  "RUN_REWARD",
+  "GACHA_RECRUITMENT",
+  "STORY_PROGRESS",
+  "BUG_OTHER",
+]);
 const runFinishForbiddenRewardFields = new Set([
   "rewardAmount",
   "rewardAmounts",
@@ -469,6 +497,26 @@ function parsePositiveInteger(value: string): number | null {
 
 function toIso(ms: number): string {
   return new Date(ms).toISOString();
+}
+
+function toNullableIso(ms: number | null | undefined): string | null {
+  return ms === null || ms === undefined ? null : toIso(ms);
+}
+
+function normalizeOptionalText(value: unknown, maxLength: number): string | null | "INVALID" {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "string") return "INVALID";
+  const normalized = value.trim();
+  if (normalized.length === 0) return null;
+  if (normalized.length > maxLength) return "INVALID";
+  return normalized;
+}
+
+function parseOptionalIsoMs(value: unknown): number | null | "INVALID" {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "string" || value.trim().length === 0) return "INVALID";
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : "INVALID";
 }
 
 function createDomainId(prefix: string): string {
@@ -1844,6 +1892,69 @@ function createPasswordLinkRejected(errorCode: string, message: string) {
     errorCode,
     message,
   };
+}
+
+function createSupportTicketRejectedResponse(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    ticketStatus: "REJECTED",
+    ticketId: null,
+    category: null,
+    bodyPreview: null,
+    appVersion: null,
+    appVersionCode: null,
+    clientComposedAt: null,
+    clientSubmittedAt: null,
+    serverReceivedAt: null,
+    errorCode,
+    message,
+  };
+}
+
+function supportTicketResponse(row: SupportTicketRow, ticketStatus: "RECEIVED" | "DUPLICATE_REPLAY") {
+  return {
+    accepted: true,
+    ticketStatus,
+    ticketId: row.id,
+    category: row.category,
+    bodyPreview: row.body_preview,
+    appVersion: row.app_version,
+    appVersionCode: row.app_version_code,
+    clientComposedAt: toNullableIso(row.client_composed_at),
+    clientSubmittedAt: toNullableIso(row.client_submitted_at),
+    serverReceivedAt: toIso(row.server_received_at),
+    errorCode: ticketStatus === "DUPLICATE_REPLAY" ? "duplicate_replay" : null,
+    message: ticketStatus === "DUPLICATE_REPLAY" ? "Support ticket was already received." : null,
+  };
+}
+
+function parseSupportTicketCategory(value: unknown): SupportTicketCategory | null {
+  return typeof value === "string" && supportTicketCategories.has(value as SupportTicketCategory)
+    ? value as SupportTicketCategory
+    : null;
+}
+
+function buildSupportTicketPreview(bodyText: string): string {
+  return bodyText.length <= 160 ? bodyText : `${bodyText.slice(0, 157)}...`;
+}
+
+async function buildSupportTicketRequestHash(input: {
+  category: SupportTicketCategory;
+  bodyText: string;
+  appVersion: string | null;
+  appVersionCode: string | null;
+  clientComposedAt: number | null;
+  clientSubmittedAt: number | null;
+}): Promise<string> {
+  const canonical = canonicalJson({
+    category: input.category,
+    bodyText: input.bodyText,
+    appVersion: input.appVersion,
+    appVersionCode: input.appVersionCode,
+    clientComposedAt: input.clientComposedAt,
+    clientSubmittedAt: input.clientSubmittedAt,
+  });
+  return `sha256:${await sha256Hex(canonical)}`;
 }
 
 async function parseJsonObjectBody(c: GameApiContext): Promise<Record<string, unknown> | AuthFailure> {
@@ -3931,6 +4042,129 @@ app.post("/v1/login-bonus/claim", async (c) => {
     errorCode: null,
     message: null,
   });
+});
+
+app.post("/v1/support/tickets", async (c) => {
+  const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
+  if (idempotencyKey === undefined || idempotencyKey.length === 0) {
+    return c.json(createSupportTicketRejectedResponse("contract_violation", "Idempotency-Key header is required."), 400);
+  }
+  if (idempotencyKey.length > 128) {
+    return c.json(createSupportTicketRejectedResponse("contract_violation", "Idempotency-Key header is too long."), 400);
+  }
+
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createSupportTicketRejectedResponse(body.errorCode, body.message), body.status);
+  }
+
+  const category = parseSupportTicketCategory(body.category);
+  const bodyText = normalizeOptionalText(body.body, 2000);
+  const appVersion = normalizeOptionalText(body.appVersion, 64);
+  const appVersionCode = normalizeOptionalText(body.appVersionCode, 19);
+  const clientComposedAt = parseOptionalIsoMs(body.clientComposedAt);
+  const clientSubmittedAt = parseOptionalIsoMs(body.clientSubmittedAt);
+  if (
+    category === null ||
+    bodyText === null ||
+    bodyText === "INVALID" ||
+    bodyText.length < 10 ||
+    appVersion === "INVALID" ||
+    appVersionCode === "INVALID" ||
+    (typeof appVersionCode === "string" && !/^\d{1,19}$/u.test(appVersionCode)) ||
+    clientComposedAt === "INVALID" ||
+    clientSubmittedAt === "INVALID"
+  ) {
+    return c.json(createSupportTicketRejectedResponse(
+      "support_ticket_invalid",
+      "Support ticket category, body, or client metadata is invalid.",
+    ), 400);
+  }
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createSupportTicketRejectedResponse(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const requestHash = await buildSupportTicketRequestHash({
+    category,
+    bodyText,
+    appVersion,
+    appVersionCode,
+    clientComposedAt,
+    clientSubmittedAt,
+  });
+  const existing = await c.env.DB.prepare(
+    `SELECT id, account_id, category, status, body_text, body_preview, body_length,
+            app_version, app_version_code, client_composed_at, client_submitted_at,
+            server_received_at, idempotency_key, request_hash, created_at, updated_at
+     FROM support_tickets
+     WHERE account_id = ? AND idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<SupportTicketRow>();
+  if (existing !== null) {
+    if (existing.request_hash !== requestHash) {
+      return c.json(createSupportTicketRejectedResponse(
+        "idempotency_conflict",
+        "Idempotency-Key was already used for a different support ticket request.",
+      ), 409);
+    }
+    return c.json(supportTicketResponse(existing, "DUPLICATE_REPLAY"));
+  }
+
+  const now = Date.now();
+  const ticketId = createDomainId("support_ticket");
+  const row: SupportTicketRow = {
+    id: ticketId,
+    account_id: authContext.accountId,
+    category,
+    status: "OPEN",
+    body_text: bodyText,
+    body_preview: buildSupportTicketPreview(bodyText),
+    body_length: bodyText.length,
+    app_version: appVersion,
+    app_version_code: appVersionCode,
+    client_composed_at: clientComposedAt,
+    client_submitted_at: clientSubmittedAt,
+    server_received_at: now,
+    idempotency_key: idempotencyKey,
+    request_hash: requestHash,
+    created_at: now,
+    updated_at: now,
+  };
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO support_tickets (
+         id, account_id, category, status, body_text, body_preview, body_length,
+         app_version, app_version_code, client_composed_at, client_submitted_at,
+         server_received_at, idempotency_key, request_hash, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(
+      row.id,
+      row.account_id,
+      row.category,
+      row.status,
+      row.body_text,
+      row.body_preview,
+      row.body_length,
+      row.app_version,
+      row.app_version_code,
+      row.client_composed_at,
+      row.client_submitted_at,
+      row.server_received_at,
+      row.idempotency_key,
+      row.request_hash,
+      row.created_at,
+      row.updated_at,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'support_ticket_create', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, ticketId, now),
+  ]);
+
+  return c.json(supportTicketResponse(row, "RECEIVED"));
 });
 
 app.get("/v1/balance-config/:version", async (c) => {

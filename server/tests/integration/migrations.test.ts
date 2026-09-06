@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(19);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(20);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0019 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0020 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -67,6 +67,45 @@ describe("D1 migrations", () => {
          account_id, status, assigned_to, reason, updated_by, updated_at, created_at
        ) VALUES (
          'account-review-1', 'REWARD_HELD', NULL, 'mark-only review', 'principal-review-1', 2, 1
+       );`
+    );
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates support ticket read model tables for player inquiries", async () => {
+    const db = await createMigratedDb();
+
+    const ticket = db.exec("PRAGMA table_info(support_tickets);");
+    expect(ticket[0]?.values.map((row) => row[1])).toEqual([
+      "id",
+      "account_id",
+      "category",
+      "status",
+      "body_text",
+      "body_preview",
+      "body_length",
+      "app_version",
+      "app_version_code",
+      "client_composed_at",
+      "client_submitted_at",
+      "server_received_at",
+      "idempotency_key",
+      "request_hash",
+      "created_at",
+      "updated_at",
+    ]);
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-ticket-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO support_tickets (
+         id, account_id, category, status, body_text, body_preview, body_length,
+         app_version, app_version_code, client_composed_at, client_submitted_at,
+         server_received_at, idempotency_key, request_hash, created_at, updated_at
+       ) VALUES (
+         'support_ticket_migration_1', 'account-ticket-1', 'BUG_OTHER', 'OPEN',
+         '고객 문의 마이그레이션 검증용 본문입니다.', '고객 문의 마이그레이션 검증용 본문입니다.', 22,
+         NULL, NULL, NULL, NULL, 2, 'support-ticket-migration-key', 'sha256:support-ticket', 2, 2
        );`
     );
 

@@ -281,6 +281,26 @@ type AdminSupportLoginBonusClaimRow = {
   reward_json: string;
 };
 
+type AdminSupportTicketRow = {
+  id: string;
+  account_id: string;
+  category: string;
+  status: string;
+  body_text: string;
+  body_preview: string;
+  body_length: number;
+  app_version: string | null;
+  app_version_code: string | null;
+  client_composed_at: number | null;
+  client_submitted_at: number | null;
+  server_received_at: number;
+  idempotency_key: string;
+  request_hash: string;
+  created_at: number;
+  updated_at: number;
+  idempotency_replay_known?: number | null;
+};
+
 type AdminSupportGachaBatchRow = {
   batch_id: string;
   banner_id: string;
@@ -1290,6 +1310,33 @@ function supportOpsErrorSummary(row: AdminOpsErrorLogRow) {
   };
 }
 
+function supportTicketSummary(row: AdminSupportTicketRow) {
+  return {
+    ticketId: row.id,
+    accountId: row.account_id,
+    category: row.category,
+    status: row.status,
+    bodyPreview: row.body_preview,
+    bodyLength: row.body_length,
+    detailAvailable: true,
+    appVersion: row.app_version,
+    appVersionCode: row.app_version_code,
+    clientComposedAt: toNullableIso(row.client_composed_at),
+    clientSubmittedAt: toNullableIso(row.client_submitted_at),
+    serverReceivedAt: toIso(row.server_received_at),
+    createdAt: toIso(row.created_at),
+    updatedAt: toIso(row.updated_at),
+  };
+}
+
+function supportTicketDetail(row: AdminSupportTicketRow) {
+  return {
+    ...supportTicketSummary(row),
+    body: row.body_text,
+    idempotencyReplayKnown: row.idempotency_replay_known === 1,
+  };
+}
+
 function parseJsonObjectOrEmpty(json: string): { readonly [key: string]: JsonValue } {
   try {
     const parsed = parseJsonValue(json);
@@ -2055,6 +2102,92 @@ app.get("/v1/admin/ops/error-logs/:errorLogId", async (c) => {
   return c.json({
     item: opsErrorLogDetail(row),
     detail: null,
+  });
+});
+app.get("/v1/admin/support/tickets", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminSupportBody(c);
+
+  const accountId = c.req.query("accountId")?.trim() || null;
+  const category = c.req.query("category")?.trim() || null;
+  const status = c.req.query("status")?.trim() || null;
+  const limitQuery = c.req.query("limit");
+  const parsedLimit = limitQuery === undefined ? 50 : Number(limitQuery);
+  const limit = Number.isSafeInteger(parsedLimit) && parsedLimit > 0 ? Math.min(parsedLimit, 50) : 50;
+  const cursorQuery = c.req.query("cursor");
+  const parsedCursor = cursorQuery === undefined ? 0 : Number(cursorQuery);
+  const offset = Number.isSafeInteger(parsedCursor) && parsedCursor >= 0 ? parsedCursor : 0;
+
+  const rows = await c.env.DB.prepare(
+    `SELECT id, account_id, category, status, body_text, body_preview, body_length,
+            app_version, app_version_code, client_composed_at, client_submitted_at,
+            server_received_at, idempotency_key, request_hash, created_at, updated_at
+     FROM support_tickets
+     WHERE (? IS NULL OR account_id = ?)
+       AND (? IS NULL OR category = ?)
+       AND (? IS NULL OR status = ?)
+     ORDER BY server_received_at DESC, id
+     LIMIT ? OFFSET ?`,
+  )
+    .bind(accountId, accountId, category, category, status, status, limit + 1, offset)
+    .all<AdminSupportTicketRow>();
+  const visibleRows = rows.results.slice(0, limit);
+
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    items: visibleRows.map(supportTicketSummary),
+    nextCursor: rows.results.length > limit ? String(offset + limit) : null,
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      repairEndpointsEnabled: false,
+      source: "admin_support_tickets",
+    },
+    errorCode: null,
+    message: null,
+  });
+});
+app.get("/v1/admin/support/tickets/:ticketId", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminSupportBody(c);
+
+  const row = await c.env.DB.prepare(
+    `SELECT ticket.id, ticket.account_id, ticket.category, ticket.status, ticket.body_text,
+            ticket.body_preview, ticket.body_length, ticket.app_version, ticket.app_version_code,
+            ticket.client_composed_at, ticket.client_submitted_at, ticket.server_received_at,
+            ticket.idempotency_key, ticket.request_hash, ticket.created_at, ticket.updated_at,
+            CASE WHEN idem.id IS NULL THEN 0 ELSE 1 END AS idempotency_replay_known
+     FROM support_tickets ticket
+     LEFT JOIN idempotency_records idem
+       ON idem.account_id = ticket.account_id
+      AND idem.operation = 'support_ticket_create'
+      AND idem.result_ref = ticket.id
+     WHERE ticket.id = ?`,
+  )
+    .bind(c.req.param("ticketId"))
+    .first<AdminSupportTicketRow>();
+
+  if (row === null) {
+    return c.json({ error: "support_ticket_not_found", message: "Support ticket was not found." }, 404);
+  }
+
+  return c.json({
+    permission: SUPPORT_READ_PERMISSION,
+    permissionMode: "ROLE_PERMISSION",
+    ticket: supportTicketDetail(row),
+    supportContext: {
+      readOnly: true,
+      mutationEndpointsEnabled: false,
+      repairEndpointsEnabled: false,
+      source: "admin_support_ticket_detail",
+    },
+    errorCode: null,
+    message: null,
   });
 });
 app.get("/v1/admin/support/accounts/:accountId", async (c) => {

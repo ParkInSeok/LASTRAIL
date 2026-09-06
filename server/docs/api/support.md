@@ -85,6 +85,142 @@ Missing account:
 }
 ```
 
+## Player Inquiry Endpoint
+
+```text
+POST /v1/support/tickets
+```
+
+Implemented as a Game API player-bearer route. The authenticated session is the
+only account selector.
+
+Request:
+
+- Header `Authorization: Bearer <access token>` is required.
+- Header `Idempotency-Key` is required, account-scoped, and max 128 chars.
+- Query parameters are not accepted.
+- Body must be a JSON object.
+- `accountId` / `account_id` body shortcuts are `contract_violation`.
+- `category` must be one of:
+  - `ACCOUNT_LOGIN`
+  - `RUN_REWARD`
+  - `GACHA_RECRUITMENT`
+  - `STORY_PROGRESS`
+  - `BUG_OTHER`
+- `body` is trimmed server-side and must be 10-2000 chars.
+- Optional `appVersion` is trimmed and max 64 chars.
+- Optional `appVersionCode` is a decimal string, max 19 chars.
+- Optional `clientComposedAt` and `clientSubmittedAt` are ISO timestamp strings.
+
+Response:
+
+```ts
+type SupportTicketCreateResponse = {
+  accepted: boolean;
+  ticketStatus: "RECEIVED" | "DUPLICATE_REPLAY" | "REJECTED";
+  ticketId: string | null;
+  category: "ACCOUNT_LOGIN" | "RUN_REWARD" | "GACHA_RECRUITMENT" | "STORY_PROGRESS" | "BUG_OTHER" | null;
+  bodyPreview: string | null;
+  appVersion: string | null;
+  appVersionCode: string | null;
+  clientComposedAt: string | null;
+  clientSubmittedAt: string | null;
+  serverReceivedAt: string | null;
+  errorCode: null | "duplicate_replay" | "contract_violation" | "auth_required" | "support_ticket_invalid" | "idempotency_conflict";
+  message: string | null;
+};
+```
+
+Duplicate policy:
+
+- Same account + `support_ticket_create` + same `Idempotency-Key` + same request
+  hash returns `DUPLICATE_REPLAY` with the original `ticketId`.
+- Same account + same key + different request hash returns `409
+  idempotency_conflict`.
+- Same key on a different authenticated account is independent.
+
+Storage:
+
+- `support_tickets` stores the support body and compact metadata needed for
+  launch CS investigation.
+- `idempotency_records.operation = support_ticket_create` links the accepted
+  request to the ticket id.
+- Retention/deletion policy is a launch operations decision and should be set
+  before PRD data retention commitments are published.
+
+Do not return or store:
+
+- raw tokens;
+- raw auth headers;
+- refresh tokens or refresh token hashes;
+- raw client log bundles;
+- screenshots or attachments;
+- raw RNG/probability/full weight tables;
+- repair/manual grant intent.
+
+## Admin Support Ticket Read Endpoints
+
+```text
+GET /v1/admin/support/tickets
+GET /v1/admin/support/tickets/:ticketId
+```
+
+Implemented as Admin API read-only routes with `SUPPORT_READ` and
+`ROLE_PERMISSION`. OWNER / OPERATOR / VIEWER can read for launch, matching the
+support account summary policy.
+
+List filters:
+
+- `accountId`
+- `category`
+- `status`
+- `limit`
+- `cursor`
+
+List response:
+
+```ts
+type AdminSupportTicketListResponse = {
+  permission: "SUPPORT_READ";
+  permissionMode: "ROLE_PERMISSION";
+  items: AdminSupportTicketSummary[];
+  nextCursor: string | null;
+  supportContext: {
+    readOnly: true;
+    mutationEndpointsEnabled: false;
+    repairEndpointsEnabled: false;
+    source: "admin_support_tickets";
+  };
+  errorCode: null;
+  message: null;
+};
+```
+
+Detail response:
+
+```ts
+type AdminSupportTicketDetailResponse = {
+  permission: "SUPPORT_READ";
+  permissionMode: "ROLE_PERMISSION";
+  ticket: AdminSupportTicketSummary & {
+    body: string;
+    idempotencyReplayKnown: boolean;
+  };
+  supportContext: {
+    readOnly: true;
+    mutationEndpointsEnabled: false;
+    repairEndpointsEnabled: false;
+    source: "admin_support_ticket_detail";
+  };
+  errorCode: null;
+  message: null;
+};
+```
+
+Admin ticket endpoints are not repair endpoints. Launch does not expose ticket
+close, assign, reply, manual compensation, reward correction, account merge, or
+session revoke controls.
+
 ## Permission
 
 Candidate stable permission id:
