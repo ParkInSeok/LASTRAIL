@@ -41,6 +41,63 @@ export type ServerDeployExecutor<TDeployResult> = (input: {
   service: ServerReleaseService;
 }) => Promise<TDeployResult>;
 
+export type ServerDeploymentReleaseDeployResult =
+  | {
+      accepted: true;
+      cloudflareDeploymentId: string;
+      previousDeploymentId?: string | null;
+    }
+  | {
+      accepted: false;
+      errorCode: "deployment_execution_failed";
+    };
+
+export type ServerDeploymentReleaseSmokeResult =
+  | {
+      accepted: true;
+    }
+  | {
+      accepted: false;
+      errorCode: "deployment_smoke_failed" | "deployment_smoke_blocked";
+    };
+
+export type ServerDeploymentReleaseDeployExecutor = (input: {
+  plan: ServerDeployPlan;
+  service: ServerReleaseService;
+}) => Promise<ServerDeploymentReleaseDeployResult>;
+
+export type ServerDeploymentReleaseSmokeExecutor = (input: {
+  plan: ServerDeployPlan;
+  service: ServerReleaseService;
+  cloudflareDeploymentId: string;
+}) => Promise<ServerDeploymentReleaseSmokeResult>;
+
+export type ServerDeploymentReleaseFlowResult =
+  | {
+      accepted: true;
+      service: ServerReleaseService;
+      serverVersion: string;
+      cloudflareDeploymentId: string;
+      historyKey: string;
+      currentKey: string;
+      currentPointerStatus: "CURRENT";
+      idempotentReplay: boolean;
+    }
+  | {
+      accepted: false;
+      errorCode:
+        | ServerDeployPreflightErrorCode
+        | "deployment_execution_failed"
+        | "deployment_smoke_failed"
+        | "deployment_smoke_blocked"
+        | "deployment_history_invalid"
+        | "deployment_history_immutable_conflict"
+        | "deployment_current_pointer_conflict";
+      historyKey?: string;
+      currentKey?: string;
+      currentPointerStatus?: "DEGRADED";
+    };
+
 export type ServerDeploymentEvidence = {
   releaseId: string;
   environment: ServerReleaseEnvironment;
@@ -148,6 +205,62 @@ export async function executeServerDeployWithPreflight<TDeployResult>(
     service: target.service,
     serverVersion: preflight.plan.serverVersion,
     deployResult: await deploy({ plan: preflight.plan, service: target.service }),
+  };
+}
+
+export async function runServerDeploymentReleaseFlow(
+  value: unknown,
+  history: ServerDeployHistoryEntry[],
+  target: ServerDeployPreflightTarget,
+  bucket: ServerDeploymentHistoryBucket,
+  deploy: ServerDeploymentReleaseDeployExecutor,
+  smoke: ServerDeploymentReleaseSmokeExecutor,
+  options: {
+    createdAt: string;
+    expectedCurrentEtag?: string | null;
+  },
+): Promise<ServerDeploymentReleaseFlowResult> {
+  const preflight = buildServerDeployPreflight(value, history, target);
+  if (!preflight.accepted) return preflight;
+
+  const deployResult = await deploy({ plan: preflight.plan, service: target.service });
+  if (!deployResult.accepted) return deployResult;
+
+  const smokeResult = await smoke({
+    plan: preflight.plan,
+    service: target.service,
+    cloudflareDeploymentId: deployResult.cloudflareDeploymentId,
+  });
+  if (!smokeResult.accepted) return smokeResult;
+
+  const smokePassedPlan: ServerDeployPlan = {
+    ...preflight.plan,
+    verification: {
+      ...preflight.plan.verification,
+      remoteSmoke: "PASSED",
+    },
+  };
+  const evidence = buildServerDeploymentEvidence(smokePassedPlan, target.service, {
+    cloudflareDeploymentId: deployResult.cloudflareDeploymentId,
+    createdAt: options.createdAt,
+    ...(deployResult.previousDeploymentId === undefined ? {} : { previousDeploymentId: deployResult.previousDeploymentId }),
+  });
+  const writeResult = await saveServerDeploymentEvidence(
+    bucket,
+    evidence,
+    options.expectedCurrentEtag === undefined ? {} : { expectedCurrentEtag: options.expectedCurrentEtag },
+  );
+  if (!writeResult.accepted) return writeResult;
+
+  return {
+    accepted: true,
+    service: target.service,
+    serverVersion: preflight.plan.serverVersion,
+    cloudflareDeploymentId: deployResult.cloudflareDeploymentId,
+    historyKey: writeResult.historyKey,
+    currentKey: writeResult.currentKey,
+    currentPointerStatus: writeResult.currentPointerStatus,
+    idempotentReplay: writeResult.idempotentReplay,
   };
 }
 

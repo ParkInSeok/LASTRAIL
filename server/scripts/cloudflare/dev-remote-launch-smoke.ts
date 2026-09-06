@@ -173,6 +173,8 @@ function seedGacha(options: {
   balanceVersion: number;
   now: number;
 }): void {
+  // DEV smoke uses a single-candidate pickup pool so result-shape and ledger
+  // checks are deterministic. This is not production gacha weight evidence.
   const poolSnapshotJson = JSON.stringify({
     results: [
       { resultRarity: "ELITE", resultType: "ELITE_OPERATOR", resultId: "op_vex", weight: 1, isPickup: true },

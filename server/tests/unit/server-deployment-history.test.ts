@@ -3,6 +3,7 @@ import {
   buildServerDeploymentEvidence,
   buildServerDeployPreflight,
   executeServerDeployWithPreflight,
+  runServerDeploymentReleaseFlow,
   saveServerDeploymentEvidence,
   type ServerDeploymentHistoryBucket,
 } from "@lastrail/common";
@@ -281,5 +282,86 @@ describe("server deployment history store", () => {
     });
 
     expect(calls).toEqual([]);
+  });
+
+  it("commits deployment history only after deploy and remote smoke pass", async () => {
+    const calls: string[] = [];
+    const bucket = createFakeBucket();
+
+    const result = await runServerDeploymentReleaseFlow(
+      plan,
+      [],
+      { environment: "prd", service: "game-api" },
+      bucket,
+      async ({ plan: acceptedPlan, service }) => {
+        calls.push(`deploy:${acceptedPlan.environment}:${service}:${acceptedPlan.serverVersion}`);
+        return {
+          accepted: true,
+          cloudflareDeploymentId: "cf-deploy-game-20260906-1",
+          previousDeploymentId: "cf-deploy-game-previous",
+        };
+      },
+      async ({ cloudflareDeploymentId, service }) => {
+        calls.push(`smoke:${service}:${cloudflareDeploymentId}`);
+        return { accepted: true };
+      },
+      { createdAt: "2026-09-06T03:00:00.000Z" },
+    );
+
+    expect(result).toMatchObject({
+      accepted: true,
+      service: "game-api",
+      serverVersion: "2026.09.06.1",
+      historyKey: "server-deployments/prd/game-api/2026.09.06.1.json",
+      currentPointerStatus: "CURRENT",
+    });
+    expect(calls).toEqual([
+      "deploy:prd:game-api:2026.09.06.1",
+      "smoke:game-api:cf-deploy-game-20260906-1",
+    ]);
+    expect(bucket.snapshot()).toMatchObject({
+      "server-deployments/prd/game-api/2026.09.06.1.json": {
+        cloudflareDeploymentId: "cf-deploy-game-20260906-1",
+        previousDeploymentId: "cf-deploy-game-previous",
+        verification: { localRegression: "PASSED", dryRun: "PASSED", remoteSmoke: "PASSED" },
+        pointerStatus: "CURRENT",
+      },
+      "server-deployments/prd/game-api/current.json": {
+        cloudflareDeploymentId: "cf-deploy-game-20260906-1",
+        serverVersion: "2026.09.06.1",
+      },
+    });
+  });
+
+  it("does not write deployment history when deploy or remote smoke fails", async () => {
+    const deployFailedBucket = createFakeBucket();
+    const deployFailed = await runServerDeploymentReleaseFlow(
+      plan,
+      [],
+      { environment: "prd", service: "game-api" },
+      deployFailedBucket,
+      async () => ({ accepted: false, errorCode: "deployment_execution_failed" }),
+      async () => {
+        throw new Error("smoke should not run after deploy failure");
+      },
+      { createdAt: "2026-09-06T03:00:00.000Z" },
+    );
+
+    expect(deployFailed).toEqual({ accepted: false, errorCode: "deployment_execution_failed" });
+    expect(deployFailedBucket.snapshot()).toEqual({});
+
+    const smokeFailedBucket = createFakeBucket();
+    const smokeFailed = await runServerDeploymentReleaseFlow(
+      plan,
+      [],
+      { environment: "prd", service: "game-api" },
+      smokeFailedBucket,
+      async () => ({ accepted: true, cloudflareDeploymentId: "cf-deploy-game-20260906-1" }),
+      async () => ({ accepted: false, errorCode: "deployment_smoke_failed" }),
+      { createdAt: "2026-09-06T03:00:00.000Z" },
+    );
+
+    expect(smokeFailed).toEqual({ accepted: false, errorCode: "deployment_smoke_failed" });
+    expect(smokeFailedBucket.snapshot()).toEqual({});
   });
 });

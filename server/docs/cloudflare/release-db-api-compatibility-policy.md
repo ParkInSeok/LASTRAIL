@@ -181,6 +181,13 @@ deploy or a D1 rollback.
 The helper is covered with a local fake R2-compatible store. Real R2 writes are
 still a deploy-operation step and require explicit environment approval.
 
+The local release-flow model also verifies ordering with fake deploy and smoke
+executors: immutable history and the current pointer are written only after
+preflight accepts, deploy succeeds, and remote smoke passes. Deploy or smoke
+failure must leave deployment evidence untouched. A pointer write conflict after
+successful deploy/smoke is degraded evidence that must be reconciled through the
+approved release process; it must not trigger automatic redeploy or D1 rollback.
+
 ## Game API Admission
 
 Game API `GET /v1/client-config` evaluates an app build code supplied by the
