@@ -60,7 +60,9 @@ The expanded three-path launch auth design is tracked in
 registration/login/link, Google link, and provider-owned-by-other-account
 conflict preview/confirm. Local ID/password register/login/link and password
 reset route skeletons are implemented behind provider-neutral recovery email
-verification; production email delivery/provider config remains approval-gated.
+verification. A Gmail API recovery email sender adapter is available behind the
+same sender contract; real Gmail OAuth credentials, sender authorization, and
+real-send smoke remain approval/setup-gated.
 Account-switch endpoints are not implemented yet. ID/password registration and
 link completion require an explicitly submitted and server-verified recovery
 email; Google claim email is not auto-promoted into password recovery state.

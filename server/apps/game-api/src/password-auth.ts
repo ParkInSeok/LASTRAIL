@@ -15,6 +15,44 @@ export type RecoveryEmailSender = {
   sendRecoveryEmail: (message: RecoveryEmailMessage) => Promise<void>;
 };
 
+export type GmailRecoveryEmailSendErrorCode =
+  | "gmail_config_missing"
+  | "gmail_oauth_unavailable"
+  | "gmail_oauth_unauthorized"
+  | "gmail_send_unavailable"
+  | "gmail_send_unauthorized"
+  | "gmail_quota_exceeded";
+
+export class GmailRecoveryEmailSendError extends Error {
+  readonly code: GmailRecoveryEmailSendErrorCode;
+
+  constructor(code: GmailRecoveryEmailSendErrorCode) {
+    super(code);
+    this.name = "GmailRecoveryEmailSendError";
+    this.code = code;
+  }
+}
+
+type Fetcher = typeof fetch;
+
+export type GmailRecoveryEmailSenderConfig = {
+  senderEmail?: string | undefined;
+  oauthClientId?: string | undefined;
+  oauthClientSecret?: string | undefined;
+  oauthRefreshToken?: string | undefined;
+  tokenEndpoint?: string | undefined;
+  gmailSendEndpoint?: string | undefined;
+  fetcher?: Fetcher | undefined;
+};
+
+export type GmailRecoveryEmailSenderEnv = {
+  RECOVERY_EMAIL_PROVIDER?: string;
+  GMAIL_RECOVERY_SENDER_EMAIL?: string;
+  GMAIL_RECOVERY_OAUTH_CLIENT_ID?: string;
+  GMAIL_RECOVERY_OAUTH_CLIENT_SECRET?: string;
+  GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN?: string;
+};
+
 export type NormalizedLoginId = {
   loginId: string;
   normalized: string;
@@ -39,6 +77,36 @@ const passwordHashBytes = 32;
 
 const reservedLoginIds = new Set(["admin", "administrator", "gm", "system", "operator", "support"]);
 const reservedLoginPrefixes = ["account_", "admin_", "gm_", "system_"];
+const gmailTokenEndpoint = "https://oauth2.googleapis.com/token";
+const gmailMessagesSendEndpoint = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
+
+export function createGmailRecoveryEmailSender(config: GmailRecoveryEmailSenderConfig): RecoveryEmailSender {
+  return {
+    sendRecoveryEmail: async (message) => {
+      const prepared = prepareGmailConfig(config);
+      const accessToken = await fetchGmailAccessToken(prepared);
+      await sendGmailMimeMessage(prepared, accessToken, message);
+    },
+  };
+}
+
+export function createGmailRecoveryEmailSenderFromEnv(env: GmailRecoveryEmailSenderEnv): RecoveryEmailSender | null {
+  if (env.RECOVERY_EMAIL_PROVIDER?.trim().toUpperCase() !== "GMAIL") return null;
+  if (
+    !isPresent(env.GMAIL_RECOVERY_SENDER_EMAIL)
+    || !isPresent(env.GMAIL_RECOVERY_OAUTH_CLIENT_ID)
+    || !isPresent(env.GMAIL_RECOVERY_OAUTH_CLIENT_SECRET)
+    || !isPresent(env.GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN)
+  ) {
+    return null;
+  }
+  return createGmailRecoveryEmailSender({
+    senderEmail: env.GMAIL_RECOVERY_SENDER_EMAIL,
+    oauthClientId: env.GMAIL_RECOVERY_OAUTH_CLIENT_ID,
+    oauthClientSecret: env.GMAIL_RECOVERY_OAUTH_CLIENT_SECRET,
+    oauthRefreshToken: env.GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN,
+  });
+}
 
 export function normalizeLoginId(value: unknown): NormalizedLoginId | null {
   if (typeof value !== "string") return null;
@@ -111,6 +179,152 @@ function maskRecoveryEmail(email: string): string {
   if (localPart === undefined || domain === undefined) return "***";
   const first = localPart[0] ?? "*";
   return `${first}${"*".repeat(Math.max(3, Math.min(localPart.length - 1, 8)))}@${domain}`;
+}
+
+function isPresent(value: string | undefined): value is string {
+  return value !== undefined && value.trim() !== "";
+}
+
+type PreparedGmailConfig = {
+  senderEmail: string;
+  oauthClientId: string;
+  oauthClientSecret: string;
+  oauthRefreshToken: string;
+  tokenEndpoint: string;
+  gmailSendEndpoint: string;
+  fetcher: Fetcher;
+};
+
+function prepareGmailConfig(config: GmailRecoveryEmailSenderConfig): PreparedGmailConfig {
+  const senderEmail = config.senderEmail?.trim() ?? "";
+  const oauthClientId = config.oauthClientId?.trim() ?? "";
+  const oauthClientSecret = config.oauthClientSecret?.trim() ?? "";
+  const oauthRefreshToken = config.oauthRefreshToken?.trim() ?? "";
+  const tokenEndpoint = config.tokenEndpoint?.trim() || gmailTokenEndpoint;
+  const gmailSendEndpoint = config.gmailSendEndpoint?.trim() || gmailMessagesSendEndpoint;
+  const fetcher = config.fetcher ?? fetch;
+
+  if (
+    senderEmail === ""
+    || !senderEmail.includes("@")
+    || oauthClientId === ""
+    || oauthClientSecret === ""
+    || oauthRefreshToken === ""
+    || tokenEndpoint === ""
+    || gmailSendEndpoint === ""
+  ) {
+    throw new GmailRecoveryEmailSendError("gmail_config_missing");
+  }
+
+  return {
+    senderEmail,
+    oauthClientId,
+    oauthClientSecret,
+    oauthRefreshToken,
+    tokenEndpoint,
+    gmailSendEndpoint,
+    fetcher,
+  };
+}
+
+async function fetchGmailAccessToken(config: PreparedGmailConfig): Promise<string> {
+  const body = new URLSearchParams({
+    client_id: config.oauthClientId,
+    client_secret: config.oauthClientSecret,
+    refresh_token: config.oauthRefreshToken,
+    grant_type: "refresh_token",
+  });
+
+  let response: Response;
+  try {
+    response = await config.fetcher(config.tokenEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+  } catch {
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+  }
+
+  if (response.status === 401 || response.status === 403) {
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unauthorized");
+  }
+  if (response.status === 429 || response.status >= 500) {
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+  }
+  if (!response.ok) {
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+  }
+
+  const payload = await readJsonObject(response);
+  const accessToken = typeof payload.access_token === "string" ? payload.access_token.trim() : "";
+  if (accessToken === "") {
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+  }
+  return accessToken;
+}
+
+async function sendGmailMimeMessage(config: PreparedGmailConfig, accessToken: string, message: RecoveryEmailMessage): Promise<void> {
+  let response: Response;
+  try {
+    response = await config.fetcher(config.gmailSendEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ raw: base64UrlEncodeString(createRecoveryEmailMime(config.senderEmail, message)) }),
+    });
+  } catch {
+    throw new GmailRecoveryEmailSendError("gmail_send_unavailable");
+  }
+
+  if (response.status === 401 || response.status === 403) {
+    throw new GmailRecoveryEmailSendError("gmail_send_unauthorized");
+  }
+  if (response.status === 429) {
+    throw new GmailRecoveryEmailSendError("gmail_quota_exceeded");
+  }
+  if (response.status >= 500 || !response.ok) {
+    throw new GmailRecoveryEmailSendError("gmail_send_unavailable");
+  }
+}
+
+function createRecoveryEmailMime(senderEmail: string, message: RecoveryEmailMessage): string {
+  const body = [
+    "LAST RAIL account verification",
+    "",
+    `Purpose: ${message.purpose}`,
+    `Reference: ${message.challengeId}`,
+    `Verification code: ${message.verificationCode}`,
+    `Expires at: ${message.expiresAt}`,
+    "",
+    "Enter the verification code in LAST RAIL. Do not share this code.",
+  ].join("\r\n");
+
+  return [
+    `To: ${message.toEmail}`,
+    `From: ${senderEmail}`,
+    "Subject: LAST RAIL account verification",
+    "MIME-Version: 1.0",
+    "Content-Type: text/plain; charset=UTF-8",
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    body,
+  ].join("\r\n");
+}
+
+function base64UrlEncodeString(value: string): string {
+  return base64UrlEncode(new TextEncoder().encode(value));
+}
+
+async function readJsonObject(response: Response): Promise<Record<string, unknown>> {
+  try {
+    const payload: unknown = await response.json();
+    return typeof payload === "object" && payload !== null ? payload as Record<string, unknown> : {};
+  } catch {
+    return {};
+  }
 }
 
 function randomBytes(length: number): Uint8Array {

@@ -85,7 +85,9 @@ GET /v1/auth/links
 
 `GET /v1/auth/links` is still a future read-only helper candidate; the runtime
 ID/password routes above are implemented locally without enabling production
-email delivery.
+email delivery. The local sender boundary now includes a Gmail API adapter
+behind the existing `RECOVERY_EMAIL_SENDER` contract, but real Gmail OAuth
+credentials and real send smoke remain setup-gated.
 
 `POST /v1/auth/password/register` creates a new account with an ID/password
 credential. `POST /v1/auth/password/link` requires Bearer auth and attaches an
@@ -436,6 +438,70 @@ Candidate error codes:
 - `account_switch_revision_conflict`
 - `account_switch_blocked_by_active_transaction`
 - `guest_recovery_missing`
+- `recovery_email_service_unavailable`
+- `gmail_config_missing`
+- `gmail_oauth_unavailable`
+- `gmail_oauth_unauthorized`
+- `gmail_send_unavailable`
+- `gmail_send_unauthorized`
+- `gmail_quota_exceeded`
+
+## Recovery Email Provider: Gmail API
+
+The launch-selected first recovery email provider is Gmail API, wired behind
+the provider-neutral `RECOVERY_EMAIL_SENDER` interface. This is an operational
+mail-sending integration only. It is separate from player Google Sign-In:
+player Google ID tokens, Google profile claims, and game account linking are
+not reused as mail-sending credentials.
+
+The adapter follows the official Gmail API send flow:
+
+- Exchange a server-owned OAuth refresh token for an access token using
+  Google's token endpoint.
+- Build an RFC 2822 text MIME message.
+- Base64url encode the MIME content into the Gmail `raw` message field.
+- Call `users.messages.send` with user id `me`.
+
+Required server config/secrets, once real Gmail setup is approved:
+
+- `RECOVERY_EMAIL_PROVIDER=GMAIL`
+- `GMAIL_RECOVERY_SENDER_EMAIL`
+- `GMAIL_RECOVERY_OAUTH_CLIENT_ID`
+- `GMAIL_RECOVERY_OAUTH_CLIENT_SECRET`
+- `GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN`
+
+The adapter does not store raw Google access tokens, refresh tokens, client
+secrets, full Google claims, player passwords, or raw Authorization headers in
+D1, logs, responses, Unity diagnostics, or Admin responses. Gmail send is not
+retried automatically inside the adapter, because a timeout after an accepted
+send can otherwise create duplicate email risk. Route-level resend cooldowns
+and verification attempt limits remain the control boundary.
+
+Gmail API accepting `users.messages.send` only means Gmail accepted the send
+request; it is not proof that the player received, opened, or completed the
+verification. Verification succeeds only when the player submits the separate
+server challenge reference and one-use verification code.
+
+Provider failure mapping:
+
+- missing config: `gmail_config_missing`, surfaced to player routes as
+  `recovery_email_service_unavailable`
+- OAuth token endpoint unauthorized: `gmail_oauth_unauthorized`
+- OAuth token endpoint unavailable/invalid payload: `gmail_oauth_unavailable`
+- Gmail send unauthorized: `gmail_send_unauthorized`
+- Gmail quota/rate limit: `gmail_quota_exceeded`
+- Gmail send transient/unavailable: `gmail_send_unavailable`
+
+Current real-connection wait:
+
+- choose the sender Gmail/Workspace account
+- create/confirm Google Cloud OAuth client for the sender integration
+- complete OAuth consent for the Gmail send scope
+- inject the Gmail recovery secrets into the target environment
+- run real-send smoke with an approved test recipient
+
+Do not configure or test real Gmail sending until those values and approvals are
+provided.
 
 ## Recovery / Consent Decision Queue
 
@@ -448,9 +514,9 @@ Not finalized:
   whether to keep this or add a stricter policy.
 - Account lookup UX: whether players start recovery from `loginId`, recovery
   email, or both, while preserving account-enumeration resistance.
-- Email provider: Cloudflare Email Service Workers binding is a platform-native
-  candidate, but sender domain onboarding, DNS, credentials, deliverability, and
-  cost approval are not complete.
+- Future email provider fallback: Cloudflare Email Service Workers binding
+  remains a platform-native candidate if Gmail quota, deliverability,
+  operations, or scale needs make a provider change worthwhile.
 - Whether to keep WebCrypto `PBKDF2_SHA256` for launch or approve a stronger
   Workers-safe password hashing service/library before production.
 

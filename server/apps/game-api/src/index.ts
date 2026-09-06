@@ -14,6 +14,7 @@ import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificati
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
+  createGmailRecoveryEmailSenderFromEnv,
   hashPassword,
   hashVerificationCode,
   normalizeLoginId,
@@ -34,6 +35,11 @@ type GameApiEnv = Env & {
   GOOGLE_AUTH_AUDIENCES?: string;
   GOOGLE_ID_TOKEN_VERIFIER?: GoogleIdTokenVerifier;
   RECOVERY_EMAIL_SENDER?: RecoveryEmailSender;
+  RECOVERY_EMAIL_PROVIDER?: string;
+  GMAIL_RECOVERY_SENDER_EMAIL?: string;
+  GMAIL_RECOVERY_OAUTH_CLIENT_ID?: string;
+  GMAIL_RECOVERY_OAUTH_CLIENT_SECRET?: string;
+  GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN?: string;
   REALTIME_COOP_ROOMS?: RealtimeCoopRoomNamespace;
 };
 
@@ -1726,7 +1732,7 @@ function getGoogleVerifier(env: Env): GoogleIdTokenVerifier | null {
 }
 
 function getRecoveryEmailSender(env: Env): RecoveryEmailSender | null {
-  return (env as GameApiEnv).RECOVERY_EMAIL_SENDER ?? null;
+  return (env as GameApiEnv).RECOVERY_EMAIL_SENDER ?? createGmailRecoveryEmailSenderFromEnv(env as GameApiEnv);
 }
 
 function createAuthError(errorCode: string, message: string) {
