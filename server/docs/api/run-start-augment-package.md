@@ -74,6 +74,7 @@ when the result is later submitted.
   "runVersionSnapshot": {
     "source": "server_accepted_run_start",
     "clientInstalled": {
+      "appVersion": "1.0.0",
       "versionCode": "100",
       "platform": "android",
       "channel": "internal"
@@ -103,6 +104,10 @@ Idempotency replay returns the originally stored snapshot; it does not read the
 current version policy again. The snapshot is diagnostic/support evidence only
 and must not drive reward, story progress, offline reward, gacha, or economy
 truth.
+
+Run finish stores a separate `runFinishVersionSnapshot` with source
+`server_accepted_run_finish`. The old `runVersionSnapshot` remains the start
+snapshot alias for compatibility.
 
 ## Server-Owned Metadata
 

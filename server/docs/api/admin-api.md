@@ -73,7 +73,14 @@ Query:
 
 - `accountId`: optional account filter
 
-Response includes run balance version, result, risk tier, and validator version when available.
+Response includes run balance version, result, risk tier, validator version
+when available, and compact version evidence:
+
+- `runStartVersionSnapshot` / `runStartVersionSnapshotStatus`;
+- `runFinishVersionSnapshot` / `runFinishVersionSnapshotStatus`.
+
+`runFinishVersionSnapshotStatus` is `NOT_FINISHED` for active runs and
+`UNRECORDED_LEGACY` for completed legacy rows without a stored finish snapshot.
 
 `GET /v1/admin/runs/:runId` returns run detail with frozen
 `run_snapshots.snapshot_json`, run balance version, current active balance
@@ -91,9 +98,12 @@ story raid investigation:
   `allowedOperatorSlots`;
 - `startAugmentPackageRef`, `startTacticPackageRef`, `selectedAugmentIds`, and
   `selectedTacticIds`;
-- `runVersionSnapshot` with the server-accepted client app version code,
-  platform/channel, admission status, runtime deployment id, content
-  release/hash, and capture timestamp when available;
+- `runVersionSnapshot` as a compatibility alias for the start snapshot;
+- `runStartVersionSnapshot` and `runFinishVersionSnapshot` with
+  server-accepted client app version/version code, platform/channel, admission
+  status, runtime deployment id, content release/hash, and capture timestamp
+  when available;
+- `runStartVersionSnapshotStatus` and `runFinishVersionSnapshotStatus`;
 - `staminaRefund.status/resource/reason/policyId/serverOwnedMutation`,
   `fuelLedgerReason`, and safe `fuelLedgerRefs`;
 - `integrityDisposition` summary counts.
@@ -147,12 +157,17 @@ Exact concurrent users are intentionally not claimed. The response returns
 `recentActiveAccounts30m = null`, and source/precision fields that mark those
 values unavailable until a server-owned activity source exists.
 
-`dailySourceMetrics` uses KST calendar-day inclusive windows. DAU is counted
-from distinct `auth_sessions.account_id` by `created_at`; signups are counted
-from `accounts.created_at`; ad reward counts come from
-`ad_reward_transactions.status`. Pass/purchase metrics remain `null` with
-`passSource = UNAVAILABLE_NO_SOURCE_TABLE` until a server-owned purchase source
-exists.
+`dailySourceMetrics` uses KST calendar-day inclusive windows. The current
+server-owned source can count distinct accounts that created auth sessions in
+the window, so Admin should treat `sessionCreatedAccounts` as the launch metric.
+`dauSource = UNAVAILABLE_NO_ACTIVITY_HEARTBEAT_SOURCE` marks exact activity DAU
+as unavailable until a heartbeat/activity source exists. The response includes
+both 7/30-day aggregates and `points[]` with `date`,
+`sessionCreatedAccounts`, `signups`, `adRewardsVerified`, and
+`adRewardsGranted`. Signups are counted from `accounts.created_at`; ad reward
+counts come from `ad_reward_transactions.status`. Pass/purchase and ad revenue
+metrics remain `null`, with source availability set to false, until
+server-owned source tables exist.
 
 The story/narrative aggregate is read-only launch visibility. It counts stored
 `account_story_progress` rows and the static Act 1 narrative coverage candidate

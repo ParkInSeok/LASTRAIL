@@ -67,6 +67,20 @@ class SqlJsD1Database {
 }
 
 const authSecret = "test-secret-minimum-32-characters";
+const compatibleVersionDocument = {
+  version: "1.0.1",
+  versionCode: "101",
+  minimumVersionCode: "90",
+  contentRelease: {
+    status: "APPROVED",
+    releaseId: "content_act1_001",
+    contentVersion: "act1.2026-09-06.001",
+    catalogUrl: "https://r2.dev.example/catalog.json",
+    catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    minimumVersionCode: "90",
+    maximumVersionCode: "101",
+  },
+};
 
 async function createMigratedDb(): Promise<initSqlJs.Database> {
   const SQL = await initSqlJs();
@@ -84,11 +98,31 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   return db;
 }
 
-function createEnv(db: initSqlJs.Database): Env & { AUTH_SIGNING_KEY_CURRENT: string } {
+function createEnv(
+  db: initSqlJs.Database,
+  options: {
+    clientAdmissionMode?: "DISABLED" | "ENFORCED";
+    runtimeDeploymentId?: string;
+    versionDocument?: unknown;
+  } = {},
+): Env & { AUTH_SIGNING_KEY_CURRENT: string } {
   return {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     AUTH_SIGNING_KEY_CURRENT: authSecret,
+    CLIENT_ADMISSION_MODE: options.clientAdmissionMode,
+    VERSION_BUCKET: options.versionDocument === undefined
+      ? undefined
+      : {
+          get: async (key: string) => {
+            expect(key).toBe("versions/current.json");
+            return { json: async () => options.versionDocument };
+          },
+          put: async () => {
+            throw new Error("run finish must not write version policy.");
+          },
+        } as unknown as R2Bucket,
+    CF_VERSION_METADATA: options.runtimeDeploymentId === undefined ? undefined : { id: options.runtimeDeploymentId },
     DB: new SqlJsD1Database(db) as unknown as D1Database,
   };
 }
@@ -160,12 +194,13 @@ async function seedFinishableRun(db: initSqlJs.Database): Promise<string> {
     [
       "run-smoke-1",
       JSON.stringify({
-        runVersionSnapshot: {
-          source: "server_accepted_run_start",
-          clientInstalled: {
-            versionCode: "100",
-            platform: "android",
-            channel: "internal",
+          runVersionSnapshot: {
+            source: "server_accepted_run_start",
+            clientInstalled: {
+              appVersion: "1.0.0",
+              versionCode: "100",
+              platform: "android",
+              channel: "internal",
           },
           clientAdmission: {
             status: "ACCEPTED",
@@ -458,6 +493,10 @@ describe("game-api run finish local D1 smoke", () => {
         headers: {
           "Idempotency-Key": "run-finish-smoke-idem-1",
           Authorization: authorization,
+          "X-LastRail-App-Version": "1.0.1",
+          "X-LastRail-App-Version-Code": "101",
+          "X-LastRail-App-Platform": "android",
+          "X-LastRail-App-Channel": "internal",
         },
         body: JSON.stringify({
           runId: "run-smoke-1",
@@ -470,7 +509,11 @@ describe("game-api run finish local D1 smoke", () => {
           clientCompletedAt: "2026-08-27T00:00:00.000Z",
         }),
       },
-      createEnv(db),
+      createEnv(db, {
+        clientAdmissionMode: "ENFORCED",
+        runtimeDeploymentId: "cf-runtime-deploy-finish-b",
+        versionDocument: compatibleVersionDocument,
+      }),
     );
 
     expect(response.status).toBe(200);
@@ -483,6 +526,26 @@ describe("game-api run finish local D1 smoke", () => {
       balanceVersion: "1",
       errorCode: null,
       message: null,
+      runStartVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: {
+          appVersion: "1.0.0",
+          versionCode: "100",
+        },
+      },
+      runFinishVersionSnapshot: {
+        source: "server_accepted_run_finish",
+        clientInstalled: {
+          appVersion: "1.0.1",
+          versionCode: "101",
+          platform: "android",
+          channel: "internal",
+        },
+        serverAcceptedDeployment: {
+          environment: "DEV",
+          runtimeDeploymentId: "cf-runtime-deploy-finish-b",
+        },
+      },
     });
     expect(body.rewardPreviewId).toMatch(/^reward_preview_/u);
     expect(db.exec("SELECT outcome, cleared_waves FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([
@@ -492,6 +555,7 @@ describe("game-api run finish local D1 smoke", () => {
     expect(finalPayload.runVersionSnapshot).toMatchObject({
       source: "server_accepted_run_start",
       clientInstalled: {
+        appVersion: "1.0.0",
         versionCode: "100",
         platform: "android",
         channel: "internal",
@@ -504,6 +568,26 @@ describe("game-api run finish local D1 smoke", () => {
       serverAcceptedDeployment: {
         environment: "DEV",
         runtimeDeploymentId: "cf-runtime-deploy-smoke",
+      },
+      contentRelease: {
+        status: "APPROVED_COMPATIBLE",
+        releaseId: "content_act1_001",
+        contentVersion: "act1.2026-09-06.001",
+        catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      },
+    });
+    expect(finalPayload.runStartVersionSnapshot).toEqual(finalPayload.runVersionSnapshot);
+    expect(finalPayload.runFinishVersionSnapshot).toMatchObject({
+      source: "server_accepted_run_finish",
+      clientInstalled: {
+        appVersion: "1.0.1",
+        versionCode: "101",
+        platform: "android",
+        channel: "internal",
+      },
+      serverAcceptedDeployment: {
+        environment: "DEV",
+        runtimeDeploymentId: "cf-runtime-deploy-finish-b",
       },
       contentRelease: {
         status: "APPROVED_COMPATIBLE",
@@ -577,6 +661,10 @@ describe("game-api run finish local D1 smoke", () => {
         headers: {
           "Idempotency-Key": "run-finish-smoke-idem-1",
           Authorization: authorization,
+          "X-LastRail-App-Version": "1.0.2",
+          "X-LastRail-App-Version-Code": "101",
+          "X-LastRail-App-Platform": "android",
+          "X-LastRail-App-Channel": "internal",
         },
         body: JSON.stringify({
           runId: "run-smoke-1",
@@ -589,7 +677,11 @@ describe("game-api run finish local D1 smoke", () => {
           clientCompletedAt: "2026-08-27T00:00:00.000Z",
         }),
       },
-      createEnv(db),
+      createEnv(db, {
+        clientAdmissionMode: "ENFORCED",
+        runtimeDeploymentId: "cf-runtime-deploy-retry-c",
+        versionDocument: compatibleVersionDocument,
+      }),
     );
 
     expect(replayResponse.status).toBe(200);
@@ -600,6 +692,26 @@ describe("game-api run finish local D1 smoke", () => {
       rewardPreviewId: body.rewardPreviewId,
       balanceVersion: "1",
       errorCode: "duplicate_replay",
+      runStartVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: {
+          appVersion: "1.0.0",
+          versionCode: "100",
+        },
+        serverAcceptedDeployment: {
+          runtimeDeploymentId: "cf-runtime-deploy-smoke",
+        },
+      },
+      runFinishVersionSnapshot: {
+        source: "server_accepted_run_finish",
+        clientInstalled: {
+          appVersion: "1.0.1",
+          versionCode: "101",
+        },
+        serverAcceptedDeployment: {
+          runtimeDeploymentId: "cf-runtime-deploy-finish-b",
+        },
+      },
     });
     expect(db.exec("SELECT COUNT(*) FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);
     expect(db.exec("SELECT COUNT(*) FROM run_reward_previews WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([[1]]);

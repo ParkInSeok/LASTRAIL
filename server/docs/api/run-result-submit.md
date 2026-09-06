@@ -222,16 +222,27 @@ Duplicate replay response:
 
 ## Run Version Snapshot Preservation
 
-Accepted run finish stores the start-time `runVersionSnapshot` from
-`run_snapshots.snapshot_json` into `run_final_results.payload_json`. This is the
-server-accepted deployment/app/content compatibility evidence from run start.
-It is not recalculated from finish request headers and does not use
-client-supplied version/body fields as Source of Truth.
+Accepted run finish stores two separate sanitized evidence snapshots in
+`run_final_results.payload_json`:
 
-The stored snapshot is nullable for legacy/local runs. When present, it contains
+- `runStartVersionSnapshot`: copied from `run_snapshots.snapshot_json`;
+- `runFinishVersionSnapshot`: captured from the accepted finish request's
+  client admission and current Worker runtime.
+
+The legacy `runVersionSnapshot` field remains an alias for
+`runStartVersionSnapshot`.
+
+This preserves start-A / finish-B / retry-C evidence correctly: the start
+snapshot remains the original run start evidence, the finish snapshot records
+the deployment/app/content compatibility state that accepted the first finish,
+and duplicate finish replay returns the stored finish snapshot without reading
+current version policy again.
+
+The stored snapshots are nullable for legacy/local runs. When present, each
+contains
 only sanitized fields:
 
-- installed app `versionCode`, `platform`, and `channel`;
+- installed app `appVersion`, `versionCode`, `platform`, and `channel`;
 - client admission status and minimum version code;
 - environment and Cloudflare runtime deployment id;
 - approved content `releaseId`, `contentVersion`, and `catalogHash`;

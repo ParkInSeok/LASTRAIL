@@ -494,9 +494,10 @@ Accepted response shape:
 ```
 
 When client admission is enforced and accepted, `runVersionSnapshot` contains
-the start-time client installed version code/platform/channel, admission status,
-runtime deployment id, content release id/version/hash, and capture timestamp.
-It is nullable for legacy/local runs and is diagnostic evidence only.
+the start-time client installed app version/version code/platform/channel,
+admission status, runtime deployment id, content release id/version/hash, and
+capture timestamp. It is nullable for legacy/local runs and is diagnostic
+evidence only.
 
 Raid boss-only previews use the same route and return `encounterType =
 RAID_BOSS`, `ordinary = null`, and raid refs under both the compact top-level
@@ -513,6 +514,11 @@ same key for a different
 `operationPreviewId` returns `contract_violation`. A consumed preview without a
 matching idempotency record returns `409` with
 `operation_preview_already_consumed`.
+
+Run finish responses add `runStartVersionSnapshot` and
+`runFinishVersionSnapshot`. The latter uses source `server_accepted_run_finish`
+and is stored only for the first accepted finish; duplicate finish replay
+returns the stored value.
 
 If preview consumption succeeds but run/snapshot/idempotency persistence fails,
 the route returns `409 run_start_state_conflict`, attempts to reopen the preview

@@ -47,9 +47,12 @@ type GameApiEnv = Env & {
   CLIENT_ADMISSION_MODE?: "DISABLED" | "ENFORCED";
 };
 
+type RunVersionSnapshotSource = "server_accepted_run_start" | "server_accepted_run_finish";
+
 type RunVersionSnapshot = {
-  source: "server_accepted_run_start";
+  source: RunVersionSnapshotSource;
   clientInstalled: {
+    appVersion: string | null;
     versionCode: string | null;
     platform: string | null;
     channel: string | null;
@@ -128,6 +131,7 @@ function serializeCompatibleContentRelease(contentRelease: ContentReleaseDocumen
 function createClientConfigResponse(input: {
   env: GameApiEnv;
   version: VersionDocument | null;
+  installedAppVersion: string | null;
   installedVersionCode: string | null;
   platform: string | null;
   channel: string | null;
@@ -147,6 +151,7 @@ function createClientConfigResponse(input: {
       serverVersion: null,
       clientAdmission: {
         status: "VERSION_POLICY_UNCONFIGURED",
+        installedAppVersion: input.installedAppVersion,
         installedVersionCode: input.installedVersionCode,
         minimumVersionCode: null,
         updateRequired: true,
@@ -172,6 +177,7 @@ function createClientConfigResponse(input: {
       serverVersion,
       clientAdmission: {
         status: "APP_VERSION_REQUIRED",
+        installedAppVersion: input.installedAppVersion,
         installedVersionCode: null,
         minimumVersionCode: input.version.minimumVersionCode,
         updateRequired: true,
@@ -192,6 +198,7 @@ function createClientConfigResponse(input: {
       serverVersion,
       clientAdmission: {
         status: "UPDATE_REQUIRED",
+        installedAppVersion: input.installedAppVersion,
         installedVersionCode: input.installedVersionCode,
         minimumVersionCode: input.version.minimumVersionCode,
         updateRequired: true,
@@ -212,6 +219,7 @@ function createClientConfigResponse(input: {
       serverVersion,
       clientAdmission: {
         status: "ACCEPTED",
+        installedAppVersion: input.installedAppVersion,
         installedVersionCode: input.installedVersionCode,
         minimumVersionCode: input.version.minimumVersionCode,
         updateRequired: false,
@@ -231,6 +239,7 @@ function createClientConfigResponse(input: {
       serverVersion,
       clientAdmission: {
         status: "ACCEPTED",
+        installedAppVersion: input.installedAppVersion,
         installedVersionCode: input.installedVersionCode,
         minimumVersionCode: input.version.minimumVersionCode,
         updateRequired: false,
@@ -249,6 +258,7 @@ function createClientConfigResponse(input: {
     serverVersion,
     clientAdmission: {
       status: "ACCEPTED",
+      installedAppVersion: input.installedAppVersion,
       installedVersionCode: input.installedVersionCode,
       minimumVersionCode: input.version.minimumVersionCode,
       updateRequired: false,
@@ -288,6 +298,7 @@ async function createClientAdmissionForRequest(c: GameApiContext) {
   return createClientConfigResponse({
     env,
     version,
+    installedAppVersion: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Version")),
     installedVersionCode: normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code")),
     platform: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Platform")),
     channel: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Channel")),
@@ -302,13 +313,15 @@ function createRunVersionSnapshotFromAdmission(
   admission: ReturnType<typeof createClientConfigResponse>,
   env: GameApiEnv,
   capturedAtMs: number,
+  source: RunVersionSnapshotSource,
 ): RunVersionSnapshot | null {
   if (admission.accepted !== true) return null;
   const clientAdmission = admission.clientAdmission;
   const contentRelease = admission.contentRelease;
   return {
-    source: "server_accepted_run_start",
+    source,
     clientInstalled: {
+      appVersion: clientAdmission.installedAppVersion,
       versionCode: clientAdmission.installedVersionCode,
       platform: clientAdmission.platform,
       channel: clientAdmission.channel,
@@ -335,12 +348,29 @@ function createRunVersionSnapshotFromAdmission(
 async function createRunVersionSnapshotForAcceptedRequest(c: GameApiContext, capturedAtMs: number): Promise<RunVersionSnapshot | null> {
   const env = c.env as GameApiEnv;
   if (env.CLIENT_ADMISSION_MODE !== "ENFORCED") return null;
-  return createRunVersionSnapshotFromAdmission(await createClientAdmissionForRequest(c), env, capturedAtMs);
+  return createRunVersionSnapshotFromAdmission(
+    await createClientAdmissionForRequest(c),
+    env,
+    capturedAtMs,
+    "server_accepted_run_start",
+  );
 }
 
-function parseRunVersionSnapshot(value: unknown): RunVersionSnapshot | null {
+async function createRunFinishVersionSnapshotForAcceptedRequest(c: GameApiContext, capturedAtMs: number): Promise<RunVersionSnapshot | null> {
+  const env = c.env as GameApiEnv;
+  if (env.CLIENT_ADMISSION_MODE !== "ENFORCED") return null;
+  return createRunVersionSnapshotFromAdmission(
+    await createClientAdmissionForRequest(c),
+    env,
+    capturedAtMs,
+    "server_accepted_run_finish",
+  );
+}
+
+function parseRunVersionSnapshot(value: unknown, expectedSource?: RunVersionSnapshotSource): RunVersionSnapshot | null {
   if (!isObjectRecord(value)) return null;
-  if (value.source !== "server_accepted_run_start") return null;
+  if (value.source !== "server_accepted_run_start" && value.source !== "server_accepted_run_finish") return null;
+  if (expectedSource !== undefined && value.source !== expectedSource) return null;
   const clientInstalled = isObjectRecord(value.clientInstalled) ? value.clientInstalled : {};
   const clientAdmission = isObjectRecord(value.clientAdmission) ? value.clientAdmission : null;
   const serverAcceptedDeployment = isObjectRecord(value.serverAcceptedDeployment) ? value.serverAcceptedDeployment : {};
@@ -349,8 +379,9 @@ function parseRunVersionSnapshot(value: unknown): RunVersionSnapshot | null {
   if (typeof clientAdmission.updateRequired !== "boolean") return null;
   if (typeof value.capturedAt !== "string") return null;
   return {
-    source: "server_accepted_run_start",
+    source: value.source,
     clientInstalled: {
+      appVersion: typeof clientInstalled.appVersion === "string" ? clientInstalled.appVersion : null,
       versionCode: typeof clientInstalled.versionCode === "string" ? clientInstalled.versionCode : null,
       platform: typeof clientInstalled.platform === "string" ? clientInstalled.platform : null,
       channel: typeof clientInstalled.channel === "string" ? clientInstalled.channel : null,
@@ -374,12 +405,36 @@ function parseRunVersionSnapshot(value: unknown): RunVersionSnapshot | null {
   };
 }
 
-function getStoredRunVersionSnapshot(snapshotJson: string | null | undefined): RunVersionSnapshot | null {
+function getStoredRunStartVersionSnapshot(snapshotJson: string | null | undefined): RunVersionSnapshot | null {
   if (typeof snapshotJson !== "string") return null;
   try {
     const snapshot = JSON.parse(snapshotJson) as unknown;
     if (!isObjectRecord(snapshot)) return null;
-    return parseRunVersionSnapshot(snapshot.runVersionSnapshot);
+    return parseRunVersionSnapshot(snapshot.runStartVersionSnapshot, "server_accepted_run_start") ??
+      parseRunVersionSnapshot(snapshot.runVersionSnapshot, "server_accepted_run_start");
+  } catch {
+    return null;
+  }
+}
+
+function getStoredRunFinishVersionSnapshot(finalPayloadJson: string | null | undefined): RunVersionSnapshot | null {
+  if (typeof finalPayloadJson !== "string") return null;
+  try {
+    const payload = JSON.parse(finalPayloadJson) as unknown;
+    if (!isObjectRecord(payload)) return null;
+    return parseRunVersionSnapshot(payload.runFinishVersionSnapshot, "server_accepted_run_finish");
+  } catch {
+    return null;
+  }
+}
+
+function getStoredRunStartVersionSnapshotFromFinishPayload(finalPayloadJson: string | null | undefined): RunVersionSnapshot | null {
+  if (typeof finalPayloadJson !== "string") return null;
+  try {
+    const payload = JSON.parse(finalPayloadJson) as unknown;
+    if (!isObjectRecord(payload)) return null;
+    return parseRunVersionSnapshot(payload.runStartVersionSnapshot, "server_accepted_run_start") ??
+      parseRunVersionSnapshot(payload.runVersionSnapshot, "server_accepted_run_start");
   } catch {
     return null;
   }
@@ -1047,6 +1102,8 @@ function createRunFinishRejectedResponse(options: {
     rewardPreviewId: null,
     serverReceivedAt: null,
     balanceVersion: options.balanceVersion ?? null,
+    runStartVersionSnapshot: null,
+    runFinishVersionSnapshot: null,
     message: options.message,
     errorCode: options.errorCode,
   };
@@ -1058,6 +1115,8 @@ function createRunFinishAcceptedResponse(options: {
   balanceVersion: string;
   serverReceivedAt: number;
   staminaRefund?: StoryRaidStaminaRefundCandidate | null;
+  runStartVersionSnapshot?: RunVersionSnapshot | null;
+  runFinishVersionSnapshot?: RunVersionSnapshot | null;
 }) {
   return {
     runId: options.runId,
@@ -1068,6 +1127,8 @@ function createRunFinishAcceptedResponse(options: {
     serverReceivedAt: toIso(options.serverReceivedAt),
     balanceVersion: options.balanceVersion,
     staminaRefund: options.staminaRefund ?? null,
+    runStartVersionSnapshot: options.runStartVersionSnapshot ?? null,
+    runFinishVersionSnapshot: options.runFinishVersionSnapshot ?? null,
     message: null,
     errorCode: null,
   };
@@ -1079,6 +1140,8 @@ function createRunFinishDuplicateReplayResponse(options: {
   balanceVersion?: string | null;
   serverReceivedAt: number;
   staminaRefund?: StoryRaidStaminaRefundCandidate | null;
+  runStartVersionSnapshot?: RunVersionSnapshot | null;
+  runFinishVersionSnapshot?: RunVersionSnapshot | null;
 }) {
   return {
     runId: options.runId,
@@ -1089,6 +1152,8 @@ function createRunFinishDuplicateReplayResponse(options: {
     serverReceivedAt: toIso(options.serverReceivedAt),
     balanceVersion: options.balanceVersion ?? null,
     staminaRefund: options.staminaRefund ?? null,
+    runStartVersionSnapshot: options.runStartVersionSnapshot ?? null,
+    runFinishVersionSnapshot: options.runFinishVersionSnapshot ?? null,
     message: "Run finish was already accepted.",
     errorCode: "duplicate_replay",
   };
@@ -1447,7 +1512,8 @@ function createRunFinishPayload(
   body: RunFinishBody,
   previewMetadata: ReturnType<typeof parseRunPreviewMetadata>,
   balanceVersion: number,
-  runVersionSnapshot: RunVersionSnapshot | null,
+  runStartVersionSnapshot: RunVersionSnapshot | null,
+  runFinishVersionSnapshot: RunVersionSnapshot | null,
 ): RunFinishBody & {
   serverPreviewMetadata: {
     operationId: string;
@@ -1464,6 +1530,8 @@ function createRunFinishPayload(
     contentVersion: string | null;
   };
   runVersionSnapshot: RunVersionSnapshot | null;
+  runStartVersionSnapshot: RunVersionSnapshot | null;
+  runFinishVersionSnapshot: RunVersionSnapshot | null;
   staminaRefund?: StoryRaidStaminaRefundCandidate;
 } {
   const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
@@ -1483,7 +1551,9 @@ function createRunFinishPayload(
       balanceVersion: String(balanceVersion),
       contentVersion: previewMetadata.contentVersion,
     },
-    runVersionSnapshot,
+    runVersionSnapshot: runStartVersionSnapshot,
+    runStartVersionSnapshot,
+    runFinishVersionSnapshot,
     ...(staminaRefund === null ? {} : { staminaRefund }),
   };
 }
@@ -5969,6 +6039,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
         : String(idempotencyRecord.balance_config_version),
       serverReceivedAt: idempotencyRecord.created_at,
       staminaRefund: getStoredStoryRaidStaminaRefundCandidate(idempotencyRecord.final_payload_json),
+      runStartVersionSnapshot: getStoredRunStartVersionSnapshotFromFinishPayload(idempotencyRecord.final_payload_json),
+      runFinishVersionSnapshot: getStoredRunFinishVersionSnapshot(idempotencyRecord.final_payload_json),
     }));
   }
 
@@ -6156,6 +6228,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     ? fuelState.fuel + (staminaRefundFuelDelta ?? 0)
     : null;
   const now = Date.now();
+  const runStartVersionSnapshot = getStoredRunStartVersionSnapshot(row.snapshot_json);
+  const runFinishVersionSnapshot = await createRunFinishVersionSnapshotForAcceptedRequest(c, now);
   const rewardPreviewId = createDomainId("reward_preview");
   const storyProgressPlan = fullCompletion
     ? createStoryProgressPlan({
@@ -6194,7 +6268,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     body,
     previewMetadata,
     row.balance_config_version,
-    getStoredRunVersionSnapshot(row.snapshot_json),
+    runStartVersionSnapshot,
+    runFinishVersionSnapshot,
   ));
 
   const finishStatements = [
@@ -6366,6 +6441,8 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     balanceVersion: String(row.balance_config_version),
     serverReceivedAt: now,
     staminaRefund,
+    runStartVersionSnapshot,
+    runFinishVersionSnapshot,
   }));
 });
 

@@ -153,6 +153,8 @@ type AdminRunSearchRow = {
   risk: string | null;
   balance_config_version: number;
   validator_version: string | null;
+  snapshot_json?: string | null;
+  final_payload_json?: string | null;
 };
 
 type AdminRunDetailRow = AdminRunSearchRow & {
@@ -379,6 +381,14 @@ type AdminDashboardDailySourceMetricsRow = {
   ad_rewards_verified_30d: number | null;
   ad_rewards_granted_7d: number | null;
   ad_rewards_granted_30d: number | null;
+};
+
+type AdminDashboardDailySourcePointRow = {
+  kst_day: string;
+  session_created_accounts: number | null;
+  signups: number | null;
+  ad_rewards_verified: number | null;
+  ad_rewards_granted: number | null;
 };
 
 type AdminDashboardSupportReviewRow = {
@@ -852,19 +862,27 @@ function nullableJsonBoolean(value: JsonValue | undefined): boolean {
   return typeof value === "boolean" ? value : false;
 }
 
-function parseAdminRunVersionSnapshot(snapshotJson: string): JsonValue | null {
-  const snapshot = parseRunSnapshot(snapshotJson);
-  if (!isJsonObject(snapshot) || !isJsonObject(snapshot.runVersionSnapshot)) return null;
-  const versionSnapshot = snapshot.runVersionSnapshot;
-  if (versionSnapshot.source !== "server_accepted_run_start") return null;
+type AdminRunVersionSnapshotStatus = "AVAILABLE" | "NOT_FINISHED" | "UNRECORDED_LEGACY";
+
+function parseAdminRunVersionSnapshotFromJson(
+  json: string | null | undefined,
+  key: "runVersionSnapshot" | "runStartVersionSnapshot" | "runFinishVersionSnapshot",
+  expectedSource: "server_accepted_run_start" | "server_accepted_run_finish",
+): JsonValue | null {
+  if (typeof json !== "string") return null;
+  const parsed = parseRunSnapshot(json);
+  if (!isJsonObject(parsed) || !isJsonObject(parsed[key])) return null;
+  const versionSnapshot = parsed[key];
+  if (versionSnapshot.source !== expectedSource) return null;
   if (!isJsonObject(versionSnapshot.clientInstalled)) return null;
   if (!isJsonObject(versionSnapshot.clientAdmission)) return null;
   if (!isJsonObject(versionSnapshot.serverAcceptedDeployment)) return null;
   if (!isJsonObject(versionSnapshot.contentRelease)) return null;
 
   return {
-    source: "server_accepted_run_start",
+    source: expectedSource,
     clientInstalled: {
+      appVersion: nullableJsonString(versionSnapshot.clientInstalled.appVersion),
       versionCode: nullableJsonString(versionSnapshot.clientInstalled.versionCode),
       platform: nullableJsonString(versionSnapshot.clientInstalled.platform),
       channel: nullableJsonString(versionSnapshot.clientInstalled.channel),
@@ -886,6 +904,24 @@ function parseAdminRunVersionSnapshot(snapshotJson: string): JsonValue | null {
     },
     capturedAt: nullableJsonString(versionSnapshot.capturedAt),
   };
+}
+
+function parseAdminRunStartVersionSnapshot(snapshotJson: string | null | undefined): JsonValue | null {
+  return parseAdminRunVersionSnapshotFromJson(snapshotJson, "runStartVersionSnapshot", "server_accepted_run_start") ??
+    parseAdminRunVersionSnapshotFromJson(snapshotJson, "runVersionSnapshot", "server_accepted_run_start");
+}
+
+function parseAdminRunFinishVersionSnapshot(finalPayloadJson: string | null | undefined): JsonValue | null {
+  return parseAdminRunVersionSnapshotFromJson(finalPayloadJson, "runFinishVersionSnapshot", "server_accepted_run_finish");
+}
+
+function adminRunStartVersionSnapshotStatus(snapshotJson: string | null | undefined): AdminRunVersionSnapshotStatus {
+  return parseAdminRunStartVersionSnapshot(snapshotJson) === null ? "UNRECORDED_LEGACY" : "AVAILABLE";
+}
+
+function adminRunFinishVersionSnapshotStatus(row: { finished_at: number | null; final_payload_json?: string | null }): AdminRunVersionSnapshotStatus {
+  if (row.finished_at === null) return "NOT_FINISHED";
+  return parseAdminRunFinishVersionSnapshot(row.final_payload_json) === null ? "UNRECORDED_LEGACY" : "AVAILABLE";
 }
 
 function parseJsonValue(json: string): JsonValue {
@@ -1975,6 +2011,59 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
       thirtyDayStart,
     )
     .first<AdminDashboardDailySourceMetricsRow>();
+  const dailySourcePoints = await c.env.DB.prepare(
+    `SELECT
+       kst_day,
+       SUM(session_created_accounts) AS session_created_accounts,
+       SUM(signups) AS signups,
+       SUM(ad_rewards_verified) AS ad_rewards_verified,
+       SUM(ad_rewards_granted) AS ad_rewards_granted
+     FROM (
+       SELECT
+         strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '+9 hours') AS kst_day,
+         COUNT(DISTINCT account_id) AS session_created_accounts,
+         0 AS signups,
+         0 AS ad_rewards_verified,
+         0 AS ad_rewards_granted
+       FROM auth_sessions
+       WHERE created_at >= ?
+       GROUP BY kst_day
+       UNION ALL
+       SELECT
+         strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '+9 hours') AS kst_day,
+         0 AS session_created_accounts,
+         COUNT(*) AS signups,
+         0 AS ad_rewards_verified,
+         0 AS ad_rewards_granted
+       FROM accounts
+       WHERE created_at >= ?
+       GROUP BY kst_day
+       UNION ALL
+       SELECT
+         strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '+9 hours') AS kst_day,
+         0 AS session_created_accounts,
+         0 AS signups,
+         COUNT(*) AS ad_rewards_verified,
+         0 AS ad_rewards_granted
+       FROM ad_reward_transactions
+       WHERE created_at >= ? AND status IN ('VERIFIED','GRANTED')
+       GROUP BY kst_day
+       UNION ALL
+       SELECT
+         strftime('%Y-%m-%d', created_at / 1000, 'unixepoch', '+9 hours') AS kst_day,
+         0 AS session_created_accounts,
+         0 AS signups,
+         0 AS ad_rewards_verified,
+         COUNT(*) AS ad_rewards_granted
+       FROM ad_reward_transactions
+       WHERE created_at >= ? AND status = 'GRANTED'
+       GROUP BY kst_day
+     )
+     GROUP BY kst_day
+     ORDER BY kst_day ASC`,
+  )
+    .bind(thirtyDayStart, thirtyDayStart, thirtyDayStart, thirtyDayStart)
+    .all<AdminDashboardDailySourcePointRow>();
   const supportReview = await c.env.DB.prepare(
     `SELECT COUNT(*) AS support_review_needed_count
      FROM suspicious_player_reviews
@@ -2061,24 +2150,47 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
     dailySourceMetrics: {
       timezone: "Asia/Seoul",
       windowSemantics: "KST_CALENDAR_DAY_INCLUSIVE",
-      dauSource: "auth_sessions.created_at_distinct_account",
+      sessionCreatedAccountsSource: "auth_sessions.created_at_distinct_account",
+      dauSource: "UNAVAILABLE_NO_ACTIVITY_HEARTBEAT_SOURCE",
       signupSource: "accounts.created_at",
       adRewardSource: "ad_reward_transactions.status",
       passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
+      sourceAvailability: {
+        exactDau: false,
+        exactConcurrentUsers: false,
+        sessionCreatedAccounts: true,
+        signups: true,
+        adRewards: true,
+        passPurchases: false,
+        adRevenue: false,
+      },
       sevenDay: {
         dau: countValue(dailySourceMetrics?.dau_7d),
+        sessionCreatedAccounts: countValue(dailySourceMetrics?.dau_7d),
         signups: countValue(dailySourceMetrics?.signups_7d),
         adRewardsVerified: countValue(dailySourceMetrics?.ad_rewards_verified_7d),
         adRewardsGranted: countValue(dailySourceMetrics?.ad_rewards_granted_7d),
         passPurchases: null,
+        adRevenue: null,
       },
       thirtyDay: {
         dau: countValue(dailySourceMetrics?.dau_30d),
+        sessionCreatedAccounts: countValue(dailySourceMetrics?.dau_30d),
         signups: countValue(dailySourceMetrics?.signups_30d),
         adRewardsVerified: countValue(dailySourceMetrics?.ad_rewards_verified_30d),
         adRewardsGranted: countValue(dailySourceMetrics?.ad_rewards_granted_30d),
         passPurchases: null,
+        adRevenue: null,
       },
+      points: dailySourcePoints.results.map((row) => ({
+        date: row.kst_day,
+        sessionCreatedAccounts: countValue(row.session_created_accounts),
+        signups: countValue(row.signups),
+        adRewardsVerified: countValue(row.ad_rewards_verified),
+        adRewardsGranted: countValue(row.ad_rewards_granted),
+        passPurchases: null,
+        adRevenue: null,
+      })),
     },
     supportReviewNeededCount: countValue(supportReview?.support_review_needed_count),
     accountRecoveryCandidateCount: countValue(recoveryCandidates?.account_recovery_candidate_count),
@@ -3882,8 +3994,12 @@ app.get("/v1/admin/runs", async (c) => {
        r.finished_at AS finished_at,
        op.risk AS risk,
        r.balance_config_version AS balance_config_version,
-       vv.version AS validator_version
+       vv.version AS validator_version,
+       rs.snapshot_json AS snapshot_json,
+       final.payload_json AS final_payload_json
      FROM runs r
+     LEFT JOIN run_snapshots rs ON rs.run_id = r.id
+     LEFT JOIN run_final_results final ON final.run_id = r.id
      LEFT JOIN operation_previews op ON op.id = r.preview_id
      LEFT JOIN validator_runtime_active vra ON vra.singleton_id = 1
      LEFT JOIN validator_runtime_configs vrc ON vrc.id = vra.runtime_config_id
@@ -3905,6 +4021,10 @@ app.get("/v1/admin/runs", async (c) => {
       riskTier: normalizeRiskTier(row.risk),
       balanceVersion: String(row.balance_config_version),
       ...(row.validator_version ? { validatorVersion: row.validator_version } : {}),
+      runStartVersionSnapshot: parseAdminRunStartVersionSnapshot(row.snapshot_json),
+      runStartVersionSnapshotStatus: adminRunStartVersionSnapshotStatus(row.snapshot_json),
+      runFinishVersionSnapshot: parseAdminRunFinishVersionSnapshot(row.final_payload_json),
+      runFinishVersionSnapshotStatus: adminRunFinishVersionSnapshotStatus(row),
     })),
   });
 });
@@ -4003,6 +4123,8 @@ app.get("/v1/admin/runs/:runId", async (c) => {
     .bind(row.run_id, row.run_id)
     .first<AdminRunIntegrityEvidenceRow>();
   const rewardCalculation = parseRunRewardCalculationMetadata(rewardPreview?.reward_plan_json);
+  const runStartVersionSnapshot = parseAdminRunStartVersionSnapshot(row.snapshot_json);
+  const runFinishVersionSnapshot = parseAdminRunFinishVersionSnapshot(finalResult?.payload_json);
   const fuelLedgerRefs = validFuelLedgerRows(fuelLedgerRows.results).map((ledger) => ledger.id);
   const staminaRefund = finalMetadata.staminaRefund === null
     ? null
@@ -4027,7 +4149,14 @@ app.get("/v1/admin/runs/:runId", async (c) => {
     validatorVersion: row.validator_version ?? "UNKNOWN",
     validatorRuntimeRevision: String(row.validator_runtime_revision ?? 0),
     snapshot: parseRunSnapshot(row.snapshot_json),
-    runVersionSnapshot: parseAdminRunVersionSnapshot(row.snapshot_json),
+    runVersionSnapshot: runStartVersionSnapshot,
+    runStartVersionSnapshot,
+    runStartVersionSnapshotStatus: adminRunStartVersionSnapshotStatus(row.snapshot_json),
+    runFinishVersionSnapshot,
+    runFinishVersionSnapshotStatus: adminRunFinishVersionSnapshotStatus({
+      finished_at: row.finished_at,
+      final_payload_json: finalResult?.payload_json ?? null,
+    }),
     operationId: previewMetadata.operationId,
     outcome: finalResult?.outcome ?? null,
     clearedWaves: finalResult?.cleared_waves ?? null,

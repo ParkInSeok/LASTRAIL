@@ -708,6 +708,8 @@ describe("game-api run finish contract", () => {
       serverReceivedAt: "2026-08-27T00:00:00.000Z",
       balanceVersion: "1",
       staminaRefund: null,
+      runStartVersionSnapshot: null,
+      runFinishVersionSnapshot: null,
       message: "Run finish was already accepted.",
       errorCode: "duplicate_replay",
     });

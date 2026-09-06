@@ -109,6 +109,22 @@ describe("admin-api launch read-only aggregate models", () => {
             ad_rewards_granted_7d: 3,
             ad_rewards_granted_30d: 11,
           },
+          [
+            {
+              kst_day: "2026-08-19",
+              session_created_accounts: 1,
+              signups: 1,
+              ad_rewards_verified: 0,
+              ad_rewards_granted: 0,
+            },
+            {
+              kst_day: "2026-08-25",
+              session_created_accounts: 5,
+              signups: 2,
+              ad_rewards_verified: 3,
+              ad_rewards_granted: 2,
+            },
+          ],
           { support_review_needed_count: 3 },
           { integrity_high_risk_count: 4 },
           { reward_claim_failure_count: 1, offline_reward_issue_count: 2, gacha_support_issue_count: 1, critical_open_ops_error_count: 5, unacknowledged_core_failure_count: 6 },
@@ -137,24 +153,58 @@ describe("admin-api launch read-only aggregate models", () => {
         dailySourceMetrics: {
           timezone: "Asia/Seoul",
           windowSemantics: "KST_CALENDAR_DAY_INCLUSIVE",
-          dauSource: "auth_sessions.created_at_distinct_account",
+          sessionCreatedAccountsSource: "auth_sessions.created_at_distinct_account",
+          dauSource: "UNAVAILABLE_NO_ACTIVITY_HEARTBEAT_SOURCE",
           signupSource: "accounts.created_at",
           adRewardSource: "ad_reward_transactions.status",
           passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
+          sourceAvailability: {
+            exactDau: false,
+            exactConcurrentUsers: false,
+            sessionCreatedAccounts: true,
+            signups: true,
+            adRewards: true,
+            passPurchases: false,
+            adRevenue: false,
+          },
           sevenDay: {
             dau: 12,
+            sessionCreatedAccounts: 12,
             signups: 4,
             adRewardsVerified: 5,
             adRewardsGranted: 3,
             passPurchases: null,
+            adRevenue: null,
           },
           thirtyDay: {
             dau: 31,
+            sessionCreatedAccounts: 31,
             signups: 9,
             adRewardsVerified: 15,
             adRewardsGranted: 11,
             passPurchases: null,
+            adRevenue: null,
           },
+          points: [
+            {
+              date: "2026-08-19",
+              sessionCreatedAccounts: 1,
+              signups: 1,
+              adRewardsVerified: 0,
+              adRewardsGranted: 0,
+              passPurchases: null,
+              adRevenue: null,
+            },
+            {
+              date: "2026-08-25",
+              sessionCreatedAccounts: 5,
+              signups: 2,
+              adRewardsVerified: 3,
+              adRewardsGranted: 2,
+              passPurchases: null,
+              adRevenue: null,
+            },
+          ],
         },
         supportReviewNeededCount: 3,
         accountRecoveryCandidateCount: 1,
@@ -186,7 +236,7 @@ describe("admin-api launch read-only aggregate models", () => {
     const response = await app.request(
       "/v1/admin/dashboard/launch-summary",
       { headers: { "Cf-Access-Subject": "access|operator" } },
-      createEnv([operatorPrincipal, null, null, null, null, null, null, null, null, []]),
+      createEnv([operatorPrincipal, null, null, [], null, null, null, null, null, null, []]),
     );
 
     expect(response.status).toBe(200);
@@ -195,20 +245,36 @@ describe("admin-api launch read-only aggregate models", () => {
       activeSessions: 0,
       lastLoginAtLatest: null,
       dailySourceMetrics: {
+        dauSource: "UNAVAILABLE_NO_ACTIVITY_HEARTBEAT_SOURCE",
+        sessionCreatedAccountsSource: "auth_sessions.created_at_distinct_account",
+        sourceAvailability: {
+          exactDau: false,
+          exactConcurrentUsers: false,
+          sessionCreatedAccounts: true,
+          signups: true,
+          adRewards: true,
+          passPurchases: false,
+          adRevenue: false,
+        },
         sevenDay: {
           dau: 0,
+          sessionCreatedAccounts: 0,
           signups: 0,
           adRewardsVerified: 0,
           adRewardsGranted: 0,
           passPurchases: null,
+          adRevenue: null,
         },
         thirtyDay: {
           dau: 0,
+          sessionCreatedAccounts: 0,
           signups: 0,
           adRewardsVerified: 0,
           adRewardsGranted: 0,
           passPurchases: null,
+          adRevenue: null,
         },
+        points: [],
         passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
       },
       supportReviewNeededCount: 0,
@@ -579,7 +645,154 @@ describe("admin-api player and run launch support read models", () => {
     }
   });
 
+  it("returns run list version snapshot evidence without conflating unfinished and legacy finish records", async () => {
+    const startSnapshot = {
+      source: "server_accepted_run_start",
+      clientInstalled: { appVersion: "1.0.0", versionCode: "100", platform: "android", channel: "internal" },
+      clientAdmission: { status: "ACCEPTED", minimumVersionCode: "90", updateRequired: false },
+      serverAcceptedDeployment: { environment: "DEV", runtimeDeploymentId: "cf-runtime-start-list" },
+      contentRelease: { status: "APPROVED_COMPATIBLE", releaseId: "content_act1_001", contentVersion: "act1.2026-09-06.001", catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      capturedAt: "2026-08-25T11:40:00.000Z",
+    };
+    const finishSnapshot = {
+      source: "server_accepted_run_finish",
+      clientInstalled: { appVersion: "1.0.1", versionCode: "101", platform: "android", channel: "internal" },
+      clientAdmission: { status: "ACCEPTED", minimumVersionCode: "90", updateRequired: false },
+      serverAcceptedDeployment: { environment: "DEV", runtimeDeploymentId: "cf-runtime-finish-list" },
+      contentRelease: { status: "APPROVED_COMPATIBLE", releaseId: "content_act1_001", contentVersion: "act1.2026-09-06.001", catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+      capturedAt: "2026-08-25T11:46:00.000Z",
+    };
+
+    const response = await app.request(
+      "/v1/admin/runs",
+      { headers: { "Cf-Access-Subject": "access|operator" } },
+      createEnv([
+        operatorPrincipal,
+        [
+          {
+            run_id: "run-finished-1",
+            account_id: "account-1",
+            status: "COMPLETED",
+            started_at: 1787650000000,
+            finished_at: 1787650360000,
+            risk: "III",
+            balance_config_version: 7,
+            validator_version: "validator-1",
+            snapshot_json: JSON.stringify({ runVersionSnapshot: startSnapshot }),
+            final_payload_json: JSON.stringify({ runFinishVersionSnapshot: finishSnapshot }),
+          },
+          {
+            run_id: "run-active-1",
+            account_id: "account-1",
+            status: "ACTIVE",
+            started_at: 1787650400000,
+            finished_at: null,
+            risk: "I",
+            balance_config_version: 7,
+            validator_version: "validator-1",
+            snapshot_json: JSON.stringify({ runVersionSnapshot: startSnapshot }),
+            final_payload_json: null,
+          },
+          {
+            run_id: "run-legacy-1",
+            account_id: "account-1",
+            status: "COMPLETED",
+            started_at: 1787650500000,
+            finished_at: 1787650600000,
+            risk: "II",
+            balance_config_version: 7,
+            validator_version: "validator-1",
+            snapshot_json: JSON.stringify({}),
+            final_payload_json: JSON.stringify({}),
+          },
+        ],
+      ]),
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      items: [
+        {
+          runId: "run-finished-1",
+          runStartVersionSnapshotStatus: "AVAILABLE",
+          runStartVersionSnapshot: {
+            source: "server_accepted_run_start",
+            clientInstalled: { appVersion: "1.0.0", versionCode: "100" },
+          },
+          runFinishVersionSnapshotStatus: "AVAILABLE",
+          runFinishVersionSnapshot: {
+            source: "server_accepted_run_finish",
+            clientInstalled: { appVersion: "1.0.1", versionCode: "101" },
+          },
+        },
+        {
+          runId: "run-active-1",
+          runStartVersionSnapshotStatus: "AVAILABLE",
+          runFinishVersionSnapshotStatus: "NOT_FINISHED",
+          runFinishVersionSnapshot: null,
+        },
+        {
+          runId: "run-legacy-1",
+          runStartVersionSnapshotStatus: "UNRECORDED_LEGACY",
+          runStartVersionSnapshot: null,
+          runFinishVersionSnapshotStatus: "UNRECORDED_LEGACY",
+          runFinishVersionSnapshot: null,
+        },
+      ],
+    });
+  });
+
   it("returns run detail reward, raid, start package, and stamina refund evidence", async () => {
+    const runStartVersionSnapshot = {
+      source: "server_accepted_run_start",
+      clientInstalled: {
+        appVersion: "1.0.0",
+        versionCode: "100",
+        platform: "android",
+        channel: "internal",
+      },
+      clientAdmission: {
+        status: "ACCEPTED",
+        minimumVersionCode: "90",
+        updateRequired: false,
+      },
+      serverAcceptedDeployment: {
+        environment: "DEV",
+        runtimeDeploymentId: "cf-runtime-deploy-admin-start",
+      },
+      contentRelease: {
+        status: "APPROVED_COMPATIBLE",
+        releaseId: "content_act1_001",
+        contentVersion: "act1.2026-09-06.001",
+        catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      },
+      capturedAt: "2026-08-25T11:40:00.000Z",
+    };
+    const runFinishVersionSnapshot = {
+      source: "server_accepted_run_finish",
+      clientInstalled: {
+        appVersion: "1.0.1",
+        versionCode: "101",
+        platform: "android",
+        channel: "internal",
+      },
+      clientAdmission: {
+        status: "ACCEPTED",
+        minimumVersionCode: "90",
+        updateRequired: false,
+      },
+      serverAcceptedDeployment: {
+        environment: "DEV",
+        runtimeDeploymentId: "cf-runtime-deploy-admin-finish",
+      },
+      contentRelease: {
+        status: "APPROVED_COMPATIBLE",
+        releaseId: "content_act1_001",
+        contentVersion: "act1.2026-09-06.001",
+        catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      },
+      capturedAt: "2026-08-25T11:46:00.000Z",
+    };
     const previewJson = {
       operationId: "raid_raider_king_engine",
       encounterType: "RAID_BOSS",
@@ -602,6 +815,9 @@ describe("admin-api player and run launch support read models", () => {
         completedPhaseCount: 2,
         encounterDurationSeconds: 360,
       },
+      runStartVersionSnapshot,
+      runFinishVersionSnapshot,
+      runVersionSnapshot: runStartVersionSnapshot,
       staminaRefund: {
         status: "COMMITTED",
         refundType: "STAMINA",
@@ -637,30 +853,7 @@ describe("admin-api player and run launch support read models", () => {
           validator_runtime_revision: 12,
           snapshot_json: JSON.stringify({
             operatorIds: ["op_a", "op_b", "op_c", "op_d", "op_e"],
-            runVersionSnapshot: {
-              source: "server_accepted_run_start",
-              clientInstalled: {
-                versionCode: "100",
-                platform: "android",
-                channel: "internal",
-              },
-              clientAdmission: {
-                status: "ACCEPTED",
-                minimumVersionCode: "90",
-                updateRequired: false,
-              },
-              serverAcceptedDeployment: {
-                environment: "DEV",
-                runtimeDeploymentId: "cf-runtime-deploy-admin",
-              },
-              contentRelease: {
-                status: "APPROVED_COMPATIBLE",
-                releaseId: "content_act1_001",
-                contentVersion: "act1.2026-09-06.001",
-                catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-              },
-              capturedAt: "2026-08-25T11:40:00.000Z",
-            },
+            runVersionSnapshot: runStartVersionSnapshot,
           }),
           preview_json: JSON.stringify(previewJson),
         },
@@ -718,6 +911,7 @@ describe("admin-api player and run launch support read models", () => {
       runVersionSnapshot: {
         source: "server_accepted_run_start",
         clientInstalled: {
+          appVersion: "1.0.0",
           versionCode: "100",
           platform: "android",
           channel: "internal",
@@ -729,7 +923,7 @@ describe("admin-api player and run launch support read models", () => {
         },
         serverAcceptedDeployment: {
           environment: "DEV",
-          runtimeDeploymentId: "cf-runtime-deploy-admin",
+          runtimeDeploymentId: "cf-runtime-deploy-admin-start",
         },
         contentRelease: {
           status: "APPROVED_COMPATIBLE",
@@ -738,6 +932,28 @@ describe("admin-api player and run launch support read models", () => {
           catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         },
       },
+      runStartVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: {
+          appVersion: "1.0.0",
+          versionCode: "100",
+        },
+        serverAcceptedDeployment: {
+          runtimeDeploymentId: "cf-runtime-deploy-admin-start",
+        },
+      },
+      runStartVersionSnapshotStatus: "AVAILABLE",
+      runFinishVersionSnapshot: {
+        source: "server_accepted_run_finish",
+        clientInstalled: {
+          appVersion: "1.0.1",
+          versionCode: "101",
+        },
+        serverAcceptedDeployment: {
+          runtimeDeploymentId: "cf-runtime-deploy-admin-finish",
+        },
+      },
+      runFinishVersionSnapshotStatus: "AVAILABLE",
       integrityDisposition: {
         status: "CLEAR",
         openSignals: 0,

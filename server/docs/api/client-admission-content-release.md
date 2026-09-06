@@ -11,6 +11,7 @@ directly.
 
 The client sends its installed build metadata in headers:
 
+- `X-LastRail-App-Version`: optional human display version.
 - `X-LastRail-App-Version-Code`: decimal Android/Unity version code.
 - `X-LastRail-App-Platform`: optional platform label such as `android`.
 - `X-LastRail-App-Channel`: optional release channel such as `internal`.
