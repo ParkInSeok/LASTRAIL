@@ -45,6 +45,7 @@ export const launchForbiddenSensitiveFields = [
 ] as const;
 
 const launchNavigationPermissions: AdminPermission[] = [
+  "SUPPORT_READ",
   "ACCOUNT_READ",
   "RUN_READ",
   "ECONOMY_READ",

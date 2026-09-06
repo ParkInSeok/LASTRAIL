@@ -13,6 +13,7 @@ import { PlayersPage } from "../pages/PlayersPage";
 import { RunDetailPage } from "../pages/RunDetailPage";
 import { RunsPage } from "../pages/RunsPage";
 import { SupportAccountPage } from "../pages/SupportAccountPage";
+import { SupportTicketsPage, SupportTicketPage } from "../pages/SupportTicketsPage";
 import { SuspiciousPlayerDetailPage } from "../pages/SuspiciousPlayerDetailPage";
 import { SuspiciousPlayersPage } from "../pages/SuspiciousPlayersPage";
 import { VersionManagementPage } from "../pages/VersionManagementPage";
@@ -137,6 +138,8 @@ function Shell() {
           <Route path="/players" element={<PlayersPage />} />
           <Route path="/players/:accountId" element={<PlayerDetailPage />} />
           <Route path="/support/accounts/:accountId" element={<SupportAccountPage />} />
+          <Route path="/support/tickets" element={<SupportTicketsPage />} />
+          <Route path="/support/tickets/:ticketId" element={<SupportTicketPage />} />
           <Route path="/gacha" element={<GachaPage />} />
           <Route path="/ops/error-logs" element={<ErrorLogsPage />} />
           <Route path="/integrity" element={<IntegrityPage />} />

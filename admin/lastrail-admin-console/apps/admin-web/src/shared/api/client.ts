@@ -1,3 +1,4 @@
+import { ticketList, ticketDetail } from "../support/tickets";
 import {
   mapDashboardLaunchSummaryResponse
 } from "../dashboard/launchSummaryContract";
@@ -280,6 +281,12 @@ export const adminApi = {
       await readJson(`/api/support/accounts/${encodeURIComponent(accountId)}`),
       accountId
     );
+  },
+  async supportTickets(filters: Record<string, string>) {
+    return ticketList(await readJson(`/api/support/tickets${queryString(filters)}`));
+  },
+  async supportTicket(ticketId: string) {
+    return ticketDetail(await readJson(`/api/support/tickets/${encodeURIComponent(ticketId)}`));
   },
   async gachaBanners(filters: { status?: string } = {}) {
     return mapGachaBannerListResponse(await readJson(`/api/gacha/banners${gachaQuery(filters)}`));

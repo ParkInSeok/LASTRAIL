@@ -28,7 +28,7 @@ export function PlayersPage() {
         <input
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
-          placeholder="계정 ID 또는 표시 이름"
+          placeholder="계정 ID 또는 닉네임"
         />
         <button type="submit">검색</button>
       </form>
@@ -38,7 +38,8 @@ export function PlayersPage() {
         <table>
           <thead>
             <tr>
-              <th>계정</th>
+              <th>닉네임</th>
+              <th>계정 ID</th>
               <th>상태</th>
               <th>동기화</th>
               <th>위험도</th>
@@ -49,9 +50,9 @@ export function PlayersPage() {
             {query.data.items.map((player) => (
               <tr key={player.accountId}>
                 <td>
-                  <Link to={`/players/${player.accountId}`}>{player.displayName}</Link>
-                  <small>{player.accountId}</small>
+                  {player.displayName?.trim() || "닉네임 없음"}
                 </td>
+                <td><Link to={`/players/${encodeURIComponent(player.accountId)}`}>{player.accountId}</Link></td>
                 <td>{accountStatusLabel(player.status)}</td>
                 <td>{player.syncLevel}</td>
                 <td>{player.risk ? priorityLabel(player.risk) : "-"}</td>

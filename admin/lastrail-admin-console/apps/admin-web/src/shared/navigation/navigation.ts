@@ -21,7 +21,7 @@ const navigation: NavigationGroup[] = [
     items: [
       { label: "플레이어", path: "/players", permission: "ACCOUNT_READ" },
       { label: "출격", path: "/runs", permission: "RUN_READ" },
-      { label: "CS 지원", path: "/support/accounts/pending", permission: "ACCOUNT_READ" },
+      { label: "CS 지원", path: "/support/tickets", permission: "SUPPORT_READ" },
       { label: "요원 모집", path: "/gacha", permission: "ECONOMY_READ" },
       { label: "시스템 에러 로그", path: "/ops/error-logs", permission: "AUDIT_READ" },
       { label: "무결성", path: "/integrity", permission: "INTEGRITY_READ" },
