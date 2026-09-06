@@ -1,157 +1,20 @@
 import { describe, expect, it } from "vitest";
-import {
-  errorLogDetailPlaceholders,
-  errorLogEndpointCandidates,
-  errorLogEndpointStatus,
-  errorLogFilterGroups,
-  errorLogFilterStatus,
-  errorLogListColumns,
-  errorLogReadOnlyFilters,
-  errorLogSummaryCardsForReadState,
-  errorLogSummaryCards
-} from "./ErrorLogsPage";
+import { buildLogFilters, emptyLogFilters, logTime } from "./ErrorLogsPage";
+import { mapOpsErrorLogListResponse } from "../shared/opsErrorLogs/opsErrorLogContract";
 
-describe("ErrorLogsPage configuration", () => {
-  it("covers runtime error summary, filters, list columns, and detail placeholders", () => {
-    expect(errorLogSummaryCards.map((card) => card.label)).toEqual([
-      "최근 오류",
-      "경고",
-      "치명 오류",
-      "재시도 가능 이벤트",
-      "마스킹 필요 이벤트"
-    ]);
-
-    expect(errorLogFilterGroups.map((group) => group.label)).toContain("서비스");
-    expect(errorLogListColumns).toContain("errorCode/message 요약");
-    expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("민감정보 마스킹 상태");
+describe("Error log browser", () => {
+  it("includes category and all applied filters before server pagination", () => {
+    const result = buildLogFilters("server", { ...emptyLogFilters, q: " request-1 ", severity: "error", environment: "DEV", from: "2026-09-06T10:00" }, "25");
+    expect(result).toMatchObject({ category: "server", q: "request-1", severity: "error", environment: "DEV", cursor: "25", limit: "25" });
+    expect(result.occurredFrom).toBe(new Date("2026-09-06T10:00").toISOString());
+    expect(buildLogFilters("frontend", emptyLogFilters)).toMatchObject({ category: "frontend", cursor: "", service: "", q: "" });
   });
-
-  it("labels ops log waiting states by source instead of generic integration pending", () => {
-    expect(errorLogSummaryCards.every((card) => card.value === "집계 API 대기")).toBe(true);
-    expect(errorLogFilterStatus).toBe("필터 기준 준비");
-    expect(errorLogEndpointStatus).toBe("read-only API 연결됨");
-    expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.status)).toEqual([
-      "R2/trace 상세 대기",
-      "request metadata 상세 대기",
-      "관련 링크 API 대기",
-      "마스킹 정책 기준 준비",
-      "클라이언트 진단 연동 대기",
-      "support compose 연동됨",
-      "ops label/filter 준비",
-      "ops label/filter 준비",
-      "ops label/filter 준비"
-    ]);
+  it("distinguishes frontend collection unavailable from successful empty server logs", () => {
+    expect(mapOpsErrorLogListResponse({ items: [], collectionAvailable: false }).collectionAvailable).toBe(false);
+    expect(mapOpsErrorLogListResponse({ items: [] }).collectionAvailable).toBe(true);
   });
-
-  it("maps ops error summary API values into summary cards", () => {
-    const cards = errorLogSummaryCardsForReadState({
-      data: {
-        permission: "OPS_ERROR_LOG_READ",
-        permissionMode: "ROLE_PERMISSION",
-        recentErrorCount: "9",
-        warningCount: "2",
-        criticalCount: "3",
-        retryableCount: "4",
-        maskedCount: "8",
-        openCount: "5",
-        acknowledgedCount: "1",
-        latestCriticalAt: "없음",
-        serverCalculatedAt: "2026-08-25T11:56:40.000Z",
-        detailAvailable: false
-      },
-      isLoading: false,
-      error: null
-    });
-
-    expect(cards.map((card) => [card.label, card.value])).toEqual([
-      ["최근 오류", "9"],
-      ["경고", "2"],
-      ["치명 오류", "3"],
-      ["재시도 가능 이벤트", "4"],
-      ["마스킹 필요 이벤트", "8"]
-    ]);
-  });
-
-  it("uses Korean labels while keeping ops log stable codes visible", () => {
-    const options = errorLogFilterGroups.flatMap((group) => group.options);
-
-    expect(options).toContain("개발 (DEV)");
-    expect(options).toContain("운영 (PRD)");
-    expect(options).toContain("게임 API (game_api)");
-    expect(options).toContain("고객지원 조회 모델 (support_read_model)");
-    expect(options).toContain("열림 (open)");
-    expect(options).toContain("확인됨 (acknowledged)");
-    expect(options).toContain("치명 (critical)");
-    expect(options).toContain("Unity 클라이언트 진단 (Unity Client Diagnostic)");
-    expect(options).toContain("치명 오류 (fatal)");
-    expect(options).toContain("Google 인증 설정 누락 (google_auth_config_missing)");
-    expect(options).toContain("Google 인증 검증기 사용 불가 (google_auth_verifier_unavailable)");
-    expect(options).toContain("출격 시작 상태 충돌 (run_start_state_conflict)");
-    expect(options).toContain("스토리 레이드 stamina 환급 상태 충돌 (story_raid_stamina_refund_state_conflict)");
-    expect(options).toContain("스토리 레이드 stamina 환급 정책 누락 (story_raid_stamina_refund_policy_missing)");
-    expect(options).toContain("보상 계획 불일치 (reward_plan_mismatch)");
-    expect(options).toContain("위험도 보상 정책 누락 (risk_reward_policy_missing)");
-    expect(options).toContain("무결성 판정으로 보상 제한 (reward_integrity_restricted)");
-    expect(options).toContain("오프라인 보상 정책 누락 (offline_reward_policy_missing)");
-    expect(options).toContain("오프라인 보상 상태 충돌 (offline_reward_state_conflict)");
-    expect(options).toContain("모집 상태 충돌 (gacha_state_conflict)");
-    expect(options).toContain("스토리 진행 정책 누락 (story_progress_policy_missing)");
-    expect(options).toContain("스토리 진행 상태 충돌 (story_progress_state_conflict)");
-    expect(options).toContain("내러티브 콘텐츠 누락 (narrative_content_missing)");
-    expect(options).toContain("gachaBannerId");
-  });
-
-  it("keeps ops error logs as read-only support evidence before endpoints are implemented", () => {
-    expect(errorLogEndpointCandidates).toEqual([
-      "GET /v1/admin/ops/error-logs",
-      "GET /v1/admin/ops/error-logs/:id"
-    ]);
-    expect(errorLogDetailPlaceholders.map((placeholder) => placeholder.title)).toContain("지원 근거");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("resolve button");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("repair action");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("Google JWKS/fetch/parse");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("retryable=true");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("masked=true");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("run_start_state_conflict");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("story_raid_stamina_refund_state_conflict");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("story_raid_stamina_refund_policy_missing");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).toContain("safe correlation only");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("JWKS raw dump");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("full claims");
-    expect(JSON.stringify(errorLogDetailPlaceholders)).not.toContain("stack dump");
-  });
-
-  it("prepares actual read-only Admin API filters and list columns", () => {
-    expect(errorLogReadOnlyFilters).toEqual([
-      "environment",
-      "severity",
-      "status",
-      "source",
-      "service",
-      "errorCode",
-      "requestId",
-      "accountId",
-      "runId",
-      "rewardPreviewId",
-      "rewardClaimId",
-      "offlineRewardClaimId",
-      "gachaBatchId",
-      "gachaBannerId",
-      "storyProgressId",
-      "integrityEventId",
-      "supportTicketId",
-      "limit",
-      "cursor"
-    ]);
-    expect(errorLogListColumns).toEqual([
-      "발생 시각",
-      "소스/서비스",
-      "심각도",
-      "상태",
-      "errorCode/message 요약",
-      "requestId",
-      "관련 리소스",
-      "masked"
-    ]);
+  it("formats timestamp values in KST while preserving unknown values", () => {
+    expect(logTime("2026-09-06T00:00:00Z")).toContain("09:00:00");
+    expect(logTime("없음")).toBe("없음");
   });
 });

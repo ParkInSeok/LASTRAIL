@@ -1,6 +1,7 @@
 import { Hono, type Context } from "hono";
 import { canonicalJson, createRequestId, sha256Hex } from "@lastrail/common";
 import { parseVersion, readVersion, saveVersion, type VersionBucket } from "./version-store";
+import { opsLogSearch } from "./ops-log-search";
 
 const app = new Hono<{ Bindings: Env & { VERSION_BUCKET?: VersionBucket } }>();
 
@@ -1894,6 +1895,13 @@ app.get("/v1/admin/ops/error-logs", async (c) => {
 
   const whereClauses: string[] = [];
   const values: Array<string | number> = [];
+  try {
+    const search = opsLogSearch(c.req.query("category"), c.req.query("q"));
+    whereClauses.push(...search.clauses);
+    values.push(...search.values);
+  } catch {
+    return c.json({ error: { code: "invalid_log_filter" } }, 400);
+  }
   const filters = [
     ["environment", "environment"],
     ["service", "service"],
@@ -1976,6 +1984,7 @@ app.get("/v1/admin/ops/error-logs", async (c) => {
     permission: OPS_ERROR_LOG_READ_PERMISSION,
     permissionMode: "ROLE_PERMISSION",
     items: visibleRows.map(opsErrorLogSummary),
+    collectionAvailable: c.req.query("category") !== "frontend",
     nextCursor: rows.results.length > limit ? String(offset + limit) : null,
   });
 });

@@ -1,6 +1,10 @@
 import { adminReadValueLabel } from "../api/errorDisplay";
 
 export type OpsErrorLogReadFiltersPreview = {
+  category?: string;
+  q?: string;
+  occurredFrom?: string;
+  occurredTo?: string;
   environment: string;
   severity: string;
   status: string;
@@ -51,6 +55,7 @@ export type OpsErrorLogListItem = {
 };
 
 export type OpsErrorLogListResponse = {
+  collectionAvailable?: boolean;
   permission: "OPS_ERROR_LOG_READ" | string;
   permissionMode: "ROLE_PERMISSION" | string;
   items: OpsErrorLogListItem[];
@@ -191,6 +196,7 @@ export function emptyOpsErrorLogDetail(errorLogId = "연동 대기"): OpsErrorLo
 export function mapOpsErrorLogListResponse(response: unknown): OpsErrorLogListResponse {
   const record = asRecord(response);
   return {
+    collectionAvailable: record?.collectionAvailable !== false,
     permission: stringValue(record?.permission, "OPS_ERROR_LOG_READ"),
     permissionMode: stringValue(record?.permissionMode, "ROLE_PERMISSION"),
     items: Array.isArray(record?.items) ? record.items.map((item) => mapOpsErrorLogItem(item)) : [],

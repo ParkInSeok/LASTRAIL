@@ -1,386 +1,79 @@
-import {
-  opsEnvironmentLabel,
-  opsErrorCodeLabel,
-  opsErrorLogSourceLabel,
-  opsErrorLogStatusLabel,
-  permissionLabel,
-  opsServiceLabel,
-  opsSeverityLabel
-} from "../shared/labels/adminLabels";
+import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
-import { adminReadStatusLabel, adminRequestFailureDisplay } from "../shared/api/errorDisplay";
-import {
-  emptyOpsErrorLogListItem,
-  noDataOpsErrorLogListItem,
-  opsErrorLogReadFilterFields,
-  type OpsErrorLogSummaryResponse,
-  type OpsErrorLogListItem
-} from "../shared/opsErrorLogs/opsErrorLogContract";
+import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
+import { opsSeverityLabel, opsErrorLogStatusLabel, opsErrorLogSourceLabel } from "../shared/labels/adminLabels";
+import type { OpsErrorLogReadFiltersPreview } from "../shared/opsErrorLogs/opsErrorLogContract";
+import "./errorLogs.css";
 
-type ErrorLogSummaryCard = {
-  label: string;
-  value: string;
-  note: string;
-};
-
-type ErrorLogFilterGroup = {
-  label: string;
-  options: string[];
-};
-
-type ErrorLogDetailPlaceholder = {
-  title: string;
-  status: string;
-  description: string;
-};
-
-const labeledCode = (label: string, code: string) => `${label} (${code})`;
-
-export const errorLogEndpointCandidates = [
-  "GET /v1/admin/ops/error-logs",
-  "GET /v1/admin/ops/error-logs/:id"
-];
-
-export const errorLogFilterStatus = "필터 기준 준비";
-
-export const errorLogEndpointStatus = "read-only API 연결됨";
-
-export const errorLogSummaryCards: ErrorLogSummaryCard[] = [
-  { label: "최근 오류", value: "집계 API 대기", note: "최근 런타임 error 이벤트" },
-  { label: "경고", value: "집계 API 대기", note: "warn 심각도 이벤트" },
-  { label: "치명 오류", value: "집계 API 대기", note: "fatal 심각도 이벤트" },
-  { label: "재시도 가능 이벤트", value: "집계 API 대기", note: "retry later 후보" },
-  { label: "마스킹 필요 이벤트", value: "집계 API 대기", note: "민감정보 보호 검토" }
-];
-
-export function errorLogSummaryCardsForReadState(state: {
-  data?: OpsErrorLogSummaryResponse;
-  isLoading: boolean;
-  error: unknown;
-}): ErrorLogSummaryCard[] {
-  if (state.data) {
-    return [
-      { label: "최근 오류", value: state.data.recentErrorCount, note: "recentErrorCount" },
-      { label: "경고", value: state.data.warningCount, note: "warningCount" },
-      { label: "치명 오류", value: state.data.criticalCount, note: "criticalCount" },
-      { label: "재시도 가능 이벤트", value: state.data.retryableCount, note: "retryableCount" },
-      { label: "마스킹 필요 이벤트", value: state.data.maskedCount, note: "maskedCount" }
-    ];
-  }
-  if (state.isLoading) {
-    return errorLogSummaryCards.map((card) => ({ ...card, value: "조회 중" }));
-  }
-  if (state.error) {
-    const failure = adminRequestFailureDisplay(state.error, {
-      resourceLabel: "시스템 에러 로그 요약",
-      resourceId: "/api/ops/error-logs/summary"
-    });
-    return errorLogSummaryCards.map((card) => ({ ...card, value: failure.reason }));
-  }
-  return errorLogSummaryCards;
+export type LogFilters = { q: string; environment: string; service: string; severity: string; status: string; from: string; to: string };
+export const emptyLogFilters: LogFilters = { q: "", environment: "", service: "", severity: "", status: "", from: "", to: "" };
+export function buildLogFilters(category: "server" | "frontend", filters: LogFilters, cursor = ""): Partial<OpsErrorLogReadFiltersPreview> {
+  return { category, q: filters.q.trim(), environment: filters.environment, service: filters.service, severity: filters.severity, status: filters.status,
+    occurredFrom: filters.from ? new Date(filters.from).toISOString() : "", occurredTo: filters.to ? new Date(filters.to).toISOString() : "", limit: "25", cursor };
 }
-
-export const errorLogFilterGroups: ErrorLogFilterGroup[] = [
-  { label: "환경", options: ["DEV", "PRD"].map((code) => labeledCode(opsEnvironmentLabel(code), code)) },
-  {
-    label: "소스",
-    options: [
-      "game_api",
-      "admin_api",
-      "worker_cron",
-      "migration_verify",
-      "support_read_model",
-      "integrity_pipeline"
-    ].map((code) => labeledCode(opsErrorLogSourceLabel(code), code))
-  },
-  {
-    label: "서비스",
-    options: ["Admin API", "Game API", "Async Worker", "Pages Function", "Unity Client Diagnostic"].map((code) =>
-      labeledCode(opsServiceLabel(code), code)
-    )
-  },
-  {
-    label: "심각도",
-    options: ["info", "warning", "warn", "error", "critical", "fatal"].map((code) =>
-      labeledCode(opsSeverityLabel(code), code)
-    )
-  },
-  {
-    label: "상태",
-    options: ["open", "acknowledged", "resolved", "ignored"].map((code) =>
-      labeledCode(opsErrorLogStatusLabel(code), code)
-    )
-  },
-  {
-    label: "인증/보상/모집/스토리 오류",
-    options: [
-      "google_auth_config_missing",
-      "google_auth_verifier_unavailable",
-      "run_start_state_conflict",
-      "story_raid_stamina_refund_state_conflict",
-      "story_raid_stamina_refund_policy_missing",
-      "reward_plan_mismatch",
-      "reward_multiplier_missing",
-      "reward_plan_unavailable",
-      "risk_reward_policy_missing",
-      "reward_integrity_restricted",
-      "offline_reward_policy_missing",
-      "offline_reward_claim_unavailable",
-      "offline_reward_state_conflict",
-      "offline_reward_integrity_restricted",
-      "gacha_state_conflict",
-      "story_progress_policy_missing",
-      "story_progress_state_conflict",
-      "narrative_content_missing",
-      "narrative_version_mismatch"
-    ].map((code) => labeledCode(opsErrorCodeLabel(code), code))
-  },
-  {
-    label: "식별자",
-    options: [
-      "errorCode",
-      "requestId",
-      "accountId",
-      "runId",
-      "rewardPreviewId",
-      "rewardClaimId",
-      "offlineRewardClaimId",
-      "gachaBatchId",
-      "gachaBannerId",
-      "storyProgressId",
-      "integrityEventId",
-      "supportTicketId"
-    ]
-  },
-  { label: "시간 범위", options: ["최근 1시간", "최근 24시간", "최근 7일", "사용자 지정"] }
-];
-
-export const errorLogReadOnlyFilters = [...opsErrorLogReadFilterFields];
-
-export const errorLogListColumns = [
-  "발생 시각",
-  "소스/서비스",
-  "심각도",
-  "상태",
-  "errorCode/message 요약",
-  "requestId",
-  "관련 리소스",
-  "masked"
-];
-
-export const errorLogDetailPlaceholders: ErrorLogDetailPlaceholder[] = [
-  {
-    title: "stack/trace 요약",
-    status: "R2/trace 상세 대기",
-    description: "서버 로그 수집 API 확정 후 마스킹된 trace 요약을 표시합니다."
-  },
-  {
-    title: "request metadata",
-    status: "request metadata 상세 대기",
-    description: "method, route, status, requestId 등 민감정보를 제외한 요청 메타데이터를 표시합니다."
-  },
-  {
-    title: "관련 운영 링크",
-    status: "관련 링크 API 대기",
-    description: "audit log, ledger, reward claim, gacha batch 연결 조회 후보입니다."
-  },
-  {
-    title: "민감정보 마스킹 상태",
-    status: "마스킹 정책 기준 준비",
-    description: "token, secret, raw request body, raw RNG material 저장/표시 금지 기준을 확인합니다."
-  },
-  {
-    title: "클라이언트 진단 payload",
-    status: "클라이언트 진단 연동 대기",
-    description: "Unity diagnostic snapshot은 fail-soft/non-blocking 별도 소스 후보로만 취급합니다."
-  },
-  {
-    title: "지원 근거",
-    status: "support compose 연동됨",
-    description: "support summary opsErrors는 최근 open/acknowledged latest 5, critical first 후보이며 복구 수단이 아닙니다."
-  },
-  {
-    title: "Google 인증 검증기 장애",
-    status: "ops label/filter 준비",
-    description:
-      "Google JWKS/fetch/parse 계열 운영 장애는 retryable=true, masked=true, severity=error, source/service=game_api 기준으로 표시합니다."
-  },
-  {
-    title: "출격 시작 상태 충돌",
-    status: "ops label/filter 준비",
-    description:
-      "run_start_state_conflict는 retryable=true, masked=true 기준이며 run id FK가 없을 수 있어 safe correlation only로 표시합니다."
-  },
-  {
-    title: "스토리 레이드 stamina 환급",
-    status: "ops label/filter 준비",
-    description:
-      "story_raid_stamina_refund_state_conflict / story_raid_stamina_refund_policy_missing은 story raid failure refund read-only evidence로만 표시합니다."
-  }
-];
-
-function relatedResources(item: OpsErrorLogListItem): string {
-  const resources = [
-    item.accountId,
-    item.runId,
-    item.rewardPreviewId,
-    item.rewardClaimId,
-    item.offlineRewardClaimId,
-    item.gachaBatchId,
-    item.gachaBannerId,
-    item.storyProgressId,
-    item.integrityEventId,
-    item.supportTicketId
-  ]
-    .filter(Boolean)
-    .join(" / ");
-
-  if (resources.length > 0) return resources;
-  return item.id === "연동 대기" ? "연동 대기" : "없음";
-}
-
-function maskedLabel(masked: OpsErrorLogListItem["masked"]): string {
-  if (masked === true) return "마스킹됨";
-  if (masked === false) return "확인 필요";
-  return masked;
+export function logTime(value: string) {
+  const date = new Date(/^\d+$/.test(value) ? Number(value) : value);
+  if (Number.isNaN(date.getTime())) return value;
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).formatToParts(date).map((part) => [part.type, part.value]));
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
 export function ErrorLogsPage() {
-  const query = useQuery({
-    queryKey: ["ops-error-logs"],
-    queryFn: () => adminApi.opsErrorLogs({}),
-    retry: false
-  });
-  const summaryQuery = useQuery({
-    queryKey: ["ops-error-logs-summary"],
-    queryFn: adminApi.opsErrorLogSummary,
-    retry: false
-  });
-  const { data } = query;
-  const rows = data?.items.length ? data.items : data ? [noDataOpsErrorLogListItem()] : [emptyOpsErrorLogListItem()];
-  const failure = query.error
-    ? adminRequestFailureDisplay(query.error, { resourceLabel: "시스템 에러 로그", resourceId: "list" })
-    : null;
-  const summaryCards = errorLogSummaryCardsForReadState({
-    data: summaryQuery.data,
-    isLoading: summaryQuery.isLoading,
-    error: summaryQuery.error
-  });
-
-  return (
-    <main className="content">
-      <header>
-        <h1>시스템 에러 로그</h1>
-        <p>Worker, API, Pages Function, 클라이언트 진단 실패를 관측하는 읽기 전용 준비 화면</p>
-      </header>
-      <section className="summary-grid" aria-label="시스템 에러 로그 요약">
-        {summaryCards.map((card) => (
-          <div key={card.label}>
-            <span>{card.label}</span>
-            <strong>{card.value}</strong>
-            <small>{card.note}</small>
-          </div>
-        ))}
-        <div>
-          <span>권한</span>
-          <strong>{permissionLabel(data?.permission ?? "OPS_ERROR_LOG_READ")}</strong>
-          <small>OWNER/OPERATOR 읽기 전용, VIEWER 거절 가능</small>
-        </div>
-        <div>
-          <span>권한 모드</span>
-          <strong>{data?.permissionMode ?? "ROLE_PERMISSION"}</strong>
-          <small>mutation 없이 조회만 허용합니다</small>
-        </div>
-        <div>
-          <span>조회 상태</span>
-          <strong>
-            {failure?.reason ??
-              adminReadStatusLabel({
-                hasData: Boolean(data),
-                isError: query.isError,
-                isLoading: query.isLoading
-              })}
-          </strong>
-          <small>{failure?.nextStep ?? "빈 결과는 목록에서 데이터 없음으로 표시합니다"}</small>
-        </div>
-      </section>
-      <section className="admin-panel">
-        <header>
-          <h2>필터</h2>
-          <p>로그 수집 API 확정 전까지 조건만 고정합니다</p>
-        </header>
-        <div className="metric-grid">
-          {errorLogFilterGroups.map((group) => (
-            <div key={group.label} className="metric-card">
-              <span>{group.label}</span>
-              <strong>{errorLogFilterStatus}</strong>
-              <small>{group.options.join(" / ")}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="admin-panel">
-        <header>
-          <h2>목록</h2>
-          <p>시스템 런타임 실패 관측용이며 운영자 작업 이력인 감사 로그와 분리합니다</p>
-        </header>
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                {errorLogListColumns.map((column) => (
-                  <th key={column}>{column}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.occurredAt}</td>
-                  <td>
-                    {opsErrorLogSourceLabel(row.source)} ({row.source}) / {opsServiceLabel(row.service)} ({row.service})
-                  </td>
-                  <td>
-                    {opsSeverityLabel(row.severity)} ({row.severity})
-                  </td>
-                  <td>
-                    {opsErrorLogStatusLabel(row.status)} ({row.status})
-                  </td>
-                  <td>
-                    {opsErrorCodeLabel(row.errorCode)} ({row.errorCode}) / {row.messageSummary}
-                  </td>
-                  <td>{row.requestId}</td>
-                  <td>{relatedResources(row)}</td>
-                  <td>{maskedLabel(row.masked)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-      <section className="admin-panel">
-        <header>
-          <h2>상세/가이드</h2>
-          <p>D1/R2/remote log transport 연결 없이 표시 구조만 준비합니다</p>
-        </header>
-        <div className="metric-grid">
-          {errorLogEndpointCandidates.map((endpoint) => (
-            <div key={endpoint} className="metric-card">
-              <span>endpoint 후보</span>
-              <strong>{errorLogEndpointStatus}</strong>
-              <small>{endpoint}</small>
-            </div>
-          ))}
-          {errorLogDetailPlaceholders.map((placeholder) => (
-            <div key={placeholder.title} className="metric-card">
-              <span>{placeholder.title}</span>
-              <strong>{placeholder.status}</strong>
-              <small>{placeholder.description}</small>
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
-  );
+  const [category, setCategory] = useState<"server" | "frontend">("server");
+  const [draft, setDraft] = useState<LogFilters>({ ...emptyLogFilters });
+  const [filters, setFilters] = useState<LogFilters>({ ...emptyLogFilters });
+  const [cursors, setCursors] = useState<string[]>([""]);
+  const [selected, setSelected] = useState<string | null>(null);
+  const queryFilters = buildLogFilters(category, filters, cursors[cursors.length - 1]);
+  const query = useQuery({ queryKey: ["ops-error-logs", queryFilters], queryFn: () => adminApi.opsErrorLogs(queryFilters), retry: false });
+  const detail = useQuery({ queryKey: ["ops-error-log", selected], queryFn: () => adminApi.opsErrorLogDetail(selected!), enabled: selected !== null, retry: false });
+  const error = query.error ? adminRequestFailureDisplay(query.error, { resourceLabel: "에러 로그", resourceId: "list" }) : null;
+  function changeTab(next: "server" | "frontend") {
+    setCategory(next); setCursors([""]); setSelected(null);
+    setDraft({ ...emptyLogFilters }); setFilters({ ...emptyLogFilters });
+  }
+  function apply(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setFilters({ ...draft }); setCursors([""]); setSelected(null);
+  }
+  const rangeInvalid = Boolean(draft.from && draft.to && draft.from > draft.to);
+  function selectFilter(key: "environment" | "service" | "severity" | "status", label: string, codes: string[], labelFor: (code: string) => string = (code) => code) {
+    return <label>{label}<select value={draft[key]} onChange={(e) => setDraft({ ...draft, [key]: e.target.value })}><option value="">전체</option>{codes.map((code) => <option key={code} value={code}>{labelFor(code)}</option>)}</select></label>;
+  }
+  return <main className="content error-log-page">
+    <h1>시스템 에러 로그</h1>
+    <div role="tablist" aria-label="에러 발생 영역" className="log-tabs">
+      {(["server", "frontend"] as const).map((tab) => <button key={tab} id={`log-tab-${tab}`} role="tab" aria-selected={category === tab} aria-controls="log-panel" onClick={() => changeTab(tab)}>{tab === "server" ? "서버" : "프론트"}</button>)}
+    </div>
+    <section id="log-panel" role="tabpanel" aria-labelledby={`log-tab-${category}`}>
+      <form onSubmit={apply} className="log-filters">
+        <label className="log-search">검색<input aria-label="로그 검색" maxLength={200} placeholder="에러코드, 내용, 로그 ID, 요청 ID, 리소스 ID" value={draft.q} onChange={(e) => setDraft({ ...draft, q: e.target.value })} /></label>
+        {selectFilter("environment", "환경", ["DEV", "PRD"])}
+        {selectFilter("service", "발생 서비스", category === "server" ? ["admin_api", "game_api", "worker_cron", "migration_verify", "support_read_model", "integrity_pipeline"] : [], opsErrorLogSourceLabel)}
+        {selectFilter("severity", "심각도", ["info", "warning", "error", "critical"], opsSeverityLabel)}
+        {selectFilter("status", "상태", ["open", "acknowledged", "resolved", "ignored"], opsErrorLogStatusLabel)}
+        <label>시작 시점 (현지 시간)<input aria-label="시작 시점" type="datetime-local" value={draft.from} onChange={(e) => setDraft({ ...draft, from: e.target.value })} /></label>
+        <label>종료 시점 (현지 시간)<input aria-label="종료 시점" type="datetime-local" value={draft.to} onChange={(e) => setDraft({ ...draft, to: e.target.value })} /></label>
+        <button type="submit" disabled={rangeInvalid}>검색</button>
+        <button type="button" onClick={() => { setDraft({ ...emptyLogFilters }); setFilters({ ...emptyLogFilters }); setCursors([""]); setSelected(null); }}>초기화</button>
+        <button type="button" disabled={query.isFetching} onClick={() => void query.refetch()}>새로고침</button>
+        {rangeInvalid && <p role="alert">종료 시점은 시작 시점 이후로 선택하세요.</p>}
+      </form>
+      {query.data?.collectionAvailable === false && <p role="status">프론트 로그 수집 미연결. 서버 로그는 서버 탭에서 조회할 수 있습니다.</p>}
+      {error && <p role="alert">{error.reason} · {error.nextStep}</p>}
+      <div className="table-wrap"><table><thead><tr>{["발생 시점 (KST)", "에러코드", "에러내용", "발생 위치", "심각도 / 상태", "추적코드"].map((label) => <th key={label}>{label}</th>)}</tr></thead>
+        <tbody>{query.isLoading ? <tr><td colSpan={6}>조회 중</td></tr> : !query.error && !query.data?.items.length ? <tr><td colSpan={6}>데이터 없음</td></tr> : query.data?.items.map((row) => <tr key={row.id}>
+          <td>{logTime(row.occurredAt)}</td><td><code>{row.errorCode}</code></td><td>{row.messageSummary}</td>
+          <td>{opsErrorLogSourceLabel(row.service)}<small>{row.environment} · {row.source}</small></td>
+          <td>{opsSeverityLabel(row.severity)}<small>{opsErrorLogStatusLabel(row.status)}</small></td>
+          <td><button className="log-id" onClick={() => setSelected(row.id)} aria-label={`로그 상세 ${row.id}`}>{row.id}</button><small>요청: {row.requestId}</small></td>
+        </tr>)}</tbody></table></div>
+      <nav className="log-paging" aria-label="로그 페이지"><button disabled={cursors.length === 1 || query.isFetching} onClick={() => { setCursors(cursors.slice(0, -1)); setSelected(null); }}>이전</button><span>{cursors.length} 페이지</span><button disabled={!query.data?.nextCursor || query.isFetching} onClick={() => { setCursors([...cursors, query.data!.nextCursor!]); setSelected(null); }}>다음</button></nav>
+      {selected && <section className="log-detail" aria-label="로그 추적 상세"><h2>로그 추적 상세</h2><button onClick={() => setSelected(null)}>닫기</button>
+        {detail.isLoading && <p>조회 중</p>}
+        {detail.error && <p role="alert">{adminRequestFailureDisplay(detail.error, { resourceLabel: "로그 상세", resourceId: selected }).reason}</p>}
+        {detail.data && <dl>{([ ["로그 ID", detail.data.item.id], ["요청 ID", detail.data.item.requestId], ["추적 참조", detail.data.item.traceRef], ["계정 ID", detail.data.item.accountId], ["출격 ID", detail.data.item.runId], ["보상 미리보기 ID", detail.data.item.rewardPreviewId], ["보상 수령 ID", detail.data.item.rewardClaimId], ["오프라인 보상 ID", detail.data.item.offlineRewardClaimId], ["모집 배치 ID", detail.data.item.gachaBatchId], ["마스킹", detail.data.item.masked === true ? "마스킹됨" : "확인 필요"] ]).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value || "없음"}</dd></div>)}</dl>}
+      </section>}
+    </section>
+  </main>;
 }
