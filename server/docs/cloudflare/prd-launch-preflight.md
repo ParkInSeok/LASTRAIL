@@ -20,6 +20,13 @@ Before PRD deployment, prepare and verify:
 
 - Release branch: `release/YYYY-MM-DD-act1`.
 - Release tag: `act1-launch-YYYY-MM-DD`.
+- LAST RAIL server version: a unique calendar version such as
+  `2026.09.06.1`. Do not deploy a Worker without one, and do not reuse one for
+  the same environment/service pair.
+- Service deploy tags: immutable tags that include both service and server
+  version, for example `game-api-2026.09.06.1`,
+  `admin-api-2026.09.06.1`, and `async-worker-2026.09.06.1` when those
+  services are included.
 - Final local regression: `pnpm test`, `pnpm typecheck`, `pnpm lint`,
   `pnpm d1:local:verify`.
 - Config diff review for `apps/game-api/wrangler.jsonc`,
@@ -30,6 +37,11 @@ Before PRD deployment, prepare and verify:
 - Rollback note: keep the previous Worker version id for each deployed Worker;
   rollback uses Wrangler Worker version rollback after confirming no migration
   rollback is needed. D1 schema rollback must be a separate approved plan.
+- Source preservation note: release branches and tags preserve the verified
+  source. They are not DB backups and do not authorize D1 rollback.
+- Server deployment evidence note: the actual Cloudflare Worker deployment id is
+  runtime truth. The LAST RAIL server version links that runtime to source,
+  tests, smoke results, and Admin evidence.
 - Compatibility note: a stored minimum version document or Unity update popup is
   not by itself a safe guard for compatibility-breaking DB/API changes. The Game
   API admission path must consume the policy before incompatible routes rely on
@@ -73,6 +85,13 @@ pnpm --filter @lastrail/admin-api wrangler deploy --env prd --dry-run
 pnpm --filter @lastrail/async-worker wrangler deploy --env prd --dry-run
 ```
 
+Before actual deploy, validate the server deployment plan with the common
+release-policy schema. The plan must include the new server version, clean
+source commit, versioned release branch, all service deploy tags, DB
+compatibility class, and local regression/dry-run success. This validation is a
+local preflight; it does not create branches, tags, remote resources, secrets,
+or R2 objects by itself.
+
 Remote PRD checks must be value-scrubbed:
 
 ```bash
@@ -101,7 +120,11 @@ presence by name.
 6. Inject/rotate PRD Worker secrets only through Wrangler secret storage.
 7. Run scrubbed PRD smoke for public Game API, protected Admin API, and async
    worker queue health where credentials permit.
-8. Tag the verified release commit as `act1-launch-YYYY-MM-DD`.
+8. Write immutable sanitized server deployment history and update the current
+   pointer only after deploy and smoke pass. If deployment succeeds but the R2
+   evidence write fails, mark the release evidence as degraded and reconcile the
+   pointer; do not auto-deploy again and do not run D1 rollback.
+9. Tag the verified release commit as `act1-launch-YYYY-MM-DD`.
 
 ## PRD Smoke Candidate
 

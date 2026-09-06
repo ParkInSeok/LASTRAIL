@@ -5,4 +5,5 @@ export * from "./logger";
 export * from "./ops-error-log";
 export * from "./request-id";
 export * from "./result";
+export * from "./server-release-policy";
 export * from "./version-policy";

@@ -8,6 +8,10 @@ compatibility. It separates four version axes:
 - Database state: D1 migrations and durable data.
 - Content release: immutable Addressables/catalog manifests and active pointers.
 
+Server code releases also carry a LAST RAIL server version such as
+`2026.09.06.1`. This is separate from Unity app versions and Cloudflare's
+runtime deployment id.
+
 ## Confirmed Policy
 
 Compatibility-breaking DB-changing updates are protected by the minimum
@@ -23,6 +27,17 @@ offer an Admin "rollback DB" action in the launch surface.
 
 Cloudflare Worker code rollback remains available only when the database shape
 and data semantics are still compatible with the previous Worker version.
+
+Do not deploy a Worker without an explicit, unique server version. Reusing a
+server version for a later deployment is forbidden because support, Admin
+evidence, and ops error logs must be able to identify the exact runtime.
+
+Before a deploy, preserve the verified source with a release branch whose name
+includes the server version, for example
+`release/YYYY-MM-DD-2026.09.06.1`. Create immutable service-specific deploy tags
+for each Worker, for example `game-api-2026.09.06.1` and
+`admin-api-2026.09.06.1`. Branches and tags preserve source state; they are not
+database backups.
 
 ## Migration Classes
 
@@ -52,22 +67,34 @@ cleanup is safe. A stored `minimumVersionCode` document alone is not enough.
 Use this order for DB-sensitive changes:
 
 1. Add backward-compatible schema/data first.
-2. Deploy server code that can read old and new shapes.
-3. Release the new Unity app through the approved app distribution flow.
-4. Activate or raise `minimumVersionCode` only after the new app is available
+2. Choose a new unique server version and verify that it has not been used for
+   the target environment/service pair.
+3. Run local regression, config diff, migration compatibility review, and
+   Wrangler dry-run.
+4. Create the versioned release branch and service deploy tags only after the
+   source is clean and verified.
+5. Deploy server code that can read old and new shapes.
+6. Release the new Unity app through the approved app distribution flow.
+7. Activate or raise `minimumVersionCode` only after the new app is available
    and the Game API admission check consumes the policy.
-5. Drain or tolerate existing sessions, cached offline flows, and retry traffic
+8. Drain or tolerate existing sessions, cached offline flows, and retry traffic
    from old clients during the compatibility window.
-6. Apply compatibility-breaking behavior only after the minimum app gate is
+9. Apply compatibility-breaking behavior only after the minimum app gate is
    active and verification confirms old clients cannot reach the incompatible
    contract path.
-7. Do destructive cleanup in a separate explicitly approved migration.
+10. Do destructive cleanup in a separate explicitly approved migration.
 
 If any step fails, rollback Worker code only when the current D1 state remains
 compatible with the target rollback version. Otherwise, roll forward. Before a
 Worker rollback, verify that the rollback target can safely read current schema,
 current enum values, current idempotency records, current ledger records, and
 current content/version pointers.
+
+The actual Cloudflare Worker deployment id remains runtime truth after deploy.
+The LAST RAIL server version is the human/support release identity that links
+source, tests, deploy tags, smoke results, and Admin evidence. Store only
+sanitized deployment metadata; never store secrets, raw auth headers, raw
+request bodies, Google tokens, RNG material, or raw probability/weight tables.
 
 ## API Change Policy
 
@@ -106,6 +133,42 @@ It must not:
 Content rollback means moving an active content pointer to a previously approved
 compatible manifest. Server Worker rollback uses Cloudflare Worker version
 rollback. Database recovery uses forward migrations or audited corrections.
+
+Admin may show server deployment history and current deployment pointers as
+read-only evidence. A successful deploy whose deployment-history write fails
+must be marked degraded until the actual Worker id and server history pointer
+are reconciled. It must not trigger an automatic second deploy or a D1 rollback.
+
+## Server Deployment Metadata
+
+Server deployment metadata should be written as immutable history records plus a
+small current pointer, separate from the app/content version document used by
+`GET /v1/client-config`.
+
+Candidate R2 keys:
+
+- `server-deployments/<env>/<service>/<serverVersion>.json`
+- `server-deployments/<env>/<service>/current.json`
+
+The immutable record should contain only sanitized fields:
+
+- `releaseId`
+- `environment`
+- `service`
+- `serverVersion`
+- verified `commitSha`
+- versioned `releaseBranch`
+- immutable service deploy tag
+- Cloudflare Worker deployment id and previous known-good deployment id
+- DB compatibility class and `minimumVersionCode` when required
+- linked content `releaseId`/`contentVersion`, not the full manifest body
+- local regression, dry-run, remote smoke, and current-pointer status
+
+The current pointer may move only after deploy and smoke verification. Failed
+deploys remain in history, but do not become current. If deploy succeeds and R2
+current-pointer write fails, the runtime remains live and the record must show a
+degraded evidence state until manually reconciled through the approved release
+process.
 
 ## Game API Admission
 
