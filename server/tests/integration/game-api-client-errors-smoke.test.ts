@@ -359,4 +359,78 @@ describe("game-api frontend-safe client error ingest local D1 smoke", () => {
       vi.useRealTimers();
     }
   });
+
+  it("reads client error ingest receipt by Idempotency-Key after response loss without resending events", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const gameEnv = createGameEnv(db);
+      const guestResponse = await gameApi.request("/v1/auth/guest", { method: "POST" }, gameEnv);
+      const guestBody = await guestResponse.json() as { account: { id: string }; accessToken: string };
+      const createResponse = await gameApi.request(
+        "/v1/client-errors",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guestBody.accessToken}`,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "client-error-receipt-1",
+          },
+          body: JSON.stringify({
+            events: [
+              {
+                kind: "UNITY_ASSERT",
+                occurredAt: "2026-08-30T00:00:00.000Z",
+                occurrenceCount: 2,
+                scope: "AUTHENTICATED_CURRENT_SESSION",
+              },
+            ],
+          }),
+        },
+        gameEnv,
+      );
+      const created = await createResponse.json() as { ingestId: string };
+
+      const receiptResponse = await gameApi.request(
+        "/v1/client-errors/receipt",
+        {
+          headers: {
+            Authorization: `Bearer ${guestBody.accessToken}`,
+            "Idempotency-Key": "client-error-receipt-1",
+          },
+        },
+        gameEnv,
+      );
+      expect(receiptResponse.status).toBe(200);
+      expect(await receiptResponse.json()).toMatchObject({
+        accepted: true,
+        receiptStatus: "FOUND",
+        ingestId: created.ingestId,
+        acceptedEventCount: 1,
+        errorCode: null,
+        message: null,
+      });
+
+      const missingResponse = await gameApi.request(
+        "/v1/client-errors/receipt",
+        {
+          headers: {
+            Authorization: `Bearer ${guestBody.accessToken}`,
+            "Idempotency-Key": "client-error-receipt-missing",
+          },
+        },
+        gameEnv,
+      );
+      expect(missingResponse.status).toBe(404);
+      expect(await missingResponse.json()).toMatchObject({
+        accepted: false,
+        receiptStatus: "NOT_FOUND",
+        ingestId: null,
+        errorCode: "client_error_ingest_receipt_not_found",
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

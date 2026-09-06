@@ -148,6 +148,24 @@ Duplicate policy:
   already accepted ticket does not create another ticket and is not rejected by
   the rate limit.
 
+Receipt lookup for response-loss recovery:
+
+```text
+GET /v1/support/tickets/receipt
+Idempotency-Key: <client-generated-key>
+Authorization: Bearer <accessToken>
+```
+
+The receipt route accepts no body and no query parameters. It looks up only the
+authenticated account and returns either:
+
+- `receiptStatus: FOUND` with `ticketId`, category, body preview, app version
+  fields, and server timestamp;
+- `receiptStatus: NOT_FOUND` with `support_ticket_receipt_not_found`.
+
+It performs no writes and exposes no raw request body, auth token, session
+secret, or account shortcut.
+
 Rate limit:
 
 - Technical launch default: max 3 new support tickets per authenticated account

@@ -133,6 +133,14 @@ type IdempotencyRecordRow = {
   final_payload_json?: string | null;
 };
 
+type AuthGuestReplayRow = {
+  account_id: string;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  session_id: string;
+  session_expires_at: number;
+  created_at: number;
+};
+
 type RunStartIdempotencyRecordRow = {
   result_ref: string;
   created_at: number;
@@ -259,6 +267,15 @@ type AuthSessionAccountRow = {
   session_expires_at: number;
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
   account_created_at?: number;
+};
+
+type RefreshReplaySessionRow = {
+  result_ref: string;
+  created_at: number;
+  account_id: string;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+  session_id: string;
+  session_expires_at: number;
 };
 
 type RefreshSessionAccountRow = AuthSessionAccountRow & {
@@ -550,6 +567,10 @@ function d1Changes(result: unknown): number | null {
 
 function createRefreshToken(): string {
   return `refresh_${createRequestId().slice(4)}${createRequestId().slice(4)}`;
+}
+
+async function createReplaySafeRefreshToken(secret: string, scope: string, material: string): Promise<string> {
+  return `refresh_replay_${await sha256Hex(`${scope}:${secret}:${material}`)}`;
 }
 
 function getOpsLogEnvironment(env: Env): "DEV" | "PRD" {
@@ -1887,6 +1908,46 @@ function createRecoveryVerificationResponse(options: {
   };
 }
 
+function parseOptionalIdempotencyKey(c: GameApiContext): string | null | AuthFailure {
+  const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
+  if (idempotencyKey === undefined || idempotencyKey.length === 0) return null;
+  if (idempotencyKey.length > 128) {
+    return createAuthFailure(400, "contract_violation", "Idempotency-Key header is too long.");
+  }
+  return idempotencyKey;
+}
+
+async function createAuthResponseForSession(options: {
+  secret: string;
+  accountId: string;
+  sessionId: string;
+  refreshToken: string;
+  refreshTokenExpiresAt: number;
+  now: number;
+}) {
+  const accessTokenTtlMs = 15 * 60 * 1000;
+  const accessTokenExpiresAt = options.now + accessTokenTtlMs;
+  const accessToken = await createAccessToken({
+    secret: options.secret,
+    accountId: options.accountId,
+    sessionId: options.sessionId,
+    nowMs: options.now,
+    ttlMs: accessTokenTtlMs,
+  });
+
+  return {
+    tokenType: "Bearer",
+    account: {
+      id: options.accountId,
+      status: "ACTIVE",
+    },
+    accessToken,
+    accessTokenExpiresAt: toIso(accessTokenExpiresAt),
+    refreshToken: options.refreshToken,
+    refreshTokenExpiresAt: toIso(options.refreshTokenExpiresAt),
+  };
+}
+
 function createPasswordRegisterRejected(errorCode: string, message: string) {
   return {
     accepted: false,
@@ -1947,6 +2008,42 @@ function supportTicketResponse(row: SupportTicketRow, ticketStatus: "RECEIVED" |
   };
 }
 
+function supportTicketReceiptFoundResponse(row: SupportTicketRow) {
+  return {
+    accepted: true,
+    receiptStatus: "FOUND",
+    ticketId: row.id,
+    accountId: row.account_id,
+    category: row.category,
+    bodyPreview: row.body_preview,
+    appVersion: row.app_version,
+    appVersionCode: row.app_version_code,
+    clientComposedAt: toNullableIso(row.client_composed_at),
+    clientSubmittedAt: toNullableIso(row.client_submitted_at),
+    serverReceivedAt: toIso(row.server_received_at),
+    errorCode: null,
+    message: null,
+  };
+}
+
+function supportTicketReceiptNotFoundResponse() {
+  return {
+    accepted: false,
+    receiptStatus: "NOT_FOUND",
+    ticketId: null,
+    accountId: null,
+    category: null,
+    bodyPreview: null,
+    appVersion: null,
+    appVersionCode: null,
+    clientComposedAt: null,
+    clientSubmittedAt: null,
+    serverReceivedAt: null,
+    errorCode: "support_ticket_receipt_not_found",
+    message: "Support ticket receipt was not found for this account.",
+  };
+}
+
 function parseSupportTicketCategory(value: unknown): SupportTicketCategory | null {
   return typeof value === "string" && supportTicketCategories.has(value as SupportTicketCategory)
     ? value as SupportTicketCategory
@@ -1972,6 +2069,18 @@ function createClientErrorIngestRejectedResponse(
     retryAfterSeconds: options.retryAfterSeconds ?? null,
     errorCode,
     message,
+  };
+}
+
+function createClientErrorIngestReceiptNotFoundResponse() {
+  return {
+    accepted: false,
+    receiptStatus: "NOT_FOUND",
+    ingestId: null,
+    acceptedEventCount: 0,
+    serverReceivedAt: null,
+    errorCode: "client_error_ingest_receipt_not_found",
+    message: "Client error ingest receipt was not found for this account.",
   };
 }
 
@@ -3053,13 +3162,59 @@ app.post("/v1/auth/guest", async (c) => {
     return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
   }
 
+  const idempotencyKey = parseOptionalIdempotencyKey(c);
+  if (isAuthFailure(idempotencyKey)) {
+    return c.json(createAuthError(idempotencyKey.errorCode, idempotencyKey.message), idempotencyKey.status);
+  }
+
   const now = Date.now();
+  const guestReplayProviderSubject = idempotencyKey === null
+    ? null
+    : `auth_guest_create:${await sha256Hex(idempotencyKey)}`;
+  if (guestReplayProviderSubject !== null) {
+    const replayRow = await c.env.DB.prepare(
+      `SELECT identities.account_id, accounts.status AS account_status,
+              sessions.id AS session_id, sessions.expires_at AS session_expires_at,
+              accounts.created_at
+       FROM auth_identities identities
+       JOIN accounts ON accounts.id = identities.account_id
+       JOIN auth_sessions sessions ON sessions.account_id = accounts.id
+       WHERE identities.provider = 'GUEST'
+         AND identities.provider_subject = ?
+         AND sessions.status = 'ACTIVE'
+       ORDER BY sessions.created_at ASC
+       LIMIT 1`,
+    )
+      .bind(guestReplayProviderSubject)
+      .first<AuthGuestReplayRow>();
+    if (replayRow !== null) {
+      if (replayRow.account_status !== "ACTIVE") {
+        return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+      }
+      const refreshToken = await createReplaySafeRefreshToken(
+        secret,
+        "auth_guest_create",
+        `${guestReplayProviderSubject}:${replayRow.account_id}:${replayRow.session_id}`,
+      );
+      return c.json(await createAuthResponseForSession({
+        secret,
+        accountId: replayRow.account_id,
+        sessionId: replayRow.session_id,
+        refreshToken,
+        refreshTokenExpiresAt: replayRow.session_expires_at,
+        now,
+      }));
+    }
+  }
+
   const accountId = createDomainId("account");
   const identityId = createDomainId("identity");
   const sessionId = createDomainId("session");
   const familyId = createDomainId("family");
-  const providerSubject = createDomainId("guest");
-  const refreshToken = createRefreshToken();
+  const providerSubject = guestReplayProviderSubject ?? createDomainId("guest");
+  const refreshToken = guestReplayProviderSubject === null
+    ? createRefreshToken()
+    : await createReplaySafeRefreshToken(secret, "auth_guest_create", `${guestReplayProviderSubject}:${accountId}:${sessionId}`);
   const refreshTokenHash = await hashRefreshToken(refreshToken);
   const accessTokenTtlMs = 15 * 60 * 1000;
   const refreshTokenTtlMs = 30 * 24 * 60 * 60 * 1000;
@@ -3104,6 +3259,12 @@ app.post("/v1/auth/guest", async (c) => {
          last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
        ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
     ).bind(accountId, now, "none", actOneNarrativeVersion, now),
+    ...(idempotencyKey === null ? [] : [
+      c.env.DB.prepare(
+        `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+         VALUES (?, ?, ?, 'auth_guest_create', ?, ?)`,
+      ).bind(createDomainId("idem"), accountId, idempotencyKey, sessionId, now),
+    ]),
   ]);
 
   return c.json({
@@ -3281,6 +3442,11 @@ app.post("/v1/auth/refresh", async (c) => {
     return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
   }
 
+  const idempotencyKey = parseOptionalIdempotencyKey(c);
+  if (isAuthFailure(idempotencyKey)) {
+    return c.json(createAuthError(idempotencyKey.errorCode, idempotencyKey.message), idempotencyKey.status);
+  }
+
   let body: { refreshToken?: unknown };
   try {
     body = await c.req.json();
@@ -3310,6 +3476,43 @@ app.post("/v1/auth/refresh", async (c) => {
 
   const now = Date.now();
   if (row.session_status === "ROTATED") {
+    if (idempotencyKey !== null) {
+      const replayRow = await c.env.DB.prepare(
+        `SELECT idem.result_ref, idem.created_at,
+                sessions.account_id, sessions.id AS session_id,
+                sessions.expires_at AS session_expires_at,
+                accounts.status AS account_status
+         FROM idempotency_records idem
+         JOIN auth_sessions sessions ON sessions.id = idem.result_ref
+         JOIN accounts ON accounts.id = sessions.account_id
+         WHERE idem.account_id = ?
+           AND idem.operation = 'auth_refresh'
+           AND idem.idempotency_key = ?
+           AND sessions.family_id = ?
+           AND sessions.generation = ?
+           AND sessions.status = 'ACTIVE'`,
+      )
+        .bind(row.account_id, idempotencyKey, row.family_id, row.generation + 1)
+        .first<RefreshReplaySessionRow>();
+      if (replayRow !== null) {
+        if (replayRow.account_status !== "ACTIVE") {
+          return c.json(createAuthError("account_not_active", "Account is not active."), 403);
+        }
+        const replayRefreshToken = await createReplaySafeRefreshToken(
+          secret,
+          "auth_refresh",
+          `${row.refresh_token_hash}:${idempotencyKey}:${replayRow.session_id}`,
+        );
+        return c.json(await createAuthResponseForSession({
+          secret,
+          accountId: replayRow.account_id,
+          sessionId: replayRow.session_id,
+          refreshToken: replayRefreshToken,
+          refreshTokenExpiresAt: replayRow.session_expires_at,
+          now,
+        }));
+      }
+    }
     await c.env.DB.batch([
       c.env.DB.prepare(
         `UPDATE auth_sessions
@@ -3329,7 +3532,21 @@ app.post("/v1/auth/refresh", async (c) => {
   }
 
   const newSessionId = createDomainId("session");
-  const newRefreshToken = createRefreshToken();
+  if (idempotencyKey !== null) {
+    const existingIdempotency = await c.env.DB.prepare(
+      `SELECT result_ref, created_at
+       FROM idempotency_records
+       WHERE account_id = ? AND operation = 'auth_refresh' AND idempotency_key = ?`,
+    )
+      .bind(row.account_id, idempotencyKey)
+      .first<IdempotencyRecordRow>();
+    if (existingIdempotency !== null) {
+      return c.json(createAuthError("idempotency_conflict", "Idempotency-Key was already used for another refresh request."), 409);
+    }
+  }
+  const newRefreshToken = idempotencyKey === null
+    ? createRefreshToken()
+    : await createReplaySafeRefreshToken(secret, "auth_refresh", `${row.refresh_token_hash}:${idempotencyKey}:${newSessionId}`);
   const newRefreshTokenHash = await hashRefreshToken(newRefreshToken);
   const accessTokenTtlMs = 15 * 60 * 1000;
   const refreshTokenTtlMs = 30 * 24 * 60 * 60 * 1000;
@@ -3353,6 +3570,12 @@ app.post("/v1/auth/refresh", async (c) => {
       `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
        VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, ?, NULL)`,
     ).bind(newSessionId, row.account_id, newRefreshTokenHash, row.family_id, row.generation + 1, now, refreshTokenExpiresAt),
+    ...(idempotencyKey === null ? [] : [
+      c.env.DB.prepare(
+        `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+         VALUES (?, ?, ?, 'auth_refresh', ?, ?)`,
+      ).bind(createDomainId("idem"), row.account_id, idempotencyKey, newSessionId, now),
+    ]),
   ]);
 
   return c.json({
@@ -4134,6 +4357,36 @@ app.post("/v1/login-bonus/claim", async (c) => {
   });
 });
 
+app.get("/v1/support/tickets/receipt", async (c) => {
+  if (Object.keys(c.req.query()).length > 0 || hasNonEmptyRequestBody(c)) {
+    return c.json(createSupportTicketRejectedResponse("contract_violation", "Support ticket receipt lookup accepts only headers."), 400);
+  }
+  const idempotencyKey = parseOptionalIdempotencyKey(c);
+  if (isAuthFailure(idempotencyKey)) {
+    return c.json(createSupportTicketRejectedResponse(idempotencyKey.errorCode, idempotencyKey.message), idempotencyKey.status);
+  }
+  if (idempotencyKey === null) {
+    return c.json(createSupportTicketRejectedResponse("contract_violation", "Idempotency-Key header is required."), 400);
+  }
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createSupportTicketRejectedResponse(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, category, status, body_text, body_preview, body_length,
+            app_version, app_version_code, client_composed_at, client_submitted_at,
+            server_received_at, idempotency_key, request_hash, created_at, updated_at
+     FROM support_tickets
+     WHERE account_id = ? AND idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<SupportTicketRow>();
+  if (row === null) return c.json(supportTicketReceiptNotFoundResponse(), 404);
+
+  return c.json(supportTicketReceiptFoundResponse(row));
+});
+
 app.post("/v1/support/tickets", async (c) => {
   const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
   if (idempotencyKey === undefined || idempotencyKey.length === 0) {
@@ -4272,6 +4525,51 @@ app.post("/v1/support/tickets", async (c) => {
   ]);
 
   return c.json(supportTicketResponse(row, "RECEIVED"));
+});
+
+app.get("/v1/client-errors/receipt", async (c) => {
+  if (Object.keys(c.req.query()).length > 0 || hasNonEmptyRequestBody(c)) {
+    return c.json(createClientErrorIngestRejectedResponse("contract_violation", "Client error ingest receipt lookup accepts only headers."), 400);
+  }
+  const idempotencyKey = parseOptionalIdempotencyKey(c);
+  if (isAuthFailure(idempotencyKey)) {
+    return c.json(createClientErrorIngestRejectedResponse(idempotencyKey.errorCode, idempotencyKey.message), idempotencyKey.status);
+  }
+  if (idempotencyKey === null) {
+    return c.json(createClientErrorIngestRejectedResponse("contract_violation", "Idempotency-Key header is required."), 400);
+  }
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createClientErrorIngestRejectedResponse(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const replay = await c.env.DB.prepare(
+    `SELECT result_ref, created_at
+     FROM idempotency_records
+     WHERE account_id = ? AND operation = 'client_error_ingest' AND idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<IdempotencyRecordRow>();
+  if (replay === null) return c.json(createClientErrorIngestReceiptNotFoundResponse(), 404);
+
+  const idempotencyKeyHash = `sha256:${await sha256Hex(idempotencyKey)}`;
+  const count = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS accepted_count
+     FROM ops_error_logs
+     WHERE account_id = ? AND idempotency_operation = 'client_error_ingest' AND idempotency_key_hash = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKeyHash)
+    .first<{ accepted_count: number }>();
+
+  return c.json({
+    accepted: true,
+    receiptStatus: "FOUND",
+    ingestId: replay.result_ref,
+    acceptedEventCount: count?.accepted_count ?? 0,
+    serverReceivedAt: toIso(replay.created_at),
+    errorCode: null,
+    message: null,
+  });
 });
 
 app.post("/v1/client-errors", async (c) => {

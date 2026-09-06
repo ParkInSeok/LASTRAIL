@@ -331,4 +331,75 @@ describe("game-api support ticket local D1 smoke", () => {
       vi.useRealTimers();
     }
   });
+
+  it("reads support ticket receipt by Idempotency-Key after response loss without the original body", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const guestResponse = await app.request("/v1/auth/guest", { method: "POST" }, env);
+      const guestBody = await guestResponse.json() as { account: { id: string }; accessToken: string };
+      const authorization = `Bearer ${guestBody.accessToken}`;
+      const createResponse = await app.request(
+        "/v1/support/tickets",
+        {
+          method: "POST",
+          headers: {
+            Authorization: authorization,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "support-ticket-receipt-1",
+          },
+          body: JSON.stringify({
+            category: "ACCOUNT_LOGIN",
+            body: "응답 유실 후 영수증 조회를 확인하기 위한 고객 지원 요청입니다.",
+          }),
+        },
+        env,
+      );
+      const created = await createResponse.json() as { ticketId: string };
+
+      const receiptResponse = await app.request(
+        "/v1/support/tickets/receipt",
+        {
+          headers: {
+            Authorization: authorization,
+            "Idempotency-Key": "support-ticket-receipt-1",
+          },
+        },
+        env,
+      );
+      expect(receiptResponse.status).toBe(200);
+      expect(await receiptResponse.json()).toMatchObject({
+        accepted: true,
+        receiptStatus: "FOUND",
+        ticketId: created.ticketId,
+        accountId: guestBody.account.id,
+        category: "ACCOUNT_LOGIN",
+        bodyPreview: "응답 유실 후 영수증 조회를 확인하기 위한 고객 지원 요청입니다.",
+        errorCode: null,
+        message: null,
+      });
+
+      const missingResponse = await app.request(
+        "/v1/support/tickets/receipt",
+        {
+          headers: {
+            Authorization: authorization,
+            "Idempotency-Key": "support-ticket-receipt-missing",
+          },
+        },
+        env,
+      );
+      expect(missingResponse.status).toBe(404);
+      expect(await missingResponse.json()).toMatchObject({
+        accepted: false,
+        receiptStatus: "NOT_FOUND",
+        ticketId: null,
+        errorCode: "support_ticket_receipt_not_found",
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

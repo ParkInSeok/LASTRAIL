@@ -70,34 +70,30 @@ player to recovery or login UI.
 
 Launch response-loss boundary:
 
-- `POST /v1/auth/guest` is not idempotent today. If the server accepted the
-  request but the client lost the response, retrying can create another guest
-  account. Unity must not use automatic new-guest creation as recovery for a
-  timeout, offline error, cancelled request, 5xx, or unknown response state.
-- `POST /v1/auth/refresh` rotates refresh sessions and is not idempotent today.
-  If the server accepted the rotation but the client lost the response, retrying
-  the old refresh token can return `refresh_token_reused`. Treat timeout or
-  unknown response as an unresolved owner-session state, not as permission to
-  delete the stored account or create a new guest.
+- `POST /v1/auth/guest` accepts an optional client-generated
+  `Idempotency-Key`. When supplied, same-key retry returns the same guest account
+  and token bundle instead of creating another guest. Without the header, guest
+  creation remains a new-account request.
+- `POST /v1/auth/refresh` accepts an optional client-generated
+  `Idempotency-Key`. When the original rotation committed but the client lost
+  the response, retrying the same old refresh token with the same key can recover
+  the rotated token bundle without marking the refresh family `REUSED`.
+- Unity must still not create a new guest automatically for timeout, offline,
+  cancelled request, 5xx, or unknown response state. Store and reuse the same
+  high-entropy idempotency key until the token bundle is durably persisted.
 - Stable terminal auth responses are explicit `401`/`403` codes such as
   `refresh_token_invalid`, `refresh_session_invalid`, `refresh_token_reused`,
   and `account_not_active`. Network timeout, offline, and generic `5xx` are not
   terminal account ownership decisions.
 
-Launch gate still open: minimum replay/reconciliation design candidate, not
-implemented:
+Remaining client integration gate:
 
-- Add an idempotent guest creation/recovery envelope keyed by a client-generated
-  install-local request id that is stored only after the token bundle is
-  durably persisted locally.
-- Add refresh rotation replay reconciliation for same family/generation so a
-  lost response can be recovered without accepting stolen/reused tokens.
-- Store only hashed request ids or server-issued reconciliation refs; never
-  store raw tokens, device fingerprints, or account shortcuts as authority.
-- Tests required before enabling: response-loss retry, same key/different body
-  conflict, cross-account isolation, old refresh reuse theft detection,
-  successful local-store-after-response replacement, and no automatic guest
-  discard.
+- Unity secure storage must persist the refresh token and the in-flight
+  idempotency key before retrying.
+- New security settings or account recovery screens still require explicit
+  approval.
+- The server never stores refresh tokens in plaintext and never accepts
+  account-id shortcuts as authority.
 
 ## Login ID / Password Candidate Contract
 

@@ -370,6 +370,13 @@ Refresh rules:
   `generation + 1`.
 - Reusing an already `ROTATED` refresh token marks active/rotated sessions in
   that family as `REUSED` and returns `refresh_token_reused`.
+- Supplying `Idempotency-Key` on guest creation or refresh enables response-loss
+  replay recovery for that exact request. Same-key guest replay returns the same
+  account/session bundle. Same-key refresh replay after a committed rotation
+  returns the same rotated session bundle instead of marking the family reused.
+- The idempotency key is a replay secret for the in-flight request and must be
+  high entropy, locally persisted only until the token bundle is durably stored,
+  and never logged by Unity.
 
 ## Client Config
 

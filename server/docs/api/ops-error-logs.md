@@ -153,6 +153,19 @@ Launch limits and retention:
   pre-pagination path. This is covered by `ops-log-search` unit tests and the
   client error ingest smoke.
 
+Response-loss receipt lookup:
+
+```text
+GET /v1/client-errors/receipt
+Idempotency-Key: <client-generated-key>
+Authorization: Bearer <accessToken>
+```
+
+The receipt route accepts no body and no query parameters. It returns the
+committed ingest id and accepted event count for the authenticated account, or
+`client_error_ingest_receipt_not_found` when the key has no matching committed
+ingest. It does not resend events or expose raw diagnostic payloads.
+
 Backlog / decision queue:
 
 - Queue-based async sink and optional R2 sanitized detail payloads.
