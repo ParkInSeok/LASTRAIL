@@ -370,6 +370,17 @@ type AdminDashboardSessionRow = {
   latest_session_created_at: number | null;
 };
 
+type AdminDashboardDailySourceMetricsRow = {
+  dau_7d: number | null;
+  dau_30d: number | null;
+  signups_7d: number | null;
+  signups_30d: number | null;
+  ad_rewards_verified_7d: number | null;
+  ad_rewards_verified_30d: number | null;
+  ad_rewards_granted_7d: number | null;
+  ad_rewards_granted_30d: number | null;
+};
+
 type AdminDashboardSupportReviewRow = {
   support_review_needed_count: number | null;
 };
@@ -1252,6 +1263,12 @@ function countValue(value: number | null | undefined): number {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
 }
 
+function kstCalendarDayStartUtcMs(now: number): number {
+  const kstOffsetMs = 9 * 60 * 60 * 1000;
+  const kstDate = new Date(now + kstOffsetMs);
+  return Date.UTC(kstDate.getUTCFullYear(), kstDate.getUTCMonth(), kstDate.getUTCDate()) - kstOffsetMs;
+}
+
 function parseOptionalJsonObject(json: string): JsonValue {
   try {
     const parsed = parseJsonValue(json);
@@ -1889,6 +1906,9 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
   if (hasRequestBody(c)) return rejectAdminDashboardBody(c);
 
   const now = Date.now();
+  const currentKstDayStart = kstCalendarDayStartUtcMs(now);
+  const sevenDayStart = currentKstDayStart - 6 * 24 * 60 * 60 * 1000;
+  const thirtyDayStart = currentKstDayStart - 29 * 24 * 60 * 60 * 1000;
   const sessionSummary = await c.env.DB.prepare(
     `SELECT
        COALESCE(SUM(CASE WHEN status = 'ACTIVE' AND expires_at > ? THEN 1 ELSE 0 END), 0) AS active_session_count,
@@ -1897,6 +1917,28 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
   )
     .bind(now)
     .first<AdminDashboardSessionRow>();
+  const dailySourceMetrics = await c.env.DB.prepare(
+    `SELECT
+       (SELECT COUNT(DISTINCT account_id) FROM auth_sessions WHERE created_at >= ?) AS dau_7d,
+       (SELECT COUNT(DISTINCT account_id) FROM auth_sessions WHERE created_at >= ?) AS dau_30d,
+       (SELECT COUNT(*) FROM accounts WHERE created_at >= ?) AS signups_7d,
+       (SELECT COUNT(*) FROM accounts WHERE created_at >= ?) AS signups_30d,
+       (SELECT COUNT(*) FROM ad_reward_transactions WHERE created_at >= ? AND status IN ('VERIFIED','GRANTED')) AS ad_rewards_verified_7d,
+       (SELECT COUNT(*) FROM ad_reward_transactions WHERE created_at >= ? AND status IN ('VERIFIED','GRANTED')) AS ad_rewards_verified_30d,
+       (SELECT COUNT(*) FROM ad_reward_transactions WHERE created_at >= ? AND status = 'GRANTED') AS ad_rewards_granted_7d,
+       (SELECT COUNT(*) FROM ad_reward_transactions WHERE created_at >= ? AND status = 'GRANTED') AS ad_rewards_granted_30d`,
+  )
+    .bind(
+      sevenDayStart,
+      thirtyDayStart,
+      sevenDayStart,
+      thirtyDayStart,
+      sevenDayStart,
+      thirtyDayStart,
+      sevenDayStart,
+      thirtyDayStart,
+    )
+    .first<AdminDashboardDailySourceMetricsRow>();
   const supportReview = await c.env.DB.prepare(
     `SELECT COUNT(*) AS support_review_needed_count
      FROM suspicious_player_reviews
@@ -1979,6 +2021,28 @@ app.get("/v1/admin/dashboard/launch-summary", async (c) => {
     lastLoginAgeBuckets: {
       latestAgeSeconds: getLastLoginAgeSeconds(lastLoginAt, now),
       exactConcurrentUsersAvailable: false,
+    },
+    dailySourceMetrics: {
+      timezone: "Asia/Seoul",
+      windowSemantics: "KST_CALENDAR_DAY_INCLUSIVE",
+      dauSource: "auth_sessions.created_at_distinct_account",
+      signupSource: "accounts.created_at",
+      adRewardSource: "ad_reward_transactions.status",
+      passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
+      sevenDay: {
+        dau: countValue(dailySourceMetrics?.dau_7d),
+        signups: countValue(dailySourceMetrics?.signups_7d),
+        adRewardsVerified: countValue(dailySourceMetrics?.ad_rewards_verified_7d),
+        adRewardsGranted: countValue(dailySourceMetrics?.ad_rewards_granted_7d),
+        passPurchases: null,
+      },
+      thirtyDay: {
+        dau: countValue(dailySourceMetrics?.dau_30d),
+        signups: countValue(dailySourceMetrics?.signups_30d),
+        adRewardsVerified: countValue(dailySourceMetrics?.ad_rewards_verified_30d),
+        adRewardsGranted: countValue(dailySourceMetrics?.ad_rewards_granted_30d),
+        passPurchases: null,
+      },
     },
     supportReviewNeededCount: countValue(supportReview?.support_review_needed_count),
     accountRecoveryCandidateCount: countValue(recoveryCandidates?.account_recovery_candidate_count),

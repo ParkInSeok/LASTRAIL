@@ -99,6 +99,16 @@ describe("admin-api launch read-only aggregate models", () => {
         createEnv([
           operatorPrincipal,
           { active_session_count: 2, latest_session_created_at: 1787658700000 },
+          {
+            dau_7d: 12,
+            dau_30d: 31,
+            signups_7d: 4,
+            signups_30d: 9,
+            ad_rewards_verified_7d: 5,
+            ad_rewards_verified_30d: 15,
+            ad_rewards_granted_7d: 3,
+            ad_rewards_granted_30d: 11,
+          },
           { support_review_needed_count: 3 },
           { integrity_high_risk_count: 4 },
           { reward_claim_failure_count: 1, offline_reward_issue_count: 2, gacha_support_issue_count: 1, critical_open_ops_error_count: 5, unacknowledged_core_failure_count: 6 },
@@ -123,6 +133,28 @@ describe("admin-api launch read-only aggregate models", () => {
         lastLoginAgeBuckets: {
           latestAgeSeconds: 300,
           exactConcurrentUsersAvailable: false,
+        },
+        dailySourceMetrics: {
+          timezone: "Asia/Seoul",
+          windowSemantics: "KST_CALENDAR_DAY_INCLUSIVE",
+          dauSource: "auth_sessions.created_at_distinct_account",
+          signupSource: "accounts.created_at",
+          adRewardSource: "ad_reward_transactions.status",
+          passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
+          sevenDay: {
+            dau: 12,
+            signups: 4,
+            adRewardsVerified: 5,
+            adRewardsGranted: 3,
+            passPurchases: null,
+          },
+          thirtyDay: {
+            dau: 31,
+            signups: 9,
+            adRewardsVerified: 15,
+            adRewardsGranted: 11,
+            passPurchases: null,
+          },
         },
         supportReviewNeededCount: 3,
         accountRecoveryCandidateCount: 1,
@@ -154,7 +186,7 @@ describe("admin-api launch read-only aggregate models", () => {
     const response = await app.request(
       "/v1/admin/dashboard/launch-summary",
       { headers: { "Cf-Access-Subject": "access|operator" } },
-      createEnv([operatorPrincipal, null, null, null, null, null, null, null, []]),
+      createEnv([operatorPrincipal, null, null, null, null, null, null, null, null, []]),
     );
 
     expect(response.status).toBe(200);
@@ -162,6 +194,23 @@ describe("admin-api launch read-only aggregate models", () => {
     expect(body).toMatchObject({
       activeSessions: 0,
       lastLoginAtLatest: null,
+      dailySourceMetrics: {
+        sevenDay: {
+          dau: 0,
+          signups: 0,
+          adRewardsVerified: 0,
+          adRewardsGranted: 0,
+          passPurchases: null,
+        },
+        thirtyDay: {
+          dau: 0,
+          signups: 0,
+          adRewardsVerified: 0,
+          adRewardsGranted: 0,
+          passPurchases: null,
+        },
+        passSource: "UNAVAILABLE_NO_SOURCE_TABLE",
+      },
       supportReviewNeededCount: 0,
       accountRecoveryCandidateCount: 0,
       integrityHighRiskCount: 0,

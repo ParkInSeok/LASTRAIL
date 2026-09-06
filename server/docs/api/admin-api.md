@@ -123,6 +123,7 @@ cards:
 - `activeSessions`
 - `lastLoginAtLatest`
 - `lastLoginAgeBuckets.latestAgeSeconds`
+- `dailySourceMetrics`
 - `supportReviewNeededCount`
 - `accountRecoveryCandidateCount`
 - `integrityHighRiskCount`
@@ -145,6 +146,13 @@ Exact concurrent users are intentionally not claimed. The response returns
 `concurrentUsers = null`, `recentActiveAccounts5m = null`,
 `recentActiveAccounts30m = null`, and source/precision fields that mark those
 values unavailable until a server-owned activity source exists.
+
+`dailySourceMetrics` uses KST calendar-day inclusive windows. DAU is counted
+from distinct `auth_sessions.account_id` by `created_at`; signups are counted
+from `accounts.created_at`; ad reward counts come from
+`ad_reward_transactions.status`. Pass/purchase metrics remain `null` with
+`passSource = UNAVAILABLE_NO_SOURCE_TABLE` until a server-owned purchase source
+exists.
 
 The story/narrative aggregate is read-only launch visibility. It counts stored
 `account_story_progress` rows and the static Act 1 narrative coverage candidate
