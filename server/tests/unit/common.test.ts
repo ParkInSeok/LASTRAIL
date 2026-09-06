@@ -75,7 +75,7 @@ describe("common foundations", () => {
     });
     expect(envelope.idempotencyKeyHash).toMatch(/^sha256:[a-f0-9]{64}$/u);
     expect(JSON.parse(envelope.correlationJson)).toEqual({ accountId: "account-1" });
-    expect(JSON.parse(envelope.sanitizedContextJson)).toEqual({ nested: { value: "kept" }, safe: true });
+    expect(JSON.parse(envelope.sanitizedContextJson)).toEqual({ nested: { value: "kept" }, safe: true, serverVersion: null });
   });
 });
 

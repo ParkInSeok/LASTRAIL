@@ -3,6 +3,7 @@ import initSqlJs from "sql.js";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import app from "../../apps/game-api/src/index";
+import { GmailRecoveryEmailSendError } from "../../apps/game-api/src/password-auth";
 import type { RecoveryEmailMessage, RecoveryEmailSender } from "../../apps/game-api/src/password-auth";
 
 type SqlValue = string | number | Uint8Array | null;
@@ -120,6 +121,14 @@ function scalar(db: initSqlJs.Database, sql: string): number {
   return Number(result[0]?.values[0]?.[0] ?? 0);
 }
 
+function firstRow<T extends Record<string, SqlValue>>(db: initSqlJs.Database, sql: string): T | null {
+  const result = db.exec(sql);
+  if (result.length === 0 || result[0]?.values.length === 0) return null;
+  const columns = result[0]?.columns ?? [];
+  const values = result[0]?.values[0] ?? [];
+  return Object.fromEntries(columns.map((column, index) => [column, values[index] ?? null])) as T;
+}
+
 describe("game-api password auth and recovery email local D1 smoke", () => {
   it("fails closed when recovery email sending is not configured", async () => {
     const db = await createMigratedDb();
@@ -146,6 +155,78 @@ describe("game-api password auth and recovery email local D1 smoke", () => {
       message: "Recovery email verification is not configured.",
     });
     expect(scalar(db, "SELECT COUNT(*) FROM auth_email_verification_challenges;")).toBe(0);
+  });
+
+  it("logs Gmail recovery email sender failures without exposing provider details to players", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      env.RECOVERY_EMAIL_SENDER = {
+        sendRecoveryEmail: async () => {
+          throw Object.assign(new GmailRecoveryEmailSendError("gmail_send_unauthorized"), {
+            failureStage: "send_response",
+            upstreamStatus: 403,
+          });
+        },
+      };
+
+      const response = await app.request(
+        "/v1/auth/password/recovery-email/verify/start",
+        {
+          method: "POST",
+          headers: { "X-Request-Id": "req_recovery_gmail_failure_1" },
+          body: JSON.stringify({ purpose: "PASSWORD_REGISTER", recoveryEmail: "Commander@Example.com" }),
+        },
+        env,
+      );
+
+      expect(response.status).toBe(503);
+      await expect(response.json()).resolves.toEqual({
+        accepted: false,
+        verificationStatus: "REJECTED",
+        challengeId: null,
+        expiresAt: null,
+        retryAfterSeconds: null,
+        errorCode: "recovery_email_service_unavailable",
+        message: "Recovery email verification is not configured.",
+      });
+      expect(scalar(db, "SELECT COUNT(*) FROM auth_email_verification_challenges WHERE status = 'CANCELLED';")).toBe(1);
+      expect(scalar(db, "SELECT COUNT(*) FROM ops_error_logs WHERE error_code = 'gmail_send_unauthorized';")).toBe(1);
+      expect(firstRow(db, "SELECT environment, service, severity, error_code, status, source, request_id, masked, retryable FROM ops_error_logs WHERE error_code = 'gmail_send_unauthorized';")).toEqual({
+        environment: "DEV",
+        service: "game_api",
+        severity: "error",
+        error_code: "gmail_send_unauthorized",
+        status: "open",
+        source: "game_api",
+        request_id: "req_recovery_gmail_failure_1",
+        masked: 1,
+        retryable: 0,
+      });
+      const opsLogContext = firstRow<{ sanitized_context_json: string }>(
+        db,
+        "SELECT sanitized_context_json FROM ops_error_logs WHERE error_code = 'gmail_send_unauthorized';",
+      );
+      expect(JSON.parse(opsLogContext?.sanitized_context_json ?? "{}")).toMatchObject({
+        emailMasked: "c********@example.com",
+        failureCode: "gmail_send_unauthorized",
+        failureStage: "send_response",
+        provider: "GMAIL",
+        upstreamStatus: 403,
+      });
+      const serializedLog = JSON.stringify(db.exec("SELECT * FROM ops_error_logs;"));
+      expect(serializedLog).toContain("c********@example.com");
+      expect(serializedLog).not.toContain("Commander@Example.com");
+      expect(serializedLog).not.toContain("commander@example.com");
+      expect(serializedLog).not.toContain("verificationCode");
+      expect(serializedLog).not.toContain("Authorization");
+      expect(serializedLog).not.toContain("refresh_token");
+      expect(serializedLog).not.toContain("access_token");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("registers, signs in, and resets password only after verified recovery email ownership", async () => {

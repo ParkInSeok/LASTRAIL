@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createGmailRecoveryEmailSender,
   createGmailRecoveryEmailSenderFromEnv,
-  GmailRecoveryEmailSendError,
   type RecoveryEmailMessage,
 } from "../../apps/game-api/src/password-auth";
 
@@ -102,7 +101,72 @@ describe("GmailRecoveryEmailSender", () => {
       fetcher: async () => new Response(JSON.stringify({ error: "invalid_grant" }), { status: 401 }),
     });
 
-    await expect(sender.sendRecoveryEmail(message)).rejects.toEqual(new GmailRecoveryEmailSendError("gmail_oauth_unauthorized"));
+    await expect(sender.sendRecoveryEmail(message)).rejects.toMatchObject({
+      code: "gmail_oauth_unauthorized",
+      failureStage: "oauth_response",
+      upstreamStatus: 401,
+    });
+  });
+
+  it("maps rejected OAuth refresh-token exchanges to a non-retryable Gmail sender error", async () => {
+    const sender = createGmailRecoveryEmailSender({
+      senderEmail: "noreply@lastrail.example",
+      oauthClientId: "gmail-client-id",
+      oauthClientSecret: "gmail-client-secret",
+      oauthRefreshToken: "gmail-refresh-token",
+      fetcher: async () => new Response(JSON.stringify({ error: "invalid_grant" }), { status: 400 }),
+    });
+
+    await expect(sender.sendRecoveryEmail(message)).rejects.toMatchObject({
+      code: "gmail_oauth_rejected",
+      failureStage: "oauth_response",
+      upstreamStatus: 400,
+    });
+  });
+
+  it("attaches sanitized OAuth failure metadata without reading provider error bodies", async () => {
+    const sender = createGmailRecoveryEmailSender({
+      senderEmail: "noreply@lastrail.example",
+      oauthClientId: "gmail-client-id",
+      oauthClientSecret: "gmail-client-secret",
+      oauthRefreshToken: "gmail-refresh-token",
+      fetcher: async () => new Response("raw upstream body", { status: 503 }),
+    });
+
+    await expect(sender.sendRecoveryEmail(message)).rejects.toMatchObject({
+      code: "gmail_oauth_unavailable",
+      failureStage: "oauth_response",
+      upstreamStatus: 503,
+    });
+  });
+
+  it("binds the default runtime fetcher so Cloudflare Workers do not reject the receiver", async () => {
+    const fetcher = vi.fn(function (this: unknown, input: string | URL | Request) {
+      if (this !== globalThis) throw new TypeError("Illegal invocation");
+      const url = input.toString();
+      if (url === "https://oauth2.googleapis.com/token") {
+        return Promise.resolve(new Response(JSON.stringify({ access_token: "access-token-from-google" }), { status: 200 }));
+      }
+      if (url === "https://gmail.googleapis.com/gmail/v1/users/me/messages/send") {
+        return Promise.resolve(new Response(JSON.stringify({ id: "gmail-message-id" }), { status: 200 }));
+      }
+      return Promise.reject(new Error(`unexpected URL ${url}`));
+    });
+    vi.stubGlobal("fetch", fetcher);
+    try {
+      const sender = createGmailRecoveryEmailSender({
+        senderEmail: "noreply@lastrail.example",
+        oauthClientId: "gmail-client-id",
+        oauthClientSecret: "gmail-client-secret",
+        oauthRefreshToken: "gmail-refresh-token",
+      });
+
+      await sender.sendRecoveryEmail(message);
+
+      expect(fetcher).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("maps Gmail quota and transient send failures to stable Gmail sender errors without retrying duplicate sends", async () => {
@@ -119,7 +183,11 @@ describe("GmailRecoveryEmailSender", () => {
       },
     });
 
-    await expect(quotaSender.sendRecoveryEmail(message)).rejects.toEqual(new GmailRecoveryEmailSendError("gmail_quota_exceeded"));
+    await expect(quotaSender.sendRecoveryEmail(message)).rejects.toMatchObject({
+      code: "gmail_quota_exceeded",
+      failureStage: "send_response",
+      upstreamStatus: 429,
+    });
     expect(calls).toHaveLength(2);
 
     const transientSender = createGmailRecoveryEmailSender({
@@ -133,6 +201,10 @@ describe("GmailRecoveryEmailSender", () => {
       },
     });
 
-    await expect(transientSender.sendRecoveryEmail(message)).rejects.toEqual(new GmailRecoveryEmailSendError("gmail_send_unavailable"));
+    await expect(transientSender.sendRecoveryEmail(message)).rejects.toMatchObject({
+      code: "gmail_send_unavailable",
+      failureStage: "send_fetch",
+      upstreamStatus: null,
+    });
   });
 });

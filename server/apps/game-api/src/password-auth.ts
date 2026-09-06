@@ -17,19 +17,35 @@ export type RecoveryEmailSender = {
 
 export type GmailRecoveryEmailSendErrorCode =
   | "gmail_config_missing"
+  | "gmail_oauth_rejected"
   | "gmail_oauth_unavailable"
   | "gmail_oauth_unauthorized"
   | "gmail_send_unavailable"
   | "gmail_send_unauthorized"
   | "gmail_quota_exceeded";
 
+export type GmailRecoveryEmailFailureStage =
+  | "config"
+  | "oauth_fetch"
+  | "oauth_response"
+  | "oauth_payload"
+  | "send_fetch"
+  | "send_response";
+
 export class GmailRecoveryEmailSendError extends Error {
   readonly code: GmailRecoveryEmailSendErrorCode;
+  readonly failureStage: GmailRecoveryEmailFailureStage | null;
+  readonly upstreamStatus: number | null;
 
-  constructor(code: GmailRecoveryEmailSendErrorCode) {
+  constructor(code: GmailRecoveryEmailSendErrorCode, details: {
+    failureStage?: GmailRecoveryEmailFailureStage;
+    upstreamStatus?: number;
+  } = {}) {
     super(code);
     this.name = "GmailRecoveryEmailSendError";
     this.code = code;
+    this.failureStage = details.failureStage ?? null;
+    this.upstreamStatus = details.upstreamStatus ?? null;
   }
 }
 
@@ -202,7 +218,7 @@ function prepareGmailConfig(config: GmailRecoveryEmailSenderConfig): PreparedGma
   const oauthRefreshToken = config.oauthRefreshToken?.trim() ?? "";
   const tokenEndpoint = config.tokenEndpoint?.trim() || gmailTokenEndpoint;
   const gmailSendEndpoint = config.gmailSendEndpoint?.trim() || gmailMessagesSendEndpoint;
-  const fetcher = config.fetcher ?? fetch;
+  const fetcher = config.fetcher ?? globalThis.fetch.bind(globalThis);
 
   if (
     senderEmail === ""
@@ -213,7 +229,7 @@ function prepareGmailConfig(config: GmailRecoveryEmailSenderConfig): PreparedGma
     || tokenEndpoint === ""
     || gmailSendEndpoint === ""
   ) {
-    throw new GmailRecoveryEmailSendError("gmail_config_missing");
+    throw new GmailRecoveryEmailSendError("gmail_config_missing", { failureStage: "config" });
   }
 
   return {
@@ -243,23 +259,23 @@ async function fetchGmailAccessToken(config: PreparedGmailConfig): Promise<strin
       body,
     });
   } catch {
-    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable", { failureStage: "oauth_fetch" });
   }
 
   if (response.status === 401 || response.status === 403) {
-    throw new GmailRecoveryEmailSendError("gmail_oauth_unauthorized");
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unauthorized", { failureStage: "oauth_response", upstreamStatus: response.status });
   }
   if (response.status === 429 || response.status >= 500) {
-    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable", { failureStage: "oauth_response", upstreamStatus: response.status });
   }
   if (!response.ok) {
-    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_oauth_rejected", { failureStage: "oauth_response", upstreamStatus: response.status });
   }
 
   const payload = await readJsonObject(response);
   const accessToken = typeof payload.access_token === "string" ? payload.access_token.trim() : "";
   if (accessToken === "") {
-    throw new GmailRecoveryEmailSendError("gmail_oauth_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_oauth_rejected", { failureStage: "oauth_payload", upstreamStatus: response.status });
   }
   return accessToken;
 }
@@ -276,17 +292,17 @@ async function sendGmailMimeMessage(config: PreparedGmailConfig, accessToken: st
       body: JSON.stringify({ raw: base64UrlEncodeString(createRecoveryEmailMime(config.senderEmail, message)) }),
     });
   } catch {
-    throw new GmailRecoveryEmailSendError("gmail_send_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_send_unavailable", { failureStage: "send_fetch" });
   }
 
   if (response.status === 401 || response.status === 403) {
-    throw new GmailRecoveryEmailSendError("gmail_send_unauthorized");
+    throw new GmailRecoveryEmailSendError("gmail_send_unauthorized", { failureStage: "send_response", upstreamStatus: response.status });
   }
   if (response.status === 429) {
-    throw new GmailRecoveryEmailSendError("gmail_quota_exceeded");
+    throw new GmailRecoveryEmailSendError("gmail_quota_exceeded", { failureStage: "send_response", upstreamStatus: response.status });
   }
   if (response.status >= 500 || !response.ok) {
-    throw new GmailRecoveryEmailSendError("gmail_send_unavailable");
+    throw new GmailRecoveryEmailSendError("gmail_send_unavailable", { failureStage: "send_response", upstreamStatus: response.status });
   }
 }
 

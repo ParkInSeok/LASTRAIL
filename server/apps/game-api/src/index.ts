@@ -14,6 +14,7 @@ import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificati
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
+  GmailRecoveryEmailSendError,
   createGmailRecoveryEmailSenderFromEnv,
   hashPassword,
   hashVerificationCode,
@@ -1736,6 +1737,52 @@ function getRecoveryEmailSender(env: Env): RecoveryEmailSender | null {
   return (env as GameApiEnv).RECOVERY_EMAIL_SENDER ?? createGmailRecoveryEmailSenderFromEnv(env as GameApiEnv);
 }
 
+function getRecoveryEmailSenderFailureCode(error: unknown): string {
+  return error instanceof GmailRecoveryEmailSendError ? error.code : "recovery_email_service_unavailable";
+}
+
+function getRecoveryEmailSenderFailureStage(error: unknown): string | null {
+  return error instanceof GmailRecoveryEmailSendError ? error.failureStage : null;
+}
+
+function getRecoveryEmailSenderUpstreamStatus(error: unknown): number | null {
+  return error instanceof GmailRecoveryEmailSendError ? error.upstreamStatus : null;
+}
+
+function isRetryableRecoveryEmailSenderFailure(errorCode: string): boolean {
+  return errorCode === "gmail_oauth_unavailable"
+    || errorCode === "gmail_send_unavailable"
+    || errorCode === "gmail_quota_exceeded";
+}
+
+async function writeRecoveryEmailSenderFailureOpsLog(c: GameApiContext, input: {
+  error: unknown;
+  accountId: string | null;
+  purpose: RecoveryEmailPurpose;
+  challengeId: string;
+  emailMasked: string;
+}): Promise<void> {
+  const errorCode = getRecoveryEmailSenderFailureCode(input.error);
+  await writeGameApiOpsErrorLog(c, {
+    severity: "error",
+    errorCode,
+    messageSummary: "Recovery email sender failed.",
+    accountId: input.accountId,
+    correlation: {
+      challengeId: input.challengeId,
+      purpose: input.purpose,
+    },
+    context: {
+      provider: errorCode.startsWith("gmail_") ? "GMAIL" : "unknown",
+      failureCode: errorCode,
+      failureStage: getRecoveryEmailSenderFailureStage(input.error),
+      upstreamStatus: getRecoveryEmailSenderUpstreamStatus(input.error),
+      emailMasked: input.emailMasked,
+    },
+    retryable: isRetryableRecoveryEmailSenderFailure(errorCode),
+  });
+}
+
 function createAuthError(errorCode: string, message: string) {
   return {
     errorCode,
@@ -2218,12 +2265,19 @@ app.post("/v1/auth/password/recovery-email/verify/start", async (c) => {
       verificationCode,
       expiresAt: toIso(expiresAt),
     });
-  } catch {
+  } catch (error) {
     await c.env.DB.prepare(
       `UPDATE auth_email_verification_challenges
        SET status = 'CANCELLED', updated_at = ?
        WHERE id = ? AND status = 'PENDING'`,
     ).bind(Date.now(), challengeId).run();
+    await writeRecoveryEmailSenderFailureOpsLog(c, {
+      error,
+      accountId,
+      purpose,
+      challengeId,
+      emailMasked: recoveryEmail.masked,
+    });
     return c.json(createRecoveryVerificationResponse({
       accepted: false,
       verificationStatus: "REJECTED",
@@ -2678,12 +2732,19 @@ app.post("/v1/auth/password/reset/start", async (c) => {
       verificationCode,
       expiresAt: toIso(expiresAt),
     });
-  } catch {
+  } catch (error) {
     await c.env.DB.prepare(
       `UPDATE auth_email_verification_challenges
        SET status = 'CANCELLED', updated_at = ?
        WHERE id = ? AND status = 'PENDING'`,
     ).bind(Date.now(), challengeId).run();
+    await writeRecoveryEmailSenderFailureOpsLog(c, {
+      error,
+      accountId: row.account_id,
+      purpose: "PASSWORD_RESET",
+      challengeId,
+      emailMasked: recoveryEmail.masked,
+    });
   }
 
   return c.json(response);
