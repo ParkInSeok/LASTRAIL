@@ -7,10 +7,10 @@ import { opsSeverityLabel, opsErrorLogStatusLabel, opsErrorLogSourceLabel } from
 import type { OpsErrorLogReadFiltersPreview } from "../shared/opsErrorLogs/opsErrorLogContract";
 import "./errorLogs.css";
 
-export type LogFilters = { q: string; serverVersion: string; service: string; severity: string; status: string; from: string; to: string };
-export const emptyLogFilters: LogFilters = { q: "", serverVersion: "", service: "", severity: "", status: "", from: "", to: "" };
+export type LogFilters = { q: string; serverVersion: string; appVersion: string; appVersionCode: string; service: string; severity: string; status: string; from: string; to: string };
+export const emptyLogFilters: LogFilters = { q: "", serverVersion: "", appVersion: "", appVersionCode: "", service: "", severity: "", status: "", from: "", to: "" };
 export function buildLogFilters(category: "server" | "frontend", filters: LogFilters, cursor = ""): Partial<OpsErrorLogReadFiltersPreview> {
-  return { category, q: filters.q.trim(), serverVersion: filters.serverVersion.trim(), service: filters.service, severity: filters.severity, status: filters.status,
+  return { category, q: filters.q.trim(), ...(category === "server" ? { serverVersion: filters.serverVersion.trim() } : { appVersion: filters.appVersion.trim(), appVersionCode: filters.appVersionCode.trim() }), service: filters.service, severity: filters.severity, status: filters.status,
     occurredFrom: filters.from ? new Date(filters.from).toISOString() : "", occurredTo: filters.to ? new Date(filters.to).toISOString() : "", limit: "25", cursor };
 }
 export function logTime(value: string) {
@@ -53,6 +53,10 @@ export function ErrorLogsPage() {
         {selectFilter("service", "발생 서비스", category === "server" ? ["admin_api", "game_api", "worker_cron", "migration_verify", "support_read_model", "integrity_pipeline"] : [], opsErrorLogSourceLabel)}
         {selectFilter("severity", "심각도", ["info", "warning", "error", "critical"], opsSeverityLabel)}
         {category === "server" && <label>서버 버전<input aria-label="서버 버전" placeholder="배포 ID 전체 일치" maxLength={100} pattern="[A-Za-z0-9._-]+" value={draft.serverVersion} onChange={(e) => setDraft({ ...draft, serverVersion: e.target.value })} /></label>}
+        {category === "frontend" && <>
+          <label>앱 버전<input aria-label="앱 버전" placeholder="예: 0.1.0" maxLength={100} value={draft.appVersion} onChange={(e) => setDraft({ ...draft, appVersion: e.target.value })} /></label>
+          <label>앱 버전코드<input aria-label="앱 버전코드" placeholder="예: 1" inputMode="numeric" pattern="[0-9]+" maxLength={10} value={draft.appVersionCode} onChange={(e) => setDraft({ ...draft, appVersionCode: e.target.value })} /></label>
+        </>}
         {selectFilter("status", "상태", ["open", "acknowledged", "resolved", "ignored"], opsErrorLogStatusLabel)}
         <label>시작 시점 (현지 시간)<input aria-label="시작 시점" type="datetime-local" value={draft.from} onChange={(e) => setDraft({ ...draft, from: e.target.value })} /></label>
         <label>종료 시점 (현지 시간)<input aria-label="종료 시점" type="datetime-local" value={draft.to} onChange={(e) => setDraft({ ...draft, to: e.target.value })} /></label>
@@ -66,7 +70,7 @@ export function ErrorLogsPage() {
       <div className="table-wrap"><table><thead><tr>{["발생 시점 (KST)", "에러코드", "에러내용", "발생 위치", "심각도 / 상태", "로그 ID"].map((label) => <th key={label}>{label}</th>)}</tr></thead>
         <tbody>{query.isLoading ? <tr><td colSpan={6}>조회 중</td></tr> : !query.error && !query.data?.items.length ? <tr><td colSpan={6}>데이터 없음</td></tr> : query.data?.items.map((row) => <tr key={row.id}>
           <td>{logTime(row.occurredAt)}</td><td><code>{row.errorCode}</code></td><td>{row.messageSummary}</td>
-          <td>{opsErrorLogSourceLabel(row.service)}<small>{row.environment} · {row.source}</small><small>서버 버전: {row.serverVersion ?? "미기록"}</small></td>
+          <td>{opsErrorLogSourceLabel(row.service)}<small>{row.environment} · {row.source}</small>{category === "server" ? <small>서버 버전: {row.serverVersion ?? "미기록"}</small> : <><small>앱 버전: {row.appVersion ?? "미기록"}</small><small>버전코드: {row.appVersionCode ?? "미기록"}</small></>}</td>
           <td>{opsSeverityLabel(row.severity)}<small>{opsErrorLogStatusLabel(row.status)}</small></td>
           <td><button className="log-id" onClick={() => setSelected(row.id)} aria-label={`로그 상세 ${row.id}`}>{row.id}</button><small>요청: {row.requestId}</small></td>
         </tr>)}</tbody></table></div>

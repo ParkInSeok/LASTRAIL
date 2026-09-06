@@ -3,6 +3,8 @@ import { adminReadValueLabel } from "../api/errorDisplay";
 export type OpsErrorLogReadFiltersPreview = {
   category?: string;
   serverVersion?: string;
+  appVersion?: string;
+  appVersionCode?: string;
   q?: string;
   occurredFrom?: string;
   occurredTo?: string;
@@ -28,6 +30,8 @@ export type OpsErrorLogReadFiltersPreview = {
 };
 
 export type OpsErrorLogListItem = {
+  appVersion?: string | null;
+  appVersionCode?: string | null;
   serverVersion?: string | null;
   id: string;
   occurredAt: string;
@@ -152,6 +156,8 @@ function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsEr
   return {
     id: stringValue(record?.id, fallbackId),
     serverVersion: nullableStringValue(record?.serverVersion),
+    appVersion: nullableStringValue(record?.appVersion),
+    appVersionCode: typeof record?.appVersionCode === "number" && Number.isSafeInteger(record.appVersionCode) && record.appVersionCode > 0 ? String(record.appVersionCode) : nullableStringValue(record?.appVersionCode),
     occurredAt: readStringValue(pick(record, "occurredAt", "occurred_at"), fieldFallback),
     environment: readStringValue(record?.environment, fieldFallback),
     severity: readStringValue(record?.severity, fieldFallback),
