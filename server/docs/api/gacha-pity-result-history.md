@@ -787,10 +787,19 @@ World Raid score, ranking, settlement, and event reward tickets are separate
 future scope and must not be mixed into the Act 1 story/pickup banner launch
 fixture.
 
-Local smoke uses this fixture as `gacha_banners.pool_snapshot_json` input and
-asserts the response keeps Unity-visible fields stable while not returning raw
-RNG material, seed preimages, per-candidate probabilities, full weight tables,
-tokens, secrets, or account shortcut data.
+Local integration smoke uses the `launchGachaDataDraft` pool as
+`gacha_banners.pool_snapshot_json` input and asserts the response keeps
+Unity-visible fields stable while not returning raw RNG material, seed
+preimages, per-candidate probabilities, full weight tables, tokens, secrets, or
+account shortcut data.
+
+DEV remote launch smoke uses a separate deterministic fixture in
+`scripts/cloudflare/dev-remote-launch-smoke.ts`. That script creates banner ids
+with `dev_smoke_banner_<suffix>`, calls `seedGacha(...)`, grants the smoke
+account 12 command tickets, and seeds a single-candidate pickup pool containing
+`op_vex`. If a designated DEV smoke batch for a `dev_smoke_banner_<suffix>`
+returns repeated `op_vex` results, the source-level explanation is the
+deterministic smoke seed, not production gacha probability evidence.
 
 Decision queue:
 

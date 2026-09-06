@@ -344,11 +344,27 @@ describe("server deployment history store", () => {
       async () => {
         throw new Error("smoke should not run after deploy failure");
       },
-      { createdAt: "2026-09-06T03:00:00.000Z" },
+      { attemptId: "attempt-deploy-failed-1", createdAt: "2026-09-06T03:00:00.000Z" },
     );
 
-    expect(deployFailed).toEqual({ accepted: false, errorCode: "deployment_execution_failed" });
-    expect(deployFailedBucket.snapshot()).toEqual({});
+    expect(deployFailed).toEqual({
+      accepted: false,
+      errorCode: "deployment_execution_failed",
+      failureKey: "server-deployments/prd/game-api/2026.09.06.1/failures/attempt-deploy-failed-1.json",
+    });
+    expect(deployFailedBucket.snapshot()).toMatchObject({
+      "server-deployments/prd/game-api/2026.09.06.1/failures/attempt-deploy-failed-1.json": {
+        environment: "prd",
+        service: "game-api",
+        serverVersion: "2026.09.06.1",
+        failureStage: "DEPLOY",
+        errorCode: "deployment_execution_failed",
+        cloudflareDeploymentId: null,
+        verification: { localRegression: "PASSED", dryRun: "PASSED", remoteSmoke: "PENDING" },
+      },
+    });
+    expect(deployFailedBucket.snapshot()).not.toHaveProperty("server-deployments/prd/game-api/2026.09.06.1.json");
+    expect(deployFailedBucket.snapshot()).not.toHaveProperty("server-deployments/prd/game-api/current.json");
 
     const smokeFailedBucket = createFakeBucket();
     const smokeFailed = await runServerDeploymentReleaseFlow(
@@ -358,10 +374,27 @@ describe("server deployment history store", () => {
       smokeFailedBucket,
       async () => ({ accepted: true, cloudflareDeploymentId: "cf-deploy-game-20260906-1" }),
       async () => ({ accepted: false, errorCode: "deployment_smoke_failed" }),
-      { createdAt: "2026-09-06T03:00:00.000Z" },
+      { attemptId: "attempt-smoke-failed-1", createdAt: "2026-09-06T03:00:00.000Z" },
     );
 
-    expect(smokeFailed).toEqual({ accepted: false, errorCode: "deployment_smoke_failed" });
-    expect(smokeFailedBucket.snapshot()).toEqual({});
+    expect(smokeFailed).toEqual({
+      accepted: false,
+      errorCode: "deployment_smoke_failed",
+      failureKey: "server-deployments/prd/game-api/2026.09.06.1/failures/attempt-smoke-failed-1.json",
+    });
+    expect(smokeFailedBucket.snapshot()).toMatchObject({
+      "server-deployments/prd/game-api/2026.09.06.1/failures/attempt-smoke-failed-1.json": {
+        environment: "prd",
+        service: "game-api",
+        serverVersion: "2026.09.06.1",
+        failureStage: "SMOKE",
+        errorCode: "deployment_smoke_failed",
+        cloudflareDeploymentId: "cf-deploy-game-20260906-1",
+        verification: { localRegression: "PASSED", dryRun: "PASSED", remoteSmoke: "FAILED" },
+      },
+    });
+    expect(smokeFailedBucket.snapshot()).not.toHaveProperty("server-deployments/prd/game-api/2026.09.06.1.json");
+    expect(smokeFailedBucket.snapshot()).not.toHaveProperty("server-deployments/prd/game-api/current.json");
+    expect(JSON.stringify(smokeFailedBucket.snapshot())).not.toContain("PASSED\",\"pointerStatus");
   });
 });

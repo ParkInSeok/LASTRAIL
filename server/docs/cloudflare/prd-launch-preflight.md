@@ -115,9 +115,10 @@ scrubbed release identity and never prints secrets, tokens, raw request bodies,
 Google tokens, RNG material, raw probability tables, or R2 credentials.
 
 The shared release-flow helper models the approved production order with local
-fake executors: preflight, deploy, remote smoke, then immutable history/current
-pointer writes. It writes deployment history only after deploy execution and
-remote smoke both pass. Deploy failure or smoke failure leaves history/current
+fake executors: preflight, deploy, remote smoke, then immutable success
+history/current pointer writes. It writes success history only after deploy
+execution and remote smoke both pass. Deploy failure or smoke failure writes a
+separate sanitized failure-attempt record and leaves success history/current
 untouched; current-pointer conflicts are degraded evidence states, not automatic
 redeploys or D1 rollback triggers. Real deploy execution, remote smoke, and R2
 history writes still require explicit environment approval.

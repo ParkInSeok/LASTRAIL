@@ -477,6 +477,8 @@ async function main(): Promise<void> {
   });
 
   const bannerId = `dev_smoke_banner_${suffix}`;
+  // This exact banner id is backed by seedGacha's deterministic single-pickup
+  // pool above, so repeated op_vex results prove the smoke fixture wiring.
   seedGacha({ accountId, bannerId, balanceVersion, now });
   const gachaOneKey = `dev-smoke-gacha-one-${suffix}`;
   const gachaOne = await requestJson("POST", `/v1/gacha/banners/${bannerId}/pulls`, {

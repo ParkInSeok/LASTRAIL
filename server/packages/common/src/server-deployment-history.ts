@@ -93,10 +93,39 @@ export type ServerDeploymentReleaseFlowResult =
         | "deployment_history_invalid"
         | "deployment_history_immutable_conflict"
         | "deployment_current_pointer_conflict";
+      failureKey?: string;
       historyKey?: string;
       currentKey?: string;
       currentPointerStatus?: "DEGRADED";
     };
+
+export type ServerDeploymentFailureRecord = {
+  releaseId: string;
+  environment: ServerReleaseEnvironment;
+  service: ServerReleaseService;
+  serverVersion: string;
+  commitSha: string;
+  releaseBranch: string;
+  deploymentTag: string;
+  failureStage: "DEPLOY" | "SMOKE";
+  errorCode: "deployment_execution_failed" | "deployment_smoke_failed" | "deployment_smoke_blocked";
+  cloudflareDeploymentId: string | null;
+  database: {
+    compatibility: ServerDbCompatibility;
+    minimumVersionCode?: string;
+    migrationRange?: string;
+  };
+  contentRelease: {
+    releaseId: string;
+    contentVersion: string;
+  } | null;
+  verification: {
+    localRegression: Extract<ServerVerificationStatus, "PASSED">;
+    dryRun: Extract<ServerVerificationStatus, "PASSED">;
+    remoteSmoke: ServerVerificationStatus;
+  };
+  createdAt: string;
+};
 
 export type ServerDeploymentEvidence = {
   releaseId: string;
@@ -216,6 +245,7 @@ export async function runServerDeploymentReleaseFlow(
   deploy: ServerDeploymentReleaseDeployExecutor,
   smoke: ServerDeploymentReleaseSmokeExecutor,
   options: {
+    attemptId?: string;
     createdAt: string;
     expectedCurrentEtag?: string | null;
   },
@@ -223,15 +253,41 @@ export async function runServerDeploymentReleaseFlow(
   const preflight = buildServerDeployPreflight(value, history, target);
   if (!preflight.accepted) return preflight;
 
+  const attemptId = options.attemptId ?? `attempt-${Date.parse(options.createdAt)}`;
   const deployResult = await deploy({ plan: preflight.plan, service: target.service });
-  if (!deployResult.accepted) return deployResult;
+  if (!deployResult.accepted) {
+    const failureKey = await writeServerDeploymentFailureRecord(
+      bucket,
+      buildServerDeploymentFailureRecord(preflight.plan, target.service, {
+        attemptId,
+        failureStage: "DEPLOY",
+        errorCode: deployResult.errorCode,
+        remoteSmoke: preflight.plan.verification.remoteSmoke,
+        createdAt: options.createdAt,
+      }),
+    );
+    return { ...deployResult, failureKey };
+  }
 
   const smokeResult = await smoke({
     plan: preflight.plan,
     service: target.service,
     cloudflareDeploymentId: deployResult.cloudflareDeploymentId,
   });
-  if (!smokeResult.accepted) return smokeResult;
+  if (!smokeResult.accepted) {
+    const failureKey = await writeServerDeploymentFailureRecord(
+      bucket,
+      buildServerDeploymentFailureRecord(preflight.plan, target.service, {
+        attemptId,
+        failureStage: "SMOKE",
+        errorCode: smokeResult.errorCode,
+        cloudflareDeploymentId: deployResult.cloudflareDeploymentId,
+        remoteSmoke: smokeResult.errorCode === "deployment_smoke_blocked" ? "BLOCKED" : "FAILED",
+        createdAt: options.createdAt,
+      }),
+    );
+    return { ...smokeResult, failureKey };
+  }
 
   const smokePassedPlan: ServerDeployPlan = {
     ...preflight.plan,
@@ -270,6 +326,15 @@ export function buildServerDeploymentHistoryKey(environment: ServerReleaseEnviro
 
 export function buildServerDeploymentCurrentKey(environment: ServerReleaseEnvironment, service: ServerReleaseService): string {
   return `server-deployments/${environment}/${service}/current.json`;
+}
+
+export function buildServerDeploymentFailureKey(
+  environment: ServerReleaseEnvironment,
+  service: ServerReleaseService,
+  serverVersion: string,
+  attemptId: string,
+): string {
+  return `server-deployments/${environment}/${service}/${serverVersion}/failures/${attemptId}.json`;
 }
 
 export function parseServerDeploymentEvidence(value: unknown): ServerDeploymentEvidence | null {
@@ -351,6 +416,64 @@ export function buildServerDeploymentEvidence(
     pointerStatus: "CURRENT",
     createdAt: input.createdAt,
   };
+}
+
+function buildServerDeploymentFailureRecord(
+  plan: ServerDeployPlan,
+  service: ServerReleaseService,
+  input: {
+    attemptId: string;
+    failureStage: ServerDeploymentFailureRecord["failureStage"];
+    errorCode: ServerDeploymentFailureRecord["errorCode"];
+    cloudflareDeploymentId?: string | null;
+    remoteSmoke: ServerVerificationStatus;
+    createdAt: string;
+  },
+): { key: string; record: ServerDeploymentFailureRecord } {
+  const tag = plan.deploymentTags.find((deploymentTag) => deploymentTag.service === service);
+  if (!plan.services.includes(service) || tag === undefined) {
+    throw new Error("deployment_target_mismatch");
+  }
+  if (!safeDeploymentIdPattern.test(input.attemptId)) {
+    throw new Error("deployment_attempt_id_invalid");
+  }
+  if (input.cloudflareDeploymentId !== undefined && input.cloudflareDeploymentId !== null && !safeDeploymentIdPattern.test(input.cloudflareDeploymentId)) {
+    throw new Error("cloudflare_deployment_id_invalid");
+  }
+
+  return {
+    key: buildServerDeploymentFailureKey(plan.environment, service, plan.serverVersion, input.attemptId),
+    record: {
+      releaseId: plan.releaseId,
+      environment: plan.environment,
+      service,
+      serverVersion: plan.serverVersion,
+      commitSha: plan.source.commitSha,
+      releaseBranch: plan.source.releaseBranch,
+      deploymentTag: tag.tag,
+      failureStage: input.failureStage,
+      errorCode: input.errorCode,
+      cloudflareDeploymentId: input.cloudflareDeploymentId ?? null,
+      database: plan.database,
+      contentRelease: plan.contentRelease ?? null,
+      verification: {
+        ...plan.verification,
+        remoteSmoke: input.remoteSmoke,
+      },
+      createdAt: input.createdAt,
+    },
+  };
+}
+
+async function writeServerDeploymentFailureRecord(
+  bucket: ServerDeploymentHistoryBucket,
+  failure: { key: string; record: ServerDeploymentFailureRecord },
+): Promise<string> {
+  await bucket.put(failure.key, canonicalJson(failure.record as never), {
+    onlyIf: ifNoneMatchStar(),
+    httpMetadata: { contentType: "application/json", cacheControl: "no-store" },
+  });
+  return failure.key;
 }
 
 export function parseServerDeploymentCurrentPointer(value: unknown): ServerDeploymentCurrentPointer | null {
