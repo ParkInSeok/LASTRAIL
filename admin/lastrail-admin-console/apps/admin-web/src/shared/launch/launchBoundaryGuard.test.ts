@@ -20,7 +20,6 @@ describe("launch read-only boundary guard", () => {
       "출격",
       "CS 지원",
       "요원 모집",
-      "오프라인 보상",
       "시스템 에러 로그",
       "무결성",
       "의심 플레이어",
@@ -108,7 +107,6 @@ describe("launch read-only boundary guard", () => {
       "출격",
       "CS 지원",
       "요원 모집",
-      "오프라인 보상",
       "시스템 에러 로그",
       "무결성",
       "의심 플레이어",
@@ -192,7 +190,6 @@ describe("launch read-only boundary guard", () => {
       ["player_detail", "/players/:accountId", true],
       ["run_detail", "/runs/:runId", true],
       ["gacha", "/gacha", true],
-      ["offline_reward", "/offline-rewards", true],
       ["ops_error_logs", "/ops/error-logs", true],
       ["version_management", "/versions", true]
     ]);

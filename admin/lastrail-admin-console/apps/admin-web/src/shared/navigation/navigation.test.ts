@@ -26,11 +26,11 @@ describe("admin navigation", () => {
     });
   });
 
-  it("shows offline reward support view for admins with offline reward read permission", () => {
+  it("hides the removed offline reward page even with read permission", () => {
     const nav = visibleNavigation(["OFFLINE_REWARD_READ"]);
     const items = nav.flatMap((group) => group.items);
 
-    expect(items).toContainEqual({
+    expect(items).not.toContainEqual({
       label: "오프라인 보상",
       path: "/offline-rewards",
       permission: "OFFLINE_REWARD_READ"

@@ -193,7 +193,6 @@ export function buildPreviewSmokeChecklist(): PreviewSmokeChecklist {
       { code: "player_detail", path: "/players/:accountId", readOnly: true },
       { code: "run_detail", path: "/runs/:runId", readOnly: true },
       { code: "gacha", path: "/gacha", readOnly: true },
-      { code: "offline_reward", path: "/offline-rewards", readOnly: true },
       { code: "ops_error_logs", path: "/ops/error-logs", readOnly: true },
       { code: "version_management", path: "/versions", readOnly: true }
     ],

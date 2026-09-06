@@ -8,7 +8,6 @@ import { DashboardPage } from "../pages/DashboardPage";
 import { ErrorLogsPage } from "../pages/ErrorLogsPage";
 import { GachaPage } from "../pages/GachaPage";
 import { IntegrityPage } from "../pages/IntegrityPage";
-import { OfflineRewardsPage } from "../pages/OfflineRewardsPage";
 import { PlayerDetailPage } from "../pages/PlayerDetailPage";
 import { PlayersPage } from "../pages/PlayersPage";
 import { RunDetailPage } from "../pages/RunDetailPage";
@@ -139,7 +138,6 @@ function Shell() {
           <Route path="/players/:accountId" element={<PlayerDetailPage />} />
           <Route path="/support/accounts/:accountId" element={<SupportAccountPage />} />
           <Route path="/gacha" element={<GachaPage />} />
-          <Route path="/offline-rewards" element={<OfflineRewardsPage />} />
           <Route path="/ops/error-logs" element={<ErrorLogsPage />} />
           <Route path="/integrity" element={<IntegrityPage />} />
           <Route path="/integrity/suspicious-players" element={<SuspiciousPlayersPage />} />
