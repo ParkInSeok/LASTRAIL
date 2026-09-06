@@ -9,8 +9,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-8])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(18);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|1[0-9])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(19);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,7 +20,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
-  it("apply 0001 through 0018 and pass SQLite integrity checks", async () => {
+  it("apply 0001 through 0019 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
@@ -524,6 +524,101 @@ describe("D1 migrations", () => {
          );`,
       ),
     ).toThrow();
+
+    expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    db.close();
+  });
+
+  it("creates ID/password credentials with verified recovery email challenge state", async () => {
+    const db = await createMigratedDb();
+
+    const credentials = db.exec("PRAGMA table_info(auth_password_credentials);");
+    const recoveryEmails = db.exec("PRAGMA table_info(auth_recovery_emails);");
+    const challenges = db.exec("PRAGMA table_info(auth_email_verification_challenges);");
+    const credentialIndexes = db.exec("PRAGMA index_list(auth_password_credentials);");
+    const recoveryIndexes = db.exec("PRAGMA index_list(auth_recovery_emails);");
+    const challengeIndexes = db.exec("PRAGMA index_list(auth_email_verification_challenges);");
+
+    expect(credentials[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "login_id_normalized",
+      "password_hash",
+      "password_hash_algorithm",
+      "password_hash_params_json",
+      "recovery_email_normalized",
+      "created_at",
+      "updated_at",
+    ]);
+    expect(recoveryEmails[0]?.values.map((row) => row[1])).toEqual([
+      "account_id",
+      "email_normalized",
+      "email_masked",
+      "status",
+      "verified_at",
+      "created_at",
+      "updated_at",
+    ]);
+    expect(challenges[0]?.values.map((row) => row[1])).toEqual([
+      "id",
+      "account_id",
+      "email_normalized",
+      "purpose",
+      "verifier_hash",
+      "status",
+      "expires_at",
+      "consumed_at",
+      "created_at",
+      "updated_at",
+    ]);
+    expect(credentialIndexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining(["idx_auth_password_credentials_login_id_unique"]),
+    );
+    expect(recoveryIndexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining(["idx_auth_recovery_emails_email"]),
+    );
+    expect(challengeIndexes[0]?.values.map((row) => row[1])).toEqual(
+      expect.arrayContaining([
+        "idx_auth_email_verification_challenges_account_status",
+        "idx_auth_email_verification_challenges_email_purpose",
+      ]),
+    );
+
+    db.run("INSERT INTO accounts (id, status, created_at, updated_at) VALUES ('account-password-1', 'ACTIVE', 1, 1);");
+    db.run(
+      `INSERT INTO auth_recovery_emails (
+         account_id, email_normalized, email_masked, status, verified_at, created_at, updated_at
+       ) VALUES (
+         'account-password-1', 'commander@example.com', 'c********@example.com', 'VERIFIED', 2, 1, 2
+       );`,
+    );
+    db.run(
+      `INSERT INTO auth_password_credentials (
+         account_id, login_id_normalized, password_hash, password_hash_algorithm,
+         password_hash_params_json, recovery_email_normalized, created_at, updated_at
+       ) VALUES (
+         'account-password-1', 'rail_commander', 'hash', 'ARGON2ID', '{"memoryKiB":19456}',
+         'commander@example.com', 2, 2
+       );`,
+    );
+    expect(() =>
+      db.run(
+        `INSERT INTO auth_password_credentials (
+           account_id, login_id_normalized, password_hash, password_hash_algorithm,
+           password_hash_params_json, recovery_email_normalized, created_at, updated_at
+         ) VALUES (
+           'account-password-1', 'second_login', 'hash', 'ARGON2ID', '{}', 'commander@example.com', 3, 3
+         );`,
+      ),
+    ).toThrow();
+
+    db.run(
+      `INSERT INTO auth_email_verification_challenges (
+         id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, consumed_at, created_at, updated_at
+       ) VALUES (
+         'email-challenge-1', 'account-password-1', 'new@example.com', 'PASSWORD_RESET',
+         'challenge-hash', 'PENDING', 60000, NULL, 4, 4
+       );`,
+    );
 
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     db.close();

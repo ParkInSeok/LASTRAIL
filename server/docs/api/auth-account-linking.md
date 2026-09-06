@@ -65,6 +65,10 @@ Candidate endpoints:
 POST /v1/auth/password/register
 POST /v1/auth/password/login
 POST /v1/auth/password/link
+POST /v1/auth/password/recovery-email/verify/start
+POST /v1/auth/password/recovery-email/verify/confirm
+POST /v1/auth/password/reset/start
+POST /v1/auth/password/reset/confirm
 GET /v1/auth/links
 ```
 
@@ -72,6 +76,12 @@ GET /v1/auth/links
 credential. `POST /v1/auth/password/link` requires Bearer auth and attaches an
 unused login ID credential to the current account, preserving `accountId`,
 inventory, story progress, rewards, and sessions.
+
+Both register and link require an explicit recovery email and completed
+server-side email ownership verification before the password credential becomes
+usable. Pending registration/link state must not replace the current guest or
+Google session. Abandon, timeout, resend, or retry keeps the existing account
+state and must not create duplicate accounts or credentials.
 
 `POST /v1/auth/password/login` signs in to the account that owns the login ID
 and returns the same token bundle shape as guest and Google auth.
@@ -81,7 +91,8 @@ Candidate request:
 ```json
 {
   "loginId": "rail_commander",
-  "password": "player supplied secret"
+  "password": "player supplied secret",
+  "recoveryEmail": "player@example.com"
 }
 ```
 
@@ -115,6 +126,33 @@ Link status values:
 - `CONFLICT_REQUIRES_CONFIRMATION`: credential belongs to another account and
   account switching must use the conflict preview/confirm flow.
 
+Recovery email rules:
+
+- Guest start and Google-only login do not require a recovery email.
+- Google claim email is not automatically registered as the password recovery
+  email. The player must explicitly submit and verify a recovery email.
+- Recovery email is separate from `loginId`, `displayName`, and `accountId`.
+- Matching email addresses do not link, merge, switch, or recover accounts by
+  themselves.
+- UI/support surfaces should use masked email only when a recovery flow needs
+  it; public profile and account-conflict comparison must not expose email.
+
+Candidate verification defaults:
+
+- Email verification challenge TTL: 15 minutes.
+- Resend cooldown: 60 seconds per account/email/purpose.
+- Verification and reset proofs are one-use, cryptographically random, hashed
+  at rest, and bound to purpose, account or pending transaction, and expiry.
+- Reset request responses are generic whether or not the login ID/email exists.
+- Reset request or link click alone must not sign the player in or revoke
+  current sessions.
+- Password reset confirm invalidates existing password sessions only after the
+  new password verifier is stored. Linked Google identity is not deleted.
+- Recovery email change requires recent re-authentication plus verification of
+  the new address before replacing the stored recovery email.
+- If the old recovery address is inaccessible, launch support must not promise
+  manual recovery unless a separate approved support policy exists.
+
 ## Login ID Policy Recommendation
 
 This is a recommendation, not a user-finalized value:
@@ -138,11 +176,37 @@ Candidate local schema:
 ```sql
 CREATE TABLE auth_password_credentials (
   account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
-  login_id_normalized TEXT NOT NULL UNIQUE,
+  login_id_normalized TEXT NOT NULL,
   password_hash TEXT NOT NULL,
   password_hash_algorithm TEXT NOT NULL,
   password_hash_params_json TEXT NOT NULL,
-  password_updated_at INTEGER NOT NULL,
+  recovery_email_normalized TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE UNIQUE INDEX idx_auth_password_credentials_login_id_unique
+  ON auth_password_credentials(login_id_normalized);
+
+CREATE TABLE auth_recovery_emails (
+  account_id TEXT PRIMARY KEY REFERENCES accounts(id) ON DELETE CASCADE,
+  email_normalized TEXT NOT NULL,
+  email_masked TEXT NOT NULL,
+  status TEXT NOT NULL,
+  verified_at INTEGER,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE auth_email_verification_challenges (
+  id TEXT PRIMARY KEY,
+  account_id TEXT REFERENCES accounts(id) ON DELETE CASCADE,
+  email_normalized TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  verifier_hash TEXT NOT NULL,
+  status TEXT NOT NULL,
+  expires_at INTEGER NOT NULL,
+  consumed_at INTEGER,
   created_at INTEGER NOT NULL,
   updated_at INTEGER NOT NULL
 );
@@ -287,11 +351,16 @@ Candidate error codes:
 
 Not finalized:
 
-- Password recovery by verified email.
-- Recovery through an already-linked Google/password credential only.
-- Whether email is required at ID/password registration.
 - Terms/privacy consent storage and minimum signup-complete gate.
 - Whether account switch requires re-authentication immediately before confirm.
+- Same recovery email on multiple accounts: currently allowed by the draft
+  schema to avoid treating email equality as identity/merge truth; decide
+  whether to keep this or add a stricter policy.
+- Account lookup UX: whether players start recovery from `loginId`, recovery
+  email, or both, while preserving account-enumeration resistance.
+- Email provider: Cloudflare Email Service Workers binding is a platform-native
+  candidate, but sender domain onboarding, DNS, credentials, deliverability, and
+  cost approval are not complete.
 
 Do not claim the ID/password system is production-ready until these gates are
 resolved.
