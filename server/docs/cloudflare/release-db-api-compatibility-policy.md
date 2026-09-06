@@ -107,17 +107,18 @@ Content rollback means moving an active content pointer to a previously approved
 compatible manifest. Server Worker rollback uses Cloudflare Worker version
 rollback. Database recovery uses forward migrations or audited corrections.
 
-## Future Game API Admission
+## Game API Admission
 
-Game API admission should eventually evaluate an app build code supplied by the
-client against the server-owned `minimumVersionCode`. The app display version
-string is for humans and must not be the authoritative comparison key.
+Game API `GET /v1/client-config` evaluates an app build code supplied by the
+client in `X-LastRail-App-Version-Code` against the server-owned
+`minimumVersionCode`. The app display version string is for humans and must not
+be the authoritative comparison key.
 
-The admission check must be server-owned and should be applied before
-incompatible authenticated gameplay routes are allowed. It should not trust a
-display version string, R2 folder name, or Unity-only update prompt as the only
-guard.
+The admission check is server-owned and returns explicit fail-closed states when
+version policy or approved compatible content release metadata is missing. It
+must not trust a display version string, R2 folder name, or Unity-only update
+prompt as the only guard.
 
-Until that admission route is implemented, Admin policy storage is diagnostic
-and release-planning data only. It is not sufficient evidence to approve
-compatibility-breaking migrations.
+Compatibility-breaking migrations still require a release plan that verifies
+the current version document, available app build, content release pointer, and
+rollback/roll-forward path before activation.

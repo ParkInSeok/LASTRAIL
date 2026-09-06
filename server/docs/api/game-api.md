@@ -394,15 +394,26 @@ Refresh rules:
 - `balanceConfigEndpointTemplate`
 - `minimumClientVersion`
 - `maintenance`
+- `accepted`
+- `serverVersion`
+- `clientAdmission`
+- `contentRelease`
+- `errorCode`
+- `message`
 
 This response must not include secrets, tokens, Cloudflare credentials, Admin API URLs, or Access credentials. API domains are public client configuration, not a secret. If tamper resistance is needed later, add a signed config payload instead of encrypting a value that the Unity client must decrypt.
 
-Current launch code still returns a display-version-style
-`minimumClientVersion`. The confirmed DB/API compatibility policy uses numeric
-app build codes instead: future admission must compare the installed app
-`versionCode` against server-owned `minimumVersionCode`. A Unity update prompt
-or Admin version document alone is not sufficient to protect
-compatibility-breaking D1/API changes. See
+Launch admission uses numeric app build codes. Unity sends
+`X-LastRail-App-Version-Code`; the Game API compares it with the server-owned
+`minimumVersionCode` from the current version document. A Unity update prompt or
+Admin version document alone is not sufficient to protect
+compatibility-breaking D1/API changes.
+
+The endpoint also returns an approved compatible Addressables content release
+pointer when the current version document contains one and the installed app
+version is in its compatibility range. Missing policy or missing compatible
+content is explicit fail-closed config state. See
+`docs/api/client-admission-content-release.md` and
 `docs/cloudflare/release-db-api-compatibility-policy.md`.
 
 ## Balance Config

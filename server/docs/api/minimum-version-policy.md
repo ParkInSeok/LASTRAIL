@@ -21,8 +21,9 @@ This policy is independent of retention: it does not delete old artifacts or dat
 Version history and rollback execution are separate work; current export overwrites
 the current document and does not provide an archive or database rollback.
 
-This slice stores and displays the policy only. Game API admission checks and
-Unity update prompts do not yet consume it; saving it does not enforce login blocking.
-Because the server admission gate is not implemented yet, this document is not
-enough to approve compatibility-breaking D1 migrations. DB-sensitive releases
-must follow `docs/cloudflare/release-db-api-compatibility-policy.md`.
+Game API `GET /v1/client-config` now consumes the current version document for
+launch admission and compares the installed `X-LastRail-App-Version-Code`
+against server-owned `minimumVersionCode`. Saving the document is still not the
+same as a Worker deploy, content activation approval, or database rollback.
+DB-sensitive releases must follow
+`docs/cloudflare/release-db-api-compatibility-policy.md`.

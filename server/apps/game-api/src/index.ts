@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, sha256Hex } from "@lastrail/common";
+import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, readVersion, sha256Hex } from "@lastrail/common";
+import type { ContentReleaseDocument, VersionBucket, VersionDocument } from "@lastrail/common";
 import {
   calculateOfflineRewardPreview,
   calculateRunRewardPreview,
@@ -42,6 +43,7 @@ type GameApiEnv = Env & {
   GMAIL_RECOVERY_OAUTH_CLIENT_SECRET?: string;
   GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN?: string;
   REALTIME_COOP_ROOMS?: RealtimeCoopRoomNamespace;
+  VERSION_BUCKET?: VersionBucket;
 };
 
 const apiBaseUrls = {
@@ -49,6 +51,189 @@ const apiBaseUrls = {
   DEV: "https://dev-api.lastrail.app",
   PRD: "https://api.lastrail.app",
 } as const;
+
+function normalizeClientConfigHeader(value: string | undefined): string | null {
+  if (value === undefined) return null;
+  const normalized = value.trim();
+  if (normalized === "" || normalized.length > 64) return null;
+  if (!/^[A-Za-z0-9._:-]+$/u.test(normalized)) return null;
+  return normalized;
+}
+
+function normalizeInstalledVersionCode(value: string | undefined): string | null {
+  const normalized = normalizeClientConfigHeader(value);
+  if (normalized === null || !/^[1-9]\d{0,9}$/u.test(normalized)) return null;
+  if (Number(normalized) > 2147483647) return null;
+  return normalized;
+}
+
+function createEmptyContentRelease(status: "UNCONFIGURED" | "INCOMPATIBLE" | "NOT_APPROVED") {
+  return {
+    status,
+    releaseId: null,
+    contentVersion: null,
+    catalogUrl: null,
+    catalogHash: null,
+    compatibility: null,
+  };
+}
+
+function contentReleaseCompatible(contentRelease: ContentReleaseDocument, installedVersionCode: string): boolean {
+  const installed = Number(installedVersionCode);
+  if (installed < Number(contentRelease.minimumVersionCode)) return false;
+  if (contentRelease.maximumVersionCode !== undefined && installed > Number(contentRelease.maximumVersionCode)) return false;
+  return true;
+}
+
+function serializeCompatibleContentRelease(contentRelease: ContentReleaseDocument) {
+  return {
+    status: "APPROVED_COMPATIBLE",
+    releaseId: contentRelease.releaseId,
+    contentVersion: contentRelease.contentVersion,
+    catalogUrl: contentRelease.catalogUrl,
+    catalogHash: contentRelease.catalogHash,
+    compatibility: {
+      minimumVersionCode: contentRelease.minimumVersionCode,
+      maximumVersionCode: contentRelease.maximumVersionCode ?? null,
+    },
+  };
+}
+
+function createClientConfigResponse(input: {
+  env: GameApiEnv;
+  version: VersionDocument | null;
+  installedVersionCode: string | null;
+  platform: string | null;
+  channel: string | null;
+}) {
+  const base = {
+    environment: input.env.ENVIRONMENT,
+    apiBaseUrl: apiBaseUrls[input.env.ENVIRONMENT],
+    balanceConfigEndpointTemplate: "/v1/balance-config/:version",
+    minimumClientVersion: "0.1.0",
+    maintenance: { enabled: false },
+  };
+
+  if (input.version === null || input.version.minimumVersionCode === undefined) {
+    return {
+      ...base,
+      accepted: false,
+      serverVersion: null,
+      clientAdmission: {
+        status: "VERSION_POLICY_UNCONFIGURED",
+        installedVersionCode: input.installedVersionCode,
+        minimumVersionCode: null,
+        updateRequired: true,
+        platform: input.platform,
+        channel: input.channel,
+      },
+      contentRelease: createEmptyContentRelease("UNCONFIGURED"),
+      errorCode: "version_policy_unconfigured",
+      message: "Version policy is not configured.",
+    };
+  }
+
+  const serverVersion = {
+    version: input.version.version,
+    versionCode: input.version.versionCode,
+    minimumVersionCode: input.version.minimumVersionCode,
+  };
+
+  if (input.installedVersionCode === null) {
+    return {
+      ...base,
+      accepted: false,
+      serverVersion,
+      clientAdmission: {
+        status: "APP_VERSION_REQUIRED",
+        installedVersionCode: null,
+        minimumVersionCode: input.version.minimumVersionCode,
+        updateRequired: true,
+        platform: input.platform,
+        channel: input.channel,
+      },
+      contentRelease: createEmptyContentRelease("UNCONFIGURED"),
+      errorCode: "app_version_required",
+      message: "Installed app version code is required.",
+    };
+  }
+
+  const updateRequired = Number(input.installedVersionCode) < Number(input.version.minimumVersionCode);
+  if (updateRequired) {
+    return {
+      ...base,
+      accepted: false,
+      serverVersion,
+      clientAdmission: {
+        status: "UPDATE_REQUIRED",
+        installedVersionCode: input.installedVersionCode,
+        minimumVersionCode: input.version.minimumVersionCode,
+        updateRequired: true,
+        platform: input.platform,
+        channel: input.channel,
+      },
+      contentRelease: createEmptyContentRelease("INCOMPATIBLE"),
+      errorCode: "client_update_required",
+      message: "Client update is required.",
+    };
+  }
+
+  const contentRelease = input.version.contentRelease;
+  if (contentRelease === undefined) {
+    return {
+      ...base,
+      accepted: false,
+      serverVersion,
+      clientAdmission: {
+        status: "ACCEPTED",
+        installedVersionCode: input.installedVersionCode,
+        minimumVersionCode: input.version.minimumVersionCode,
+        updateRequired: false,
+        platform: input.platform,
+        channel: input.channel,
+      },
+      contentRelease: createEmptyContentRelease("UNCONFIGURED"),
+      errorCode: "content_release_unconfigured",
+      message: "Approved content release is not configured.",
+    };
+  }
+
+  if (!contentReleaseCompatible(contentRelease, input.installedVersionCode)) {
+    return {
+      ...base,
+      accepted: false,
+      serverVersion,
+      clientAdmission: {
+        status: "ACCEPTED",
+        installedVersionCode: input.installedVersionCode,
+        minimumVersionCode: input.version.minimumVersionCode,
+        updateRequired: false,
+        platform: input.platform,
+        channel: input.channel,
+      },
+      contentRelease: createEmptyContentRelease("INCOMPATIBLE"),
+      errorCode: "content_release_incompatible",
+      message: "Approved content release is not compatible with this app version.",
+    };
+  }
+
+  return {
+    ...base,
+    accepted: true,
+    serverVersion,
+    clientAdmission: {
+      status: "ACCEPTED",
+      installedVersionCode: input.installedVersionCode,
+      minimumVersionCode: input.version.minimumVersionCode,
+      updateRequired: false,
+      platform: input.platform,
+      channel: input.channel,
+    },
+    contentRelease: serializeCompatibleContentRelease(contentRelease),
+    errorCode: null,
+    message: null,
+  };
+}
 
 type BalanceConfigRow = {
   version: number;
@@ -3854,15 +4039,28 @@ app.post("/v1/profile/display-name", async (c) => {
     message: null,
   });
 });
-app.get("/v1/client-config", (c) =>
-  c.json({
-    environment: c.env.ENVIRONMENT,
-    apiBaseUrl: apiBaseUrls[c.env.ENVIRONMENT],
-    balanceConfigEndpointTemplate: "/v1/balance-config/:version",
-    minimumClientVersion: "0.1.0",
-    maintenance: { enabled: false },
-  }),
-);
+app.get("/v1/client-config", async (c) => {
+  const env = c.env as GameApiEnv;
+  const installedVersionCode = normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code"));
+  const platform = normalizeClientConfigHeader(c.req.header("X-LastRail-App-Platform"));
+  const channel = normalizeClientConfigHeader(c.req.header("X-LastRail-App-Channel"));
+  let version: VersionDocument | null = null;
+  if (env.VERSION_BUCKET !== undefined) {
+    try {
+      version = await readVersion(env.VERSION_BUCKET);
+    } catch {
+      version = null;
+    }
+  }
+
+  return c.json(createClientConfigResponse({
+    env,
+    version,
+    installedVersionCode,
+    platform,
+    channel,
+  }));
+});
 app.post("/v1/realtime/coop/rooms", async (c) => {
   const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
   if (idempotencyKey === undefined || idempotencyKey === "") {
