@@ -63,6 +63,47 @@ observational only; log write failure must not worsen the player-facing
 response. The response must not include raw auth headers, tokens, raw request
 body, RNG/probability data, internal weights, or animation timeline fields.
 
+When `CLIENT_ADMISSION_MODE=ENFORCED`, accepted run start also stores a
+nullable `runVersionSnapshot` in `run_snapshots.snapshot_json` and returns the
+same object in the start response. This captures the server-accepted app/content
+compatibility state at the logical run start, not whatever policy is current
+when the result is later submitted.
+
+```json
+{
+  "runVersionSnapshot": {
+    "source": "server_accepted_run_start",
+    "clientInstalled": {
+      "versionCode": "100",
+      "platform": "android",
+      "channel": "internal"
+    },
+    "clientAdmission": {
+      "status": "ACCEPTED",
+      "minimumVersionCode": "90",
+      "updateRequired": false
+    },
+    "serverAcceptedDeployment": {
+      "environment": "DEV",
+      "runtimeDeploymentId": "cf-runtime-deployment-id"
+    },
+    "contentRelease": {
+      "status": "APPROVED_COMPATIBLE",
+      "releaseId": "content_act1_001",
+      "contentVersion": "act1.2026-09-06.001",
+      "catalogHash": "sha256:..."
+    },
+    "capturedAt": "2026-09-06T00:00:00.000Z"
+  }
+}
+```
+
+Legacy/local runs or disabled admission return/store `runVersionSnapshot: null`.
+Idempotency replay returns the originally stored snapshot; it does not read the
+current version policy again. The snapshot is diagnostic/support evidence only
+and must not drive reward, story progress, offline reward, gacha, or economy
+truth.
+
 ## Server-Owned Metadata
 
 The server-authored run/operation preview metadata may include:
@@ -165,6 +206,7 @@ silently reusing launch fields.
 
 Run start/read and finish/submit contracts must not include:
 
+- raw Addressables catalog URL in `runVersionSnapshot` or Admin run evidence;
 - raw RNG material or seed preimage;
 - probability values or internal balance weights;
 - reward amount, currency grant, item grant, economy grant, or ledger ids

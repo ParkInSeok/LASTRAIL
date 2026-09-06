@@ -833,6 +833,50 @@ function parseRunSnapshot(snapshotJson: string): JsonValue {
   return parsed;
 }
 
+function nullableJsonString(value: JsonValue | undefined): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+function nullableJsonBoolean(value: JsonValue | undefined): boolean {
+  return typeof value === "boolean" ? value : false;
+}
+
+function parseAdminRunVersionSnapshot(snapshotJson: string): JsonValue | null {
+  const snapshot = parseRunSnapshot(snapshotJson);
+  if (!isJsonObject(snapshot) || !isJsonObject(snapshot.runVersionSnapshot)) return null;
+  const versionSnapshot = snapshot.runVersionSnapshot;
+  if (versionSnapshot.source !== "server_accepted_run_start") return null;
+  if (!isJsonObject(versionSnapshot.clientInstalled)) return null;
+  if (!isJsonObject(versionSnapshot.clientAdmission)) return null;
+  if (!isJsonObject(versionSnapshot.serverAcceptedDeployment)) return null;
+  if (!isJsonObject(versionSnapshot.contentRelease)) return null;
+
+  return {
+    source: "server_accepted_run_start",
+    clientInstalled: {
+      versionCode: nullableJsonString(versionSnapshot.clientInstalled.versionCode),
+      platform: nullableJsonString(versionSnapshot.clientInstalled.platform),
+      channel: nullableJsonString(versionSnapshot.clientInstalled.channel),
+    },
+    clientAdmission: {
+      status: nullableJsonString(versionSnapshot.clientAdmission.status),
+      minimumVersionCode: nullableJsonString(versionSnapshot.clientAdmission.minimumVersionCode),
+      updateRequired: nullableJsonBoolean(versionSnapshot.clientAdmission.updateRequired),
+    },
+    serverAcceptedDeployment: {
+      environment: nullableJsonString(versionSnapshot.serverAcceptedDeployment.environment),
+      runtimeDeploymentId: nullableJsonString(versionSnapshot.serverAcceptedDeployment.runtimeDeploymentId),
+    },
+    contentRelease: {
+      status: nullableJsonString(versionSnapshot.contentRelease.status),
+      releaseId: nullableJsonString(versionSnapshot.contentRelease.releaseId),
+      contentVersion: nullableJsonString(versionSnapshot.contentRelease.contentVersion),
+      catalogHash: nullableJsonString(versionSnapshot.contentRelease.catalogHash),
+    },
+    capturedAt: nullableJsonString(versionSnapshot.capturedAt),
+  };
+}
+
 function parseJsonValue(json: string): JsonValue {
   const parsed = JSON.parse(json) as unknown;
   if (!isJsonValue(parsed)) throw new Error("JSON_VALUE_INVALID");
@@ -3881,6 +3925,7 @@ app.get("/v1/admin/runs/:runId", async (c) => {
     validatorVersion: row.validator_version ?? "UNKNOWN",
     validatorRuntimeRevision: String(row.validator_runtime_revision ?? 0),
     snapshot: parseRunSnapshot(row.snapshot_json),
+    runVersionSnapshot: parseAdminRunVersionSnapshot(row.snapshot_json),
     operationId: previewMetadata.operationId,
     outcome: finalResult?.outcome ?? null,
     clearedWaves: finalResult?.cleared_waves ?? null,

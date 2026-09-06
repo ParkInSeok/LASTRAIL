@@ -47,6 +47,31 @@ type GameApiEnv = Env & {
   CLIENT_ADMISSION_MODE?: "DISABLED" | "ENFORCED";
 };
 
+type RunVersionSnapshot = {
+  source: "server_accepted_run_start";
+  clientInstalled: {
+    versionCode: string | null;
+    platform: string | null;
+    channel: string | null;
+  };
+  clientAdmission: {
+    status: string;
+    minimumVersionCode: string | null;
+    updateRequired: boolean;
+  };
+  serverAcceptedDeployment: {
+    environment: "LOCAL" | "DEV" | "PRD";
+    runtimeDeploymentId: string | null;
+  };
+  contentRelease: {
+    status: string;
+    releaseId: string | null;
+    contentVersion: string | null;
+    catalogHash: string | null;
+  };
+  capturedAt: string;
+};
+
 const apiBaseUrls = {
   LOCAL: "http://localhost:8787",
   DEV: "https://dev-api.lastrail.app",
@@ -269,6 +294,97 @@ async function createClientAdmissionForRequest(c: GameApiContext) {
   });
 }
 
+function isObjectRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function createRunVersionSnapshotFromAdmission(
+  admission: ReturnType<typeof createClientConfigResponse>,
+  env: GameApiEnv,
+  capturedAtMs: number,
+): RunVersionSnapshot | null {
+  if (admission.accepted !== true) return null;
+  const clientAdmission = admission.clientAdmission;
+  const contentRelease = admission.contentRelease;
+  return {
+    source: "server_accepted_run_start",
+    clientInstalled: {
+      versionCode: clientAdmission.installedVersionCode,
+      platform: clientAdmission.platform,
+      channel: clientAdmission.channel,
+    },
+    clientAdmission: {
+      status: clientAdmission.status,
+      minimumVersionCode: clientAdmission.minimumVersionCode,
+      updateRequired: clientAdmission.updateRequired,
+    },
+    serverAcceptedDeployment: {
+      environment: env.ENVIRONMENT,
+      runtimeDeploymentId: (env as GameApiEnv & { CF_VERSION_METADATA?: { id: string } }).CF_VERSION_METADATA?.id ?? null,
+    },
+    contentRelease: {
+      status: contentRelease.status,
+      releaseId: contentRelease.releaseId,
+      contentVersion: contentRelease.contentVersion,
+      catalogHash: contentRelease.catalogHash,
+    },
+    capturedAt: toIso(capturedAtMs),
+  };
+}
+
+async function createRunVersionSnapshotForAcceptedRequest(c: GameApiContext, capturedAtMs: number): Promise<RunVersionSnapshot | null> {
+  const env = c.env as GameApiEnv;
+  if (env.CLIENT_ADMISSION_MODE !== "ENFORCED") return null;
+  return createRunVersionSnapshotFromAdmission(await createClientAdmissionForRequest(c), env, capturedAtMs);
+}
+
+function parseRunVersionSnapshot(value: unknown): RunVersionSnapshot | null {
+  if (!isObjectRecord(value)) return null;
+  if (value.source !== "server_accepted_run_start") return null;
+  const clientInstalled = isObjectRecord(value.clientInstalled) ? value.clientInstalled : {};
+  const clientAdmission = isObjectRecord(value.clientAdmission) ? value.clientAdmission : null;
+  const serverAcceptedDeployment = isObjectRecord(value.serverAcceptedDeployment) ? value.serverAcceptedDeployment : {};
+  const contentRelease = isObjectRecord(value.contentRelease) ? value.contentRelease : {};
+  if (clientAdmission === null || typeof clientAdmission.status !== "string") return null;
+  if (typeof clientAdmission.updateRequired !== "boolean") return null;
+  if (typeof value.capturedAt !== "string") return null;
+  return {
+    source: "server_accepted_run_start",
+    clientInstalled: {
+      versionCode: typeof clientInstalled.versionCode === "string" ? clientInstalled.versionCode : null,
+      platform: typeof clientInstalled.platform === "string" ? clientInstalled.platform : null,
+      channel: typeof clientInstalled.channel === "string" ? clientInstalled.channel : null,
+    },
+    clientAdmission: {
+      status: clientAdmission.status,
+      minimumVersionCode: typeof clientAdmission.minimumVersionCode === "string" ? clientAdmission.minimumVersionCode : null,
+      updateRequired: clientAdmission.updateRequired,
+    },
+    serverAcceptedDeployment: {
+      environment: serverAcceptedDeployment.environment === "PRD" ? "PRD" : serverAcceptedDeployment.environment === "LOCAL" ? "LOCAL" : "DEV",
+      runtimeDeploymentId: typeof serverAcceptedDeployment.runtimeDeploymentId === "string" ? serverAcceptedDeployment.runtimeDeploymentId : null,
+    },
+    contentRelease: {
+      status: typeof contentRelease.status === "string" ? contentRelease.status : "UNCONFIGURED",
+      releaseId: typeof contentRelease.releaseId === "string" ? contentRelease.releaseId : null,
+      contentVersion: typeof contentRelease.contentVersion === "string" ? contentRelease.contentVersion : null,
+      catalogHash: typeof contentRelease.catalogHash === "string" ? contentRelease.catalogHash : null,
+    },
+    capturedAt: value.capturedAt,
+  };
+}
+
+function getStoredRunVersionSnapshot(snapshotJson: string | null | undefined): RunVersionSnapshot | null {
+  if (typeof snapshotJson !== "string") return null;
+  try {
+    const snapshot = JSON.parse(snapshotJson) as unknown;
+    if (!isObjectRecord(snapshot)) return null;
+    return parseRunVersionSnapshot(snapshot.runVersionSnapshot);
+  } catch {
+    return null;
+  }
+}
+
 type BalanceConfigRow = {
   version: number;
   schema_version: number;
@@ -300,6 +416,7 @@ type RunFinishRow = {
   risk: string;
   preview_json: string;
   config_json: string;
+  snapshot_json: string | null;
 };
 
 type RunStartPreviewRow = {
@@ -1001,6 +1118,7 @@ function createRunStartRejectedResponse(options: {
     allowedOperatorSlots: null,
     startAugmentPackageRef: null,
     startTacticPackageRef: null,
+    runVersionSnapshot: null,
     serverStartedAt: null,
     errorCode: options.errorCode,
     message: options.message,
@@ -1014,6 +1132,7 @@ function createRunStartAcceptedResponse(options: {
   risk: string;
   balanceVersion: number;
   serverStartedAt: number;
+  runVersionSnapshot: RunVersionSnapshot | null;
 }) {
   const raid = options.previewMetadata.encounterType === "RAID_BOSS"
     ? {
@@ -1048,6 +1167,7 @@ function createRunStartAcceptedResponse(options: {
     allowedOperatorSlots: options.previewMetadata.allowedOperatorSlots,
     startAugmentPackageRef: options.previewMetadata.startAugmentPackageRef,
     startTacticPackageRef: options.previewMetadata.startTacticPackageRef,
+    runVersionSnapshot: options.runVersionSnapshot,
     serverStartedAt: toIso(options.serverStartedAt),
     errorCode: null,
     message: null,
@@ -1089,6 +1209,7 @@ function createRunStartReplayResponse(row: RunStartIdempotencyRecordRow) {
       allowedOperatorSlots: typeof snapshot.allowedOperatorSlots === "number" ? snapshot.allowedOperatorSlots : null,
       startAugmentPackageRef: typeof snapshot.startAugmentPackageRef === "string" ? snapshot.startAugmentPackageRef : null,
       startTacticPackageRef: typeof snapshot.startTacticPackageRef === "string" ? snapshot.startTacticPackageRef : null,
+      runVersionSnapshot: parseRunVersionSnapshot(snapshot.runVersionSnapshot),
       serverStartedAt: typeof snapshot.serverStartedAt === "string" ? snapshot.serverStartedAt : toIso(row.created_at),
       errorCode: null,
       message: null,
@@ -1322,7 +1443,12 @@ function getStoryRaidStaminaRefundAmount(balanceConfig: unknown): number | null 
     : null;
 }
 
-function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType<typeof parseRunPreviewMetadata>, balanceVersion: number): RunFinishBody & {
+function createRunFinishPayload(
+  body: RunFinishBody,
+  previewMetadata: ReturnType<typeof parseRunPreviewMetadata>,
+  balanceVersion: number,
+  runVersionSnapshot: RunVersionSnapshot | null,
+): RunFinishBody & {
   serverPreviewMetadata: {
     operationId: string;
     actId: string;
@@ -1337,6 +1463,7 @@ function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType
     balanceVersion: string;
     contentVersion: string | null;
   };
+  runVersionSnapshot: RunVersionSnapshot | null;
   staminaRefund?: StoryRaidStaminaRefundCandidate;
 } {
   const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
@@ -1356,6 +1483,7 @@ function createRunFinishPayload(body: RunFinishBody, previewMetadata: ReturnType
       balanceVersion: String(balanceVersion),
       contentVersion: previewMetadata.contentVersion,
     },
+    runVersionSnapshot,
     ...(staminaRefund === null ? {} : { staminaRefund }),
   };
 }
@@ -5667,6 +5795,7 @@ app.post("/v1/runs/start", async (c) => {
 
   const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
   const runId = createDomainId("run");
+  const runVersionSnapshot = await createRunVersionSnapshotForAcceptedRequest(c, now);
   const snapshotJson = JSON.stringify({
     runId,
     operationPreviewId: row.id,
@@ -5694,6 +5823,7 @@ app.post("/v1/runs/start", async (c) => {
     allowedOperatorSlots: previewMetadata.allowedOperatorSlots,
     startAugmentPackageRef: previewMetadata.startAugmentPackageRef,
     startTacticPackageRef: previewMetadata.startTacticPackageRef,
+    runVersionSnapshot,
     serverStartedAt: toIso(now),
   });
 
@@ -5769,6 +5899,7 @@ app.post("/v1/runs/start", async (c) => {
     risk: row.risk,
     balanceVersion: row.balance_config_version,
     serverStartedAt: now,
+    runVersionSnapshot,
   }));
 });
 
@@ -5844,10 +5975,12 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   const row = await c.env.DB.prepare(
     `SELECT runs.id, runs.account_id, runs.status, runs.balance_config_version,
             preview.objective, preview.risk, preview.preview_json,
-            balance.config_json
+            balance.config_json,
+            snapshots.snapshot_json
      FROM runs
      JOIN operation_previews preview ON preview.id = runs.preview_id
      JOIN balance_config_versions balance ON balance.version = runs.balance_config_version
+     LEFT JOIN run_snapshots snapshots ON snapshots.run_id = runs.id
      WHERE runs.id = ?`,
   )
     .bind(runId)
@@ -6057,7 +6190,12 @@ app.post("/v1/runs/:runId/finish", async (c) => {
       ...(staminaRefund === null ? {} : { staminaRefund }),
     },
   });
-  const finalPayloadJson = JSON.stringify(createRunFinishPayload(body, previewMetadata, row.balance_config_version));
+  const finalPayloadJson = JSON.stringify(createRunFinishPayload(
+    body,
+    previewMetadata,
+    row.balance_config_version,
+    getStoredRunVersionSnapshot(row.snapshot_json),
+  ));
 
   const finishStatements = [
     c.env.DB.prepare(

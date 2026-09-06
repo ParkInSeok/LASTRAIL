@@ -24,6 +24,9 @@ function createEnv(previewRow: Record<string, unknown> | null, options: {
   idempotencyRow?: Record<string, unknown> | null;
   failStartBatch?: boolean;
   rollbackChanges?: number;
+  versionDocument?: unknown;
+  clientAdmissionMode?: "DISABLED" | "ENFORCED";
+  runtimeDeploymentId?: string;
 } = {}) {
   const batchSql: string[] = [];
   const batchBinds: unknown[][] = [];
@@ -38,6 +41,21 @@ function createEnv(previewRow: Record<string, unknown> | null, options: {
     ENVIRONMENT: "DEV",
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     AUTH_SIGNING_KEY_CURRENT: authSecret,
+    CLIENT_ADMISSION_MODE: options.clientAdmissionMode,
+    VERSION_BUCKET: options.versionDocument === undefined
+      ? undefined
+      : {
+          get: async (key: string) => {
+            expect(key).toBe("versions/current.json");
+            return { json: async () => options.versionDocument };
+          },
+          put: async () => {
+            throw new Error("run start must not write version policy.");
+          },
+        },
+    CF_VERSION_METADATA: options.runtimeDeploymentId === undefined
+      ? undefined
+      : { id: options.runtimeDeploymentId },
     DB: {
       prepare(sql: string) {
         return {
@@ -168,6 +186,104 @@ describe("game-api run start contract", () => {
     expect(env.__batchSql.join("\n")).not.toContain("UPDATE operation_previews");
   });
 
+  it("stores the server-accepted deployment and client installed app snapshot for accepted starts", async () => {
+    const env = createEnv({
+      id: "preview_versioned_1",
+      account_id: "account_1",
+      mutation_id: "mutation_preview_1",
+      objective: "opn_03_water_stop",
+      risk: "III",
+      balance_config_version: 501,
+      preview_json: JSON.stringify({
+        operationId: "opn_03_water_stop",
+        encounterType: "ORDINARY_15_WAVE",
+        allowedOperatorSlots: 5,
+        startAugmentPackageRef: "act1_full_start_package_v1",
+        startTacticPackageRef: "act1_full_start_package_v1",
+        contentVersion: "act1.launch.content.v1",
+      }),
+      status: "ACTIVE",
+      expires_at: Date.now() + 900000,
+      created_at: Date.now() - 1000,
+    }, {
+      clientAdmissionMode: "ENFORCED",
+      runtimeDeploymentId: "cf-runtime-deploy-123",
+      versionDocument: {
+        version: "1.0.0",
+        versionCode: "100",
+        minimumVersionCode: "90",
+        contentRelease: {
+          status: "APPROVED",
+          releaseId: "content_act1_001",
+          contentVersion: "act1.2026-09-06.001",
+          catalogUrl: "https://assets.lastrail.app/addressables/catalog.json",
+          catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          minimumVersionCode: "90",
+          maximumVersionCode: "100",
+        },
+      },
+    });
+
+    const response = await app.request(
+      "/v1/runs/start",
+      {
+        method: "POST",
+        headers: {
+          Authorization: await createAuthorizationHeader(),
+          "Idempotency-Key": "run-start-idem-versioned",
+          "X-LastRail-App-Version-Code": "100",
+          "X-LastRail-App-Platform": "android",
+          "X-LastRail-App-Channel": "internal",
+        },
+        body: JSON.stringify({ operationPreviewId: "preview_versioned_1" }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      accepted: true,
+      runVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: {
+          versionCode: "100",
+          platform: "android",
+          channel: "internal",
+        },
+        clientAdmission: {
+          status: "ACCEPTED",
+          minimumVersionCode: "90",
+          updateRequired: false,
+        },
+        serverAcceptedDeployment: {
+          environment: "DEV",
+          runtimeDeploymentId: "cf-runtime-deploy-123",
+        },
+        contentRelease: {
+          status: "APPROVED_COMPATIBLE",
+          releaseId: "content_act1_001",
+          contentVersion: "act1.2026-09-06.001",
+          catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        },
+      },
+    });
+    expect(body.runVersionSnapshot.capturedAt).toMatch(/Z$/u);
+    const snapshotBind = env.__batchBinds.find((values) =>
+      String(values[0]).startsWith("run_") &&
+      typeof values[1] === "string" &&
+      String(values[1]).startsWith("{")
+    );
+    expect(snapshotBind).toBeDefined();
+    const snapshot = JSON.parse(String(snapshotBind?.[1])) as Record<string, unknown>;
+    expect(snapshot.runVersionSnapshot).toEqual(body.runVersionSnapshot);
+    const serialized = JSON.stringify(snapshot);
+    expect(serialized).not.toContain("catalogUrl");
+    expect(serialized).not.toContain("Authorization");
+    expect(serialized).not.toContain("refreshToken");
+    expect(serialized).not.toContain("rawRng");
+  });
+
   it("requires Idempotency-Key header before starting a run", async () => {
     const response = await app.request(
       "/v1/runs/start",
@@ -214,6 +330,14 @@ describe("game-api run start contract", () => {
           startAugmentPackageRef: "act1_full_start_package_v1",
           startTacticPackageRef: "act1_full_start_package_v1",
           serverStartedAt: "2026-12-28T00:00:00.000Z",
+          runVersionSnapshot: {
+            source: "server_accepted_run_start",
+            clientInstalled: { versionCode: "100", platform: "android", channel: "internal" },
+            clientAdmission: { status: "ACCEPTED", minimumVersionCode: "90", updateRequired: false },
+            serverAcceptedDeployment: { environment: "DEV", runtimeDeploymentId: "cf-runtime-deploy-123" },
+            contentRelease: { status: "APPROVED_COMPATIBLE", releaseId: "content_act1_001", contentVersion: "act1.2026-09-06.001", catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+            capturedAt: "2026-12-28T00:00:00.000Z",
+          },
         }),
       },
     });
@@ -239,6 +363,11 @@ describe("game-api run start contract", () => {
       operationPreviewId: "preview_ordinary_1",
       encounterType: "ORDINARY_15_WAVE",
       allowedOperatorSlots: 5,
+      runVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: { versionCode: "100", platform: "android", channel: "internal" },
+        clientAdmission: { status: "ACCEPTED", minimumVersionCode: "90", updateRequired: false },
+      },
       errorCode: null,
     });
     expect(env.__runSql.join("\n")).not.toContain("UPDATE operation_previews");

@@ -154,6 +154,40 @@ async function seedFinishableRun(db: initSqlJs.Database): Promise<string> {
      ) VALUES (?, ?, ?, ?, 1, 'ACTIVE', ?, NULL, NULL);`,
     ["run-smoke-1", "account-smoke-1", "preview-smoke-1", "mutation-run-smoke-1", now],
   );
+  db.run(
+    `INSERT INTO run_snapshots (run_id, snapshot_json, created_at)
+     VALUES (?, ?, ?);`,
+    [
+      "run-smoke-1",
+      JSON.stringify({
+        runVersionSnapshot: {
+          source: "server_accepted_run_start",
+          clientInstalled: {
+            versionCode: "100",
+            platform: "android",
+            channel: "internal",
+          },
+          clientAdmission: {
+            status: "ACCEPTED",
+            minimumVersionCode: "90",
+            updateRequired: false,
+          },
+          serverAcceptedDeployment: {
+            environment: "DEV",
+            runtimeDeploymentId: "cf-runtime-deploy-smoke",
+          },
+          contentRelease: {
+            status: "APPROVED_COMPATIBLE",
+            releaseId: "content_act1_001",
+            contentVersion: "act1.2026-09-06.001",
+            catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          },
+          capturedAt: "2026-08-27T00:00:00.000Z",
+        },
+      }),
+      now,
+    ],
+  );
 
   return `Bearer ${await createAccessToken({
     secret: authSecret,
@@ -454,6 +488,33 @@ describe("game-api run finish local D1 smoke", () => {
     expect(db.exec("SELECT outcome, cleared_waves FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values).toEqual([
       ["VICTORY", 15],
     ]);
+    const finalPayload = JSON.parse(String(db.exec("SELECT payload_json FROM run_final_results WHERE run_id = 'run-smoke-1';")[0]?.values[0]?.[0])) as Record<string, unknown>;
+    expect(finalPayload.runVersionSnapshot).toMatchObject({
+      source: "server_accepted_run_start",
+      clientInstalled: {
+        versionCode: "100",
+        platform: "android",
+        channel: "internal",
+      },
+      clientAdmission: {
+        status: "ACCEPTED",
+        minimumVersionCode: "90",
+        updateRequired: false,
+      },
+      serverAcceptedDeployment: {
+        environment: "DEV",
+        runtimeDeploymentId: "cf-runtime-deploy-smoke",
+      },
+      contentRelease: {
+        status: "APPROVED_COMPATIBLE",
+        releaseId: "content_act1_001",
+        contentVersion: "act1.2026-09-06.001",
+        catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      },
+    });
+    expect(JSON.stringify(finalPayload)).not.toContain("catalogUrl");
+    expect(JSON.stringify(finalPayload)).not.toContain("Authorization");
+    expect(JSON.stringify(finalPayload)).not.toContain("rawRng");
     expect(db.exec("SELECT status FROM runs WHERE id = 'run-smoke-1';")[0]?.values).toEqual([["COMPLETED"]]);
     const previewRows = db.exec(
       "SELECT status, balance_config_version, reward_plan_json FROM run_reward_previews WHERE run_id = 'run-smoke-1';",

@@ -559,7 +559,33 @@ describe("admin-api player and run launch support read models", () => {
           content_version: 4,
           validator_version: "validator-1",
           validator_runtime_revision: 12,
-          snapshot_json: JSON.stringify({ operatorIds: ["op_a", "op_b", "op_c", "op_d", "op_e"] }),
+          snapshot_json: JSON.stringify({
+            operatorIds: ["op_a", "op_b", "op_c", "op_d", "op_e"],
+            runVersionSnapshot: {
+              source: "server_accepted_run_start",
+              clientInstalled: {
+                versionCode: "100",
+                platform: "android",
+                channel: "internal",
+              },
+              clientAdmission: {
+                status: "ACCEPTED",
+                minimumVersionCode: "90",
+                updateRequired: false,
+              },
+              serverAcceptedDeployment: {
+                environment: "DEV",
+                runtimeDeploymentId: "cf-runtime-deploy-admin",
+              },
+              contentRelease: {
+                status: "APPROVED_COMPATIBLE",
+                releaseId: "content_act1_001",
+                contentVersion: "act1.2026-09-06.001",
+                catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              },
+              capturedAt: "2026-08-25T11:40:00.000Z",
+            },
+          }),
           preview_json: JSON.stringify(previewJson),
         },
         {
@@ -613,6 +639,29 @@ describe("admin-api player and run launch support read models", () => {
         fuelLedgerReason: "STORY_RAID_FAILURE_REFUND",
         fuelLedgerRefs: ["fuel-ledger-1"],
       },
+      runVersionSnapshot: {
+        source: "server_accepted_run_start",
+        clientInstalled: {
+          versionCode: "100",
+          platform: "android",
+          channel: "internal",
+        },
+        clientAdmission: {
+          status: "ACCEPTED",
+          minimumVersionCode: "90",
+          updateRequired: false,
+        },
+        serverAcceptedDeployment: {
+          environment: "DEV",
+          runtimeDeploymentId: "cf-runtime-deploy-admin",
+        },
+        contentRelease: {
+          status: "APPROVED_COMPATIBLE",
+          releaseId: "content_act1_001",
+          contentVersion: "act1.2026-09-06.001",
+          catalogHash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        },
+      },
       integrityDisposition: {
         status: "CLEAR",
         openSignals: 0,
@@ -630,5 +679,6 @@ describe("admin-api player and run launch support read models", () => {
     expect(serialized).not.toContain("probability");
     expect(serialized).not.toContain("fullWeights");
     expect(serialized).not.toContain("animationTimeline");
+    expect(serialized).not.toContain("catalogUrl");
   });
 });

@@ -91,14 +91,17 @@ story raid investigation:
   `allowedOperatorSlots`;
 - `startAugmentPackageRef`, `startTacticPackageRef`, `selectedAugmentIds`, and
   `selectedTacticIds`;
+- `runVersionSnapshot` with the server-accepted client app version code,
+  platform/channel, admission status, runtime deployment id, content
+  release/hash, and capture timestamp when available;
 - `staminaRefund.status/resource/reason/policyId/serverOwnedMutation`,
   `fuelLedgerReason`, and safe `fuelLedgerRefs`;
 - `integrityDisposition` summary counts.
 
 This is read-only evidence only. It does not expose raw animation timelines,
 VFX/SFX/camera data, raw RNG material, probability, full weight tables,
-unrestricted payload dumps, reward correction controls, or replay/reprocess
-actions.
+raw Addressables catalog URLs, unrestricted payload dumps, reward correction
+controls, or replay/reprocess actions.
 
 ## Dashboard Launch Summary
 

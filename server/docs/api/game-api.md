@@ -486,11 +486,17 @@ Accepted response shape:
   "allowedOperatorSlots": 5,
   "startAugmentPackageRef": "act1_full_start_package_v1",
   "startTacticPackageRef": "act1_full_start_package_v1",
+  "runVersionSnapshot": null,
   "serverStartedAt": "2026-08-27T00:00:00.000Z",
   "errorCode": null,
   "message": null
 }
 ```
+
+When client admission is enforced and accepted, `runVersionSnapshot` contains
+the start-time client installed version code/platform/channel, admission status,
+runtime deployment id, content release id/version/hash, and capture timestamp.
+It is nullable for legacy/local runs and is diagnostic evidence only.
 
 Raid boss-only previews use the same route and return `encounterType =
 RAID_BOSS`, `ordinary = null`, and raid refs under both the compact top-level
@@ -501,7 +507,9 @@ Run start consumes `operation_previews` with an affected-row guard before
 creating the run snapshot. `Idempotency-Key` is required for launch. A retry
 with the same account, operation `run_start`, key, and `operationPreviewId`
 returns the stored `STARTED` response shape and must not create a second
-`runs` row or `run_snapshots` row. Reusing the same key for a different
+`runs` row or `run_snapshots` row. The retry returns the originally stored
+`runVersionSnapshot` and does not read current version policy again. Reusing the
+same key for a different
 `operationPreviewId` returns `contract_violation`. A consumed preview without a
 matching idempotency record returns `409` with
 `operation_preview_already_consumed`.

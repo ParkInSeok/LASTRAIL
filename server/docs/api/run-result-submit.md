@@ -220,6 +220,28 @@ Duplicate replay response:
 - no second `run_reward_previews` row.
 - the stored reward preview must belong to the same path `:runId`.
 
+## Run Version Snapshot Preservation
+
+Accepted run finish stores the start-time `runVersionSnapshot` from
+`run_snapshots.snapshot_json` into `run_final_results.payload_json`. This is the
+server-accepted deployment/app/content compatibility evidence from run start.
+It is not recalculated from finish request headers and does not use
+client-supplied version/body fields as Source of Truth.
+
+The stored snapshot is nullable for legacy/local runs. When present, it contains
+only sanitized fields:
+
+- installed app `versionCode`, `platform`, and `channel`;
+- client admission status and minimum version code;
+- environment and Cloudflare runtime deployment id;
+- approved content `releaseId`, `contentVersion`, and `catalogHash`;
+- capture timestamp.
+
+It must not contain raw auth headers, tokens, raw request bodies, Google token
+claims, raw Addressables catalog URL, RNG material, probability tables, full
+balance weights, animation timeline, VFX/SFX/camera payload, reward amount
+internals, or ledger dumps.
+
 ## First Clear Boundary
 
 The local contract slice consumes first clear at accepted finish preview
