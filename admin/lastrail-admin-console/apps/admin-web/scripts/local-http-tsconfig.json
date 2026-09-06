@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@lastrail/common": ["../../../../../server/packages/common/src/index.ts"]
+    }
+  }
+}

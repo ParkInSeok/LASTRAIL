@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { runResultLabel } from "../shared/labels/adminLabels";
+import { versionSummary } from "../shared/runs/runVersions";
 
 export function runTimeLabel(value?: string, result?: string): string {
   if (!value) return result === "IN_PROGRESS" ? "진행 중" : "미기록";
@@ -42,6 +43,7 @@ export function RunsPage() {
               <th>결과</th>
               <th>위험도</th>
               <th>밸런스</th>
+              <th>시작 앱 / 서버 버전</th>
             </tr>
           </thead>
           <tbody>
@@ -56,6 +58,7 @@ export function RunsPage() {
                 <td>{runResultLabel(run.result)}</td>
                 <td>{run.riskTier}</td>
                 <td>{run.balanceVersion}</td>
+                <td>{versionSummary(run.versionEvidence.start)}</td>
               </tr>
             ))}
           </tbody>

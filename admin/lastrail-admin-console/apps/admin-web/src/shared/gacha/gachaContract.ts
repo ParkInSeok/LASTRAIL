@@ -92,6 +92,7 @@ export type GachaPullBatchDetailResponse = {
     itemLedgerRefs: string[];
     operatorLedgerRefs: string[];
     results: GachaPullResultSummary[];
+    causeEvidence: { source: string; duplicateResultCount: number | null; idempotencyReplayKnown: boolean | null; guaranteeTypes: string[] } | null;
   };
   detailAvailable: boolean;
 };
@@ -262,6 +263,7 @@ function mapResult(value: unknown): GachaPullResultSummary | null {
 export function mapGachaPullBatchDetailResponse(response: unknown): GachaPullBatchDetailResponse {
   const record = asRecord(response) ?? {};
   const item = asRecord(record.item);
+  const evidence = asRecord(item?.causeEvidence);
   const batch = mapBatch(item) ?? {
     batchId: "없음",
     accountId: "없음",
@@ -278,6 +280,12 @@ export function mapGachaPullBatchDetailResponse(response: unknown): GachaPullBat
   return {
     item: {
       ...batch,
+      causeEvidence: evidence?.source === "gacha_pull_batch_server_records" ? {
+        source: evidence.source,
+        duplicateResultCount: typeof evidence.duplicateResultCount === "number" && Number.isSafeInteger(evidence.duplicateResultCount) && evidence.duplicateResultCount >= 0 ? evidence.duplicateResultCount : null,
+        idempotencyReplayKnown: typeof evidence.idempotencyReplayKnown === "boolean" ? evidence.idempotencyReplayKnown : null,
+        guaranteeTypes: stringList(evidence.guaranteeTypes)
+      } : null,
       itemLedgerRefs: stringList(item?.itemLedgerRefs),
       operatorLedgerRefs: stringList(item?.operatorLedgerRefs),
       results: Array.isArray(item?.results)

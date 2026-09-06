@@ -28,6 +28,7 @@ import {
 import { mapPlayerLaunchEvidence } from "../players/playerLaunchEvidenceContract";
 import { mapPlayerDetailResponse } from "../players/playerDetailContract";
 import { mapRunDetailResponse } from "../runs/runDetailContract";
+import { mapRunVersions } from "../runs/runVersions";
 import { mapRunLaunchEvidence } from "../runs/runLaunchEvidenceContract";
 import { mapCurrentVersion, mapVersionExportResult, type VersionExportRequest } from "../release/releaseManagementContract";
 
@@ -249,7 +250,10 @@ export const adminApi = {
   async searchRuns(accountId?: string) {
     const params = new URLSearchParams();
     if (accountId) params.set("accountId", accountId);
-    return RunSearchResponseSchema.parse(await readJson(`/api/runs?${params.toString()}`));
+    const raw = await readJson(`/api/runs?${params.toString()}`);
+    const parsed = RunSearchResponseSchema.parse(raw);
+    const rows = (raw as { items: unknown[] }).items;
+    return { ...parsed, items: parsed.items.map((item, index) => ({ ...item, versionEvidence: mapRunVersions(rows[index]) })) };
   },
   async runDetail(runId: string) {
     const raw = await readJson(`/api/runs/${encodeURIComponent(runId)}`);

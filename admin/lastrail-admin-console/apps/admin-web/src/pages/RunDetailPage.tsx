@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { RunVersionEvidence } from "../shared/runs/RunVersionEvidence";
 import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { adminReadValueLabel, adminRequestFailureDisplay } from "../shared/api/errorDisplay";
@@ -718,6 +719,7 @@ export function RunDetailPage() {
           <strong>{run.validatorRuntimeRevision}</strong>
         </div>
       </section>
+      <RunVersionEvidence value={run.versionEvidence} />
       <section className="admin-panel">
         <header>
           <h2>위험도/보상 계산 기준</h2>

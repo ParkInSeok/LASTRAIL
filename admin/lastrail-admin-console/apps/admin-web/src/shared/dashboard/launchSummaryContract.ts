@@ -1,7 +1,9 @@
 import { adminReadValueLabel } from "../api/errorDisplay";
 import { storyProgressLabel } from "../labels/adminLabels";
+import { mapDailyMetrics, type DailyMetrics } from "./dailyMetrics";
 
 export type DashboardLaunchSummary = {
+  dailySourceMetrics?: DailyMetrics | null;
   permission: string;
   permissionMode: string;
   activeSessions: string;
@@ -91,6 +93,7 @@ export function mapDashboardLaunchSummaryResponse(response: unknown): DashboardL
 
   return {
     permission: readValue(record.permission, "SUPPORT_READ"),
+    dailySourceMetrics: mapDailyMetrics(record.dailySourceMetrics),
     permissionMode: readValue(record.permissionMode, "ROLE_PERMISSION"),
     activeSessions: numberValue(record.activeSessions),
     concurrentUsers: exactConcurrentUsersLabel(record.concurrentUsers, record.concurrentUsersPrecision),

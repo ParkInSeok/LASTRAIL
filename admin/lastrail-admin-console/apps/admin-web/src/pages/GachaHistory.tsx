@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
+import { gachaGuaranteeTypeLabel } from "../shared/labels/adminLabels";
 import "./gachaHistory.css";
 
 export function bannerTypeLabel(value?: string) {
@@ -20,10 +21,16 @@ function PullResults({ batchId }: { batchId: string }) {
   if (query.error) return <span role="status">{failure(query.error)}</span>;
   const results = query.data?.item.results ?? [];
   if (!results.length) return <>결과 없음</>;
-  return <ul className="gacha-results">{results.map((r, i) => <li key={`${r.resultId}-${i}`}>
+  const evidence = query.data?.item.causeEvidence;
+  return <><ul className="gacha-results">{results.map((r, i) => <li key={`${r.resultId}-${i}`}>
     <span>{r.rewardId}</span> <small>{r.resultRarity}{r.isPickup === "예" ? " · 픽업" : ""}{r.wasDuplicate === "예" ? " · 중복" : ""}</small>
     {r.duplicateConversion !== "없음" && <small> → {r.duplicateConversion}</small>}
-  </li>)}</ul>;
+  </li>)}</ul>{evidence && <details><summary>서버 참조 기록</summary><dl>
+    <dt>중복 결과 수</dt><dd>{evidence.duplicateResultCount ?? "미기록"}</dd>
+    <dt>중복 요청 기록</dt><dd>{evidence.idempotencyReplayKnown === null ? "미기록" : evidence.idempotencyReplayKnown ? "있음" : "없음"}</dd>
+    <dt>보장 유형</dt><dd>{evidence.guaranteeTypes.map(gachaGuaranteeTypeLabel).join(", ") || "없음"}</dd>
+    <dt>원인 판정</dt><dd>미확정 · 저장된 서버 기록만 표시</dd>
+  </dl></details>}</>;
 }
 export function GachaHistory() {
   const [params, setParams] = useSearchParams();

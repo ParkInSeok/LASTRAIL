@@ -3,15 +3,16 @@ import { useState } from "react";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import { overviewMetrics } from "../shared/dashboard/overviewMetrics";
-import { overviewChartDefinitions, overviewDateLabels } from "../shared/dashboard/overviewCharts";
+import { DailyCharts } from "../shared/dashboard/DailyCharts";
 import "./overviewDashboard.css";
 
 export function OverviewDashboard() {
   const [days, setDays] = useState<7 | 30>(7);
-  const [from, to] = overviewDateLabels(days);
   const query = useQuery({ queryKey: ["dashboard-launch-summary"], queryFn: adminApi.dashboardLaunchSummary, retry: false });
   const groups = overviewMetrics({
     activeSessions: query.data?.activeSessions,
+    daily: query.data?.dailySourceMetrics,
+    calculatedAt: query.data?.serverCalculatedAt,
     loading: query.isLoading,
     error: query.error ? adminRequestFailureDisplay(query.error, { resourceLabel: "개요", resourceId: "/api/dashboard/launch-summary" }).reason : undefined
   });
@@ -30,14 +31,7 @@ export function OverviewDashboard() {
           {([7, 30] as const).map(value => <button key={value} type="button" aria-pressed={days === value} onClick={() => setDays(value)}>최근 {value}일</button>)}
         </div>
       </header>
-      <div className="overview-chart-grid">{overviewChartDefinitions.map(chart => <figure key={chart.title} className="overview-chart" aria-label={`${chart.title}, 최근 ${days}일, 일별 집계 미연동`}>
-        <figcaption><span><i style={{ backgroundColor: chart.color }} aria-hidden="true" />{chart.title}</span><small>{chart.unit}</small></figcaption>
-        <div className="overview-plot">
-          <div className="overview-gridlines" aria-hidden="true">{[0, 1, 2, 3].map(line => <span key={line} />)}</div>
-          <p>일별 집계 미연동</p>
-        </div>
-        <div className="overview-axis" aria-hidden="true"><span>{from}</span><span>{to}</span></div>
-      </figure>)}</div>
+      <DailyCharts data={query.data?.dailySourceMetrics} days={days} calculatedAt={query.data?.serverCalculatedAt ?? ""} state={query.isLoading ? "조회 중" : query.error ? adminRequestFailureDisplay(query.error, { resourceLabel: "일별 지표", resourceId: "/api/dashboard/launch-summary" }).reason : undefined} />
     </section>
   </main>;
 }

@@ -1,4 +1,5 @@
 import type { RunLaunchEvidence } from "./runLaunchEvidenceContract";
+import { mapRunVersions, type RunVersionEvidence } from "./runVersions";
 
 export type RunOperatorSnapshot = {
   operatorId: string;
@@ -29,6 +30,7 @@ export type RunDetailReadModel = {
     operators: RunOperatorSnapshot[];
   };
   launchEvidence: RunLaunchEvidence;
+  versionEvidence: RunVersionEvidence;
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -127,6 +129,7 @@ export function mapRunDetailResponse(
       ultimateOperatorId: optionalString(snapshot.ultimateOperatorId),
       operators
     },
-    launchEvidence
+    launchEvidence,
+    versionEvidence: mapRunVersions(record)
   };
 }
