@@ -9,13 +9,18 @@ Run from `server` after building Admin Web:
 The harness binds only 127.0.0.1:4174 and refuses an occupied port. Stop with Ctrl+C.
 It applies repository migrations to a fresh in-memory sql.js database, calls real
 Game/Admin handlers through Node HTTP, and serves the Admin `dist` build.
-It creates only a synthetic principal/account, inquiry and diagnostic. It has no
+It creates synthetic accounts, inquiries and diagnostics, plus runs/pulls in full mode. It has no
 remote database, queues, R2 or persistent credential bindings. No tokens are logged.
 Admin methods other than GET are disabled in this harness.
 
 The local `/api` bridge maps paths and bootstrap role permissions; it is NOT the
 Cloudflare Pages proxy or Access authentication. This does not verify Unity UI,
 Workers runtime, remote D1, DEV deployment, or production authentication.
+
+For Unity inquiry/diagnostic-only testing, append `--support-errors`. This mode
+reports `runGachaChecks: NOT_RUN` and disables client admission for this local
+process only. The default full mode uses a read-only in-memory approved version
+policy (not real R2); no catalog URL is fetched. Do not run both on the same port.
 
 ## 2026-09-06 Execution
 
@@ -51,6 +56,23 @@ Workers runtime, remote D1, DEV deployment, or production authentication.
 - Run start/finish and gacha cause-reference mapping covered by local adapter/render
   tests only in this pass, not a real run/gacha creation browser E2E.
 - All browser tabs and local HTTP processes stopped after verification.
+
+## Run / Gacha Actual HTTP Extension
+
+- Preparation reuses server launch balance fixtures in disposable DB: active
+  operation preview, draft gacha pool and test tickets. No live seed promotion.
+- Actual POST run start returned a run id. Admin read before finish returned
+  NOT_FINISHED. Actual POST finish captured app code 101/runtime-finish separately
+  from start code 100/runtime-start. Replay with code 102 preserved stored finish.
+- Chrome runs list showed start version; detail showed independent start/finish.
+- Actual 10-pull and duplicate replay returned the same batch/results. Admin list
+  and detail rendered all ten stored results and safe cause references in Chrome.
+- This synthetic pool produced varied items in this execution; this is NOT a
+  diagnosis or probability-distribution validation for the user's DEV op_vex batch.
+- Initial full-mode attempt exposed missing admission configuration: snapshot was
+  null when CLIENT_ADMISSION_MODE was disabled. Full mode now explicitly enables
+  a memory-only policy, without claiming remote gate enforcement.
+- Support-errors-only mode separately passed its HTTP assertions. Servers stopped.
 
 Browser steps after `ready: true`: open `/support/tickets`, follow the generated
 ticket link, open `/ops/error-logs`, select frontend, enter version/code, search.

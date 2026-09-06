@@ -9,8 +9,10 @@ import assert from "node:assert/strict";
 import gameApi from "../../../../../server/apps/game-api/src/index.ts";
 import adminApi from "../../../../../server/apps/admin-api/src/index.ts";
 import { rolePermissions } from "../../../packages/admin-contracts/src/index.ts";
+import { seedGameReadEvidence } from "./local-game-fixtures.ts";
 
 const root = fileURLToPath(new URL("../../../../../server/", import.meta.url));
+const supportErrorsOnly = process.argv.includes("--support-errors");
 const require = createRequire(resolve(root, "package.json"));
 const SQL = await require("sql.js")();
 const db = new SQL.Database();
@@ -33,7 +35,7 @@ class Statement {
     } finally { statement.free(); }
   }
   async first() { return (await this.all()).results[0] ?? null; }
-  run() { db.run(this.sql, this.values); }
+  run() { db.run(this.sql, this.values); return { success: true, meta: { changes: db.getRowsModified() } }; }
 }
 const d1 = {
   prepare: (sql: string) => new Statement(sql),
@@ -49,7 +51,8 @@ const d1 = {
 const now = Date.now();
 db.run("INSERT INTO admin_principals (id,access_subject,role,status,display_name,created_at,updated_at) VALUES (?,?,?,?,?,?,?)",
   ["local-evidence-owner", "local-evidence-subject", "OWNER", "ACTIVE", "LOCAL Synthetic Owner", now, now]);
-const gameEnv = { ENVIRONMENT: "DEV", DB: d1, AUTH_SIGNING_KEY_CURRENT: randomUUID() + randomUUID() };
+const localVersionPolicy = { version: "1.0.2-local", versionCode: "200", minimumVersionCode: "90", contentRelease: { status: "APPROVED", releaseId: "local-content", contentVersion: "local-content-1", catalogUrl: "https://example.invalid/local-catalog.json", catalogHash: "sha256:" + "a".repeat(64), minimumVersionCode: "90", maximumVersionCode: "200" } };
+const gameEnv = { ENVIRONMENT: "DEV", DB: d1, AUTH_SIGNING_KEY_CURRENT: randomUUID() + randomUUID(), CF_VERSION_METADATA: { id: "local-runtime-start" }, CLIENT_ADMISSION_MODE: supportErrorsOnly ? "DISABLED" : "ENFORCED", VERSION_BUCKET: { get: async () => ({ json: async () => localVersionPolicy }), put: async () => { throw new Error("Read-only local version policy"); } } };
 const adminEnv = { ENVIRONMENT: "LOCAL", DB: d1, ADMIN_AUTH_MODE: "LOCAL_HEADER", ALLOWED_ADMIN_ORIGINS: "http://127.0.0.1:4174" };
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const base = "http://127.0.0.1:4174";
@@ -93,8 +96,8 @@ const server = createServer(async (incoming, outgoing) => {
   }
 });
 await new Promise<void>((yes, no) => { server.once("error", no); server.listen(4174, "127.0.0.1", yes); });
-async function post(path: string, payload?: unknown, token?: string, key = randomUUID()) {
-  const response = await fetch(base + path, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key, ...(token ? { Authorization: `Bearer ${token}` } : {}) }, ...(payload ? { body: JSON.stringify(payload) } : {}) });
+async function post(path: string, payload?: unknown, token?: string, key = randomUUID(), extraHeaders: Record<string, string> = {}) {
+  const response = await fetch(base + path, { method: "POST", headers: { "Content-Type": "application/json", "Idempotency-Key": key, "X-LastRail-App-Version-Code": "100", "X-LastRail-App-Platform": "android", "X-LastRail-App-Channel": "internal", ...extraHeaders, ...(token ? { Authorization: `Bearer ${token}` } : {}) }, ...(payload ? { body: JSON.stringify(payload) } : {}) });
   assert.equal(response.status, 200, `${path}: HTTP ${response.status}`);
   return response.json() as Promise<any>;
 }
@@ -136,7 +139,38 @@ try {
     } while (cursor);
     assert.equal(ids.size, category === "server" ? 26 : 27);
   }
-  console.log(JSON.stringify({ ready: true, base, accountId: guest.account.id, ticketId: ticket.ticketId, networkAssertions: "PASS", storage: "ephemeral sql.js; actual server handlers; synthetic local principal; NOT Cloudflare Access/Pages E2E" }));
+  if (!supportErrorsOnly) {
+  seedGameReadEvidence(db, guest.account.id);
+  const started = await post("/v1/runs/start", { operationPreviewId: "local-read-preview" }, guest.accessToken, "local-run-start", { "X-LastRail-App-Version": "1.0.0-local", "X-LastRail-App-Version-Code": "100" });
+  assert.equal(started.accepted, true);
+  const unfinished = await (await fetch(base + "/api/runs/" + started.runId)).json() as any;
+  assert.equal(unfinished.runFinishVersionSnapshotStatus, "NOT_FINISHED");
+  gameEnv.CF_VERSION_METADATA.id = "local-runtime-finish";
+  const finishPayload = { runId: started.runId, currentStage: "Complete", currentWaveNumber: 0, completedWaveCount: 15, outcome: "VICTORY", runtimeStateJson: "{}", tacticSelections: [], clientCompletedAt: new Date().toISOString() };
+  const finished = await post("/v1/runs/" + started.runId + "/finish", finishPayload, guest.accessToken, "local-run-finish", { "X-LastRail-App-Version": "1.0.1-local", "X-LastRail-App-Version-Code": "101" });
+  assert.equal(finished.accepted, true);
+  const detailRun = await (await fetch(base + "/api/runs/" + started.runId)).json() as any;
+  assert.equal(detailRun.runStartVersionSnapshot.clientInstalled.versionCode, "100");
+  assert.equal(detailRun.runFinishVersionSnapshot.clientInstalled.versionCode, "101");
+  assert.equal(detailRun.runStartVersionSnapshot.serverAcceptedDeployment.runtimeDeploymentId, "local-runtime-start");
+  assert.equal(detailRun.runFinishVersionSnapshot.serverAcceptedDeployment.runtimeDeploymentId, "local-runtime-finish");
+  await post("/v1/runs/" + started.runId + "/finish", finishPayload, guest.accessToken, "local-run-finish", { "X-LastRail-App-Version-Code": "102" });
+  const replayRun = await (await fetch(base + "/api/runs/" + started.runId)).json() as any;
+  assert.deepEqual(replayRun.runFinishVersionSnapshot, detailRun.runFinishVersionSnapshot);
+  const pull = await post("/v1/gacha/banners/local-read-banner/pulls", { pullCount: 10 }, guest.accessToken, "local-pull");
+  assert.equal(pull.accepted, true);
+  const batch = await (await fetch(base + "/api/gacha/pull-batches/" + pull.batchId)).json() as any;
+  assert.equal(batch.item.results.length, 10);
+  assert.equal(batch.item.causeEvidence.source, "gacha_pull_batch_server_records");
+  const replayPull = await post("/v1/gacha/banners/local-read-banner/pulls", { pullCount: 10 }, guest.accessToken, "local-pull");
+  assert.equal(replayPull.resultStatus, "DUPLICATE_REPLAY");
+  assert.equal(replayPull.batchId, pull.batchId);
+  const afterReplay = await (await fetch(base + "/api/gacha/pull-batches/" + pull.batchId)).json() as any;
+  assert.deepEqual(afterReplay.item.results, batch.item.results);
+  console.log(JSON.stringify({ ready: true, base, accountId: guest.account.id, ticketId: ticket.ticketId, runId: started.runId, batchId: pull.batchId, networkAssertions: "PASS", storage: "ephemeral sql.js; actual server handlers; synthetic local principal; NOT Cloudflare Access/Pages E2E" }));
+  } else {
+    console.log(JSON.stringify({ ready: true, base, scope: "support-errors", runGachaChecks: "NOT_RUN", networkAssertions: "PASS", accountId: guest.account.id, ticketId: ticket.ticketId }));
+  }
 } catch (error) { server.close(); db.close(); throw error; }
 process.on("SIGINT", () => server.close(() => { db.close(); process.exit(0); }));
 process.on("SIGTERM", () => server.close(() => { db.close(); process.exit(0); }));
