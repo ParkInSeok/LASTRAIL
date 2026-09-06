@@ -513,6 +513,7 @@ async function writeGameApiOpsErrorLog(c: GameApiContext, input: {
       occurredAtMs: now,
       environment: getOpsLogEnvironment(c.env),
       service: "game_api",
+      serverVersion: (c.env as Env & { CF_VERSION_METADATA?: { id: string } }).CF_VERSION_METADATA?.id ?? null,
       severity: input.severity,
       errorCode: input.errorCode,
       messageSummary: input.messageSummary,

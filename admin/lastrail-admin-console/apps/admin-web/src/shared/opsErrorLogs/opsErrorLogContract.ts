@@ -2,6 +2,7 @@ import { adminReadValueLabel } from "../api/errorDisplay";
 
 export type OpsErrorLogReadFiltersPreview = {
   category?: string;
+  serverVersion?: string;
   q?: string;
   occurredFrom?: string;
   occurredTo?: string;
@@ -27,6 +28,7 @@ export type OpsErrorLogReadFiltersPreview = {
 };
 
 export type OpsErrorLogListItem = {
+  serverVersion?: string | null;
   id: string;
   occurredAt: string;
   environment: string;
@@ -149,6 +151,7 @@ function mapOpsErrorLogItem(value: unknown, fallbackId = "연동 대기"): OpsEr
 
   return {
     id: stringValue(record?.id, fallbackId),
+    serverVersion: nullableStringValue(record?.serverVersion),
     occurredAt: readStringValue(pick(record, "occurredAt", "occurred_at"), fieldFallback),
     environment: readStringValue(record?.environment, fieldFallback),
     severity: readStringValue(record?.severity, fieldFallback),

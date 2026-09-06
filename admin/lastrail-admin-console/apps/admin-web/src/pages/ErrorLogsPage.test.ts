@@ -3,9 +3,15 @@ import { buildLogFilters, emptyLogFilters, logTime } from "./ErrorLogsPage";
 import { mapOpsErrorLogListResponse } from "../shared/opsErrorLogs/opsErrorLogContract";
 
 describe("Error log browser", () => {
+  it("sends deployment version and preserves missing historical versions", () => {
+    expect(buildLogFilters("server", { ...emptyLogFilters, serverVersion: " deploy-1 " }).serverVersion).toBe("deploy-1");
+    const data = mapOpsErrorLogListResponse({ items: [{ id: "log-1", serverVersion: "deploy-1" }, { id: "old-log" }] });
+    expect(data.items.map((row) => row.serverVersion)).toEqual(["deploy-1", null]);
+  });
   it("includes category and all applied filters before server pagination", () => {
-    const result = buildLogFilters("server", { ...emptyLogFilters, q: " request-1 ", severity: "error", environment: "DEV", from: "2026-09-06T10:00" }, "25");
-    expect(result).toMatchObject({ category: "server", q: "request-1", severity: "error", environment: "DEV", cursor: "25", limit: "25" });
+    const result = buildLogFilters("server", { ...emptyLogFilters, q: " request-1 ", severity: "error", from: "2026-09-06T10:00" }, "25");
+    expect(result).toMatchObject({ category: "server", q: "request-1", severity: "error", cursor: "25", limit: "25" });
+    expect(result).not.toHaveProperty("environment");
     expect(result.occurredFrom).toBe(new Date("2026-09-06T10:00").toISOString());
     expect(buildLogFilters("frontend", emptyLogFilters)).toMatchObject({ category: "frontend", cursor: "", service: "", q: "" });
   });

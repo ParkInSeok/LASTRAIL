@@ -1,4 +1,6 @@
 .log-tabs { display: flex; gap: 0; border-bottom: 1px solid #ccd2da; margin-bottom: 16px; }
+.log-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+.log-heading span { color: #64748b; font-size: 16px; }
 .log-tabs button { background: transparent; color: #374151; border: 0; border-radius: 0; padding: 12px 24px; }
 .log-tabs button[aria-selected="true"] { color: #111827; border-bottom: 3px solid #15803d; font-weight: 700; }
 .log-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 20px; }

@@ -24,6 +24,7 @@ export type OpsErrorLogInsertInput = {
   status?: OpsErrorLogStatus;
   source: OpsErrorLogService;
   requestId?: string | null;
+  serverVersion?: string | null;
   accountId?: string | null;
   runId?: string | null;
   rewardPreviewId?: string | null;
@@ -144,7 +145,10 @@ export async function buildOpsErrorLogInsertEnvelope(input: OpsErrorLogInsertInp
       ? null
       : `sha256:${await sha256Hex(input.idempotencyKey)}`,
     correlationJson: canonicalJson(scrubJson(input.correlation ?? {}) ?? {}),
-    sanitizedContextJson: canonicalJson(scrubJson(input.context ?? {}) ?? {}),
+    sanitizedContextJson: canonicalJson({
+      ...(typeof input.context === "object" && input.context !== null && !Array.isArray(input.context) ? scrubJson(input.context) as Record<string, JsonValue> : {}),
+      serverVersion: input.serverVersion ?? null,
+    }),
     retryable: input.retryable ?? false,
     masked: true,
     payloadRef: input.payloadRef ?? null,

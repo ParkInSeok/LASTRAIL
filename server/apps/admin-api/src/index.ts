@@ -1212,6 +1212,8 @@ function opsErrorLogLinks(row: AdminOpsErrorLogRow) {
 }
 
 function opsErrorLogSummary(row: AdminOpsErrorLogRow) {
+  const context = parseOptionalJsonObject(row.sanitized_context_json);
+  const serverVersion = context && typeof context === "object" && !Array.isArray(context) && typeof context.serverVersion === "string" ? context.serverVersion : null;
   return {
     id: row.id,
     occurredAt: toIso(row.occurred_at),
@@ -1223,6 +1225,7 @@ function opsErrorLogSummary(row: AdminOpsErrorLogRow) {
     status: row.status,
     source: row.source,
     requestId: row.request_id,
+    serverVersion,
     accountId: row.account_id,
     runId: row.run_id,
     rewardPreviewId: row.reward_preview_id,
@@ -1896,7 +1899,7 @@ app.get("/v1/admin/ops/error-logs", async (c) => {
   const whereClauses: string[] = [];
   const values: Array<string | number> = [];
   try {
-    const search = opsLogSearch(c.req.query("category"), c.req.query("q"));
+    const search = opsLogSearch(c.req.query("category"), c.req.query("q"), c.req.query("serverVersion"));
     whereClauses.push(...search.clauses);
     values.push(...search.values);
   } catch {
