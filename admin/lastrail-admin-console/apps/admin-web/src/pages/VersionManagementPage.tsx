@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
@@ -12,11 +13,15 @@ export const versionManagementInputFields = simpleVersionInputFields;
 export const versionManagementExportAction = simpleVersionExportAction;
 
 export function VersionManagementPage() {
+  const current = useQuery({ queryKey: ["current-version"], queryFn: adminApi.currentVersion, retry: false });
+  const readStatus = current.isLoading ? "조회 중" : current.isError
+    ? adminRequestFailureDisplay(current.error, { resourceLabel: "현재 버전", resourceId: "/api/versions" }).reason
+    : "없음";
   const [targetVersion, setTargetVersion] = useState("");
   const [targetVersionCode, setTargetVersionCode] = useState("");
   const [submitStatus, setSubmitStatus] = useState<string>(versionManagementExportAction.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const canSubmit = targetVersion.trim().length > 0 && targetVersionCode.trim().length > 0 && !isSubmitting;
+  const canSubmit = current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && !isSubmitting;
 
   async function submitVersionExport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,6 +35,7 @@ export function VersionManagementPage() {
         versionCode: targetVersionCode.trim()
       });
       setSubmitStatus(result.status);
+      if (result.accepted) await current.refetch();
     } catch (error) {
       const failure = adminRequestFailureDisplay(error, {
         resourceLabel: "버전 내보내기",
@@ -45,21 +51,18 @@ export function VersionManagementPage() {
     <main className="content">
       <header>
         <h1>버전 관리</h1>
-        <p>현재 서버와 현재 버전을 확인하고, 변경할 버전을 R2 current version JSON으로 내보내는 화면입니다</p>
       </header>
       <section className="summary-grid" aria-label="버전 관리 요약">
         {versionManagementServerCards.map((card) => (
           <div key={card.code}>
             <span>{card.label}</span>
-            <strong>{card.value}</strong>
-            <small>{card.note}</small>
+            <strong>{current.data ? (card.code === "currentServer" ? current.data.server : card.code === "currentVersion" ? current.data.version ?? "없음" : current.data.versionCode ?? "없음") : readStatus}</strong>
           </div>
         ))}
       </section>
       <section className="admin-panel">
         <header>
           <h2>버전 변경</h2>
-          <p>입력값 검증과 R2 갱신은 서버 내보내기 API가 담당합니다</p>
         </header>
         <form className="metric-grid" onSubmit={submitVersionExport}>
           {versionManagementInputFields.map((field) => (

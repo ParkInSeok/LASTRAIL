@@ -34,6 +34,12 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.errorCode === "version_storage_unavailable") {
+      return { reason: "R2 활성화 및 버킷 연결 필요", nextStep: "DEV R2 저장소 연결 후 다시 조회하세요." };
+    }
+    if (error.errorCode === "invalid_version") {
+      return { reason: "버전 또는 버전코드 형식 확인 필요", nextStep: "버전은 영문·숫자·점·밑줄·하이픈, 버전코드는 1~2147483647을 입력하세요." };
+    }
     if (error.errorCode === "ADMIN_API_NON_JSON_RESPONSE") {
       return {
         reason: "Access redirect 또는 프록시 응답 확인 필요",

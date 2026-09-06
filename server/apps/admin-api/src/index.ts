@@ -1,7 +1,8 @@
 import { Hono, type Context } from "hono";
 import { canonicalJson, createRequestId, sha256Hex } from "@lastrail/common";
+import { parseVersion, readVersion, saveVersion, type VersionBucket } from "./version-store";
 
-const app = new Hono<{ Bindings: Env }>();
+const app = new Hono<{ Bindings: Env & { VERSION_BUCKET?: VersionBucket } }>();
 
 type JsonValue = null | boolean | number | string | JsonValue[] | { readonly [key: string]: JsonValue };
 
@@ -1706,6 +1707,33 @@ async function writeBalancePublishFailureAudit(
 }
 
 app.get("/status", (c) => c.json({ ok: true, service: "admin-api", requestId: createRequestId() }));
+app.get("/v1/admin/versions", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  c.header("Cache-Control", "no-store");
+  if (c.env.ENVIRONMENT !== "DEV") return c.json({ error: { code: "version_environment_disabled" } }, 403);
+  if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+  try {
+    const version = await readVersion(c.env.VERSION_BUCKET);
+    return c.json({ environment: "DEV", server: "dev-admin.lastrail.app", canExport: principal.role === "OWNER", version: version?.version ?? null, versionCode: version?.versionCode ?? null });
+  } catch {
+    return c.json({ error: { code: "version_storage_read_failed" } }, 502);
+  }
+});
+app.post("/v1/admin/versions/export", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  c.header("Cache-Control", "no-store");
+  if (principal.role !== "OWNER" || c.env.ENVIRONMENT !== "DEV") return c.json({ error: { code: "version_export_forbidden" } }, 403);
+  const version = parseVersion(await c.req.json().catch(() => null));
+  if (!version) return c.json({ error: { code: "invalid_version" } }, 400);
+  if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+  try {
+    return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, version) });
+  } catch {
+    return c.json({ error: { code: "version_storage_write_failed" } }, 502);
+  }
+});
 app.get("/v1/admin/bootstrap/access-subject", async (c) => {
   if (c.env.ENVIRONMENT !== "DEV") {
     return c.json({ error: "NOT_FOUND" }, 404);

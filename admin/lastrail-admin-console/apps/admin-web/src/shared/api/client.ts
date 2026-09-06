@@ -28,7 +28,7 @@ import { mapPlayerLaunchEvidence } from "../players/playerLaunchEvidenceContract
 import { mapPlayerDetailResponse } from "../players/playerDetailContract";
 import { mapRunDetailResponse } from "../runs/runDetailContract";
 import { mapRunLaunchEvidence } from "../runs/runLaunchEvidenceContract";
-import { mapVersionExportResult, type VersionExportRequest } from "../release/releaseManagementContract";
+import { mapCurrentVersion, mapVersionExportResult, type VersionExportRequest } from "../release/releaseManagementContract";
 
 import {
   mapStoryProgressDetailResponse,
@@ -177,6 +177,9 @@ export const adminApi = {
   },
   async exportVersionToR2(request: VersionExportRequest) {
     return mapVersionExportResult(await writeJson("/api/versions/export", request), request);
+  },
+  async currentVersion() {
+    return mapCurrentVersion(await readJson("/api/versions"));
   },
   async dashboardLaunchSummary() {
     return mapDashboardLaunchSummaryResponse(await readJson("/api/dashboard/launch-summary"));

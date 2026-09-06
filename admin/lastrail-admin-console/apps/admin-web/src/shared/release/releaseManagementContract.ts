@@ -470,3 +470,13 @@ export function mapVersionExportResult(raw: unknown, request: VersionExportReque
     status: response.accepted === true ? "내보내기 완료" : readString(response.status, "내보내기 결과 확인 필요")
   };
 }
+
+export function mapCurrentVersion(raw: unknown) {
+  const value = record(raw);
+  if (typeof value.server !== "string" || typeof value.canExport !== "boolean" ||
+      !(value.version === null || typeof value.version === "string") ||
+      !(value.versionCode === null || typeof value.versionCode === "string")) {
+    throw new Error("Invalid version response");
+  }
+  return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null };
+}
