@@ -383,6 +383,14 @@ Refresh rules:
 
 This response must not include secrets, tokens, Cloudflare credentials, Admin API URLs, or Access credentials. API domains are public client configuration, not a secret. If tamper resistance is needed later, add a signed config payload instead of encrypting a value that the Unity client must decrypt.
 
+Current launch code still returns a display-version-style
+`minimumClientVersion`. The confirmed DB/API compatibility policy uses numeric
+app build codes instead: future admission must compare the installed app
+`versionCode` against server-owned `minimumVersionCode`. A Unity update prompt
+or Admin version document alone is not sufficient to protect
+compatibility-breaking D1/API changes. See
+`docs/cloudflare/release-db-api-compatibility-policy.md`.
+
 ## Balance Config
 
 Balance payloads remain on Game API: `GET /v1/balance-config/:version`.

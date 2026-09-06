@@ -24,10 +24,16 @@ Before PRD deployment, prepare and verify:
   `pnpm d1:local:verify`.
 - Config diff review for `apps/game-api/wrangler.jsonc`,
   `apps/admin-api/wrangler.jsonc`, and `apps/async-worker/wrangler.jsonc`.
-- PRD migration plan for `packages/db/migrations/0001` through current HEAD.
+- PRD migration plan for `packages/db/migrations/0001` through current HEAD,
+  including whether every migration is additive/rollback-compatible or requires
+  an enforced `minimumVersionCode` gate.
 - Rollback note: keep the previous Worker version id for each deployed Worker;
   rollback uses Wrangler Worker version rollback after confirming no migration
   rollback is needed. D1 schema rollback must be a separate approved plan.
+- Compatibility note: a stored minimum version document or Unity update popup is
+  not by itself a safe guard for compatibility-breaking DB/API changes. The Game
+  API admission path must consume the policy before incompatible routes rely on
+  it.
 
 ## Required PRD Inputs
 
@@ -87,7 +93,10 @@ presence by name.
 2. Replace PRD config placeholders with the approved PRD resource ids and Access
    issuer/audience values.
 3. Regenerate Worker types and run the final local regression.
-4. Apply PRD D1 migrations after explicit PRD migration approval.
+4. Apply PRD D1 migrations after explicit PRD migration approval. If a migration
+   is compatibility-breaking, first confirm new app availability, server-side
+   minimum-version admission, old-session/retry tolerance, and rollback target
+   compatibility with the current D1 state.
 5. Deploy PRD Workers with dry-run first, then actual deploy after approval.
 6. Inject/rotate PRD Worker secrets only through Wrangler secret storage.
 7. Run scrubbed PRD smoke for public Game API, protected Admin API, and async
