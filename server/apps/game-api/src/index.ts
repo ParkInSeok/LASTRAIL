@@ -44,6 +44,7 @@ type GameApiEnv = Env & {
   GMAIL_RECOVERY_OAUTH_REFRESH_TOKEN?: string;
   REALTIME_COOP_ROOMS?: RealtimeCoopRoomNamespace;
   VERSION_BUCKET?: VersionBucket;
+  CLIENT_ADMISSION_MODE?: "DISABLED" | "ENFORCED";
 };
 
 const apiBaseUrls = {
@@ -233,6 +234,39 @@ function createClientConfigResponse(input: {
     errorCode: null,
     message: null,
   };
+}
+
+function isClientAdmissionProtectedRoute(pathname: string): boolean {
+  if (pathname === "/status" || pathname === "/v1/client-config") return false;
+  if (pathname.startsWith("/v1/auth/password/recovery-email/verify/")) return false;
+  if (pathname.startsWith("/v1/auth/password/reset/")) return false;
+  if (pathname.startsWith("/v1/client-errors")) return false;
+  return pathname.startsWith("/v1/");
+}
+
+function clientAdmissionHttpStatus(errorCode: string | null): 400 | 426 | 503 {
+  if (errorCode === "app_version_required") return 400;
+  if (errorCode === "client_update_required") return 426;
+  return 503;
+}
+
+async function createClientAdmissionForRequest(c: GameApiContext) {
+  const env = c.env as GameApiEnv;
+  let version: VersionDocument | null = null;
+  if (env.VERSION_BUCKET !== undefined) {
+    try {
+      version = await readVersion(env.VERSION_BUCKET);
+    } catch {
+      version = null;
+    }
+  }
+  return createClientConfigResponse({
+    env,
+    version,
+    installedVersionCode: normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code")),
+    platform: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Platform")),
+    channel: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Channel")),
+  });
 }
 
 type BalanceConfigRow = {
@@ -2759,6 +2793,20 @@ async function parseGoogleAuthBody(c: GameApiContext): Promise<{ idToken: string
   return { idToken: body.idToken };
 }
 
+app.use("*", async (c, next) => {
+  const env = c.env as GameApiEnv;
+  if (env.CLIENT_ADMISSION_MODE !== "ENFORCED" || !isClientAdmissionProtectedRoute(new URL(c.req.url).pathname)) {
+    return next();
+  }
+
+  const admission = await createClientAdmissionForRequest(c);
+  if (admission.accepted === false) {
+    return c.json(admission, clientAdmissionHttpStatus(admission.errorCode));
+  }
+
+  return next();
+});
+
 app.get("/status", (c) => c.json({ ok: true, service: "game-api", requestId: createRequestId() }));
 app.post("/v1/auth/password/recovery-email/verify/start", async (c) => {
   const body = await parseJsonObjectBody(c);
@@ -4040,26 +4088,7 @@ app.post("/v1/profile/display-name", async (c) => {
   });
 });
 app.get("/v1/client-config", async (c) => {
-  const env = c.env as GameApiEnv;
-  const installedVersionCode = normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code"));
-  const platform = normalizeClientConfigHeader(c.req.header("X-LastRail-App-Platform"));
-  const channel = normalizeClientConfigHeader(c.req.header("X-LastRail-App-Channel"));
-  let version: VersionDocument | null = null;
-  if (env.VERSION_BUCKET !== undefined) {
-    try {
-      version = await readVersion(env.VERSION_BUCKET);
-    } catch {
-      version = null;
-    }
-  }
-
-  return c.json(createClientConfigResponse({
-    env,
-    version,
-    installedVersionCode,
-    platform,
-    channel,
-  }));
+  return c.json(await createClientAdmissionForRequest(c));
 });
 app.post("/v1/realtime/coop/rooms", async (c) => {
   const idempotencyKey = c.req.header("Idempotency-Key")?.trim();

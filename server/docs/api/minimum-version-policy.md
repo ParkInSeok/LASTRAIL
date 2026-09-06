@@ -23,7 +23,9 @@ the current document and does not provide an archive or database rollback.
 
 Game API `GET /v1/client-config` now consumes the current version document for
 launch admission and compares the installed `X-LastRail-App-Version-Code`
-against server-owned `minimumVersionCode`. Saving the document is still not the
-same as a Worker deploy, content activation approval, or database rollback.
+against server-owned `minimumVersionCode`. When `CLIENT_ADMISSION_MODE` is
+`ENFORCED`, protected Game API `/v1/*` routes run the same check before auth or
+gameplay handling. Saving the document is still not the same as a Worker deploy,
+content activation approval, or database rollback.
 DB-sensitive releases must follow
 `docs/cloudflare/release-db-api-compatibility-policy.md`.

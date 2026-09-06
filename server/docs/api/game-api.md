@@ -405,9 +405,14 @@ This response must not include secrets, tokens, Cloudflare credentials, Admin AP
 
 Launch admission uses numeric app build codes. Unity sends
 `X-LastRail-App-Version-Code`; the Game API compares it with the server-owned
-`minimumVersionCode` from the current version document. A Unity update prompt or
-Admin version document alone is not sufficient to protect
-compatibility-breaking D1/API changes.
+`minimumVersionCode` from the current version document. When
+`CLIENT_ADMISSION_MODE=ENFORCED`, protected `/v1/*` routes run the same gate
+before auth/gameplay handling. A Unity update prompt or Admin version document
+alone is not sufficient to protect compatibility-breaking D1/API changes.
+
+Protected route exceptions are `GET /status`, `GET /v1/client-config`, password
+recovery verification/reset routes, and frontend diagnostic `client-errors`
+routes.
 
 The endpoint also returns an approved compatible Addressables content release
 pointer when the current version document contains one and the installed app

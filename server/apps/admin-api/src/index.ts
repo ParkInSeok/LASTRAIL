@@ -1777,7 +1777,19 @@ app.get("/v1/admin/versions", async (c) => {
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
     const version = await readVersion(c.env.VERSION_BUCKET);
-    return c.json({ environment: "DEV", server: "dev-admin.lastrail.app", canExport: principal.role === "OWNER", version: version?.version ?? null, versionCode: version?.versionCode ?? null, minimumVersionCode: version?.minimumVersionCode ?? null });
+    return c.json({
+      environment: "DEV",
+      server: "dev-admin.lastrail.app",
+      canExport: principal.role === "OWNER",
+      version: version?.version ?? null,
+      versionCode: version?.versionCode ?? null,
+      minimumVersionCode: version?.minimumVersionCode ?? null,
+      contentRelease: version?.contentRelease ?? null,
+      admissionPolicy: {
+        status: version?.minimumVersionCode === undefined ? "UNCONFIGURED" : "CONFIGURED",
+        gameApiEnforcement: "CLIENT_CONFIG_AND_PROTECTED_ROUTES",
+      },
+    });
   } catch {
     return c.json({ error: { code: "version_storage_read_failed" } }, 502);
   }
@@ -1791,7 +1803,11 @@ app.post("/v1/admin/versions/export", async (c) => {
   if (!version || !version.minimumVersionCode) return c.json({ error: { code: "invalid_version" } }, 400);
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
-    return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, version) });
+    const existing = await readVersion(c.env.VERSION_BUCKET);
+    const mergedVersion = version.contentRelease === undefined && existing?.contentRelease !== undefined
+      ? { ...version, contentRelease: existing.contentRelease }
+      : version;
+    return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, mergedVersion) });
   } catch {
     return c.json({ error: { code: "version_storage_write_failed" } }, 502);
   }
