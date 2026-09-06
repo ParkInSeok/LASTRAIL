@@ -10,8 +10,9 @@ export function opsLogSearch(category: string | undefined, search: string | unde
     clauses.push("json_extract(CASE WHEN json_valid(sanitized_context_json) THEN sanitized_context_json ELSE '{}' END, '$.serverVersion') = ?");
     values.push(version);
   }
-  // Current producers are server-only. Client ingestion is not connected yet.
-  if (category === "frontend") clauses.push("1 = 0");
+  if (category === "frontend") {
+    clauses.push("json_extract(CASE WHEN json_valid(sanitized_context_json) THEN sanitized_context_json ELSE '{}' END, '$.clientDiagnosticCategory') = 'frontend'");
+  }
   if (q) {
     const fields = ["id", "error_code", "message_summary", "request_id", "service", "source", "account_id", "run_id", "trace_ref", "correlation_json"];
     clauses.push(`(${fields.map((field) => `instr(lower(COALESCE(${field}, '')), lower(?)) > 0`).join(" OR ")})`);

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { opsLogSearch } from "../../apps/admin-api/src/ops-log-search";
 describe("ops log category and search", () => {
-  it("never exposes server events on the unconnected frontend category", () => {
-    expect(opsLogSearch("frontend", "").clauses).toEqual(["1 = 0"]);
+  it("filters frontend category to safe client diagnostics only", () => {
+    expect(opsLogSearch("frontend", "").clauses).toEqual([
+      "json_extract(CASE WHEN json_valid(sanitized_context_json) THEN sanitized_context_json ELSE '{}' END, '$.clientDiagnosticCategory') = 'frontend'",
+    ]);
     expect(opsLogSearch("server", "").clauses).toEqual([]);
     expect(() => opsLogSearch("other", "")).toThrow();
   });

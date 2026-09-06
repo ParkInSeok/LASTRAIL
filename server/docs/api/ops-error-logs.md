@@ -88,17 +88,40 @@ Current direct-write scope:
   `POST /v1/runs/start` consumes an operation preview but cannot safely persist
   the run, snapshot, and `run_start` idempotency record. The route attempts a
   best-effort preview reopen before returning the stable rejected response.
+- `frontend_unity_error`, `frontend_unity_exception`,
+  `frontend_unity_assert`: `warning`, `game_api`, open. Written only by
+  `POST /v1/client-errors` after player Bearer auth, `Idempotency-Key`, fixed
+  event kind, timestamp, occurrence count, authenticated-current-session scope,
+  and bounded app version metadata validation. These rows are client diagnostic
+  evidence, not server-side error Source of Truth.
 
 These writes are fail-soft. If the ops log insert fails, the original player API
 response is preserved. Request bodies, raw Google tokens, Authorization headers,
 raw idempotency keys, RNG material, probability data, full weight tables, raw
 multiplier bps, and unrestricted stack traces are still not stored.
 
+Frontend safe ingest:
+
+- `POST /v1/client-errors`
+- Player Bearer auth required.
+- `Idempotency-Key` required; same key/same event batch returns
+  `DUPLICATE_REPLAY`, same key/different event batch returns `409
+  idempotency_conflict`.
+- Top-level body accepts only `events`.
+- Each event accepts only `kind`, `occurredAt`, `occurrenceCount`, `appVersion`,
+  `appVersionCode`, and `scope=AUTHENTICATED_CURRENT_SESSION`.
+- Max 25 events per request and max occurrence count 60 per event.
+- Admin `GET /v1/admin/ops/error-logs?category=frontend` returns those
+  sanitized rows with `collectionAvailable=true`.
+- Pre-login or previous-account queued events are not attributed at upload time
+  in this launch contract; Unity should only upload events explicitly scoped to
+  the authenticated current session or drop/hold them locally.
+
 Backlog / decision queue:
 
 - Queue-based async sink and optional R2 sanitized detail payloads.
 - Wider automatic write integration for non-critical validation rejects,
-  support notes, Admin API read model composition failures, and client
+  support notes, Admin API read model composition failures, and richer client
   diagnostics.
 
 ### Queues + D1 Sink

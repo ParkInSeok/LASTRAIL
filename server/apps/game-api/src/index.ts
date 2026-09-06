@@ -174,6 +174,17 @@ type SupportTicketRow = {
   updated_at: number;
 };
 
+type ClientErrorKind = "UNITY_ERROR" | "UNITY_EXCEPTION" | "UNITY_ASSERT";
+
+type ClientErrorEvent = {
+  kind: ClientErrorKind;
+  occurredAt: number;
+  occurrenceCount: number;
+  appVersion: string | null;
+  appVersionCode: string | null;
+  scope: "AUTHENTICATED_CURRENT_SESSION";
+};
+
 type FirstClearRow = {
   cleared_at: number;
 };
@@ -411,6 +422,8 @@ const supportTicketCategories = new Set<SupportTicketCategory>([
   "STORY_PROGRESS",
   "BUG_OTHER",
 ]);
+const clientErrorKinds = new Set<ClientErrorKind>(["UNITY_ERROR", "UNITY_EXCEPTION", "UNITY_ASSERT"]);
+const clientErrorEventKeys = new Set(["kind", "occurredAt", "occurrenceCount", "appVersion", "appVersionCode", "scope"]);
 const runFinishForbiddenRewardFields = new Set([
   "rewardAmount",
   "rewardAmounts",
@@ -1936,6 +1949,72 @@ function parseSupportTicketCategory(value: unknown): SupportTicketCategory | nul
 
 function buildSupportTicketPreview(bodyText: string): string {
   return bodyText.length <= 160 ? bodyText : `${bodyText.slice(0, 157)}...`;
+}
+
+function createClientErrorIngestRejectedResponse(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    ingestStatus: "REJECTED",
+    ingestId: null,
+    acceptedEventCount: 0,
+    droppedEventCount: 0,
+    serverReceivedAt: null,
+    errorCode,
+    message,
+  };
+}
+
+function clientErrorCode(kind: ClientErrorKind): string {
+  if (kind === "UNITY_EXCEPTION") return "frontend_unity_exception";
+  if (kind === "UNITY_ASSERT") return "frontend_unity_assert";
+  return "frontend_unity_error";
+}
+
+function clientErrorSummary(kind: ClientErrorKind): string {
+  if (kind === "UNITY_EXCEPTION") return "Frontend Unity exception diagnostic captured.";
+  if (kind === "UNITY_ASSERT") return "Frontend Unity assert diagnostic captured.";
+  return "Frontend Unity error diagnostic captured.";
+}
+
+function parseClientErrorEvent(value: unknown): ClientErrorEvent | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const candidate = value as Record<string, unknown>;
+  if (Object.keys(candidate).some((key) => !clientErrorEventKeys.has(key))) return null;
+  const kind = typeof candidate.kind === "string" && clientErrorKinds.has(candidate.kind as ClientErrorKind)
+    ? candidate.kind as ClientErrorKind
+    : null;
+  const occurredAt = parseOptionalIsoMs(candidate.occurredAt);
+  const occurrenceCount = typeof candidate.occurrenceCount === "number" && Number.isSafeInteger(candidate.occurrenceCount)
+    ? candidate.occurrenceCount
+    : null;
+  const appVersion = normalizeOptionalText(candidate.appVersion, 64);
+  const appVersionCode = normalizeOptionalText(candidate.appVersionCode, 19);
+  if (
+    kind === null ||
+    occurredAt === null ||
+    occurredAt === "INVALID" ||
+    occurrenceCount === null ||
+    occurrenceCount < 1 ||
+    occurrenceCount > 60 ||
+    appVersion === "INVALID" ||
+    appVersionCode === "INVALID" ||
+    (typeof appVersionCode === "string" && !/^\d{1,19}$/u.test(appVersionCode)) ||
+    candidate.scope !== "AUTHENTICATED_CURRENT_SESSION"
+  ) {
+    return null;
+  }
+  return {
+    kind,
+    occurredAt,
+    occurrenceCount,
+    appVersion,
+    appVersionCode,
+    scope: "AUTHENTICATED_CURRENT_SESSION",
+  };
+}
+
+async function buildClientErrorIngestHash(events: ClientErrorEvent[]): Promise<string> {
+  return `sha256:${await sha256Hex(canonicalJson({ events }))}`;
 }
 
 async function buildSupportTicketRequestHash(input: {
@@ -4165,6 +4244,161 @@ app.post("/v1/support/tickets", async (c) => {
   ]);
 
   return c.json(supportTicketResponse(row, "RECEIVED"));
+});
+
+app.post("/v1/client-errors", async (c) => {
+  const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
+  if (idempotencyKey === undefined || idempotencyKey.length === 0) {
+    return c.json(createClientErrorIngestRejectedResponse("contract_violation", "Idempotency-Key header is required."), 400);
+  }
+  if (idempotencyKey.length > 128) {
+    return c.json(createClientErrorIngestRejectedResponse("contract_violation", "Idempotency-Key header is too long."), 400);
+  }
+
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createClientErrorIngestRejectedResponse(body.errorCode, body.message), body.status);
+  }
+  if (Object.keys(body).some((key) => key !== "events") || !Array.isArray(body.events) || body.events.length < 1 || body.events.length > 25) {
+    return c.json(createClientErrorIngestRejectedResponse(
+      "contract_violation",
+      "Client error ingest accepts only a bounded events array.",
+    ), 400);
+  }
+
+  const events = body.events.map(parseClientErrorEvent);
+  if (events.some((event) => event === null)) {
+    return c.json(createClientErrorIngestRejectedResponse(
+      "contract_violation",
+      "Client error events must use fixed safe diagnostic fields only.",
+    ), 400);
+  }
+  const safeEvents = events as ClientErrorEvent[];
+
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) {
+    return c.json(createClientErrorIngestRejectedResponse(authContext.errorCode, authContext.message), authContext.status);
+  }
+
+  const requestHash = await buildClientErrorIngestHash(safeEvents);
+  const ingestId = `client_error_ingest_${requestHash.slice("sha256:".length, "sha256:".length + 32)}`;
+  const replay = await c.env.DB.prepare(
+    `SELECT result_ref, created_at
+     FROM idempotency_records
+     WHERE account_id = ? AND operation = 'client_error_ingest' AND idempotency_key = ?`,
+  )
+    .bind(authContext.accountId, idempotencyKey)
+    .first<IdempotencyRecordRow>();
+  if (replay !== null) {
+    if (replay.result_ref !== ingestId) {
+      return c.json(createClientErrorIngestRejectedResponse(
+        "idempotency_conflict",
+        "Idempotency-Key was already used for a different client error ingest request.",
+      ), 409);
+    }
+    return c.json({
+      accepted: true,
+      ingestStatus: "DUPLICATE_REPLAY",
+      ingestId,
+      acceptedEventCount: 0,
+      droppedEventCount: safeEvents.length,
+      serverReceivedAt: toIso(replay.created_at),
+      errorCode: "duplicate_replay",
+      message: "Client error ingest was already received.",
+    });
+  }
+
+  const now = Date.now();
+  const serverVersion = (c.env as Env & { CF_VERSION_METADATA?: { id: string } }).CF_VERSION_METADATA?.id ?? null;
+  const statements = [];
+  for (const event of safeEvents) {
+    const envelope = await buildOpsErrorLogInsertEnvelope({
+      id: createDomainId("ops_error"),
+      occurredAtMs: event.occurredAt,
+      environment: getOpsLogEnvironment(c.env),
+      service: "game_api",
+      serverVersion,
+      severity: "warning",
+      errorCode: clientErrorCode(event.kind),
+      messageSummary: clientErrorSummary(event.kind),
+      source: "game_api",
+      requestId: c.req.header("X-Request-Id") ?? null,
+      accountId: authContext.accountId,
+      idempotencyOperation: "client_error_ingest",
+      idempotencyKey,
+      correlation: {
+        accountId: authContext.accountId,
+        ingestId,
+      },
+      context: {
+        clientDiagnosticCategory: "frontend",
+        clientDiagnosticKind: event.kind,
+        occurrenceCount: event.occurrenceCount,
+        appVersion: event.appVersion,
+        appVersionCode: event.appVersionCode,
+        scope: event.scope,
+      },
+      retryable: false,
+      createdAtMs: now,
+    });
+    statements.push(
+      c.env.DB.prepare(
+        `INSERT INTO ops_error_logs (
+           id, occurred_at, environment, service, severity, error_code, message_summary,
+           status, source, request_id, account_id, run_id, reward_preview_id, reward_claim_id,
+           offline_reward_claim_id, gacha_batch_id, gacha_banner_id, story_progress_id,
+           integrity_event_id, support_ticket_id, idempotency_operation, idempotency_key_hash,
+           correlation_json, sanitized_context_json, retryable, masked, payload_ref, trace_ref,
+           resolved_at, resolved_by, resolution_note, created_at
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?)`,
+      ).bind(
+        envelope.id,
+        envelope.occurredAt,
+        envelope.environment,
+        envelope.service,
+        envelope.severity,
+        envelope.errorCode,
+        envelope.messageSummary,
+        envelope.status,
+        envelope.source,
+        envelope.requestId,
+        envelope.accountId,
+        envelope.idempotencyOperation,
+        envelope.idempotencyKeyHash,
+        envelope.correlationJson,
+        envelope.sanitizedContextJson,
+        envelope.retryable ? 1 : 0,
+        envelope.masked ? 1 : 0,
+        envelope.createdAt,
+      ),
+    );
+  }
+  statements.push(
+    c.env.DB.prepare(
+      `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
+       VALUES (?, ?, ?, 'client_error_ingest', ?, ?)`,
+    ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, ingestId, now),
+  );
+
+  try {
+    await c.env.DB.batch(statements);
+  } catch {
+    return c.json(createClientErrorIngestRejectedResponse(
+      "client_error_ingest_conflict",
+      "Client error diagnostics could not be recorded safely.",
+    ), 409);
+  }
+
+  return c.json({
+    accepted: true,
+    ingestStatus: "RECEIVED",
+    ingestId,
+    acceptedEventCount: safeEvents.length,
+    droppedEventCount: 0,
+    serverReceivedAt: toIso(now),
+    errorCode: null,
+    message: null,
+  });
 });
 
 app.get("/v1/balance-config/:version", async (c) => {

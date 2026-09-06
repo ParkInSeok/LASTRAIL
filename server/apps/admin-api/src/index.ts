@@ -2034,7 +2034,7 @@ app.get("/v1/admin/ops/error-logs", async (c) => {
     permission: OPS_ERROR_LOG_READ_PERMISSION,
     permissionMode: "ROLE_PERMISSION",
     items: visibleRows.map(opsErrorLogSummary),
-    collectionAvailable: c.req.query("category") !== "frontend",
+    collectionAvailable: true,
     nextCursor: rows.results.length > limit ? String(offset + limit) : null,
   });
 });
