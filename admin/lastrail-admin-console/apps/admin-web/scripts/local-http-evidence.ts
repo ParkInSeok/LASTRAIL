@@ -10,9 +10,12 @@ import gameApi from "../../../../../server/apps/game-api/src/index.ts";
 import adminApi from "../../../../../server/apps/admin-api/src/index.ts";
 import { rolePermissions } from "../../../packages/admin-contracts/src/index.ts";
 import { seedGameReadEvidence } from "./local-game-fixtures.ts";
+import { deploymentBucket } from "./local-deployment-fixtures.ts";
+import { mapDeployment } from "../src/shared/release/serverDeployment.ts";
 
 const root = fileURLToPath(new URL("../../../../../server/", import.meta.url));
-const supportErrorsOnly = process.argv.includes("--support-errors");
+const deploymentMode = process.argv.includes("--deployments");
+const supportErrorsOnly = deploymentMode || process.argv.includes("--support-errors");
 const require = createRequire(resolve(root, "package.json"));
 const SQL = await require("sql.js")();
 const db = new SQL.Database();
@@ -53,7 +56,7 @@ db.run("INSERT INTO admin_principals (id,access_subject,role,status,display_name
   ["local-evidence-owner", "local-evidence-subject", "OWNER", "ACTIVE", "LOCAL Synthetic Owner", now, now]);
 const localVersionPolicy = { version: "1.0.2-local", versionCode: "200", minimumVersionCode: "90", contentRelease: { status: "APPROVED", releaseId: "local-content", contentVersion: "local-content-1", catalogUrl: "https://example.invalid/local-catalog.json", catalogHash: "sha256:" + "a".repeat(64), minimumVersionCode: "90", maximumVersionCode: "200" } };
 const gameEnv = { ENVIRONMENT: "DEV", DB: d1, AUTH_SIGNING_KEY_CURRENT: randomUUID() + randomUUID(), CF_VERSION_METADATA: { id: "local-runtime-start" }, CLIENT_ADMISSION_MODE: supportErrorsOnly ? "DISABLED" : "ENFORCED", VERSION_BUCKET: { get: async () => ({ json: async () => localVersionPolicy }), put: async () => { throw new Error("Read-only local version policy"); } } };
-const adminEnv = { ENVIRONMENT: "LOCAL", DB: d1, ADMIN_AUTH_MODE: "LOCAL_HEADER", ALLOWED_ADMIN_ORIGINS: "http://127.0.0.1:4174" };
+const adminEnv = { ENVIRONMENT: deploymentMode ? "DEV" : "LOCAL", DB: d1, ADMIN_AUTH_MODE: "LOCAL_HEADER", ALLOWED_ADMIN_ORIGINS: "http://127.0.0.1:4174", ...(deploymentMode ? { VERSION_BUCKET: deploymentBucket(localVersionPolicy) } : {}) };
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const base = "http://127.0.0.1:4174";
 const types: Record<string, string> = { ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".svg": "image/svg+xml", ".png": "image/png" };
@@ -102,6 +105,21 @@ async function post(path: string, payload?: unknown, token?: string, key = rando
   return response.json() as Promise<any>;
 }
 try {
+  if (deploymentMode) {
+    for (const service of ["game-api", "admin-api"] as const) {
+      const pointer = await fetch(base + `/api/server-deployments/current?service=${service}`);
+      assert.equal(pointer.status, 200);
+      const current = mapDeployment(await pointer.json(), service, "current");
+      const response = await fetch(base + `/api/server-deployments/history/${current.serverVersion}?service=${service}`);
+      assert.equal(response.status, 200);
+      const history = mapDeployment(await response.json(), service, "history", current.serverVersion);
+      assert.equal(history.pointerStatus, service === "admin-api" ? "DEGRADED" : "CURRENT");
+    }
+    for (const [path, status] of [["current?service=async-worker", 404], ["history/missing?service=game-api", 404], ["history/invalid?service=game-api", 502], ["current?service=game-api&environment=PRD", 400]] as const) {
+      assert.equal((await fetch(base + "/api/server-deployments/" + path)).status, status);
+    }
+    console.log("Deployment HTTP assertions PASS: current/history, degraded, absent, invalid, cross-env rejected; fake local bucket only");
+  }
   const guest = await post("/v1/auth/guest");
   const time = new Date().toISOString();
   const ticket = await post("/v1/support/tickets", { category: "BUG_OTHER", body: "LOCAL HTTP synthetic support evidence <b>plain text</b>", appVersion: "1.0.0-local", appVersionCode: "42", clientComposedAt: time, clientSubmittedAt: time }, guest.accessToken);

@@ -2,6 +2,15 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AdminApiError, adminApi } from "./client";
 
 describe("admin web API client", () => {
+  it("reads server deployment current and history without an environment override", async () => {
+    const current = {environment:"dev",service:"game-api",serverVersion:"local-1",historyKey:"server-deployments/dev/game-api/local-1.json",releaseId:"local",cloudflareDeploymentId:"local-worker",updatedAt:"2026-09-06T00:00:00Z"};
+    const root = {accepted:true,environment:"DEV",service:"game-api",permission:"SERVER_DEPLOYMENT_READ",permissionMode:"ROLE_PERMISSION"};
+    const fetchSpy = vi.fn().mockResolvedValueOnce(Response.json({...root,current})).mockResolvedValueOnce(Response.json({...root,historyKey:current.historyKey,history:{...current,createdAt:current.updatedAt,pointerStatus:"DEGRADED"}}));
+    vi.stubGlobal("fetch", fetchSpy);
+    expect((await adminApi.serverDeploymentCurrent("game-api")).serverVersion).toBe("local-1");
+    expect((await adminApi.serverDeploymentHistory("game-api", "local-1")).pointerStatus).toBe("DEGRADED");
+    expect(fetchSpy.mock.calls.map(call => call[0])).toEqual(["/api/server-deployments/current?service=game-api", "/api/server-deployments/history/local-1?service=game-api"]);
+  });
   afterEach(() => {
     vi.unstubAllGlobals();
   });

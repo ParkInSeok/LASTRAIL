@@ -2,6 +2,7 @@ import { type FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import "./versionManagement.css";
 import { adminApi } from "../shared/api/client";
+import { ServerDeploymentPanel } from "../shared/release/ServerDeploymentPanel";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   simpleVersionExportAction,
@@ -123,9 +124,9 @@ export function VersionManagementPage() {
       </section>
       <section className="server-version-section" aria-label="서버 버전 정책">
         <h2>서버 버전</h2>
+        <ServerDeploymentPanel />
         <dl className="version-policy">
           <div><dt>조회 대상 Admin API</dt><dd>{current.data?.server ?? readStatus}</dd></div>
-          <div><dt>Worker 배포 버전</dt><dd>서버 버전 API 미연동</dd></div>
           <div><dt>버전 기준</dt><dd>Unity 앱 버전과 독립된 배포·진단 버전</dd></div>
           <div><dt>서버 배포·롤백</dt><dd>이 화면에서 미지원</dd></div>
           <div><dt>API 호환 정책</dt><dd>API-only 변경은 롤백 가능한 설계 우선. 호환되는 추가 변경만으로 최소 버전 상향 불필요</dd></div>

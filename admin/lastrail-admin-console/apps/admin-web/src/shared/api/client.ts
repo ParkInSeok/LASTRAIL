@@ -1,4 +1,5 @@
 import { ticketList, ticketDetail } from "../support/tickets";
+import { mapDeployment, type DeploymentService } from "../release/serverDeployment";
 import {
   mapDashboardLaunchSummaryResponse
 } from "../dashboard/launchSummaryContract";
@@ -174,6 +175,12 @@ function queryString(filters: Record<string, string | undefined>): string {
 }
 
 export const adminApi = {
+  async serverDeploymentCurrent(service: DeploymentService) {
+    return mapDeployment(await readJson(`/api/server-deployments/current?service=${encodeURIComponent(service)}`), service, "current");
+  },
+  async serverDeploymentHistory(service: DeploymentService, version: string) {
+    return mapDeployment(await readJson(`/api/server-deployments/history/${encodeURIComponent(version)}?service=${encodeURIComponent(service)}`), service, "history", version);
+  },
   async bootstrap() {
     return BootstrapResponseSchema.parse(await readJson("/api/bootstrap"));
   },
