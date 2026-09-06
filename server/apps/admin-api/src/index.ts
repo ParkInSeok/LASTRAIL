@@ -1559,6 +1559,42 @@ function adminGachaResultSummary(row: AdminGachaResultRow) {
   };
 }
 
+function adminGachaBatchCauseEvidence(
+  batch: AdminGachaBatchRow,
+  resultItems: Array<ReturnType<typeof adminGachaResultSummary>>,
+  itemLedgerRefs: string[],
+  operatorLedgerRefs: string[],
+) {
+  const duplicateConversionItems = resultItems
+    .map((result) => result.duplicateConversion)
+    .filter((conversion): conversion is NonNullable<typeof conversion> => conversion !== null);
+  return {
+    source: "gacha_pull_batch_server_records",
+    accountId: batch.account_id,
+    batchId: batch.batch_id,
+    bannerId: batch.banner_id,
+    resultStatus: "ACCEPTED",
+    idempotencyReplayKnown: batch.idempotency_replay_known === 1,
+    guaranteeTypes: parseGachaGuaranteeTypes(batch.result_summary_json),
+    prePityState: parseOptionalJsonObject(batch.pre_pity_json),
+    postPityState: parseOptionalJsonObject(batch.post_pity_json),
+    duplicateResultCount: resultItems.filter((result) => result.wasDuplicate).length,
+    duplicateConversionItems,
+    cost: {
+      itemId: batch.cost_item_id,
+      quantity: batch.cost_quantity,
+      itemLedgerRef: batch.cost_ledger_id ?? null,
+    },
+    resultLedgerRefs: {
+      itemLedgerRefs,
+      operatorLedgerRefs,
+    },
+    rawProbabilityAvailable: false,
+    fullWeightsAvailable: false,
+    rngMaterialAvailable: false,
+  };
+}
+
 function parseRunFinalPayloadMetadata(payloadJson: string | null | undefined): {
   selectedAugmentIds: string[];
   selectedTacticIds: string[];
@@ -2845,13 +2881,15 @@ app.get("/v1/admin/gacha/pull-batches/:batchId", async (c) => {
   const operatorLedgerRefs = results.results
     .map((result) => result.progression_ledger_id)
     .filter((value): value is string => value !== null);
+  const resultItems = results.results.map(adminGachaResultSummary);
 
   return c.json({
     item: {
       ...adminGachaBatchSummary(batch),
       itemLedgerRefs,
       operatorLedgerRefs,
-      results: results.results.map(adminGachaResultSummary),
+      results: resultItems,
+      causeEvidence: adminGachaBatchCauseEvidence(batch, resultItems, itemLedgerRefs, operatorLedgerRefs),
     },
     detailAvailable: true,
   });

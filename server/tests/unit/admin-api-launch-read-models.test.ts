@@ -473,6 +473,33 @@ describe("admin-api gacha read-only support model", () => {
             itemLedgerRef: "ledger-token-1",
           },
         ],
+        causeEvidence: {
+          source: "gacha_pull_batch_server_records",
+          accountId: "account-1",
+          batchId: "batch-1",
+          bannerId: "banner-1",
+          resultStatus: "ACCEPTED",
+          idempotencyReplayKnown: true,
+          guaranteeTypes: ["ELITE_30"],
+          prePityState: { totalPullCount: 29 },
+          postPityState: { totalPullCount: 30 },
+          duplicateResultCount: 1,
+          duplicateConversionItems: [
+            {
+              displayItemId: "cur_operator_token",
+              persistedTokenPattern: "cur_operator_token:op_vex",
+              quantity: 30,
+            },
+          ],
+          cost: { itemId: "cur_command_ticket", quantity: 1, itemLedgerRef: "ledger-cost-1" },
+          resultLedgerRefs: {
+            itemLedgerRefs: ["ledger-cost-1", "ledger-token-1"],
+            operatorLedgerRefs: [],
+          },
+          rawProbabilityAvailable: false,
+          fullWeightsAvailable: false,
+          rngMaterialAvailable: false,
+        },
       },
       detailAvailable: true,
     });

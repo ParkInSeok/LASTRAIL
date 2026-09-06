@@ -661,7 +661,11 @@ GET /v1/admin/gacha/pull-batches/:batchId
 Launch scope exposes banner status, pickup operator id, command-ticket cost,
 pull count options, pity thresholds, account pity state, batch cost refs,
 pre/post pity state, client-visible response result shape, guarantee types,
-duplicate conversion summaries, and safe ledger references.
+duplicate conversion summaries, safe ledger references, and detail
+`causeEvidence` assembled from stored server records. The evidence is read-only
+support context: source, account/banner/batch refs, replay-known state,
+pre/post pity snapshots, cost/result ledger refs, and duplicate conversion item
+summaries.
 
 It does not expose raw RNG material, RNG seed preimages, per-candidate
 probabilities, full weight lists, token/secret/account shortcut data, reroll,

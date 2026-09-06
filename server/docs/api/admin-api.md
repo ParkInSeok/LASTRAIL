@@ -387,7 +387,12 @@ Permission:
 
 These endpoints expose launch support evidence for active banners, account
 pity state, pull batches, idempotency replay hints, cost references, result
-refs, guarantee types, and duplicate conversion summaries. They intentionally
+refs, guarantee types, duplicate conversion summaries, and detail
+`causeEvidence` from stored server records. The detail evidence includes
+source, account/banner/batch refs, replay-known state, pre/post pity snapshots,
+cost ledger refs, result ledger refs, and duplicate conversion item summaries.
+It also marks raw probability, full weight, and RNG material availability as
+false for launch support views. They intentionally
 omit raw RNG material, RNG seed preimages, per-candidate probability, full
 weight lists, token/secret/account shortcut data, and repair/reroll controls.
 
