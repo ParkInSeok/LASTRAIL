@@ -176,6 +176,75 @@ missing latest versions are `null`.
 
 Request bodies are rejected with `contract_violation`.
 
+## Server Deployments
+
+Current local read-only endpoints:
+
+```text
+GET /v1/admin/server-deployments/current?service=game-api
+GET /v1/admin/server-deployments/history/:serverVersion?service=game-api
+```
+
+`service` may be `game-api`, `admin-api`, or `async-worker`. The Admin worker
+environment is isolated: DEV Admin can read only `dev` deployment evidence and
+PRD Admin can read only `prd` evidence. Supplying a different `environment`
+query returns `deployment_target_mismatch`.
+
+Permission:
+
+- `SERVER_DEPLOYMENT_READ`
+- Current implementation: `ROLE_PERMISSION`; OWNER / OPERATOR / VIEWER can read
+  server deployment evidence.
+
+The endpoints read sanitized R2 documents from the version bucket:
+
+- current pointer key:
+  `server-deployments/<env>/<service>/current.json`
+- immutable history key:
+  `server-deployments/<env>/<service>/<serverVersion>.json`
+
+Current pointer response fields:
+
+- `environment`
+- `service`
+- `serverVersion`
+- `historyKey`
+- `releaseId`
+- `cloudflareDeploymentId`
+- `updatedAt`
+
+History response fields:
+
+- `releaseId`
+- `environment`
+- `service`
+- `serverVersion`
+- `commitSha`
+- `releaseBranch`
+- `deploymentTag`
+- `cloudflareDeploymentId`
+- `previousDeploymentId`
+- `database.compatibility`
+- `database.minimumVersionCode` when required for compatibility-breaking
+  changes
+- `database.migrationRange`
+- `contentRelease.releaseId` / `contentRelease.contentVersion` when linked
+- `verification.localRegression`
+- `verification.dryRun`
+- `verification.remoteSmoke`
+- `pointerStatus`
+- `createdAt`
+
+Missing documents return `server_deployment_current_not_found` or
+`server_deployment_history_not_found`. Invalid stored evidence returns
+`server_deployment_history_invalid`. Request bodies are rejected with
+`contract_violation`.
+
+These endpoints do not deploy Workers, move R2 pointers, create branches/tags,
+write secrets, roll back D1, or expose raw R2 credentials, tokens, raw auth
+headers, raw request bodies, Google tokens, RNG material, raw probability/weight
+tables, or rollback controls.
+
 ## Story Progress
 
 Current local read-only endpoints:

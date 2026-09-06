@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildServerDeploymentEvidence,
   buildServerDeployPreflight,
+  executeServerDeployWithPreflight,
   saveServerDeploymentEvidence,
   type ServerDeploymentHistoryBucket,
 } from "@lastrail/common";
@@ -236,5 +237,49 @@ describe("server deployment history store", () => {
       accepted: false,
       errorCode: "deployment_target_mismatch",
     });
+  });
+
+  it("calls the deploy executor only after preflight accepts the exact target", async () => {
+    const calls: string[] = [];
+    const result = await executeServerDeployWithPreflight(plan, [], { environment: "prd", service: "game-api" }, async ({ plan: acceptedPlan, service }) => {
+      calls.push(`${acceptedPlan.environment}:${service}:${acceptedPlan.serverVersion}`);
+      return { cloudflareDeploymentId: "cf-deploy-game-20260906-1" };
+    });
+
+    expect(result).toEqual({
+      accepted: true,
+      service: "game-api",
+      serverVersion: "2026.09.06.1",
+      deployResult: { cloudflareDeploymentId: "cf-deploy-game-20260906-1" },
+    });
+    expect(calls).toEqual(["prd:game-api:2026.09.06.1"]);
+  });
+
+  it("does not call the deploy executor when preflight rejects target, invalid plan, or version reuse", async () => {
+    const calls: string[] = [];
+    const deploy = async () => {
+      calls.push("called");
+      return { cloudflareDeploymentId: "unexpected" };
+    };
+
+    await expect(executeServerDeployWithPreflight(plan, [], { environment: "dev", service: "game-api" }, deploy)).resolves.toEqual({
+      accepted: false,
+      errorCode: "deployment_target_mismatch",
+    });
+    await expect(executeServerDeployWithPreflight({ ...plan, serverVersion: "bad" }, [], { environment: "prd", service: "game-api" }, deploy)).resolves.toEqual({
+      accepted: false,
+      errorCode: "server_version_invalid",
+    });
+    await expect(executeServerDeployWithPreflight(
+      plan,
+      [{ environment: "prd", service: "game-api", serverVersion: "2026.09.06.1" }],
+      { environment: "prd", service: "game-api" },
+      deploy,
+    )).resolves.toEqual({
+      accepted: false,
+      errorCode: "server_version_reused",
+    });
+
+    expect(calls).toEqual([]);
   });
 });

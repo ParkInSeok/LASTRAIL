@@ -1,5 +1,15 @@
 import { Hono, type Context } from "hono";
-import { canonicalJson, createRequestId, sha256Hex } from "@lastrail/common";
+import {
+  buildServerDeploymentHistoryKey,
+  canonicalJson,
+  createRequestId,
+  parseServerDeploymentEvidence,
+  readServerDeploymentCurrentPointer,
+  sha256Hex,
+  type ServerDeploymentHistoryBucket,
+  type ServerReleaseEnvironment,
+  type ServerReleaseService,
+} from "@lastrail/common";
 import { parseVersion, readVersion, saveVersion, type VersionBucket } from "./version-store";
 import { opsLogSearch } from "./ops-log-search";
 
@@ -508,6 +518,7 @@ const STORY_PROGRESS_READ_PERMISSION = "STORY_PROGRESS_READ";
 const OFFLINE_REWARD_READ_PERMISSION = "OFFLINE_REWARD_READ";
 const SUPPORT_READ_PERMISSION = "SUPPORT_READ";
 const OPS_ERROR_LOG_READ_PERMISSION = "OPS_ERROR_LOG_READ";
+const SERVER_DEPLOYMENT_READ_PERMISSION = "SERVER_DEPLOYMENT_READ";
 const LAUNCH_LOGIN_BONUS_ID = "launch_login_bonus_act1_v1";
 const LAUNCH_LOGIN_BONUS_EXPECTED_REWARD_LINES = [
   { kind: "ITEM", id: "cur_command_ticket", quantity: 5, source: "LAUNCH_LOGIN_BONUS" },
@@ -1802,9 +1813,19 @@ function rejectAdminOpsErrorLogBody(c: AppContext): Response {
   }, 400);
 }
 
+function rejectAdminServerDeploymentBody(c: AppContext): Response {
+  return c.json({
+    error: "contract_violation",
+    message: "Admin server deployment read endpoints do not accept request bodies.",
+  }, 400);
+}
+
 function hasAdminPermission(principal: AdminPrincipalRow, permission: string): boolean {
   if (permission === OPS_ERROR_LOG_READ_PERMISSION) {
     return principal.role === "OWNER" || principal.role === "OPERATOR";
+  }
+  if (permission === SERVER_DEPLOYMENT_READ_PERMISSION) {
+    return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
   }
   if (permission === SUPPORT_READ_PERMISSION) {
     return principal.role === "OWNER" || principal.role === "OPERATOR" || principal.role === "VIEWER";
@@ -1822,6 +1843,22 @@ function hasAdminPermission(principal: AdminPrincipalRow, permission: string): b
     return principal.role === "OWNER";
   }
   return false;
+}
+
+function parseServerDeploymentService(value: string | undefined): ServerReleaseService | null {
+  return value === "game-api" || value === "admin-api" || value === "async-worker" ? value : null;
+}
+
+function currentAdminEnvironment(c: AppContext): ServerReleaseEnvironment | null {
+  if (c.env.ENVIRONMENT === "DEV") return "dev";
+  if (c.env.ENVIRONMENT === "PRD") return "prd";
+  return null;
+}
+
+function parseServerDeploymentEnvironment(value: string | undefined, fallback: ServerReleaseEnvironment | null): ServerReleaseEnvironment | null {
+  if (value === undefined) return fallback;
+  const normalized = value.toLowerCase();
+  return normalized === "dev" || normalized === "prd" ? normalized : null;
 }
 
 function adminPermissionDenied(): Response {
@@ -1943,6 +1980,96 @@ app.post("/v1/admin/versions/export", async (c) => {
     return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, mergedVersion) });
   } catch {
     return c.json({ error: { code: "version_storage_write_failed" } }, 502);
+  }
+});
+app.get("/v1/admin/server-deployments/current", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  c.header("Cache-Control", "no-store");
+  if (!hasAdminPermission(principal, SERVER_DEPLOYMENT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminServerDeploymentBody(c);
+
+  const service = parseServerDeploymentService(c.req.query("service"));
+  const adminEnvironment = currentAdminEnvironment(c);
+  const environment = parseServerDeploymentEnvironment(c.req.query("environment"), adminEnvironment);
+  if (service === null || environment === null) return c.json({ error: { code: "server_deployment_query_invalid" } }, 400);
+  if (adminEnvironment === null || environment !== adminEnvironment) return c.json({ error: { code: "deployment_target_mismatch" } }, 400);
+  if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+
+  try {
+    const current = await readServerDeploymentCurrentPointer(c.env.VERSION_BUCKET as unknown as ServerDeploymentHistoryBucket, environment, service);
+    if (current === null) {
+      return c.json({
+        accepted: false,
+        environment: c.env.ENVIRONMENT,
+        service,
+        current: null,
+        permission: SERVER_DEPLOYMENT_READ_PERMISSION,
+        permissionMode: "ROLE_PERMISSION",
+        errorCode: "server_deployment_current_not_found",
+        message: "No current server deployment pointer is available.",
+      }, 404);
+    }
+    return c.json({
+      accepted: true,
+      environment: c.env.ENVIRONMENT,
+      service,
+      current: current.pointer,
+      permission: SERVER_DEPLOYMENT_READ_PERMISSION,
+      permissionMode: "ROLE_PERMISSION",
+      errorCode: null,
+      message: null,
+    });
+  } catch {
+    return c.json({ error: { code: "server_deployment_storage_read_failed" } }, 502);
+  }
+});
+app.get("/v1/admin/server-deployments/history/:serverVersion", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  c.header("Cache-Control", "no-store");
+  if (!hasAdminPermission(principal, SERVER_DEPLOYMENT_READ_PERMISSION)) return adminPermissionDenied();
+  if (hasRequestBody(c)) return rejectAdminServerDeploymentBody(c);
+
+  const service = parseServerDeploymentService(c.req.query("service"));
+  const adminEnvironment = currentAdminEnvironment(c);
+  const environment = parseServerDeploymentEnvironment(c.req.query("environment"), adminEnvironment);
+  const serverVersion = c.req.param("serverVersion");
+  if (service === null || environment === null || serverVersion.length === 0) return c.json({ error: { code: "server_deployment_query_invalid" } }, 400);
+  if (adminEnvironment === null || environment !== adminEnvironment) return c.json({ error: { code: "deployment_target_mismatch" } }, 400);
+  if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+
+  const historyKey = buildServerDeploymentHistoryKey(environment, service, serverVersion);
+  try {
+    const object = await (c.env.VERSION_BUCKET as unknown as ServerDeploymentHistoryBucket).get(historyKey);
+    if (object === null) {
+      return c.json({
+        accepted: false,
+        environment: c.env.ENVIRONMENT,
+        service,
+        history: null,
+        historyKey,
+        permission: SERVER_DEPLOYMENT_READ_PERMISSION,
+        permissionMode: "ROLE_PERMISSION",
+        errorCode: "server_deployment_history_not_found",
+        message: "No immutable server deployment history record is available.",
+      }, 404);
+    }
+    const history = parseServerDeploymentEvidence(await object.json());
+    if (history === null) return c.json({ error: { code: "server_deployment_history_invalid" } }, 502);
+    return c.json({
+      accepted: true,
+      environment: c.env.ENVIRONMENT,
+      service,
+      history,
+      historyKey,
+      permission: SERVER_DEPLOYMENT_READ_PERMISSION,
+      permissionMode: "ROLE_PERMISSION",
+      errorCode: null,
+      message: null,
+    });
+  } catch {
+    return c.json({ error: { code: "server_deployment_storage_read_failed" } }, 502);
   }
 });
 app.get("/v1/admin/bootstrap/access-subject", async (c) => {

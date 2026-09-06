@@ -36,6 +36,11 @@ export type ServerDeployPreflightTarget = {
 
 export type ServerDeployPreflightErrorCode = ServerDeployValidationErrorCode | "deployment_target_mismatch";
 
+export type ServerDeployExecutor<TDeployResult> = (input: {
+  plan: ServerDeployPlan;
+  service: ServerReleaseService;
+}) => Promise<TDeployResult>;
+
 export type ServerDeploymentEvidence = {
   releaseId: string;
   environment: ServerReleaseEnvironment;
@@ -125,6 +130,25 @@ export function buildServerDeployPreflight(
     return { accepted: false, errorCode: "deployment_target_mismatch" };
   }
   return validation;
+}
+
+export async function executeServerDeployWithPreflight<TDeployResult>(
+  value: unknown,
+  history: ServerDeployHistoryEntry[],
+  target: ServerDeployPreflightTarget,
+  deploy: ServerDeployExecutor<TDeployResult>,
+): Promise<
+  | { accepted: true; service: ServerReleaseService; serverVersion: string; deployResult: TDeployResult }
+  | { accepted: false; errorCode: ServerDeployPreflightErrorCode }
+> {
+  const preflight = buildServerDeployPreflight(value, history, target);
+  if (!preflight.accepted) return preflight;
+  return {
+    accepted: true,
+    service: target.service,
+    serverVersion: preflight.plan.serverVersion,
+    deployResult: await deploy({ plan: preflight.plan, service: target.service }),
+  };
 }
 
 export function buildServerDeploymentHistoryKey(environment: ServerReleaseEnvironment, service: ServerReleaseService, serverVersion: string): string {
