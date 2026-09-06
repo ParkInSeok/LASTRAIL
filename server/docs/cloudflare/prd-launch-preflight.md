@@ -98,12 +98,21 @@ The local preflight entrypoint is:
 pnpm preflight:server-deploy -- --plan <plan.json> --service game-api --env prd --history <used-history.json>
 ```
 
+The supported launch-safe deploy dry-run entrypoint wraps the same mandatory
+preflight before invoking Wrangler:
+
+```bash
+pnpm deploy:server:dry-run -- --plan <plan.json> --service game-api --env prd --history <used-history.json>
+```
+
 Run it once per deployed service before Wrangler dry-run and before actual
 deploy. The optional history file is a sanitized list of prior
 `environment/service/serverVersion` tuples and is used to reject version reuse.
-The command prints only scrubbed release identity and never prints secrets,
-tokens, raw request bodies, Google tokens, RNG material, raw probability tables,
-or R2 credentials.
+The dry-run wrapper refuses actual deploy mode until a separate approved release
+operation wires that path explicitly. Invalid plans, target mismatches, and
+server-version reuse fail before Wrangler is called. The command prints only
+scrubbed release identity and never prints secrets, tokens, raw request bodies,
+Google tokens, RNG material, raw probability tables, or R2 credentials.
 
 Remote PRD checks must be value-scrubbed:
 
