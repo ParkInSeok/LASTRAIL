@@ -109,8 +109,13 @@ Request:
   - `BUG_OTHER`
 - `body` is trimmed server-side and must be 10-2000 chars.
 - Optional `appVersion` is trimmed and max 64 chars.
-- Optional `appVersionCode` is a decimal string, max 19 chars.
+- Optional `appVersionCode` is a decimal string, max 19 chars; omitted or empty
+  values are returned as `null`.
 - Optional `clientComposedAt` and `clientSubmittedAt` are ISO timestamp strings.
+
+`body` length is evaluated after server trim using the same string-length
+semantics used by the route and SQLite guard. Unity should treat this as
+10-2000 user-visible characters and keep any local counter conservative.
 
 Response:
 
@@ -146,7 +151,15 @@ Storage:
 - `idempotency_records.operation = support_ticket_create` links the accepted
   request to the ticket id.
 - Retention/deletion policy is a launch operations decision and should be set
-  before PRD data retention commitments are published.
+  before PRD data retention commitments are published. Current idempotency
+  retention follows `idempotency_records`; no local TTL/purge job is implemented
+  in this slice.
+- No route-specific server rate limiter is implemented in the local slice.
+  Abuse controls can be added through server rate limiting or Cloudflare/WAF
+  before public PRD if needed.
+- Admin support ticket collection is local-code available after `edb44b3`; DEV
+  and PRD should remain "API pending" until their matching migrations/deploys
+  are explicitly approved and applied.
 
 Do not return or store:
 

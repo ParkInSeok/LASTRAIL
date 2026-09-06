@@ -68,6 +68,36 @@ new guest. Timeout/offline must not delete the stored session or create a new
 guest. Only explicit invalid/expired/reused session responses should move the
 player to recovery or login UI.
 
+Launch response-loss boundary:
+
+- `POST /v1/auth/guest` is not idempotent today. If the server accepted the
+  request but the client lost the response, retrying can create another guest
+  account. Unity must not use automatic new-guest creation as recovery for a
+  timeout, offline error, cancelled request, 5xx, or unknown response state.
+- `POST /v1/auth/refresh` rotates refresh sessions and is not idempotent today.
+  If the server accepted the rotation but the client lost the response, retrying
+  the old refresh token can return `refresh_token_reused`. Treat timeout or
+  unknown response as an unresolved owner-session state, not as permission to
+  delete the stored account or create a new guest.
+- Stable terminal auth responses are explicit `401`/`403` codes such as
+  `refresh_token_invalid`, `refresh_session_invalid`, `refresh_token_reused`,
+  and `account_not_active`. Network timeout, offline, and generic `5xx` are not
+  terminal account ownership decisions.
+
+Minimum replay/reconciliation design candidate, not implemented:
+
+- Add an idempotent guest creation/recovery envelope keyed by a client-generated
+  install-local request id that is stored only after the token bundle is
+  durably persisted locally.
+- Add refresh rotation replay reconciliation for same family/generation so a
+  lost response can be recovered without accepting stolen/reused tokens.
+- Store only hashed request ids or server-issued reconciliation refs; never
+  store raw tokens, device fingerprints, or account shortcuts as authority.
+- Tests required before enabling: response-loss retry, same key/different body
+  conflict, cross-account isolation, old refresh reuse theft detection,
+  successful local-store-after-response replacement, and no automatic guest
+  discard.
+
 ## Login ID / Password Candidate Contract
 
 Local endpoints:
@@ -535,6 +565,8 @@ Unity must not:
 
 - generate account IDs
 - infer signup completion from nickname alone
+- discard a stored owner account or create a replacement guest after timeout,
+  offline, 5xx, app restart, or response-loss uncertainty
 - merge accounts
 - calculate story/reward/economy state
 - store raw passwords or Google ID tokens long-term

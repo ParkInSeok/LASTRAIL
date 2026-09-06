@@ -112,10 +112,37 @@ Frontend safe ingest:
   `appVersionCode`, and `scope=AUTHENTICATED_CURRENT_SESSION`.
 - Max 25 events per request and max occurrence count 60 per event.
 - Admin `GET /v1/admin/ops/error-logs?category=frontend` returns those
-  sanitized rows with `collectionAvailable=true`.
+  sanitized rows with `collectionAvailable=true` in the local code path after
+  `0b823d0`. DEV/PRD deployments only expose this collection after the matching
+  deploy and migration path is approved and applied.
+- Admin list/detail summaries expose nullable `appVersion` and
+  `appVersionCode` from sanitized context for frontend rows. The list endpoint
+  supports exact `appVersion` and `appVersionCode` filters before pagination.
 - Pre-login or previous-account queued events are not attributed at upload time
   in this launch contract; Unity should only upload events explicitly scoped to
   the authenticated current session or drop/hold them locally.
+
+`AUTHENTICATED_CURRENT_SESSION` means the event was captured after the current
+account's Bearer session became active and before Unity replaced or cleared that
+local account owner. Refresh rotation for the same stored account can keep the
+same attribution, but a fresh login/restore after app restart should only upload
+events Unity can still prove belong to the same local owner. Pre-login events,
+previous-account events, and old process crash buffers are unsupported for
+server ingestion in launch. The server ignores body account shortcuts and
+derives account ownership only from the authenticated Bearer token.
+
+Launch limits and retention:
+
+- Route-level payload limits are fixed at 25 events/request and 60 occurrences
+  per event. No additional per-account/minute server rate limiter is implemented
+  in this local slice; add Cloudflare/WAF or server rate limiting before public
+  PRD if abuse pressure requires it.
+- Idempotency retention follows `idempotency_records`; no local TTL/purge job is
+  implemented in this slice.
+- Admin `category=frontend` is applied in the SQL `WHERE` clause before
+  ordering and pagination; exact frontend app version/code filters use the same
+  pre-pagination path. This is covered by `ops-log-search` unit tests and the
+  client error ingest smoke.
 
 Backlog / decision queue:
 

@@ -195,7 +195,7 @@ describe("game-api frontend-safe client error ingest local D1 smoke", () => {
       });
 
       const adminResponse = await adminApi.request(
-        "/v1/admin/ops/error-logs?category=frontend&accountId=" + guestBody.account.id,
+        "/v1/admin/ops/error-logs?category=frontend&appVersion=1.0.0-dev&appVersionCode=42&accountId=" + guestBody.account.id,
         { headers: { "Cf-Access-Subject": "access|client-error-operator" } },
         createAdminEnv(db),
       );
@@ -209,6 +209,8 @@ describe("game-api frontend-safe client error ingest local D1 smoke", () => {
         severity: "warning",
         errorCode: "frontend_unity_exception",
         accountId: guestBody.account.id,
+        appVersion: "1.0.0-dev",
+        appVersionCode: "42",
         retryable: false,
         masked: true,
       });

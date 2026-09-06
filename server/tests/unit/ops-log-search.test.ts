@@ -8,6 +8,17 @@ describe("ops log category and search", () => {
     expect(opsLogSearch("server", "").clauses).toEqual([]);
     expect(() => opsLogSearch("other", "")).toThrow();
   });
+
+  it("filters frontend app version metadata before pagination", () => {
+    const search = opsLogSearch("frontend", "", undefined, "1.0.0-dev", "42");
+    expect(search.clauses.join("\n")).toContain("$.clientDiagnosticCategory");
+    expect(search.clauses.join("\n")).toContain("$.appVersion");
+    expect(search.clauses.join("\n")).toContain("$.appVersionCode");
+    expect(search.values).toEqual(["1.0.0-dev", "42"]);
+    expect(() => opsLogSearch("frontend", "", undefined, "x".repeat(65), "42")).toThrow();
+    expect(() => opsLogSearch("frontend", "", undefined, "1.0.0-dev", "not-number")).toThrow();
+  });
+
   it("binds literal search instead of interpreting wildcard or SQL input", () => {
     const value = "%' OR 1=1 --";
     const search = opsLogSearch("server", value);
