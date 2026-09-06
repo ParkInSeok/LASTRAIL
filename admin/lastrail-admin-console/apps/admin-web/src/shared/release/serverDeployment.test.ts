@@ -15,6 +15,10 @@ describe("server deployment read evidence", () => {
     expect(deploymentFailure({ status: 404, errorCode: "server_deployment_current_not_found" })).toBe("배포 기록 없음");
     expect(deploymentFailure({ status: 403 })).toContain("권한");
     expect(deploymentFailure({ status: 502, errorCode: "server_deployment_history_invalid" })).toContain("저장된 배포 기록");
+    expect(deploymentFailure({ status: 502, errorCode: "server_deployment_current_invalid" })).toContain("저장된 배포 기록 형식");
+    for (const errorCode of ["server_deployment_current_target_mismatch", "server_deployment_history_target_mismatch"]) {
+      expect(deploymentFailure({status: 502, errorCode})).toContain("환경·서비스·버전 일치 여부");
+    }
   });
   it("whitelists history and rejects a different version under the requested key", () => {
     const raw = {accepted:true,environment:"DEV",service:"game-api",permission:"SERVER_DEPLOYMENT_READ",permissionMode:"ROLE_PERMISSION",historyKey:pointer.historyKey,history:{...pointer,createdAt:pointer.updatedAt,pointerStatus:"DEGRADED",verification:{localRegression:"PASSED"},unexpected:"discard"}};
