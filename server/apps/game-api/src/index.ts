@@ -1912,6 +1912,56 @@ async function requireConsumedRecoveryChallenge(c: GameApiContext, input: {
   return row;
 }
 
+async function findPasswordResetChallenge(c: GameApiContext, body: Record<string, unknown>): Promise<RecoveryEmailChallengeRow | AuthFailure> {
+  const explicitChallengeId = getChallengeId(body.challengeId);
+  if (explicitChallengeId !== null) {
+    const row = await c.env.DB.prepare(
+      `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+       FROM auth_email_verification_challenges
+       WHERE id = ? AND purpose = 'PASSWORD_RESET'`,
+    )
+      .bind(explicitChallengeId)
+      .first<RecoveryEmailChallengeRow>();
+    if (row === null || row.account_id === null || row.status !== "PENDING" || row.expires_at <= Date.now()) {
+      return createAuthFailure(409, "password_reset_challenge_invalid", "Password reset challenge is invalid or expired.");
+    }
+    return row;
+  }
+
+  const loginId = normalizeLoginId(body.loginId);
+  const recoveryEmail = normalizeRecoveryEmail(body.recoveryEmail);
+  if (loginId === null || recoveryEmail === null) {
+    return createAuthFailure(400, "contract_violation", "loginId, recoveryEmail, verificationCode, and newPassword are required.");
+  }
+
+  const credential = await c.env.DB.prepare(
+    `SELECT credentials.account_id, credentials.password_hash, credentials.password_hash_algorithm,
+            credentials.recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.login_id_normalized = ? AND credentials.recovery_email_normalized = ?`,
+  )
+    .bind(loginId.normalized, recoveryEmail.normalized)
+    .first<PasswordCredentialAccountRow>();
+  if (credential === null || credential.account_status !== "ACTIVE") {
+    return createAuthFailure(409, "password_reset_challenge_invalid", "Password reset challenge is invalid or expired.");
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE account_id = ? AND email_normalized = ? AND purpose = 'PASSWORD_RESET' AND status = 'PENDING'
+     ORDER BY created_at DESC
+     LIMIT 1`,
+  )
+    .bind(credential.account_id, recoveryEmail.normalized)
+    .first<RecoveryEmailChallengeRow>();
+  if (row === null || row.account_id === null || row.expires_at <= Date.now()) {
+    return createAuthFailure(409, "password_reset_challenge_invalid", "Password reset challenge is invalid or expired.");
+  }
+  return row;
+}
+
 function isSendableRecoveryPurpose(purpose: RecoveryEmailPurpose): boolean {
   return purpose === "PASSWORD_REGISTER" || purpose === "PASSWORD_LINK" || purpose === "PASSWORD_RESET";
 }
@@ -2754,25 +2804,16 @@ app.post("/v1/auth/password/reset/confirm", async (c) => {
   const body = await parseJsonObjectBody(c);
   if (isAuthFailure(body)) return c.json(createAuthError(body.errorCode, body.message), body.status);
 
-  const challengeId = getChallengeId(body.challengeId);
   const verificationCode = typeof body.verificationCode === "string" ? body.verificationCode.trim() : "";
   const newPassword = validatePassword(body.newPassword);
-  if (challengeId === null || verificationCode === "" || newPassword === null) {
-    return c.json(createAuthError("contract_violation", "challengeId, verificationCode, and newPassword are required."), 400);
+  if (verificationCode === "" || newPassword === null) {
+    return c.json(createAuthError("contract_violation", "loginId, recoveryEmail, verificationCode, and newPassword are required."), 400);
   }
 
-  const row = await c.env.DB.prepare(
-    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
-     FROM auth_email_verification_challenges
-     WHERE id = ? AND purpose = 'PASSWORD_RESET'`,
-  )
-    .bind(challengeId)
-    .first<RecoveryEmailChallengeRow>();
-  if (row === null || row.account_id === null || row.status !== "PENDING" || row.expires_at <= Date.now()) {
-    return c.json(createAuthError("password_reset_challenge_invalid", "Password reset challenge is invalid or expired."), 409);
-  }
+  const row = await findPasswordResetChallenge(c, body);
+  if (isAuthFailure(row)) return c.json(createAuthError(row.errorCode, row.message), row.status);
 
-  const expectedHash = await hashVerificationCode(challengeId, "PASSWORD_RESET", verificationCode);
+  const expectedHash = await hashVerificationCode(row.id, "PASSWORD_RESET", verificationCode);
   if (expectedHash !== row.verifier_hash) {
     return c.json(createAuthError("password_reset_challenge_invalid", "Password reset challenge is invalid or expired."), 409);
   }
@@ -2784,7 +2825,7 @@ app.post("/v1/auth/password/reset/confirm", async (c) => {
       `UPDATE auth_email_verification_challenges
        SET status = 'CONSUMED', consumed_at = ?, updated_at = ?
        WHERE id = ? AND status = 'PENDING'`,
-    ).bind(now, now, challengeId),
+    ).bind(now, now, row.id),
     c.env.DB.prepare(
       `UPDATE auth_password_credentials
        SET password_hash = ?, password_hash_algorithm = ?, password_hash_params_json = ?, updated_at = ?

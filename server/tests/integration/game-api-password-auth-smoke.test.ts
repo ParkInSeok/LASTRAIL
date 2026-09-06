@@ -427,7 +427,8 @@ describe("game-api password auth and recovery email local D1 smoke", () => {
         {
           method: "POST",
           body: JSON.stringify({
-            challengeId: messages[1]?.challengeId,
+            loginId: "rail_commander",
+            recoveryEmail: "commander@example.com",
             verificationCode: messages[1]?.verificationCode,
             newPassword: "NewCorrectHorseBattery1!",
           }),
@@ -448,7 +449,8 @@ describe("game-api password auth and recovery email local D1 smoke", () => {
         {
           method: "POST",
           body: JSON.stringify({
-            challengeId: messages[1]?.challengeId,
+            loginId: "rail_commander",
+            recoveryEmail: "commander@example.com",
             verificationCode: messages[1]?.verificationCode,
             newPassword: "AnotherCorrectHorseBattery1!",
           }),
