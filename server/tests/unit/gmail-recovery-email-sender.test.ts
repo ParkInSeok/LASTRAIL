@@ -62,7 +62,8 @@ describe("GmailRecoveryEmailSender", () => {
     expect(mime).toContain("To: Commander@Example.com");
     expect(mime).toContain("From: noreply@lastrail.example");
     expect(mime).toContain("Subject: LAST RAIL account verification");
-    expect(mime).toContain("Reference: email_challenge_test");
+    expect(mime).not.toContain("Reference:");
+    expect(mime).not.toContain("email_challenge_test");
     expect(mime).toContain("Verification code: 12345678");
     expect(mime).not.toContain("https://");
   });

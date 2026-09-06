@@ -311,7 +311,6 @@ function createRecoveryEmailMime(senderEmail: string, message: RecoveryEmailMess
     "LAST RAIL account verification",
     "",
     `Purpose: ${message.purpose}`,
-    `Reference: ${message.challengeId}`,
     `Verification code: ${message.verificationCode}`,
     `Expires at: ${message.expiresAt}`,
     "",
