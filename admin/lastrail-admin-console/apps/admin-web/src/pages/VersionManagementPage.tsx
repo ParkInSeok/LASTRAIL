@@ -19,9 +19,12 @@ export function VersionManagementPage() {
     : "없음";
   const [targetVersion, setTargetVersion] = useState("");
   const [targetVersionCode, setTargetVersionCode] = useState("");
+  const [minimumVersionCode, setMinimumVersionCode] = useState<string | null>(null);
+  const effectiveMinimum = minimumVersionCode ?? current.data?.minimumVersionCode ?? "";
   const [submitStatus, setSubmitStatus] = useState<string>(versionManagementExportAction.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const canSubmit = current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && !isSubmitting;
+  const minimumValid = /^[1-9]\d{0,9}$/.test(effectiveMinimum) && Number(effectiveMinimum) <= Number(targetVersionCode);
+  const canSubmit = current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && minimumValid && !isSubmitting;
 
   async function submitVersionExport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,7 +35,8 @@ export function VersionManagementPage() {
     try {
       const result = await adminApi.exportVersionToR2({
         version: targetVersion.trim(),
-        versionCode: targetVersionCode.trim()
+        versionCode: targetVersionCode.trim(),
+        minimumVersionCode: effectiveMinimum
       });
       setSubmitStatus(result.status);
       if (result.accepted) await current.refetch();
@@ -59,6 +63,10 @@ export function VersionManagementPage() {
             <strong>{current.data ? (card.code === "currentServer" ? current.data.server : card.code === "currentVersion" ? current.data.version ?? "없음" : current.data.versionCode ?? "없음") : readStatus}</strong>
           </div>
         ))}
+        <div>
+          <span>최소 지원 버전코드</span>
+          <strong>{current.data ? current.data.minimumVersionCode ?? "미설정" : readStatus}</strong>
+        </div>
       </section>
       <section className="admin-panel">
         <header>
@@ -83,6 +91,12 @@ export function VersionManagementPage() {
               <small>현재 서버에 내보낼 목표 버전을 입력합니다</small>
             </label>
           ))}
+          <label className="metric-card" htmlFor="minimumVersionCode">
+            <span>최소 지원 버전코드</span>
+            <input id="minimumVersionCode" aria-label="최소 지원 버전코드" inputMode="numeric" value={effectiveMinimum} onChange={(event) => setMinimumVersionCode(event.target.value)} placeholder="예: 1" />
+            <small>이 값보다 낮은 앱은 업데이트 대상입니다. 배포할 버전코드 이하로 설정하세요.</small>
+            {effectiveMinimum && targetVersionCode && !minimumValid && <small role="alert">최소 버전코드는 1 이상이며 배포할 버전코드를 초과할 수 없습니다.</small>}
+          </label>
           <div className="metric-card">
             <span>R2 갱신</span>
             <strong>{submitStatus}</strong>

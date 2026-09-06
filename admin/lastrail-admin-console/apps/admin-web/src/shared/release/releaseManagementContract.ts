@@ -386,6 +386,7 @@ export type SimpleVersionExportAction = {
 export type VersionExportRequest = {
   version: string;
   versionCode: string;
+  minimumVersionCode?: string;
 };
 
 export type VersionExportResult = {
@@ -478,5 +479,6 @@ export function mapCurrentVersion(raw: unknown) {
       !(value.versionCode === null || typeof value.versionCode === "string")) {
     throw new Error("Invalid version response");
   }
-  return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null };
+  if (value.minimumVersionCode != null && (typeof value.minimumVersionCode !== "string" || !/^[1-9]\d{0,9}$/.test(value.minimumVersionCode) || Number(value.minimumVersionCode) > Number(value.versionCode))) throw new Error("Invalid minimum version response");
+  return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null, ...(value.minimumVersionCode != null ? { minimumVersionCode: value.minimumVersionCode as string } : {}) };
 }

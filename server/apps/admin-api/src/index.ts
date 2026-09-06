@@ -1715,7 +1715,7 @@ app.get("/v1/admin/versions", async (c) => {
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
     const version = await readVersion(c.env.VERSION_BUCKET);
-    return c.json({ environment: "DEV", server: "dev-admin.lastrail.app", canExport: principal.role === "OWNER", version: version?.version ?? null, versionCode: version?.versionCode ?? null });
+    return c.json({ environment: "DEV", server: "dev-admin.lastrail.app", canExport: principal.role === "OWNER", version: version?.version ?? null, versionCode: version?.versionCode ?? null, minimumVersionCode: version?.minimumVersionCode ?? null });
   } catch {
     return c.json({ error: { code: "version_storage_read_failed" } }, 502);
   }
@@ -1726,7 +1726,7 @@ app.post("/v1/admin/versions/export", async (c) => {
   c.header("Cache-Control", "no-store");
   if (principal.role !== "OWNER" || c.env.ENVIRONMENT !== "DEV") return c.json({ error: { code: "version_export_forbidden" } }, 403);
   const version = parseVersion(await c.req.json().catch(() => null));
-  if (!version) return c.json({ error: { code: "invalid_version" } }, 400);
+  if (!version || !version.minimumVersionCode) return c.json({ error: { code: "invalid_version" } }, 400);
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
     return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, version) });

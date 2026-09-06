@@ -38,7 +38,7 @@ function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | 
       return { reason: "R2 활성화 및 버킷 연결 필요", nextStep: "DEV R2 저장소 연결 후 다시 조회하세요." };
     }
     if (error.errorCode === "invalid_version") {
-      return { reason: "버전 또는 버전코드 형식 확인 필요", nextStep: "버전은 영문·숫자·점·밑줄·하이픈, 버전코드는 1~2147483647을 입력하세요." };
+      return { reason: "버전·버전코드·최소 지원 버전 확인 필요", nextStep: "버전코드는 1~2147483647, 최소 지원 버전코드는 배포할 버전코드 이하로 입력하세요." };
     }
     if (error.errorCode === "ADMIN_API_NON_JSON_RESPONSE") {
       return {
