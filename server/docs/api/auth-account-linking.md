@@ -84,7 +84,8 @@ Launch response-loss boundary:
   and `account_not_active`. Network timeout, offline, and generic `5xx` are not
   terminal account ownership decisions.
 
-Minimum replay/reconciliation design candidate, not implemented:
+Launch gate still open: minimum replay/reconciliation design candidate, not
+implemented:
 
 - Add an idempotent guest creation/recovery envelope keyed by a client-generated
   install-local request id that is stored only after the token bundle is

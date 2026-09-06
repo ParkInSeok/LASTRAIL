@@ -110,6 +110,11 @@ function createAdminEnv(db: initSqlJs.Database): Env {
   };
 }
 
+function scalar(db: initSqlJs.Database, sql: string): number {
+  const result = db.exec(sql);
+  return Number(result[0]?.values[0]?.[0] ?? 0);
+}
+
 describe("game-api frontend-safe client error ingest local D1 smoke", () => {
   it("stores bounded Unity diagnostics and exposes them through Admin frontend filters", async () => {
     vi.useFakeTimers();
@@ -266,5 +271,92 @@ describe("game-api frontend-safe client error ingest local D1 smoke", () => {
       ingestStatus: "REJECTED",
       errorCode: "contract_violation",
     });
+  });
+
+  it("rate limits new frontend diagnostic batches per account without blocking idempotency replay", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const gameEnv = createGameEnv(db);
+      const guestResponse = await gameApi.request("/v1/auth/guest", { method: "POST" }, gameEnv);
+      const guestBody = await guestResponse.json() as { account: { id: string }; accessToken: string };
+      const event = {
+        kind: "UNITY_ERROR",
+        occurredAt: "2026-08-30T00:00:00.000Z",
+        occurrenceCount: 1,
+        appVersion: "1.0.0-dev",
+        appVersionCode: "42",
+        scope: "AUTHENTICATED_CURRENT_SESSION",
+      };
+      let firstIngestId = "";
+
+      for (let index = 1; index <= 12; index += 1) {
+        const response = await gameApi.request(
+          "/v1/client-errors",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${guestBody.accessToken}`,
+              "Content-Type": "application/json",
+              "Idempotency-Key": `client-error-rate-${index}`,
+            },
+            body: JSON.stringify({ events: [{ ...event, occurrenceCount: index }] }),
+          },
+          gameEnv,
+        );
+        expect(response.status).toBe(200);
+        const body = await response.json() as { ingestId: string };
+        if (index === 1) firstIngestId = body.ingestId;
+      }
+
+      const limitedResponse = await gameApi.request(
+        "/v1/client-errors",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guestBody.accessToken}`,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "client-error-rate-13",
+          },
+          body: JSON.stringify({ events: [{ ...event, occurrenceCount: 13 }] }),
+        },
+        gameEnv,
+      );
+      expect(limitedResponse.status).toBe(429);
+      expect(limitedResponse.headers.get("Retry-After")).toBe("600");
+      expect(await limitedResponse.json()).toMatchObject({
+        accepted: false,
+        ingestStatus: "REJECTED",
+        retryAfterSeconds: 600,
+        errorCode: "client_error_ingest_rate_limited",
+      });
+      expect(scalar(db, `SELECT COUNT(*) FROM idempotency_records WHERE account_id = '${guestBody.account.id}' AND operation = 'client_error_ingest';`)).toBe(12);
+      expect(scalar(db, `SELECT COUNT(*) FROM ops_error_logs WHERE account_id = '${guestBody.account.id}' AND idempotency_operation = 'client_error_ingest';`)).toBe(12);
+
+      const replayResponse = await gameApi.request(
+        "/v1/client-errors",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${guestBody.accessToken}`,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "client-error-rate-1",
+          },
+          body: JSON.stringify({ events: [{ ...event, occurrenceCount: 1 }] }),
+        },
+        gameEnv,
+      );
+      expect(replayResponse.status).toBe(200);
+      expect(await replayResponse.json()).toMatchObject({
+        accepted: true,
+        ingestStatus: "DUPLICATE_REPLAY",
+        ingestId: firstIngestId,
+        errorCode: "duplicate_replay",
+      });
+      expect(scalar(db, `SELECT COUNT(*) FROM idempotency_records WHERE account_id = '${guestBody.account.id}' AND operation = 'client_error_ingest';`)).toBe(12);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

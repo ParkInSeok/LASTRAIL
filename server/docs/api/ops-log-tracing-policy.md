@@ -35,6 +35,11 @@
 - Search/category filters are part of SQL `WHERE` before `ORDER BY`, `LIMIT`,
   and `OFFSET`; pagination is over the filtered result set. Frontend app
   version/code filters use the same path.
+- Frontend diagnostic collection has a route-specific local server guard of 12
+  new ingest batches per authenticated account per 10 minutes, plus 25
+  events/request and 60 occurrences/event payload caps. This is a bounded
+  diagnostic intake, not a complete public PRD abuse-control story; broader
+  Cloudflare/WAF/IP/device controls remain a release operations decision.
 - UI dates display KST; date filter inputs use browser-local time converted to ISO UTC.
 - Tab/filter changes reset pagination and selected detail. Detail only renders safe
   reference fields; no resolve/acknowledge or other mutation actions are provided.

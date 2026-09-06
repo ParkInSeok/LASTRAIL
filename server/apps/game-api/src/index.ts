@@ -415,6 +415,10 @@ const launchLoginBonusRewardLine = {
   quantity: 5,
   source: "LAUNCH_LOGIN_BONUS",
 } as const;
+const supportTicketRateWindowMs = 10 * 60 * 1000;
+const supportTicketRateLimitPerWindow = 3;
+const clientErrorIngestRateWindowMs = 10 * 60 * 1000;
+const clientErrorIngestRateLimitPerWindow = 12;
 const supportTicketCategories = new Set<SupportTicketCategory>([
   "ACCOUNT_LOGIN",
   "RUN_REWARD",
@@ -1907,7 +1911,7 @@ function createPasswordLinkRejected(errorCode: string, message: string) {
   };
 }
 
-function createSupportTicketRejectedResponse(errorCode: string, message: string) {
+function createSupportTicketRejectedResponse(errorCode: string, message: string, retryAfterSeconds: number | null = null) {
   return {
     accepted: false,
     ticketStatus: "REJECTED",
@@ -1919,6 +1923,7 @@ function createSupportTicketRejectedResponse(errorCode: string, message: string)
     clientComposedAt: null,
     clientSubmittedAt: null,
     serverReceivedAt: null,
+    retryAfterSeconds,
     errorCode,
     message,
   };
@@ -1936,6 +1941,7 @@ function supportTicketResponse(row: SupportTicketRow, ticketStatus: "RECEIVED" |
     clientComposedAt: toNullableIso(row.client_composed_at),
     clientSubmittedAt: toNullableIso(row.client_submitted_at),
     serverReceivedAt: toIso(row.server_received_at),
+    retryAfterSeconds: null,
     errorCode: ticketStatus === "DUPLICATE_REPLAY" ? "duplicate_replay" : null,
     message: ticketStatus === "DUPLICATE_REPLAY" ? "Support ticket was already received." : null,
   };
@@ -1951,14 +1957,19 @@ function buildSupportTicketPreview(bodyText: string): string {
   return bodyText.length <= 160 ? bodyText : `${bodyText.slice(0, 157)}...`;
 }
 
-function createClientErrorIngestRejectedResponse(errorCode: string, message: string) {
+function createClientErrorIngestRejectedResponse(
+  errorCode: string,
+  message: string,
+  options: { droppedEventCount?: number; retryAfterSeconds?: number | null } = {},
+) {
   return {
     accepted: false,
     ingestStatus: "REJECTED",
     ingestId: null,
     acceptedEventCount: 0,
-    droppedEventCount: 0,
+    droppedEventCount: options.droppedEventCount ?? 0,
     serverReceivedAt: null,
+    retryAfterSeconds: options.retryAfterSeconds ?? null,
     errorCode,
     message,
   };
@@ -4193,6 +4204,23 @@ app.post("/v1/support/tickets", async (c) => {
   }
 
   const now = Date.now();
+  const acceptedTicketCount = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS accepted_count
+     FROM support_tickets
+     WHERE account_id = ? AND created_at >= ?`,
+  )
+    .bind(authContext.accountId, now - supportTicketRateWindowMs)
+    .first<{ accepted_count: number }>();
+  if ((acceptedTicketCount?.accepted_count ?? 0) >= supportTicketRateLimitPerWindow) {
+    const retryAfterSeconds = Math.ceil(supportTicketRateWindowMs / 1000);
+    c.header("Retry-After", String(retryAfterSeconds));
+    return c.json(createSupportTicketRejectedResponse(
+      "support_ticket_rate_limited",
+      "Too many support tickets were received for this account. Please retry later.",
+      retryAfterSeconds,
+    ), 429);
+  }
+
   const ticketId = createDomainId("support_ticket");
   const row: SupportTicketRow = {
     id: ticketId,
@@ -4309,6 +4337,23 @@ app.post("/v1/client-errors", async (c) => {
   }
 
   const now = Date.now();
+  const acceptedIngestCount = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS accepted_count
+     FROM idempotency_records
+     WHERE account_id = ? AND operation = 'client_error_ingest' AND created_at >= ?`,
+  )
+    .bind(authContext.accountId, now - clientErrorIngestRateWindowMs)
+    .first<{ accepted_count: number }>();
+  if ((acceptedIngestCount?.accepted_count ?? 0) >= clientErrorIngestRateLimitPerWindow) {
+    const retryAfterSeconds = Math.ceil(clientErrorIngestRateWindowMs / 1000);
+    c.header("Retry-After", String(retryAfterSeconds));
+    return c.json(createClientErrorIngestRejectedResponse(
+      "client_error_ingest_rate_limited",
+      "Too many client error diagnostic batches were received for this account. Please retry later.",
+      { droppedEventCount: safeEvents.length, retryAfterSeconds },
+    ), 429);
+  }
+
   const serverVersion = (c.env as Env & { CF_VERSION_METADATA?: { id: string } }).CF_VERSION_METADATA?.id ?? null;
   const statements = [];
   for (const event of safeEvents) {

@@ -131,7 +131,8 @@ type SupportTicketCreateResponse = {
   clientComposedAt: string | null;
   clientSubmittedAt: string | null;
   serverReceivedAt: string | null;
-  errorCode: null | "duplicate_replay" | "contract_violation" | "auth_required" | "support_ticket_invalid" | "idempotency_conflict";
+  retryAfterSeconds: number | null;
+  errorCode: null | "duplicate_replay" | "contract_violation" | "auth_required" | "support_ticket_invalid" | "idempotency_conflict" | "support_ticket_rate_limited";
   message: string | null;
 };
 ```
@@ -143,6 +144,20 @@ Duplicate policy:
 - Same account + same key + different request hash returns `409
   idempotency_conflict`.
 - Same key on a different authenticated account is independent.
+- Duplicate replay is resolved before rate checks so a network retry of an
+  already accepted ticket does not create another ticket and is not rejected by
+  the rate limit.
+
+Rate limit:
+
+- Technical launch default: max 3 new support tickets per authenticated account
+  per 10-minute rolling window.
+- The route returns `429`, `Retry-After: 600`, `retryAfterSeconds: 600`, and
+  `errorCode: support_ticket_rate_limited` when the window is exhausted.
+- The limit uses existing `support_tickets.created_at` rows; no new table,
+  migration, paid service, or remote config is required for the local slice.
+- This is a route-specific abuse/control guard, not a full public PRD rate
+  policy. Wider IP/device/WAF limits remain a release operations decision.
 
 Storage:
 
@@ -154,9 +169,6 @@ Storage:
   before PRD data retention commitments are published. Current idempotency
   retention follows `idempotency_records`; no local TTL/purge job is implemented
   in this slice.
-- No route-specific server rate limiter is implemented in the local slice.
-  Abuse controls can be added through server rate limiting or Cloudflare/WAF
-  before public PRD if needed.
 - Admin support ticket collection is local-code available after `edb44b3`; DEV
   and PRD should remain "API pending" until their matching migrations/deploys
   are explicitly approved and applied.

@@ -134,9 +134,18 @@ derives account ownership only from the authenticated Bearer token.
 Launch limits and retention:
 
 - Route-level payload limits are fixed at 25 events/request and 60 occurrences
-  per event. No additional per-account/minute server rate limiter is implemented
-  in this local slice; add Cloudflare/WAF or server rate limiting before public
-  PRD if abuse pressure requires it.
+  per event.
+- Technical launch default: max 12 new client error ingest batches per
+  authenticated account per 10-minute rolling window. Duplicate replay is
+  resolved before rate checks so a network retry of an already accepted ingest
+  does not write duplicate rows and is not rejected by the rate limit.
+- The route returns `429`, `Retry-After: 600`, `retryAfterSeconds: 600`, and
+  `errorCode: client_error_ingest_rate_limited` when the account window is
+  exhausted.
+- The limit uses existing `idempotency_records` for operation
+  `client_error_ingest`; no new table, migration, paid service, or remote config
+  is required for the local slice. This is not a full public PRD anti-abuse
+  policy; wider IP/device/WAF limits remain a release operations decision.
 - Idempotency retention follows `idempotency_records`; no local TTL/purge job is
   implemented in this slice.
 - Admin `category=frontend` is applied in the SQL `WHERE` clause before

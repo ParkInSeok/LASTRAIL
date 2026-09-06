@@ -248,4 +248,87 @@ describe("game-api support ticket local D1 smoke", () => {
       errorCode: "support_ticket_invalid",
     });
   });
+
+  it("rate limits new support tickets per account without blocking idempotency replay", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+    try {
+      const db = await createMigratedDb();
+      const env = createEnv(db);
+      const guestResponse = await app.request("/v1/auth/guest", { method: "POST" }, env);
+      const guestBody = await guestResponse.json() as { account: { id: string }; accessToken: string };
+      const authorization = `Bearer ${guestBody.accessToken}`;
+      const requestBody = {
+        category: "BUG_OTHER",
+        body: "반복 문의 제한 확인을 위한 충분한 길이의 고객 지원 요청입니다.",
+      };
+      let firstTicketId = "";
+
+      for (let index = 1; index <= 3; index += 1) {
+        const response = await app.request(
+          "/v1/support/tickets",
+          {
+            method: "POST",
+            headers: {
+              Authorization: authorization,
+              "Content-Type": "application/json",
+              "Idempotency-Key": `support-ticket-rate-${index}`,
+            },
+            body: JSON.stringify({ ...requestBody, body: `${requestBody.body} ${index}` }),
+          },
+          env,
+        );
+        expect(response.status).toBe(200);
+        const body = await response.json() as { ticketId: string };
+        if (index === 1) firstTicketId = body.ticketId;
+      }
+
+      const limitedResponse = await app.request(
+        "/v1/support/tickets",
+        {
+          method: "POST",
+          headers: {
+            Authorization: authorization,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "support-ticket-rate-4",
+          },
+          body: JSON.stringify({ ...requestBody, body: `${requestBody.body} 4` }),
+        },
+        env,
+      );
+      expect(limitedResponse.status).toBe(429);
+      expect(limitedResponse.headers.get("Retry-After")).toBe("600");
+      expect(await limitedResponse.json()).toMatchObject({
+        accepted: false,
+        ticketStatus: "REJECTED",
+        retryAfterSeconds: 600,
+        errorCode: "support_ticket_rate_limited",
+      });
+      expect(scalar(db, `SELECT COUNT(*) FROM support_tickets WHERE account_id = '${guestBody.account.id}';`)).toBe(3);
+
+      const replayResponse = await app.request(
+        "/v1/support/tickets",
+        {
+          method: "POST",
+          headers: {
+            Authorization: authorization,
+            "Content-Type": "application/json",
+            "Idempotency-Key": "support-ticket-rate-1",
+          },
+          body: JSON.stringify({ ...requestBody, body: `${requestBody.body} 1` }),
+        },
+        env,
+      );
+      expect(replayResponse.status).toBe(200);
+      expect(await replayResponse.json()).toMatchObject({
+        accepted: true,
+        ticketStatus: "DUPLICATE_REPLAY",
+        ticketId: firstTicketId,
+        errorCode: "duplicate_replay",
+      });
+      expect(scalar(db, `SELECT COUNT(*) FROM support_tickets WHERE account_id = '${guestBody.account.id}';`)).toBe(3);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
