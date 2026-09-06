@@ -12,6 +12,16 @@ import {
 } from "../../../packages/balance/src/index";
 import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificationError, hashRefreshToken, verifyAccessToken } from "./auth";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
+import {
+  createVerificationCode,
+  hashPassword,
+  hashVerificationCode,
+  normalizeLoginId,
+  normalizeRecoveryEmail,
+  validatePassword,
+  verifyPasswordHash,
+} from "./password-auth";
+import type { RecoveryEmailPurpose, RecoveryEmailSender } from "./password-auth";
 import { containsForbiddenRealtimeCoopField, createRealtimeCoopRejected, isSafeRealtimeId, RealtimeCoopRoom } from "./realtime-coop";
 import type { RealtimeCoopRoomNamespace } from "./realtime-coop";
 
@@ -23,6 +33,7 @@ type GameApiEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT?: string;
   GOOGLE_AUTH_AUDIENCES?: string;
   GOOGLE_ID_TOKEN_VERIFIER?: GoogleIdTokenVerifier;
+  RECOVERY_EMAIL_SENDER?: RecoveryEmailSender;
   REALTIME_COOP_ROOMS?: RealtimeCoopRoomNamespace;
 };
 
@@ -220,6 +231,25 @@ type RefreshSessionAccountRow = AuthSessionAccountRow & {
 type AuthIdentityAccountRow = {
   account_id: string;
   account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+};
+
+type PasswordCredentialAccountRow = {
+  account_id: string;
+  password_hash: string;
+  password_hash_algorithm: "ARGON2ID" | "SCRYPT" | "BCRYPT" | "PBKDF2_SHA256";
+  recovery_email_normalized: string;
+  account_status: "ACTIVE" | "SUSPENDED" | "BANNED" | "DELETED";
+};
+
+type RecoveryEmailChallengeRow = {
+  id: string;
+  account_id: string | null;
+  email_normalized: string;
+  purpose: RecoveryEmailPurpose;
+  verifier_hash: string;
+  status: "PENDING" | "CONSUMED" | "EXPIRED" | "CANCELLED";
+  expires_at: number;
+  created_at: number;
 };
 
 type AuthContext = {
@@ -1695,6 +1725,10 @@ function getGoogleVerifier(env: Env): GoogleIdTokenVerifier | null {
   return (env as GameApiEnv).GOOGLE_ID_TOKEN_VERIFIER ?? createGoogleIdTokenVerifier();
 }
 
+function getRecoveryEmailSender(env: Env): RecoveryEmailSender | null {
+  return (env as GameApiEnv).RECOVERY_EMAIL_SENDER ?? null;
+}
+
 function createAuthError(errorCode: string, message: string) {
   return {
     errorCode,
@@ -1712,6 +1746,120 @@ function createAuthFailure(status: AuthFailureStatus, errorCode: string, message
 
 function isAuthFailure(value: unknown): value is AuthFailure {
   return typeof value === "object" && value !== null && "errorCode" in value;
+}
+
+function createRecoveryVerificationResponse(options: {
+  accepted: boolean;
+  verificationStatus: "PENDING" | "VERIFIED" | "REJECTED";
+  challengeId: string | null;
+  expiresAt: number | null;
+  retryAfterSeconds: number | null;
+  errorCode: string | null;
+  message: string | null;
+}) {
+  return {
+    accepted: options.accepted,
+    verificationStatus: options.verificationStatus,
+    challengeId: options.challengeId,
+    expiresAt: options.expiresAt === null ? null : toIso(options.expiresAt),
+    retryAfterSeconds: options.retryAfterSeconds,
+    errorCode: options.errorCode,
+    message: options.message,
+  };
+}
+
+function createPasswordRegisterRejected(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    registerStatus: "REJECTED",
+    account: null,
+    accessToken: null,
+    refreshToken: null,
+    errorCode,
+    message,
+  };
+}
+
+function createPasswordLinkRejected(errorCode: string, message: string) {
+  return {
+    accepted: false,
+    linkStatus: "REJECTED",
+    account: null,
+    accessToken: null,
+    refreshToken: null,
+    errorCode,
+    message,
+  };
+}
+
+async function parseJsonObjectBody(c: GameApiContext): Promise<Record<string, unknown> | AuthFailure> {
+  if (Object.keys(c.req.query()).length > 0) {
+    return createAuthFailure(400, "contract_violation", "Query parameters are not accepted.");
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = await c.req.json();
+  } catch {
+    parsed = {};
+  }
+
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return createAuthFailure(400, "contract_violation", "Request body must be a JSON object.");
+  }
+
+  const body = parsed as Record<string, unknown>;
+  if (Object.hasOwn(body, "accountId") || Object.hasOwn(body, "account_id")) {
+    return createAuthFailure(400, "contract_violation", "accountId must not be supplied by the client.");
+  }
+  return body;
+}
+
+function parseRecoveryEmailPurpose(value: unknown): RecoveryEmailPurpose | null {
+  if (
+    value === "PASSWORD_REGISTER"
+    || value === "PASSWORD_LINK"
+    || value === "PASSWORD_RESET"
+    || value === "RECOVERY_EMAIL_CHANGE"
+  ) {
+    return value;
+  }
+  return null;
+}
+
+function getChallengeId(value: unknown): string | null {
+  if (typeof value !== "string" || !/^email_challenge_[A-Za-z0-9_-]+$/u.test(value)) return null;
+  return value;
+}
+
+async function requireConsumedRecoveryChallenge(c: GameApiContext, input: {
+  challengeId: string;
+  purpose: RecoveryEmailPurpose;
+  emailNormalized: string;
+  accountId: string | null;
+}): Promise<RecoveryEmailChallengeRow | AuthFailure> {
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE id = ? AND purpose = ? AND email_normalized = ?`,
+  )
+    .bind(input.challengeId, input.purpose, input.emailNormalized)
+    .first<RecoveryEmailChallengeRow>();
+
+  if (
+    row === null
+    || row.status !== "CONSUMED"
+    || row.expires_at <= Date.now()
+    || (input.accountId === null ? row.account_id !== null : row.account_id !== input.accountId)
+  ) {
+    return createAuthFailure(409, "recovery_email_verification_required", "Recovery email ownership verification is required.");
+  }
+
+  return row;
+}
+
+function isSendableRecoveryPurpose(purpose: RecoveryEmailPurpose): boolean {
+  return purpose === "PASSWORD_REGISTER" || purpose === "PASSWORD_LINK" || purpose === "PASSWORD_RESET";
 }
 
 const displayNameCooldownMs = 7 * 24 * 60 * 60 * 1000;
@@ -1962,6 +2110,633 @@ async function parseGoogleAuthBody(c: GameApiContext): Promise<{ idToken: string
 }
 
 app.get("/status", (c) => c.json({ ok: true, service: "game-api", requestId: createRequestId() }));
+app.post("/v1/auth/password/recovery-email/verify/start", async (c) => {
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: body.errorCode,
+      message: body.message,
+    }), body.status);
+  }
+
+  const sender = getRecoveryEmailSender(c.env);
+  if (sender === null) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: "recovery_email_service_unavailable",
+      message: "Recovery email verification is not configured.",
+    }), 503);
+  }
+
+  const purpose = parseRecoveryEmailPurpose(body.purpose);
+  const recoveryEmail = normalizeRecoveryEmail(body.recoveryEmail);
+  if (purpose === null || !isSendableRecoveryPurpose(purpose) || recoveryEmail === null) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: "contract_violation",
+      message: "A valid recovery email verification purpose and email are required.",
+    }), 400);
+  }
+
+  let accountId: string | null = null;
+  if (purpose === "PASSWORD_LINK") {
+    const auth = await resolveAuthContext(c);
+    if (isAuthFailure(auth)) {
+      return c.json(createRecoveryVerificationResponse({
+        accepted: false,
+        verificationStatus: "REJECTED",
+        challengeId: null,
+        expiresAt: null,
+        retryAfterSeconds: null,
+        errorCode: auth.errorCode,
+        message: auth.message,
+      }), auth.status);
+    }
+    accountId = auth.accountId;
+  }
+
+  const now = Date.now();
+  const latestChallenge = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE email_normalized = ? AND purpose = ? AND status = 'PENDING'
+     ORDER BY created_at DESC
+     LIMIT 1`,
+  )
+    .bind(recoveryEmail.normalized, purpose)
+    .first<RecoveryEmailChallengeRow>();
+
+  if (latestChallenge !== null && latestChallenge.created_at + 60_000 > now) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: latestChallenge.expires_at,
+      retryAfterSeconds: 60,
+      errorCode: "recovery_email_resend_limited",
+      message: "Please wait before requesting another recovery email verification.",
+    }), 429);
+  }
+
+  const challengeId = createDomainId("email_challenge");
+  const verificationCode = createVerificationCode();
+  const verifierHash = await hashVerificationCode(challengeId, purpose, verificationCode);
+  const expiresAt = now + 15 * 60 * 1000;
+
+  await c.env.DB.prepare(
+    `INSERT INTO auth_email_verification_challenges (
+       id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, consumed_at, created_at, updated_at
+     ) VALUES (?, ?, ?, ?, ?, 'PENDING', ?, NULL, ?, ?)`,
+  ).bind(challengeId, accountId, recoveryEmail.normalized, purpose, verifierHash, expiresAt, now, now).run();
+
+  try {
+    await sender.sendRecoveryEmail({
+      toEmail: recoveryEmail.email,
+      emailMasked: recoveryEmail.masked,
+      purpose,
+      challengeId,
+      verificationCode,
+      expiresAt: toIso(expiresAt),
+    });
+  } catch {
+    await c.env.DB.prepare(
+      `UPDATE auth_email_verification_challenges
+       SET status = 'CANCELLED', updated_at = ?
+       WHERE id = ? AND status = 'PENDING'`,
+    ).bind(Date.now(), challengeId).run();
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: "recovery_email_service_unavailable",
+      message: "Recovery email verification is not configured.",
+    }), 503);
+  }
+
+  return c.json(createRecoveryVerificationResponse({
+    accepted: true,
+    verificationStatus: "PENDING",
+    challengeId,
+    expiresAt,
+    retryAfterSeconds: 60,
+    errorCode: null,
+    message: null,
+  }));
+});
+
+app.post("/v1/auth/password/recovery-email/verify/confirm", async (c) => {
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: body.errorCode,
+      message: body.message,
+    }), body.status);
+  }
+
+  const challengeId = getChallengeId(body.challengeId);
+  const verificationCode = typeof body.verificationCode === "string" ? body.verificationCode.trim() : "";
+  if (challengeId === null || verificationCode === "") {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId: null,
+      expiresAt: null,
+      retryAfterSeconds: null,
+      errorCode: "contract_violation",
+      message: "challengeId and verificationCode are required.",
+    }), 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE id = ?`,
+  )
+    .bind(challengeId)
+    .first<RecoveryEmailChallengeRow>();
+
+  if (row === null || row.status !== "PENDING" || row.expires_at <= Date.now()) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId,
+      expiresAt: row?.expires_at ?? null,
+      retryAfterSeconds: null,
+      errorCode: "recovery_email_challenge_invalid",
+      message: "Recovery email verification challenge is invalid or expired.",
+    }), 409);
+  }
+
+  if (row.purpose === "PASSWORD_LINK") {
+    const auth = await resolveAuthContext(c);
+    if (isAuthFailure(auth) || auth.accountId !== row.account_id) {
+      const status = isAuthFailure(auth) ? auth.status : 409;
+      return c.json(createRecoveryVerificationResponse({
+        accepted: false,
+        verificationStatus: "REJECTED",
+        challengeId,
+        expiresAt: row.expires_at,
+        retryAfterSeconds: null,
+        errorCode: isAuthFailure(auth) ? auth.errorCode : "recovery_email_challenge_invalid",
+        message: isAuthFailure(auth) ? auth.message : "Recovery email verification challenge is invalid or expired.",
+      }), status);
+    }
+  }
+
+  const expectedHash = await hashVerificationCode(challengeId, row.purpose, verificationCode);
+  if (expectedHash !== row.verifier_hash) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId,
+      expiresAt: row.expires_at,
+      retryAfterSeconds: null,
+      errorCode: "recovery_email_challenge_invalid",
+      message: "Recovery email verification challenge is invalid or expired.",
+    }), 409);
+  }
+
+  const consumed = await c.env.DB.prepare(
+    `UPDATE auth_email_verification_challenges
+     SET status = 'CONSUMED', consumed_at = ?, updated_at = ?
+     WHERE id = ? AND status = 'PENDING'`,
+  ).bind(Date.now(), Date.now(), challengeId).run();
+  if (d1Changes(consumed) === 0) {
+    return c.json(createRecoveryVerificationResponse({
+      accepted: false,
+      verificationStatus: "REJECTED",
+      challengeId,
+      expiresAt: row.expires_at,
+      retryAfterSeconds: null,
+      errorCode: "recovery_email_challenge_invalid",
+      message: "Recovery email verification challenge is invalid or expired.",
+    }), 409);
+  }
+
+  return c.json(createRecoveryVerificationResponse({
+    accepted: true,
+    verificationStatus: "VERIFIED",
+    challengeId,
+    expiresAt: row.expires_at,
+    retryAfterSeconds: null,
+    errorCode: null,
+    message: null,
+  }));
+});
+
+app.post("/v1/auth/password/register", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createPasswordRegisterRejected("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) return c.json(createPasswordRegisterRejected(body.errorCode, body.message), body.status);
+
+  const loginId = normalizeLoginId(body.loginId);
+  const recoveryEmail = normalizeRecoveryEmail(body.recoveryEmail);
+  const password = validatePassword(body.password);
+  const verificationChallengeId = getChallengeId(body.verificationChallengeId);
+  if (loginId === null || recoveryEmail === null || password === null) {
+    return c.json(createPasswordRegisterRejected("contract_violation", "loginId, password, and recoveryEmail are required."), 400);
+  }
+  if (verificationChallengeId === null) {
+    return c.json(createPasswordRegisterRejected("recovery_email_verification_required", "Recovery email ownership verification is required."), 409);
+  }
+
+  const existingLogin = await c.env.DB.prepare(
+    `SELECT account_id, password_hash, password_hash_algorithm, recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.login_id_normalized = ?`,
+  )
+    .bind(loginId.normalized)
+    .first<PasswordCredentialAccountRow>();
+  if (existingLogin !== null) {
+    return c.json(createPasswordRegisterRejected("login_id_unavailable", "Login ID is unavailable."), 409);
+  }
+
+  const challenge = await requireConsumedRecoveryChallenge(c, {
+    challengeId: verificationChallengeId,
+    purpose: "PASSWORD_REGISTER",
+    emailNormalized: recoveryEmail.normalized,
+    accountId: null,
+  });
+  if (isAuthFailure(challenge)) {
+    return c.json(createPasswordRegisterRejected(challenge.errorCode, challenge.message), challenge.status);
+  }
+
+  const now = Date.now();
+  const accountId = createDomainId("account");
+  const passwordRecord = await hashPassword(password);
+  const bundle = await createAuthTokenBundle({ env: c.env, secret, accountId, now });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO accounts (id, status, created_at, updated_at)
+       VALUES (?, 'ACTIVE', ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_password_credentials (
+         account_id, login_id_normalized, password_hash, password_hash_algorithm,
+         password_hash_params_json, recovery_email_normalized, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(
+      accountId,
+      loginId.normalized,
+      passwordRecord.passwordHash,
+      passwordRecord.algorithm,
+      passwordRecord.paramsJson,
+      recoveryEmail.normalized,
+      now,
+      now,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO auth_recovery_emails (
+         account_id, email_normalized, email_masked, status, verified_at, created_at, updated_at
+       ) VALUES (?, ?, ?, 'VERIFIED', ?, ?, ?)`,
+    ).bind(accountId, recoveryEmail.normalized, recoveryEmail.masked, now, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(bundle.sessionId, accountId, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+    c.env.DB.prepare(
+      `INSERT INTO player_profiles (account_id, display_name, commander_xp, created_at, updated_at)
+       VALUES (?, NULL, 0, ?, ?)`,
+    ).bind(accountId, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_runtime_state (account_id, protection_mode, maintenance_until, updated_at)
+       VALUES (?, 'NORMAL', NULL, ?)`,
+    ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_tutorial_state (account_id, status, completed_at, updated_at)
+       VALUES (?, 'NOT_STARTED', NULL, ?)`,
+    ).bind(accountId, now),
+    c.env.DB.prepare(
+      `INSERT INTO account_offline_reward_state (
+         account_id, last_offline_reward_claim_at, last_story_progress_id,
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
+       ) VALUES (?, ?, ?, NULL, ?, NULL, 0, ?)`,
+    ).bind(accountId, now, "none", actOneNarrativeVersion, now),
+    c.env.DB.prepare(
+      `UPDATE auth_email_verification_challenges
+       SET status = 'CANCELLED', updated_at = ?
+       WHERE id = ? AND status = 'CONSUMED'`,
+    ).bind(now, verificationChallengeId),
+  ]);
+
+  return c.json({
+    ...bundle.response,
+    accepted: true,
+    registerStatus: "REGISTERED",
+    errorCode: null,
+    message: null,
+  });
+});
+
+app.post("/v1/auth/password/link", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createPasswordLinkRejected("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const auth = await resolveAuthContext(c);
+  if (isAuthFailure(auth)) return c.json(createPasswordLinkRejected(auth.errorCode, auth.message), auth.status);
+
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) return c.json(createPasswordLinkRejected(body.errorCode, body.message), body.status);
+
+  const loginId = normalizeLoginId(body.loginId);
+  const recoveryEmail = normalizeRecoveryEmail(body.recoveryEmail);
+  const password = validatePassword(body.password);
+  const verificationChallengeId = getChallengeId(body.verificationChallengeId);
+  if (loginId === null || recoveryEmail === null || password === null) {
+    return c.json(createPasswordLinkRejected("contract_violation", "loginId, password, and recoveryEmail are required."), 400);
+  }
+  if (verificationChallengeId === null) {
+    return c.json(createPasswordLinkRejected("recovery_email_verification_required", "Recovery email ownership verification is required."), 409);
+  }
+
+  const accountCredential = await c.env.DB.prepare(
+    `SELECT account_id, password_hash, password_hash_algorithm, recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.account_id = ?`,
+  )
+    .bind(auth.accountId)
+    .first<PasswordCredentialAccountRow>();
+  if (accountCredential !== null) {
+    return c.json(createPasswordLinkRejected("password_credential_already_linked", "Password credential is already linked to this account."), 409);
+  }
+
+  const existingLogin = await c.env.DB.prepare(
+    `SELECT account_id, password_hash, password_hash_algorithm, recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.login_id_normalized = ?`,
+  )
+    .bind(loginId.normalized)
+    .first<PasswordCredentialAccountRow>();
+  if (existingLogin !== null) {
+    return c.json(createPasswordLinkRejected("login_id_unavailable", "Login ID is unavailable."), 409);
+  }
+
+  const challenge = await requireConsumedRecoveryChallenge(c, {
+    challengeId: verificationChallengeId,
+    purpose: "PASSWORD_LINK",
+    emailNormalized: recoveryEmail.normalized,
+    accountId: auth.accountId,
+  });
+  if (isAuthFailure(challenge)) return c.json(createPasswordLinkRejected(challenge.errorCode, challenge.message), challenge.status);
+
+  const now = Date.now();
+  const passwordRecord = await hashPassword(password);
+  const bundle = await createAuthTokenBundle({ env: c.env, secret, accountId: auth.accountId, now });
+
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO auth_password_credentials (
+         account_id, login_id_normalized, password_hash, password_hash_algorithm,
+         password_hash_params_json, recovery_email_normalized, created_at, updated_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(
+      auth.accountId,
+      loginId.normalized,
+      passwordRecord.passwordHash,
+      passwordRecord.algorithm,
+      passwordRecord.paramsJson,
+      recoveryEmail.normalized,
+      now,
+      now,
+    ),
+    c.env.DB.prepare(
+      `INSERT INTO auth_recovery_emails (
+         account_id, email_normalized, email_masked, status, verified_at, created_at, updated_at
+       ) VALUES (?, ?, ?, 'VERIFIED', ?, ?, ?)
+       ON CONFLICT(account_id) DO UPDATE SET
+         email_normalized = excluded.email_normalized,
+         email_masked = excluded.email_masked,
+         status = 'VERIFIED',
+         verified_at = excluded.verified_at,
+         updated_at = excluded.updated_at`,
+    ).bind(auth.accountId, recoveryEmail.normalized, recoveryEmail.masked, now, now, now),
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(bundle.sessionId, auth.accountId, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+    c.env.DB.prepare(
+      `UPDATE auth_email_verification_challenges
+       SET status = 'CANCELLED', updated_at = ?
+       WHERE id = ? AND status = 'CONSUMED'`,
+    ).bind(now, verificationChallengeId),
+  ]);
+
+  return c.json({
+    ...bundle.response,
+    accepted: true,
+    linkStatus: "LINKED",
+    errorCode: null,
+    message: null,
+  });
+});
+
+app.post("/v1/auth/password/login", async (c) => {
+  const secret = getAuthSecret(c.env);
+  if (secret === null || secret.trim() === "") {
+    return c.json(createAuthError("auth_not_configured", "Auth signing key is not configured."), 500);
+  }
+
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) return c.json(createAuthError(body.errorCode, body.message), body.status);
+
+  const loginId = normalizeLoginId(body.loginId);
+  const password = validatePassword(body.password);
+  if (loginId === null || password === null) {
+    return c.json(createAuthError("contract_violation", "loginId and password are required."), 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT credentials.account_id, credentials.password_hash, credentials.password_hash_algorithm,
+            credentials.recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.login_id_normalized = ?`,
+  )
+    .bind(loginId.normalized)
+    .first<PasswordCredentialAccountRow>();
+  if (row === null || row.account_status !== "ACTIVE" || row.password_hash_algorithm !== "PBKDF2_SHA256") {
+    return c.json(createAuthError("password_login_invalid", "Login ID or password is invalid."), 401);
+  }
+
+  const verified = await verifyPasswordHash(password, row.password_hash);
+  if (!verified) {
+    return c.json(createAuthError("password_login_invalid", "Login ID or password is invalid."), 401);
+  }
+
+  const now = Date.now();
+  const bundle = await createAuthTokenBundle({ env: c.env, secret, accountId: row.account_id, now });
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `INSERT INTO auth_sessions (id, account_id, refresh_token_hash, family_id, generation, status, created_at, expires_at, rotated_at)
+       VALUES (?, ?, ?, ?, 0, 'ACTIVE', ?, ?, NULL)`,
+    ).bind(bundle.sessionId, row.account_id, bundle.refreshTokenHash, bundle.familyId, now, bundle.refreshTokenExpiresAt),
+  ]);
+
+  return c.json({
+    ...bundle.response,
+    signInStatus: "SIGNED_IN",
+  });
+});
+
+app.post("/v1/auth/password/reset/start", async (c) => {
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) return c.json(createAuthError(body.errorCode, body.message), body.status);
+
+  const sender = getRecoveryEmailSender(c.env);
+  if (sender === null) {
+    return c.json(createAuthError("recovery_email_service_unavailable", "Recovery email verification is not configured."), 503);
+  }
+
+  const loginId = normalizeLoginId(body.loginId);
+  const recoveryEmail = normalizeRecoveryEmail(body.recoveryEmail);
+  if (loginId === null || recoveryEmail === null) {
+    return c.json(createAuthError("contract_violation", "loginId and recoveryEmail are required."), 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT credentials.account_id, credentials.password_hash, credentials.password_hash_algorithm,
+            credentials.recovery_email_normalized, accounts.status AS account_status
+     FROM auth_password_credentials credentials
+     JOIN accounts ON accounts.id = credentials.account_id
+     WHERE credentials.login_id_normalized = ? AND credentials.recovery_email_normalized = ?`,
+  )
+    .bind(loginId.normalized, recoveryEmail.normalized)
+    .first<PasswordCredentialAccountRow>();
+
+  const response = {
+    accepted: true,
+    resetStatus: "EMAIL_SENT_IF_AVAILABLE",
+    errorCode: null,
+    message: null,
+  };
+  if (row === null || row.account_status !== "ACTIVE") return c.json(response);
+
+  const now = Date.now();
+  const latestChallenge = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE email_normalized = ? AND purpose = 'PASSWORD_RESET' AND status = 'PENDING'
+     ORDER BY created_at DESC
+     LIMIT 1`,
+  )
+    .bind(recoveryEmail.normalized)
+    .first<RecoveryEmailChallengeRow>();
+  if (latestChallenge !== null && latestChallenge.created_at + 60_000 > now) return c.json(response);
+
+  const challengeId = createDomainId("email_challenge");
+  const verificationCode = createVerificationCode();
+  const expiresAt = now + 15 * 60 * 1000;
+  const verifierHash = await hashVerificationCode(challengeId, "PASSWORD_RESET", verificationCode);
+  await c.env.DB.prepare(
+    `INSERT INTO auth_email_verification_challenges (
+       id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, consumed_at, created_at, updated_at
+     ) VALUES (?, ?, ?, 'PASSWORD_RESET', ?, 'PENDING', ?, NULL, ?, ?)`,
+  ).bind(challengeId, row.account_id, recoveryEmail.normalized, verifierHash, expiresAt, now, now).run();
+  try {
+    await sender.sendRecoveryEmail({
+      toEmail: recoveryEmail.email,
+      emailMasked: recoveryEmail.masked,
+      purpose: "PASSWORD_RESET",
+      challengeId,
+      verificationCode,
+      expiresAt: toIso(expiresAt),
+    });
+  } catch {
+    await c.env.DB.prepare(
+      `UPDATE auth_email_verification_challenges
+       SET status = 'CANCELLED', updated_at = ?
+       WHERE id = ? AND status = 'PENDING'`,
+    ).bind(Date.now(), challengeId).run();
+  }
+
+  return c.json(response);
+});
+
+app.post("/v1/auth/password/reset/confirm", async (c) => {
+  const body = await parseJsonObjectBody(c);
+  if (isAuthFailure(body)) return c.json(createAuthError(body.errorCode, body.message), body.status);
+
+  const challengeId = getChallengeId(body.challengeId);
+  const verificationCode = typeof body.verificationCode === "string" ? body.verificationCode.trim() : "";
+  const newPassword = validatePassword(body.newPassword);
+  if (challengeId === null || verificationCode === "" || newPassword === null) {
+    return c.json(createAuthError("contract_violation", "challengeId, verificationCode, and newPassword are required."), 400);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT id, account_id, email_normalized, purpose, verifier_hash, status, expires_at, created_at
+     FROM auth_email_verification_challenges
+     WHERE id = ? AND purpose = 'PASSWORD_RESET'`,
+  )
+    .bind(challengeId)
+    .first<RecoveryEmailChallengeRow>();
+  if (row === null || row.account_id === null || row.status !== "PENDING" || row.expires_at <= Date.now()) {
+    return c.json(createAuthError("password_reset_challenge_invalid", "Password reset challenge is invalid or expired."), 409);
+  }
+
+  const expectedHash = await hashVerificationCode(challengeId, "PASSWORD_RESET", verificationCode);
+  if (expectedHash !== row.verifier_hash) {
+    return c.json(createAuthError("password_reset_challenge_invalid", "Password reset challenge is invalid or expired."), 409);
+  }
+
+  const passwordRecord = await hashPassword(newPassword);
+  const now = Date.now();
+  await c.env.DB.batch([
+    c.env.DB.prepare(
+      `UPDATE auth_email_verification_challenges
+       SET status = 'CONSUMED', consumed_at = ?, updated_at = ?
+       WHERE id = ? AND status = 'PENDING'`,
+    ).bind(now, now, challengeId),
+    c.env.DB.prepare(
+      `UPDATE auth_password_credentials
+       SET password_hash = ?, password_hash_algorithm = ?, password_hash_params_json = ?, updated_at = ?
+       WHERE account_id = ?`,
+    ).bind(passwordRecord.passwordHash, passwordRecord.algorithm, passwordRecord.paramsJson, now, row.account_id),
+    c.env.DB.prepare(
+      `UPDATE auth_sessions
+       SET status = 'REVOKED', rotated_at = ?
+       WHERE account_id = ? AND status = 'ACTIVE'`,
+    ).bind(now, row.account_id),
+  ]);
+
+  return c.json({
+    accepted: true,
+    resetStatus: "RESET_CONFIRMED",
+    errorCode: null,
+    message: "Password was reset. Please sign in again.",
+  });
+});
+
 app.post("/v1/auth/guest", async (c) => {
   const secret = getAuthSecret(c.env);
   if (secret === null || secret.trim() === "") {

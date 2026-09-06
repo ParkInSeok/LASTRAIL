@@ -58,10 +58,12 @@ pair.
 The expanded three-path launch auth design is tracked in
 `auth-account-linking.md`. That draft covers guest restore, ID/password
 registration/login/link, Google link, and provider-owned-by-other-account
-conflict preview/confirm. The ID/password and account-switch endpoints are not
-implemented yet. ID/password registration and link completion require an
-explicitly submitted and server-verified recovery email; Google claim email is
-not auto-promoted into password recovery state.
+conflict preview/confirm. Local ID/password register/login/link and password
+reset route skeletons are implemented behind provider-neutral recovery email
+verification; production email delivery/provider config remains approval-gated.
+Account-switch endpoints are not implemented yet. ID/password registration and
+link completion require an explicitly submitted and server-verified recovery
+email; Google claim email is not auto-promoted into password recovery state.
 
 Realtime two-player cooperative combat starts in `realtime-coop.md`. The first
 server slice exposes room creation and WebSocket connection skeletons behind a

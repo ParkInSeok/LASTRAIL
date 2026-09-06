@@ -32,12 +32,23 @@ Already implemented:
 - `POST /v1/auth/refresh`
 - `POST /v1/auth/google`
 - `POST /v1/auth/google/link`
+- `POST /v1/auth/password/recovery-email/verify/start` (local
+  provider-neutral sender contract only)
+- `POST /v1/auth/password/recovery-email/verify/confirm`
+- `POST /v1/auth/password/register`
+- `POST /v1/auth/password/login`
+- `POST /v1/auth/password/link`
+- `POST /v1/auth/password/reset/start` (generic response, local
+  provider-neutral sender contract only)
+- `POST /v1/auth/password/reset/confirm`
 - `GET /v1/profile`
 - `GET /v1/profile/display-name/check`
 - `POST /v1/profile/display-name`
 
-Current schema only allows `auth_identities.provider IN ('GUEST','GOOGLE')`.
-ID/password auth therefore needs a local schema slice before implementation.
+`auth_identities.provider` remains `GUEST`/`GOOGLE`. ID/password credentials are
+stored separately in `auth_password_credentials` and use
+`auth_recovery_emails` plus `auth_email_verification_challenges` for verified
+recovery ownership.
 
 ## Guest Restore
 
@@ -59,7 +70,7 @@ player to recovery or login UI.
 
 ## Login ID / Password Candidate Contract
 
-Candidate endpoints:
+Local endpoints:
 
 ```text
 POST /v1/auth/password/register
@@ -71,6 +82,10 @@ POST /v1/auth/password/reset/start
 POST /v1/auth/password/reset/confirm
 GET /v1/auth/links
 ```
+
+`GET /v1/auth/links` is still a future read-only helper candidate; the runtime
+ID/password routes above are implemented locally without enabling production
+email delivery.
 
 `POST /v1/auth/password/register` creates a new account with an ID/password
 credential. `POST /v1/auth/password/link` requires Bearer auth and attaches an
@@ -92,19 +107,21 @@ Candidate request:
 {
   "loginId": "rail_commander",
   "password": "player supplied secret",
-  "recoveryEmail": "player@example.com"
+  "recoveryEmail": "player@example.com",
+  "verificationChallengeId": "email_challenge_..."
 }
 ```
 
 Do not accept `accountId`, `displayName`, reward fields, story progress fields,
 or provider subject shortcuts in request bodies, query parameters, or headers.
 
-Candidate response:
+Register response:
 
 ```json
 {
   "tokenType": "Bearer",
-  "authStatus": "SIGNED_IN",
+  "accepted": true,
+  "registerStatus": "REGISTERED",
   "account": {
     "id": "account_...",
     "status": "ACTIVE"
@@ -115,6 +132,61 @@ Candidate response:
   "refreshTokenExpiresAt": "2026-09-25T00:00:00.000Z",
   "errorCode": null,
   "message": null
+}
+```
+
+Login response uses the same token bundle and adds
+`signInStatus: "SIGNED_IN"`. Password link response uses the same token bundle
+and adds `linkStatus: "LINKED"`.
+
+Recovery email verification start response:
+
+```json
+{
+  "accepted": true,
+  "verificationStatus": "PENDING",
+  "challengeId": "email_challenge_...",
+  "expiresAt": "2026-09-06T00:15:00.000Z",
+  "retryAfterSeconds": 60,
+  "errorCode": null,
+  "message": null
+}
+```
+
+Recovery email verification confirm response:
+
+```json
+{
+  "accepted": true,
+  "verificationStatus": "VERIFIED",
+  "challengeId": "email_challenge_...",
+  "expiresAt": "2026-09-06T00:15:00.000Z",
+  "retryAfterSeconds": null,
+  "errorCode": null,
+  "message": null
+}
+```
+
+Password reset start response is account-existence agnostic:
+
+```json
+{
+  "accepted": true,
+  "resetStatus": "EMAIL_SENT_IF_AVAILABLE",
+  "errorCode": null,
+  "message": null
+}
+```
+
+Password reset confirm response does not log the player in and does not return
+tokens:
+
+```json
+{
+  "accepted": true,
+  "resetStatus": "RESET_CONFIRMED",
+  "errorCode": null,
+  "message": "Password was reset. Please sign in again."
 }
 ```
 
@@ -146,7 +218,7 @@ Candidate verification defaults:
 - Reset request responses are generic whether or not the login ID/email exists.
 - Reset request or link click alone must not sign the player in or revoke
   current sessions.
-- Password reset confirm invalidates existing password sessions only after the
+- Password reset confirm invalidates existing active sessions only after the
   new password verifier is stored. Linked Google identity is not deleted.
 - Recovery email change requires recent re-authentication plus verification of
   the new address before replacing the stored recovery email.
@@ -169,7 +241,10 @@ This is a recommendation, not a user-finalized value:
 Use a proven password hashing implementation, not a custom algorithm. OWASP
 recommends Argon2id when available, or scrypt/bcrypt/PBKDF2 with appropriate
 costs. NIST requires salted password verifier storage and recommends storing
-algorithm/cost metadata so work factors can migrate over time.
+algorithm/cost metadata so work factors can migrate over time. The current
+Workers-compatible local route skeleton uses WebCrypto `PBKDF2_SHA256` with
+per-password random salt and stored cost metadata until a stronger Workers-safe
+password hashing provider is approved.
 
 Candidate local schema:
 
@@ -361,6 +436,8 @@ Not finalized:
 - Email provider: Cloudflare Email Service Workers binding is a platform-native
   candidate, but sender domain onboarding, DNS, credentials, deliverability, and
   cost approval are not complete.
+- Whether to keep WebCrypto `PBKDF2_SHA256` for launch or approve a stronger
+  Workers-safe password hashing service/library before production.
 
 Do not claim the ID/password system is production-ready until these gates are
 resolved.
