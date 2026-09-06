@@ -160,4 +160,74 @@ describe("admin-api server deployment read model", () => {
       body: { accepted: false, current: null, errorCode: "server_deployment_current_not_found" },
     });
   });
+
+  it("rejects stored history whose target fields do not match the requested key", async () => {
+    const serviceMismatch = await app.request(
+      "/v1/admin/server-deployments/history/2026.09.06.1?service=game-api",
+      { headers: { "Cf-Access-Subject": "access|admin-1" } },
+      createEnv({
+        "server-deployments/dev/game-api/2026.09.06.1.json": {
+          ...history,
+          service: "admin-api",
+          deploymentTag: "admin-api-2026.09.06.1",
+        },
+      }),
+    );
+
+    expect(serviceMismatch.status).toBe(502);
+    await expect(serviceMismatch.json()).resolves.toEqual({
+      error: { code: "server_deployment_history_target_mismatch" },
+    });
+
+    const versionMismatch = await app.request(
+      "/v1/admin/server-deployments/history/2026.09.06.1?service=game-api",
+      { headers: { "Cf-Access-Subject": "access|admin-1" } },
+      createEnv({
+        "server-deployments/dev/game-api/2026.09.06.1.json": {
+          ...history,
+          serverVersion: "2026.09.06.2",
+          deploymentTag: "game-api-2026.09.06.2",
+        },
+      }),
+    );
+
+    expect(versionMismatch.status).toBe(502);
+    await expect(versionMismatch.json()).resolves.toEqual({
+      error: { code: "server_deployment_history_target_mismatch" },
+    });
+
+    const envMismatch = await app.request(
+      "/v1/admin/server-deployments/history/2026.09.06.1?service=game-api",
+      { headers: { "Cf-Access-Subject": "access|admin-1" } },
+      createEnv({
+        "server-deployments/dev/game-api/2026.09.06.1.json": {
+          ...history,
+          environment: "prd",
+        },
+      }),
+    );
+
+    expect(envMismatch.status).toBe(502);
+    await expect(envMismatch.json()).resolves.toEqual({
+      error: { code: "server_deployment_history_target_mismatch" },
+    });
+  });
+
+  it("rejects stored current pointers whose target fields do not match the requested key", async () => {
+    const response = await app.request(
+      "/v1/admin/server-deployments/current?service=game-api",
+      { headers: { "Cf-Access-Subject": "access|admin-1" } },
+      createEnv({
+        "server-deployments/dev/game-api/current.json": {
+          ...currentPointer,
+          service: "admin-api",
+        },
+      }),
+    );
+
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({
+      error: { code: "server_deployment_current_target_mismatch" },
+    });
+  });
 });

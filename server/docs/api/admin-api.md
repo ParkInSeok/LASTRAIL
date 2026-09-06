@@ -169,6 +169,22 @@ counts come from `ad_reward_transactions.status`. Pass/purchase and ad revenue
 metrics remain `null`, with source availability set to false, until
 server-owned source tables exist.
 
+Do not substitute unavailable launch metrics with lookalike counters:
+
+- `todayActiveUsers` / exact DAU requires a server-owned activity event source
+  with KST day-boundary distinct account semantics. Distinct accounts that
+  created auth sessions are exposed only as `sessionCreatedAccounts`.
+- Total registered accounts requires an explicit denominator policy for deleted
+  or disabled accounts before Admin should label it as a production KPI.
+- Ad views and ad viewers require a verified ad view event source. Reward grant
+  rows are not the same as ad view events.
+- Ad revenue requires a settlement/currency source.
+- Pass purchase rate requires verified purchase rows and an agreed DAU or
+  active-account denominator.
+
+Until those sources exist, responses should keep unavailable values as `null`
+with source-unavailable metadata. A source-backed successful zero remains `0`.
+
 The story/narrative aggregate is read-only launch visibility. It counts stored
 `account_story_progress` rows and the static Act 1 narrative coverage candidate
 set. Empty semantics are stable: counts are `0`, distributions are `[]`, and

@@ -3,8 +3,8 @@ import {
   buildServerDeploymentHistoryKey,
   canonicalJson,
   createRequestId,
+  parseServerDeploymentCurrentPointer,
   parseServerDeploymentEvidence,
-  readServerDeploymentCurrentPointer,
   sha256Hex,
   type ServerDeploymentHistoryBucket,
   type ServerReleaseEnvironment,
@@ -1997,8 +1997,9 @@ app.get("/v1/admin/server-deployments/current", async (c) => {
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
 
   try {
-    const current = await readServerDeploymentCurrentPointer(c.env.VERSION_BUCKET as unknown as ServerDeploymentHistoryBucket, environment, service);
-    if (current === null) {
+    const currentKey = `server-deployments/${environment}/${service}/current.json`;
+    const object = await (c.env.VERSION_BUCKET as unknown as ServerDeploymentHistoryBucket).get(currentKey);
+    if (object === null) {
       return c.json({
         accepted: false,
         environment: c.env.ENVIRONMENT,
@@ -2010,11 +2011,16 @@ app.get("/v1/admin/server-deployments/current", async (c) => {
         message: "No current server deployment pointer is available.",
       }, 404);
     }
+    const current = parseServerDeploymentCurrentPointer(await object.json());
+    if (current === null) return c.json({ error: { code: "server_deployment_current_invalid" } }, 502);
+    if (current.environment !== environment || current.service !== service) {
+      return c.json({ error: { code: "server_deployment_current_target_mismatch" } }, 502);
+    }
     return c.json({
       accepted: true,
       environment: c.env.ENVIRONMENT,
       service,
-      current: current.pointer,
+      current,
       permission: SERVER_DEPLOYMENT_READ_PERMISSION,
       permissionMode: "ROLE_PERMISSION",
       errorCode: null,
@@ -2057,6 +2063,9 @@ app.get("/v1/admin/server-deployments/history/:serverVersion", async (c) => {
     }
     const history = parseServerDeploymentEvidence(await object.json());
     if (history === null) return c.json({ error: { code: "server_deployment_history_invalid" } }, 502);
+    if (history.environment !== environment || history.service !== service || history.serverVersion !== serverVersion) {
+      return c.json({ error: { code: "server_deployment_history_target_mismatch" } }, 502);
+    }
     return c.json({
       accepted: true,
       environment: c.env.ENVIRONMENT,

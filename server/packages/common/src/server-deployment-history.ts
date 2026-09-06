@@ -240,18 +240,11 @@ export function buildServerDeploymentEvidence(
   };
 }
 
-export async function readServerDeploymentCurrentPointer(
-  bucket: ServerDeploymentHistoryBucket,
-  environment: ServerReleaseEnvironment,
-  service: ServerReleaseService,
-): Promise<{ pointer: ServerDeploymentCurrentPointer; etag: string | null } | null> {
-  const object = await bucket.get(buildServerDeploymentCurrentKey(environment, service));
-  if (object === null) return null;
-  const value = await object.json();
+export function parseServerDeploymentCurrentPointer(value: unknown): ServerDeploymentCurrentPointer | null {
   if (!isRecord(value)) return null;
   if (
-    value.environment !== environment ||
-    value.service !== service ||
+    (value.environment !== "dev" && value.environment !== "prd") ||
+    (value.service !== "game-api" && value.service !== "admin-api" && value.service !== "async-worker") ||
     typeof value.serverVersion !== "string" ||
     typeof value.historyKey !== "string" ||
     typeof value.releaseId !== "string" ||
@@ -261,15 +254,27 @@ export async function readServerDeploymentCurrentPointer(
     return null;
   }
   return {
-    pointer: {
-      environment,
-      service,
-      serverVersion: value.serverVersion,
-      historyKey: value.historyKey,
-      releaseId: value.releaseId,
-      cloudflareDeploymentId: value.cloudflareDeploymentId,
-      updatedAt: value.updatedAt,
-    },
+    environment: value.environment,
+    service: value.service,
+    serverVersion: value.serverVersion,
+    historyKey: value.historyKey,
+    releaseId: value.releaseId,
+    cloudflareDeploymentId: value.cloudflareDeploymentId,
+    updatedAt: value.updatedAt,
+  };
+}
+
+export async function readServerDeploymentCurrentPointer(
+  bucket: ServerDeploymentHistoryBucket,
+  environment: ServerReleaseEnvironment,
+  service: ServerReleaseService,
+): Promise<{ pointer: ServerDeploymentCurrentPointer; etag: string | null } | null> {
+  const object = await bucket.get(buildServerDeploymentCurrentKey(environment, service));
+  if (object === null) return null;
+  const pointer = parseServerDeploymentCurrentPointer(await object.json());
+  if (pointer === null || pointer.environment !== environment || pointer.service !== service) return null;
+  return {
+    pointer,
     etag: getComparableEtag(object),
   };
 }
