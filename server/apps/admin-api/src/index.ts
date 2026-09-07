@@ -1588,7 +1588,7 @@ function parseDuplicateConversion(value: string | null) {
   };
 }
 
-function adminGachaResultSummary(row: AdminGachaResultRow) {
+function adminGachaResultSummary(row: AdminGachaResultRow, quantity: number | null = null) {
   return {
     resultId: row.result_id,
     pullSequence: row.pull_sequence,
@@ -1596,6 +1596,7 @@ function adminGachaResultSummary(row: AdminGachaResultRow) {
     resultType: row.result_type,
     reward: {
       id: row.reward_id,
+      quantity,
     },
     isPickup: row.is_pickup === 1,
     wasDuplicate: row.was_duplicate === 1,
@@ -3146,7 +3147,16 @@ app.get("/v1/admin/gacha/pull-batches/:batchId", async (c) => {
   const operatorLedgerRefs = results.results
     .map((result) => result.progression_ledger_id)
     .filter((value): value is string => value !== null);
-  const resultItems = results.results.map(adminGachaResultSummary);
+  const storedResponseResults = parseGachaResponseResults(batch.result_summary_json);
+  const resultItems = results.results.map((row) => {
+    const stored = storedResponseResults.find((value) => isJsonObject(value)
+      && value.pullSequence === row.pull_sequence && value.resultId === row.reward_id
+      && value.resultRarity === row.result_rarity && value.resultType === row.result_type);
+    const reward = isJsonObject(stored) && isJsonObject(stored.reward) ? stored.reward : null;
+    const quantity = reward && typeof reward.quantity === "number" && Number.isSafeInteger(reward.quantity) && reward.quantity > 0
+      ? reward.quantity : parseDuplicateConversion(row.duplicate_conversion_json)?.quantity ?? null;
+    return adminGachaResultSummary(row, quantity);
+  });
 
   return c.json({
     item: {

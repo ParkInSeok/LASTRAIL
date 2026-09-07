@@ -12,6 +12,7 @@ import {
   type RunRiskTier,
 } from "../../../packages/balance/src/index";
 import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificationError, hashRefreshToken, verifyAccessToken } from "./auth";
+import { isDevGachaScopeAllowed } from "./gacha-dev-scope";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
@@ -745,7 +746,7 @@ type GachaPityConfig = {
 
 type GachaPoolResult = {
   resultRarity: "COMMON" | "RARE" | "ELITE";
-  resultType: "ELITE_OPERATOR" | "RARE_OPERATOR" | "ELITE_OPERATOR_SHARD" | "RARE_OPERATOR_SHARD" | "OPERATOR_TOKEN" | "TRAINING_MATERIAL" | "WORK_SKILL_MATERIAL";
+  resultType: "ELITE_OPERATOR" | "RARE_OPERATOR" | "ELITE_OPERATOR_SHARD" | "RARE_OPERATOR_SHARD" | "OPERATOR_TOKEN" | "TRAINING_MATERIAL" | "WORK_SKILL_MATERIAL" | "RARE_OPERATOR_TOKEN" | "TACTICAL_MATERIAL";
   resultId: string;
   weight?: number;
   isPickup?: boolean;
@@ -2010,10 +2011,17 @@ function isActiveGachaBanner(row: GachaBannerRow, now: number): boolean {
 }
 
 function parseGachaPoolResults(poolSnapshotJson: string): GachaPoolResult[] {
-  const parsed = JSON.parse(poolSnapshotJson) as { results?: unknown };
+  let parsed: { results?: unknown };
+  try {
+    const value: unknown = JSON.parse(poolSnapshotJson);
+    if (typeof value !== "object" || value === null) return [];
+    parsed = value as { results?: unknown };
+  } catch {
+    return [];
+  }
   if (!Array.isArray(parsed.results)) return [];
 
-  return parsed.results.filter((result): result is GachaPoolResult => {
+  const results = parsed.results.filter((result): result is GachaPoolResult => {
     if (typeof result !== "object" || result === null) return false;
     const candidate = result as Record<string, unknown>;
     return (candidate.resultRarity === "COMMON" || candidate.resultRarity === "RARE" || candidate.resultRarity === "ELITE")
@@ -2023,9 +2031,22 @@ function parseGachaPoolResults(poolSnapshotJson: string): GachaPoolResult[] {
         || candidate.resultType === "RARE_OPERATOR_SHARD"
         || candidate.resultType === "OPERATOR_TOKEN"
         || candidate.resultType === "TRAINING_MATERIAL"
+        || candidate.resultType === "RARE_OPERATOR_TOKEN"
+        || candidate.resultType === "TACTICAL_MATERIAL"
         || candidate.resultType === "WORK_SKILL_MATERIAL")
-      && typeof candidate.resultId === "string";
+      && typeof candidate.resultId === "string" && candidate.resultId.trim().length > 0
+      && (candidate.weight === undefined || (typeof candidate.weight === "number"
+        && Number.isSafeInteger(candidate.weight) && candidate.weight >= 0 && candidate.weight <= 2 ** 32))
+      && (candidate.quantity === undefined || (typeof candidate.quantity === "number"
+        && Number.isSafeInteger(candidate.quantity) && candidate.quantity > 0))
+      && (candidate.isPickup === undefined || typeof candidate.isPickup === "boolean");
   });
+  // Never silently remove candidates and renormalize a published pool.
+  if (results.length !== parsed.results.length) return [];
+  if (new Set(results.map((result) => result.resultId)).size !== results.length) return [];
+  const maximumTotal = results.reduce((sum, result) => sum + Math.max(result.weight ?? 0, 1), 0);
+  if (!Number.isSafeInteger(maximumTotal) || maximumTotal > 2 ** 32) return [];
+  return results;
 }
 
 function parseGachaPityConfig(pityConfigJson: string): GachaPityConfig {
@@ -2115,15 +2136,6 @@ function isGachaPoolResultEligibleForGuarantee(
   return true;
 }
 
-function hashStringToUint32(input: string): number {
-  let hash = 2166136261;
-  for (let index = 0; index < input.length; index += 1) {
-    hash ^= input.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
 function getGachaResultWeight(result: GachaPoolResult, guaranteeType: GachaGuaranteeType): number {
   if (guaranteeType !== "NONE") {
     return typeof result.weight === "number" && Number.isFinite(result.weight) && result.weight > 0
@@ -2139,16 +2151,30 @@ function selectGachaPoolResult(options: {
   poolResults: GachaPoolResult[];
   guaranteeType: GachaGuaranteeType;
   banner: GachaBannerRow;
-  seed: string;
 }): GachaPoolResult | null {
   const candidates = options.poolResults
     .filter((result) => isGachaPoolResultEligibleForGuarantee(result, options.guaranteeType, options.banner))
     .map((result) => ({ result, weight: getGachaResultWeight(result, options.guaranteeType) }))
     .filter((candidate) => candidate.weight > 0);
   const totalWeight = candidates.reduce((sum, candidate) => sum + candidate.weight, 0);
-  if (totalWeight <= 0) return null;
+  if (!Number.isSafeInteger(totalWeight) || totalWeight <= 0 || totalWeight > 2 ** 32) return null;
 
-  let roll = hashStringToUint32(options.seed) % totalWeight;
+  // Rejection sampling gives each integer interval equal mass. Fresh entropy
+  // is server-owned; replay reads committed results instead of sampling again.
+  const limit = Math.floor(2 ** 32 / totalWeight) * totalWeight;
+  const random = new Uint32Array(1);
+  let value: number | null = null;
+  try {
+    for (let attempt = 0; attempt < 128; attempt += 1) {
+      crypto.getRandomValues(random);
+      const candidate = random[0]!;
+      if (candidate < limit) { value = candidate; break; }
+    }
+  } catch {
+    return null;
+  }
+  if (value === null) return null;
+  let roll = value % totalWeight;
   for (const candidate of candidates) {
     if (roll < candidate.weight) return candidate.result;
     roll -= candidate.weight;
@@ -5352,6 +5378,14 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     }), authContext.status);
   }
 
+  if (bannerId.startsWith("banner_dev_gacha_verify_")) {
+    const scopedBanner = await c.env.DB.prepare("SELECT pool_snapshot_json FROM gacha_banners WHERE id = ?")
+      .bind(bannerId).first<{ pool_snapshot_json: string }>();
+    if (!scopedBanner || !isDevGachaScopeAllowed({ environment: c.env.ENVIRONMENT, accountId: authContext.accountId, nowMs: Date.now(), snapshot: scopedBanner.pool_snapshot_json })) {
+      return c.json(createGachaRejectedResponse({ bannerId, pullCount, errorCode: "gacha_banner_unavailable", message: "Gacha banner is unavailable." }), 403);
+    }
+  }
+
   const replayBatch = await c.env.DB.prepare(
     `SELECT batch.id, batch.banner_id, banner.balance_config_version, batch.pull_count, batch.cost_item_id, batch.cost_quantity,
             batch.post_pity_json, batch.result_summary_json, batch.created_at
@@ -5517,7 +5551,6 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       poolResults,
       guaranteeType,
       banner: row,
-      seed: `${authContext.accountId}:${bannerId}:${idempotencyKey}:${index + 1}`,
     });
     if (poolResult === null) {
       return c.json(createGachaRejectedResponse({
@@ -6715,5 +6748,3 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
 export { RealtimeCoopRoom };
 
 export default app;
-
-

@@ -1,10 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import initSqlJs from "sql.js";
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import app from "../../apps/game-api/src/index";
+import adminApp from "../../apps/admin-api/src/index";
 import { createAccessToken } from "../../apps/game-api/src/auth";
-import { launchGachaDataDraft } from "../../packages/balance/src/index";
+import { launchGachaPool, launchGachaPolicyVersion } from "../../packages/balance/src/gacha-policy";
+import { startGachaAuditReadBridge } from "../helpers/gacha-audit-read-bridge";
 
 type SqlValue = string | number | Uint8Array | null;
 
@@ -79,14 +81,14 @@ class SqlJsD1Database {
   }
 }
 
-async function createMigratedDb(): Promise<initSqlJs.Database> {
+async function createMigratedDb(maxVersion = 21): Promise<initSqlJs.Database> {
   const SQL = await initSqlJs();
   const db = new SQL.Database();
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(20);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).filter((file) => Number(file.slice(0, 4)) <= maxVersion).sort();
+  expect(migrations).toHaveLength(maxVersion);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -644,57 +646,221 @@ describe("game-api gacha pull local D1 smoke", () => {
     db.close();
   });
 
-  it("accepts the launch draft gacha pool without leaking internal selection data", async () => {
+  it("reaches every approved 21-pool candidate through the real API and isolated DB, including replay and duplicates", async () => {
+    // Exact user-approved 21-result policy, exercised through real API and DB.
+    const pool = launchGachaPool.results;
     const db = await createMigratedDb();
-    const launchBanner = launchGachaDataDraft.banners[0];
-    seedBaseGachaState(db, {
-      alreadyOwnsPickup: false,
-      tickets: 10,
-      poolSnapshotJson: JSON.stringify(launchBanner.pool),
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 100, poolSnapshotJson: JSON.stringify({ results: pool }) });
+    const authorization = await createAuthorizationHeader();
+    const originalRandom = crypto.getRandomValues.bind(crypto);
+    let roll = 0;
+    let samplerCalls = 0;
+    const randomSpy = vi.spyOn(crypto, "getRandomValues").mockImplementation((buffer) => {
+      if (buffer instanceof Uint32Array && buffer.length === 1) { buffer[0] = roll; samplerCalls++; return buffer; }
+      return originalRandom(buffer);
     });
+    const safeResults: unknown[] = [];
+    try {
+      let boundary = 0;
+      for (const candidate of pool) {
+        // Reset counters in the isolated test DB to inspect base candidate reachability.
+        db.run("DELETE FROM player_gacha_pity;");
+        roll = boundary;
+        const request = () => app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+          method: "POST", headers: { "Idempotency-Key": `full-pool-${candidate.resultId}`, Authorization: authorization }, body: JSON.stringify({ pullCount: 1 }),
+        }, createEnv(db));
+        const response = await request();
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.results[0].resultId).toBe(candidate.resultId);
+        expect(body.results[0].reward.quantity).toBe(candidate.quantity ?? 1);
+        expectNoForbiddenDebugFields(body);
+        expectGachaResultShape(body.results[0]);
+        safeResults.push(body.results[0]);
+        const calls = samplerCalls;
+        const balance = scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';");
+        roll = boundary + candidate.weight - 1;
+        const replayResponse = await request();
+        const replay = await replayResponse.json();
+        expect(replay.results).toEqual(body.results);
+        expect(samplerCalls).toBe(calls);
+        expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';")).toBe(balance);
+        boundary += candidate.weight;
+      }
+      // Both duplicate classes must grant their canonical operator-specific balance.
+      for (const [id, quantity] of [["op_vex", 50], ["op_signal_runner", 30], ["op_kyle", 50], ["op_reina", 50], ["op_eve", 50], ["op_sera", 50], ["op_mira", 50]] as const) {
+        db.run("DELETE FROM player_gacha_pity;");
+        roll = pool.slice(0, pool.findIndex((r) => r.resultId === id)).reduce((sum, r) => sum + r.weight, 0);
+        const response = await app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+          method: "POST", headers: { "Idempotency-Key": `duplicate-${id}`, Authorization: authorization }, body: JSON.stringify({ pullCount: 1 }),
+        }, createEnv(db));
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.results[0]).toMatchObject({ resultId: id, wasDuplicate: true, duplicateConversion: { quantity, operatorId: id } });
+        expect(scalar(db, `SELECT quantity FROM account_items WHERE item_id = 'cur_operator_token:${id}';`)).toBe(quantity);
+        safeResults.push(body.results[0]);
+      }
+      expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results;")).toBe(pool.length + 7);
+      const persistedIds = db.exec("SELECT result_id FROM gacha_pull_results ORDER BY rowid;")[0]?.values.map((row) => row[0]);
+      expect(persistedIds).toEqual([...pool.map((candidate) => candidate.resultId), "op_vex", "op_signal_runner", "op_kyle", "op_reina", "op_eve", "op_sera", "op_mira"]);
+      expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';")).toBe(100 - pool.length - 7);
+      expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+      expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+      mkdirSync("audit-results", { recursive: true });
+      writeFileSync("audit-results/admin-safe-results.json", JSON.stringify({ status: "APPROVED_21_POLICY_LOCAL_API_DB_VERIFIED_NOT_REMOTE", results: safeResults }, null, 2));
+      // Capture the real Admin projection from this same DB. The earlier Game
+      // result fixture is not interchangeable with the Admin detail contract.
+      db.run("INSERT INTO admin_principals VALUES ('audit-admin', 'audit-local-subject', 'OWNER', 'ACTIVE', 'Local test owner', 1, 1);");
+      const adminEnv = { ...createEnv(db), ADMIN_AUTH_MODE: "LOCAL_HEADER" as const, ADMIN_ACCESS_ISSUER: "", ADMIN_ACCESS_AUD: "", ADMIN_DELEGATED_ACCESS_ISSUER: "", ADMIN_DELEGATED_ACCESS_AUD: "", ADMIN_JOBS_QUEUE: {} as Queue };
+      const readAdmin = (path: string) => adminApp.request(path, { headers: { "Cf-Access-Subject": "audit-local-subject" } }, adminEnv);
+      const listResponse = await readAdmin("/v1/admin/gacha/pull-batches");
+      expect(listResponse.status).toBe(200);
+      const list = await listResponse.json();
+      expect(list.items).toHaveLength(pool.length + 7);
+      const details = [];
+      for (const item of list.items) {
+        const detailResponse = await readAdmin(`/v1/admin/gacha/pull-batches/${item.batchId}`);
+        expect(detailResponse.status).toBe(200);
+        const detail = await detailResponse.json();
+        expect(detail.item.results).toHaveLength(1);
+        expect(detail.item.results[0].resultId).toMatch(/^gacha_result_/u);
+        expect(pool.some((candidate) => candidate.resultId === detail.item.results[0].reward.id)).toBe(true);
+        const result = detail.item.results[0];
+        expect(result.reward.quantity).toBe(result.wasDuplicate ? result.duplicateConversion.quantity : pool.find((r) => r.resultId === result.reward.id)!.quantity);
+        details.push(detail);
+      }
+      const duplicateDetails = details.filter((detail) => detail.item.results[0].wasDuplicate);
+      expect(duplicateDetails).toHaveLength(7);
+      expect(duplicateDetails.map((detail) => detail.item.results[0].duplicateConversion.quantity).sort((a, b) => a - b)).toEqual([30, 50, 50, 50, 50, 50, 50]);
+      const fixture = JSON.stringify({ status: "APPROVED_21_POLICY_LOCAL_API_DB_VERIFIED_NOT_REMOTE", syntheticLocalAccountOnly: true, list, details }, null, 2);
+      for (const forbidden of ['"weight"', '"rngSeed"', '"rawRng"', '"accessToken"', '"secret"']) expect(fixture).not.toContain(forbidden);
+      writeFileSync("audit-results/admin-projection-safe.json", fixture);
+      if (process.env.GACHA_AUDIT_READ_BRIDGE === "1") {
+        randomSpy.mockRestore();
+        const bridge = await startGachaAuditReadBridge(readAdmin);
+        writeFileSync("audit-results/read-bridge.json", JSON.stringify({
+          status: "RUNNING_APPROVED_21_POLICY_LOCAL_API_DB_VERIFIED_NOT_REMOTE", url: bridge.url,
+          pid: process.pid, expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+          database: "same_live_in_memory_database_used_by_game_pulls_and_admin_reads",
+        }, null, 2));
+        try { await bridge.closed; } finally { bridge.close(); }
+      }
+    } finally { randomSpy.mockRestore(); db.close(); }
+  }, process.env.GACHA_AUDIT_READ_BRIDGE === "1" ? 31 * 60 * 1000 : 5000);
 
-    const response = await app.request(
-      "/v1/gacha/banners/banner-gacha-smoke-1/pulls",
-      {
-        method: "POST",
-        headers: {
-          "Idempotency-Key": "gacha-smoke-idem-launch-draft-10-1",
-          Authorization: await createAuthorizationHeader(),
-        },
-        body: JSON.stringify({ pullCount: 10 }),
-      },
-      createEnv(db),
-    );
+  it("carries pity across real single and ten-pull batches with pickup precedence and replay", async () => {
+    const pool = launchGachaPool.results;
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 20, poolSnapshotJson: JSON.stringify({ results: pool }), pityState: { totalPullCount: 58, elitePityCount: 28, pickupElitePityCount: 58, rareOrHigherPityCount: 8, revision: 3 } });
+    const authorization = await createAuthorizationHeader();
+    const originalRandom = crypto.getRandomValues.bind(crypto);
+    let roll = pool.slice(0, pool.findIndex((r) => r.resultId === "mat_scrap")).reduce((sum, r) => sum + r.weight, 0);
+    const randomSpy = vi.spyOn(crypto, "getRandomValues").mockImplementation((buffer) => {
+      if (buffer instanceof Uint32Array && buffer.length === 1) { buffer[0] = roll; return buffer; }
+      return originalRandom(buffer);
+    });
+    try {
+      const pull = (key: string, count: number) => app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+        method: "POST", headers: { "Idempotency-Key": key, Authorization: authorization }, body: JSON.stringify({ pullCount: count }),
+      }, createEnv(db));
+      const first = await (await pull("carry-single", 1)).json();
+      expect(first.postPityState).toMatchObject({ totalPullCount: 59, elitePityCount: 29, pickupElitePityCount: 59, rareOrHigherPityCount: 9 });
+      roll = 0;
+      const batch = await (await pull("carry-ten", 10)).json();
+      expect(batch.results).toHaveLength(10);
+      expect(batch.results[0]).toMatchObject({ guaranteeType: "PICKUP_ELITE_60", resultId: "op_vex" });
+      expect(batch.results.slice(1).every((r: { guaranteeType: string }) => r.guaranteeType === "NONE")).toBe(true);
+      expect(batch.postPityState).toMatchObject({ totalPullCount: 69, elitePityCount: 0, pickupElitePityCount: 9, rareOrHigherPityCount: 0, revision: 5 });
+      expect((await (await pull("carry-ten", 10)).json()).results).toEqual(batch.results);
+      expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';")).toBe(9);
+      expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results;")).toBe(11);
+      expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
+    } finally { randomSpy.mockRestore(); db.close(); }
+  });
 
+  it("fails closed when entropy fails partway through a ten-pull, without committing any economic state", async () => {
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 10 });
+    const authorization = await createAuthorizationHeader();
+    const originalRandom = crypto.getRandomValues.bind(crypto);
+    let calls = 0;
+    const randomSpy = vi.spyOn(crypto, "getRandomValues").mockImplementation((buffer) => {
+      if (buffer instanceof Uint32Array && buffer.length === 1) {
+        if (++calls === 4) throw new Error("test-only entropy outage");
+        buffer[0] = 0; return buffer;
+      }
+      return originalRandom(buffer);
+    });
+    try {
+      const response = await app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+        method: "POST", headers: { "Idempotency-Key": "entropy-failure", Authorization: authorization }, body: JSON.stringify({ pullCount: 10 }),
+      }, createEnv(db));
+      expect(response.status).toBe(503);
+      const body = await response.json();
+      expect(body).toMatchObject({ accepted: false, errorCode: "gacha_pool_unavailable" });
+      expectNoForbiddenDebugFields(body);
+      expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';")).toBe(10);
+      for (const table of ["account_operators", "account_mutations", "gacha_pull_results", "gacha_pull_batches", "player_gacha_pity", "item_ledger", "progression_ledger", "idempotency_records"]) {
+        expect(scalar(db, `SELECT COUNT(*) FROM ${table};`)).toBe(0);
+      }
+    } finally { randomSpy.mockRestore(); db.close(); }
+  });
+
+  it("preserves populated existing DB rows and indexes when adding only the two result types", async () => {
+    const db = await createMigratedDb(20);
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 1 });
+    const response = await app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+      method: "POST", headers: { "Idempotency-Key": "pre-migration", Authorization: await createAuthorizationHeader() }, body: JSON.stringify({ pullCount: 1 }),
+    }, createEnv(db));
     expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body).toMatchObject({
-      accepted: true,
-      resultStatus: "ACCEPTED",
-      bannerId: "banner-gacha-smoke-1",
-      balanceVersion: "301",
-      pullCount: 10,
-      cost: { itemId: "cur_command_ticket", quantity: 10 },
-      errorCode: null,
-      message: null,
-    });
-    expectGachaResponseTopLevelShape(body);
-    expect(body.results).toHaveLength(10);
-
-    const launchPoolResultIds = new Set(launchBanner.pool.results.map((result) => result.resultId));
-    for (const result of body.results as Array<Record<string, unknown>>) {
-      expectGachaResultShape(result);
-      expect(launchPoolResultIds.has(String(result.resultId))).toBe(true);
-      expect(launchGachaDataDraft.supportedGuaranteeTypes).toContain(result.guaranteeType);
-    }
-
-    expectNoForbiddenDebugFields(body);
-    expect(JSON.stringify(body)).not.toContain("weight");
-    expect(JSON.stringify(body)).not.toContain("pool");
-    expect(scalar(db, "SELECT quantity FROM account_items WHERE account_id = 'account-gacha-smoke-1' AND item_id = 'cur_command_ticket';")).toBe(0);
-    expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results WHERE account_id = 'account-gacha-smoke-1';")).toBe(10);
+    const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;")[0]!.values.map((row) => String(row[0]));
+    const before = tables.map((table) => db.exec(`SELECT * FROM ${table} ORDER BY rowid;`));
+    const indexBefore = db.exec("SELECT name,tbl_name FROM sqlite_master WHERE type='index' ORDER BY name;");
+    db.run(readFileSync("packages/db/migrations/0021_gacha_result_types.sql", "utf8"));
+    expect(tables.map((table) => db.exec(`SELECT * FROM ${table} ORDER BY rowid;`))).toEqual(before);
+    expect(db.exec("SELECT name,tbl_name FROM sqlite_master WHERE type='index' ORDER BY name;")).toEqual(indexBefore);
     expect(db.exec("PRAGMA foreign_key_check;")).toEqual([]);
     expect(db.exec("PRAGMA quick_check;")[0]?.values).toEqual([["ok"]]);
+    expect(() => db.run("UPDATE gacha_pull_results SET result_type='UNSUPPORTED_TYPE';")).toThrow();
+    db.close();
+  });
+
+  it("enforces the dedicated DEV banner scope on the real authenticated route", async () => {
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 1 });
+    const snapshot = JSON.stringify({ ...launchGachaPool, policyVersion: launchGachaPolicyVersion, devTestScope: { environment: "DEV", accountId: "someone-else", expiresAtMs: Date.now() + 60000 } });
+    db.run("UPDATE gacha_banners SET id='banner_dev_gacha_verify_local',pool_snapshot_json=?;", [snapshot]);
+    const request = (environment = "DEV") => app.request("/v1/gacha/banners/banner_dev_gacha_verify_local/pulls", {
+      method: "POST", headers: { "Idempotency-Key": "scoped-request", Authorization: "" }, body: JSON.stringify({ pullCount: 1, accountId: "someone-else" }),
+    }, { ...createEnv(db), ENVIRONMENT: environment as Env["ENVIRONMENT"] });
+    expect((await request()).status).toBe(401);
+    const authorization = await createAuthorizationHeader();
+    const authenticated = (environment = "DEV") => app.request("/v1/gacha/banners/banner_dev_gacha_verify_local/pulls", {
+      method: "POST", headers: { "Idempotency-Key": "scoped-request", Authorization: authorization }, body: JSON.stringify({ pullCount: 1, accountId: "someone-else" }),
+    }, { ...createEnv(db), ENVIRONMENT: environment as Env["ENVIRONMENT"] });
+    expect((await authenticated()).status).toBe(403);
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id='cur_command_ticket';")).toBe(1);
+    db.run("UPDATE gacha_banners SET pool_snapshot_json=?;", [snapshot.replace('"someone-else"', '"account-gacha-smoke-1"')]);
+    expect((await authenticated("PRD")).status).toBe(403);
+    expect((await authenticated()).status).toBe(200);
+    expect((await authenticated()).status).toBe(200);
+    expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_results;")).toBe(1);
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id='cur_command_ticket';")).toBe(0);
+    db.close();
+  });
+
+  it("rejects an unsupported type without spending tickets or changing state", async () => {
+    const db = await createMigratedDb();
+    seedBaseGachaState(db, { alreadyOwnsPickup: false, tickets: 10, poolSnapshotJson: JSON.stringify({ results: [{ resultId: "invalid", resultRarity: "COMMON", resultType: "UNSUPPORTED_TYPE", weight: 1 }] }) });
+    const response = await app.request("/v1/gacha/banners/banner-gacha-smoke-1/pulls", {
+      method: "POST", headers: { "Idempotency-Key": "invalid-full-draft", Authorization: await createAuthorizationHeader() },
+      body: JSON.stringify({ pullCount: 10 }),
+    }, createEnv(db));
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ accepted: false, errorCode: "gacha_pool_unavailable" });
+    expect(scalar(db, "SELECT quantity FROM account_items WHERE item_id = 'cur_command_ticket';")).toBe(10);
+    expect(scalar(db, "SELECT COUNT(*) FROM gacha_pull_batches;")).toBe(0);
+    expect(scalar(db, "SELECT COUNT(*) FROM item_ledger;")).toBe(0);
     db.close();
   });
 });
