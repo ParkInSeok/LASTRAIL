@@ -79,6 +79,7 @@ export type GachaPullResultSummary = {
   resultRarity: string;
   resultType: string;
   rewardId: string;
+  rewardQuantity: number | null;
   isPickup: string;
   wasDuplicate: string;
   guaranteeType: string;
@@ -251,6 +252,7 @@ function mapResult(value: unknown): GachaPullResultSummary | null {
     resultRarity: readValue(record.resultRarity),
     resultType: readValue(record.resultType),
     rewardId: readValue(reward?.id),
+    rewardQuantity: typeof reward?.quantity === "number" && Number.isSafeInteger(reward.quantity) && reward.quantity >= 0 ? reward.quantity : null,
     isPickup: booleanValue(record.isPickup),
     wasDuplicate: booleanValue(record.wasDuplicate),
     guaranteeType: guaranteeTypeValue(record.guaranteeType),

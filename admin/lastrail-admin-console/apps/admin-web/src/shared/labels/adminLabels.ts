@@ -201,6 +201,17 @@ export function gachaResultStatusLabel(status: GachaResultStatus | string): stri
   );
 }
 
+export function gachaResultTypeLabel(type: string): string {
+  return labelFor({
+    ELITE_OPERATOR: "정예 요원",
+    RARE_OPERATOR: "희귀 요원",
+    RARE_OPERATOR_TOKEN: "희귀 요원 증표",
+    TRAINING_MATERIAL: "훈련 재료",
+    WORK_SKILL_MATERIAL: "작업 기술 재료",
+    TACTICAL_MATERIAL: "전술 재료"
+  }, type);
+}
+
 export function firstClearLabel(isFirstClear: boolean): string {
   return isFirstClear ? "첫 클리어 보너스" : "첫 클리어 보너스 없음";
 }

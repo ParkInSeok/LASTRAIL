@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useSearchParams } from "react-router-dom";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
-import { gachaGuaranteeTypeLabel } from "../shared/labels/adminLabels";
+import { gachaGuaranteeTypeLabel, gachaResultTypeLabel } from "../shared/labels/adminLabels";
 import "./gachaHistory.css";
 
 export function bannerTypeLabel(value?: string) {
@@ -24,6 +24,8 @@ function PullResults({ batchId }: { batchId: string }) {
   const evidence = query.data?.item.causeEvidence;
   return <><ul className="gacha-results">{results.map((r, i) => <li key={`${r.resultId}-${i}`}>
     <span>{r.rewardId}</span> <small>{r.resultRarity}{r.isPickup === "예" ? " · 픽업" : ""}{r.wasDuplicate === "예" ? " · 중복" : ""}</small>
+    <small title={r.resultType}>{gachaResultTypeLabel(r.resultType)}</small>
+    <small>{`${r.wasDuplicate === "예" ? "변환 수량" : "획득 수량"}: ${r.rewardQuantity ?? "미기록"}`}</small>
     {r.duplicateConversion !== "없음" && <small> → {r.duplicateConversion}</small>}
   </li>)}</ul>{evidence && <details><summary>서버 참조 기록</summary><dl>
     <dt>중복 결과 수</dt><dd>{evidence.duplicateResultCount ?? "미기록"}</dd>
