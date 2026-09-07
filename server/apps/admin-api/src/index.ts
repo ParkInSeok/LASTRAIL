@@ -10,7 +10,7 @@ import {
   type ServerReleaseEnvironment,
   type ServerReleaseService,
 } from "@lastrail/common";
-import { parseVersion, readVersion, saveVersion, type VersionBucket } from "./version-store";
+import { parseVersion, readVersionSnapshot, saveVersion, type VersionBucket } from "./version-store";
 import { opsLogSearch } from "./ops-log-search";
 
 const app = new Hono<{ Bindings: Env & { VERSION_BUCKET?: VersionBucket } }>();
@@ -1946,11 +1946,13 @@ app.get("/v1/admin/versions", async (c) => {
   if (c.env.ENVIRONMENT !== "DEV") return c.json({ error: { code: "version_environment_disabled" } }, 403);
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
-    const version = await readVersion(c.env.VERSION_BUCKET);
+    const snapshot = await readVersionSnapshot(c.env.VERSION_BUCKET);
+    const version = snapshot.version;
     return c.json({
       environment: "DEV",
       server: "dev-admin.lastrail.app",
       canExport: principal.role === "OWNER",
+      revision: snapshot.etag,
       version: version?.version ?? null,
       versionCode: version?.versionCode ?? null,
       minimumVersionCode: version?.minimumVersionCode ?? null,
@@ -1969,16 +1971,31 @@ app.post("/v1/admin/versions/export", async (c) => {
   if (principal instanceof Response) return principal;
   c.header("Cache-Control", "no-store");
   if (principal.role !== "OWNER" || c.env.ENVIRONMENT !== "DEV") return c.json({ error: { code: "version_export_forbidden" } }, 403);
-  const version = parseVersion(await c.req.json().catch(() => null));
+  const body: unknown = await c.req.json().catch(() => null);
+  const version = parseVersion(body);
   if (!version || !version.minimumVersionCode) return c.json({ error: { code: "invalid_version" } }, 400);
+  if (!Object.prototype.hasOwnProperty.call(body, "expectedRevision")) {
+    return c.json({ error: { code: "version_precondition_required" } }, 428);
+  }
+  const expectedRevision = (body as Record<string, unknown>).expectedRevision;
+  if (expectedRevision !== null && (typeof expectedRevision !== "string" || !/^"[\x21\x23-\x7e]{1,256}"$/u.test(expectedRevision))) {
+    return c.json({ error: { code: "invalid_version_revision" } }, 400);
+  }
   if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
   try {
-    const existing = await readVersion(c.env.VERSION_BUCKET);
+    const snapshot = await readVersionSnapshot(c.env.VERSION_BUCKET);
+    if (snapshot.etag !== expectedRevision) {
+      return c.json({ error: { code: "version_current_pointer_conflict" } }, 409);
+    }
+    const existing = snapshot.version;
     const mergedVersion = version.contentRelease === undefined && existing?.contentRelease !== undefined
       ? { ...version, contentRelease: existing.contentRelease }
       : version;
-    return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, mergedVersion) });
-  } catch {
+    return c.json({ accepted: true, ...await saveVersion(c.env.VERSION_BUCKET, mergedVersion, { expectedEtag: snapshot.etag }) });
+  } catch (error) {
+    if (error instanceof Error && error.message === "version_current_pointer_conflict") {
+      return c.json({ error: { code: "version_current_pointer_conflict" } }, 409);
+    }
     return c.json({ error: { code: "version_storage_write_failed" } }, 502);
   }
 });

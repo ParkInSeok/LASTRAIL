@@ -25,6 +25,34 @@ Do not seed real admin principals or expose operational Admin routes until Cloud
 
 ## Read-only Operations
 
+### Version policy browser preconditions (local, not deployed)
+
+`GET /v1/admin/versions` returns `revision: string | null` with the version
+policy. A string is the opaque quoted object ETag and must be echoed unchanged;
+null means the object does not exist. Missing/unavailable revision must not be
+converted into null by the UI. Read failures return no usable revision.
+
+`POST /v1/admin/versions/export` requires `expectedRevision: string | null` in
+the existing JSON body alongside version/versionCode/minimumVersionCode. An
+explicit null permits creation only while the object is still absent. Legacy
+content omission still preserves the current approved content release.
+
+- Missing expectedRevision:428 `version_precondition_required`.
+- Invalid revision format:400 `invalid_version_revision`.
+- Browser revision differs from current, or final conditional write fails:409
+  `version_current_pointer_conflict`.
+- Storage read/write failures retain502 `version_storage_read_failed` /
+  `version_storage_write_failed` on the respective routes.
+
+The server compares the browser revision to the current snapshot, then merges
+and writes with that same snapshot's atomic storage precondition. The comparison
+does not replace CAS. Success response remains unchanged; obtain a fresh revision
+through GET before another save. Do not automatically resubmit after409. Reload
+the latest policy and require user review; block saving while reload is pending
+or failed. An old UI without expectedRevision receives428 after server rollout.
+This protects an old browser form in addition to the server's read/merge race.
+Actual UI/API rollout is a separate approval; no deployed behavior is claimed.
+
 `GET /v1/admin/players` returns account search rows for the Admin Console.
 
 Query:

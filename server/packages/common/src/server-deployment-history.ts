@@ -475,10 +475,19 @@ async function writeServerDeploymentFailureRecord(
   bucket: ServerDeploymentHistoryBucket,
   failure: { key: string; record: ServerDeploymentFailureRecord },
 ): Promise<string> {
-  await bucket.put(failure.key, canonicalJson(failure.record as never), {
+  const payload = canonicalJson(failure.record as never);
+  const result = await bucket.put(failure.key, payload, {
     onlyIf: ifNoneMatchStar(),
     httpMetadata: { contentType: "application/json", cacheControl: "no-store" },
   });
+  if (result === null) {
+    const existing = await bucket.get(failure.key);
+    if (existing === null || canonicalJson(await existing.json() as never) !== payload) {
+      throw new Error("deployment_failure_immutable_conflict");
+    }
+  } else if (result === undefined) {
+    throw new Error("deployment_failure_storage_write_failed");
+  }
   return failure.key;
 }
 
@@ -558,7 +567,7 @@ export async function saveServerDeploymentEvidence(
 
   const current = await readServerDeploymentCurrentPointer(bucket, evidence.environment, evidence.service);
   const expectedCurrentEtag = options.expectedCurrentEtag === undefined ? current?.etag ?? null : options.expectedCurrentEtag;
-  if (options.expectedCurrentEtag !== undefined && current?.etag !== null && current?.etag !== options.expectedCurrentEtag) {
+  if (options.expectedCurrentEtag !== undefined && (current?.etag ?? null) !== options.expectedCurrentEtag) {
     return { accepted: false, errorCode: "deployment_current_pointer_conflict", historyKey, currentKey, currentPointerStatus: "DEGRADED" };
   }
   const pointer: ServerDeploymentCurrentPointer = {

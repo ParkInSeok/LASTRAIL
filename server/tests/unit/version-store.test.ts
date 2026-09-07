@@ -18,7 +18,7 @@ describe("DEV current version storage", () => {
   });
   it("writes the fixed JSON key and reads back saved values", async () => {
     let stored: string | null = null;
-    const put = vi.fn(async (_key: string, value: string) => { stored = value; });
+    const put = vi.fn(async (_key: string, value: string) => { stored = value; return { etag: "1" }; });
     const bucket = { put, get: vi.fn(async () => stored === null ? null : { json: async () => JSON.parse(stored!) }) } as unknown as VersionBucket;
     expect(await readVersion(bucket)).toBeNull();
     const value = { version: "1.2.3", versionCode: "100", minimumVersionCode: "10" };
@@ -29,6 +29,7 @@ describe("DEV current version storage", () => {
   it("does not treat corrupted data or failed writes as success", async () => {
     const bucket = { get: async () => ({ json: async () => ({}) }), put: async () => { throw new Error("unavailable"); } } as unknown as VersionBucket;
     await expect(readVersion(bucket)).rejects.toThrow("version_document_invalid");
+    bucket.get = async () => null;
     await expect(saveVersion(bucket, { version: "1", versionCode: "1" })).rejects.toThrow("unavailable");
   });
 });

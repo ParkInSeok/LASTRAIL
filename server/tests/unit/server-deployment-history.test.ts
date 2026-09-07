@@ -76,6 +76,49 @@ function createFakeBucket(initial?: Record<string, unknown>) {
 }
 
 describe("server deployment history store", () => {
+  it.each([false, true])("failure creation races preserve one immutable payload (different=%s)", async (different) => {
+    const bucket = createFakeBucket();
+    const run = (errorCode: "deployment_smoke_failed" | "deployment_smoke_blocked") => runServerDeploymentReleaseFlow(
+      plan, [], { environment: "prd", service: "game-api" }, bucket,
+      async () => ({ accepted: true, cloudflareDeploymentId: "existing-deployment" }),
+      async () => ({ accepted: false, errorCode }),
+      { attemptId: "race-attempt", createdAt: "2026-09-07T01:00:00.000Z" },
+    );
+    const results = await Promise.allSettled([run("deployment_smoke_failed"), run(different ? "deployment_smoke_blocked" : "deployment_smoke_failed")]);
+    expect(results.filter(r => r.status === "fulfilled")).toHaveLength(different ? 1 : 2);
+    expect(Object.keys(bucket.snapshot())).toHaveLength(1);
+    expect(Object.keys(bucket.snapshot())[0]).toContain("/failures/");
+  });
+
+  it("does not claim a failure key when a rejected conditional write has no stored object", async () => {
+    const bucket = createFakeBucket();
+    bucket.put = async () => null;
+    await expect(runServerDeploymentReleaseFlow(plan, [], { environment: "prd", service: "game-api" }, bucket,
+      async () => ({ accepted: false, errorCode: "deployment_execution_failed" }),
+      async () => { throw new Error("must not smoke"); },
+      { createdAt: "2026-09-07T01:00:00.000Z" },
+    )).rejects.toThrow("deployment_failure_immutable_conflict");
+    expect(bucket.snapshot()).toEqual({});
+  });
+
+  it("failure records distinguish identical replay, conflicting replay and failed storage", async () => {
+    const bucket = createFakeBucket();
+    const run = (errorCode: "deployment_smoke_failed" | "deployment_smoke_blocked") => runServerDeploymentReleaseFlow(
+      plan, [], { environment: "prd", service: "game-api" }, bucket,
+      async () => ({ accepted: true, cloudflareDeploymentId: "existing-deployment" }),
+      async () => ({ accepted: false, errorCode }),
+      { attemptId: "same-attempt", createdAt: "2026-09-07T01:00:00.000Z" },
+    );
+    const first = await run("deployment_smoke_failed");
+    expect(await run("deployment_smoke_failed")).toEqual(first);
+    const before = bucket.snapshot();
+    await expect(run("deployment_smoke_blocked")).rejects.toThrow("deployment_failure_immutable_conflict");
+    expect(bucket.snapshot()).toEqual(before);
+    bucket.put = async () => { throw new Error("store_offline"); };
+    await expect(run("deployment_smoke_failed")).rejects.toThrow("store_offline");
+    expect(Object.keys(bucket.snapshot()).every(key => key.includes("/failures/"))).toBe(true);
+  });
+
   it("writes immutable deployment history and a current pointer with sanitized evidence", async () => {
     const preflight = buildServerDeployPreflight(plan, [], { environment: "prd", service: "game-api" });
     expect(preflight).toMatchObject({ accepted: true });

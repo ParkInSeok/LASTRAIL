@@ -1,10 +1,10 @@
 export type VersionBucket = {
-  get(key: string): Promise<{ json(): Promise<unknown> } | null>;
+  get(key: string): Promise<{ etag?: string; httpEtag?: string; json(): Promise<unknown> } | null>;
   put(
     key: string,
     value: string,
-    options: { httpMetadata: { contentType: string; cacheControl: string } },
-  ): Promise<unknown>;
+    options: { onlyIf: Headers; httpMetadata: { contentType: string; cacheControl: string } },
+  ): Promise<{ etag?: string; httpEtag?: string } | null>;
 };
 
 export type ContentReleaseDocument = {
@@ -97,9 +97,27 @@ export async function readVersion(bucket: VersionBucket) {
   return version;
 }
 
-export async function saveVersion(bucket: VersionBucket, version: VersionDocument) {
-  await bucket.put(currentVersionKey, JSON.stringify(version), {
+export async function readVersionSnapshot(bucket: VersionBucket): Promise<{ version: VersionDocument | null; etag: string | null }> {
+  const object = await bucket.get(currentVersionKey);
+  if (object === null) return { version: null, etag: null };
+  const version = parseVersion(await object.json());
+  if (version === null) throw new Error("version_document_invalid");
+  const etag = object.httpEtag ?? (object.etag ? `"${object.etag}"` : null);
+  if (!etag) throw new Error("version_etag_unavailable");
+  return { version, etag };
+}
+
+export async function saveVersion(bucket: VersionBucket, version: VersionDocument, options: { expectedEtag?: string | null } = {}) {
+  const expectedEtag = options.expectedEtag === undefined ? (await readVersionSnapshot(bucket)).etag : options.expectedEtag;
+  if (expectedEtag === "") throw new Error("version_etag_unavailable");
+  const onlyIf = new Headers();
+  if (expectedEtag === null) onlyIf.set("If-None-Match", "*");
+  else onlyIf.set("If-Match", expectedEtag);
+  const result = await bucket.put(currentVersionKey, JSON.stringify(version), {
+    onlyIf,
     httpMetadata: { contentType: "application/json", cacheControl: "no-store" },
   });
+  if (result === null) throw new Error("version_current_pointer_conflict");
+  if (result === undefined) throw new Error("version_storage_write_failed");
   return version;
 }
