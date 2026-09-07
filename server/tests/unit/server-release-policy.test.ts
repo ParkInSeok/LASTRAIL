@@ -23,6 +23,10 @@ const basePlan = {
     minimumVersionCode: "101",
     migrationRange: "0001-0020",
   },
+  api: {
+    compatibility: "ROLLBACK_COMPATIBLE",
+    rollbackVerified: true,
+  },
   contentRelease: {
     releaseId: "act1-content-2026-09-06",
     contentVersion: "act1.2026-09-06.1",
@@ -96,6 +100,27 @@ describe("server release deploy policy", () => {
     expect(validateServerDeployPlanForDeployment({
       ...basePlan,
       database: { compatibility: "ADDITIVE_COMPATIBLE", migrationRange: "0001-0020" },
+    }, [])).toMatchObject({ accepted: true });
+  });
+
+  it("requires API-only changes to be rollback verified unless they are protected by minimum app version", () => {
+    expect(validateServerDeployPlanForDeployment({
+      ...basePlan,
+      api: { compatibility: "ROLLBACK_COMPATIBLE", rollbackVerified: false },
+    }, [])).toEqual({
+      accepted: false,
+      errorCode: "api_rollback_verification_required",
+    });
+    expect(validateServerDeployPlanForDeployment({
+      ...basePlan,
+      api: { compatibility: "MIN_VERSION_GATE_REQUIRED" },
+    }, [])).toEqual({
+      accepted: false,
+      errorCode: "minimum_version_required_for_api_change",
+    });
+    expect(validateServerDeployPlanForDeployment({
+      ...basePlan,
+      api: { compatibility: "MIN_VERSION_GATE_REQUIRED", minimumVersionCode: "101" },
     }, [])).toMatchObject({ accepted: true });
   });
 

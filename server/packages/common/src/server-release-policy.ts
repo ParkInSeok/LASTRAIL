@@ -1,6 +1,7 @@
 export type ServerReleaseService = "game-api" | "admin-api" | "async-worker";
 export type ServerReleaseEnvironment = "dev" | "prd";
 export type ServerDbCompatibility = "NO_DB_CHANGE" | "ADDITIVE_COMPATIBLE" | "MIN_VERSION_GATE_REQUIRED";
+export type ServerApiCompatibility = "NO_API_CHANGE" | "ROLLBACK_COMPATIBLE" | "MIN_VERSION_GATE_REQUIRED";
 export type ServerVerificationStatus = "PENDING" | "PASSED" | "FAILED" | "BLOCKED";
 
 export type ServerDeploymentTag = {
@@ -23,6 +24,11 @@ export type ServerDeployPlan = {
     compatibility: ServerDbCompatibility;
     minimumVersionCode?: string;
     migrationRange?: string;
+  };
+  api?: {
+    compatibility: ServerApiCompatibility;
+    rollbackVerified?: boolean;
+    minimumVersionCode?: string;
   };
   contentRelease?: {
     releaseId: string;
@@ -48,11 +54,14 @@ export type ServerDeployValidationErrorCode =
   | "release_branch_missing_server_version"
   | "deployment_tag_missing"
   | "deployment_tag_invalid"
-  | "minimum_version_required_for_db_change";
+  | "minimum_version_required_for_db_change"
+  | "api_rollback_verification_required"
+  | "minimum_version_required_for_api_change";
 
 const serviceValues = new Set<ServerReleaseService>(["game-api", "admin-api", "async-worker"]);
 const environmentValues = new Set<ServerReleaseEnvironment>(["dev", "prd"]);
 const dbCompatibilityValues = new Set<ServerDbCompatibility>(["NO_DB_CHANGE", "ADDITIVE_COMPATIBLE", "MIN_VERSION_GATE_REQUIRED"]);
+const apiCompatibilityValues = new Set<ServerApiCompatibility>(["NO_API_CHANGE", "ROLLBACK_COMPATIBLE", "MIN_VERSION_GATE_REQUIRED"]);
 const verificationValues = new Set<ServerVerificationStatus>(["PENDING", "PASSED", "FAILED", "BLOCKED"]);
 const safeIdPattern = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u;
 const safeBranchPattern = /^release\/[A-Za-z0-9][A-Za-z0-9._/-]{0,160}$/u;
@@ -133,6 +142,19 @@ export function parseServerDeployPlan(value: unknown): ServerDeployPlan | null {
   if (!dbCompatibilityValues.has(compatibility)) return null;
   if (value.database.minimumVersionCode !== undefined && !isVersionCode(value.database.minimumVersionCode)) return null;
   if (value.database.migrationRange !== undefined && !isSafeId(value.database.migrationRange)) return null;
+  let api: ServerDeployPlan["api"];
+  if (value.api !== undefined) {
+    if (!isRecord(value.api) || typeof value.api.compatibility !== "string") return null;
+    const apiCompatibility = value.api.compatibility as ServerApiCompatibility;
+    if (!apiCompatibilityValues.has(apiCompatibility)) return null;
+    if (value.api.rollbackVerified !== undefined && typeof value.api.rollbackVerified !== "boolean") return null;
+    if (value.api.minimumVersionCode !== undefined && !isVersionCode(value.api.minimumVersionCode)) return null;
+    api = {
+      compatibility: apiCompatibility,
+      ...(value.api.rollbackVerified === undefined ? {} : { rollbackVerified: value.api.rollbackVerified }),
+      ...(value.api.minimumVersionCode === undefined ? {} : { minimumVersionCode: value.api.minimumVersionCode }),
+    };
+  }
   if (!isRecord(value.verification)) return null;
   if (value.verification.localRegression !== "PASSED" || value.verification.dryRun !== "PASSED") return null;
   if (typeof value.verification.remoteSmoke !== "string" || !verificationValues.has(value.verification.remoteSmoke as ServerVerificationStatus)) return null;
@@ -163,6 +185,7 @@ export function parseServerDeployPlan(value: unknown): ServerDeployPlan | null {
       ...(value.database.minimumVersionCode === undefined ? {} : { minimumVersionCode: value.database.minimumVersionCode }),
       ...(value.database.migrationRange === undefined ? {} : { migrationRange: value.database.migrationRange }),
     },
+    ...(api === undefined ? {} : { api }),
     ...(contentRelease === undefined ? {} : { contentRelease }),
     verification: {
       localRegression: "PASSED",
@@ -197,6 +220,12 @@ export function validateServerDeployPlanForDeployment(
 
   if (plan.database.compatibility === "MIN_VERSION_GATE_REQUIRED" && plan.database.minimumVersionCode === undefined) {
     return { accepted: false, errorCode: "minimum_version_required_for_db_change" };
+  }
+  if (plan.api?.compatibility === "ROLLBACK_COMPATIBLE" && plan.api.rollbackVerified !== true) {
+    return { accepted: false, errorCode: "api_rollback_verification_required" };
+  }
+  if (plan.api?.compatibility === "MIN_VERSION_GATE_REQUIRED" && plan.api.minimumVersionCode === undefined) {
+    return { accepted: false, errorCode: "minimum_version_required_for_api_change" };
   }
 
   const reused = history.some((entry) =>

@@ -26,6 +26,10 @@ const plan = {
     compatibility: "ADDITIVE_COMPATIBLE",
     migrationRange: "0001-0020",
   },
+  api: {
+    compatibility: "ROLLBACK_COMPATIBLE",
+    rollbackVerified: true,
+  },
   verification: {
     localRegression: "PASSED",
     dryRun: "PASSED",
@@ -104,6 +108,7 @@ describe("server deployment history store", () => {
         cloudflareDeploymentId: "cf-deploy-game-20260906-1",
         previousDeploymentId: "cf-deploy-game-previous",
         database: { compatibility: "ADDITIVE_COMPATIBLE", migrationRange: "0001-0020" },
+        api: { compatibility: "ROLLBACK_COMPATIBLE", rollbackVerified: true },
         verification: { localRegression: "PASSED", dryRun: "PASSED", remoteSmoke: "PENDING" },
         pointerStatus: "CURRENT",
       },

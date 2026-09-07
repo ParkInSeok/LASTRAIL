@@ -115,6 +115,7 @@ export type ServerDeploymentFailureRecord = {
     minimumVersionCode?: string;
     migrationRange?: string;
   };
+  api?: ServerDeployPlan["api"];
   contentRelease: {
     releaseId: string;
     contentVersion: string;
@@ -142,6 +143,7 @@ export type ServerDeploymentEvidence = {
     minimumVersionCode?: string;
     migrationRange?: string;
   };
+  api?: ServerDeployPlan["api"];
   contentRelease: {
     releaseId: string;
     contentVersion: string;
@@ -351,6 +353,7 @@ export function parseServerDeploymentEvidence(value: unknown): ServerDeploymentE
     },
     deploymentTags: [{ service: value.service, tag: value.deploymentTag }],
     database: value.database,
+    ...(value.api === undefined ? {} : { api: value.api }),
     ...(value.contentRelease === null ? {} : { contentRelease: value.contentRelease }),
     verification: value.verification,
   });
@@ -373,6 +376,7 @@ export function parseServerDeploymentEvidence(value: unknown): ServerDeploymentE
     cloudflareDeploymentId: value.cloudflareDeploymentId,
     previousDeploymentId: value.previousDeploymentId,
     database: plan.database,
+    ...(plan.api === undefined ? {} : { api: plan.api }),
     contentRelease: plan.contentRelease ?? null,
     verification: plan.verification,
     pointerStatus: value.pointerStatus,
@@ -411,6 +415,7 @@ export function buildServerDeploymentEvidence(
     cloudflareDeploymentId: input.cloudflareDeploymentId,
     previousDeploymentId: input.previousDeploymentId ?? null,
     database: plan.database,
+    ...(plan.api === undefined ? {} : { api: plan.api }),
     contentRelease: plan.contentRelease ?? null,
     verification: plan.verification,
     pointerStatus: "CURRENT",
@@ -455,6 +460,7 @@ function buildServerDeploymentFailureRecord(
       errorCode: input.errorCode,
       cloudflareDeploymentId: input.cloudflareDeploymentId ?? null,
       database: plan.database,
+      ...(plan.api === undefined ? {} : { api: plan.api }),
       contentRelease: plan.contentRelease ?? null,
       verification: {
         ...plan.verification,

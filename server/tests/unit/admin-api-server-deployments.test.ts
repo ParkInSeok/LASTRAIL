@@ -25,6 +25,10 @@ const history = {
     compatibility: "ADDITIVE_COMPATIBLE",
     migrationRange: "0001-0020",
   },
+  api: {
+    compatibility: "ROLLBACK_COMPATIBLE",
+    rollbackVerified: true,
+  },
   contentRelease: null,
   verification: {
     localRegression: "PASSED",

@@ -18,7 +18,14 @@ Compatibility-breaking DB-changing updates are protected by the minimum
 supported app version policy. Additive DB changes that old clients and old
 Workers can ignore do not require a forced app update by themselves.
 
-API-only updates must be designed to remain rollbackable whenever possible.
+Confirmed launch rule:
+
+- DB-changing updates that break compatibility must raise or enforce the
+  server-owned `minimumVersionCode` gate before the incompatible behavior is
+  reachable.
+- API-only updates must be designed and verified as rollback-compatible by
+  default. If an API change is not rollback-compatible for old installed apps,
+  it uses the same minimum-version gate as a breaking DB change.
 
 D1 migrations are treated as forward-moving operational changes, not ordinary
 rollback targets. If a DB migration creates an issue, the default recovery path
@@ -112,6 +119,18 @@ compatibility-breaking DB changes. Startup update prompts are useful UX, but
 they do not replace server-side admission for direct API calls, stale sessions,
 offline retry, or tampered client payloads.
 
+Deploy evidence may carry an optional API compatibility block:
+
+- `api.compatibility = NO_API_CHANGE`: no API contract change in this deploy.
+- `api.compatibility = ROLLBACK_COMPATIBLE`: the release plan verified old and
+  new Workers can read current D1 state and tolerate old-client traffic during
+  rollback.
+- `api.compatibility = MIN_VERSION_GATE_REQUIRED`: the API change is breaking
+  and must include `api.minimumVersionCode`.
+
+`ROLLBACK_COMPATIBLE` evidence must set `api.rollbackVerified = true`.
+`MIN_VERSION_GATE_REQUIRED` evidence must include the minimum app version code.
+
 ## Admin Version Management Boundary
 
 The Admin version-management surface may manage:
@@ -133,6 +152,15 @@ It must not:
 Content rollback means moving an active content pointer to a previously approved
 compatible manifest. Server Worker rollback uses Cloudflare Worker version
 rollback. Database recovery uses forward migrations or audited corrections.
+
+Admin should present server policy as read-only operational evidence:
+
+- Server version is independent from Unity app version.
+- DB rollback is not supported from Admin.
+- Breaking DB updates require minimum app version gating.
+- API-only updates are rollbackable only after compatibility verification.
+- Breaking API updates require the same minimum app version gating as breaking
+  DB updates.
 
 Admin may show server deployment history and current deployment pointers as
 read-only evidence. A successful deploy whose deployment-history write fails
@@ -161,6 +189,8 @@ The immutable record should contain only sanitized fields:
 - immutable service deploy tag
 - Cloudflare Worker deployment id and previous known-good deployment id
 - DB compatibility class and `minimumVersionCode` when required
+- API compatibility class, rollback verification status, and API
+  `minimumVersionCode` when required
 - linked content `releaseId`/`contentVersion`, not the full manifest body
 - local regression, dry-run, remote smoke, and current-pointer status
 

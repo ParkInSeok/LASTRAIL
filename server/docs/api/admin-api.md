@@ -244,6 +244,11 @@ History response fields:
 - `database.minimumVersionCode` when required for compatibility-breaking
   changes
 - `database.migrationRange`
+- `api.compatibility` when recorded:
+  `NO_API_CHANGE`, `ROLLBACK_COMPATIBLE`, or `MIN_VERSION_GATE_REQUIRED`
+- `api.rollbackVerified` when rollback-compatible API evidence is recorded
+- `api.minimumVersionCode` when required for compatibility-breaking API
+  changes
 - `contentRelease.releaseId` / `contentRelease.contentVersion` when linked
 - `verification.localRegression`
 - `verification.dryRun`
@@ -260,6 +265,17 @@ These endpoints do not deploy Workers, move R2 pointers, create branches/tags,
 write secrets, roll back D1, or expose raw R2 credentials, tokens, raw auth
 headers, raw request bodies, Google tokens, RNG material, raw probability/weight
 tables, or rollback controls.
+
+Server version policy for the Admin version-management tab:
+
+- Server version is independent from the Unity app version.
+- D1/DB changes are forward-moving. Admin must not expose DB rollback.
+- Compatibility-breaking DB updates require a server-enforced
+  `minimumVersionCode` gate.
+- API-only updates should remain rollback-compatible. Admin may show
+  `api.rollbackVerified`, but it must not treat the label as a rollback action.
+- Compatibility-breaking API updates require `api.minimumVersionCode` before
+  the incompatible path is reachable.
 
 ## Story Progress
 
