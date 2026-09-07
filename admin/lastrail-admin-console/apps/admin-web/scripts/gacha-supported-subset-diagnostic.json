@@ -1,0 +1,2695 @@
+{
+  "status": "DIAGNOSTIC_SUPPORTED_SUBSET_NOT_SHIPPING",
+  "syntheticLocalAccountOnly": true,
+  "list": {
+    "permission": "SUPPORT_READ",
+    "permissionMode": "ROLE_PERMISSION",
+    "items": [
+      {
+        "batchId": "gacha_batch_01M1X9H6NHMFA9WQE0QCTZ98DP",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6NHFG5MVP1R2JTQTGK7"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "resultId": "op_signal_runner",
+            "reward": {
+              "kind": "ITEM",
+              "id": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "quantity": 30
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": true,
+            "duplicateConversion": {
+              "sourceResultType": "RARE_OPERATOR",
+              "sourceResultId": "op_signal_runner",
+              "itemId": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "quantity": 30
+            }
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.561Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6NB42PADV5F31J67R2N",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6NB67CRJ6V96PE1Q8X4"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_vex",
+            "reward": {
+              "kind": "ITEM",
+              "id": "cur_operator_token",
+              "operatorId": "op_vex",
+              "quantity": 50
+            },
+            "isPickup": true,
+            "guaranteeType": "NONE",
+            "wasDuplicate": true,
+            "duplicateConversion": {
+              "sourceResultType": "ELITE_OPERATOR",
+              "sourceResultId": "op_vex",
+              "itemId": "cur_operator_token",
+              "operatorId": "op_vex",
+              "quantity": 50
+            }
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.555Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6N4X599D524XX1PVH8Z",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6N4TXT0Y44MNB8J4A29"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 1,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "WORK_SKILL_MATERIAL",
+            "resultId": "mat_work_skill_basic",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_work_skill_basic",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.548Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6MWZ6DNB7THQRNWSC2A",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6MWZCQNHJQZKCDDRZBW"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 1,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "TRAINING_MATERIAL",
+            "resultId": "mat_scrap",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_scrap",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.540Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6MGSJXAXEMBNW4GDGXK",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6MG17EHT45QJB34SE12"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "TRAINING_MATERIAL",
+            "resultId": "mat_rare_manual",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_rare_manual",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.528Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6M8YNX6WPP6FZH1TKET",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6M8T6VBDVAYEJWZ63VR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "resultId": "op_signal_runner",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_signal_runner",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.520Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6KYHJHXKM5R32F59K5Q",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KY9HKEDK8WYS32B40K"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_warden",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_warden",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.510Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6KQJ16D8EHA966XEFD8",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KR7Z287J21KWB1HE8M"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_cinder",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_cinder",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.503Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6KBH07MS4FFTDBHK6D6",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KB6D9807HWEXM988MZ"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_lumen",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_lumen",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.491Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6K3SZRHSNHTRP710H14",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6K3XC6S1DNFEVXKQ98Y"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_anchor",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_anchor",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.483Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6JY84ZKEKGA5YNHZ1JP",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6JY80SHG3A4DKGKR720"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_rail",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_rail",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.478Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6JRHVCHH59EM3B48003",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6JRHE4H1RFZ6Q1MCZGR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_iris",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_iris",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.472Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6J04Y3GP4KGGMWEKKX8",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6J0BZGARACKSEAEDEYR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_marrow",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_marrow",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.448Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6HH2W1YREHYPEZYPMCJ",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6HH0YPN2HHVQEQAXX9N"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_sable",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_sable",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.433Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6HB733C11T2GEYARX4V",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6HC0GQ571BKVC7CCNWP"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_nyx",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_nyx",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.427Z"
+      },
+      {
+        "batchId": "gacha_batch_01M1X9H6H4S40WBW4A3NQVT5GS",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6H54WWMXVZ4HTXYHRQH"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_vex",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_vex",
+              "quantity": 1
+            },
+            "isPickup": true,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.420Z"
+      }
+    ],
+    "nextCursor": null
+  },
+  "details": [
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6NHMFA9WQE0QCTZ98DP",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6NHFG5MVP1R2JTQTGK7"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "resultId": "op_signal_runner",
+            "reward": {
+              "kind": "ITEM",
+              "id": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "quantity": 30
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": true,
+            "duplicateConversion": {
+              "sourceResultType": "RARE_OPERATOR",
+              "sourceResultId": "op_signal_runner",
+              "itemId": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "quantity": 30
+            }
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.561Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6NHFG5MVP1R2JTQTGK7",
+          "item_ledger_01M1X9H6NHVGP68NN2GJSY6JM2"
+        ],
+        "operatorLedgerRefs": [],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6NH9S36K0C0HQQKGE6M",
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "reward": {
+              "id": "op_signal_runner"
+            },
+            "isPickup": false,
+            "wasDuplicate": true,
+            "guaranteeType": "NONE",
+            "duplicateConversion": {
+              "displayItemId": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "persistedTokenPattern": "cur_operator_token:op_signal_runner",
+              "quantity": 30
+            },
+            "itemLedgerRef": "item_ledger_01M1X9H6NHVGP68NN2GJSY6JM2",
+            "operatorLedgerRef": null
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6NHMFA9WQE0QCTZ98DP",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 1,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 1,
+          "duplicateConversionItems": [
+            {
+              "displayItemId": "cur_operator_token",
+              "operatorId": "op_signal_runner",
+              "persistedTokenPattern": "cur_operator_token:op_signal_runner",
+              "quantity": 30
+            }
+          ],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6NHFG5MVP1R2JTQTGK7"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6NHFG5MVP1R2JTQTGK7",
+              "item_ledger_01M1X9H6NHVGP68NN2GJSY6JM2"
+            ],
+            "operatorLedgerRefs": []
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6NB42PADV5F31J67R2N",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6NB67CRJ6V96PE1Q8X4"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_vex",
+            "reward": {
+              "kind": "ITEM",
+              "id": "cur_operator_token",
+              "operatorId": "op_vex",
+              "quantity": 50
+            },
+            "isPickup": true,
+            "guaranteeType": "NONE",
+            "wasDuplicate": true,
+            "duplicateConversion": {
+              "sourceResultType": "ELITE_OPERATOR",
+              "sourceResultId": "op_vex",
+              "itemId": "cur_operator_token",
+              "operatorId": "op_vex",
+              "quantity": 50
+            }
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.555Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6NB67CRJ6V96PE1Q8X4",
+          "item_ledger_01M1X9H6NBJ01E8HQNS18HDBMV"
+        ],
+        "operatorLedgerRefs": [],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6NB8TPCERBW8BKN23S6",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_vex"
+            },
+            "isPickup": true,
+            "wasDuplicate": true,
+            "guaranteeType": "NONE",
+            "duplicateConversion": {
+              "displayItemId": "cur_operator_token",
+              "operatorId": "op_vex",
+              "persistedTokenPattern": "cur_operator_token:op_vex",
+              "quantity": 50
+            },
+            "itemLedgerRef": "item_ledger_01M1X9H6NBJ01E8HQNS18HDBMV",
+            "operatorLedgerRef": null
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6NB42PADV5F31J67R2N",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 1,
+          "duplicateConversionItems": [
+            {
+              "displayItemId": "cur_operator_token",
+              "operatorId": "op_vex",
+              "persistedTokenPattern": "cur_operator_token:op_vex",
+              "quantity": 50
+            }
+          ],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6NB67CRJ6V96PE1Q8X4"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6NB67CRJ6V96PE1Q8X4",
+              "item_ledger_01M1X9H6NBJ01E8HQNS18HDBMV"
+            ],
+            "operatorLedgerRefs": []
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6N4X599D524XX1PVH8Z",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6N4TXT0Y44MNB8J4A29"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 1,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "WORK_SKILL_MATERIAL",
+            "resultId": "mat_work_skill_basic",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_work_skill_basic",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.548Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6N4TXT0Y44MNB8J4A29",
+          "item_ledger_01M1X9H6N4D1CV7F22JEZT8CZW"
+        ],
+        "operatorLedgerRefs": [],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6N46HXR8CC90SFHTFK5",
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "WORK_SKILL_MATERIAL",
+            "reward": {
+              "id": "mat_work_skill_basic"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": "item_ledger_01M1X9H6N4D1CV7F22JEZT8CZW",
+            "operatorLedgerRef": null
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6N4X599D524XX1PVH8Z",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 1,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 1,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6N4TXT0Y44MNB8J4A29"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6N4TXT0Y44MNB8J4A29",
+              "item_ledger_01M1X9H6N4D1CV7F22JEZT8CZW"
+            ],
+            "operatorLedgerRefs": []
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6MWZ6DNB7THQRNWSC2A",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6MWZCQNHJQZKCDDRZBW"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 1,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "TRAINING_MATERIAL",
+            "resultId": "mat_scrap",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_scrap",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.540Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6MWZCQNHJQZKCDDRZBW",
+          "item_ledger_01M1X9H6MWXKNQ2TRC3XBWC7XK"
+        ],
+        "operatorLedgerRefs": [],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6MWYW5SRHM1ZPY8FC26",
+            "pullSequence": 1,
+            "resultRarity": "COMMON",
+            "resultType": "TRAINING_MATERIAL",
+            "reward": {
+              "id": "mat_scrap"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": "item_ledger_01M1X9H6MWXKNQ2TRC3XBWC7XK",
+            "operatorLedgerRef": null
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6MWZ6DNB7THQRNWSC2A",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 1,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 1,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6MWZCQNHJQZKCDDRZBW"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6MWZCQNHJQZKCDDRZBW",
+              "item_ledger_01M1X9H6MWXKNQ2TRC3XBWC7XK"
+            ],
+            "operatorLedgerRefs": []
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6MGSJXAXEMBNW4GDGXK",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6MG17EHT45QJB34SE12"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "TRAINING_MATERIAL",
+            "resultId": "mat_rare_manual",
+            "reward": {
+              "kind": "ITEM",
+              "id": "mat_rare_manual",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.528Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6MG17EHT45QJB34SE12",
+          "item_ledger_01M1X9H6MGMV8PKQZG0Q2M7A1Z"
+        ],
+        "operatorLedgerRefs": [],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6MGTNG5GZC4FQTYWNJA",
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "TRAINING_MATERIAL",
+            "reward": {
+              "id": "mat_rare_manual"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": "item_ledger_01M1X9H6MGMV8PKQZG0Q2M7A1Z",
+            "operatorLedgerRef": null
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6MGSJXAXEMBNW4GDGXK",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 1,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6MG17EHT45QJB34SE12"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6MG17EHT45QJB34SE12",
+              "item_ledger_01M1X9H6MGMV8PKQZG0Q2M7A1Z"
+            ],
+            "operatorLedgerRefs": []
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6M8YNX6WPP6FZH1TKET",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6M8T6VBDVAYEJWZ63VR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 1,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "resultId": "op_signal_runner",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_signal_runner",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.520Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6M8T6VBDVAYEJWZ63VR"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6M9FZ2D6Y8P96N3QJFR"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6M93TSDZQB14MW5DAZF",
+            "pullSequence": 1,
+            "resultRarity": "RARE",
+            "resultType": "RARE_OPERATOR",
+            "reward": {
+              "id": "op_signal_runner"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6M9FZ2D6Y8P96N3QJFR"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6M8YNX6WPP6FZH1TKET",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 1,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6M8T6VBDVAYEJWZ63VR"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6M8T6VBDVAYEJWZ63VR"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6M9FZ2D6Y8P96N3QJFR"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6KYHJHXKM5R32F59K5Q",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KY9HKEDK8WYS32B40K"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_warden",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_warden",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.510Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6KY9HKEDK8WYS32B40K"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6KYYVZKTM1ANY70590D"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6KY785YV81JETB6TH4G",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_warden"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6KYYVZKTM1ANY70590D"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6KYHJHXKM5R32F59K5Q",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6KY9HKEDK8WYS32B40K"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6KY9HKEDK8WYS32B40K"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6KYYVZKTM1ANY70590D"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6KQJ16D8EHA966XEFD8",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KR7Z287J21KWB1HE8M"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_cinder",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_cinder",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.503Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6KR7Z287J21KWB1HE8M"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6KR0WKY8ZCJWPE1CJCT"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6KR3M2MVSQMWW7CV8X0",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_cinder"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6KR0WKY8ZCJWPE1CJCT"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6KQJ16D8EHA966XEFD8",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6KR7Z287J21KWB1HE8M"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6KR7Z287J21KWB1HE8M"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6KR0WKY8ZCJWPE1CJCT"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6KBH07MS4FFTDBHK6D6",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6KB6D9807HWEXM988MZ"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_lumen",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_lumen",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.491Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6KB6D9807HWEXM988MZ"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6KBNPK3TED073JQSD0Y"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6KB47Q2K33HTDFDGSJ9",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_lumen"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6KBNPK3TED073JQSD0Y"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6KBH07MS4FFTDBHK6D6",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6KB6D9807HWEXM988MZ"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6KB6D9807HWEXM988MZ"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6KBNPK3TED073JQSD0Y"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6K3SZRHSNHTRP710H14",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6K3XC6S1DNFEVXKQ98Y"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_anchor",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_anchor",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.483Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6K3XC6S1DNFEVXKQ98Y"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6K3DF28SVSXDPDTKDXK"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6K3PN5JFJ6CNZS6X1RB",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_anchor"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6K3DF28SVSXDPDTKDXK"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6K3SZRHSNHTRP710H14",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6K3XC6S1DNFEVXKQ98Y"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6K3XC6S1DNFEVXKQ98Y"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6K3DF28SVSXDPDTKDXK"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6JY84ZKEKGA5YNHZ1JP",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6JY80SHG3A4DKGKR720"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_rail",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_rail",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.478Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6JY80SHG3A4DKGKR720"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6JY5769377Z5TVFV5M3"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6JYKXNE8GQ2Q9BQWCZQ",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_rail"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6JY5769377Z5TVFV5M3"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6JY84ZKEKGA5YNHZ1JP",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6JY80SHG3A4DKGKR720"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6JY80SHG3A4DKGKR720"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6JY5769377Z5TVFV5M3"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6JRHVCHH59EM3B48003",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6JRHE4H1RFZ6Q1MCZGR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_iris",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_iris",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.472Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6JRHE4H1RFZ6Q1MCZGR"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6JSYDETG21DA36ZD66C"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6JS3YD32GZTDSFE1C0A",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_iris"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6JSYDETG21DA36ZD66C"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6JRHVCHH59EM3B48003",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6JRHE4H1RFZ6Q1MCZGR"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6JRHE4H1RFZ6Q1MCZGR"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6JSYDETG21DA36ZD66C"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6J04Y3GP4KGGMWEKKX8",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6J0BZGARACKSEAEDEYR"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_marrow",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_marrow",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.448Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6J0BZGARACKSEAEDEYR"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6J13ACQDFFWJ4DN5E3K"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6J1YNGZ72TF72B707HQ",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_marrow"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6J13ACQDFFWJ4DN5E3K"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6J04Y3GP4KGGMWEKKX8",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6J0BZGARACKSEAEDEYR"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6J0BZGARACKSEAEDEYR"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6J13ACQDFFWJ4DN5E3K"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6HH2W1YREHYPEZYPMCJ",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6HH0YPN2HHVQEQAXX9N"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_sable",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_sable",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.433Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6HH0YPN2HHVQEQAXX9N"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6HJ1T2DHSATEBZ3SJR9"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6HJMXEGQGYBNQNMC1PR",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_sable"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6HJ1T2DHSATEBZ3SJR9"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6HH2W1YREHYPEZYPMCJ",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6HH0YPN2HHVQEQAXX9N"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6HH0YPN2HHVQEQAXX9N"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6HJ1T2DHSATEBZ3SJR9"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6HB733C11T2GEYARX4V",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6HC0GQ571BKVC7CCNWP"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 1,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_nyx",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_nyx",
+              "quantity": 1
+            },
+            "isPickup": false,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.427Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6HC0GQ571BKVC7CCNWP"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6HC378HSZB0K3HXQPCM"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6HCHFYSE3X757290V0D",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_nyx"
+            },
+            "isPickup": false,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6HC378HSZB0K3HXQPCM"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6HB733C11T2GEYARX4V",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 1,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6HC0GQ571BKVC7CCNWP"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6HC0GQ571BKVC7CCNWP"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6HC378HSZB0K3HXQPCM"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    },
+    {
+      "item": {
+        "batchId": "gacha_batch_01M1X9H6H4S40WBW4A3NQVT5GS",
+        "accountId": "account-gacha-smoke-1",
+        "bannerId": "banner-gacha-smoke-1",
+        "resultStatus": "ACCEPTED",
+        "idempotencyReplayKnown": true,
+        "pullCount": 1,
+        "cost": {
+          "itemId": "cur_command_ticket",
+          "quantity": 1,
+          "itemLedgerRef": "item_ledger_01M1X9H6H54WWMXVZ4HTXYHRQH"
+        },
+        "prePityState": {
+          "totalPullCount": 0,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 0
+        },
+        "postPityState": {
+          "totalPullCount": 1,
+          "elitePityCount": 0,
+          "pickupElitePityCount": 0,
+          "rareOrHigherPityCount": 0,
+          "revision": 1
+        },
+        "responseResults": [
+          {
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "resultId": "op_vex",
+            "reward": {
+              "kind": "OPERATOR",
+              "id": "op_vex",
+              "quantity": 1
+            },
+            "isPickup": true,
+            "guaranteeType": "NONE",
+            "wasDuplicate": false,
+            "duplicateConversion": null
+          }
+        ],
+        "guaranteeTypes": [
+          "NONE"
+        ],
+        "createdAt": "2026-09-07T06:40:16.420Z",
+        "itemLedgerRefs": [
+          "item_ledger_01M1X9H6H54WWMXVZ4HTXYHRQH"
+        ],
+        "operatorLedgerRefs": [
+          "progression_01M1X9H6H5S3QWXEW58NBGZ7DF"
+        ],
+        "results": [
+          {
+            "resultId": "gacha_result_01M1X9H6H57650SN99M6771N8X",
+            "pullSequence": 1,
+            "resultRarity": "ELITE",
+            "resultType": "ELITE_OPERATOR",
+            "reward": {
+              "id": "op_vex"
+            },
+            "isPickup": true,
+            "wasDuplicate": false,
+            "guaranteeType": "NONE",
+            "duplicateConversion": null,
+            "itemLedgerRef": null,
+            "operatorLedgerRef": "progression_01M1X9H6H5S3QWXEW58NBGZ7DF"
+          }
+        ],
+        "causeEvidence": {
+          "source": "gacha_pull_batch_server_records",
+          "accountId": "account-gacha-smoke-1",
+          "batchId": "gacha_batch_01M1X9H6H4S40WBW4A3NQVT5GS",
+          "bannerId": "banner-gacha-smoke-1",
+          "resultStatus": "ACCEPTED",
+          "idempotencyReplayKnown": true,
+          "guaranteeTypes": [
+            "NONE"
+          ],
+          "prePityState": {
+            "totalPullCount": 0,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 0
+          },
+          "postPityState": {
+            "totalPullCount": 1,
+            "elitePityCount": 0,
+            "pickupElitePityCount": 0,
+            "rareOrHigherPityCount": 0,
+            "revision": 1
+          },
+          "duplicateResultCount": 0,
+          "duplicateConversionItems": [],
+          "cost": {
+            "itemId": "cur_command_ticket",
+            "quantity": 1,
+            "itemLedgerRef": "item_ledger_01M1X9H6H54WWMXVZ4HTXYHRQH"
+          },
+          "resultLedgerRefs": {
+            "itemLedgerRefs": [
+              "item_ledger_01M1X9H6H54WWMXVZ4HTXYHRQH"
+            ],
+            "operatorLedgerRefs": [
+              "progression_01M1X9H6H5S3QWXEW58NBGZ7DF"
+            ]
+          },
+          "rawProbabilityAvailable": false,
+          "fullWeightsAvailable": false,
+          "rngMaterialAvailable": false
+        }
+      },
+      "detailAvailable": true
+    }
+  ]
+}
