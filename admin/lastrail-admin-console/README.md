@@ -1,6 +1,7 @@
 # LAST RAIL Admin Console
 
-Internal read-only admin console foundation.
+Internal Admin console. Operational reads are the default; the explicitly
+authorized app-version policy export is a separate permission-gated write.
 
 ## Workspaces
 
@@ -18,7 +19,8 @@ Set these outside source control before launching the backend:
 - `ADMIN_API_TOKEN`
 - `ADMIN_LOCAL_ACCESS_SUBJECT` for local `ADMIN_AUTH_MODE=LOCAL_HEADER` development only
 
-The browser must only call the local backend under `/api`. Secrets stay in the backend process.
+The browser calls `/api` only. Local development uses the local backend; deployed
+Pages uses Pages Functions. Secrets never belong in browser source.
 
 The local backend maps browser routes to the versioned Admin API:
 
@@ -31,11 +33,27 @@ The local backend maps browser routes to the versioned Admin API:
 ## Commands
 
 ```cmd
-npm install
+cd packages/admin-contracts
+npm ci
 npm test
 npm run typecheck
-npm run build:web
+cd ../../apps/admin-web
+npm ci
+npm test
+npm run typecheck
+npm run build
 ```
+
+Run these commands from `lastrail-admin-console` in the order shown. The root
+package has no test/build scripts. Lockfiles pin the installed graph; do not use
+an unrelated parent node_modules as build evidence. Verified runtime: Node
+22.22.3 / npm 10.9.8. `scripts/local-http-evidence.md` describes optional local
+Hono/sql.js browser checks; these also require the Server toolchain.
+
+The 2026-08-25 foundation specification is historical design, not a current
+claim that the repository is empty or that remote Pages is unsupported.
+Current architecture uses Pages Functions plus the Server Admin API. Read the
+canonical Admin handoff before selecting a deploy snapshot or assuming approvals.
 
 ## Cloudflare Pages
 
