@@ -10,12 +10,13 @@ export function mapDeployment(raw: unknown, service: DeploymentService, kind: "c
   const historyKey = `server-deployments/${environment}/${service}/${item.serverVersion}.json`;
   if ((kind === "current" && item.historyKey !== historyKey) || (kind === "history" && root.historyKey !== historyKey)) throw new Error("server_deployment_evidence_mismatch");
   if (kind === "history" && item.pointerStatus !== "CURRENT" && item.pointerStatus !== "DEGRADED") throw new Error("server_deployment_evidence_mismatch");
-  const database = record(item.database), content = record(item.contentRelease), verification = record(item.verification);
+  const database = record(item.database), api = record(item.api), content = record(item.contentRelease), verification = record(item.verification);
   return {
     environment, service, serverVersion: item.serverVersion as string, releaseId: item.releaseId as string, cloudflareDeploymentId: item.cloudflareDeploymentId as string, historyKey,
     timestamp: (kind === "current" ? item.updatedAt : item.createdAt) as string,
     commitSha: optional(item.commitSha), releaseBranch: optional(item.releaseBranch), deploymentTag: optional(item.deploymentTag), previousDeploymentId: optional(item.previousDeploymentId),
     compatibility: optional(database.compatibility), minimumVersionCode: optional(database.minimumVersionCode), migrationRange: optional(database.migrationRange),
+    apiCompatibility: optional(api.compatibility), apiMinimumVersionCode: optional(api.minimumVersionCode), apiRollbackVerified: typeof api.rollbackVerified === "boolean" ? api.rollbackVerified : null,
     contentReleaseId: optional(content.releaseId), contentVersion: optional(content.contentVersion),
     localRegression: optional(verification.localRegression), dryRun: optional(verification.dryRun), remoteSmoke: optional(verification.remoteSmoke), pointerStatus: optional(item.pointerStatus)
   };

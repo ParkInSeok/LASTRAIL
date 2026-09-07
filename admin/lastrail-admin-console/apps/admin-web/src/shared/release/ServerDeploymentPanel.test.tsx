@@ -25,4 +25,14 @@ describe("deployment read panel", () => {
     state.history = {data: {environment: "dev", service: "game-api", pointerStatus: "CURRENT", releaseId: "b", cloudflareDeploymentId: "worker-b"}};
     expect(render()).toContain("대조 필요 (DEGRADED)");
   });
+  it("requires explicit compatible and verified evidence for rollback wording", () => {
+    const data = {environment:"dev",service:"game-api",pointerStatus:"CURRENT",apiCompatibility:"ROLLBACK_COMPATIBLE",apiRollbackVerified:false};
+    state.history = {data};
+    expect(render()).toContain("가능 근거 미확인");
+    expect(render()).not.toContain("API 롤백 호환 검증 완료");
+    state.history = {data:{...data,apiRollbackVerified:true}};
+    expect(render()).toContain("API 롤백 호환 검증 완료");
+    state.history = {data:{...data,apiCompatibility:"MIN_VERSION_GATE_REQUIRED",apiRollbackVerified:true}};
+    expect(render()).not.toContain("API 롤백 호환 검증 완료");
+  });
 });

@@ -36,7 +36,10 @@ function ServiceEvidence({ service }: { service: DeploymentService }) {
       <dl className="version-policy">{[
         ["이력 환경 / 서비스", `${value.environment.toUpperCase()} / ${value.service}`], ["릴리스", value.releaseId], ["이력 Worker 배포 ID", value.cloudflareDeploymentId], ["이전 Worker 배포 ID", value.previousDeploymentId],
         ["커밋", value.commitSha], ["브랜치", value.releaseBranch], ["배포 태그", value.deploymentTag],
-        ["DB 호환성", value.compatibility], ["최소 앱 버전코드", value.minimumVersionCode], ["마이그레이션 범위", value.migrationRange],
+        ["DB 호환성", value.compatibility], ["DB 최소 앱 버전코드", value.minimumVersionCode], ["마이그레이션 범위", value.migrationRange],
+        ["API 호환성", value.apiCompatibility], ["API 최소 앱 버전코드", value.apiMinimumVersionCode],
+        ["API 롤백 검증", value.apiRollbackVerified == null ? "없음" : value.apiRollbackVerified ? "검증됨 (true)" : "미검증 (false)"],
+        ["API 롤백 근거", value.apiCompatibility === "ROLLBACK_COMPATIBLE" && value.apiRollbackVerified === true ? "API 롤백 호환 검증 완료 · 실제 Worker 롤백은 현재 DB 호환성 별도 확인 필요" : "가능 근거 미확인"],
         ["콘텐츠 릴리스", value.contentReleaseId], ["콘텐츠 버전", value.contentVersion], ["로컬 회귀", value.localRegression], ["Dry-run", value.dryRun], ["원격 smoke", value.remoteSmoke], ["기록 시각", value.timestamp]
       ].map(([label, text]) => <div key={label}><dt>{label}</dt><dd>{text ?? "없음"}</dd></div>)}</dl>
     </>}

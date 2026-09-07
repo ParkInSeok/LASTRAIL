@@ -25,8 +25,13 @@ describe("server deployment read evidence", () => {
     const mapped = mapDeployment(raw,"game-api","history",pointer.serverVersion);
     expect(mapped.pointerStatus).toBe("DEGRADED");
     expect(mapped.contentVersion).toBeNull();
+    expect(mapped.apiCompatibility).toBeNull();
+    expect(mapped.apiRollbackVerified).toBeNull();
     expect(JSON.stringify(mapped)).not.toContain("discard");
     expect(() => mapDeployment(raw,"game-api","history","another-version")).toThrow();
+    const withApi = (api: unknown) => mapDeployment({...raw, history:{...raw.history,api}},"game-api","history",pointer.serverVersion);
+    expect(withApi({compatibility:"ROLLBACK_COMPATIBLE",rollbackVerified:true,minimumVersionCode:"100",unknown:"drop"})).toMatchObject({apiCompatibility:"ROLLBACK_COMPATIBLE",apiRollbackVerified:true,apiMinimumVersionCode:"100"});
+    expect(withApi({rollbackVerified:"true"}).apiRollbackVerified).toBeNull();
   });
   it("exposes read permission for the three server-authorized roles", () => {
     for (const role of ["OWNER", "OPERATOR", "VIEWER"] as const) expect(rolePermissions[role]).toContain("SERVER_DEPLOYMENT_READ");
