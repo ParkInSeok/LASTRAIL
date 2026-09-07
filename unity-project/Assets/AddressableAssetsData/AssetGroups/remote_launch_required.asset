@@ -1,0 +1,1160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_launch_required
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_launch_required
+  m_GUID: 3aa4a3c74255fad4fa0ecd418367ae0f
+  m_SerializeEntries:
+  - m_GUID: d7f68a30c1254de4b98205fdc163a7e9
+    m_Address: Assets/_LASTRAIL/Scenes/Main.unity
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01014d28d91f2b54fa0017818981e0a0
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_button_icon_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 015276f1124fbc04aa08d752f513ccd5
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_warden_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0359c132415846af814a411d7c4e3c90
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_cooldown.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0499290fd37790f4c8021111783041a3
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Buttons/auth_bottom_nav_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0736a65ebaf26b34cb8d81053059d25c
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Panels/story_progress_timeline_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0877bf9330028b24d84dc6d3145fcc9a
+    m_Address: Assets/_LASTRAIL/UI/Common/LRToastNotification.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0941afdad216a484da5fbd8c3e421981
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Buttons/settings_audio_haptic_toggles.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09c8e18bfcc5018449b1406b917382de
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_first_clear_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b892eec58ad42a47a1fd845198fd046
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Panels/codex_archive_record_detail_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c2a948ce961fc04887783037eb613f9
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_unlock_seal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d134739408d8cc4a991f85e6c69b9e8
+    m_Address: Assets/_LASTRAIL/UI/Common/Rows/LRListRow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10356421e3502294785b1f644502746d
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_wave_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10ca5aceb620c44429e3519bf8158932
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_rail_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12303232ea664f24aad8e8cf8d4141fd
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_tab_selected_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12561ce5782036d468d592946c57af4a
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_operator.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1397abe4e0dbfd4449c798065f654785
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_toggle_off_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 154e4721f1ff0304080237600ff3119c
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_objective_plate.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17890e22a8fd33843837dbee1d97edba
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/TutorialGuide.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18ebbd8cd1f8e1448b8b8ceaef3536b4
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_slider_handle_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b12ade11356ed04cbd46363f07803a3
+    m_Address: Assets/_LASTRAIL/UI/Common/Buttons/LRButton_Secondary.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d8408157c23b4c4786dde23343a36dc
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e673a78cf75c034fbc3d916e3315a01
+    m_Address: Assets/_LASTRAIL/UI/Common/Buttons/LRButton_Danger.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23b6cc26f4897a643baa0d64386637d6
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_cleared_node_seal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 248937047fdd6a94b8fa9da6790e875c
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_nyx_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24f0429d3ff42bb42bfbb2d61fe730e1
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_success_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2575ffbdfc509c64493de4c83334e725
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_cinder_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27c766514ddc45eab4638e1d608d8976
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_unavailable.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2be5dde9a048e2540953e55460548cd2
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_input_error_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c8b6f936e4150e45ad1c6158b8389f7
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_success_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f4aa926fd020e24b813a97b8769bcb9
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_eve_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 305cbcf492795c94f925a2a9170389c2
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3195d695ae63711429bc7d12afa7877f
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/CodexArchiveScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 322fbbde116768f46a04f0da2562f9cf
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Elites/elite_broadcast_executioner.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32e67a381c104b1b803d89b348783359
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_selected_target.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 338de5485287c7e4e9e49860cd4f99ec
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_basic_hit_spark.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35428ccf775ce384db4daa9b65c02d96
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-SemiBold
+      SDF UI.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35a10dce8c76498449568cf61951fd45
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_mission.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35b1cb044fd4ec64a99872e54261536e
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_shield_status.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35c9747d6850c044f82b34b9f1a90343
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_anchor_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a7a61a80230f03489ebdbed70414644
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Elites/elite_ironclad_boarder.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c6cd1068ca87974fb6d5d14728f518a
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Progress/mission_progress_rail_strip.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d41beeb19b96ea48949bc4a7ac8be66
+    m_Address: Assets/_LASTRAIL/UI/Common/LRSegmentedControl.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3df67a1750a59aa488a2cb8f7cefbb20
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_narrative_status_ribbon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ead14fdd40b66f478b5f3946b0174bd
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Buttons/codex_archive_bottom_nav_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fa96e6ea78f4ebf964cdcfd022b13a0
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_a.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 422822951a156e943b0e80a228f97234
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Panels/settings_toggle_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4302b3c35670a2c4f98d19131a49ff77
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Panels/mission_briefing_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4307a910a3445244b9b4d46b30e1c9cc
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47c5f7ca2d0a15146826c301f5fd58d7
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_current_node_glow.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 490d1ce0ff1568a43adad43054b9421d
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_reina_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a5d762895f267a4a8583c3fc3c18563
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_failure_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b4dc858f35266c40aa2f14038cd7b7d
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_interior_boarding_lane.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b95da4bd39a7d54dbe989593ae93ed7
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_duration_accumulation_strip.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bc14d8d889371f4ca7ddfcd8d5d2aa7
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Badges/story_progress_raid_gate_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cb22aabab6048f469e74c7c48051bb1
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_button_danger_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dbd7e7289343c54b9650e1f424b9173
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_material_glow.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ec28dbd0de8ed847a9b4ae39b4bff58
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_lumen_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ed29a6917bab50478ae5ef34c340874
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_scroll_thumb_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5375644ec5232c94fac68154923a1ea3
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_iris_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 551c188ff5588ee479baa75613d04c28
+    m_Address: Assets/_LASTRAIL/UI/Common/InputFields/LRInputField_Disabled.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5693d479eb02dd448b2e7cf9c6f39a44
+    m_Address: Assets/_LASTRAIL/UI/Common/Sliders/LRSlider_Compact.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 569599422ad8a144b8b34d35d0c247b0
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Panels/auth_profile_status_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56b072e835798c24fb5142fe0be5236a
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_reward.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 58d7305e4e3a46a468695b4b848aacb6
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_guest_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ab0677668768614fa4c38209a3c6262
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_tooltip_panel_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b11ee638ce348dfb70f1a7911b02d84
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_story_raid_boss.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b27949be1b9a4245b995ea82ea84c89
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_sable_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c2194207ca4ed346bfc6627be7992e7
+    m_Address: Assets/_LASTRAIL/UI/Common/Sliders/LRSlider_Normal.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e8874e5b36da1d4fae5e1944da4a4a0
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Buttons/story_progress_bottom_nav_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ed2f48915e67b74d97145eac22be59a
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Panels/codex_archive_main_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66455ac61bc78194f8b2ac57109fc6f8
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Overlays/story_progress_locked_node_mist.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 666bc2a17c6f4f2781035dcb5f5e5eb4
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_buff.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67602167f4f7585499b216df8e011693
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_close.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 678dd3bcaf1571443893367822a5ed30
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_locked_seal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67bcfa3488ae40241b731eb4a9d8fe30
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_chest_supply_crate_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67e0f38be9e22cf458fe51c6a92e1567
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/OfflineRewardScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 699d5284ce25c1341bc2a73ffc2f65d7
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_tab_unselected_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d2cc59503c087a46a09a4e5b7c7cb21
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_reward_row_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fa530bc37b0a904a93df007a0d37f2c
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_sera_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72550f5138f51c94a8a8c53164a58056
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_marrow_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72dbd480b1ad4e542bef4d27b969b78b
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Status/inline_status_dot_set.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 732a86e9e59db2148a60ab460a7d5686
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Badges/codex_archive_lore_tag.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 788307b3fc55e3a469968935d8be2ba6
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_vibration.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b565668f0202b34c94792d7e9d5bddd
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/Pretendard-SemiBold.otf
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c2bd64193391544981c8077859f4c96
+    m_Address: Assets/_LASTRAIL/UI/Common/LRModalPanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ee957580f4741b4a9249831899d45b1
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_codex.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82aad4ea7a8c1c14681bec1dde5869db
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_entry_card_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82b5d01f1ec92ea4db931bae537e5fe0
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Notices/maintenance_notice_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85738480a24ca8f4586bf6eff76a3751
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Accents/combat_unit_contact_shadow.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86394a73da5f7a74f8f845a6fdb0b924
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_network_error_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 867f7623608b86f4d84d87342c2b6c10
+    m_Address: Assets/_LASTRAIL/UI/Common/LRTooltipCallout.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a2fb0f97f14d2346baa367f25c3de93
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Frames/mission_operation_card_selected_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8b5f1b7eb3478d64282c719d42f6c462
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Panels/story_progress_codex_unlock_hint_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bd36d1d7e4ad4046a3e0d0e596f1bf5
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_toggle_on_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8bdda0c8851c5c146936038da2cb8f30
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-SemiBold SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dbce924c28801843bf3ac771cdcc3d4
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/MissionShellScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ea04dff1e7717d488e6117a8dd15749
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_scroll_track_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90dba702a5724223b28738e62902fb3c
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_elite_squad_b.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93956090b63553745bcc0e6eb6c63f27
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Disabled/disabled_unavailable_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94c2a8ec8927e564e89e909a95f2a099
+    m_Address: Assets/_LASTRAIL/UI/Common/LRToggle_Checkbox.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 957bcf97c419c8f469eca7e348d28f3c
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Bold SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 995efe9f90dbc0a4badfdf61012260cd
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Warning/warning_strip_banner_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9baacea54616fb14d810856343010251
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_mira_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ed4e252832259449839330d7b5bf808
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_input_normal_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0be6c60091079342aa514c8665cac0f
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_story_raid_danger.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a11e8b475019aed488721af1f06e1034
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_result_plate.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a21eefd7ad93b4946a9bd747dcd0cff1
+    m_Address: Assets/_LASTRAIL/UI/Common/Sliders/LRSlider_Disabled.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5800841554019e428513cabc9225a5e
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_modal_panel_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8f22be7a60ed004c80a70f487294176
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_settlement_meter.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aea82e397970c734690904a515f6844e
+    m_Address: Assets/_LASTRAIL/UI/StoryProgressResources/Frames/story_progress_route_spine.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b186cdea37155ef46b8984a5c9fd57ee
+    m_Address: Assets/_LASTRAIL/UI/Common/Rows/LRCardRow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2e78c46d3035584785b0b5e10e92686
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_risk_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b71d2d1aac5607a4796ea35dec675ea8
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_line_item_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8d73de0ef1987e41b272474dceb5df7
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_kyle_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9d35708bc90cbd498ae4aeb6fffc954
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_button_disabled_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc3c9abf01063c9419fa6e263194f974
+    m_Address: Assets/_LASTRAIL/UI/Common/InputFields/LRInputField_Normal.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bca462fe0df5eed48b335f39625278b0
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_entry_selected_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be86633eb4f256142896aa123d6b48cc
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_list_row_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf8d72ba41125fb43ab9e1f3ca727cb1
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_sound.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2271c9f51c4ed9489ecbccee646aa1a
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Bold
+      SDF UI.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5d273195eb6f5f4f94ea6c20686831e
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Buttons/mission_back_button_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5ed8a79ed0e86d4d81411b291cd9df9
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Buttons/mission_start_button_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c64dba382cc6a624e8c592299cb481f0
+    m_Address: Assets/_LASTRAIL/UI/Common/Buttons/LRButton_Disabled.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c74260b10d510c34c8ec1f636314c118
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_unlock.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c87e708bcb9f4a149b8bcab5cf9b9a0a
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Transitions/combat_defeat.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca2ca863b49d37c40a158fcd276aa9da
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/StoryProgressSummaryScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd9783f94c4c0a44093e4b1d8fc43297
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Frames/profile_nameplate_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce0b0ccfab8c498428bd8ab7ecb23676
+    m_Address: Assets/_LASTRAIL/UI/Common/InputFields/LRInputField_Error.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0accce6e21be0d4f9362bcd6a5db51b
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_session_safe_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1645fab5a17ffa43bc7641f34add4ac
+    m_Address: Assets/_LASTRAIL/Prefabs/Screens/RewardReviewScreen.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d20ba413852aa41429fbf52fef5ecfa7
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular
+      SDF UI.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d25a3c17d0fbd7445affe8bd9e248789
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Frames/mission_operation_card_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5dd9e262e4740b469f043b24678fbcc
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Retry/retry_refresh_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d86e53181e25bff4f866d89b17296a85
+    m_Address: Assets/_LASTRAIL/UI/Common/InputFields/LRInputField_Focused.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da4be580b90198547a1ffb035032a573
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_gacha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de74f29ad66edb44f89f6b306e513353
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_vex_skill_or_special.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deae42dae6b14134885f4b295b490b2d
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_skill_activation.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0759764d3b0da74b8b7d640ddf881d1
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_ticket.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0a4751ea7784ea8abf15f3a7239daf8
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_debuff.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e57c5a9192684470bcf95653f7e92e2e
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Transitions/combat_victory.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5856ddb522c29a46b386e3ecea902e4
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_keystore_lock_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5e4e0994dea43743954bcfa73217176
+    m_Address: Assets/_LASTRAIL/UI/MissionShellResources/Panels/mission_objective_panel.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e719fa1d9a449414b92663a4b138dfbf
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_status_chip_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e74103542c1082244913bec3362af970
+    m_Address: Assets/_LASTRAIL/UI/Common/Rows/LRRewardRow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8437ab936061024d9cb9804755dee79
+    m_Address: Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_google_provider_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e962984f157173046af09ccd277bc63c
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_buff_debuff_status.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9ee24dd39aa4294962d0f4f042fae2f
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Interiors/combat_train_interior_initial_squad.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eba14a94772c06d41b0071e69dd5011a
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_ultimate_activation.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ebe36df136eb4d04bbdafd2eccd15265
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_available.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec3463406f7826e47b91660045feb2fa
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_settings.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee458540eadd7c248b79ad2551856549
+    m_Address: Assets/_LASTRAIL/UI/Fonts/Pretendard/Pretendard-Bold.otf
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee8ecb3894f66a543bad945ae3aecde6
+    m_Address: Assets/_LASTRAIL/UI/Common/Buttons/LRButton_Icon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f242a1213dc0f1346ac456ec69524d48
+    m_Address: Assets/_LASTRAIL/UI/Icons/ic_back.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f32c449aa1eab9a4a983d122342b63bf
+    m_Address: Assets/_LASTRAIL/UI/Common/Buttons/LRButton_Primary.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f42ba536f0970204ca6fd04fcb5943f6
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_exterior_advance_lane.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7407b1609b1390488c6fc0f64c23363
+    m_Address: Assets/_LASTRAIL/UI/SystemFeedbackResources/Loading/loading_rail_indicator.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9fdcf898b1ea524f97df1b2bf2f4559
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_input_focused_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc23fd039fe018e42bcb55a7d40f3350
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_heal_status.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcc83cbdcbe96f946834b7ee05c28e5c
+    m_Address: Assets/_LASTRAIL/UI/CodexArchiveResources/Frames/codex_archive_scroll_edge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fceea924d9cd14146bca369f81ec0c8c
+    m_Address: Assets/_LASTRAIL/UI/Common/Skins/ui_toast_panel_9slice.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdbf0ec297ecbcc4aa07b77c4f255174
+    m_Address: Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_pending_claimable_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_launch_required
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 0c8e38fe04eb957499271db99cca5814, type: 2}
+    - {fileID: 11400000, guid: daa6af14f2e7fc74490799d7568bb5f9, type: 2}
