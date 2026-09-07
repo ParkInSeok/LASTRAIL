@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import "./versionManagement.css";
 import { adminApi } from "../shared/api/client";
 import { ServerDeploymentPanel } from "../shared/release/ServerDeploymentPanel";
+import { canSaveVersionRevision } from "../shared/release/versionPrecondition";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   simpleVersionExportAction,
@@ -25,24 +26,46 @@ export function VersionManagementPage() {
   const effectiveMinimum = minimumVersionCode ?? current.data?.minimumVersionCode ?? "";
   const [submitStatus, setSubmitStatus] = useState<string>(versionManagementExportAction.status);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingRevision, setEditingRevision] = useState<string | null | undefined>(undefined);
+  const [needsReview, setNeedsReview] = useState(false);
+  function beginEdit() {
+    if (editingRevision === undefined && !needsReview && !current.isFetching && !current.isError) {
+      setEditingRevision(current.data?.revision);
+    }
+  }
+  async function reloadPolicy() {
+    setNeedsReview(true);
+    const latest = await current.refetch();
+    if (latest.isError || latest.data?.revision === undefined) return;
+    setTargetVersion("");
+    setTargetVersionCode("");
+    setMinimumVersionCode(null);
+    setEditingRevision(undefined);
+    setNeedsReview(false);
+    setSubmitStatus("최신 정책 조회 완료 · 입력값을 다시 확인하세요.");
+  }
   const minimumValid = /^[1-9]\d{0,9}$/.test(effectiveMinimum) && Number(effectiveMinimum) <= Number(targetVersionCode);
-  const canSubmit = current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && minimumValid && !isSubmitting;
+  const revisionReady = canSaveVersionRevision(editingRevision, current.data?.revision, current.isFetching || current.isError, needsReview);
+  const canSubmit = revisionReady && current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && minimumValid && !isSubmitting;
 
   async function submitVersionExport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || editingRevision === undefined) return;
 
     setIsSubmitting(true);
     setSubmitStatus("내보내는 중");
     try {
       const result = await adminApi.exportVersionToR2({
+        expectedRevision: editingRevision,
         version: targetVersion.trim(),
         versionCode: targetVersionCode.trim(),
         minimumVersionCode: effectiveMinimum
       });
       setSubmitStatus(result.status);
-      if (result.accepted) await current.refetch();
+      setNeedsReview(true);
+      if (result.accepted) await reloadPolicy();
     } catch (error) {
+      setNeedsReview(true);
       const failure = adminRequestFailureDisplay(error, {
         resourceLabel: "버전 내보내기",
         resourceId: "/api/versions/export"
@@ -60,6 +83,9 @@ export function VersionManagementPage() {
       </header>
       <section aria-label="프론트 앱 버전 정책">
       <h2>프론트 버전</h2>
+      <button type="button" onClick={() => void reloadPolicy()} disabled={isSubmitting || current.isFetching}>최신 정책 조회</button>
+      {current.data?.revision === undefined && !current.isLoading && <p role="status">저장 사전조건 조회 미지원 · Admin API 업데이트 확인 필요</p>}
+      {(needsReview || (editingRevision !== undefined && editingRevision !== current.data?.revision)) && <p role="status">최신 정책을 조회한 뒤 입력값을 다시 검토하세요. 자동 재저장하지 않습니다.</p>}
       <section className="summary-grid" aria-label="버전 관리 요약">
         {versionManagementServerCards.map((card) => (
           <div key={card.code}>
@@ -87,17 +113,18 @@ export function VersionManagementPage() {
                 placeholder={field.placeholder}
                 aria-label={field.label}
                 inputMode={field.key === "targetVersionCode" ? "numeric" : "text"}
-                onChange={(event) =>
+                onChange={(event) => {
+                  beginEdit();
                   field.key === "targetVersion"
                     ? setTargetVersion(event.target.value)
-                    : setTargetVersionCode(event.target.value)
-                }
+                    : setTargetVersionCode(event.target.value);
+                }}
               />
             </label>
           ))}
           <label className="metric-card" htmlFor="minimumVersionCode">
             <span>최소 지원 버전코드</span>
-            <input id="minimumVersionCode" aria-label="최소 지원 버전코드" inputMode="numeric" value={effectiveMinimum} onChange={(event) => setMinimumVersionCode(event.target.value)} placeholder="예: 1" />
+            <input id="minimumVersionCode" aria-label="최소 지원 버전코드" inputMode="numeric" value={effectiveMinimum} onChange={(event) => { beginEdit(); setMinimumVersionCode(event.target.value); }} placeholder="예: 1" />
             <small>접속 허용 하한의 정책값입니다. 리소스 폴더명·삭제 기준이 아닙니다.</small>
             {effectiveMinimum && targetVersionCode && !minimumValid && <small role="alert">최소 버전코드는 1 이상이며 배포할 버전코드를 초과할 수 없습니다.</small>}
           </label>

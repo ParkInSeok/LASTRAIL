@@ -5,6 +5,12 @@ import { VersionManagementPage } from "./VersionManagementPage";
 vi.mock("@tanstack/react-query", () => ({useQuery: ({queryKey}: {queryKey: string[]}) => queryKey[0].startsWith("server-deployment") ? {isLoading:false} : ({ data: {server:"dev-admin.lastrail.app",version:"app-only-1",versionCode:"7",minimumVersionCode:"1",canExport:true},isLoading:false })}));
 function render(path: string) { return renderToStaticMarkup(<MemoryRouter initialEntries={[path]}><VersionManagementPage/></MemoryRouter>); }
 describe("version scope tabs", () => {
+  it("keeps a legacy revision-less API readable but export disabled", () => {
+    const html = render("/versions");
+    expect(html).toContain("저장 사전조건 조회 미지원");
+    expect(html).toContain('type="submit" disabled=""');
+    expect(html).toContain("최신 정책 조회");
+  });
   it("keeps existing app version form in frontend tab", () => {
     expect(render("/versions")).toContain("app-only-1");
     expect(render("/versions")).toContain("최소 지원 버전코드");

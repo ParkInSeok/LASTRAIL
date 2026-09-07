@@ -34,6 +34,9 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.errorCode === "version_precondition_required" || error.errorCode === "invalid_version_revision") {
+      return { reason: "버전 저장 기준 확인 필요 · 최신 정책을 다시 조회하세요.", nextStep: "Admin UI/API 버전 정렬과 최신 정책 조회를 확인하세요. 자동 재저장하지 않습니다." };
+    }
     if (error.status === 409 && error.errorCode === "version_current_pointer_conflict") {
       return {
         reason: "저장 중 다른 변경과 충돌했습니다. 새로고침으로 최신 정책을 조회한 뒤 입력값을 다시 검토하세요.",

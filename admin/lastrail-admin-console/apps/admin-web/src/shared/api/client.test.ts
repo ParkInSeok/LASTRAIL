@@ -5,7 +5,7 @@ describe("admin web API client", () => {
   it("preserves version conflict and never automatically retries the write", async () => {
     const fetchSpy = vi.fn(async () => Response.json({error:{code:"version_current_pointer_conflict"}}, {status:409}));
     vi.stubGlobal("fetch", fetchSpy);
-    await expect(adminApi.exportVersionToR2({version:"1.0.0",versionCode:"100",minimumVersionCode:"90"})).rejects.toMatchObject({status:409,errorCode:"version_current_pointer_conflict"});
+    await expect(adminApi.exportVersionToR2({version:"1.0.0",versionCode:"100",minimumVersionCode:"90",expectedRevision:'"r1"'})).rejects.toMatchObject({status:409,errorCode:"version_current_pointer_conflict"});
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
   it("reads server deployment current and history without an environment override", async () => {
@@ -66,6 +66,7 @@ describe("admin web API client", () => {
     vi.stubGlobal("fetch", fetchSpy);
 
     const result = await adminApi.exportVersionToR2({
+      expectedRevision: null,
       version: "act1.2026-09-05.001",
       versionCode: "100"
     });
@@ -83,6 +84,7 @@ describe("admin web API client", () => {
         "content-type": "application/json"
       },
       body: JSON.stringify({
+        expectedRevision: null,
         version: "act1.2026-09-05.001",
         versionCode: "100"
       })

@@ -384,6 +384,7 @@ export type SimpleVersionExportAction = {
 };
 
 export type VersionExportRequest = {
+  expectedRevision: string | null;
   version: string;
   versionCode: string;
   minimumVersionCode?: string;
@@ -484,6 +485,7 @@ export function mapCurrentVersion(raw: unknown) {
   const policy = record(value.admissionPolicy);
   const safe = (source: Record<string, unknown>, key: string) => typeof source[key] === "string" ? source[key] as string : null;
   return { server: value.server, canExport: value.canExport, version: value.version as string | null, versionCode: value.versionCode as string | null, ...(value.minimumVersionCode != null ? { minimumVersionCode: value.minimumVersionCode as string } : {}),
+    ...(value.revision === null || typeof value.revision === "string" ? {revision: value.revision as string | null} : {}),
     ...(value.contentRelease !== undefined ? {contentRelease: value.contentRelease === null ? null : {releaseId:safe(content,"releaseId"),contentVersion:safe(content,"contentVersion"),status:safe(content,"status")}} : {}),
     ...(value.admissionPolicy !== undefined ? {admissionPolicy: {status:safe(policy,"status"),gameApiEnforcement:safe(policy,"gameApiEnforcement")}} : {}) };
 }

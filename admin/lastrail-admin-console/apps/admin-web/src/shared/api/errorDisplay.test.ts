@@ -3,6 +3,11 @@ import { AdminApiError } from "./client";
 import { adminReadStatusLabel, adminReadValueLabel, adminRequestFailureDisplay } from "./errorDisplay";
 
 describe("admin request failure display", () => {
+  it.each([[428,"version_precondition_required"],[400,"invalid_version_revision"]])("classifies version precondition %s", (status, errorCode) => {
+    const result = adminRequestFailureDisplay(new AdminApiError({status: Number(status),errorCode:String(errorCode),path:"/api/versions/export"}), {resourceLabel:"버전",resourceId:"/api/versions/export"});
+    expect(result.reason).toContain("최신 정책을 다시 조회");
+    expect(result.nextStep).toContain("자동 재저장하지 않습니다");
+  });
   it("requires reread and user review after a version save conflict", () => {
     const display = adminRequestFailureDisplay(new AdminApiError({status:409,path:"/api/versions/export",errorCode:"version_current_pointer_conflict"}), {resourceLabel:"버전 내보내기",resourceId:"/api/versions/export"});
     expect(display.reason).toContain("다른 변경과 충돌");
