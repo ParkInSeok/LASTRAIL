@@ -22,18 +22,27 @@ export type VersionDocument = {
   versionCode: string;
   minimumVersionCode?: string;
   contentRelease?: ContentReleaseDocument;
+  clientReleaseRegistry?: ClientReleaseRegistry;
 };
+
+export type ClientReleaseEntry = {
+  version: string;
+  versionCode: string;
+  status: "INTERNAL" | "STABLE" | "DISABLED";
+  contentRelease: ContentReleaseDocument;
+};
+export type ClientReleaseRegistry = { schemaVersion: 1; entries: ClientReleaseEntry[]; auditHead?: string };
 
 const currentVersionKey = "versions/current.json";
 const safeIdPattern = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u;
 const safeVersionPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u;
 const sha256Pattern = /^sha256:[a-f0-9]{64}$/u;
 
-function isVersionCode(value: unknown): value is string {
+export function isVersionCode(value: unknown): value is string {
   return typeof value === "string" && /^[1-9]\d{0,9}$/u.test(value) && Number(value) <= 2147483647;
 }
 
-function parseContentRelease(value: unknown): ContentReleaseDocument | null {
+export function parseContentRelease(value: unknown): ContentReleaseDocument | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const raw = value as Record<string, unknown>;
   if (raw.status !== "APPROVED") return null;
@@ -63,6 +72,36 @@ function parseContentRelease(value: unknown): ContentReleaseDocument | null {
   };
 }
 
+export function parseClientReleaseRegistry(value: unknown): ClientReleaseRegistry | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (Object.keys(raw).some((key) => !["schemaVersion", "entries", "auditHead"].includes(key))) return null;
+  if (raw.schemaVersion !== 1 || !Array.isArray(raw.entries) || raw.entries.length > 1000) return null;
+  if (raw.auditHead !== undefined && (typeof raw.auditHead !== "string" || !safeIdPattern.test(raw.auditHead))) return null;
+  const entries: ClientReleaseEntry[] = [];
+  const codes = new Set<string>();
+  const releaseIdentities = new Map<string, string>();
+  for (const value of raw.entries) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    const entry = value as Record<string, unknown>;
+    if (Object.keys(entry).some((key) => !["version", "versionCode", "status", "contentRelease"].includes(key))) return null;
+    if (typeof entry.version !== "string" || !safeVersionPattern.test(entry.version) || !isVersionCode(entry.versionCode) || codes.has(entry.versionCode)) return null;
+    if (entry.status !== "INTERNAL" && entry.status !== "STABLE" && entry.status !== "DISABLED") return null;
+    const contentRelease = parseContentRelease(entry.contentRelease);
+    if (!contentRelease || Number(entry.versionCode) < Number(contentRelease.minimumVersionCode)
+      || (contentRelease.maximumVersionCode !== undefined && Number(entry.versionCode) > Number(contentRelease.maximumVersionCode))) return null;
+    const url = new URL(contentRelease.catalogUrl);
+    if (url.username || url.password || url.search || url.hash) return null;
+    const identity = JSON.stringify(contentRelease);
+    const previousIdentity = releaseIdentities.get(contentRelease.releaseId);
+    if (previousIdentity !== undefined && previousIdentity !== identity) return null;
+    releaseIdentities.set(contentRelease.releaseId, identity);
+    codes.add(entry.versionCode);
+    entries.push({ version: entry.version, versionCode: entry.versionCode, status: entry.status, contentRelease });
+  }
+  return { schemaVersion: 1, entries, ...(raw.auditHead === undefined ? {} : { auditHead: raw.auditHead as string }) };
+}
+
 export function parseVersion(value: unknown): VersionDocument | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const raw = value as Record<string, unknown>;
@@ -71,6 +110,8 @@ export function parseVersion(value: unknown): VersionDocument | null {
   if (raw.minimumVersionCode !== undefined) {
     if (!isVersionCode(raw.minimumVersionCode) || Number(raw.minimumVersionCode) > Number(raw.versionCode)) return null;
   }
+  const registry = raw.clientReleaseRegistry === undefined ? undefined : parseClientReleaseRegistry(raw.clientReleaseRegistry);
+  if (registry === null || (registry !== undefined && raw.minimumVersionCode === undefined)) return null;
   if (raw.contentRelease !== undefined) {
     const contentRelease = parseContentRelease(raw.contentRelease);
     if (contentRelease === null) return null;
@@ -79,6 +120,7 @@ export function parseVersion(value: unknown): VersionDocument | null {
       versionCode: raw.versionCode,
       ...(raw.minimumVersionCode === undefined ? {} : { minimumVersionCode: raw.minimumVersionCode }),
       contentRelease,
+      ...(registry === undefined ? {} : { clientReleaseRegistry: registry }),
     };
   }
 
@@ -86,6 +128,7 @@ export function parseVersion(value: unknown): VersionDocument | null {
     version: raw.version,
     versionCode: raw.versionCode,
     ...(raw.minimumVersionCode === undefined ? {} : { minimumVersionCode: raw.minimumVersionCode }),
+    ...(registry === undefined ? {} : { clientReleaseRegistry: registry }),
   };
 }
 
@@ -95,6 +138,16 @@ export async function readVersion(bucket: VersionBucket) {
   const version = parseVersion(await object.json());
   if (!version) throw new Error("version_document_invalid");
   return version;
+}
+
+export async function readVersionForAdmission(bucket: VersionBucket): Promise<{ version: VersionDocument | null; revision: string | null }> {
+  const object = await bucket.get(currentVersionKey);
+  if (!object) return { version: null, revision: null };
+  const version = parseVersion(await object.json());
+  if (!version) throw new Error("version_document_invalid");
+  const revision = object.httpEtag ?? (object.etag ? `"${object.etag}"` : null);
+  if (version.clientReleaseRegistry && !revision) throw new Error("version_etag_unavailable");
+  return { version, revision };
 }
 
 export async function readVersionSnapshot(bucket: VersionBucket): Promise<{ version: VersionDocument | null; etag: string | null }> {

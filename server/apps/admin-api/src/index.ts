@@ -12,6 +12,7 @@ import {
 } from "@lastrail/common";
 import { parseVersion, readVersionSnapshot, saveVersion, type VersionBucket } from "./version-store";
 import { opsLogSearch } from "./ops-log-search";
+import { describeClientReleaseRegistry, mutateClientReleaseRegistry } from "./client-release-registry";
 
 const app = new Hono<{ Bindings: Env & { VERSION_BUCKET?: VersionBucket } }>();
 
@@ -1952,7 +1953,7 @@ app.get("/v1/admin/versions", async (c) => {
     return c.json({
       environment: "DEV",
       server: "dev-admin.lastrail.app",
-      canExport: principal.role === "OWNER",
+      canExport: principal.role === "OWNER" && !version?.clientReleaseRegistry,
       revision: snapshot.etag,
       version: version?.version ?? null,
       versionCode: version?.versionCode ?? null,
@@ -1989,6 +1990,7 @@ app.post("/v1/admin/versions/export", async (c) => {
       return c.json({ error: { code: "version_current_pointer_conflict" } }, 409);
     }
     const existing = snapshot.version;
+    if (existing?.clientReleaseRegistry || version.clientReleaseRegistry) return c.json({ error: { code: "version_registry_managed" } }, 409);
     const mergedVersion = version.contentRelease === undefined && existing?.contentRelease !== undefined
       ? { ...version, contentRelease: existing.contentRelease }
       : version;
@@ -2000,6 +2002,40 @@ app.post("/v1/admin/versions/export", async (c) => {
     return c.json({ error: { code: "version_storage_write_failed" } }, 502);
   }
 });
+app.get("/v1/admin/client-releases", async (c) => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  c.header("Cache-Control", "no-store");
+  const target = c.req.query("target");
+  if ((target !== "DEV" && target !== "PRD") || target !== c.env.ENVIRONMENT) return c.json({ error: { code: "registry_target_mismatch" } }, 400);
+  if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+  try { return c.json(await describeClientReleaseRegistry(c.env.VERSION_BUCKET, target, principal.role === "OWNER")); }
+  catch { return c.json({ error: { code: "version_storage_read_failed" } }, 502); }
+});
+for (const [path, operation] of [
+  ["/v1/admin/client-releases/register", "register"], ["/v1/admin/client-releases/:versionCode/status", "status"],
+  ["/v1/admin/client-releases/:versionCode/promote", "promote"], ["/v1/admin/client-releases/minimum", "minimum"],
+  ["/v1/admin/client-releases/rollback", "rollback"],
+] as const) {
+  app.post(path, async (c) => {
+    const principal = await authenticateAdmin(c);
+    if (principal instanceof Response) return principal;
+    c.header("Cache-Control", "no-store");
+    if (principal.role !== "OWNER") return c.json({ error: { code: "registry_mutation_forbidden" } }, 403);
+    if (!c.env.VERSION_BUCKET) return c.json({ error: { code: "version_storage_unavailable" } }, 503);
+    const body: unknown = await c.req.json().catch(() => null);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return c.json({ error: { code: "registry_body_invalid" } }, 400);
+    try { return c.json(await mutateClientReleaseRegistry(c.env.VERSION_BUCKET, c.env.ENVIRONMENT, principal.id, operation,
+      body as Record<string, unknown>, c.req.param("versionCode"))); }
+    catch (error) {
+      const code = error instanceof Error ? error.message : "version_storage_write_failed";
+      if (code === "version_precondition_required") return c.json({ error: { code } }, 428);
+      if (["version_current_pointer_conflict", "version_code_already_registered", "registry_artifact_identity_conflict", "registry_promotion_state_invalid"].includes(code)) return c.json({ error: { code } }, 409);
+      if (code.startsWith("registry_") || code === "invalid_version_revision" || code === "client_version_unregistered") return c.json({ error: { code } }, 400);
+      return c.json({ error: { code: "version_storage_write_failed" } }, 502);
+    }
+  });
+}
 app.get("/v1/admin/server-deployments/current", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
@@ -4762,5 +4798,4 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
 });
 
 export default app;
-
 

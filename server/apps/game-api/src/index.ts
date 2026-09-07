@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, readVersion, sha256Hex } from "@lastrail/common";
+import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, readVersionForAdmission, sha256Hex } from "@lastrail/common";
 import type { ContentReleaseDocument, VersionBucket, VersionDocument } from "@lastrail/common";
 import {
   calculateOfflineRewardPreview,
@@ -13,6 +13,8 @@ import {
 } from "../../../packages/balance/src/index";
 import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificationError, hashRefreshToken, verifyAccessToken } from "./auth";
 import { isDevGachaScopeAllowed } from "./gacha-dev-scope";
+import { registerActivityRoutes } from "./activity-routes";
+import { registerCrystalRoutes } from "./crystal-routes";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
@@ -273,14 +275,17 @@ function createClientConfigResponse(input: {
 }
 
 function isClientAdmissionProtectedRoute(pathname: string): boolean {
-  if (pathname === "/status" || pathname === "/v1/client-config") return false;
+  if (pathname === "/status" || pathname === "/v1/client-config" || pathname === "/v1/client-config/authorized") return false;
   if (pathname.startsWith("/v1/auth/password/recovery-email/verify/")) return false;
   if (pathname.startsWith("/v1/auth/password/reset/")) return false;
   if (pathname.startsWith("/v1/client-errors")) return false;
   return pathname.startsWith("/v1/");
 }
 
-function clientAdmissionHttpStatus(errorCode: string | null): 400 | 426 | 503 {
+function clientAdmissionHttpStatus(errorCode: string | null): 400 | 401 | 403 | 409 | 426 | 503 {
+  if (errorCode === "authentication_required") return 401;
+  if (["client_version_unregistered", "client_version_disabled", "tester_forbidden"].includes(errorCode ?? "")) return 403;
+  if (["content_release_pin_required", "content_release_pin_mismatch"].includes(errorCode ?? "")) return 409;
   if (errorCode === "app_version_required") return 400;
   if (errorCode === "client_update_required") return 426;
   return 503;
@@ -289,21 +294,62 @@ function clientAdmissionHttpStatus(errorCode: string | null): 400 | 426 | 503 {
 async function createClientAdmissionForRequest(c: GameApiContext) {
   const env = c.env as GameApiEnv;
   let version: VersionDocument | null = null;
+  let revision: string | null = null;
   if (env.VERSION_BUCKET !== undefined) {
     try {
-      version = await readVersion(env.VERSION_BUCKET);
+      ({ version, revision } = await readVersionForAdmission(env.VERSION_BUCKET));
     } catch {
       version = null;
     }
   }
-  return createClientConfigResponse({
+  const code = normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code"));
+  const registry = version?.clientReleaseRegistry;
+  const entry = registry?.entries.find((row) => row.versionCode === code);
+  let selectedVersion = version;
+  if (registry && version) {
+    selectedVersion = { ...version };
+    delete selectedVersion.contentRelease;
+    if (entry) selectedVersion.contentRelease = entry.contentRelease;
+  }
+  const response = createClientConfigResponse({
     env,
-    version,
+    version: selectedVersion,
     installedAppVersion: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Version")),
     installedVersionCode: normalizeInstalledVersionCode(c.req.header("X-LastRail-App-Version-Code")),
     platform: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Platform")),
     channel: normalizeClientConfigHeader(c.req.header("X-LastRail-App-Channel")),
   });
+  const result = { ...response, registryRevision: registry ? revision : null,
+    clientAdmission: { ...response.clientAdmission, distribution: entry?.status ?? null },
+    bootstrap: { canAuthenticate: response.accepted, contentAuthorized: response.accepted, authenticationRequired: false } };
+  if (!registry) return result;
+  const deny = (status: string, errorCode: string, message: string, canAuthenticate = false) => ({ ...result,
+    accepted: false, clientAdmission: { ...result.clientAdmission, status }, contentRelease: createEmptyContentRelease("NOT_APPROVED"),
+    bootstrap: { canAuthenticate, contentAuthorized: false, authenticationRequired: entry?.status === "INTERNAL" }, errorCode, message });
+  if (!code || response.errorCode === "client_update_required") return result;
+  if (!entry) return deny("UNREGISTERED", "client_version_unregistered", "This exact version code is not registered.");
+  if (entry.status === "DISABLED") return deny("DISABLED", "client_version_disabled", "This version code is disabled.");
+  if (entry.status === "STABLE") return result;
+  const auth = await resolveAuthContext(c);
+  if (!("accountId" in auth)) return deny("AUTH_REQUIRED", "authentication_required", "Authenticate before requesting internal content.", true);
+  const tester = await env.DB.prepare(`SELECT account_id FROM account_tester_entitlements
+    WHERE account_id = ? AND environment = ? AND version_code = ? AND status = 'ACTIVE'
+    AND revoked_at IS NULL AND expires_at > unixepoch('subsec') * 1000`)
+    .bind(auth.accountId, env.ENVIRONMENT, code).first();
+  if (!tester) return deny("TESTER_FORBIDDEN", "tester_forbidden", "An active tester entitlement is required.", true);
+  return result;
+}
+
+function isRegistryBootstrapRoute(method: string, path: string): boolean {
+  return new Set([
+    "POST /v1/auth/guest", "POST /v1/auth/password/register", "POST /v1/auth/password/login",
+    "POST /v1/auth/google", "POST /v1/auth/refresh",
+  ]).has(`${method} ${path}`);
+}
+
+function isRegistryHydrationRoute(method: string, path: string): boolean {
+  return new Set(["GET /v1/profile", "GET /v1/profile/display-name/check", "POST /v1/profile/display-name", "GET /v1/story-progress"])
+    .has(`${method} ${path}`);
 }
 
 function isObjectRecord(value: unknown): value is Record<string, unknown> {
@@ -311,7 +357,7 @@ function isObjectRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function createRunVersionSnapshotFromAdmission(
-  admission: ReturnType<typeof createClientConfigResponse>,
+  admission: Awaited<ReturnType<typeof createClientAdmissionForRequest>>,
   env: GameApiEnv,
   capturedAtMs: number,
   source: RunVersionSnapshotSource,
@@ -3024,8 +3070,23 @@ app.use("*", async (c, next) => {
   }
 
   const admission = await createClientAdmissionForRequest(c);
+  if (admission.registryRevision !== null && admission.bootstrap.canAuthenticate) {
+    const path = new URL(c.req.url).pathname;
+    if (isRegistryBootstrapRoute(c.req.method, path)) return next();
+    if (isRegistryHydrationRoute(c.req.method, path)) {
+      const auth = await resolveAuthContext(c);
+      if (!("accountId" in auth)) return c.json(auth, auth.status);
+      return next();
+    }
+  }
   if (admission.accepted === false) {
     return c.json(admission, clientAdmissionHttpStatus(admission.errorCode));
+  }
+  if (admission.registryRevision !== null) {
+    const pin = c.req.header("X-LastRail-Content-Release-Id");
+    if (pin !== admission.contentRelease.releaseId) return c.json({ accepted: false,
+      errorCode: pin ? "content_release_pin_mismatch" : "content_release_pin_required",
+      message: "Authorize and pin the selected content release before gameplay." }, 409);
   }
 
   return next();
@@ -4312,7 +4373,16 @@ app.post("/v1/profile/display-name", async (c) => {
   });
 });
 app.get("/v1/client-config", async (c) => {
+  c.header("Cache-Control", "no-store");
   return c.json(await createClientAdmissionForRequest(c));
+});
+
+app.get("/v1/client-config/authorized", async (c) => {
+  c.header("Cache-Control", "no-store");
+  const auth = await resolveAuthContext(c);
+  if (!("accountId" in auth)) return c.json(auth, auth.status);
+  const admission = await createClientAdmissionForRequest(c);
+  return c.json(admission, admission.accepted ? 200 : clientAdmissionHttpStatus(admission.errorCode));
 });
 app.post("/v1/realtime/coop/rooms", async (c) => {
   const idempotencyKey = c.req.header("Idempotency-Key")?.trim();
@@ -6746,5 +6816,8 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
 });
 
 export { RealtimeCoopRoom };
+
+registerActivityRoutes(app, resolveAuthContext);
+registerCrystalRoutes(app, resolveAuthContext);
 
 export default app;

@@ -5,8 +5,8 @@ import { join } from "node:path";
 const migrationDir = join(process.cwd(), "packages/db/migrations");
 const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
 
-if (migrations.length !== 20) {
-  throw new Error(`Expected 20 migrations, found ${migrations.length}`);
+if (migrations.length !== 24) {
+  throw new Error(`Expected 24 migrations, found ${migrations.length}`);
 }
 
 const SQL = await initSqlJs();
