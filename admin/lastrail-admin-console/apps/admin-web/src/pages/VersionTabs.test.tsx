@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { MemoryRouter } from "react-router-dom";
 import { VersionManagementPage } from "./VersionManagementPage";
-vi.mock("@tanstack/react-query", () => ({useQuery: ({queryKey}: {queryKey: string[]}) => queryKey[0].startsWith("server-deployment") ? {isLoading:false} : ({ data: {server:"dev-admin.lastrail.app",version:"app-only-1",versionCode:"7",minimumVersionCode:"1",canExport:true},isLoading:false })}));
+vi.mock("@tanstack/react-query", () => ({useQuery: ({queryKey}: {queryKey: string[]}) => queryKey[0].startsWith("server-deployment") || queryKey[0] === "client-release-registry" ? {isLoading:false} : ({ data: {server:"dev-admin.lastrail.app",version:"app-only-1",versionCode:"7",minimumVersionCode:"1",canExport:true},isLoading:false })}));
 function render(path: string) { return renderToStaticMarkup(<MemoryRouter initialEntries={[path]}><VersionManagementPage/></MemoryRouter>); }
 describe("version scope tabs", () => {
   it("keeps a legacy revision-less API readable but export disabled", () => {

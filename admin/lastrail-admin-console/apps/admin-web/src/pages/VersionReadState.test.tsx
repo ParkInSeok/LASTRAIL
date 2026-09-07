@@ -6,7 +6,7 @@ import { VersionManagementPage } from "./VersionManagementPage";
 const state = vi.hoisted(() => ({
   query: {} as Record<string, unknown>
 }));
-vi.mock("@tanstack/react-query", () => ({ useQuery: ({ queryKey }: { queryKey: string[] }) => queryKey[0].startsWith("server-deployment") ? { isLoading: false } : state.query }));
+vi.mock("@tanstack/react-query", () => ({ useQuery: ({ queryKey }: { queryKey: string[] }) => queryKey[0].startsWith("server-deployment") || queryKey[0] === "client-release-registry" ? { isLoading: false } : state.query }));
 const current = { server: "DEV", version: "known-version", versionCode: "7", minimumVersionCode: "1", revision: '"current"', canExport: false };
 const render = () => renderToStaticMarkup(<MemoryRouter><VersionManagementPage /></MemoryRouter>);
 

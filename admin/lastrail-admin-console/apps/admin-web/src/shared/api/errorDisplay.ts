@@ -34,6 +34,15 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.path.startsWith("/api/client-releases") && error.status === 404) {
+      return { reason: "버전 등록 API 배포 확인 필요", nextStep: "현재 대상 Admin API의 registry 지원 여부를 확인하세요. 다른 서버로 자동 전환하지 않습니다." };
+    }
+    if (error.errorCode === "registry_target_mismatch") {
+      return { reason: "선택 대상과 응답 서버 불일치", nextStep: "DEV/PRD와 연결된 Admin API 환경을 확인한 뒤 다시 조회하세요." };
+    }
+    if (error.errorCode === "version_registry_managed") {
+      return { reason: "버전코드별 등록 정책 사용 중 · 기존 단일 저장 불가", nextStep: "등록 정책을 다시 조회하고 버전코드별 변경을 사용하세요." };
+    }
     if (error.errorCode === "version_precondition_required" || error.errorCode === "invalid_version_revision") {
       return { reason: "버전 저장 기준 확인 필요 · 최신 정책을 다시 조회하세요.", nextStep: "Admin UI/API 버전 정렬과 최신 정책 조회를 확인하세요. 자동 재저장하지 않습니다." };
     }

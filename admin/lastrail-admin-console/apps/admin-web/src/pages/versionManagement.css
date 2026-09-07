@@ -9,3 +9,20 @@
 .version-policy-warning { border-left: 3px solid #b47a1a; padding: 10px 12px; background: #fff8e8; color: #685017; }
 @media (max-width: 600px) { .version-policy > div { grid-template-columns: minmax(0, 1fr); gap: 6px; } }
 .server-version-section { margin-top: 28px; padding-top: 20px; border-top: 1px solid #cbd3dc; }
+.registry-section { margin: 24px 0; padding: 20px 0; border-block: 1px solid #cbd3dc; }
+.registry-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; }
+.registry-section label { display: grid; gap: 6px; min-width: 0; }
+.registry-section input, .registry-section select, .registry-section textarea { max-width: 100%; min-width: 0; box-sizing: border-box; }
+.registry-section textarea { width: 100%; min-height: 72px; resize: vertical; }
+.registry-section fieldset { margin: 20px 0 0; padding: 16px 0; border: 0; border-top: 1px solid #cbd3dc; min-width: 0; }
+.registry-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0; }
+.registry-section .registry-confirm { display: flex; align-items: start; gap: 8px; margin-top: 16px; }
+.registry-confirm input { width: 18px; height: 18px; flex: 0 0 18px; }
+.registry-table-wrap { width: 100%; overflow-x: auto; }
+.registry-table { width: 100%; min-width: 560px; table-layout: fixed; }
+.registry-table th, .registry-table td { overflow-wrap: anywhere; vertical-align: top; }
+.registry-table th:nth-child(1) { width: 16%; }
+.registry-table th:nth-child(2) { width: 16%; }
+.registry-table dd { margin: 4px 0 12px; }
+.registry-hash { overflow-wrap: anywhere; }
+@media (max-width: 600px) { .registry-fields { grid-template-columns: minmax(0, 1fr); } }

@@ -4,6 +4,8 @@ import "./versionManagement.css";
 import { adminApi } from "../shared/api/client";
 import { ServerDeploymentPanel } from "../shared/release/ServerDeploymentPanel";
 import { canSaveVersionRevision } from "../shared/release/versionPrecondition";
+import { ClientReleaseRegistryPanel } from "../shared/release/ClientReleaseRegistryPanel";
+import type { RegistryTarget, RegistryEditContext, RegistryInput } from "../shared/release/clientReleaseRegistry";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import {
   simpleVersionExportAction,
@@ -17,6 +19,24 @@ export const versionManagementExportAction = simpleVersionExportAction;
 
 export function VersionManagementPage() {
   const current = useQuery({ queryKey: ["current-version"], queryFn: adminApi.currentVersion, retry: false });
+  const [registryTarget, setRegistryTarget] = useState<RegistryTarget>("DEV");
+  const registry = useQuery({ queryKey: ["client-release-registry", registryTarget], queryFn: () => adminApi.clientReleaseRegistry(registryTarget), retry: false });
+  const [registrySaving, setRegistrySaving] = useState(false);
+  async function reloadRegistry() {
+    const latest = await registry.refetch();
+    if (latest.isError || !latest.data || latest.data.target !== registryTarget) throw latest.error ?? new Error("등록 대상 응답 확인 필요");
+    return latest.data;
+  }
+  async function saveRegistry(context: RegistryEditContext, input: RegistryInput) {
+    if (!registry.data || registrySaving || isSubmitting) throw new Error("저장 가능 상태 확인 필요");
+    setRegistrySaving(true);
+    setNeedsReview(true);
+    try {
+      await adminApi.updateClientReleaseRegistry(registry.data, { ...context, readUnavailable: context.readUnavailable || registry.isFetching || registry.isError, target: registryTarget }, input);
+      await current.refetch();
+      return await reloadRegistry();
+    } finally { setRegistrySaving(false); }
+  }
   const readStatus = current.isLoading ? "조회 중" : current.isError
     ? adminRequestFailureDisplay(current.error, { resourceLabel: "현재 버전", resourceId: "/api/versions" }).reason
     : "없음";
@@ -46,7 +66,8 @@ export function VersionManagementPage() {
   }
   const minimumValid = /^[1-9]\d{0,9}$/.test(effectiveMinimum) && Number(effectiveMinimum) <= Number(targetVersionCode);
   const revisionReady = canSaveVersionRevision(editingRevision, current.data?.revision, current.isFetching || current.isError, needsReview);
-  const canSubmit = revisionReady && current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && minimumValid && !isSubmitting;
+  const legacyRegistryReady = registry.data?.registryStatus === "LEGACY" && registry.data.target === registryTarget && !registry.isFetching && !registry.isError && !registrySaving;
+  const canSubmit = legacyRegistryReady && revisionReady && current.data?.canExport === true && targetVersion.trim().length > 0 && /^[1-9]\d{0,9}$/.test(targetVersionCode.trim()) && Number(targetVersionCode) <= 2147483647 && minimumValid && !isSubmitting;
 
   async function submitVersionExport(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -63,7 +84,7 @@ export function VersionManagementPage() {
       });
       setSubmitStatus(result.status);
       setNeedsReview(true);
-      if (result.accepted) await reloadPolicy();
+      if (result.accepted) { await reloadPolicy(); await registry.refetch(); }
     } catch (error) {
       setNeedsReview(true);
       const failure = adminRequestFailureDisplay(error, {
@@ -85,7 +106,7 @@ export function VersionManagementPage() {
       <h2>프론트 버전</h2>
       <button type="button" onClick={() => void reloadPolicy()} disabled={isSubmitting || current.isFetching}>최신 정책 조회</button>
       {current.data?.revision === undefined && !current.isLoading && <p role="status">저장 사전조건 조회 미지원 · Admin API 업데이트 확인 필요</p>}
-      {(needsReview || (editingRevision !== undefined && editingRevision !== current.data?.revision)) && <p role="status">최신 정책을 조회한 뒤 입력값을 다시 검토하세요. 자동 재저장하지 않습니다.</p>}
+      {registry.data?.registryStatus !== "CONFIGURED" && (needsReview || (editingRevision !== undefined && editingRevision !== current.data?.revision)) && <p role="status">최신 정책을 조회한 뒤 입력값을 다시 검토하세요. 자동 재저장하지 않습니다.</p>}
       <section className="summary-grid" aria-label="버전 관리 요약">
         {versionManagementServerCards.map((card) => (
           <div key={card.code}>
@@ -99,9 +120,10 @@ export function VersionManagementPage() {
         </div>
       </section>
       <p className="version-policy-warning" role="status">{current.data?.admissionPolicy ? `접속 정책: ${current.data.admissionPolicy.status ?? "미기록"} · 실제 Game API 적용 검증은 별도입니다.` : "접속 정책 조회 미연동 · 현재 저장값만으로 구버전 앱 차단 여부를 확인할 수 없습니다."}</p>
-      <section className="admin-panel">
+      <ClientReleaseRegistryPanel target={registryTarget} data={registry.data} loading={registry.isLoading} fetching={registry.isFetching} saving={registrySaving || isSubmitting} error={registry.error} onTargetChange={setRegistryTarget} onReload={reloadRegistry} onSave={saveRegistry} />
+      {registry.data?.registryStatus !== "CONFIGURED" && <section className="admin-panel">
         <header>
-          <h2>앱 버전 정책 저장</h2>
+          <h2>기존 단일 앱 버전 정책 저장</h2>
         </header>
         <form className="metric-grid" onSubmit={submitVersionExport}>
           {versionManagementInputFields.map((field) => (
@@ -137,7 +159,7 @@ export function VersionManagementPage() {
             <small>R2 정책 문서만 갱신합니다. 앱·서버 배포나 콘텐츠 활성화는 수행하지 않습니다.</small>
           </div>
         </form>
-      </section>
+      </section>}
       <section aria-label="콘텐츠 버전 정책">
         <h2>콘텐츠</h2>
         <dl className="version-policy">

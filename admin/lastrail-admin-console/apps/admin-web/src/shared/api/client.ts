@@ -1,5 +1,6 @@
 import { ticketList, ticketDetail } from "../support/tickets";
 import { mapDeployment, type DeploymentService } from "../release/serverDeployment";
+import { buildRegistryCommand, mapClientRegistry, type ClientRegistry, type RegistryEditContext, type RegistryInput, type RegistryTarget } from "../release/clientReleaseRegistry";
 import {
   mapDashboardLaunchSummaryResponse
 } from "../dashboard/launchSummaryContract";
@@ -175,6 +176,17 @@ function queryString(filters: Record<string, string | undefined>): string {
 }
 
 export const adminApi = {
+  async clientReleaseRegistry(target: RegistryTarget) {
+    const result = mapClientRegistry(await readJson(`/api/client-releases?target=${target}`));
+    if (result.target !== target) throw new AdminApiError({ status: 409, path: "/api/client-releases", errorCode: "registry_target_mismatch" });
+    return result;
+  },
+  async updateClientReleaseRegistry(state: ClientRegistry, context: RegistryEditContext, input: RegistryInput) {
+    const command = buildRegistryCommand(state, context, input);
+    const result = mapClientRegistry(await writeJson(command.path, command.body));
+    if (result.target !== context.target) throw new AdminApiError({ status: 409, path: command.path, errorCode: "registry_target_mismatch" });
+    return result;
+  },
   async serverDeploymentCurrent(service: DeploymentService) {
     return mapDeployment(await readJson(`/api/server-deployments/current?service=${encodeURIComponent(service)}`), service, "current");
   },
