@@ -13,9 +13,11 @@ import { seedGameReadEvidence } from "./local-game-fixtures.ts";
 import { deploymentBucket } from "./local-deployment-fixtures.ts";
 import { mapDeployment } from "../src/shared/release/serverDeployment.ts";
 import { seedRunVersionDisplayCases } from "./local-run-version-fixtures.ts";
+import { localVersionEditBucket } from "./local-version-edit-fixtures.ts";
 
 const root = fileURLToPath(new URL("../../../../../server/", import.meta.url));
-const deploymentMode = process.argv.includes("--deployments");
+const versionEditMode = process.argv.includes("--version-edits");
+const deploymentMode = versionEditMode || process.argv.includes("--deployments");
 const supportErrorsOnly = deploymentMode || process.argv.includes("--support-errors");
 const require = createRequire(resolve(root, "package.json"));
 const SQL = await require("sql.js")();
@@ -71,7 +73,8 @@ const server = createServer(async (incoming, outgoing) => {
       const headers = new Headers();
       for (const [name, value] of Object.entries(incoming.headers)) if (typeof value === "string") headers.set(name, value);
       const admin = url.pathname.startsWith("/api/");
-      if (admin && incoming.method !== "GET") { outgoing.writeHead(405); outgoing.end(); return; }
+      const localVersionWrite = versionEditMode && url.pathname === "/api/versions/export" && incoming.method === "POST";
+      if (admin && incoming.method !== "GET" && !localVersionWrite) { outgoing.writeHead(405); outgoing.end(); return; }
       const bootstrap = url.pathname === "/api/bootstrap";
       if (admin) {
         url.pathname = bootstrap ? "/v1/admin/me" : url.pathname.replace(/^\/api/, "/v1/admin");

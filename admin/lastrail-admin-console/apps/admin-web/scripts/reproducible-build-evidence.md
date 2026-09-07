@@ -31,3 +31,19 @@ No dependency junctions or parent runtime node_modules. No credentials copied.
 Locks permit version-pinned installation; a cold cache still needs the registry.
 Do not equate this check with authenticated Pages smoke, actual R2 writes or
 deployment approval. Hono fixture/browser verification is documented separately.
+
+## Local stale-form browser verification
+
+Run the local HTTP harness with `--version-edits`. Only this explicit mode permits
+POST /api/versions/export into a memory-only conditional bucket. No R2 client is
+constructed. All other Admin POST routes remain blocked. Stop the process to
+discard policy changes. This mode must never be used as a remote hosting service.
+
+Two independent browser documents at localhost /versions read revision1/app200.
+A entered201; B entered202 and saved first. Actual Hono response200 and refetch
+showed202, clearing B's fields and disabling save. A's stale save returned409;
+UI displayed conflict/review copy and disabled save. Explicit latest read then
+showed202 and cleared A's fields. HTTP log: exactly two POSTs,200 then409, with
+no automatic retry. Both tabs and localhost process closed after verification.
+This checks independent browser documents, not two browser-engine implementations.
+Actual remote R2 write remains prohibited in the paired rollout approval.
