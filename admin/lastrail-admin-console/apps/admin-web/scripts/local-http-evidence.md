@@ -77,3 +77,23 @@ policy (not real R2); no catalog URL is fetched. Do not run both on the same por
 Browser steps after `ready: true`: open `/support/tickets`, follow the generated
 ticket link, open `/ops/error-logs`, select frontend, enter version/code, search.
 HTTP assertions run automatically; browser verification is manual CUA, not mocked SSR.
+# 2026-09-07: Run list finish-version omission
+
+- Root cause: deployed Admin `1f1d1c4` and previous source list showed start only;
+  detail already mapped both snapshots. Server historical `57d2a10` projection
+  contains both, confirmed separately by SERVER_1. No extra API is needed.
+- Local full suite: 41 files / 236 tests PASS; `npm run build` (tsc + Vite) PASS.
+  Existing >500KB chunk warning remains. RED previously failed both new list
+  tests before adding finish column and explicit Worker version reference copy.
+- Ran actual Hono handlers with ephemeral sql.js using the existing harness.
+  Start app100 / finish app101 rendered independently in list and linked detail.
+  Duplicate finish sent app102 but readback retained original finish101.
+- Run with `--run-version-cases` for opt-in local-only long/legacy/unfinished
+  display rows. They clone synthetic records, not actual gameplay evidence.
+  Browser list showed legacy as unrecorded and unfinished as not finished;
+  unfinished detail preserved start only. Long app/Worker strings wrapped in
+  both columns and detail, verified with in-app browser screenshots. Table has
+  local horizontal scrolling at the tested ~1265px viewport; no overlapping text.
+- No remote Game POST, R2 write, Access changes, preview deployment or video.
+  Browser tab and local server were closed after verification. Authenticated
+  remote Pages/API integration remains a separate approval-dependent check.

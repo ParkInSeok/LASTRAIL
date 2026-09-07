@@ -12,6 +12,7 @@ import { rolePermissions } from "../../../packages/admin-contracts/src/index.ts"
 import { seedGameReadEvidence } from "./local-game-fixtures.ts";
 import { deploymentBucket } from "./local-deployment-fixtures.ts";
 import { mapDeployment } from "../src/shared/release/serverDeployment.ts";
+import { seedRunVersionDisplayCases } from "./local-run-version-fixtures.ts";
 
 const root = fileURLToPath(new URL("../../../../../server/", import.meta.url));
 const deploymentMode = process.argv.includes("--deployments");
@@ -175,6 +176,7 @@ try {
   await post("/v1/runs/" + started.runId + "/finish", finishPayload, guest.accessToken, "local-run-finish", { "X-LastRail-App-Version-Code": "102" });
   const replayRun = await (await fetch(base + "/api/runs/" + started.runId)).json() as any;
   assert.deepEqual(replayRun.runFinishVersionSnapshot, detailRun.runFinishVersionSnapshot);
+  if (process.argv.includes("--run-version-cases")) await seedRunVersionDisplayCases(db, d1, started.runId);
   const pull = await post("/v1/gacha/banners/local-read-banner/pulls", { pullCount: 10 }, guest.accessToken, "local-pull");
   assert.equal(pull.accepted, true);
   const batch = await (await fetch(base + "/api/gacha/pull-batches/" + pull.batchId)).json() as any;

@@ -17,5 +17,5 @@ export type RunVersionEvidence = ReturnType<typeof mapRunVersions>;
 export function versionSummary(evidence: RunVersionEvidence["start"]) {
   if (!evidence.snapshot) return evidence.status === "NOT_FINISHED" ? "미종료" : evidence.status === "AVAILABLE" ? "버전 기록 형식 확인 필요" : evidence.status === "UNRECORDED_LEGACY" ? "미기록 (이전 기록)" : evidence.status;
   const value = evidence.snapshot;
-  return `앱 ${value.appVersion ?? "미기록"} / 코드 ${value.versionCode ?? "미기록"} · 서버 ${value.runtimeDeploymentId ?? "미기록"}`;
+  return `앱 ${value.appVersion ?? "미기록"} / 코드 ${value.versionCode ?? "미기록"} · Worker 버전 참조 ${value.runtimeDeploymentId ?? "미기록"}`;
 }

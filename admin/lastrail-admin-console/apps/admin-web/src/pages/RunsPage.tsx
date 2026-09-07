@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { adminApi } from "../shared/api/client";
 import { runResultLabel } from "../shared/labels/adminLabels";
 import { versionSummary } from "../shared/runs/runVersions";
+import "../shared/runs/runVersions.css";
 
 export function runTimeLabel(value?: string, result?: string): string {
   if (!value) return result === "IN_PROGRESS" ? "진행 중" : "미기록";
@@ -33,7 +34,7 @@ export function RunsPage() {
       {query.isLoading && <p>출격을 불러오는 중</p>}
       {query.error && <p className="error">출격 요청 실패</p>}
       {query.data && (
-        <table>
+        <div className="runs-table-scroll"><table className="runs-table">
           <thead>
             <tr>
               <th>출격</th>
@@ -44,6 +45,7 @@ export function RunsPage() {
               <th>위험도</th>
               <th>밸런스</th>
               <th>시작 앱 / 서버 버전</th>
+              <th>완료 앱 / 서버 버전</th>
             </tr>
           </thead>
           <tbody>
@@ -58,11 +60,12 @@ export function RunsPage() {
                 <td>{runResultLabel(run.result)}</td>
                 <td>{run.riskTier}</td>
                 <td>{run.balanceVersion}</td>
-                <td>{versionSummary(run.versionEvidence.start)}</td>
+                <td className="run-version-value">{versionSummary(run.versionEvidence.start)}</td>
+                <td className="run-version-value">{versionSummary(run.versionEvidence.finish)}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </main>
   );

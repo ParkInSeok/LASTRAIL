@@ -1,0 +1,5 @@
+.runs-table-scroll { width: 100%; overflow-x: auto; }
+.runs-table { min-width: 1150px; table-layout: fixed; }
+.runs-table td { overflow-wrap: anywhere; vertical-align: top; }
+.runs-table th:nth-last-child(-n+2) { width: 19%; }
+.run-version-value { overflow-wrap: anywhere; white-space: normal; }
