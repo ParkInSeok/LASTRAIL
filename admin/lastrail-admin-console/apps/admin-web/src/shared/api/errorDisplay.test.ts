@@ -3,6 +3,13 @@ import { AdminApiError } from "./client";
 import { adminReadStatusLabel, adminReadValueLabel, adminRequestFailureDisplay } from "./errorDisplay";
 
 describe("admin request failure display", () => {
+  it("requires reread and user review after a version save conflict", () => {
+    const display = adminRequestFailureDisplay(new AdminApiError({status:409,path:"/api/versions/export",errorCode:"version_current_pointer_conflict"}), {resourceLabel:"버전 내보내기",resourceId:"/api/versions/export"});
+    expect(display.reason).toContain("다른 변경과 충돌");
+    expect(display.reason).toContain("새로고침");
+    expect(display.nextStep).toContain("자동 재저장하지 않습니다");
+    expect(display.statusLabel).toBe("409");
+  });
   it("classifies missing detail ids as DEV fixture or id wait", () => {
     expect(
       adminRequestFailureDisplay(

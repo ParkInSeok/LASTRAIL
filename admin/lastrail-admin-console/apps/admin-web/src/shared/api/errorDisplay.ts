@@ -34,6 +34,12 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.status === 409 && error.errorCode === "version_current_pointer_conflict") {
+      return {
+        reason: "저장 중 다른 변경과 충돌했습니다. 새로고침으로 최신 정책을 조회한 뒤 입력값을 다시 검토하세요.",
+        nextStep: "자동 재저장하지 않습니다. 최신 버전·최소 지원 버전·콘텐츠 정책을 확인한 후 다시 입력하세요."
+      };
+    }
     if (error.errorCode === "version_storage_unavailable") {
       return { reason: "R2 활성화 및 버킷 연결 필요", nextStep: "DEV R2 저장소 연결 후 다시 조회하세요." };
     }

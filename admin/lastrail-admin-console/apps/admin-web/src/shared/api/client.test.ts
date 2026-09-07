@@ -2,6 +2,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AdminApiError, adminApi } from "./client";
 
 describe("admin web API client", () => {
+  it("preserves version conflict and never automatically retries the write", async () => {
+    const fetchSpy = vi.fn(async () => Response.json({error:{code:"version_current_pointer_conflict"}}, {status:409}));
+    vi.stubGlobal("fetch", fetchSpy);
+    await expect(adminApi.exportVersionToR2({version:"1.0.0",versionCode:"100",minimumVersionCode:"90"})).rejects.toMatchObject({status:409,errorCode:"version_current_pointer_conflict"});
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
   it("reads server deployment current and history without an environment override", async () => {
     const current = {environment:"dev",service:"game-api",serverVersion:"local-1",historyKey:"server-deployments/dev/game-api/local-1.json",releaseId:"local",cloudflareDeploymentId:"local-worker",updatedAt:"2026-09-06T00:00:00Z"};
     const root = {accepted:true,environment:"DEV",service:"game-api",permission:"SERVER_DEPLOYMENT_READ",permissionMode:"ROLE_PERMISSION"};
