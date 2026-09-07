@@ -118,7 +118,14 @@ timeouts; the earlier request to stop the owned test became unnecessary.
    approved Android candidate only under separate authorization. Then validate
    actual auth/Keystore/restart, cellular transitions, disk/cache failure and UI.
 
-Persistence at checkpoint: local/uncommitted report and owner code; unrelated
-server/admin/QA/art changes preserved. No full dirty-workspace commit or new source
-snapshot claimed. Direct-report security HOLD remains; canonical Unity handoff is
+Persistence: owner code and the initial reports were selectively committed as
+4fe22dc44328dcfad5760ff8106dc8bfe48cdb58 (46 files). These include previously
+untracked Unity-owned source; this is NOT a complete fresh-checkout dependency
+snapshot. Test XML/logs and the canonical planning handoff remain local. Scoped
+staged C#/Java/Markdown whitespace checking passed. Unrelated server/admin/QA/art
+changes were preserved. Full XML SHA256:
+f18fd5b0dbeaf599d780ba73ec294348e4818836bf656bbd53423f0f5ace2843.
+This report's final persistence note is a documentation-only follow-up.
+No full dirty-workspace commit or new source snapshot claimed.
+Direct-report security HOLD remains; canonical Unity handoff is
 the integration record and no report was rerouted through another task.
