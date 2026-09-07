@@ -17,4 +17,13 @@ describe("version revision precondition", () => {
     expect(canSaveVersionRevision('"r1"','"r1"',true,false)).toBe(false);
     expect(canSaveVersionRevision('"r1"','"r1"',false,true)).toBe(false);
   });
+  it("never treats absent and unavailable revisions as interchangeable", () => {
+    for (const editing of [undefined, null, '"old"', '"current"']) {
+      for (const current of [undefined, null, '"old"', '"current"']) {
+        expect(canSaveVersionRevision(editing, current, false, false)).toBe(editing !== undefined && current !== undefined && editing === current);
+        expect(canSaveVersionRevision(editing, current, true, false)).toBe(false);
+        expect(canSaveVersionRevision(editing, current, false, true)).toBe(false);
+      }
+    }
+  });
 });
