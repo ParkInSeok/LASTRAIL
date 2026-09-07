@@ -38,9 +38,41 @@ Assets remain index-DLeeegRX.js and index-CX_sa0t9.css.
 
 ## Remaining Boundaries
 
-This is not shipping pool approval, statistical proof, unsupported-type API PASS,
-an independent browser check, or a new remote deployment. Name/icon verification
-requires an authoritative safe catalog. Actual browser/Hono re-execution remains
-separate work; SSR does not replace it. Initial/free five eligibility is not inferred.
+This is not shipping pool approval, statistical proof or unsupported-type API PASS.
+Name/icon verification requires an authoritative safe catalog. Initial/free five
+eligibility is not inferred. The browser follow-up below supersedes the original
+browser-pending checkpoint, but does not widen pool approval.
 No probability logic, economy, remote pull, R2, Access, secret or deployment changed.
 Unity-owned local-http-evidence.ts changes were preserved and not staged.
+
+## Actual Live Hono And Browser Follow-up
+
+Admin independently reran the existing Server focused test named
+`reaches every currently supported draft candidate`: 1 passed, 9 skipped, 910ms.
+SERVER_1 then reran that generation with GACHA_AUDIT_READ_BRIDGE=1, retaining
+the same in-memory DB after Game pulls, exposing actual Admin Hono GET handlers
+on loopback53702. No captured JSON replay, database rehydration or raw DB export.
+
+Admin `local-gacha-read-bridge.mjs` served the existing built UI at loopback4178
+and forwarded only allowed gacha GETs, with no incoming auth/cookies/Origin/Host.
+Its bootstrap is synthetic LOCAL diagnostic shell, not an auth readiness test.
+Run via `node scripts/local-gacha-read-bridge.mjs http://127.0.0.1:<server-port>`
+after SERVER_1 provides the current ephemeral bridge URL. Stop with Ctrl+C.
+
+Observed on 2026-09-07 around15:52 KST using IAB browser:
+- Actual list200 and all16 detail200, fourteen distinct candidate IDs visible.
+- Rare op_signal_runner token30 and elite op_vex token50 visible separately.
+- Expanded rare detail: duplicate count1, replay known, guarantee NONE, no
+  inferred cause. Screenshot inspected; no name/icon assets invented.
+- Unknown account filter returned200/empty and displayed `뽑기 이력 없음`, not pending.
+- Independent local HTTP assertions repeated16details/14IDs/30+50; missing
+  batch404, proxy POST405, unrelated API404. POST was not forwarded upstream.
+- Unknown status/type raw fallback remains adapter-test evidence only, not a
+  newly seeded live DB case. No unsupported candidate was added to the DB.
+
+Initial static path403 was caused by this new local host's double path separator;
+normalized dist with resolve, then HTTP200 and IAB worked. Chrome initial navigation
+reported ERR_BLOCKED_BY_CLIENT; no extension/security changes and no Chrome retry
+success claimed. The failed Chrome and IAB tabs plus successful IAB tab were closed.
+Admin proxy stopped; SERVER_1 was asked to stop its bridge. Full suite/build were
+not repeated in this follow-up: only local script/evidence changed, product unchanged.
