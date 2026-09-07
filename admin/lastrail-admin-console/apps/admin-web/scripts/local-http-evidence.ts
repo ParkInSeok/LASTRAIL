@@ -59,7 +59,7 @@ db.run("INSERT INTO admin_principals (id,access_subject,role,status,display_name
   ["local-evidence-owner", "local-evidence-subject", "OWNER", "ACTIVE", "LOCAL Synthetic Owner", now, now]);
 const localVersionPolicy = { version: "1.0.2-local", versionCode: "200", minimumVersionCode: "90", contentRelease: { status: "APPROVED", releaseId: "local-content", contentVersion: "local-content-1", catalogUrl: "https://example.invalid/local-catalog.json", catalogHash: "sha256:" + "a".repeat(64), minimumVersionCode: "90", maximumVersionCode: "200" } };
 const gameEnv = { ENVIRONMENT: "DEV", DB: d1, AUTH_SIGNING_KEY_CURRENT: randomUUID() + randomUUID(), CF_VERSION_METADATA: { id: "local-runtime-start" }, CLIENT_ADMISSION_MODE: supportErrorsOnly ? "DISABLED" : "ENFORCED", VERSION_BUCKET: { get: async () => ({ json: async () => localVersionPolicy }), put: async () => { throw new Error("Read-only local version policy"); } } };
-const adminEnv = { ENVIRONMENT: deploymentMode ? "DEV" : "LOCAL", DB: d1, ADMIN_AUTH_MODE: "LOCAL_HEADER", ALLOWED_ADMIN_ORIGINS: "http://127.0.0.1:4174", ...(deploymentMode ? { VERSION_BUCKET: deploymentBucket(localVersionPolicy) } : {}) };
+const adminEnv = { ENVIRONMENT: deploymentMode ? "DEV" : "LOCAL", DB: d1, ADMIN_AUTH_MODE: "LOCAL_HEADER", ALLOWED_ADMIN_ORIGINS: "http://127.0.0.1:4174", ...(deploymentMode ? { VERSION_BUCKET: versionEditMode ? localVersionEditBucket(localVersionPolicy) : deploymentBucket(localVersionPolicy) } : {}) };
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const base = "http://127.0.0.1:4174";
 const types: Record<string, string> = { ".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".svg": "image/svg+xml", ".png": "image/png" };
