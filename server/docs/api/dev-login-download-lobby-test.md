@@ -1,10 +1,23 @@
 # Opt-in real DEV login → download → lobby: server prerequisites
 
-Updated 2026-09-07 KST. Status: **BLOCKED**, not a live test success.
+Updated 2026-09-08 KST. Status: **BLOCKED**, not a live test success.
 Canonical contract: `docs/api/client-release-registry.md` in the planning checkout.
 Server implementation: `C:/Users/dlstj/.codex/worktrees/11ec/LASTRAIL/attendance-pass-20260907/server`.
 Unity owns the opt-in suite and real HTTP/session adapter. This document supplies
 its server prerequisite and assertion contract; it is not an executable test result.
+
+## DEV policy correction — local only, 2026-09-08
+
+DEV uses STABLE/DISABLED only; INTERNAL/STABLE separation and tester entitlement
+are PRD-only. The local correction on codex/dev-stable-registry-20260907 is not yet
+deployed. DEV2026.09.07.4 c08bfcd and D1 migrations0022–0024 were already deployed;
+do not repeat that rollout. A separate approved deployment of the correction is
+needed before validating the new DEV semantics remotely.
+Prior deployment: [DEV2026.09.07.4 report](../cloudflare/server-foundations-dev-deployment-2026-09-07.md). No registry activation,
+tester grant, publication, policy seed or additional account is part of this patch.
+DEV has no tester prerequisite; retain content publication/activation, exact code,
+minimum, normal authentication, release pin and economy gates. Timestamped older
+publication/session observations below are not a fresh remote inventory.
 
 ## Latest narrow authorization update — 2026-09-07
 
@@ -29,7 +42,7 @@ Newer independent publication evidence was read from Unity's
 2026-09-07T11:28:09.7259591Z, catalog_0.1.0.bin HTTP404, bytesMatch=false,
 sha256Match=false, status=BLOCKED. This is public HTTPS evidence only; no activation
 or login evidence. Server did not repeat that request. A05 publication/activation,
-registry deployment and real tester entitlement remain separate unsatisfied gates.
+deployment of the DEV correction remains separate; a tester entitlement is not a DEV gate.
 
 ## Current evidence and stop conditions
 
@@ -37,8 +50,8 @@ registry deployment and real tester entitlement remain separate unsatisfied gate
 | --- | --- | --- |
 | Actual A05 public objects uploaded and HTTPS hashes verified | Upload previously rejected; Unity HTTPS report at11:28:09Z shows catalog404, no hash match | BLOCKED_ARTIFACT_PUBLICATION |
 | versions/current.json activated by successful fresh-ETag CAS/readback | No activation performed by this server task; last observed legacy pointer had no contentRelease | BLOCKED_CONTENT_ACTIVATION |
-| Registry endpoint implementation deployed | Local only; deployment and remote0024 outside this request | BLOCKED_REGISTRY_NOT_DEPLOYED for registry cases |
-| Actual INTERNAL entitlement | Local synthetic fixtures only; no real grants | BLOCKED_TESTER_ENTITLEMENT for INTERNAL cases |
+| DEV policy correction deployed | c08bfcd registry foundation deployed; DEV STABLE correction local only | BLOCKED_DEV_POLICY_NOT_DEPLOYED for new DEV semantics |
+| Tester entitlement | PRD INTERNAL only; never required in DEV | Not a DEV prerequisite |
 | Unity authenticated adapter and session pin | Narrow DEV session consent supplied; patch/runner acceptance and wiring not yet verified | BLOCKED_AUTH_ADAPTER |
 | Approved dedicated account | Private state checked: no account, no access token, no seed, no pull checks | Account budget unused; do not create until other prerequisites pass |
 
@@ -65,8 +78,8 @@ Do not deploy the new registry or apply remote migrations merely to make a test 
    use account-id authority, or disable admission. No PRD calls in this DEV suite.
 2. GET `/v1/client-config` without credentials. Legacy/STABLE requires accepted=true,
    clientAdmission.status=ACCEPTED and contentRelease.status=APPROVED_COMPATIBLE.
-   Registry INTERNAL may instead return accepted=false, AUTH_REQUIRED and
-   bootstrap.canAuthenticate=true with every content identifier/URL/hash withheld.
+   DEV must not enter an INTERNAL AUTH_REQUIRED/tester flow. A stored DEV INTERNAL
+   row is invalid policy and stops the test with version_policy_unconfigured.
    Unknown, disabled, update-required, malformed policy, offline or503 stops the flow.
 3. Reuse the approved dedicated session if already created. Otherwise the sole
    approved account creator uses POST `/v1/auth/guest` with JSON `{}` and the existing
@@ -90,14 +103,13 @@ Do not deploy the new registry or apply remote migrations merely to make a test 
    same authenticated player without granting rewards or starting gameplay.
 6. On a deployed registry server, GET `/v1/client-config/authorized` with the existing
    session. Require accepted=true, ACCEPTED, APPROVED_COMPATIBLE, exact installed code
-   and expected releaseId/catalogHash; INTERNAL also requires server entitlement.
-   No local fixture entitlement is evidence for this step. Keep the quoted
+   and expected releaseId/catalogHash. DEV requires no tester entitlement. Keep the quoted
    registryRevision for revalidation and bind releaseId to this session.
 7. Download only the authorized catalog/bundles. Do not forward API Bearer credentials
    to the public asset host. Verify approved catalog identity and required bundle
    completion. Preserve network consent and cancellation behavior; no Editor-local
    fallback can count as an actual remote download.
-8. Revalidate the current authorized release after download; stop on revoked tester,
+8. Revalidate the current authorized release after download; stop on changed policy,
    disabled/update-required code, changed identity or session logout. Retain
    `X-LastRail-Content-Release-Id` for registry-protected gameplay requests. Enter Main
    and lobby only with the accepted session/profile/name/story and verified content.

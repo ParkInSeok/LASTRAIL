@@ -122,10 +122,10 @@ const document = { version: "0.1.0", versionCode: "1", minimumVersionCode: "1", 
   { version: "0.1.0", versionCode: "1", status: "STABLE", contentRelease: { ...release, releaseId: "test-stable", minimumVersionCode: "1", maximumVersionCode: "1" } },
   { version: "0.2.0", versionCode: "2", status: "INTERNAL", contentRelease: release },
 ] } };
-async function setupRegistry() {
+async function setupRegistry(environment: "DEV" | "PRD" = "PRD") {
   const db = await createMigratedDb();
   const policy = structuredClone(document);
-  const env = Object.assign(createEnv(db), { CLIENT_ADMISSION_MODE: "ENFORCED", VERSION_BUCKET: { get: async () => ({ httpEtag: '"test-registry-revision"', json: async () => policy }) } });
+  const env = Object.assign(createEnv(db), { ENVIRONMENT: environment, CLIENT_ADMISSION_MODE: "ENFORCED", VERSION_BUCKET: { get: async () => ({ httpEtag: '"test-registry-revision"', json: async () => policy }) } });
   const request = (path: string, method = "GET", token?: string, code = "2", pin?: string) => app.request(path, { method,
     headers: { "X-LastRail-App-Version-Code": code, "X-LastRail-App-Version": "0.2.0", "X-LastRail-App-Platform": "Android",
       ...(token ? { Authorization: `Bearer ${token}` } : {}), ...(pin ? { "X-LastRail-Content-Release-Id": pin } : {}) } }, env);
@@ -147,7 +147,7 @@ describe("exact registry admission and safe internal bootstrap", () => {
       expect((await request("/v1/wallet/crystals", "GET", auth.accessToken)).status).toBe(403);
       expect(scalar(db, "SELECT count(*) FROM reward_transactions")).toBe(0);
       db.run(`INSERT INTO account_tester_entitlements (account_id,environment,version_code,status,expires_at,granted_by,created_at,updated_at)
-        VALUES (?,'DEV','2','ACTIVE',?,'TEST_ONLY',?,?)`, [auth.account.id, fixedNow + 10000, fixedNow, fixedNow]);
+        VALUES (?,'PRD','2','ACTIVE',?,'TEST_ONLY',?,?)`, [auth.account.id, fixedNow + 10000, fixedNow, fixedNow]);
       const authorized = await request("/v1/client-config/authorized", "GET", auth.accessToken);
       expect(authorized.status).toBe(200);
       expect(await authorized.json()).toMatchObject({ accepted: true, registryRevision: '"test-registry-revision"', contentRelease: { releaseId: "test-internal" } });
@@ -173,9 +173,9 @@ describe("exact registry admission and safe internal bootstrap", () => {
       expect((await request("/v1/client-config/authorized")).status).toBe(401);
       const auth = await (await request("/v1/auth/guest", "POST")).json() as { account: { id: string }; accessToken: string };
       db.run(`INSERT INTO account_tester_entitlements (account_id,environment,version_code,status,expires_at,granted_by,created_at,updated_at)
-        VALUES (?,'PRD','2','ACTIVE',?,'TEST_ONLY',?,?)`, [auth.account.id, fixedNow + 10000, fixedNow, fixedNow]);
+        VALUES (?,'DEV','2','ACTIVE',?,'TEST_ONLY',?,?)`, [auth.account.id, fixedNow + 10000, fixedNow, fixedNow]);
       expect((await request("/v1/client-config/authorized", "GET", auth.accessToken)).status).toBe(403);
-      db.run("UPDATE account_tester_entitlements SET environment='DEV',expires_at=?", [fixedNow]);
+      db.run("UPDATE account_tester_entitlements SET environment='PRD',expires_at=?", [fixedNow]);
       expect((await request("/v1/client-config/authorized", "GET", auth.accessToken)).status).toBe(403);
       expect((await request("/v1/story-progress", "GET", auth.accessToken)).status).toBe(200);
       for (const path of ["/v1/gacha/pull", "/v1/attendance/example/check-in", "/v1/runs/start"]) {
@@ -189,5 +189,35 @@ describe("exact registry admission and safe internal bootstrap", () => {
       policy.versionCode = "2"; policy.minimumVersionCode = "2";
       expect((await request("/v1/auth/guest", "POST", undefined, "1")).status).toBe(426);
     } finally { vi.useRealTimers(); }
+  });
+  it("DEV serves registered STABLE content without tester lookup while retaining auth, exact code, minimum and pin gates", async () => {
+    const { db, env, policy, request } = await setupRegistry("DEV");
+    policy.clientReleaseRegistry.entries[1]!.status = "STABLE";
+    const prepare = vi.spyOn(env.DB, "prepare");
+    const bootstrap = await (await request("/v1/client-config")).json();
+    expect(bootstrap).toMatchObject({ accepted: true, clientAdmission: { distribution: "STABLE" }, bootstrap: { authenticationRequired: false, contentAuthorized: true } });
+    const auth = await (await request("/v1/auth/guest", "POST")).json() as { accessToken: string };
+    expect((await request("/v1/client-config/authorized", "GET", auth.accessToken)).status).toBe(200);
+    expect(prepare.mock.calls.some(([sql]) => sql.includes("account_tester_entitlements"))).toBe(false);
+    expect(scalar(db, "SELECT count(*) FROM account_tester_entitlements")).toBe(0);
+    expect((await request("/v1/wallet/crystals", "GET", undefined, "2", "test-internal")).status).toBe(401);
+    expect((await request("/v1/wallet/crystals", "GET", auth.accessToken)).status).toBe(409);
+    const wallet = await request("/v1/wallet/crystals", "GET", auth.accessToken, "2", "test-internal");
+    expect(wallet.status).toBe(503);
+    expect(await wallet.json()).toMatchObject({ errorCode: "crystal_policy_unconfigured" });
+    expect((await request("/v1/auth/guest", "POST", undefined, "99")).status).toBe(403);
+    policy.versionCode = "2"; policy.minimumVersionCode = "2";
+    expect((await request("/v1/auth/guest", "POST", undefined, "1")).status).toBe(426);
+    policy.clientReleaseRegistry.entries[1]!.status = "DISABLED";
+    expect((await request("/v1/auth/guest", "POST")).status).toBe(403);
+  });
+  it("rejects unsupported INTERNAL policy in DEV instead of entering a tester-auth flow", async () => {
+    const { env, request } = await setupRegistry("DEV");
+    const prepare = vi.spyOn(env.DB, "prepare");
+    const bootstrap = await (await request("/v1/client-config")).json();
+    expect(bootstrap).toMatchObject({ accepted: false, errorCode: "version_policy_unconfigured", bootstrap: { canAuthenticate: false, authenticationRequired: false } });
+    expect(JSON.stringify(bootstrap)).not.toContain("catalog.bin");
+    expect((await request("/v1/auth/guest", "POST")).status).toBe(503);
+    expect(prepare.mock.calls.some(([sql]) => sql.includes("account_tester_entitlements"))).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import type { Context } from "hono";
-import { buildOpsErrorLogInsertEnvelope, canonicalJson, createRequestId, readVersionForAdmission, sha256Hex } from "@lastrail/common";
+import { buildOpsErrorLogInsertEnvelope, canonicalJson, clientReleaseRegistrySupportsEnvironment, createRequestId, readVersionForAdmission, sha256Hex } from "@lastrail/common";
 import type { ContentReleaseDocument, VersionBucket, VersionDocument } from "@lastrail/common";
 import {
   calculateOfflineRewardPreview,
@@ -298,6 +298,7 @@ async function createClientAdmissionForRequest(c: GameApiContext) {
   if (env.VERSION_BUCKET !== undefined) {
     try {
       ({ version, revision } = await readVersionForAdmission(env.VERSION_BUCKET));
+      if (!clientReleaseRegistrySupportsEnvironment(version?.clientReleaseRegistry, env.ENVIRONMENT)) version = null;
     } catch {
       version = null;
     }
@@ -325,11 +326,12 @@ async function createClientAdmissionForRequest(c: GameApiContext) {
   if (!registry) return result;
   const deny = (status: string, errorCode: string, message: string, canAuthenticate = false) => ({ ...result,
     accepted: false, clientAdmission: { ...result.clientAdmission, status }, contentRelease: createEmptyContentRelease("NOT_APPROVED"),
-    bootstrap: { canAuthenticate, contentAuthorized: false, authenticationRequired: entry?.status === "INTERNAL" }, errorCode, message });
+    bootstrap: { canAuthenticate, contentAuthorized: false, authenticationRequired: env.ENVIRONMENT === "PRD" && entry?.status === "INTERNAL" }, errorCode, message });
   if (!code || response.errorCode === "client_update_required") return result;
   if (!entry) return deny("UNREGISTERED", "client_version_unregistered", "This exact version code is not registered.");
   if (entry.status === "DISABLED") return deny("DISABLED", "client_version_disabled", "This version code is disabled.");
   if (entry.status === "STABLE") return result;
+  if (env.ENVIRONMENT !== "PRD") return deny("NOT_CONFIGURED", "version_policy_unconfigured", "This distribution is not supported in this environment.");
   const auth = await resolveAuthContext(c);
   if (!("accountId" in auth)) return deny("AUTH_REQUIRED", "authentication_required", "Authenticate before requesting internal content.", true);
   const tester = await env.DB.prepare(`SELECT account_id FROM account_tester_entitlements

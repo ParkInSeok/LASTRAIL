@@ -1,4 +1,4 @@
-import { canonicalJson, isVersionCode, parseVersion, readVersionSnapshot, saveVersion, sha256Hex,
+import { canonicalJson, clientReleaseRegistrySupportsEnvironment, isVersionCode, parseVersion, readVersionSnapshot, saveVersion, sha256Hex,
   type ClientReleaseEntry, type VersionBucket, type VersionDocument } from "@lastrail/common";
 
 const historyPrefix = "versions/client-release-history/";
@@ -12,11 +12,15 @@ export async function artifactIdentity(entry: ClientReleaseEntry): Promise<strin
   return `sha256:${await sha256Hex(canonicalJson(entry.contentRelease))}`;
 }
 async function describe(version: VersionDocument | null, revision: string | null, target: string, canMutate: boolean) {
+  if (!clientReleaseRegistrySupportsEnvironment(version?.clientReleaseRegistry, target)) return fail("registry_document_environment_invalid");
+  const production = target === "PRD";
   return { target, registryStatus: version?.clientReleaseRegistry ? "CONFIGURED" : "LEGACY", revision,
     minimumVersionCode: version?.minimumVersionCode ?? null, auditHead: version?.clientReleaseRegistry?.auditHead ?? null,
     rows: await Promise.all((version?.clientReleaseRegistry?.entries ?? []).map(async (entry) => ({ ...entry,
       artifactIdentity: await artifactIdentity(entry), validation: { status: "STRUCTURAL_ONLY", artifactBytesVerified: false } }))),
-    canMutate, capabilities: { register: canMutate, changeStatus: canMutate, promote: canMutate, changeMinimum: canMutate, rollback: canMutate, manageTesters: false },
+    distributionPolicy: { supportedStatuses: production ? ["INTERNAL", "STABLE", "DISABLED"] : ["STABLE", "DISABLED"],
+      initialStatus: production ? "INTERNAL" : "STABLE", mutableStatuses: production ? ["INTERNAL", "DISABLED"] : ["STABLE", "DISABLED"], testerGate: production },
+    canMutate, capabilities: { register: canMutate, changeStatus: canMutate, promote: canMutate && production, changeMinimum: canMutate, rollback: canMutate, manageTesters: false },
   };
 }
 export async function describeClientReleaseRegistry(bucket: VersionBucket, target: string, canMutate: boolean) {
@@ -52,6 +56,8 @@ export async function mutateClientReleaseRegistry(bucket: VersionBucket, target:
   if (snapshot.etag !== body.expectedRevision) return fail("version_current_pointer_conflict");
   const before = snapshot.version;
   if (!before?.minimumVersionCode) return fail("version_policy_unconfigured");
+  if (!clientReleaseRegistrySupportsEnvironment(before.clientReleaseRegistry, target)) return fail("registry_document_environment_invalid");
+  if (operation === "promote" && target !== "PRD") return fail("registry_promotion_environment_disabled");
   let after = structuredClone(before);
   const entries = after.clientReleaseRegistry?.entries ?? [];
   after.clientReleaseRegistry = { schemaVersion: 1, entries };
@@ -60,12 +66,15 @@ export async function mutateClientReleaseRegistry(bucket: VersionBucket, target:
     if (!before.clientReleaseRegistry && body.legacyTransitionConfirmation !== "ENABLE_EXACT_LOOKUP") return fail("registry_transition_confirmation_required");
     if (entries.some((row) => row.versionCode === body.versionCode)) return fail("version_code_already_registered");
     // First registration deliberately enables exact lookup. Legacy content is not inferred as a registry row.
-    entries.push({ version: body.version, versionCode: body.versionCode, status: "INTERNAL", contentRelease: body.contentRelease } as ClientReleaseEntry);
+    const registered = { version: body.version, versionCode: body.versionCode, status: target === "DEV" ? "STABLE" : "INTERNAL", contentRelease: body.contentRelease } as ClientReleaseEntry;
+    entries.push(registered);
+    if (target === "DEV" && Number(registered.versionCode) >= Number(after.versionCode)) { after.version = registered.version; after.versionCode = registered.versionCode; }
   } else if (operation === "status" || operation === "promote") {
     if (!entry) return fail("client_version_unregistered");
     if (operation === "status") {
-      if (body.status !== "INTERNAL" && body.status !== "DISABLED") return fail("registry_status_invalid");
-      entry.status = body.status;
+      if (body.status !== (target === "DEV" ? "STABLE" : "INTERNAL") && body.status !== "DISABLED") return fail("registry_status_invalid");
+      entry.status = body.status === "DISABLED" ? "DISABLED" : target === "DEV" ? "STABLE" : "INTERNAL";
+      if (target === "DEV" && entry.status === "STABLE" && Number(entry.versionCode) >= Number(after.versionCode)) { after.version = entry.version; after.versionCode = entry.versionCode; }
     } else {
       if (entry.status !== "INTERNAL") return fail("registry_promotion_state_invalid");
       if (body.confirmation !== "PROMOTE_UNCHANGED_ARTIFACT" || body.expectedArtifactIdentity !== await artifactIdentity(entry)) return fail("registry_artifact_identity_conflict");
@@ -92,6 +101,7 @@ export async function mutateClientReleaseRegistry(bucket: VersionBucket, target:
   }
   const parsed = parseVersion(after);
   if (!parsed?.clientReleaseRegistry) return fail("registry_document_invalid");
+  if (!clientReleaseRegistrySupportsEnvironment(parsed.clientReleaseRegistry, target)) return fail("registry_document_environment_invalid");
   const id = crypto.randomUUID();
   parsed.clientReleaseRegistry.auditHead = id;
   const history: History = { schemaVersion: 1, id, parent: before.clientReleaseRegistry?.auditHead ?? null, target, actorId,

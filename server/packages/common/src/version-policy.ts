@@ -33,6 +33,12 @@ export type ClientReleaseEntry = {
 };
 export type ClientReleaseRegistry = { schemaVersion: 1; entries: ClientReleaseEntry[]; auditHead?: string };
 
+export function clientReleaseRegistrySupportsEnvironment(registry: ClientReleaseRegistry | undefined, environment: string): boolean {
+  if (!registry) return true;
+  if (environment === "PRD") return true;
+  return (environment === "DEV" || environment === "LOCAL") && registry.entries.every((entry) => entry.status !== "INTERNAL");
+}
+
 const currentVersionKey = "versions/current.json";
 const safeIdPattern = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u;
 const safeVersionPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/u;
