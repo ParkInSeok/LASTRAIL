@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { adminRequestFailureDisplay } from "../api/errorDisplay";
-import { buildRegistryCommand, registryStatusLabel, type ClientRegistry, type RegistryEditContext, type RegistryInput, type RegistryTarget } from "./clientReleaseRegistry";
+import { buildRegistryCommand, registryPolicyReady, registryStatusLabel, type ClientRegistry, type RegistryEditContext, type RegistryInput, type RegistryTarget } from "./clientReleaseRegistry";
 
 type Props = {
   target: RegistryTarget;
@@ -24,7 +24,7 @@ type Draft = {
   compatibleMinimum: string;
   compatibleMaximum: string;
   minimumVersionCode: string;
-  status: "INTERNAL" | "DISABLED";
+  status: "INTERNAL" | "STABLE" | "DISABLED";
   reason: string;
   confirmed: boolean;
 };
@@ -44,7 +44,9 @@ export function ClientReleaseRegistryPanel(props: Props) {
   return <RegistryEditor key={props.target} {...props} />;
 }
 function RegistryEditor({ target, data, loading, fetching, saving, error, onTargetChange, onReload, onSave }: Props) {
-  const [draft, setDraft] = useState(emptyDraft);
+  const freshDraft = (): Draft => ({ ...emptyDraft(), status: target === "DEV" ? "STABLE" : "INTERNAL" });
+  const labels = { ...operationLabels, register: target === "DEV" ? "정식 버전 등록" : operationLabels.register };
+  const [draft, setDraft] = useState(freshDraft);
   const [revision, setRevision] = useState<string | null | undefined>();
   const [needsReview, setNeedsReview] = useState(false);
   const [message, setMessage] = useState("");
@@ -61,13 +63,14 @@ function RegistryEditor({ target, data, loading, fetching, saving, error, onTarg
     catch (error) { validation = error instanceof Error ? error.message : "입력값 확인 필요"; }
   }
   const canSave = !validation && !busy;
-  const editable = !unavailable && !busy && !needsReview && data?.canMutate === true && !!data.revision;
+  const policyReady = !!data && registryPolicyReady(data);
+  const editable = policyReady && !unavailable && !busy && !needsReview && data?.canMutate === true && !!data.revision;
   const selected = data?.rows.find(row => row.versionCode === draft.versionCode);
   function edit(patch: Partial<Draft>) {
     if (revision === undefined && editable) setRevision(data?.revision);
     setDraft(previous => ({ ...previous, ...patch }));
   }
-  function reset() { setDraft(emptyDraft()); setRevision(undefined); setNeedsReview(false); }
+  function reset() { setDraft(freshDraft()); setRevision(undefined); setNeedsReview(false); }
   async function reload() {
     if (inFlight.current || busy) return;
     inFlight.current = true;
@@ -111,15 +114,16 @@ function RegistryEditor({ target, data, loading, fetching, saving, error, onTarg
         {!data.rows.length && <tr><td colSpan={4}>등록된 버전 없음</td></tr>}
       </tbody></table></div>
     </>}
-    <p>테스터 관리 API 미지원 · 별도 권한 준비 필요</p>
+    {target === "PRD" && <p>테스터 관리 API 미지원 · 별도 권한 준비 필요</p>}
+    {data && !policyReady && <p role="alert">배포 정책 확인 필요 · 저장 잠금</p>}
     <form onSubmit={submit} aria-label="버전코드 등록 정책 변경">
       <fieldset disabled={!editable}>
         <legend>등록 정책 변경 · 입력 초안</legend>
-        <label>변경 항목<select aria-label="등록 변경 항목" value={draft.operation} onChange={e => { setDraft({ ...emptyDraft(), operation: e.target.value as Draft["operation"] }); setRevision(undefined); setMessage(""); }}>{Object.entries(operationLabels).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
+        <label>변경 항목<select aria-label="등록 변경 항목" value={draft.operation} onChange={e => { setDraft({ ...freshDraft(), operation: e.target.value as Draft["operation"] }); setRevision(undefined); setMessage(""); }}>{Object.entries(labels).filter(([key]) => key !== "promote" || (target === "PRD" && data?.capabilities.promote)).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label>
         <div className="registry-fields">
           {draft.operation === "register" && <>{field("version", "등록 앱 버전")}{field("versionCode", "등록 버전코드", true)}{field("releaseId", "릴리스 ID")}{field("contentVersion", "콘텐츠 버전 ID")}{field("catalogUrl", "HTTPS 카탈로그 주소")}{field("catalogHash", "카탈로그 SHA256")}{field("compatibleMinimum", "콘텐츠 호환 최소 버전코드", true)}{field("compatibleMaximum", "콘텐츠 호환 최대 버전코드 (선택)", true)}</>}
           {(draft.operation === "status" || draft.operation === "promote") && <label>등록 버전코드<select aria-label="변경할 버전코드" value={draft.versionCode} onChange={e => edit({ versionCode: e.target.value, confirmed: false })}><option value="">선택</option>{data?.rows.map(row => <option key={row.versionCode} value={row.versionCode}>{row.versionCode} · {row.version} · {registryStatusLabel(row.status)}</option>)}</select></label>}
-          {draft.operation === "status" && <label>변경 상태<select aria-label="변경 상태" value={draft.status} onChange={e => edit({ status: e.target.value as Draft["status"] })}><option value="INTERNAL">내부 테스트</option><option value="DISABLED">사용 중지</option></select></label>}
+          {draft.operation === "status" && <label>변경 상태<select aria-label="변경 상태" value={draft.status} onChange={e => edit({ status: e.target.value as Draft["status"] })}>{target === "DEV" ? <option value="STABLE">정식</option> : <option value="INTERNAL">내부 테스트</option>}<option value="DISABLED">사용 중지</option></select></label>}
           {draft.operation === "minimum" && field("minimumVersionCode", "새 최소 지원 버전코드", true)}
         </div>
         {selected && <p>변경 불가 아티팩트: <code className="registry-hash">{selected.artifactIdentity}</code></p>}
@@ -128,7 +132,7 @@ function RegistryEditor({ target, data, loading, fetching, saving, error, onTarg
       </fieldset>
       <p role="status">{message || (revision !== undefined ? validation : "변경 전 대상·권한·최신 revision 확인 필요")}</p>
       {(needsReview || (revision !== undefined && revision !== data?.revision)) && <p role="alert">최신 정책을 다시 조회하고 입력·확인을 새로 진행하세요. 자동 재저장하지 않습니다.</p>}
-      <button type="submit" disabled={!canSave}>{busy ? "처리 중" : operationLabels[draft.operation]}</button>
+      <button type="submit" disabled={!canSave}>{busy ? "처리 중" : labels[draft.operation]}</button>
     </form>
   </section>;
 }

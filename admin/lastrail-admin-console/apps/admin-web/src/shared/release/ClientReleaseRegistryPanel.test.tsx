@@ -11,7 +11,8 @@ describe("registry public read state surface", () => {
     expect(html).toContain("immutable-release");
     expect(html).toContain("내부 테스트");
     expect(html).toContain("바이트 미검증");
-    expect(html).toContain("테스터 관리 API 미지원");
+    expect(html).not.toContain("테스터 관리 API 미지원");
+    expect(html).toContain("배포 정책 확인 필요");
     expect(html).toContain("읽기 전용");
     expect(html).not.toMatch(/<button[^>]*>[^<]*(테스터|롤백)/);
     expect(html).toContain('type="submit" disabled=""');

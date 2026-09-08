@@ -4,7 +4,7 @@ import { AdminApiError } from "../api/client";
 import { adminRequestFailureDisplay } from "../api/errorDisplay";
 import { mapClientRegistry } from "./clientReleaseRegistry";
 
-const response = { target: "DEV", registryStatus: "LEGACY", revision: '"r1"', minimumVersionCode: "1", auditHead: null, rows: [], canMutate: true, capabilities: { register: true } };
+const response = { distributionPolicy: { supportedStatuses: ["STABLE", "DISABLED"], initialStatus: "STABLE", mutableStatuses: ["STABLE", "DISABLED"], testerGate: false }, target: "DEV", registryStatus: "LEGACY", revision: '"r1"', minimumVersionCode: "1", auditHead: null, rows: [], canMutate: true, capabilities: { register: true } };
 const context = { target: "DEV" as const, editingRevision: '"r1"', readUnavailable: false, needsReview: false };
 const input = { operation: "register" as const, reason: "local test only", confirmed: true, version: "0.2.0", versionCode: "2", contentRelease: { status: "APPROVED", releaseId: "local", contentVersion: "local", catalogUrl: "https://example.invalid/catalog.bin", catalogHash: "sha256:" + "a".repeat(64), minimumVersionCode: "2" } };
 describe("registry same-origin API boundary", () => {
