@@ -1120,4 +1120,5 @@ function requireOneOf<T extends string>(
   }
   return value as T;
 }
-
+export { launchEconomySchema, parseLaunchEconomy, trainingCoreExpCost, ordinaryVictoryExp } from "./launch-economy";
+export type { LaunchEconomy } from "./launch-economy";
