@@ -50,6 +50,7 @@ describe("game-api run finish contract", () => {
                     expect(values).toEqual(["account_1", "run-finish-idem-1"]);
                     return null;
                   }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
                   if (sql.includes("FROM account_first_clears")) {
                     expect(values).toEqual(["account_1", "opn_03_water_stop", "III"]);
                     return null;
@@ -187,6 +188,7 @@ describe("game-api run finish contract", () => {
                     };
                   }
                   if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
                   if (sql.includes("FROM account_first_clears")) {
                     expect(values).toEqual(["account_1", "raid_raider_king_engine", "V"]);
                     return null;
@@ -913,6 +915,7 @@ describe("game-api run finish contract", () => {
                   if (sql.includes("FROM idempotency_records")) {
                     return null;
                   }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
                   if (sql.includes("FROM account_first_clears")) {
                     expect(values).toEqual(["account_1", "opn_03_water_stop", "III"]);
                     return { cleared_at: Date.parse("2026-08-26T00:00:00.000Z") };
@@ -1009,6 +1012,7 @@ describe("game-api run finish contract", () => {
                   if (sql.includes("FROM idempotency_records")) {
                     return null;
                   }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
                   if (sql.includes("FROM account_first_clears")) {
                     return { cleared_at: Date.parse("2026-08-26T00:00:00.000Z") };
                   }

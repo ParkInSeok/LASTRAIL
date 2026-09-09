@@ -1,3 +1,7 @@
+import { prepareLaunchRewards, launchEntitlementStatements, type LaunchLine } from "./launch-entitlements";
+import { readEconomyBinding } from "./economy-binding";
+import { planCrystalChange } from "./crystal-wallet";
+import { ActivityError } from "./activity-policy";
 import { Hono } from "hono";
 import type { Context } from "hono";
 import { buildOpsErrorLogInsertEnvelope, canonicalJson, clientReleaseRegistrySupportsEnvironment, createRequestId, readVersionForAdmission, sha256Hex } from "@lastrail/common";
@@ -15,6 +19,7 @@ import { createAccessToken, createGoogleIdTokenVerifier, GoogleIdTokenVerificati
 import { isDevGachaScopeAllowed } from "./gacha-dev-scope";
 import { registerActivityRoutes } from "./activity-routes";
 import { registerCrystalRoutes } from "./crystal-routes";
+import { registerGrowthRoutes } from "./growth-routes";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
@@ -34,6 +39,23 @@ import type { RealtimeCoopRoomNamespace } from "./realtime-coop";
 const app = new Hono<{ Bindings: Env }>();
 
 type GameApiContext = Context<{ Bindings: Env }>;
+
+// Retry atomic uniqueness conflicts from concurrent account/source claims. Hono
+// caches parsed request bodies, so each attempt validates the original request.
+const withEconomyRetry = (handler: (c: GameApiContext) => Promise<Response>) => async (c: GameApiContext) => {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    try { return await handler(c); }
+    catch (error) {
+      if (error instanceof ActivityError) return c.json({ accepted: false, errorCode: error.code }, error.status);
+      if (/UNIQUE constraint failed/iu.test(String(error))) {
+        if (attempt < 3) continue;
+        return c.json({ accepted: false, errorCode: "economy_write_conflict" }, 409);
+      }
+      throw error;
+    }
+  }
+  return c.json({ accepted: false, errorCode: "economy_write_conflict" }, 409);
+};
 
 type GameApiEnv = Env & {
   AUTH_SIGNING_KEY_CURRENT?: string;
@@ -4824,7 +4846,7 @@ app.post("/v1/offline-rewards/claim", async (c) => {
   return c.json(responsePayload);
 });
 
-app.post("/v1/login-bonus/claim", async (c) => {
+app.post("/v1/login-bonus/claim", withEconomyRetry(async (c) => {
   const requestUrl = new URL(c.req.url);
   const hasAnyQuery = [...requestUrl.searchParams.keys()].length > 0;
   const contentLength = c.req.header("content-length");
@@ -4837,7 +4859,7 @@ app.post("/v1/login-bonus/claim", async (c) => {
     }), 400);
   }
 
-  if (hasAnyQuery || (contentLength !== undefined && contentLength !== "0")) {
+  if (hasAnyQuery || (contentLength !== undefined && contentLength !== "0") || (await c.req.text()) !== "") {
     return c.json(createLoginBonusClaimRejectedResponse({
       errorCode: "contract_violation",
       message: "POST /v1/login-bonus/claim must not include query parameters or a request body.",
@@ -4908,8 +4930,20 @@ app.post("/v1/login-bonus/claim", async (c) => {
   )
     .bind(authContext.accountId, launchLoginBonusRewardLine.id)
     .first<AccountItemRow>();
+  const launchBinding = await readEconomyBinding(c.env.DB);
+  const launchPlan = await prepareLaunchRewards(c.env.DB, authContext.accountId, launchLoginBonusId, [launchLoginBonusRewardLine], launchBinding !== null);
+  if (launchPlan.sources.length === 0) {
+    const committed = await c.env.DB.prepare("SELECT reward_transaction_id,claimed_at,reward_json FROM account_login_bonus_claims WHERE account_id=? AND bonus_id=?")
+      .bind(authContext.accountId, launchLoginBonusId).first<LoginBonusClaimRow>();
+    if (committed) return c.json(createLoginBonusClaimReplayResponse({ claimStatus: "ALREADY_CLAIMED",
+      loginBonusClaimId: committed.reward_transaction_id, rewardJson: committed.reward_json, serverClaimedAt: committed.claimed_at }));
+    return c.json(createLoginBonusClaimRejectedResponse({errorCode:"launch_source_consumed",message:"Launch source was already consumed."}),409);
+  }
+  const crystalPlan = launchBinding === null ? null : await planCrystalChange({db:c.env.DB,accountId:authContext.accountId,operationId:createDomainId("crystal_operation"),mutationId,operation:"LAUNCH_LOGIN_BONUS",now,
+    ...(launchPlan.conversionPolicyVersion ? { expectedPolicyVersion: launchPlan.conversionPolicyVersion } : {}),
+    grants:launchPlan.lines.filter(line => line.kind === "CRYSTAL").map(line => ({quantity:line.quantity,sourceType:"LAUNCH_ENTITLEMENT" as const,sourceRef:line.launchSourceKey!,orderId:null}))});
   const balanceAfter = (currentItem?.quantity ?? 0) + launchLoginBonusRewardLine.quantity;
-  const rewardLines = [{ ...launchLoginBonusRewardLine, balanceAfter }];
+  const rewardLines = crystalPlan === null ? [{ ...launchLoginBonusRewardLine, balanceAfter }] : launchPlan.lines;
   const rewardJson = JSON.stringify({
     bonusId: launchLoginBonusId,
     rewardLines,
@@ -4927,7 +4961,7 @@ app.post("/v1/login-bonus/claim", async (c) => {
       `INSERT INTO economy_transactions (id, account_id, mutation_id, reason, source_type, source_id, created_at)
        VALUES (?, ?, ?, 'LOGIN_BONUS_CLAIM', 'LOGIN_BONUS_CLAIM', ?, ?)`,
     ).bind(economyTransactionId, authContext.accountId, mutationId, loginBonusClaimId, now),
-    c.env.DB.prepare(
+    ...(crystalPlan === null ? [c.env.DB.prepare(
       `INSERT INTO account_items (account_id, item_id, quantity, updated_at)
        VALUES (?, ?, ?, ?)
        ON CONFLICT(account_id, item_id) DO UPDATE SET quantity = excluded.quantity, updated_at = excluded.updated_at`,
@@ -4944,7 +4978,8 @@ app.post("/v1/login-bonus/claim", async (c) => {
       balanceAfter,
       loginBonusClaimId,
       now,
-    ),
+    )] : crystalPlan.statements),
+    ...launchEntitlementStatements(c.env.DB, authContext.accountId, launchPlan.sources, loginBonusClaimId, now),
     c.env.DB.prepare(
       `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
        VALUES (?, ?, NULL, ?, NULL, ?, ?)`,
@@ -4973,7 +5008,7 @@ app.post("/v1/login-bonus/claim", async (c) => {
     errorCode: null,
     message: null,
   });
-});
+}));
 
 app.get("/v1/support/tickets/receipt", async (c) => {
   if (Object.keys(c.req.query()).length > 0 || hasNonEmptyRequestBody(c)) {
@@ -6280,6 +6315,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     firstClearEligible,
     integrityDisposition: "ALLOW" satisfies IntegrityDisposition,
   });
+  const launchRewards = await prepareLaunchRewards(c.env.DB, authContext.accountId, previewMetadata.operationId, rewardPreview.rewardLines, (await readEconomyBinding(c.env.DB, row.balance_config_version)) !== null);
   const staminaRefund = createStoryRaidStaminaRefundCandidate(body, previewMetadata);
   const staminaRefundAmount = staminaRefund === null ? null : getStoryRaidStaminaRefundAmount(balanceConfig);
   if (staminaRefund !== null && staminaRefundAmount === null) {
@@ -6362,7 +6398,7 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   const nextMutationSequence = (latestMutation?.sequence ?? 0) + 1;
   const staminaRefundMutationSequence = storyProgressPlan === null ? nextMutationSequence : nextMutationSequence + 1;
   const rewardPlanJson = JSON.stringify({
-    rewardLines: rewardPreview.rewardLines,
+    rewardLines: launchRewards.lines,
     calculation: {
       ...rewardPreview.calculation,
       balanceVersion: String(row.balance_config_version),
@@ -6567,6 +6603,8 @@ app.get("/v1/runs/:runId/reward-preview/:rewardPreviewId", async (c) => {
   }
 
   const claimability = getClaimability(row);
+  const storedPlan = JSON.parse(row.reward_plan_json) as {calculation?:{operationId?:string}};
+  const visibleLaunchPlan = row.status === "CLAIMED" ? null : await prepareLaunchRewards(c.env.DB,row.account_id,storedPlan.calculation?.operationId ?? "",getRewardLines(row.reward_plan_json) as LaunchLine[],(await readEconomyBinding(c.env.DB,row.balance_config_version)) !== null);
   return c.json({
     runId: row.run_id,
     rewardPreviewId: row.id,
@@ -6575,7 +6613,7 @@ app.get("/v1/runs/:runId/reward-preview/:rewardPreviewId", async (c) => {
     balanceVersion: String(row.balance_config_version),
     expiresAt: toIso(row.expires_at),
     serverCalculatedAt: toIso(row.created_at),
-    rewardLines: getRewardLines(row.reward_plan_json),
+    rewardLines: visibleLaunchPlan?.lines ?? getRewardLines(row.reward_plan_json),
     claim: {
       claimable: claimability === "CLAIMABLE",
       rewardClaimId: row.reward_claim_id,
@@ -6585,7 +6623,7 @@ app.get("/v1/runs/:runId/reward-preview/:rewardPreviewId", async (c) => {
   });
 });
 
-app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
+app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", withEconomyRetry(async (c) => {
   const runId = c.req.param("runId");
   const rewardPreviewId = c.req.param("rewardPreviewId");
   const idempotencyKey = c.req.header("Idempotency-Key");
@@ -6625,6 +6663,12 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     }, 400);
   }
 
+  const authContext = await resolveAuthContext(c);
+  if (isAuthFailure(authContext)) return c.json({status:"REJECTED",errorCode:authContext.errorCode},authContext.status);
+  if (Object.keys(body).some(key => key !== "runId" && key !== "rewardPreviewId")) return c.json({status:"REJECTED",errorCode:"contract_violation"},400);
+  const prior = await c.env.DB.prepare(`SELECT r.run_id, r.reward_json, r.id, r.created_at FROM idempotency_records i JOIN reward_transactions r ON r.id = i.result_ref WHERE i.account_id = ? AND i.operation = 'run_reward_claim' AND i.idempotency_key = ?`)
+    .bind(authContext.accountId,idempotencyKey).first<{run_id:string;reward_json:string;id:string;created_at:number}>();
+  if (prior && prior.run_id !== runId) return c.json({status:"REJECTED",errorCode:"idempotency_conflict"},409);
   const row = await c.env.DB.prepare(
     `SELECT id, account_id, run_id, status, balance_config_version, reward_plan_json, expires_at, created_at, claimed_at, reward_claim_id
      FROM run_reward_previews
@@ -6633,6 +6677,7 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     .bind(runId, rewardPreviewId)
     .first<RewardPreviewRow>();
 
+  if (row !== null && row.account_id !== authContext.accountId) return c.json({status:"REJECTED",errorCode:"reward_preview_not_found"},404);
   if (row !== null && row.status === "CLAIMED" && row.reward_claim_id !== null && row.claimed_at !== null) {
     return c.json({
       runId: row.run_id,
@@ -6676,15 +6721,16 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
   }
 
   const idempotencyRecord = await c.env.DB.prepare(
-    `SELECT idem.result_ref, idem.created_at, reward.created_at AS reward_created_at
+    `SELECT idem.result_ref, idem.created_at, reward.created_at AS reward_created_at, reward.run_id
      FROM idempotency_records idem
      LEFT JOIN reward_transactions reward ON reward.id = idem.result_ref
      WHERE idem.account_id = ? AND idem.operation = 'run_reward_claim' AND idem.idempotency_key = ?`,
   )
     .bind(row.account_id, idempotencyKey)
-    .first<IdempotencyRecordRow>();
+    .first<IdempotencyRecordRow & { run_id: string }>();
 
   if (idempotencyRecord !== null) {
+    if (idempotencyRecord.run_id !== runId) return c.json({ status: "REJECTED", errorCode: "idempotency_conflict" }, 409);
     return c.json({
       runId: row.run_id,
       rewardPreviewId: row.id,
@@ -6703,8 +6749,6 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
   const rewardClaimId = createDomainId("reward_claim");
   const mutationId = createDomainId("mutation");
   const economyTransactionId = createDomainId("economy");
-  const rewardLines = getCurrencyRewardLines(row.reward_plan_json);
-  const itemRewardLines = getItemRewardLines(row.reward_plan_json);
   const latestMutation = await c.env.DB.prepare(
     `SELECT MAX(sequence) AS sequence
      FROM account_mutations
@@ -6713,6 +6757,15 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     .bind(accountId)
     .first<AccountMutationSequenceRow>();
   const nextSequence = (latestMutation?.sequence ?? 0) + 1;
+  const originalPlan = JSON.parse(row.reward_plan_json) as {calculation?:{operationId?:string}};
+  const launchPlan = await prepareLaunchRewards(c.env.DB, accountId, originalPlan.calculation?.operationId ?? "", getRewardLines(row.reward_plan_json) as LaunchLine[], (await readEconomyBinding(c.env.DB,row.balance_config_version)) !== null);
+  const effectiveRewardJson = JSON.stringify({...originalPlan,rewardLines:launchPlan.lines});
+  const rewardLines = getCurrencyRewardLines(effectiveRewardJson);
+  const itemRewardLines = getItemRewardLines(effectiveRewardJson);
+  const crystalLines = launchPlan.lines.filter(line => line.kind === "CRYSTAL");
+  const crystalPlan = crystalLines.length === 0 ? null : await planCrystalChange({db:c.env.DB,accountId,operationId:createDomainId("crystal_operation"),mutationId,operation:"LAUNCH_FIRST_CLEAR",now,
+    ...(launchPlan.conversionPolicyVersion ? { expectedPolicyVersion: launchPlan.conversionPolicyVersion } : {}),
+    grants:crystalLines.map(line => ({quantity:line.quantity,sourceType:"LAUNCH_ENTITLEMENT" as const,sourceRef:line.launchSourceKey!,orderId:null}))});
   const claimRewardLines = [];
   const statements = [
     c.env.DB.prepare(
@@ -6722,13 +6775,14 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     c.env.DB.prepare(
       `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(rewardClaimId, accountId, runId, mutationId, row.balance_config_version, row.reward_plan_json, now),
+    ).bind(rewardClaimId, accountId, runId, mutationId, row.balance_config_version, effectiveRewardJson, now),
     c.env.DB.prepare(
       `INSERT INTO economy_transactions (id, account_id, mutation_id, reason, source_type, source_id, created_at)
        VALUES (?, ?, ?, 'RUN_REWARD_CLAIM', 'RUN_REWARD_PREVIEW', ?, ?)`,
     ).bind(economyTransactionId, accountId, mutationId, rewardPreviewId, now),
   ];
 
+  const currencyBalances = new Map<string, number>();
   for (const rewardLine of rewardLines) {
     const currency = currencyIdToD1Currency[rewardLine.id as keyof typeof currencyIdToD1Currency];
     const current = await c.env.DB.prepare(
@@ -6738,7 +6792,8 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     )
       .bind(accountId, currency)
       .first<AccountCurrencyRow>();
-    const balanceAfter = (current?.balance ?? 0) + rewardLine.quantity;
+    const balanceAfter = (currencyBalances.get(currency) ?? current?.balance ?? 0) + rewardLine.quantity;
+    currencyBalances.set(currency,balanceAfter);
     const ledgerId = createDomainId("ledger");
     statements.push(
       c.env.DB.prepare(
@@ -6760,6 +6815,10 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     });
   }
 
+  statements.push(...launchEntitlementStatements(c.env.DB, accountId, launchPlan.sources, rewardClaimId, now), ...(crystalPlan?.statements ?? []));
+  claimRewardLines.push(...crystalLines);
+
+  const itemBalances = new Map<string, number>();
   for (const rewardLine of itemRewardLines) {
     const current = await c.env.DB.prepare(
       `SELECT quantity
@@ -6768,7 +6827,8 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     )
       .bind(accountId, rewardLine.id)
       .first<AccountItemRow>();
-    const balanceAfter = (current?.quantity ?? 0) + rewardLine.quantity;
+    const balanceAfter = (itemBalances.get(rewardLine.id) ?? current?.quantity ?? 0) + rewardLine.quantity;
+    itemBalances.set(rewardLine.id,balanceAfter);
     const itemLedgerId = createDomainId("item_ledger");
     statements.push(
       c.env.DB.prepare(
@@ -6793,9 +6853,9 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
   statements.push(
     c.env.DB.prepare(
       `UPDATE run_reward_previews
-       SET status = 'CLAIMED', claimed_at = ?, reward_claim_id = ?
+       SET status = 'CLAIMED', claimed_at = ?, reward_claim_id = ?, reward_plan_json = ?
        WHERE id = ? AND run_id = ? AND status = 'ACTIVE'`,
-    ).bind(now, rewardClaimId, rewardPreviewId, runId),
+    ).bind(now, rewardClaimId, effectiveRewardJson, rewardPreviewId, runId),
     c.env.DB.prepare(
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
        VALUES (?, ?, ?, 'run_reward_claim', ?, ?)`,
@@ -6815,11 +6875,12 @@ app.post("/v1/runs/:runId/reward-preview/:rewardPreviewId/claim", async (c) => {
     errorCode: null,
     message: null,
   });
-});
+}));
 
 export { RealtimeCoopRoom };
 
 registerActivityRoutes(app, resolveAuthContext);
 registerCrystalRoutes(app, resolveAuthContext);
+registerGrowthRoutes(app, resolveAuthContext);
 
 export default app;

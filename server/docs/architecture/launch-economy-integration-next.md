@@ -1,5 +1,9 @@
 # Launch economy: configuration versus integration
 
+Follow-up implemented locally on2026-09-09: see
+[growth and launch implementation](growth-launch-implementation-2026-09-09.md).
+The status table below describes the earlier config-only checkpoint and is historical.
+
 2026-09-09 first unit: local versioned snapshot, strict parser and quote accessors.
 Planning snapshot SHA256: C17BA2EB831AFB9C0C5F6EB55DBE13EC06D24A3A89C78708B409974EF065169A.
 The source is canonical docs/ops/launch-economy-v1.json. Plan owns the numbers.

@@ -1,3 +1,4 @@
+import { createAccessToken } from "../../apps/game-api/src/auth";
 import { describe, expect, it } from "vitest";
 import app from "../../apps/game-api/src/index";
 
@@ -14,14 +15,20 @@ type RewardPreviewRow = {
   reward_claim_id: string | null;
 };
 
+const authSecret = "test-secret-minimum-32-characters";
+const authSession = () => ({account_id:"account_1",session_id:"session_1",session_status:"ACTIVE",session_expires_at:Date.now()+900000,account_status:"ACTIVE"});
+const authorization = async () => `Bearer ${await createAccessToken({secret:authSecret,accountId:"account_1",sessionId:"session_1",nowMs:Date.now(),ttlMs:900000})}`;
 const ACTIVE_REWARD_PREVIEW_EXPIRES_AT = "2099-08-27T00:00:00.000Z";
 
-function createEnv(row: RewardPreviewRow | null): Env {
+function createEnv(row: RewardPreviewRow | null): Env & {AUTH_SIGNING_KEY_CURRENT:string} {
   return {
     ENVIRONMENT: "DEV",
+    AUTH_SIGNING_KEY_CURRENT: authSecret,
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     DB: {
       prepare(sql: string) {
+        if(sql.includes("FROM auth_sessions")) return {bind:()=>({first:async()=>authSession()})};
+        if(sql.includes("economy_version_bindings") || sql.includes("FROM idempotency_records")) return {bind:()=>({first:async()=>null})};
         expect(sql).toContain("run_reward_previews");
         return {
           bind(runId: string, rewardPreviewId: string) {
@@ -136,7 +143,7 @@ describe("game-api reward preview and claim contract", () => {
       "/v1/runs/run_1/reward-preview/reward_preview_1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-idem-1" },
+        headers: { Authorization: await authorization(), "Idempotency-Key": "claim-idem-1" },
         body: JSON.stringify({ runId: "run_other", rewardPreviewId: "reward_preview_1" }),
       },
       createEnv(null),
@@ -161,7 +168,7 @@ describe("game-api reward preview and claim contract", () => {
       "/v1/runs/run_1/reward-preview/reward_preview_1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-idem-1" },
+        headers: { Authorization: await authorization(), "Idempotency-Key": "claim-idem-1" },
         body: JSON.stringify({ runId: "run_1", rewardPreviewId: "reward_preview_1" }),
       },
       createEnv({
@@ -195,6 +202,7 @@ describe("game-api reward preview and claim contract", () => {
   it("replays a committed reward claim from idempotency_records without granting again", async () => {
     const env = {
       ENVIRONMENT: "DEV",
+    AUTH_SIGNING_KEY_CURRENT: authSecret,
       ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
       DB: {
         prepare(sql: string) {
@@ -202,6 +210,7 @@ describe("game-api reward preview and claim contract", () => {
             bind() {
               return {
                 first: async () => {
+                  if(sql.includes("FROM auth_sessions")) return authSession();
                   if (sql.includes("FROM run_reward_previews")) {
                     return {
                       id: "reward_preview_1",
@@ -218,6 +227,7 @@ describe("game-api reward preview and claim contract", () => {
                   }
                   if (sql.includes("FROM idempotency_records")) {
                     return {
+                      run_id: "run_1",
                       result_ref: "reward_claim_1",
                       created_at: Date.parse("2026-08-26T01:00:00.000Z"),
                       reward_created_at: Date.parse("2026-08-26T01:00:00.000Z"),
@@ -239,7 +249,7 @@ describe("game-api reward preview and claim contract", () => {
       "/v1/runs/run_1/reward-preview/reward_preview_1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-idem-1" },
+        headers: { Authorization: await authorization(), "Idempotency-Key": "claim-idem-1" },
         body: JSON.stringify({ runId: "run_1", rewardPreviewId: "reward_preview_1" }),
       },
       env,
@@ -263,6 +273,7 @@ describe("game-api reward preview and claim contract", () => {
     const batchSql: string[] = [];
     const env = {
       ENVIRONMENT: "DEV",
+    AUTH_SIGNING_KEY_CURRENT: authSecret,
       ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
       DB: {
         prepare(sql: string) {
@@ -271,6 +282,7 @@ describe("game-api reward preview and claim contract", () => {
               return {
                 sql,
                 first: async () => {
+                  if(sql.includes("FROM auth_sessions")) return authSession();
                   if (sql.includes("FROM run_reward_previews")) {
                     return {
                       id: "reward_preview_1",
@@ -279,6 +291,7 @@ describe("game-api reward preview and claim contract", () => {
                       status: "ACTIVE",
                       balance_config_version: 1,
                       reward_plan_json: JSON.stringify({
+                        calculation:{operationId:"opn_03_water_stop"},
                         rewardLines: [
                           {
                             kind: "CURRENCY",
@@ -327,7 +340,7 @@ describe("game-api reward preview and claim contract", () => {
       "/v1/runs/run_1/reward-preview/reward_preview_1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-idem-1" },
+        headers: { Authorization: await authorization(), "Idempotency-Key": "claim-idem-1" },
         body: JSON.stringify({ runId: "run_1", rewardPreviewId: "reward_preview_1" }),
       },
       env,

@@ -1,3 +1,5 @@
+import { createAccessToken } from "../../apps/game-api/src/auth";
+const authSecret = "test-secret-minimum-32-characters";
 import { describe, expect, it } from "vitest";
 import initSqlJs from "sql.js";
 import { readdirSync, readFileSync } from "node:fs";
@@ -70,7 +72,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
   const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(24);
+  expect(migrations).toHaveLength(27);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -79,9 +81,10 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   return db;
 }
 
-function createEnv(db: initSqlJs.Database): Env {
+function createEnv(db: initSqlJs.Database): Env & {AUTH_SIGNING_KEY_CURRENT:string} {
   return {
     ENVIRONMENT: "DEV",
+    AUTH_SIGNING_KEY_CURRENT: authSecret,
     ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
     DB: new SqlJsD1Database(db) as unknown as D1Database,
   };
@@ -140,12 +143,14 @@ describe("game-api reward claim local D1 smoke", () => {
   it("commits an ACTIVE preview claim once and keeps D1 integrity clean", async () => {
     const db = await createMigratedDb();
     seedClaimableRewardPreview(db);
+    db.run("INSERT INTO auth_sessions (id,account_id,refresh_token_hash,family_id,generation,status,created_at,expires_at) VALUES ('session-smoke-1','account-smoke-1','test-refresh','test-family',0,'ACTIVE',?,?)",[Date.now(),Date.now()+900000]);
+    const authorization = `Bearer ${await createAccessToken({secret:authSecret,accountId:"account-smoke-1",sessionId:"session-smoke-1",nowMs:Date.now(),ttlMs:900000})}`;
 
     const response = await app.request(
       "/v1/runs/run-smoke-1/reward-preview/reward-preview-smoke-1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-smoke-idem-1" },
+        headers: { Authorization: authorization, "Idempotency-Key": "claim-smoke-idem-1" },
         body: JSON.stringify({ runId: "run-smoke-1", rewardPreviewId: "reward-preview-smoke-1" }),
       },
       createEnv(db),
@@ -176,7 +181,7 @@ describe("game-api reward claim local D1 smoke", () => {
       "/v1/runs/run-smoke-1/reward-preview/reward-preview-smoke-1/claim",
       {
         method: "POST",
-        headers: { "Idempotency-Key": "claim-smoke-idem-1" },
+        headers: { Authorization: authorization, "Idempotency-Key": "claim-smoke-idem-1" },
         body: JSON.stringify({ runId: "run-smoke-1", rewardPreviewId: "reward-preview-smoke-1" }),
       },
       createEnv(db),

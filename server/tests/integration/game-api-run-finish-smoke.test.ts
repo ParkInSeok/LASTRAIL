@@ -89,7 +89,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
   const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(24);
+  expect(migrations).toHaveLength(27);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -721,7 +721,7 @@ describe("game-api run finish local D1 smoke", () => {
       `/v1/runs/run-smoke-1/reward-preview/${body.rewardPreviewId}/claim`,
       {
         method: "POST",
-        headers: { "Idempotency-Key": "run-reward-claim-ticket-smoke-idem-1" },
+        headers: { Authorization: authorization, "Idempotency-Key": "run-reward-claim-ticket-smoke-idem-1" },
         body: JSON.stringify({ runId: "run-smoke-1", rewardPreviewId: body.rewardPreviewId }),
       },
       createEnv(db),
