@@ -20,6 +20,9 @@ import { isDevGachaScopeAllowed } from "./gacha-dev-scope";
 import { registerActivityRoutes } from "./activity-routes";
 import { registerCrystalRoutes } from "./crystal-routes";
 import { registerGrowthRoutes } from "./growth-routes";
+import { registerAccountStateRoutes } from "./account-state";
+import { registerFormationRoutes } from "./formation";
+import { readOfflineEconomy, offlinePolicyGuard } from "./offline-economy";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
@@ -1879,11 +1882,14 @@ function createOfflineRewardClaimDuplicateReplayResponse(options: {
     economyTransactionId: parsed.economyTransactionId ?? null,
     accountMutationId: parsed.accountMutationId ?? null,
     storyProgressId: parsed.storyProgressId ?? null,
+    balanceVersion: parsed.balanceVersion ?? null,
+    economyVersion: parsed.economyVersion ?? null,
+    economyHash: parsed.economyHash ?? null,
     claimableSeconds: null,
     claimableHours: null,
     offlineStorageCapHours: parsed.offlineStorageCapHours ?? null,
-    minimumClaimSeconds: launchOfflineRewardsConfig.minimumOfflineMinutes * 60,
-    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    minimumClaimSeconds: parsed.minimumClaimSeconds ?? launchOfflineRewardsConfig.minimumOfflineMinutes * 60,
+    maxClaimableHours: parsed.maxClaimableHours ?? launchOfflineRewardsConfig.maxClaimableHours,
     rewardLines: [],
     calculation: null,
     serverClaimedAt: toIso(options.serverClaimedAt),
@@ -4573,25 +4579,26 @@ app.get("/v1/offline-rewards/preview", async (c) => {
   const actualOfflineSeconds = Math.floor((now - baselineMs) / 1000);
 
   try {
+    const offlinePolicy = await readOfflineEconomy(c.env.DB);
     const preview = calculateOfflineRewardPreview({
-      config: launchOfflineRewardsConfig,
+      config: offlinePolicy.config,
       storyProgressKey: storyProgressId,
       actualOfflineSeconds,
     });
-    return c.json(createOfflineRewardAcceptedResponse({
+    return c.json({ ...createOfflineRewardAcceptedResponse({
       storyProgressId: preview.calculation.storyProgressKey,
       rewardLines: preview.rewardLines,
       claimableSeconds: preview.calculation.claimableSeconds,
       offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
       minimumOfflineMinutes: preview.calculation.minimumOfflineMinutes,
-      maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+      maxClaimableHours: offlinePolicy.config.maxClaimableHours,
       storyProgressMultiplierBps: preview.calculation.storyProgressMultiplierBps,
       narrativeVersion: storyProgress?.narrative_version ?? actOneNarrativeVersion,
       serverCalculatedAt: now,
-    }));
+    }), ...offlinePolicy.metadata });
   } catch (error) {
     const errorCode = error instanceof Error && error.message !== "" ? error.message : "offline_reward_policy_missing";
-    const status = errorCode === "contract_violation" ? 400 : 409;
+    const status = error instanceof ActivityError ? error.status : errorCode === "contract_violation" ? 400 : 409;
     return c.json(createOfflineRewardRejectedResponse({
       errorCode,
       message: "Offline reward preview is unavailable.",
@@ -4599,7 +4606,7 @@ app.get("/v1/offline-rewards/preview", async (c) => {
   }
 });
 
-app.post("/v1/offline-rewards/claim", async (c) => {
+app.post("/v1/offline-rewards/claim", withEconomyRetry(async (c) => {
   const requestUrl = new URL(c.req.url);
   const hasAnyQuery = [...requestUrl.searchParams.keys()].length > 0;
   const contentLength = c.req.header("content-length");
@@ -4644,6 +4651,12 @@ app.post("/v1/offline-rewards/claim", async (c) => {
       serverClaimedAt: replay.reward_created_at ?? replay.created_at,
     }));
   }
+
+  // Fence all entitlement/balance reads, including the elapsed-time baseline.
+  const latestMutation = await c.env.DB.prepare(
+    `SELECT MAX(sequence) AS sequence FROM account_mutations WHERE account_id = ?`,
+  ).bind(authContext.accountId).first<AccountMutationSequenceRow>();
+  const nextSequence = (latestMutation?.sequence ?? 0) + 1;
 
   const storyProgress = await c.env.DB.prepare(
     `SELECT highest_story_progress_id, narrative_version
@@ -4694,15 +4707,17 @@ app.post("/v1/offline-rewards/claim", async (c) => {
   const narrativeVersion = storyProgress?.narrative_version ?? actOneNarrativeVersion;
   const actualOfflineSeconds = Math.floor((now - baselineMs) / 1000);
   let preview;
+  let offlinePolicy: Awaited<ReturnType<typeof readOfflineEconomy>>;
   try {
+    offlinePolicy = await readOfflineEconomy(c.env.DB);
     preview = calculateOfflineRewardPreview({
-      config: launchOfflineRewardsConfig,
+      config: offlinePolicy.config,
       storyProgressKey: storyProgressId,
       actualOfflineSeconds,
     });
   } catch (error) {
     const errorCode = error instanceof Error && error.message !== "" ? error.message : "offline_reward_policy_missing";
-    const status = errorCode === "contract_violation" ? 400 : 409;
+    const status = error instanceof ActivityError ? error.status : errorCode === "contract_violation" ? 400 : 409;
     return c.json(createOfflineRewardClaimRejectedResponse({
       storyProgressId,
       errorCode,
@@ -4723,20 +4738,14 @@ app.post("/v1/offline-rewards/claim", async (c) => {
   const offlineRewardClaimId = createDomainId("offline_claim");
   const mutationId = createDomainId("mutation");
   const economyTransactionId = createDomainId("economy");
-  const latestMutation = await c.env.DB.prepare(
-    `SELECT MAX(sequence) AS sequence
-     FROM account_mutations
-     WHERE account_id = ?`,
-  )
-    .bind(authContext.accountId)
-    .first<AccountMutationSequenceRow>();
-  const nextSequence = (latestMutation?.sequence ?? 0) + 1;
   const claimRewardLines = [];
   const statements = [
     c.env.DB.prepare(
       `INSERT INTO account_mutations (id, account_id, sequence, mutation_type, idempotency_key, created_at)
        VALUES (?, ?, ?, 'OFFLINE_REWARD_CLAIM', ?, ?)`,
     ).bind(mutationId, authContext.accountId, nextSequence, idempotencyKey, now),
+    offlinePolicyGuard(c.env.DB, offlinePolicy.metadata),
+    c.env.DB.prepare("DELETE FROM growth_write_guard"),
     c.env.DB.prepare(
       `INSERT INTO economy_transactions (id, account_id, mutation_id, reason, source_type, source_id, created_at)
        VALUES (?, ?, ?, 'OFFLINE_REWARD_CLAIM', 'OFFLINE_REWARD_CLAIM', ?, ?)`,
@@ -4786,6 +4795,7 @@ app.post("/v1/offline-rewards/claim", async (c) => {
     accepted: true,
     claimStatus: "CLAIMED",
     offlineRewardClaimId,
+    ...offlinePolicy.metadata,
     rewardTransactionId: offlineRewardClaimId,
     economyTransactionId,
     accountMutationId: mutationId,
@@ -4794,7 +4804,7 @@ app.post("/v1/offline-rewards/claim", async (c) => {
     claimableHours: preview.calculation.claimableSeconds / 3600,
     offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
     minimumClaimSeconds: preview.calculation.minimumOfflineMinutes * 60,
-    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    maxClaimableHours: offlinePolicy.config.maxClaimableHours,
     rewardLines: claimRewardLines,
     calculation,
     serverClaimedAt: toIso(now),
@@ -4803,6 +4813,7 @@ app.post("/v1/offline-rewards/claim", async (c) => {
     message: null,
   };
   const rewardJson = JSON.stringify({
+    ...offlinePolicy.metadata,
     rewardLines: claimRewardLines,
     calculation,
     storyProgressId: preview.calculation.storyProgressKey,
@@ -4810,7 +4821,7 @@ app.post("/v1/offline-rewards/claim", async (c) => {
     claimableHours: preview.calculation.claimableSeconds / 3600,
     offlineStorageCapHours: preview.calculation.offlineStorageCapHours,
     minimumClaimSeconds: preview.calculation.minimumOfflineMinutes * 60,
-    maxClaimableHours: launchOfflineRewardsConfig.maxClaimableHours,
+    maxClaimableHours: offlinePolicy.config.maxClaimableHours,
     narrativeVersion,
     rewardTransactionId: offlineRewardClaimId,
     economyTransactionId,
@@ -4820,31 +4831,36 @@ app.post("/v1/offline-rewards/claim", async (c) => {
   statements.push(
     c.env.DB.prepare(
       `INSERT INTO reward_transactions (id, account_id, run_id, mutation_id, balance_config_version, reward_json, created_at)
-       VALUES (?, ?, NULL, ?, NULL, ?, ?)`,
-    ).bind(offlineRewardClaimId, authContext.accountId, mutationId, rewardJson, now),
+       VALUES (?, ?, NULL, ?, ?, ?, ?)`,
+    ).bind(offlineRewardClaimId, authContext.accountId, mutationId, offlinePolicy.metadata.balanceVersion, rewardJson, now),
     c.env.DB.prepare(
       `INSERT INTO account_offline_reward_state (
          account_id, last_offline_reward_claim_at, last_story_progress_id,
-         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at
-       ) VALUES (?, ?, ?, NULL, ?, NULL, 1, ?)
+         last_balance_config_version, last_narrative_version, last_previewed_at, revision, updated_at, last_reward_transaction_id
+       ) VALUES (?, ?, ?, ?, ?, NULL, 1, ?, ?)
        ON CONFLICT(account_id) DO UPDATE SET
          last_offline_reward_claim_at = excluded.last_offline_reward_claim_at,
          last_story_progress_id = excluded.last_story_progress_id,
          last_balance_config_version = excluded.last_balance_config_version,
          last_narrative_version = excluded.last_narrative_version,
+         last_reward_transaction_id = excluded.last_reward_transaction_id,
          revision = account_offline_reward_state.revision + 1,
          updated_at = excluded.updated_at`,
-    ).bind(authContext.accountId, now, preview.calculation.storyProgressKey, narrativeVersion, now),
+    ).bind(authContext.accountId, now, preview.calculation.storyProgressKey, offlinePolicy.metadata.balanceVersion, narrativeVersion, now, offlineRewardClaimId),
     c.env.DB.prepare(
       `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
        VALUES (?, ?, ?, 'offline_reward_claim', ?, ?)`,
     ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, offlineRewardClaimId, now),
   );
 
-  await c.env.DB.batch(statements);
+  try { await c.env.DB.batch(statements); }
+  catch (error) {
+    if (/CHECK constraint failed: valid=1/iu.test(String(error))) throw new ActivityError(409, "offline_reward_policy_changed");
+    throw error;
+  }
 
   return c.json(responsePayload);
-});
+}));
 
 app.post("/v1/login-bonus/claim", withEconomyRetry(async (c) => {
   const requestUrl = new URL(c.req.url);
@@ -6882,5 +6898,7 @@ export { RealtimeCoopRoom };
 registerActivityRoutes(app, resolveAuthContext);
 registerCrystalRoutes(app, resolveAuthContext);
 registerGrowthRoutes(app, resolveAuthContext);
+registerAccountStateRoutes(app, resolveAuthContext);
+registerFormationRoutes(app, resolveAuthContext);
 
 export default app;

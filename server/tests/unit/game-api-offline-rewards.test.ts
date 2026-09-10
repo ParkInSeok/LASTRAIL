@@ -50,6 +50,7 @@ function createEnv(options: {
     AUTH_SIGNING_KEY_CURRENT: authSecret,
     DB: {
       prepare(sql: string) {
+        if (sql.includes("FROM balance_config_active")) return { first: async () => null };
         return {
           bind(...values: unknown[]) {
             return {
@@ -119,6 +120,9 @@ describe("game-api offline reward preview contract", () => {
         accepted: true,
         previewStatus: "AVAILABLE",
         storyProgressId: "none",
+        balanceVersion: null,
+        economyVersion: null,
+        economyHash: null,
         claimableSeconds: 14400,
         claimableHours: 4,
         offlineStorageCapHours: 4,
