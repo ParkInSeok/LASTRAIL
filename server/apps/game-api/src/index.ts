@@ -25,6 +25,7 @@ import { registerFormationRoutes } from "./formation";
 import { registerUltimateRoutes } from "./ultimate-selection";
 import { registerMonthlyAttendanceRoutes } from "./monthly-attendance";
 import { objectiveFinishEvent } from "./objective-events";
+import { registerShopRoutes } from "./shop-routes";
 import { registerRecurringRoutes } from "./recurring-routes";
 import { registerTrainLoadoutRoutes } from "./train-loadout";
 import { registerDepartureRoutes } from "./departure";
@@ -6950,6 +6951,7 @@ export { RealtimeCoopRoom };
 
 registerActivityRoutes(app, resolveAuthContext);
 registerCrystalRoutes(app, resolveAuthContext);
+registerShopRoutes(app, resolveAuthContext);
 registerGrowthRoutes(app, resolveAuthContext);
 registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);

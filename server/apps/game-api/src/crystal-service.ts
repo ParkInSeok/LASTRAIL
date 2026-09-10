@@ -3,11 +3,28 @@ import { ActivityError } from "./activity-policy";
 import { planCrystalChange, readCrystalPolicy, walletId } from "./crystal-wallet";
 import { storeOrderInsert, verifiedStoreProof } from "./crystal-orders";
 import type { CrystalPurchaseVerifier } from "./crystal-orders";
+import { objectivePeriods } from "./recurring-policy";
 
 export type CrystalAction = { kind: "EXCHANGE"; policyVersion: string; ticketCount: number }
+  | { kind: "SHOP_EXCHANGE"; policyVersion: string; ticketCount: number; offer: "NORMAL" | "DAILY"; expectedDayStart: number }
   | { kind: "PURCHASE"; policyVersion: string; productId: string; receipt: string };
 
-export async function claimCrystals(input: { db: D1Database; accountId: string; environment: "LOCAL" | "DEV" | "PRD";
+type CrystalOptions = { db: D1Database; accountId: string; environment: "LOCAL" | "DEV" | "PRD"; verifier?: CrystalPurchaseVerifier };
+export async function claimCrystals(input: CrystalOptions, action: CrystalAction, key: string): Promise<Record<string, unknown>> {
+  try { return await claimCrystalsAttempt(input, action, key); }
+  catch (error) {
+    // A concurrent identical request may commit after our initial receipt read
+    // but before a quota, balance, policy or clock check rejects this attempt.
+    const replay = await input.db.prepare("SELECT request_hash,response_json FROM crystal_operations WHERE account_id=? AND operation=? AND idempotency_key=?")
+      .bind(input.accountId, `crystal_${action.kind.toLowerCase()}`, key).first<{ request_hash: string; response_json: string }>();
+    if (replay) {
+      if (replay.request_hash !== await sha256Hex(canonicalJson(action))) throw new ActivityError(409, "idempotency_conflict");
+      return JSON.parse(replay.response_json);
+    }
+    throw error;
+  }
+}
+async function claimCrystalsAttempt(input: { db: D1Database; accountId: string; environment: "LOCAL" | "DEV" | "PRD";
   verifier?: CrystalPurchaseVerifier }, action: CrystalAction, key: string): Promise<Record<string, unknown>> {
   const { db, accountId } = input;
   const operation = `crystal_${action.kind.toLowerCase()}`;
@@ -27,11 +44,21 @@ export async function claimCrystals(input: { db: D1Database; accountId: string; 
     const now = Date.now();
     const before: D1PreparedStatement[] = [], after: D1PreparedStatement[] = [];
     let plan;
-    if (action.kind === "EXCHANGE") {
+    if (action.kind === "EXCHANGE" || action.kind === "SHOP_EXCHANGE") {
       const exchange = policy.ticketExchange;
       if (!exchange) throw new ActivityError(503, "crystal_exchange_unconfigured");
       if (!Number.isInteger(action.ticketCount) || action.ticketCount < 1 || action.ticketCount > exchange.maxTickets) throw new ActivityError(400, "contract_violation");
-      const cost = action.ticketCount * exchange.crystalsPerTicket;
+      const daily = action.kind === "SHOP_EXCHANGE" && action.offer === "DAILY";
+      if (action.kind === "SHOP_EXCHANGE" && exchange.crystalsPerTicket !== 100) throw new ActivityError(503, "shop_launch_price_unconfigured");
+      if (daily) {
+        const period = objectivePeriods(now);
+        if (action.expectedDayStart !== period.dayStart) throw new ActivityError(409, "shop_day_changed");
+        if (action.ticketCount !== 1) throw new ActivityError(400, "contract_violation");
+        if (await db.prepare("SELECT 1 FROM shop_daily_ticket_claims WHERE account_id=? AND offer_family='COMMAND_TICKET_DAILY' AND day_start=?").bind(accountId, period.dayStart).first()) throw new ActivityError(409, "shop_daily_limit_reached");
+        before.push(db.prepare("INSERT INTO shop_day_guard(valid) SELECT CASE WHEN CAST(ROUND(unixepoch('subsec')*1000) AS INTEGER)>=? AND CAST(ROUND(unixepoch('subsec')*1000) AS INTEGER)<? THEN 1 ELSE 0 END").bind(period.dayStart, period.dayEnd));
+        after.push(db.prepare("INSERT INTO shop_daily_ticket_claims(account_id,offer_family,day_start,operation_id) VALUES(?,'COMMAND_TICKET_DAILY',?,?)").bind(accountId, period.dayStart, operationId), db.prepare("DELETE FROM shop_day_guard"));
+      }
+      const cost = action.ticketCount * (daily ? 50 : exchange.crystalsPerTicket);
       if (!Number.isSafeInteger(cost)) throw new ActivityError(400, "contract_violation");
       const quantity = (await db.prepare("SELECT quantity FROM account_items WHERE account_id=? AND item_id=?")
         .bind(accountId, exchange.ticketItemId).first<{ quantity: number }>())?.quantity ?? 0;
@@ -39,7 +66,8 @@ export async function claimCrystals(input: { db: D1Database; accountId: string; 
       if (!Number.isSafeInteger(quantityAfter)) throw new ActivityError(409, "reward_balance_overflow");
       plan = await planCrystalChange({ db, accountId, operationId, mutationId, operation, now, grants: [],
         spend: { quantity: cost, reason: "TICKET_EXCHANGE", downstreamRef: operationId }, expectedPolicyVersion: action.policyVersion,
-        request: { key, hash }, response: { ticketsGranted: action.ticketCount, ticketItemId: exchange.ticketItemId, ticketBalanceAfter: quantityAfter } });
+        request: { key, hash }, response: { ticketsGranted: action.ticketCount, ticketItemId: exchange.ticketItemId, ticketBalanceAfter: quantityAfter,
+          ...(action.kind === "SHOP_EXCHANGE" ? { offer: action.offer, cost, dayStart: action.expectedDayStart, dailyRemaining: daily ? 0 : null } : {}) } });
       after.push(
         db.prepare(`INSERT INTO account_items (account_id,item_id,quantity,updated_at) VALUES (?,?,?,?)
           ON CONFLICT(account_id,item_id) DO UPDATE SET quantity=account_items.quantity+?,updated_at=excluded.updated_at`)
@@ -78,6 +106,7 @@ export async function claimCrystals(input: { db: D1Database; accountId: string; 
     ];
     try { await db.batch(statements); return plan.response; }
     catch (error) {
+      if (/CHECK constraint failed: valid=1/iu.test(String(error))) throw new ActivityError(409, "shop_day_changed");
       if (/UNIQUE constraint failed/iu.test(String(error))) {
         if (attempt < 2) continue;
         throw new ActivityError(409, "crystal_write_conflict");
