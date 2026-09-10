@@ -40,6 +40,110 @@ async function setup() {
     set: (d: number, offset = 0) => { now = start + d * day + offset; }, setVerifier: (v: Pass50Verifier) => { verifier = v; } };
 }
 describe("shared recurring objectives and rights", () => {
+  it("rejects empty, duplicate, oversized or mixed bulk membership and conflicts on changed original body", async () => {
+    const f = await setup();
+    for (const body of [{ kind: "QUEST", awardIds: [] }, { kind: "MAIL", awardIds: ["x", "x"] },
+      { kind: "QUEST", awardIds: Array.from({ length: 51 }, (_, i) => `x${i}`) },
+      { kind: "QUEST", awardIds: ["x"], levels: [1] }]) expect((await f.request("/v1/recurring/bulk-claims", body)).status).toBe(400);
+    const original = { kind: "QUEST", awardIds: ["missing"] };
+    expect((await f.request("/v1/recurring/bulk-claims", original, "fixed")).status).toBe(200);
+    expect((await f.request("/v1/recurring/bulk-claims", { ...original, awardIds: ["different"] }, "fixed")).status).toBe(409);
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_bulk_requests")).toBe(1);
+  });
+  it("keeps confirmed failures and successful receipts fixed while COMPLETE distinguishes failure count", async () => {
+    const f = await setup(); await f.login(); await f.record(); await f.record(); await f.sync();
+    const body = { kind: "PASS_LEVEL", policyId: "pass-sep", track: "FREE", levels: [1, 3] };
+    const first = await (await f.request("/v1/recurring/bulk-claims", body, "bulk")).json();
+    expect(first).toMatchObject({ status: "COMPLETE", successCount: 1, failureCount: 1, pendingCount: 0 });
+    expect(first.items.map((i: { status: string }) => i.status)).toEqual(["SUCCESS", "FAILED"]);
+    f.set(1); await f.login(); await f.record(); await f.record(); await f.sync();
+    expect(await (await f.request("/v1/recurring/bulk-claims", body, "bulk")).json()).toEqual(first);
+    const retry = await (await f.request("/v1/recurring/bulk-claims", body, "explicit-new-key")).json();
+    expect(retry.items.map((i: { status: string }) => i.status)).toEqual(["REPLAYED", "SUCCESS"]);
+    const before = f.sql.export();
+    expect(await (await f.request(`/v1/recurring/bulk-claims/${first.bulkId}`, undefined, undefined, "a", "GET")).json()).toEqual(first);
+    expect(Buffer.from(f.sql.export()).equals(Buffer.from(before))).toBe(true);
+    expect((await f.request(`/v1/recurring/bulk-claims/${first.bulkId}`, undefined, undefined, "b", "GET")).status).toBe(403);
+  });
+  it("resumes a frozen50-member list in bounded steps without adding targets", async () => {
+    const f = await setup();
+    const body = { kind: "PASS_LEVEL", policyId: "pass-sep", track: "FREE", levels: Array.from({ length: 50 }, (_, i) => i + 1) };
+    let result = await (await f.request("/v1/recurring/bulk-claims", body, "fifty")).json();
+    expect(result).toMatchObject({ status: "PARTIAL", failureCount: 10, pendingCount: 40, totalCount: 50 });
+    for (let i = 0; i < 4; i++) result = await (await f.request("/v1/recurring/bulk-claims", body, "fifty")).json();
+    expect(result).toMatchObject({ status: "COMPLETE", successCount: 0, failureCount: 50, pendingCount: 0 });
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_bulk_members")).toBe(50);
+  });
+  it("preserves another member's success and rolls back every reward item on a transient grant failure", async () => {
+    const f = await setup(); await f.record(); await f.record(); await f.sync();
+    const awards = (await f.read()).awards.filter(a => a.system === "QUESTS");
+    const body = { kind: "QUEST", awardIds: [awards.find(a => a.objective === "D2")!.id, awards.find(a => a.objective === "D3")!.id] };
+    f.sql.run("CREATE TRIGGER test_grant_failure BEFORE INSERT ON currency_ledger WHEN NEW.currency='OPERATOR_EXP' BEGIN SELECT RAISE(ABORT,'simulated temporary failure'); END");
+    const first = await (await f.request("/v1/recurring/bulk-claims", body, "retry")).json();
+    expect(first).toMatchObject({ status: "PARTIAL", successCount: 1, pendingCount: 1, failureCount: 0 });
+    expect(f.scalar("SELECT SUM(granted) FROM crystal_lots WHERE source_type='QUEST'")).toBe(10);
+    expect(f.scalar("SELECT balance FROM account_currencies WHERE currency='OPERATOR_EXP'")).toBeUndefined();
+    f.sql.run("DROP TRIGGER test_grant_failure");
+    const final = await (await f.request("/v1/recurring/bulk-claims", body, "retry")).json();
+    expect(final).toMatchObject({ status: "COMPLETE", successCount: 2, pendingCount: 0 });
+    expect(final.items[0]).toEqual(first.items[0]);
+    expect(f.scalar("SELECT SUM(granted) FROM crystal_lots WHERE source_type='QUEST'")).toBe(20);
+  });
+  it("recovers lost grant responses and races with manual and season-worker claims without duplicate payout", async () => {
+    const f = await setup(); await f.login(); await f.record(); await f.record(); await f.sync(); f.set(30);
+    const originalBatch = f.adapter.batch.bind(f.adapter); let lost = false;
+    vi.spyOn(f.adapter, "batch").mockImplementation(async statements => {
+      const result = await originalBatch(statements);
+      if (!lost && statements.some(s => s.sql.startsWith("UPDATE recurring_bulk_members SET status="))) { lost = true; throw new Error("response lost after commit"); }
+      return result;
+    });
+    const body = { kind: "PASS_LEVEL", policyId: "pass-sep", track: "FREE", levels: [1, 2] };
+    await Promise.all([f.request("/v1/recurring/bulk-claims", body, "racing"),
+      f.request("/v1/passes/pass-sep/levels/claim", { level: 1, track: "FREE" }), settleRecurringAccount(f.env.DB, "a")]);
+    const final = await (await f.request("/v1/recurring/bulk-claims", body, "racing")).json();
+    expect(final).toMatchObject({ status: "COMPLETE", successCount: 2, failureCount: 0 });
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_grants WHERE right_key LIKE 'pass:%'")).toBe(2);
+    expect(f.scalar("SELECT SUM(granted) FROM crystal_lots WHERE source_type='PASS_FREE'")).toBe(50);
+  });
+  it("concurrently resumes the same bulk key with one durable list and one grant per right", async () => {
+    const f = await setup(); await f.record(); await f.record(); await f.sync();
+    const body = { kind: "QUEST", awardIds: (await f.read()).awards.filter(a => a.system === "QUESTS").map(a => a.id) };
+    const results = await Promise.all([f.request("/v1/recurring/bulk-claims", body, "same-bulk"), f.request("/v1/recurring/bulk-claims", body, "same-bulk")]);
+    expect(results.map(r => r.status)).toEqual([200, 200]);
+    const final = await (await f.request("/v1/recurring/bulk-claims", body, "same-bulk")).json();
+    expect(final).toMatchObject({ status: "COMPLETE", successCount: 2, failureCount: 0 });
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_bulk_requests")).toBe(1);
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_grants")).toBe(2);
+  });
+  it("resumes after losing the request-persistence response without changing the frozen list", async () => {
+    const f = await setup(); const originalBatch = f.adapter.batch.bind(f.adapter); let lost = false;
+    vi.spyOn(f.adapter, "batch").mockImplementation(async statements => {
+      const result = await originalBatch(statements);
+      if (!lost && statements.some(s => s.sql.startsWith("INSERT INTO recurring_bulk_requests"))) { lost = true; throw new Error("lost after request commit"); }
+      return result;
+    });
+    const body = { kind: "QUEST", awardIds: ["missing1", "missing2"] };
+    expect((await f.request("/v1/recurring/bulk-claims", body, "lost-request")).status).toBe(503);
+    const resumed = await (await f.request("/v1/recurring/bulk-claims", body, "lost-request")).json();
+    expect(resumed).toMatchObject({ status: "COMPLETE", failureCount: 2, totalCount: 2 });
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_bulk_requests")).toBe(1);
+    expect((await f.request("/v1/recurring/bulk-claims", { ...body, awardIds: ["missing2", "missing1"] }, "lost-request")).status).toBe(409);
+  });
+  it("fixes expired mail failure at commit boundary while retaining a previously claimed mail receipt", async () => {
+    const f = await setup(); await f.record(); await f.record(); await f.sync(); f.set(1); await sendExpiredQuestMail(f.env.DB, "a");
+    const mail = (await f.read()).mail; await f.request(`/v1/quest-mail/${mail[0]!.award_id}/claim`);
+    const body = { kind: "MAIL", awardIds: mail.map(m => m.award_id) };
+    f.set(14, day - 1); const originalBatch = f.adapter.batch.bind(f.adapter); let crossed = false;
+    vi.spyOn(f.adapter, "batch").mockImplementation(async statements => {
+      if (!crossed && statements.some(s => s.sql.startsWith("INSERT INTO reward_transactions"))) { crossed = true; f.set(15); }
+      return originalBatch(statements);
+    });
+    await f.request("/v1/recurring/bulk-claims", body, "expiry");
+    const final = await (await f.request("/v1/recurring/bulk-claims", body, "expiry")).json();
+    expect(final).toMatchObject({ status: "COMPLETE", successCount: 1, failureCount: 1 });
+    expect(final.items.find((i: { status: string }) => i.status === "FAILED").errorCode).toBe("quest_mail_expired");
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_grants")).toBe(1);
+  });
   it("lists unmet approved objectives read-only, distinguishing recorded zero from unknown finish totals", async () => {
     const f = await setup(), before = f.sql.export();
     const response = await f.request("/v1/recurring/state", undefined, undefined, "a", "GET");

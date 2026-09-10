@@ -8,16 +8,21 @@ import { claimRecurringRight, requestReceipt, requestReplay } from "./recurring-
 import { recurringRetryable } from "./recurring-progress";
 import { objectivePeriods } from "./recurring-policy";
 import { purchasePass50, type Pass50Verifier } from "./pass50-purchase";
+import { bulkClaimSchema, claimRecurringBulk, readBulkClaim } from "./recurring-bulk";
 const passClaim = z.strictObject({ level: z.number().int().min(1).max(50), track: z.enum(["FREE", "PREMIUM"]) });
 const reconciliation = z.strictObject({ intentId: activityId, receipt: z.string().min(1).max(16384) });
 export function registerRecurringRoutes(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<ActivityAuthResult>) {
-  const handler = (kind: "READ" | "LOGIN" | "SYNC" | "QUEST" | "MAIL" | "PASS_LEVEL" | "INTENT" | "RECONCILE") => async (c: Context<{ Bindings: Env }>) => {
+  const handler = (kind: "READ" | "LOGIN" | "SYNC" | "QUEST" | "MAIL" | "PASS_LEVEL" | "INTENT" | "RECONCILE" | "BULK" | "BULK_READ") => async (c: Context<{ Bindings: Env }>) => {
     c.header("Cache-Control", "no-store");
     const auth = await authenticate(c); if ("errorCode" in auth) return c.json({ accepted: false, errorCode: auth.errorCode }, auth.status);
     try {
       if (new URL(c.req.url).search) throw new ActivityError(400, "contract_violation");
       const raw = await readBoundedBody(c), key = c.req.header("Idempotency-Key") ?? "";
-      if (["READ", "LOGIN", "SYNC", "QUEST", "MAIL", "INTENT"].includes(kind) && raw.length) throw new ActivityError(400, "contract_violation");
+      if (["READ", "LOGIN", "SYNC", "QUEST", "MAIL", "INTENT", "BULK_READ"].includes(kind) && raw.length) throw new ActivityError(400, "contract_violation");
+      if (kind === "BULK_READ") {
+        const id = c.req.param("bulkId"); if (!activityId.safeParse(id).success) throw new ActivityError(400, "contract_violation");
+        return c.json(await readBulkClaim(c.env.DB, auth.accountId, id!));
+      }
       if (kind === "READ") return c.json(await readRecurringState(c.env.DB, auth.accountId));
       if (kind === "LOGIN") {
         if (!/^[\x21-\x7e]{1,128}$/u.test(key)) throw new ActivityError(400, "idempotency_key_required");
@@ -34,6 +39,10 @@ export function registerRecurringRoutes(app: Hono<{ Bindings: Env }>, authentica
       }
       if (kind === "SYNC") return c.json(await syncRecurringAccount(c.env.DB, auth.accountId));
       if (!/^[\x21-\x7e]{1,128}$/u.test(key)) throw new ActivityError(400, "idempotency_key_required");
+      if (kind === "BULK") {
+        let body: z.infer<typeof bulkClaimSchema>; try { body = bulkClaimSchema.parse(JSON.parse(raw)); } catch { throw new ActivityError(400, "contract_violation"); }
+        return c.json(await claimRecurringBulk(c.env.DB, auth.accountId, body, key));
+      }
       if (kind === "QUEST" || kind === "MAIL") {
         const awardId = c.req.param("awardId"); if (!activityId.safeParse(awardId).success) throw new ActivityError(400, "contract_violation");
         return c.json(await claimRecurringRight(c.env.DB, auth.accountId, { kind, awardId: awardId! }, key));
@@ -51,6 +60,8 @@ export function registerRecurringRoutes(app: Hono<{ Bindings: Env }>, authentica
     } catch (error) { if (error instanceof ActivityError) return c.json({ accepted: false, errorCode: error.code }, error.status); throw error; }
   };
   app.get("/v1/recurring/state", handler("READ"));
+  app.post("/v1/recurring/bulk-claims", handler("BULK"));
+  app.get("/v1/recurring/bulk-claims/:bulkId", handler("BULK_READ"));
   app.post("/v1/recurring/login", handler("LOGIN"));
   app.post("/v1/recurring/sync", handler("SYNC"));
   app.post("/v1/quests/:awardId/claim", handler("QUEST"));

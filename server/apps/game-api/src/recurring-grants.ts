@@ -4,7 +4,8 @@ import { walletId } from "./crystal-wallet";
 import { planActivityGrant, type ActivityGrantReward } from "./activity-grant-plan";
 import { pass50Rewards } from "./recurring-policy";
 import { recurringDefinition, recurringRetryable, recurringSequence, passEarnedXp, type ObjectiveAward } from "./recurring-progress";
-type Action = { kind: "PASS_LEVEL"; policyId: string; level: number; track: "FREE" | "PREMIUM" }
+import { bulkMemberGuard, bulkMemberSuccess, type BulkMember } from "./recurring-bulk-hooks";
+export type RecurringClaimAction = { kind: "PASS_LEVEL"; policyId: string; level: number; track: "FREE" | "PREMIUM" }
   | { kind: "QUEST" | "MAIL"; awardId: string };
 export async function requestReplay(db: D1Database, accountId: string, operation: string, key: string, hash: string) {
   const r = await db.prepare("SELECT request_hash,response_json FROM recurring_requests WHERE account_id=? AND operation=? AND idempotency_key=?").bind(accountId, operation, key).first<{ request_hash: string; response_json: string }>();
@@ -15,16 +16,17 @@ export async function requestReplay(db: D1Database, accountId: string, operation
 export function requestReceipt(db: D1Database, accountId: string, operation: string, key: string, hash: string, json: string) {
   return db.prepare("INSERT INTO recurring_requests(account_id,operation,idempotency_key,request_hash,response_json) VALUES(?,?,?,?,?)").bind(accountId, operation, key, hash, json);
 }
-export async function claimRecurringRight(db: D1Database, accountId: string, action: Action, key?: string) {
+export async function claimRecurringRight(db: D1Database, accountId: string, action: RecurringClaimAction, key?: string, bulk?: BulkMember) {
   const operation = `recurring_${action.kind.toLowerCase()}`, hash = await sha256Hex(canonicalJson(action));
   for (let attempt = 0; attempt < 4; attempt++) {
     const previous = key ? await requestReplay(db, accountId, operation, key, hash) : null; if (previous) return previous;
     try {
+      if (bulk && !(await db.prepare("SELECT 1 FROM recurring_bulk_members WHERE bulk_id=? AND member_index=? AND status='RETRY_PENDING'").bind(bulk.bulkId, bulk.index).first())) throw new ActivityError(409, "bulk_member_finalized");
       const sequence = await recurringSequence(db, accountId), now = Date.now();
       let policyId: string, rightKey: string, rewards: ActivityGrantReward[], orderId: string | null = null;
       let sourceType: "QUEST" | "PASS_FREE" | "PASS_PREMIUM" = "QUEST";
       let award: ObjectiveAward | null = null;
-      const guards: D1PreparedStatement[] = [];
+      const guards: D1PreparedStatement[] = bulk ? [bulkMemberGuard(db, accountId, bulk)] : [];
       if (action.kind === "PASS_LEVEL") {
         const { definition: d } = await recurringDefinition(db, action.policyId);
         if (d.system !== "PASS50") throw new ActivityError(400, "recurring_kind_mismatch");
@@ -40,7 +42,12 @@ export async function claimRecurringRight(db: D1Database, accountId: string, act
         policyId = award.policy_id; rightKey = `quest:${award.id}`; rewards = JSON.parse(award.rewards_json) as ActivityGrantReward[];
       }
       const existing = await db.prepare("SELECT response_json FROM recurring_grants WHERE account_id=? AND right_key=?").bind(accountId, rightKey).first<{ response_json: string }>();
-      if (existing) { if (key) await db.batch([requestReceipt(db, accountId, operation, key, hash, existing.response_json)]); return JSON.parse(existing.response_json) as Record<string, unknown>; }
+      if (existing) {
+        const replayWrites = key ? [requestReceipt(db, accountId, operation, key, hash, existing.response_json)] : [];
+        if (bulk) replayWrites.push(bulkMemberGuard(db, accountId, bulk), bulkMemberSuccess(db, bulk, existing.response_json, true), db.prepare("DELETE FROM recurring_guard"));
+        if (replayWrites.length) await db.batch(replayWrites);
+        return JSON.parse(existing.response_json) as Record<string, unknown>;
+      }
       if (action.kind === "PASS_LEVEL") {
         const { definition: d, policy: p } = await recurringDefinition(db, policyId);
         if (now < d.start_at || await passEarnedXp(db, accountId, policyId) < action.level * 100) throw new ActivityError(409, "pass_level_not_earned");
@@ -78,6 +85,7 @@ export async function claimRecurringRight(db: D1Database, accountId: string, act
         db.prepare("INSERT INTO recurring_grants(account_id,right_key,policy_id,claim_id,response_json) VALUES(?,?,?,?,?)").bind(accountId, rightKey, policyId, claimId, json),
         db.prepare("DELETE FROM recurring_guard")];
       if (key) writes.push(requestReceipt(db, accountId, operation, key, hash, json));
+      if (bulk) writes.push(bulkMemberSuccess(db, bulk, json, false));
       await db.batch(writes); return response;
     } catch (error) {
       const completed = key ? await requestReplay(db, accountId, operation, key, hash) : null; if (completed) return completed;
