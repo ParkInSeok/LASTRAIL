@@ -10,7 +10,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
   const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[123][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(32);
+  expect(migrations).toHaveLength(33);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -20,6 +20,25 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 }
 
 describe("D1 migrations", () => {
+  it("preserves populated free, paid and revoked-order wallet history across0033", async () => {
+    const SQL = await initSqlJs(), db = new SQL.Database(); db.run("PRAGMA foreign_keys=ON");
+    const dir = join(process.cwd(), "packages/db/migrations");
+    for (const file of readdirSync(dir).filter(f => /^\d+_.+\.sql$/u.test(f) && f < "0033").sort()) db.run(readFileSync(join(dir, file), "utf8"));
+    db.run("INSERT INTO accounts(id,created_at,updated_at) VALUES('migration-account',0,0)");
+    db.run("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,created_at) VALUES('m','migration-account',1,'TEST',0)");
+    db.run("INSERT INTO crystal_policies VALUES('p','{}')");
+    db.run("INSERT INTO crystal_operations(id,account_id,policy_id,mutation_id,operation,response_json,created_at) VALUES('op','migration-account','p','m','TEST','{}',0)");
+    db.run("INSERT INTO verified_store_orders(id,account_id,provider,app_id,product_id,transaction_id,environment,product_kind,verification_ref,purchased_at,verified_at) VALUES('order','migration-account','GOOGLE_PLAY','test','test','tx','DEV','CRYSTAL','test',0,0)");
+    db.run("INSERT INTO crystal_lots VALUES('free','migration-account','crystal','FREE','ATTENDANCE','test',NULL,100,70,'op',0),('paid','migration-account','crystal','PAID','STORE_PURCHASE','test','order',200,120,'op',0)");
+    db.run("INSERT INTO crystal_ledger VALUES('l1','free','migration-account','op',100,100,'GRANT',NULL,0),('l2','free','migration-account','op',-30,70,'SPEND','ticket',1),('l3','paid','migration-account','op',200,200,'GRANT',NULL,0),('l4','paid','migration-account','op',-80,120,'SPEND','ticket',1)");
+    db.run("UPDATE verified_store_orders SET revoked_at=2 WHERE id='order'");
+    const lots = db.exec("SELECT * FROM crystal_lots ORDER BY id"), ledger = db.exec("SELECT * FROM crystal_ledger ORDER BY id");
+    db.run(readFileSync(join(dir, "0033_recurring_objectives.sql"), "utf8"));
+    expect(db.exec("SELECT * FROM crystal_lots ORDER BY id")).toEqual(lots);
+    expect(db.exec("SELECT * FROM crystal_ledger ORDER BY id")).toEqual(ledger);
+    expect(db.exec("PRAGMA foreign_key_check")).toEqual([]);
+    expect(db.exec("PRAGMA quick_check")[0]?.values).toEqual([["ok"]]); db.close();
+  });
   it("apply 0001 through 0020 and pass SQLite integrity checks", async () => {
     const db = await createMigratedDb();
 

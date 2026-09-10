@@ -8,6 +8,8 @@ const currencyIds: Record<string, string> = { cur_credits: "CREDITS", cur_machin
 export async function planActivityGrant(input: {
   db: D1Database; accountId: string; mutationId: string; claimId: string; now: number;
   rewards: ActivityGrantReward[]; operation: string; economyId: string;
+  sourceType?: "ATTENDANCE" | "PASS_FREE" | "PASS_PREMIUM" | "QUEST";
+  orderId?: string | null;
   recovery?: { walletPolicyVersion: string; confirmedPaid: number };
 }) {
   const { db, accountId, mutationId, claimId, now, rewards, operation } = input;
@@ -16,7 +18,7 @@ export async function planActivityGrant(input: {
   let wallet: Record<string, unknown> | null = null;
   if (crystals.length || input.recovery) {
     const plan = await planCrystalChange({ db, accountId, mutationId, operationId: claimId, operation, now,
-      grants: crystals.map(r => ({ quantity: r.quantity, sourceType: "ATTENDANCE", sourceRef: claimId, orderId: null })),
+      grants: crystals.map(r => ({ quantity: r.quantity, sourceType: input.sourceType ?? "ATTENDANCE", sourceRef: claimId, orderId: input.orderId ?? null })),
       ...(input.recovery ? { expectedPolicyVersion: input.recovery.walletPolicyVersion,
         spend: { quantity: 100, reason: "ATTENDANCE_RECOVERY" as const, downstreamRef: claimId } } : {}),
     });

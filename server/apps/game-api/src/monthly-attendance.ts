@@ -6,6 +6,7 @@ import { readBoundedBody, type ActivityAuthResult } from "./activity-routes";
 import { readCrystalWallet, walletId } from "./crystal-wallet";
 import { planActivityGrant } from "./activity-grant-plan";
 import { attendanceMonth, monthlyCells, parseMonthlyPolicy } from "./monthly-attendance-policy";
+import { objectiveLoginEvent } from "./objective-events";
 
 const base = { policyVersion: activityId, cycleId: z.string().regex(/^\d{4}-\d{2}$/u), expectedRevision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER - 1) };
 const naturalBody = z.strictObject(base);
@@ -148,7 +149,7 @@ export async function mutateMonthlyAttendance(o: Options, body: Body, kind: "NAT
         db.prepare("INSERT INTO activity_claims(id,account_id,activity_id,claim_key,operation,idempotency_key,request_hash,response_json,created_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(claimId, accountId, policyVersion, claimKey, operation, key, hash, json, now),
         db.prepare("INSERT INTO monthly_attendance_requests(account_id,operation,idempotency_key,request_hash,claim_id) VALUES(?,?,?,?,?)").bind(accountId, operation, key, hash, claimId),
       ];
-      if (kind === "NATURAL") writes.push(db.prepare("INSERT INTO monthly_attendance_visits(account_id,cycle_id,day_index,claim_id) VALUES(?,?,?,?)").bind(accountId, c.month.cycleId, day, claimId));
+      if (kind === "NATURAL") writes.push(db.prepare("INSERT INTO monthly_attendance_visits(account_id,cycle_id,day_index,claim_id) VALUES(?,?,?,?)").bind(accountId, c.month.cycleId, day, claimId), objectiveLoginEvent(db, accountId));
       if (nextCell !== null) writes.push(db.prepare("INSERT INTO monthly_attendance_cells(account_id,cycle_id,cell,source,day_index,claim_id) VALUES(?,?,?,?,?,?)").bind(accountId, c.month.cycleId, nextCell, kind, day, claimId));
       writes.push(db.prepare("DELETE FROM monthly_attendance_guard"));
       await db.batch(writes);

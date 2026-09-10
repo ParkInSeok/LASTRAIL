@@ -5,6 +5,7 @@ import { setup as departureSetup } from "../helpers/departure-fixture";
 import { registerMonthlyAttendanceRoutes } from "../../apps/game-api/src/monthly-attendance";
 import { attendanceMonth } from "../../apps/game-api/src/monthly-attendance-policy";
 import { planCrystalChange } from "../../apps/game-api/src/crystal-wallet";
+import { objectiveLoginEvent } from "../../apps/game-api/src/objective-events";
 
 const start = Date.parse("2026-08-31T19:00:00Z"), dayMs = 86400000;
 afterEach(() => vi.restoreAllMocks());
@@ -75,6 +76,8 @@ describe("monthly sequential attendance", () => {
     const recovered = await (await f.command(true)).json();
     expect(recovered).toMatchObject({ cell: 2, sourceDayIndex: 0, wallet: { freeSpent: 60, paidSpent: 40 } });
     expect(f.scalar("SELECT COUNT(*) FROM pass_xp_events")).toBe(0);
+    await f.env.DB.batch([objectiveLoginEvent(f.env.DB, "a")]);
+    expect(f.scalar("SELECT COUNT(*) FROM objective_events WHERE kind='LOGIN'")).toBe(1);
     expect((await f.read()).recovery.used).toBe(1);
   });
   it("never finances a crystal reward using that same uncommitted reward", async () => {

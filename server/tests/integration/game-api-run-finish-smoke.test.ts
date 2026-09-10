@@ -89,7 +89,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
   const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[123][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(32);
+  expect(migrations).toHaveLength(33);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -758,6 +758,22 @@ describe("game-api run finish local D1 smoke", () => {
     db.close();
   });
 
+  it("does not count a VICTORY label when the story boss was not defeated", async () => {
+    const db = await createMigratedDb();
+    const authorization = await seedFinishableStoryRaidFailureRun(db);
+    const response = await app.request("/v1/runs/run-raid-failure-smoke-1/finish", {
+      method: "POST", headers: { Authorization: authorization, "Idempotency-Key": "false-boss-success" },
+      body: JSON.stringify({ runId: "run-raid-failure-smoke-1", currentStage: "Complete", currentWaveNumber: 0,
+        completedWaveCount: 0, encounterType: "RAID_BOSS", outcome: "VICTORY", runtimeStateJson: "{}",
+        raidResult: { raidId: "raid_raider_king_engine", bossId: "boss_raider_king_engine", bossDefeated: false,
+          completedPhaseCount: 2, encounterDurationSeconds: 360 },
+        tacticSelections: [{ tacticId: "tactic_full_start_raid", packageRef: "act1_full_start_package_v1" }],
+        clientCompletedAt: "2026-08-27T00:00:00.000Z" }),
+    }, createEnv(db));
+    expect(response.status).toBe(200);
+    expect(db.exec("SELECT ends,waves FROM objective_events WHERE source_id='run-raid-failure-smoke-1'")[0]?.values).toEqual([[0, 0]]);
+    db.close();
+  });
   it("commits story raid failure stamina refund once and replays without another fuel grant", async () => {
     const db = await createMigratedDb();
     const authorization = await seedFinishableStoryRaidFailureRun(db);

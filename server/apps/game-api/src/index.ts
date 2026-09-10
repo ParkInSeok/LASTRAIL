@@ -24,6 +24,8 @@ import { registerAccountStateRoutes } from "./account-state";
 import { registerFormationRoutes } from "./formation";
 import { registerUltimateRoutes } from "./ultimate-selection";
 import { registerMonthlyAttendanceRoutes } from "./monthly-attendance";
+import { objectiveFinishEvent } from "./objective-events";
+import { registerRecurringRoutes } from "./recurring-routes";
 import { registerTrainLoadoutRoutes } from "./train-loadout";
 import { registerDepartureRoutes } from "./departure";
 import { describeCombatRequirements, registerRunRecoveryRoutes } from "./combat-readiness";
@@ -6601,6 +6603,9 @@ app.post("/v1/runs/:runId/finish", async (c) => {
     ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, rewardPreviewId, now),
   ];
 
+  finishStatements.push(await objectiveFinishEvent(c.env.DB, { accountId: authContext.accountId, runId,
+    operationId: previewMetadata.operationId, contentVersion: previewMetadata.contentVersion,
+    outcome: body.outcome, completedWaves: body.completedWaveCount, fullCompletion }));
   try {
     await c.env.DB.batch(finishStatements);
   } catch {
@@ -6950,6 +6955,7 @@ registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);
 registerUltimateRoutes(app, resolveAuthContext);
 registerMonthlyAttendanceRoutes(app, resolveAuthContext);
+registerRecurringRoutes(app, resolveAuthContext);
 registerTrainLoadoutRoutes(app, resolveAuthContext);
 registerDepartureRoutes(app, resolveAuthContext);
 registerRunRecoveryRoutes(app, resolveAuthContext, row => createRunStartReplayResponse({ result_ref: row.id, preview_id: row.preview_id, created_at: row.started_at, snapshot_json: row.snapshot_json }));

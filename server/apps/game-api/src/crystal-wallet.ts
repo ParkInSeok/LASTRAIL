@@ -11,7 +11,7 @@ const policySchema = z.object({
   }).strict().nullable(),
 }).strict();
 export type CrystalPolicy = z.infer<typeof policySchema> & { policyVersion: string };
-export type CrystalSourceType = "ATTENDANCE" | "PASS_FREE" | "PASS_PREMIUM" | "STORE_PURCHASE" | "LAUNCH_ENTITLEMENT";
+export type CrystalSourceType = "ATTENDANCE" | "PASS_FREE" | "PASS_PREMIUM" | "STORE_PURCHASE" | "LAUNCH_ENTITLEMENT" | "QUEST";
 export type CrystalGrant = { quantity: number; sourceType: CrystalSourceType; sourceRef: string; orderId: string | null };
 export type CrystalLot = { id: string; source: "FREE" | "PAID"; remaining: number; granted: number; order_id: string | null };
 export const walletId = (prefix: string) => `${prefix}_${crypto.randomUUID()}`;
