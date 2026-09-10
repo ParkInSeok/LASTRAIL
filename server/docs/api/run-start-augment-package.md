@@ -1,5 +1,11 @@
 # Run Start Augment Package Contract
 
+Current S11 paid-start availability is gated by
+[run-combat-requirements.md](run-combat-requirements.md). Missing battle bindings
+return409 combat_not_ready before debit/consume/run creation. Prior successful
+receipts remain replayable; metadata/start persistence alone does not prove actual
+Unity battle entry.
+
 This document captures the Act 1 launch contract for augment/tactic selection.
 
 Scope:

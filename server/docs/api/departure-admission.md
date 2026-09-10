@@ -1,5 +1,14 @@
 # S11 departure admission
 
+**Current public paid-start gate:** the subsequent
+[run combat requirements contract](run-combat-requirements.md) blocks uncommitted
+S11 starts with409 combat_not_ready until approved battle bindings exist. The
+transaction implementation below is retained and tested as a domain core; the
+original492-test result at4ced349 proved admission, not actual Unity combat entry.
+Preview now includes firstClearEligible and combatContract; owned original-run
+recovery is available through GET runs/:runId/start-state. Successful old replay
+remains unchanged.
+
 Local implementation requires migrations through `0030_departure_admission.sql`.
 No remote deployment or catalog activation is implied. Use S03 active operator
 formation and S04 `GET /v1/trains/loadout` before requesting departure.

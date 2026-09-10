@@ -23,7 +23,8 @@ import { registerGrowthRoutes } from "./growth-routes";
 import { registerAccountStateRoutes } from "./account-state";
 import { registerFormationRoutes } from "./formation";
 import { registerTrainLoadoutRoutes } from "./train-loadout";
-import { registerDepartureRoutes, startDeparture } from "./departure";
+import { registerDepartureRoutes } from "./departure";
+import { describeCombatRequirements, registerRunRecoveryRoutes } from "./combat-readiness";
 import { readOfflineEconomy, offlinePolicyGuard } from "./offline-economy";
 import { registerGachaReadRoutes } from "./gacha-reads";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
@@ -6046,11 +6047,10 @@ app.post("/v1/runs/start", async (c) => {
 
   if (row.admission_version) {
     try {
-      return c.json(await startDeparture(c.env.DB, authContext.accountId, row, idempotencyKey, async (preview, runId, startedAt) =>
-        createRunStartAcceptedResponse({ runId, operationPreviewId: preview.id,
-          previewMetadata: parseRunPreviewMetadata(preview.preview_json, preview.objective), risk: preview.risk,
-          balanceVersion: preview.balance_config_version, serverStartedAt: startedAt,
-          runVersionSnapshot: await createRunVersionSnapshotForAcceptedRequest(c, startedAt) })));
+      const combatContract = describeCombatRequirements(row.preview_json, row.risk);
+      // Frozen diagnostic/client booleans are never authority to open this gate.
+      // No approved combat binding exists yet. Stored successful replay above wins.
+      return c.json({ ...createRunStartRejectedResponse({ operationPreviewId: row.id, errorCode: "combat_not_ready", message: "Required combat bindings are not available." }), combatContract }, 409);
     } catch (error) {
       if (error instanceof ActivityError) return c.json(createRunStartRejectedResponse({ operationPreviewId: row.id, errorCode: error.code, message: "Departure admission rejected." }), error.status);
       throw error;
@@ -6948,6 +6948,7 @@ registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);
 registerTrainLoadoutRoutes(app, resolveAuthContext);
 registerDepartureRoutes(app, resolveAuthContext);
+registerRunRecoveryRoutes(app, resolveAuthContext, row => createRunStartReplayResponse({ result_ref: row.id, preview_id: row.preview_id, created_at: row.started_at, snapshot_json: row.snapshot_json }));
 registerGachaReadRoutes(app, resolveAuthContext, {
   parseGachaPoolResults, parseGachaPityConfig, getInitialPityState, getNextGachaGuaranteeType,
   isGachaPoolResultEligibleForGuarantee, getGachaResultWeight, getGachaReplayResponseResults,

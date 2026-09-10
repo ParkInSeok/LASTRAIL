@@ -1,46 +1,8 @@
 import { describe, expect, it } from "vitest";
-import initSqlJs from "sql.js";
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import app from "../../apps/game-api/src/index";
-import { createAccessToken } from "../../apps/game-api/src/auth";
-import { SqlJsD1Database } from "../helpers/growth-d1";
+import { setup as createFixture, body, operations } from "../helpers/departure-fixture";
 import { launchRunRewardsConfig } from "../../packages/balance/src/index";
-
-const operations = ["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop", "opn_04_scrapstar_show", "opn_05_night_boarders", "opn_06_broken_line", "raid_raider_king_engine"];
-const body = { operationId: operations[0], risk: "I", expectedFormationRevision: 1, expectedLoadoutRevision: 1 };
-async function setup() {
-  const SQL = await initSqlJs(), sql = new SQL.Database();
-  sql.create_function("unixepoch", () => Date.now() / 1000); sql.run("PRAGMA foreign_keys=ON");
-  for (const f of readdirSync("packages/db/migrations").filter(f => /^\d+_.+\.sql$/u.test(f)).sort()) sql.run(readFileSync(join("packages/db/migrations", f), "utf8"));
-  const now = Date.now(), secret = "departure-test-secret-at-least-32-chars";
-  sql.run("INSERT INTO accounts(id,created_at,updated_at) VALUES('a',0,0),('b',0,0)");
-  sql.run("INSERT INTO auth_sessions(id,account_id,refresh_token_hash,family_id,generation,status,created_at,expires_at) VALUES('s','a','h','f',0,'ACTIVE',?,?)", [now, now + 60000]);
-  sql.run("INSERT INTO account_train(account_id,train_id,revision,updated_at) VALUES('a','train_a',1,0)");
-  for (const id of ["car_combat", "car_gun", "car_cargo", "car_defense"]) sql.run("INSERT INTO account_carriages(account_id,carriage_id) VALUES('a',?)", [id]);
-  const operators = Array.from({ length: 5 }, (_, slot) => ({ slot, operatorId: `op${slot}` }));
-  for (const o of operators) sql.run("INSERT INTO account_operators(account_id,operator_id,acquired_at) VALUES('a',?,0)", [o.operatorId]);
-  sql.run("INSERT INTO fuel_state VALUES('a',30,100,0,0)");
-  sql.run("INSERT INTO balance_config_versions(version,schema_version,required_content_version,checksum,config_json,published_at,published_by) VALUES(1,1,1,'test','{\"fuel\":{\"runStartCost\":10}}',0,'test')");
-  sql.run("UPDATE balance_config_versions SET config_json=?", [JSON.stringify({ fuel: { runStartCost: 10 }, runRewards: launchRunRewardsConfig })]);
-  sql.run("INSERT INTO balance_config_activations(id,version,activation_type,activated_by,activated_at) VALUES('act',1,'PUBLISH','test',0)");
-  sql.run("INSERT INTO balance_config_active VALUES(1,1,'act',0)");
-  const adapter = new SqlJsD1Database(sql), env = { DB: adapter as unknown as D1Database, ENVIRONMENT: "DEV", AUTH_SIGNING_KEY_CURRENT: secret } as Env;
-  const token = await createAccessToken({ secret, accountId: "a", sessionId: "s", nowMs: now, ttlMs: 60000 });
-  const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
-  const post = (path: string, data: object, key = crypto.randomUUID()) => app.request(path, { method: "POST", headers: { ...headers, "Idempotency-Key": key }, body: JSON.stringify(data) }, env);
-  await post("/v1/formation/presets/p/save", { expectedRevision: 0, name: "squad", operators });
-  await post("/v1/formation/presets/p/activate", { expectedRevision: 1, expectedFormationRevision: 0 });
-  const install = (ids = ["car_combat", "car_gun"], expectedRevision = 0) => post("/v1/trains/loadout", { rulesVersion: "train-loadout-v1", trainId: "train_a", expectedRevision, carriages: ids.map((carriageId, slot) => ({ slot, carriageId })) });
-  await install();
-  const preview = (data: object = body, key = crypto.randomUUID()) => post("/v1/operations/preview", data, key);
-  const start = (id: string, key = crypto.randomUUID()) => post("/v1/runs/start", { operationPreviewId: id }, key);
-  const scalar = (query: string) => sql.exec(query)[0]?.values[0]?.[0];
-  const progress = (ids: string[]) => sql.run("INSERT INTO account_story_progress(account_id,act_id,highest_cleared_operation_id,highest_story_progress_id,cleared_operations_json,story_flags_json,updated_at) VALUES('a','act_01','unused','unused',?,'[]',0) ON CONFLICT(account_id) DO UPDATE SET cleared_operations_json=excluded.cleared_operations_json", [JSON.stringify(ids)]);
-  return { sql, adapter, env, headers, post, preview, start, scalar, progress, install };
-}
-
-describe("S11 departure preview and atomic start", () => {
+const setup = () => createFixture(true);
+describe("S11 preview and retained atomic start core (HTTP combat gate tested separately)", () => {
   it("quotes stored fuel and owned active squad/train, starts with one debit and exact replay", async () => {
     const { preview, start, scalar } = await setup();
     const r = await preview(body, "quote"); expect(r.status).toBe(200);
