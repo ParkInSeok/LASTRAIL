@@ -23,6 +23,7 @@ import { registerGrowthRoutes } from "./growth-routes";
 import { registerAccountStateRoutes } from "./account-state";
 import { registerFormationRoutes } from "./formation";
 import { readOfflineEconomy, offlinePolicyGuard } from "./offline-economy";
+import { registerGachaReadRoutes } from "./gacha-reads";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
 import {
   createVerificationCode,
@@ -873,6 +874,7 @@ type GachaReplayResultRow = {
   guarantee_type: GachaCommittedResult["guaranteeType"];
   was_duplicate: number;
   duplicate_conversion_json: string | null;
+  reward_quantity?: number | null;
 };
 
 type AuthFailureStatus = 400 | 401 | 403 | 409 | 500 | 503;
@@ -2281,14 +2283,21 @@ function toGachaResponseResult(result: GachaCommittedResult): Omit<GachaCommitte
 }
 
 function toGachaReplayResult(row: GachaReplayResultRow): Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId"> {
-  const duplicateConversion = row.duplicate_conversion_json === null
-    ? null
-    : JSON.parse(row.duplicate_conversion_json) as Record<string, unknown>;
-  const reward = duplicateConversion === null
+  let duplicateConversion: Record<string, unknown> | null = null;
+  try {
+    const parsed: unknown = row.duplicate_conversion_json === null ? null : JSON.parse(row.duplicate_conversion_json);
+    if (isObjectRecord(parsed) && typeof parsed.itemId === "string" && Number.isSafeInteger(parsed.quantity) && (parsed.quantity as number) > 0) {
+      duplicateConversion = { sourceResultType: parsed.sourceResultType, sourceResultId: parsed.sourceResultId,
+        itemId: parsed.itemId, operatorId: parsed.operatorId, quantity: parsed.quantity };
+    }
+  } catch { /* Retain unknown quantity rather than invent a grant. */ }
+  const reward = row.was_duplicate === 1 && duplicateConversion === null
+    ? { kind: "UNKNOWN", id: null, quantity: null }
+    : duplicateConversion === null
     ? {
-      kind: row.result_type === "ELITE_OPERATOR" || row.result_type === "RARE_OPERATOR" ? "OPERATOR" : "ITEM",
-      id: row.result_id,
-      quantity: 1,
+        kind: row.result_type === "ELITE_OPERATOR" || row.result_type === "RARE_OPERATOR" ? "OPERATOR" : "ITEM",
+        id: row.result_id,
+        quantity: row.was_duplicate === 0 && (row.result_type === "ELITE_OPERATOR" || row.result_type === "RARE_OPERATOR") ? 1 : row.reward_quantity ?? null,
     }
     : {
       kind: "ITEM",
@@ -2313,16 +2322,35 @@ function toGachaReplayResult(row: GachaReplayResultRow): Omit<GachaCommittedResu
 function getGachaReplayResponseResults(options: {
   resultSummaryJson: string;
   resultRows: GachaReplayResultRow[];
+  expectedPullCount: number;
 }): Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">> {
+  type Result = ReturnType<typeof toGachaReplayResult>;
+  const results = new Map<number, Result>();
+  for (const row of options.resultRows) results.set(row.pull_sequence, toGachaReplayResult(row));
   try {
     const parsed = JSON.parse(options.resultSummaryJson) as { responseResults?: unknown };
-    if (Array.isArray(parsed.responseResults)) {
-      return parsed.responseResults as Array<Omit<GachaCommittedResult, "id" | "operatorId" | "itemLedgerId" | "progressionLedgerId">>;
+    if (Array.isArray(parsed?.responseResults)) for (const value of parsed.responseResults) {
+      if (!isObjectRecord(value) || !Number.isSafeInteger(value.pullSequence) || (value.pullSequence as number) < 1
+        || !isObjectRecord(value.reward) || !Number.isSafeInteger(value.reward.quantity) || (value.reward.quantity as number) <= 0
+        || (value.reward.kind !== "ITEM" && value.reward.kind !== "OPERATOR") || typeof value.reward.id !== "string" || value.reward.id.length === 0
+        || typeof value.resultId !== "string" || typeof value.resultType !== "string" || typeof value.resultRarity !== "string"
+        || typeof value.isPickup !== "boolean" || typeof value.wasDuplicate !== "boolean" || typeof value.guaranteeType !== "string") continue;
+      const result = {
+        pullSequence: value.pullSequence, resultRarity: value.resultRarity, resultType: value.resultType, resultId: value.resultId,
+        isPickup: value.isPickup, guaranteeType: value.guaranteeType, wasDuplicate: value.wasDuplicate,
+        reward: { kind: value.reward.kind, id: value.reward.id, quantity: value.reward.quantity,
+          ...(typeof value.reward.operatorId === "string" ? { operatorId: value.reward.operatorId } : {}) },
+        duplicateConversion: isObjectRecord(value.duplicateConversion) ? {
+          sourceResultType: value.duplicateConversion.sourceResultType, sourceResultId: value.duplicateConversion.sourceResultId,
+          itemId: value.duplicateConversion.itemId, operatorId: value.duplicateConversion.operatorId, quantity: value.duplicateConversion.quantity,
+        } : null,
+      } as Result;
+      const row = results.get(result.pullSequence);
+      if (!row || (row.resultId === result.resultId && row.resultType === result.resultType && row.resultRarity === result.resultRarity
+        && row.wasDuplicate === result.wasDuplicate && (row.reward.quantity === null || row.reward.quantity === result.reward.quantity))) results.set(result.pullSequence, result);
     }
-  } catch {
-    return options.resultRows.map(toGachaReplayResult);
-  }
-  return options.resultRows.map(toGachaReplayResult);
+  } catch { /* Individual committed rows and ledgers remain usable. */ }
+  return [...results.values()].filter(r => r.pullSequence >= 1 && r.pullSequence <= options.expectedPullCount).sort((a, b) => a.pullSequence - b.pullSequence);
 }
 
 function getAuthSecret(env: Env): string | null {
@@ -5521,12 +5549,18 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     .first<GachaReplayBatchRow>();
 
   if (replayBatch !== null) {
+    if (replayBatch.pull_count !== pullCount) return c.json(createGachaRejectedResponse({ bannerId, pullCount,
+      errorCode: "idempotency_conflict", message: "The original pull count must be retained when retrying." }), 409);
+    let replayBalanceVersion = String(replayBatch.balance_config_version);
+    try {
+      const saved = JSON.parse(replayBatch.result_summary_json) as { balanceVersion?: unknown };
+      if (typeof saved?.balanceVersion === "string") replayBalanceVersion = saved.balanceVersion;
+    } catch { /* Legacy receipts did not pin a version. */ }
     const replayResults = await c.env.DB.prepare(
-      `SELECT pull_sequence, result_rarity, result_type, result_id, is_pickup,
-              guarantee_type, was_duplicate, duplicate_conversion_json
-       FROM gacha_pull_results
-       WHERE batch_id = ? AND account_id = ?
-       ORDER BY pull_sequence`,
+      `SELECT r.pull_sequence, r.result_rarity, r.result_type, r.result_id, r.is_pickup,
+              r.guarantee_type, r.was_duplicate, r.duplicate_conversion_json, l.delta AS reward_quantity
+       FROM gacha_pull_results r LEFT JOIN item_ledger l ON l.id=r.item_ledger_id AND l.account_id=r.account_id
+       WHERE r.batch_id = ? AND r.account_id = ? ORDER BY r.pull_sequence`,
     )
       .bind(replayBatch.id, authContext.accountId)
       .all<GachaReplayResultRow>();
@@ -5534,11 +5568,12 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
     return c.json(createGachaDuplicateReplayResponse({
       batchId: replayBatch.id,
       bannerId: replayBatch.banner_id,
-      balanceVersion: String(replayBatch.balance_config_version),
+      balanceVersion: replayBalanceVersion,
       pullCount: replayBatch.pull_count as 1 | 10,
       results: getGachaReplayResponseResults({
         resultSummaryJson: replayBatch.result_summary_json,
         resultRows: replayResults.results,
+        expectedPullCount: replayBatch.pull_count,
       }),
       postPityState: JSON.parse(replayBatch.post_pity_json) as GachaPityState,
       createdAt: replayBatch.created_at,
@@ -5804,6 +5839,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
       `rng_hash_${createRequestId().slice(4)}`,
       JSON.stringify({
         responseResults,
+        balanceVersion: String(row.balance_config_version),
         results: committedResults.map((result) => ({
           resultRarity: result.resultRarity,
           resultType: result.resultType,
@@ -6900,5 +6936,11 @@ registerCrystalRoutes(app, resolveAuthContext);
 registerGrowthRoutes(app, resolveAuthContext);
 registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);
+registerGachaReadRoutes(app, resolveAuthContext, {
+  parseGachaPoolResults, parseGachaPityConfig, getInitialPityState, getNextGachaGuaranteeType,
+  isGachaPoolResultEligibleForGuarantee, getGachaResultWeight, getGachaReplayResponseResults,
+});
+
+export type { GachaBannerRow, GachaPityState, GachaPityRow, GachaPityConfig, GachaPoolResult, GachaGuaranteeType, GachaReplayResultRow, GachaCommittedResult };
 
 export default app;
