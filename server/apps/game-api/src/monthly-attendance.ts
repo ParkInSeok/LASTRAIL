@@ -13,20 +13,52 @@ const recoveryBody = z.strictObject({ ...base, walletPolicyVersion: activityId, 
 type Body = z.infer<typeof naturalBody> | z.infer<typeof recoveryBody>;
 type Options = { db: D1Database; accountId: string; activityId: string };
 type Cell = { cell: number; source: "NATURAL" | "RECOVERY"; dayIndex: number; claimId: string };
-type State = { registeredAt: number; revision: number; policyVersion: string | null; cells: Cell[]; visits: number[] };
+type State = { registeredAt: number; revision: number; policyVersion: string | null; activeDefinitionCount: number; cells: Cell[]; visits: number[] };
+
+export async function discoverMonthlyAttendance(db: D1Database, accountId: string) {
+  // One DB snapshot supplies clock, this account's binding and all candidate
+  // definitions. Never race multiple reads into an arbitrary first match.
+  const row = await db.prepare(`SELECT json_object('serverTime',clock.now,
+    'pinned',(SELECT activity_id FROM monthly_attendance_cycles WHERE account_id=?1
+      AND cycle_id=strftime('%Y-%m',clock.now/1000,'unixepoch','+5 hours')),
+    'definitions',json((SELECT json_group_array(json_object('id',id,'policy',policy_json))
+      FROM (SELECT id,policy_json FROM activity_definitions WHERE json_extract(policy_json,'$.kind')='MONTHLY_ATTENDANCE' ORDER BY id)))) AS value
+    FROM (SELECT CAST(ROUND(unixepoch('subsec')*1000) AS INTEGER) AS now) clock`).bind(accountId).first<{ value: string }>();
+  const snapshot = JSON.parse(row!.value) as { serverTime: number; pinned: string | null; definitions: Array<{ id: string; policy: string }> };
+  const month = attendanceMonth(snapshot.serverTime);
+  const empty = { accepted: true, version: "monthly-attendance-discovery-v1", ...month, serverTime: snapshot.serverTime,
+    activityId: null as string | null, policyVersion: null as string | null, pinned: snapshot.pinned !== null, canAttend: false };
+  let definitions: Array<{ id: string; policy: ReturnType<typeof parseMonthlyPolicy> }>;
+  try { definitions = snapshot.definitions.map(d => ({ id: d.id, policy: parseMonthlyPolicy(d.policy) })); }
+  catch { return { httpStatus: 503 as const, body: { ...empty, accepted: false, status: "INVALID_CONFIGURATION", errorCode: "monthly_attendance_policy_invalid" } }; }
+  const active = definitions.filter(d => d.policy.startAt <= snapshot.serverTime && snapshot.serverTime < d.policy.endAt);
+  const pinned = definitions.find(d => d.id === snapshot.pinned);
+  const preserved = { ...empty, activityId: snapshot.pinned, policyVersion: snapshot.pinned };
+  if (active.length > 1) return { httpStatus: 409 as const, body: { ...preserved, accepted: false, status: "AMBIGUOUS_CONFIGURATION", errorCode: "attendance_definition_ambiguous", candidateCount: active.length } };
+  if (snapshot.pinned && (!pinned || !active.some(d => d.id === pinned.id))) return { httpStatus: 409 as const, body: { ...preserved, accepted: false, status: "PINNED_POLICY_UNAVAILABLE", errorCode: "attendance_cycle_policy_changed" } };
+  const selected = pinned ?? active[0];
+  if (!selected) return { httpStatus: 200 as const, body: { ...empty, status: definitions.length ? "OUTSIDE_WINDOW" : "NOT_CONFIGURED", errorCode: null } };
+  const bound = selected.policy.eliteTicketItemId !== null;
+  return { httpStatus: 200 as const, body: { ...empty, activityId: selected.id, policyVersion: selected.id,
+    definitionStartAt: selected.policy.startAt, definitionEndAt: selected.policy.endAt,
+    canAttend: bound, status: bound ? "AVAILABLE" : "REWARD_BINDING_UNAVAILABLE", errorCode: bound ? null : "elite_ticket_binding_missing" } };
+}
 
 async function context(o: Options, now: number) {
   const row = await o.db.prepare("SELECT policy_json FROM activity_definitions WHERE id=?").bind(o.activityId).first<{ policy_json: string }>();
   if (!row) throw new ActivityError(503, "activity_not_configured");
   const policy = parseMonthlyPolicy(row.policy_json), month = attendanceMonth(now);
   const raw = await o.db.prepare(`SELECT json_object('registeredAt',a.created_at,
+    'activeDefinitionCount',(SELECT COUNT(*) FROM activity_definitions WHERE json_extract(policy_json,'$.kind')='MONTHLY_ATTENDANCE'
+      AND json_extract(policy_json,'$.startAt')<=?3 AND json_extract(policy_json,'$.endAt')>?3),
     'revision',COALESCE((SELECT revision FROM monthly_attendance_cycles WHERE account_id=a.id AND cycle_id=?2),0),
     'policyVersion',(SELECT activity_id FROM monthly_attendance_cycles WHERE account_id=a.id AND cycle_id=?2),
     'cells',json((SELECT json_group_array(json_object('cell',cell,'source',source,'dayIndex',day_index,'claimId',claim_id)) FROM monthly_attendance_cells WHERE account_id=a.id AND cycle_id=?2)),
     'visits',json((SELECT json_group_array(day_index) FROM monthly_attendance_visits WHERE account_id=a.id AND cycle_id=?2))) AS value
-    FROM accounts a WHERE a.id=?1`).bind(o.accountId, month.cycleId).first<{ value: string }>();
+    FROM accounts a WHERE a.id=?1`).bind(o.accountId, month.cycleId, now).first<{ value: string }>();
   if (!raw) throw new ActivityError(403, "account_not_found");
   const state = JSON.parse(raw.value) as State;
+  if (state.activeDefinitionCount > 1) throw new ActivityError(409, "attendance_definition_ambiguous");
   if (state.policyVersion !== null && state.policyVersion !== o.activityId) throw new ActivityError(409, "attendance_cycle_policy_changed");
   // A partially elapsed registration service day is not a fully missed day.
   const firstRecoverableDay = Math.max(0, Math.ceil((state.registeredAt - month.startAt) / 86400000));
@@ -103,6 +135,8 @@ export async function mutateMonthlyAttendance(o: Options, body: Body, kind: "NAT
           AND COALESCE((SELECT revision FROM monthly_attendance_cycles WHERE account_id=?5 AND cycle_id=?6),0)=?7
           AND NOT EXISTS(SELECT 1 FROM monthly_attendance_cycles WHERE account_id=?5 AND cycle_id=?6 AND activity_id<>?8)
           AND (SELECT created_at FROM accounts WHERE id=?5)=?9
+          AND (SELECT COUNT(*) FROM activity_definitions WHERE json_extract(policy_json,'$.kind')='MONTHLY_ATTENDANCE'
+            AND json_extract(policy_json,'$.startAt')<=clock.now AND json_extract(policy_json,'$.endAt')>clock.now)=1
           THEN 1 ELSE 0 END FROM (SELECT CAST(ROUND(unixepoch('subsec')*1000) AS INTEGER) AS now) clock`)
           .bind(c.month.startAt + c.month.dayIndex * 86400000, c.month.startAt + (c.month.dayIndex + 1) * 86400000,
             c.policy.startAt, c.policy.endAt, accountId, c.month.cycleId, c.state.revision, policyVersion, c.state.registeredAt),
@@ -131,6 +165,14 @@ export async function mutateMonthlyAttendance(o: Options, body: Body, kind: "NAT
   throw new ActivityError(409, "attendance_state_changed");
 }
 export function registerMonthlyAttendanceRoutes(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<ActivityAuthResult>) {
+  app.get("/v1/attendance/monthly/current", async c => {
+    c.header("Cache-Control", "no-store");
+    const auth = await authenticate(c);
+    if ("errorCode" in auth) return c.json({ accepted: false, errorCode: auth.errorCode }, auth.status);
+    if (new URL(c.req.url).search || (await readBoundedBody(c)).length) return c.json({ accepted: false, errorCode: "contract_violation" }, 400);
+    const found = await discoverMonthlyAttendance(c.env.DB, auth.accountId);
+    return c.json(found.body, found.httpStatus);
+  });
   const handler = (kind?: "NATURAL" | "RECOVERY") => async (c: Context<{ Bindings: Env }>) => {
     c.header("Cache-Control", "no-store");
     const auth = await authenticate(c);
