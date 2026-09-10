@@ -115,6 +115,11 @@ stored. The start gate does not retroactively declare old responses battle-ready
 
 ## GET /v1/runs/:runId/start-state
 
+If the client never received runId, use the read-only
+[POST /v1/runs/start-result](run-start-result.md) with the original journal key and
+previewId. Do not retransmit a start command to discover its result. NOT_FOUND
+is indeterminate and does not allow a new key/start.
+
 Bearer auth plus existing client admission; no query/body; Cache-Control:no-store.
 ID uses existing safe-ID contract. Read only, account scoped:
 

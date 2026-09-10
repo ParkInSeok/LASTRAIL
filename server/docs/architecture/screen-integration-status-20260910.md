@@ -23,7 +23,10 @@ fixed reconstruction and source-manifest hash are documented in account-state.md
 
 This table is not completion of every S03–S11 feature. Missing implementation remains
 assigned work; catalog uncertainty is not a blanket blocker for all local work.
-S04 basic installation, S05 reads and S11 departure admission are locally implemented.
+S04 basic installation, S05 reads and S11 departure admission core are locally implemented.
+S11 read-only POST runs/start-result also recovers original start results when the
+journal has the original key/previewId but no runId; see docs/api/run-start-result.md.
+Public new paid starts remain combat_not_ready until actual combat bindings exist.
 S06–S09 still require assigned implementation; uncertain catalogs are scoped
 dependencies rather than blanket blockers.
 
