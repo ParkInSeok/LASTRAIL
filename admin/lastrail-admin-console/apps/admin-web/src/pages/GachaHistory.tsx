@@ -4,6 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { adminApi } from "../shared/api/client";
 import { adminRequestFailureDisplay } from "../shared/api/errorDisplay";
 import { gachaGuaranteeTypeLabel, gachaResultTypeLabel } from "../shared/labels/adminLabels";
+import { BannerPolicy } from "../shared/gacha/BannerPolicy";
 import "./gachaHistory.css";
 
 export function bannerTypeLabel(value?: string) {
@@ -46,6 +47,7 @@ export function GachaHistory() {
   const query = useQuery({ queryKey: ["gacha-history", accountId, bannerId, cursor], queryFn: () => adminApi.gachaPullBatches(historyFilters(accountId, bannerId, cursor)), retry: false });
   return <main className="content gacha-history">
     <h1>요원 모집</h1>
+    <BannerPolicy data={banners.data} loading={banners.isLoading} error={banners.error} />
     <form className="gacha-filters" onSubmit={e => { e.preventDefault(); setCursors([""]); setParams({ accountId: account.trim(), bannerId: banner }); }}>
       <label>계정 ID<input value={account} onChange={e => setAccount(e.target.value)} /></label>
       <label>모집 배너<select value={banner} onChange={e => setBanner(e.target.value)}><option value="">전체</option>{banners.data?.items.map(b => <option key={b.bannerId} value={b.bannerId}>{bannerTypeLabel(b.bannerType)} · {b.bannerId}</option>)}</select></label>
