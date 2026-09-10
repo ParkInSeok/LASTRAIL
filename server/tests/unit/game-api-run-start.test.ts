@@ -96,6 +96,7 @@ function createEnv(previewRow: Record<string, unknown> | null, options: {
       async batch(statements: Array<{ sql?: string; values?: unknown[] }>) {
         batchSql.push(...statements.map((statement) => String(statement.sql)));
         batchBinds.push(...statements.map((statement) => statement.values ?? []));
+        if (options.consumeChanges === 0 && statements.some(statement => String(statement.sql).includes("INSERT INTO departure_write_guard"))) throw new Error("CHECK constraint failed: valid=1");
         if (options.failStartBatch) {
           throw new Error("simulated run start persistence failure");
         }
@@ -181,9 +182,9 @@ describe("game-api run start contract", () => {
     expect(JSON.stringify(body)).not.toContain("rawRng");
     expect(JSON.stringify(body)).not.toContain("probability");
     expect(JSON.stringify(body)).not.toContain("animationTimeline");
-    expect(env.__runSql.join("\n")).toContain("UPDATE operation_previews");
+    expect(env.__runSql.join("\n")).not.toContain("UPDATE operation_previews");
     expect(env.__batchSql.join("\n")).toContain("INSERT INTO runs");
-    expect(env.__batchSql.join("\n")).not.toContain("UPDATE operation_previews");
+    expect(env.__batchSql.join("\n")).toContain("UPDATE operation_previews");
   });
 
   it("stores the server-accepted deployment and client installed app snapshot for accepted starts", async () => {
@@ -439,13 +440,13 @@ describe("game-api run start contract", () => {
       accepted: false,
       startStatus: "REJECTED",
       operationPreviewId: "preview_ordinary_1",
-      errorCode: "operation_preview_already_consumed",
+      errorCode: "run_start_state_conflict",
     });
-    expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO runs");
-    expect(env.__batchSql.join("\n")).not.toContain("INSERT INTO run_snapshots");
+    expect(env.__batchSql.join("\n")).toContain("INSERT INTO departure_write_guard");
+    expect(env.__runSql.join("\n")).not.toContain("UPDATE operation_previews");
   });
 
-  it("reopens the consumed preview and logs ops context when run start persistence fails", async () => {
+  it("logs atomic persistence failure without a separate preview reopen", async () => {
     const env = createEnv({
       id: "preview_ordinary_1",
       account_id: "account_1",
@@ -485,9 +486,8 @@ describe("game-api run start contract", () => {
       message: "Run start could not be committed safely.",
     });
     const runSql = env.__runSql.join("\n");
-    expect(runSql).toContain("SET status = 'CONSUMED'");
-    expect(runSql).toContain("SET status = 'ACTIVE'");
-    expect(env.__runBinds[1]).toEqual(["preview_ordinary_1", "account_1"]);
+    expect(runSql).not.toContain("UPDATE operation_previews");
+    expect(env.__batchSql.join("\n")).toContain("UPDATE operation_previews");
     expect(env.__batchSql.join("\n")).toContain("INSERT INTO runs");
     expect(runSql).toContain("INSERT INTO ops_error_logs");
     expect(JSON.stringify(env.__runBinds)).toContain("run_start_state_conflict");

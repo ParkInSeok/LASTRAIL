@@ -89,8 +89,8 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
   db.run("PRAGMA foreign_keys = ON;");
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
-  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[12][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(29);
+  const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[123][0-9])_.+\.sql$/u.test(file)).sort();
+  expect(migrations).toHaveLength(30);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));
@@ -709,6 +709,8 @@ describe("Act 1 core loop full local regression smoke", () => {
         balanceVersion: "501",
       });
 
+      // Metadata scenarios are sequential runs; close the first before admitting another.
+      db.run("UPDATE runs SET status='ABANDONED' WHERE account_id=? AND status='ACTIVE'", [guest.account.id]);
       const raidStart = await gameApi.request(
         "/v1/runs/start",
         {

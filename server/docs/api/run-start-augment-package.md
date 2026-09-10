@@ -49,18 +49,14 @@ plus operation `run_start`. A retry with the same key and same
 creating another run. Reusing the same key with a different
 `operationPreviewId` returns `contract_violation`.
 
-The consume step is guarded by affected row count. If the preview was already
-consumed without a matching idempotency replay record, the route returns `409
-operation_preview_already_consumed` and does not create another run or
-snapshot.
-
-If preview consumption succeeds but the subsequent `runs`,
-`run_snapshots`, or `idempotency_records` persistence batch fails, the route
-returns `409 run_start_state_conflict`. The server attempts a best-effort
-reopen of the same preview back to `ACTIVE` and writes a scrubbed
-`ops_error_logs` row with `idempotency_operation = run_start`. The error log is
-observational only; log write failure must not worsen the player-facing
-response. The response must not include raw auth headers, tokens, raw request
+Consumption and run/snapshot/idempotency persistence now share one guarded D1
+transaction. An already consumed preview without matching replay is rejected;
+commit failure rolls back consumption without a separate reopen. Legacy commit
+failure returns `409 run_start_state_conflict` and writes a scrubbed observational
+ops log. New S11 previews also validate owned formation/installation and debit
+quoted fuel atomically; see [departure-admission.md](departure-admission.md) for
+the producer, admission DTO, errors and explicit legacy cost boundary. The response
+must not include raw auth headers, tokens, raw request
 body, RNG/probability data, internal weights, or animation timeline fields.
 
 When `CLIENT_ADMISSION_MODE=ENFORCED`, accepted run start also stores a

@@ -8,7 +8,7 @@ import { walletId } from "./crystal-wallet";
 const revision = z.number().int().min(0).max(Number.MAX_SAFE_INTEGER - 1);
 const operatorSlots = z.array(z.strictObject({ slot: z.number().int().min(0).max(4), operatorId: activityId })).length(5)
   .refine(rows => new Set(rows.map(r => r.slot)).size === 5 && new Set(rows.map(r => r.operatorId)).size === 5);
-const selection = z.strictObject({ schemaVersion: z.literal(1), operators: operatorSlots });
+export const formationSelection = z.strictObject({ schemaVersion: z.literal(1), operators: operatorSlots });
 const saveBody = z.strictObject({ expectedRevision: revision, name: z.string().trim().min(1).max(80), operators: operatorSlots });
 const activateBody = z.strictObject({ expectedRevision: revision, expectedFormationRevision: revision });
 type Save = z.infer<typeof saveBody> & { kind: "SAVE"; presetId: string };
@@ -43,7 +43,7 @@ async function mutateFormation(db: D1Database, accountId: string, action: Save |
         if (!preset) throw new ActivityError(409, "preset_not_found");
         let definition: unknown;
         try { definition = JSON.parse(preset.preset_json); } catch { throw new ActivityError(409, "preset_schema_unsupported"); }
-        const parsed = selection.safeParse(definition);
+        const parsed = formationSelection.safeParse(definition);
         if (!parsed.success) throw new ActivityError(409, "preset_schema_unsupported");
         operators = parsed.data.operators;
         active = await db.prepare("SELECT revision,preset_id,preset_revision,formation_json FROM account_formation WHERE account_id=?")

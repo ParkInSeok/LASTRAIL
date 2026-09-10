@@ -23,6 +23,7 @@ import { registerGrowthRoutes } from "./growth-routes";
 import { registerAccountStateRoutes } from "./account-state";
 import { registerFormationRoutes } from "./formation";
 import { registerTrainLoadoutRoutes } from "./train-loadout";
+import { registerDepartureRoutes, startDeparture } from "./departure";
 import { readOfflineEconomy, offlinePolicyGuard } from "./offline-economy";
 import { registerGachaReadRoutes } from "./gacha-reads";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
@@ -551,6 +552,7 @@ type RunFinishRow = {
 };
 
 type RunStartPreviewRow = {
+  admission_version?: string | null;
   id: string;
   account_id: string;
   mutation_id: string;
@@ -1320,6 +1322,7 @@ function createRunStartReplayResponse(row: RunStartIdempotencyRecordRow) {
   if (row.snapshot_json === null) return null;
   try {
     const snapshot = JSON.parse(row.snapshot_json) as Record<string, unknown>;
+    if (snapshot.departureResponse && typeof snapshot.departureResponse === "object" && !Array.isArray(snapshot.departureResponse)) return snapshot.departureResponse as Record<string, unknown>;
     if (snapshot.encounterType !== "RAID_BOSS" && snapshot.encounterType !== "ORDINARY_15_WAVE") return null;
     const encounterType = snapshot.encounterType;
     const raid = encounterType === "RAID_BOSS" && typeof snapshot.raid === "object" && snapshot.raid !== null
@@ -5951,6 +5954,7 @@ app.post("/v1/gacha/banners/:bannerId/pulls", async (c) => {
 });
 
 app.post("/v1/runs/start", async (c) => {
+  c.header("Cache-Control", "no-store");
   if (new URL(c.req.url).search !== "") {
     return c.json(createRunStartRejectedResponse({
       operationPreviewId: null,
@@ -6025,7 +6029,7 @@ app.post("/v1/runs/start", async (c) => {
 
   const row = await c.env.DB.prepare(
     `SELECT id, account_id, mutation_id, objective, risk, balance_config_version,
-            preview_json, status, expires_at, created_at
+            preview_json, status, expires_at, created_at, admission_version
      FROM operation_previews
      WHERE id = ? AND account_id = ?`,
   )
@@ -6040,6 +6044,18 @@ app.post("/v1/runs/start", async (c) => {
     }), 404);
   }
 
+  if (row.admission_version) {
+    try {
+      return c.json(await startDeparture(c.env.DB, authContext.accountId, row, idempotencyKey, async (preview, runId, startedAt) =>
+        createRunStartAcceptedResponse({ runId, operationPreviewId: preview.id,
+          previewMetadata: parseRunPreviewMetadata(preview.preview_json, preview.objective), risk: preview.risk,
+          balanceVersion: preview.balance_config_version, serverStartedAt: startedAt,
+          runVersionSnapshot: await createRunVersionSnapshotForAcceptedRequest(c, startedAt) })));
+    } catch (error) {
+      if (error instanceof ActivityError) return c.json(createRunStartRejectedResponse({ operationPreviewId: row.id, errorCode: error.code, message: "Departure admission rejected." }), error.status);
+      throw error;
+    }
+  }
   if (row.status === "CONSUMED") {
     return c.json(createRunStartRejectedResponse({
       operationPreviewId: body.operationPreviewId,
@@ -6090,21 +6106,14 @@ app.post("/v1/runs/start", async (c) => {
     serverStartedAt: toIso(now),
   });
 
-  const consumeResult = await c.env.DB.prepare(
-    `UPDATE operation_previews
-     SET status = 'CONSUMED'
-     WHERE id = ? AND account_id = ? AND status = 'ACTIVE'`,
-  ).bind(row.id, authContext.accountId).run();
-  if (d1Changes(consumeResult) !== 1) {
-    return c.json(createRunStartRejectedResponse({
-      operationPreviewId: body.operationPreviewId,
-      errorCode: "operation_preview_already_consumed",
-      message: "Operation preview was already consumed.",
-    }), 409);
-  }
-
   try {
     await c.env.DB.batch([
+      c.env.DB.prepare(`INSERT INTO departure_write_guard(valid) SELECT CASE WHEN
+        EXISTS(SELECT 1 FROM operation_previews WHERE id=? AND account_id=? AND status='ACTIVE'
+          AND expires_at>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER) AND admission_version IS NULL AND preview_json=?)
+        AND NOT EXISTS(SELECT 1 FROM runs WHERE account_id=? AND status IN ('ACTIVE','FINISH_PENDING','QUARANTINED'))
+        THEN 1 ELSE 0 END`).bind(row.id, authContext.accountId, row.preview_json, authContext.accountId),
+      c.env.DB.prepare("UPDATE operation_previews SET status='CONSUMED' WHERE id=? AND account_id=?").bind(row.id, authContext.accountId),
       c.env.DB.prepare(
         `INSERT INTO runs (id, account_id, preview_id, mutation_id, balance_config_version, status, started_at, finished_at, build_id)
          VALUES (?, ?, ?, ?, ?, 'ACTIVE', ?, NULL, NULL)`,
@@ -6117,21 +6126,21 @@ app.post("/v1/runs/start", async (c) => {
         `INSERT INTO idempotency_records (id, account_id, idempotency_key, operation, result_ref, created_at)
          VALUES (?, ?, ?, 'run_start', ?, ?)`,
       ).bind(createDomainId("idem"), authContext.accountId, idempotencyKey, runId, now),
+      c.env.DB.prepare("DELETE FROM departure_write_guard"),
     ]);
   } catch {
-    try {
-      await c.env.DB.prepare(
-        `UPDATE operation_previews
-         SET status = 'ACTIVE'
-         WHERE id = ? AND account_id = ? AND status = 'CONSUMED'`,
-      ).bind(row.id, authContext.accountId).run();
-    } catch {
-      // Best-effort recovery only; the player-facing response remains stable.
+    const completed = await c.env.DB.prepare(`SELECT idem.result_ref,idem.created_at,runs.preview_id,snapshots.snapshot_json
+      FROM idempotency_records idem JOIN runs ON runs.id=idem.result_ref JOIN run_snapshots snapshots ON snapshots.run_id=runs.id
+      WHERE idem.account_id=? AND idem.operation='run_start' AND idem.idempotency_key=?`)
+      .bind(authContext.accountId, idempotencyKey).first<RunStartIdempotencyRecordRow>();
+    if (completed?.preview_id === row.id) {
+      const replay = createRunStartReplayResponse(completed);
+      if (replay) return c.json(replay);
     }
     await writeGameApiOpsErrorLog(c, {
       severity: "error",
       errorCode: "run_start_state_conflict",
-      messageSummary: "Run start persistence failed after operation preview consumption.",
+      messageSummary: "Atomic run start persistence failed.",
       accountId: authContext.accountId,
       idempotencyOperation: "run_start",
       idempotencyKey,
@@ -6142,8 +6151,8 @@ app.post("/v1/runs/start", async (c) => {
         encounterType: previewMetadata.encounterType,
       },
       context: {
-        phase: "run_start_commit_after_preview_consume",
-        rollbackAttempted: true,
+        phase: "run_start_atomic_commit",
+        rollbackAttempted: false,
         responseShape: "run_start_rejected",
       },
       retryable: true,
@@ -6938,6 +6947,7 @@ registerGrowthRoutes(app, resolveAuthContext);
 registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);
 registerTrainLoadoutRoutes(app, resolveAuthContext);
+registerDepartureRoutes(app, resolveAuthContext);
 registerGachaReadRoutes(app, resolveAuthContext, {
   parseGachaPoolResults, parseGachaPityConfig, getInitialPityState, getNextGachaGuaranteeType,
   isGachaPoolResultEligibleForGuarantee, getGachaResultWeight, getGachaReplayResponseResults,

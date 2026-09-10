@@ -19,12 +19,13 @@ fixed reconstruction and source-manifest hash are documented in account-state.md
 | S08 | GET attendance/:activityId and POST check-in/recover/milestone claim | Existing policy uses one repeated daily reward + milestones, not a sequential 28-cell calendar. Needs versioned 28-cell rewards and server check-in orchestration; launch bonus is separate |
 | S09 | GET passes/:activityId and POST rewards/claim, xp/claim, purchases/verify | Current policy uses run-outcome XP; daily/relative-week objectives, automatic season settlement and 24h checkout cutoff are not implemented. Existing explicit claimUntil is not automatic settlement |
 | S10 | Existing preview/claim extended with verified active economy adapter24/2/1/20; policy fence, pinned receipt/reference and early sequence; legacy unbound behavior retained | No implicit activation/seed; future sub-minute minimum policy unsupported by existing minute calculator. Remote behavior remains unverified |
-| S11 | POST runs/start consumes an existing account-owned operation preview; finish/preview/claim exist | No game operation-preview creation route. Need approved operation catalog, owned formation/equipment, frozen quote and atomic cost validation. Existing start consumes preview separately before batch; race/failure behavior needs review before new producer |
+| S11 | Implemented POST operations/preview and owned formation/loadout/growth/policy/fuel admission; new runs/start debits/consumes/freezes atomically, same-response replay; legacy consumption also atomic/open-run guarded; migration0030, docs/api/departure-admission.md | Existing six story IDs plus raid preserved; four category IDs still unspecified. Existing launch package refs/persisted growth are not an effective combat catalog. Legacy previews preserve historical cost semantics; no fuel regen/remote deploy/Unity runtime validation |
 
 This table is not completion of every S03–S11 feature. Missing implementation remains
 assigned work; catalog uncertainty is not a blanket blocker for all local work.
-Next dependencies are S04 owned equipment/instance installation and S11 departure
-admission; S05 read paths and the approved S06 products remain implementable work.
+S04 basic installation, S05 reads and S11 departure admission are locally implemented.
+S06–S09 still require assigned implementation; uncertain catalogs are scoped
+dependencies rather than blanket blockers.
 
 ## Planning decisions to resolve precisely
 
