@@ -22,6 +22,7 @@ import { registerCrystalRoutes } from "./crystal-routes";
 import { registerGrowthRoutes } from "./growth-routes";
 import { registerAccountStateRoutes } from "./account-state";
 import { registerFormationRoutes } from "./formation";
+import { registerTrainLoadoutRoutes } from "./train-loadout";
 import { readOfflineEconomy, offlinePolicyGuard } from "./offline-economy";
 import { registerGachaReadRoutes } from "./gacha-reads";
 import type { GoogleIdentityClaims, GoogleIdTokenVerifier } from "./auth";
@@ -6936,6 +6937,7 @@ registerCrystalRoutes(app, resolveAuthContext);
 registerGrowthRoutes(app, resolveAuthContext);
 registerAccountStateRoutes(app, resolveAuthContext);
 registerFormationRoutes(app, resolveAuthContext);
+registerTrainLoadoutRoutes(app, resolveAuthContext);
 registerGachaReadRoutes(app, resolveAuthContext, {
   parseGachaPoolResults, parseGachaPityConfig, getInitialPityState, getNextGachaGuaranteeType,
   isGachaPoolResultEligibleForGuarantee, getGachaResultWeight, getGachaReplayResponseResults,
