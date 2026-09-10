@@ -93,7 +93,7 @@ async function createMigratedDb(): Promise<initSqlJs.Database> {
 
   const migrationDir = join(process.cwd(), "packages/db/migrations");
   const migrations = readdirSync(migrationDir).filter((file) => /^00(0[1-9]|[123][0-9])_.+\.sql$/u.test(file)).sort();
-  expect(migrations).toHaveLength(31);
+  expect(migrations).toHaveLength(32);
 
   for (const migration of migrations) {
     db.run(readFileSync(join(migrationDir, migration), "utf8"));

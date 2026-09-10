@@ -1,5 +1,11 @@
 # Screen integration owner audit — 2026-09-10
 
+S08 follow-up: migration0032 monthly sequential28-cell service, auto-attend and
+recover-next mutations with existing currency/item/wallet/receipt infrastructure.
+See docs/api/monthly-attendance.md. Elite entitlement binding/consumer is still
+missing and all monthly mutations fail closed with null binding; fixture tests
+do not establish a usable ticket or activate a partial27-cell production policy.
+
 CE01 follow-up: explicit GET/POST /v1/formation/ultimate, independent revision/CAS,
 immutable receipt, active-run lock and atomic removal clear (migration0031).
 Departure-v2 requires expectedUltimateRevision and pins the actual selection;
