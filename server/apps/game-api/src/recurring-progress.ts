@@ -1,6 +1,7 @@
 import { ActivityError } from "./activity-policy";
 import { walletId } from "./crystal-wallet";
-import { objectivePeriods, objectiveDayMs, ordinaryQuestRewards, pass50Rewards, parseRecurringDefinition, type RecurringDefinition } from "./recurring-policy";
+import { objectivePeriods, objectiveDayMs, ordinaryQuestRewards, pass50Rewards, parseRecurringDefinition, recurringObjectiveSpecs, type RecurringDefinition } from "./recurring-policy";
+import { readObjectiveProgress } from "./recurring-objective-state";
 export type ObjectiveEvent = { id: number; kind: string; occurred_at: number; status: string; ends: number; waves: number };
 export type ObjectiveAward = { id: string; account_id: string; policy_id: string; system: string; period_id: string; objective: string; earned_at: number; period_end: number; xp: number; rewards_json: string };
 export const recurringRetryable = (error: unknown) => /UNIQUE constraint failed|CHECK constraint failed: valid=1/iu.test(String(error));
@@ -25,8 +26,7 @@ function deriveAwards(accountId: string, definitions: RecurringDefinition[], eve
       for (const group of groups) {
         const total = counts.get(group.id) ?? { login: 0, ends: 0, waves: 0 };
         total.login += e.kind === "LOGIN" ? 1 : 0; total.ends += e.ends; total.waves += e.waves; counts.set(group.id, total);
-        const checks = group.weekly ? [{ id: "W1", count: total.login, target: 3, xp: 200 }, { id: "W2", count: total.ends, target: 6, xp: 200 }, { id: "W3", count: total.waves, target: 60, xp: 200 }]
-          : [{ id: "D1", count: total.login, target: 1, xp: 40 }, { id: "D2", count: total.ends, target: 1, xp: 80 }, { id: "D3", count: total.ends, target: 2, xp: 80 }];
+        const checks = recurringObjectiveSpecs.filter(s => s.frequency === (group.weekly ? "WEEKLY" : "DAILY")).map(s => ({ ...s, count: total[s.metric] }));
         for (const check of checks) {
           if (check.count < check.target || (d.system === "QUESTS" && check.id === "D1")) continue;
           const identity = `${d.system}:${group.id}:${check.id}`;
@@ -90,7 +90,8 @@ export async function readRecurringState(db: D1Database, accountId: string) {
       cosmeticBindingsComplete: Object.values(p.cosmetics).every(Boolean), purchaseConfigured: p.purchase !== null, rewardRows: rows,
       settlementStatus: d.system !== "PASS50" || now < d.end_at ? "NOT_ENDED" : fence!.latest !== fence!.applied ? "SOURCE_SYNC_PENDING" : pendingGrants ? "SETTLEMENT_PENDING" : "SETTLED_FOR_RECORDED_SOURCES" });
   }
-  return { accepted: true, version: "recurring-v1", serverTime: now, periods: objectivePeriods(now), policies,
+  const objectiveProgress = await readObjectiveProgress(db, accountId);
+  return { accepted: true, version: "recurring-v1", serverTime: now, periods: objectivePeriods(now), policies, objectiveProgress,
     progressSyncPending: fence!.latest !== fence!.applied,
     capabilities: { ordinaryOperationBinding: "REQUIRES_EXPLICIT_VERSIONED_MAPPING", storyDefeat: "UNSUPPORTED_COST_CONTRACT_PENDING",
       cooperativeParticipantProducer: "NOT_IMPLEMENTED", cooperativeProgress: "UNKNOWN_FOR_UNLINKED_ORIGINAL_PARTICIPANTS", existingOwnerFinishProducer: true },

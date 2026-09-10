@@ -11,6 +11,14 @@ export function objectivePeriods(at: number) {
     passWeek: month.dayIndex < 28 ? Math.floor(month.dayIndex / 7) : null };
 }
 export type ObjectiveMode = "ORDINARY_15" | "STORY_15" | "STORY_BOSS" | "WORLD" | "MAPPING_MISSING";
+export const recurringObjectiveSpecs = [
+  { id: "D1", frequency: "DAILY", metric: "login", target: 1, xp: 40 },
+  { id: "D2", frequency: "DAILY", metric: "ends", target: 1, xp: 80 },
+  { id: "D3", frequency: "DAILY", metric: "ends", target: 2, xp: 80 },
+  { id: "W1", frequency: "WEEKLY", metric: "login", target: 3, xp: 200 },
+  { id: "W2", frequency: "WEEKLY", metric: "ends", target: 6, xp: 200 },
+  { id: "W3", frequency: "WEEKLY", metric: "waves", target: 60, xp: 200 },
+] as const;
 export function qualifyObjectiveFinish(mode: ObjectiveMode, outcome: string, waves: number, fullCompletion = false) {
   const result = (status: string, ends = 0, countedWaves = 0) => ({ status, ends, waves: countedWaves });
   if (mode === "MAPPING_MISSING") return result("OPERATION_BINDING_MISSING");

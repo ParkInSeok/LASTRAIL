@@ -40,6 +40,55 @@ async function setup() {
     set: (d: number, offset = 0) => { now = start + d * day + offset; }, setVerifier: (v: Pass50Verifier) => { verifier = v; } };
 }
 describe("shared recurring objectives and rights", () => {
+  it("lists unmet approved objectives read-only, distinguishing recorded zero from unknown finish totals", async () => {
+    const f = await setup(), before = f.sql.export();
+    const response = await f.request("/v1/recurring/state", undefined, undefined, "a", "GET");
+    expect(response.status).toBe(200); const state = await response.json();
+    const [quests, pass] = state.objectiveProgress.systems;
+    expect(quests.objectives.map((o: { objectiveId: string }) => o.objectiveId)).toEqual(["D2", "D3", "W1", "W2", "W3"]);
+    expect(pass.objectives).toHaveLength(6);
+    expect(pass.objectives[0]).toMatchObject({ objectiveId: "D1", current: 0, observedCurrent: 0, target: 1, status: "IN_PROGRESS", syncPending: false });
+    expect(quests.objectives[0]).toMatchObject({ current: null, observedCurrent: 0, target: 1, status: "UNKNOWN", coverage: "PARTIAL_UNKNOWN", awardId: null });
+    expect(Buffer.from(f.sql.export()).equals(Buffer.from(before))).toBe(true);
+  });
+  it("reports unsynced threshold progress without granting, then links the persisted right and claim", async () => {
+    const f = await setup(); await f.login(); await f.record();
+    let progress = (await f.read()).objectiveProgress;
+    expect(progress.systems[0]!.objectives[0]).toMatchObject({ observedCurrent: 1, current: null, observedTargetReached: true, syncPending: true, status: "SYNC_PENDING", awardId: null });
+    expect(f.scalar("SELECT COUNT(*) FROM recurring_awards")).toBe(0);
+    await f.sync(); progress = (await f.read()).objectiveProgress;
+    const d2 = progress.systems[0]!.objectives[0]!;
+    expect(d2).toMatchObject({ status: "EARNED", syncPending: false, coverage: "PARTIAL_UNKNOWN" });
+    expect((await f.request(`/v1/quests/${d2.awardId}/claim`)).status).toBe(200);
+    expect((await f.read()).objectiveProgress.systems[0]!.objectives[0]!.status).toBe("CLAIMED");
+  });
+  it("uses independent weekly counters at Monday04 and resets both daily counters at04", async () => {
+    const f = await setup(); f.set(5); await f.login(); await f.record(); await f.sync();
+    f.set(6); const progress = (await f.read()).objectiveProgress;
+    const quests = progress.systems[0]!.objectives, pass = progress.systems[1]!.objectives;
+    expect(quests.find(o => o.objectiveId === "W1")).toMatchObject({ current: 0, periodStartAt: start + 6 * day, calendar: "MONDAY_04_KST" });
+    expect(pass.find(o => o.objectiveId === "W1")).toMatchObject({ current: 1, periodStartAt: start, calendar: "SEASON_RELATIVE_7_DAYS" });
+    expect(pass.find(o => o.objectiveId === "D1")).toMatchObject({ current: 0, periodStartAt: start + 6 * day });
+  });
+  it("keeps delayed old-day sources out of today's daily totals and scopes pending to the contributing metric", async () => {
+    const f = await setup(); await f.record(); f.set(1);
+    let progress = (await f.read()).objectiveProgress;
+    expect(progress.systems[0]!.objectives.find(o => o.objectiveId === "D2")).toMatchObject({ observedCurrent: 0, syncPending: false });
+    expect(progress.systems[0]!.objectives.find(o => o.objectiveId === "W2")).toMatchObject({ observedCurrent: 1, syncPending: true });
+    expect(progress.systems[0]!.objectives.find(o => o.objectiveId === "W1")).toMatchObject({ current: 0, syncPending: false });
+    await f.sync(); progress = (await f.read()).objectiveProgress;
+    expect(progress.systems[0]!.objectives.find(o => o.objectiveId === "D2")).toMatchObject({ observedCurrent: 0, awardId: null });
+    expect(progress.systems[0]!.objectives.find(o => o.objectiveId === "W2")).toMatchObject({ observedCurrent: 1, syncPending: false });
+  });
+  it("marks pass week5 not scheduled and diagnoses unsupported sources without fabricating zero coverage", async () => {
+    const f = await setup(); f.set(28);
+    await f.record("VICTORY", 15, "UNMAPPED_ID"); await f.record("FAILURE", 5, "opn_01_last_departure");
+    const progress = (await f.read()).objectiveProgress;
+    expect(progress.systems[1]!.objectives.filter(o => o.frequency === "WEEKLY").every(o => o.status === "NOT_SCHEDULED" && o.current === null && o.periodId === null)).toBe(true);
+    expect(progress.systems[0]!.objectives[0]!.unknownReasons).toEqual(["COOPERATIVE_PARTICIPANT_PRODUCER_MISSING", "OPERATION_BINDING_MISSING", "STORY_DEFEAT_COST_CONTRACT_PENDING"]);
+    expect(progress.systems[0]!.objectives[0]).toMatchObject({ observedCurrent: 0, status: "UNKNOWN" });
+    f.set(30); expect((await f.read()).objectiveProgress.systems[1]).toMatchObject({ status: "NOT_CONFIGURED_FOR_CURRENT_PERIOD", policyId: null, objectives: [] });
+  });
   it("records authenticated login once, excludes GET mutations and replays old login across a new day", async () => {
     const f = await setup(), before = f.sql.export(); await f.read();
     expect(Buffer.from(f.sql.export()).equals(Buffer.from(before))).toBe(true);
