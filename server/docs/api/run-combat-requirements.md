@@ -6,7 +6,10 @@ debit and snapshot persistence (492 tests), not Unity combat loading. Actual
 `RunStartResponseJsonAdapter` and `RunStartSnapshotBuilder` require additional
 authoritative content/stat inputs that were not supplied. **New S11 paid starts
 now return 409 `combat_not_ready` without mutation.** Already committed starts
-replay their original response before the new gate. No migration is needed.
+replay their original response before the new gate. The gate itself needs no
+migration; the subsequent [CE01 choice contract](ultimate-selection.md) requires
+migration0031 and advances diagnostics to v2. See the
+[CE02 content/reward review](combat-content-resolver-review.md) for current fields.
 
 ## Field responsibility and evidence
 
@@ -33,7 +36,7 @@ Inspected sources on 2026-09-10:
 | rewardTableId | Server owns rewards via balance runRewards.operations[operationId]; no separate ID mapping exists | null in requirements; quote balanceVersion+operationId are the real current key | Agree whether Unity accepts that structured reward source or supply an approved actual table ID mapping; never rename operationId into a guessed table ID |
 | seed | Server combat protocol owner; Unity only consumes uint/RngSeed | null; uint32 consumer alone is not an issuance protocol | Need battle-only purpose, RNG algorithm/version, generation/lifetime and replay rules. No generated dummy/deterministic constant; no reuse of gacha RNG or disclosure of its internals |
 | selected operators/carriages | Server S03/S04 actual ownership and frozen selection | admission formation/loadout, revisions and persisted growth facts | Already provided; no default roster or unowned vehicle substitution |
-| ultimateOperatorId | Selection owner with server validation; builder requires chosen member of the five | null | Need approved choice storage, explicit selection command and revision/pinning rules; no Kyle/first-operator fallback |
+| ultimateOperatorId | Server CE01 validated selection among owned active five | string or null, with ultimateSelectionRevision | Explicit selection POST/GET and departure-v2 pin; null blocks start, no Kyle/first-operator fallback |
 | engineOutput | Balance/content profile owner; Unity TrainCoreCatalog has speed inputs, but canonical profile is explicitly a proposal | null | Canonical `train-combat-test-profile-v1` says RECOMMENDED TEST PROFILE, not production balance. Need approved profile version and level mapping; engine output is not attack |
 | effective combat stats | Approved balance/content formulas and Unity resolver | No profile binding yet; persisted growth != resolved stats | Need approved profile/formula version, rounding and loader input contract. No copying candidate HP/ATK/armor values |
 | catalog support | Existing client-config/version policy supplies admission and catalog identity; it does not bind these combat fields | requiredContent lists exact existing refs; bindingVersion/catalogHash remain null here | Unity compares/downloads/resolves via existing version flow. A valid catalog admission or client ready=true does not prove a missing combat binding |
@@ -50,7 +53,7 @@ and stores `firstClearEligible:boolean` and this diagnostic requirements object:
 
 ```ts
 type CombatContract = {
-  version: "run-combat-requirements-v1";
+  version: "run-combat-requirements-v2";
   status: "BLOCKED";
   canStart: false;
   blockingReasons: string[];
@@ -59,7 +62,8 @@ type CombatContract = {
   operatorSlotCount: 5 | null;
   firstClearEligible: boolean | null;
   enemyFactionId: null; wavePlanId: null; rewardTableId: null;
-  seed: null; engineOutput: null; ultimateOperatorId: null;
+  seed: null; engineOutput: null; ultimateOperatorId: string | null;
+  ultimateSelectionRevision: number | null;
   requiredContent: {
     operationId: string | null; contentVersion: string | null;
     startAugmentPackageRef: string | null; startTacticPackageRef: string | null;
@@ -70,10 +74,11 @@ type CombatContract = {
 };
 ```
 
-The current seven blocking reasons are `enemy_faction_binding_missing`,
+The six unconditional blocking reasons are `enemy_faction_binding_missing`,
 `wave_plan_binding_missing`, `reward_table_binding_missing`,
 `combat_seed_contract_missing`, `engine_output_profile_unapproved`,
-`ultimate_selection_contract_missing`, `effective_stats_profile_unapproved`.
+`effective_stats_profile_unapproved`. `ultimate_selection_required` additionally
+appears when there is no valid CE01 admission pin.
 These describe absent approved capabilities, not a transient network failure.
 Malformed stored source returns 503 `combat_requirement_source_invalid`; database
 failure remains a server error. It is not converted into a fake missing catalog,

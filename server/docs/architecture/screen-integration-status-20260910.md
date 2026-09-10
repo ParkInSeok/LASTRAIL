@@ -1,5 +1,11 @@
 # Screen integration owner audit — 2026-09-10
 
+CE01 follow-up: explicit GET/POST /v1/formation/ultimate, independent revision/CAS,
+immutable receipt, active-run lock and atomic removal clear (migration0031).
+Departure-v2 requires expectedUltimateRevision and pins the actual selection;
+run-combat-requirements-v2 reflects it. See docs/api/ultimate-selection.md and
+combat-content-resolver-review.md. Actual battle and remote deployment remain incomplete.
+
 Owner source: attendance-pass-20260907/server, base904ce840. Current S01/S03/S10
 code and API documents are one local verification/commit unit, not deployed.
 New account-state.ts, formation.ts, offline-economy.ts; index.ts registrations and

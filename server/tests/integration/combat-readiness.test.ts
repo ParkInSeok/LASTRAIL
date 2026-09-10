@@ -7,9 +7,9 @@ describe("combat requirements and recovery", () => {
     const { preview, scalar } = await setup();
     const p = await (await preview()).json();
     expect(p).toMatchObject({ allowedOperatorSlots: 5, risk: "I", firstClearEligible: true,
-      combatContract: { version: "run-combat-requirements-v1", status: "BLOCKED", canStart: false,
+      combatContract: { version: "run-combat-requirements-v2", status: "BLOCKED", canStart: false,
         riskLevel: 1, operatorSlotCount: 5, firstClearEligible: true,
-        enemyFactionId: null, wavePlanId: null, rewardTableId: null, seed: null, engineOutput: null, ultimateOperatorId: null,
+        enemyFactionId: null, wavePlanId: null, rewardTableId: null, seed: null, engineOutput: null, ultimateOperatorId: "op0",
         requiredContent: { operationId: body.operationId, contentVersion: "act1.launch.content.v1" } } });
     expect(p.combatContract.blockingReasons).toContain("combat_seed_contract_missing");
     expect(p.combatContract.blockingReasons).toContain("effective_stats_profile_unapproved");

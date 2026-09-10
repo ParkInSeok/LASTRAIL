@@ -5,17 +5,18 @@ import { readBoundedBody, type ActivityAuthResult } from "./activity-routes";
 import { ActivityError } from "./activity-policy";
 import { walletId } from "./crystal-wallet";
 import { formationSelection } from "./formation";
+import { ultimateSelection, type UltimateFormation } from "./ultimate-selection";
 import { describeCombatRequirements } from "./combat-readiness";
 import { parseRunRewardsConfig, type RunRiskTier } from "../../../packages/balance/src/index";
 import { readTrainContext, parseSavedTrain, trainProgress, validateTrainSelection, trainOwnershipGuard } from "./train-loadout";
 
 const operations = ["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop", "opn_04_scrapstar_show", "opn_05_night_boarders", "opn_06_broken_line", "raid_raider_king_engine"] as const;
 const revision = z.number().int().min(1).max(Number.MAX_SAFE_INTEGER);
-const requestSchema = z.strictObject({ operationId: z.enum(operations), risk: z.enum(["I", "II", "III", "IV", "V"]), expectedFormationRevision: revision, expectedLoadoutRevision: revision });
-const version = "departure-v1";
+const requestSchema = z.strictObject({ operationId: z.enum(operations), risk: z.enum(["I", "II", "III", "IV", "V"]), expectedFormationRevision: revision, expectedLoadoutRevision: revision, expectedUltimateRevision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER - 1) });
+const version = "departure-v2";
 type JsonValue = Parameters<typeof canonicalJson>[0];
 type Preview = { id: string; account_id: string; objective: string; risk: string; balance_config_version: number; preview_json: string; status: string; expires_at: number; admission_version?: string | null };
-type Formation = { revision: number; formation_json: string };
+type Formation = UltimateFormation;
 // Selected ownership and persisted growth facts, not effective combat stats.
 const entitiesSql = `SELECT json_object(
  'operators',json((SELECT json_group_array(json_object('operatorId',operator_id,'skillTraining',skill_training,'promotion',promotion,'revision',revision)) FROM
@@ -36,7 +37,7 @@ async function state(db: D1Database, accountId: string, operationId: string, ris
   const order = operations.indexOf(operationId as typeof operations[number]);
   if (order < 0) throw new ActivityError(400, "contract_violation");
   if (!operations.slice(0, order).every(id => progress.cleared.includes(id))) throw new ActivityError(409, "operation_locked");
-  const formation = await db.prepare("SELECT revision,formation_json FROM account_formation WHERE account_id=?").bind(accountId).first<Formation>();
+  const formation = await db.prepare("SELECT revision,formation_json,ultimate_operator_id,ultimate_revision FROM account_formation WHERE account_id=?").bind(accountId).first<Formation>();
   if (!formation) throw new ActivityError(409, "formation_required");
   let squad: z.infer<typeof formationSelection>;
   try { squad = formationSelection.parse(JSON.parse(formation.formation_json)); }
@@ -55,22 +56,22 @@ async function state(db: D1Database, accountId: string, operationId: string, ris
   if (!fuel) throw new ActivityError(409, "fuel_state_unavailable");
   if (fuel.fuel < fuelCost) throw new ActivityError(409, "insufficient_fuel");
   const firstClearEligible = !(await db.prepare("SELECT 1 FROM account_first_clears WHERE account_id=? AND operation_key=? AND risk=?").bind(accountId, operationId, risk).first());
-  return { train, selection, formation, squad, entities, balance: balance!, fuelCost, fuel: fuel.fuel, operationId, risk, firstClearEligible };
+  return { train, selection, formation, squad, ultimate: ultimateSelection(formation), entities, balance: balance!, fuelCost, fuel: fuel.fuel, operationId, risk, firstClearEligible };
 }
 type State = Awaited<ReturnType<typeof state>>;
 function admission(s: State) {
   return { version, formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision,
-    formation: s.squad, loadout: s.selection, ownedState: JSON.parse(s.entities) as JsonValue, fuelCost: s.fuelCost, firstClearEligible: s.firstClearEligible };
+    formation: s.squad, ultimateSelection: s.ultimate, loadout: s.selection, ownedState: JSON.parse(s.entities) as JsonValue, fuelCost: s.fuelCost, firstClearEligible: s.firstClearEligible };
 }
 function guards(db: D1Database, accountId: string, s: State) {
   return [trainOwnershipGuard(db, accountId, s.selection, s.train.progress, s.train.saved!.revision),
     db.prepare(`INSERT INTO departure_write_guard(valid) SELECT CASE WHEN
-      EXISTS(SELECT 1 FROM account_formation WHERE account_id=?1 AND revision=?2 AND formation_json=?3)
+      EXISTS(SELECT 1 FROM account_formation WHERE account_id=?1 AND revision=?2 AND formation_json=?3 AND ultimate_revision=?11 AND ultimate_operator_id IS ?12)
       AND (${entitiesSql})=?4
       AND EXISTS(SELECT 1 FROM balance_config_active a JOIN balance_config_versions b ON b.version=a.version WHERE a.singleton_id=1 AND b.version=?5 AND b.config_json=?6)
       AND EXISTS(SELECT 1 FROM fuel_state WHERE account_id=?1 AND fuel=?7)
       AND (NOT EXISTS(SELECT 1 FROM account_first_clears WHERE account_id=?1 AND operation_key=?8 AND risk=?9))=?10
-      THEN 1 ELSE 0 END`).bind(accountId, s.formation.revision, s.formation.formation_json, s.entities, s.balance.version, s.balance.config_json, s.fuel, s.operationId, s.risk, s.firstClearEligible ? 1 : 0)];
+      THEN 1 ELSE 0 END`).bind(accountId, s.formation.revision, s.formation.formation_json, s.entities, s.balance.version, s.balance.config_json, s.fuel, s.operationId, s.risk, s.firstClearEligible ? 1 : 0, s.ultimate.revision, s.ultimate.operatorId)];
 }
 async function nextSequence(db: D1Database, accountId: string) {
   return (await db.prepare("SELECT COALESCE(MAX(sequence),0)+1 AS value FROM account_mutations WHERE account_id=?").bind(accountId).first<{ value: number }>())!.value;
@@ -89,14 +90,14 @@ async function issue(db: D1Database, accountId: string, body: z.infer<typeof req
     const previous = await replay(); if (previous) return previous;
     try {
       const sequence = await nextSequence(db, accountId), s = await state(db, accountId, body.operationId, body.risk);
-      if (s.formation.revision !== body.expectedFormationRevision || s.train.saved!.revision !== body.expectedLoadoutRevision) throw new ActivityError(409, "departure_selection_changed");
+      if (s.formation.revision !== body.expectedFormationRevision || s.train.saved!.revision !== body.expectedLoadoutRevision || s.ultimate.revision !== body.expectedUltimateRevision) throw new ActivityError(409, "departure_selection_changed");
       const now = Date.now(), id = walletId("preview"), mutationId = walletId("departure_preview"), expiresAt = now + 300000;
       const raid = body.operationId === "raid_raider_king_engine";
       const metadata = { operationId: body.operationId, actId: "act_01_wasteland_railway", regionId: "region_wasteland_railway", encounterType: raid ? "RAID_BOSS" : "ORDINARY_15_WAVE",
         raidId: raid ? body.operationId : null, bossId: raid ? "boss_raider_king_engine" : null, bossPhaseRefs: raid ? ["crown_chase", "trophy_break", "engine_stop"] : [],
         allowedOperatorSlots: 5, startAugmentPackageRef: "act1_full_start_package_v1", startTacticPackageRef: "act1_full_start_package_v1", contentVersion: "act1.launch.content.v1", firstClearEligible: s.firstClearEligible };
-      const combatContract = describeCombatRequirements(JSON.stringify(metadata), body.risk);
       const a = admission(s);
+      const combatContract = describeCombatRequirements(JSON.stringify({ ...metadata, admission: a }), body.risk);
       const response = { accepted: true, operationPreviewId: id, ...metadata, combatContract, risk: body.risk, expiresAt: new Date(expiresAt).toISOString(),
         formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision, admission: a,
         quote: { fuelCost: s.fuelCost, availableFuel: s.fuel, balanceVersion: String(s.balance.version) } };
@@ -136,10 +137,11 @@ export async function startDeparture(db: D1Database, accountId: string, initial:
       const row = await db.prepare("SELECT * FROM operation_previews WHERE id=? AND account_id=?").bind(initial.id, accountId).first<Preview>();
       if (!row || row.status !== "ACTIVE" || row.expires_at <= Date.now()) throw new ActivityError(409, "operation_preview_not_startable");
       const s = await state(db, accountId, row.objective, row.risk);
+      if (s.ultimate.operatorId === null) throw new ActivityError(409, "ultimate_selection_required");
       const a = admission(s), pinned = JSON.parse(row.preview_json) as { admission: JsonValue; balanceConfigHash: string };
       if (s.balance.version !== row.balance_config_version || await sha256Hex(s.balance.config_json) !== pinned.balanceConfigHash || canonicalJson(a) !== canonicalJson(pinned.admission)) throw new ActivityError(409, "departure_quote_changed");
       const now = Date.now(), runId = walletId("run"), mutationId = walletId("departure_start");
-      const response = { ...await createResponse(row, runId, now), admission: a, firstClearEligible: s.firstClearEligible };
+      const response = { ...await createResponse(row, runId, now), admission: a, ultimateOperatorId: s.ultimate.operatorId, firstClearEligible: s.firstClearEligible };
       await db.batch([
         db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'RUN_START',?,?)").bind(mutationId, accountId, sequence, key, now),
         ...guards(db, accountId, s),

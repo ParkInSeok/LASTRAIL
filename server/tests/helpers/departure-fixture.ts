@@ -10,8 +10,8 @@ import { startDeparture } from "../../apps/game-api/src/departure";
 import { ActivityError } from "../../apps/game-api/src/activity-policy";
 
 export const operations = ["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop", "opn_04_scrapstar_show", "opn_05_night_boarders", "opn_06_broken_line", "raid_raider_king_engine"];
-export const body = { operationId: operations[0], risk: "I", expectedFormationRevision: 1, expectedLoadoutRevision: 1 };
-export async function setup(coreOnly = false) {
+export const body = { operationId: operations[0], risk: "I", expectedFormationRevision: 1, expectedLoadoutRevision: 1, expectedUltimateRevision: 1 };
+export async function setup(coreOnly = false, selectUltimate = true) {
   const SQL = await initSqlJs(), sql = new SQL.Database();
   sql.create_function("unixepoch", () => Date.now() / 1000); sql.run("PRAGMA foreign_keys=ON");
   for (const f of readdirSync("packages/db/migrations").filter(f => /^\d+_.+\.sql$/u.test(f)).sort()) sql.run(readFileSync(join("packages/db/migrations", f), "utf8"));
@@ -33,6 +33,7 @@ export async function setup(coreOnly = false) {
   const post = (path: string, data: object, key = crypto.randomUUID()) => app.request(path, { method: "POST", headers: { ...headers, "Idempotency-Key": key }, body: JSON.stringify(data) }, env);
   await post("/v1/formation/presets/p/save", { expectedRevision: 0, name: "squad", operators });
   await post("/v1/formation/presets/p/activate", { expectedRevision: 1, expectedFormationRevision: 0 });
+  if (selectUltimate) await post("/v1/formation/ultimate", { rulesVersion: "ultimate-selection-v1", operatorId: "op0", expectedRevision: 0, expectedFormationRevision: 1 });
   const install = (ids = ["car_combat", "car_gun"], expectedRevision = 0) => post("/v1/trains/loadout", { rulesVersion: "train-loadout-v1", trainId: "train_a", expectedRevision, carriages: ids.map((carriageId, slot) => ({ slot, carriageId })) });
   await install();
   const preview = (data: object = body, key = crypto.randomUUID()) => post("/v1/operations/preview", data, key);

@@ -9,7 +9,9 @@ Preview now includes firstClearEligible and combatContract; owned original-run
 recovery is available through GET runs/:runId/start-state. Successful old replay
 remains unchanged.
 
-Local implementation requires migrations through `0030_departure_admission.sql`.
+Local implementation requires migrations through `0031_ultimate_selection.sql`.
+CE01 advances admission to `departure-v2`. See [ultimate selection](ultimate-selection.md)
+for selection pin/revalidation and historical receipt compatibility.
 No remote deployment or catalog activation is implied. Use S03 active operator
 formation and S04 `GET /v1/trains/loadout` before requesting departure.
 
@@ -48,7 +50,8 @@ Strict body (no extra fields):
   "operationId": "opn_01_last_departure",
   "risk": "I",
   "expectedFormationRevision": 1,
-  "expectedLoadoutRevision": 1
+  "expectedLoadoutRevision": 1,
+  "expectedUltimateRevision": 1
 }
 ```
 
@@ -67,7 +70,8 @@ or regeneration is performed; `availableFuel` is explicitly the persisted amount
 
 ```ts
 type Admission = {
-  version: "departure-v1";
+  version: "departure-v2";
+  ultimateSelection: { rulesVersion: "ultimate-selection-v1"; operatorId: string | null; revision: number };
   formationRevision: number;
   loadoutRevision: number;
   formation: { schemaVersion: 1; operators: { slot: number; operatorId: string }[] };

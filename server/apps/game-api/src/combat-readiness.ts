@@ -3,7 +3,7 @@ import { z } from "zod";
 import { readBoundedBody, type ActivityAuthResult } from "./activity-routes";
 import { ActivityError, activityId } from "./activity-policy";
 
-// No approved operation-content binding or combat/stat/ultimate protocol exists
+// No approved operation-content binding or combat/stat protocol exists
 // in the inspected server source. These are explicit unavailable capabilities,
 // not a catalog containing invented defaults, nor a client-controlled flag.
 export function describeCombatRequirements(previewJson: string, risk: string) {
@@ -15,14 +15,17 @@ export function describeCombatRequirements(previewJson: string, risk: string) {
   } catch { throw new ActivityError(503, "combat_requirement_source_invalid"); }
   const text = (key: string) => typeof source[key] === "string" && source[key] !== "" ? source[key] as string : null;
   const riskIndex = ["I", "II", "III", "IV", "V"].indexOf(risk);
+  const pinned = z.object({ version: z.literal("departure-v2"), ultimateSelection: z.object({ rulesVersion: z.literal("ultimate-selection-v1"), operatorId: activityId.nullable(), revision: z.number().int().nonnegative() }), formation: z.object({ operators: z.array(z.object({ operatorId: activityId })).length(5) }) }).safeParse(source.admission);
+  const ultimate = pinned.success && pinned.data.ultimateSelection.operatorId !== null && pinned.data.formation.operators.some(o => o.operatorId === pinned.data.ultimateSelection.operatorId) ? pinned.data.ultimateSelection : null;
   return {
-    version: "run-combat-requirements-v1", status: "BLOCKED", canStart: false,
+    version: "run-combat-requirements-v2", status: "BLOCKED", canStart: false,
     blockingReasons: ["enemy_faction_binding_missing", "wave_plan_binding_missing", "reward_table_binding_missing",
-      "combat_seed_contract_missing", "engine_output_profile_unapproved", "ultimate_selection_contract_missing", "effective_stats_profile_unapproved"],
+      "combat_seed_contract_missing", "engine_output_profile_unapproved", ...(!ultimate ? ["ultimate_selection_required"] : []), "effective_stats_profile_unapproved"],
     riskTier: riskIndex >= 0 ? risk : null, riskLevel: riskIndex >= 0 ? riskIndex + 1 : null,
     operatorSlotCount: source.allowedOperatorSlots === 5 ? 5 : null,
     firstClearEligible: typeof source.firstClearEligible === "boolean" ? source.firstClearEligible : null,
-    enemyFactionId: null, wavePlanId: null, rewardTableId: null, seed: null, engineOutput: null, ultimateOperatorId: null,
+    enemyFactionId: null, wavePlanId: null, rewardTableId: null, seed: null, engineOutput: null, ultimateOperatorId: ultimate?.operatorId ?? null,
+    ultimateSelectionRevision: ultimate?.revision ?? (pinned.success ? pinned.data.ultimateSelection.revision : null),
     requiredContent: {
       operationId: text("operationId"), contentVersion: text("contentVersion"),
       startAugmentPackageRef: text("startAugmentPackageRef"), startTacticPackageRef: text("startTacticPackageRef"),
