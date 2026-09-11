@@ -27,7 +27,8 @@ export async function setup(coreOnly = false, selectUltimate = true) {
   sql.run("UPDATE balance_config_versions SET config_json=?", [JSON.stringify({ fuel: { runStartCost: 10 }, runRewards: launchRunRewardsConfig })]);
   sql.run("INSERT INTO balance_config_activations(id,version,activation_type,activated_by,activated_at) VALUES('act',1,'PUBLISH','test',0)");
   sql.run("INSERT INTO balance_config_active VALUES(1,1,'act',0)");
-  const adapter = new SqlJsD1Database(sql), env = { DB: adapter as unknown as D1Database, ENVIRONMENT: "DEV", AUTH_SIGNING_KEY_CURRENT: secret } as Env;
+  const adapter = new SqlJsD1Database(sql), env = { DB: adapter as unknown as D1Database, ENVIRONMENT: "DEV",
+    ALLOWED_ADMIN_ORIGINS: "http://localhost:5173,http://127.0.0.1:5173", AUTH_SIGNING_KEY_CURRENT: secret } satisfies Env & { AUTH_SIGNING_KEY_CURRENT: string };
   const token = await createAccessToken({ secret, accountId: "a", sessionId: "s", nowMs: now, ttlMs: 60000 });
   const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
   const post = (path: string, data: object, key = crypto.randomUUID()) => app.request(path, { method: "POST", headers: { ...headers, "Idempotency-Key": key }, body: JSON.stringify(data) }, env);

@@ -5,11 +5,13 @@ import { mkdir, mkdtemp, readFile, realpath, stat, writeFile } from "node:fs/pro
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { canonicalJson, sha256Hex } from "@lastrail/common";
 import type { ConsumerAttestationVerifier } from "../../apps/game-api/src/ce03-consumer-attestation";
+import { presentationSourcePaths, validatePresentationManifest } from "../../apps/game-api/src/ce03-presentation-manifest";
 
 type Json = Parameters<typeof canonicalJson>[0];
 export type Ce03RunnerPaths = { outputDirectory: string; sourceBundlePath: string; preparePath: string };
 type Options = { executable: string; cwd: string; sourceRoot: string; sourceFiles: readonly string[]; outputRoot: string;
-  prepare: { draft: Json; commandContract: Json }; buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number };
+  prepare: { ownedSelection: Json; carriageOwnership: Json; draft: Json; commandContract: Json; prepareSha256: string; presentationManifest?: Json };
+  buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number };
 async function fileHash(path: string) {
   const hash = createHash("sha256"); for await (const chunk of createReadStream(path)) hash.update(chunk);
   return hash.digest("hex");
@@ -51,8 +53,20 @@ export async function executeCe03ConsumerRunner(options: Options) {
     return await fileHash(executable) === executableSha256;
   };
   // All identity inputs are snapshotted before launching, with no credentials.
-  const prepareJson = canonicalJson(options.prepare), draftSha256 = await sha256Hex(canonicalJson(options.prepare.draft));
-  const commandContractJson = canonicalJson(options.prepare.commandContract), commandContractSha256 = await sha256Hex(commandContractJson);
+  const { ownedSelection, carriageOwnership, draft, commandContract, presentationManifest, prepareSha256 } = options.prepare;
+  if (ownedSelection === undefined || carriageOwnership === undefined || draft === undefined || commandContract === undefined)
+    throw new Error("ce03_runner_prepare_invalid");
+  const context = { ownedSelection, carriageOwnership, draft, commandContract, ...(presentationManifest === undefined ? {} : { presentationManifest }) };
+  if (await sha256Hex(canonicalJson(context)) !== prepareSha256) throw new Error("ce03_runner_prepare_mismatch");
+  const prepareJson = canonicalJson({ ...context, prepareSha256 }), draftSha256 = await sha256Hex(canonicalJson(draft));
+  const commandContractJson = canonicalJson(commandContract), commandContractSha256 = await sha256Hex(commandContractJson);
+  const presentationManifestJson = presentationManifest === undefined ? undefined : canonicalJson(presentationManifest);
+  const presentationManifestSha256 = presentationManifestJson === undefined ? undefined : await sha256Hex(presentationManifestJson);
+  if (presentationManifest !== undefined) {
+    const manifest = validatePresentationManifest(presentationManifest);
+    if (manifest.sourceFiles.some(s => !files.some(f => f.path === presentationSourcePaths[s.logicalName] && f.sha256 === s.rawSha256)))
+      throw new Error("ce03_runner_presentation_source_mismatch");
+  }
   const simulationVersion = (JSON.parse(prepareJson).draft as { simulationVersion?: string }).simulationVersion;
   await mkdir(options.outputRoot, { recursive: true });
   const directory = await mkdtemp(join(options.outputRoot, "ce03-execution-"));
@@ -80,7 +94,7 @@ export async function executeCe03ConsumerRunner(options: Options) {
   };
   const artifacts = Object.freeze({ algorithmSource: await output("algorithm-source.json", 32_000_000),
     checkpointSchema: await output("checkpoint-schema.json", 8_000_000), vectorsJson: await output("vectors.json", 8_000_000),
-    reportJson: await output("runner-report-v2.json", 8_000_000) });
+    reportJson: await output(presentationManifest === undefined ? "runner-report-v2.json" : "runner-report-v3.json", 8_000_000) });
   if (artifacts.algorithmSource !== algorithmSource) throw new Error("ce03_runner_bundle_mismatch");
   const hashes = { algorithmSourceSha256: await sha256Hex(artifacts.algorithmSource), checkpointSchemaSha256: await sha256Hex(artifacts.checkpointSchema),
     vectorsSha256: await sha256Hex(artifacts.vectorsJson), reportSha256: await sha256Hex(artifacts.reportJson) };
@@ -90,6 +104,8 @@ export async function executeCe03ConsumerRunner(options: Options) {
         request.vectorsJson === artifacts.vectorsJson && request.reportJson === artifacts.reportJson &&
         request.draftSha256 === draftSha256 && request.simulationVersion === simulationVersion &&
         request.commandContractJson === commandContractJson && request.commandContractSha256 === commandContractSha256 &&
+        request.presentationManifestJson === presentationManifestJson && request.presentationManifestSha256 === presentationManifestSha256 &&
+        request.prepareSha256 === (presentationManifest === undefined ? undefined : prepareSha256) &&
         request.algorithmSourceSha256 === hashes.algorithmSourceSha256 && request.checkpointSchemaSha256 === hashes.checkpointSchemaSha256 &&
         request.vectorsSha256 === hashes.vectorsSha256 && request.reportSha256 === hashes.reportSha256 && await sourceUnchanged();
     } catch { return false; }

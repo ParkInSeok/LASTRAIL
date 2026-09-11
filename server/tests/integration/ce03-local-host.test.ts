@@ -6,26 +6,30 @@ import { resolveAuthContext } from "../../apps/game-api/src/index";
 import { createCe03LocalHost, ce03HostSchemaSql } from "../../apps/game-api/src/ce03-local-host";
 import { ce03SupportSchemaSql } from "../../apps/game-api/src/ce03-support-loadout";
 import { localSupportCatalog, localLeaderChargePolicy } from "../../apps/game-api/src/ce03-command-contract";
-import { requiredCommandConsumerCoverage } from "../../apps/game-api/src/ce03-consumer-attestation";
+import { requiredCommandConsumerCoverage, requiredPresentationConsumerCoverage } from "../../apps/game-api/src/ce03-consumer-attestation";
+import { presentationFixture } from "../helpers/ce03-presentation-fixture";
 import { createAccessToken } from "../../apps/game-api/src/auth";
 import { mkdir, writeFile } from "node:fs/promises";
 
-async function fixture(evidence = true) {
+async function fixture(evidence = true, approved = false) {
   const f = await ce03ProducerFixture(); f.sql.run(ce03SupportSchemaSql); f.sql.run(ce03HostSchemaSql);
   const artifacts = async () => {
     if (!evidence) return undefined;
     // Synthetic executed-report stand-in: tests host wiring, NOT Unity conformance.
     const algorithmSource = "synthetic-host-test-code", checkpointSchema = "synthetic-host-test-checkpoint";
-    const vectorsJson = canonicalJson({ cases: requiredCommandConsumerCoverage.map((coverage, i) => ({ id: `case.${i}`, coverage })) });
-    const reportJson = canonicalJson({ schemaVersion: "ce03-consumer-runner-report-v2", scope: "FULL_LOCAL_CONSUMER", runId: "synthetic.host.runner",
+    const coverageList = approved ? requiredPresentationConsumerCoverage : requiredCommandConsumerCoverage;
+    const vectorsJson = canonicalJson({ cases: coverageList.map((coverage, i) => ({ id: `case.${i}`, coverage })) });
+    const reportJson = canonicalJson({ schemaVersion: approved ? "ce03-consumer-runner-report-v3" : "ce03-consumer-runner-report-v2", scope: "FULL_LOCAL_CONSUMER", runId: "synthetic.host.runner",
+      ...(approved ? { presentationManifestSha256: await sha256Hex(canonicalJson(prepared.presentationManifest as never)), prepareSha256: prepared.prepareSha256 } : {}),
       simulationVersion: (prepared.draft as { simulationVersion: string }).simulationVersion,
       draftSha256: await sha256Hex(canonicalJson(prepared.draft as never)), commandContractSha256: await sha256Hex(canonicalJson(prepared.commandContract as never)),
       algorithmSourceSha256: await sha256Hex(algorithmSource), vectorsSha256: await sha256Hex(vectorsJson), checkpointSchemaSha256: await sha256Hex(checkpointSchema),
-      results: requiredCommandConsumerCoverage.map((coverage, i) => ({ caseId: `case.${i}`, coverage, status: "PASS" })), passed: requiredCommandConsumerCoverage.length, failed: 0, skipped: 0 });
+      results: coverageList.map((coverage, i) => ({ caseId: `case.${i}`, coverage, status: "PASS" })), passed: coverageList.length, failed: 0, skipped: 0 });
     return { algorithmSource, checkpointSchema, vectorsJson, reportJson };
   };
   const verifier = { verify: vi.fn(async () => true) };
   const options = { disposableDatabase: f.env.DB, allowedAccountIds: ["a"], authenticate: resolveAuthContext, inputs: ce03Inputs(),
+    presentation: approved ? { mode: "APPROVED_VIEW_V1" as const, manifest: presentationFixture() } : { mode: "LEGACY_R4" as const },
     supportCatalog: localSupportCatalog, leaderPolicy: localLeaderChargePolicy, artifacts, verifier: evidence ? verifier : undefined };
   const host = createCe03LocalHost(options);
   const request = (path: string, data?: unknown, key = "original.start.key !") => host.request(`http://127.0.0.1${path}`, {
@@ -41,6 +45,39 @@ async function fixture(evidence = true) {
 }
 
 describe("disposable authenticated CE03 host (synthetic verifier fixtures only)", () => {
+  it("requires an explicit presentation manifest for the approved view before preparing", async () => {
+    const f = await fixture(), host = createCe03LocalHost({ ...f.options, presentation: { mode: "APPROVED_VIEW_V1" } });
+    const response = await host.request("http://127.0.0.1/__local/ce03/prepare", { method: "POST", headers: f.headers,
+      body: JSON.stringify({ selection: body, expectedSupportRevision: 1 }) }, f.env);
+    expect(response.status).toBe(409); expect(await response.json()).toMatchObject({ errorCode: "ce03_presentation_manifest_missing" });
+    expect(f.scalar("SELECT COUNT(*) FROM runs")).toBe(0);
+  });
+  it("pins r6 presentation content and full prepare context while retaining profile-r5 commands", async () => {
+    const f = await fixture(true, true), response = await f.request("/__local/ce03/start", f.startBody);
+    expect(response.status).toBe(200); const accepted = await response.json();
+    expect(accepted.combat.profile.schemaVersion).toBe("ce03-isolated-command-profile-r5");
+    expect(accepted.combat.contentManifest.schemaVersion).toBe("ce03-isolated-presentation-content-r6");
+    expect(accepted.combat.contentManifest.presentationManifest).toEqual(f.prepared.presentationManifest);
+    expect(accepted.combat.contentManifest.legacyBindings).toHaveLength(226);
+    expect(accepted.combat.contentSha256).toBe(await sha256Hex(canonicalJson(accepted.combat.contentManifest)));
+    const { ready: _ready, status: _status, prepareSha256, ...context } = f.prepared;
+    expect(_ready).toBe(false); expect(_status).toBe("MISSING_EXECUTION_EVIDENCE");
+    expect(prepareSha256).toBe(await sha256Hex(canonicalJson(context)));
+    expect(f.verifier.verify).toHaveBeenCalledWith(expect.objectContaining({ prepareSha256,
+      presentationManifestSha256: await sha256Hex(canonicalJson(f.prepared.presentationManifest)) }));
+  });
+  it.each(["v2", "manifestHash", "ownerHash", "coverage"])("refuses %s presentation evidence before admission", async mode => {
+    const f = await fixture(true, true), artifacts = (await f.options.artifacts())!;
+    const report = JSON.parse(artifacts.reportJson);
+    if (mode === "v2") { report.schemaVersion = "ce03-consumer-runner-report-v2"; delete report.prepareSha256; delete report.presentationManifestSha256; }
+    if (mode === "manifestHash") report.presentationManifestSha256 = "0".repeat(64);
+    if (mode === "ownerHash") report.prepareSha256 = "0".repeat(64);
+    if (mode === "coverage") { report.results = report.results.filter((r: { coverage: string }) => r.coverage !== "PRESENTATION_BINDINGS"); report.passed--; }
+    const host = createCe03LocalHost({ ...f.options, artifacts: async () => ({ ...artifacts, reportJson: canonicalJson(report) }) });
+    const response = await host.request("http://127.0.0.1/__local/ce03/start", { method: "POST", headers: { ...f.headers, "Idempotency-Key": "new" }, body: JSON.stringify(f.startBody) }, f.env);
+    expect(response.status).toBe(409); expect(f.verifier.verify).not.toHaveBeenCalled();
+    expect(f.scalar("SELECT COUNT(*) FROM runs")).toBe(0); expect(f.scalar("SELECT fuel FROM fuel_state WHERE account_id='a'")).toBe(30);
+  });
   it("fails closed without actual configured evidence before seed, debit or receipt", async () => {
     const f = await fixture(false), random = vi.spyOn(crypto, "getRandomValues"); random.mockClear();
     const response = await f.request("/__local/ce03/start", f.startBody);

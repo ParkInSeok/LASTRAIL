@@ -18,3 +18,6 @@
 *.jpg binary
 *.jpeg binary
 *.gif binary
+# Actual Unity export evidence: retain the raw bytes used by hash tests.
+server/tests/fixtures/ce03-presentation-closure-audit.json -text whitespace=cr-at-eol
+server/tests/fixtures/ce03-approved.asset.txt -text whitespace=cr-at-eol

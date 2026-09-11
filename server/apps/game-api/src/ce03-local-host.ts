@@ -13,6 +13,7 @@ import { issueLocalCombatSeed } from "./combat-seed-protocol";
 import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
 import { contentSchema, id, pos, profileSchema, sha } from "./ce03-local-schema";
 import gameApi from "./index";
+import { presentationContentSchema, validatePresentationManifest } from "./ce03-presentation-manifest";
 
 // Explicit local setup only. Not in migrations or public app registration.
 export const ce03HostSchemaSql = `
@@ -31,6 +32,7 @@ type Auth = { accountId: string } | { status: 400 | 401 | 403 | 409 | 500 | 503;
 type Options = { disposableDatabase: D1Database; allowedAccountIds: readonly string[];
   authenticate(c: Context<{ Bindings: Env }>): Promise<Auth>; inputs: LocalCombatInputs;
   supportCatalog: Ce03SupportCatalog; leaderPolicy: unknown;
+  presentation?: { mode: "LEGACY_R4" } | { mode: "APPROVED_VIEW_V1"; manifest?: unknown };
   artifacts?: () => Promise<unknown>; verifier?: ConsumerAttestationVerifier };
 const prepareBody = z.strictObject({ selection: z.unknown(), expectedSupportRevision: pos });
 const startBody = z.strictObject({ operationPreviewId: id, expectedSupportRevision: pos, prepareSha256: sha });
@@ -44,6 +46,7 @@ export function createCe03LocalHost(options: Options) {
   const database = options.disposableDatabase, allowed = new Set(options.allowedAccountIds);
   const catalog = structuredClone(options.supportCatalog), inputs = { ...options.inputs };
   const leader = structuredClone(options.leaderPolicy);
+  const presentation = structuredClone(options.presentation ?? { mode: "LEGACY_R4" as const });
   const auth = options.authenticate;
   app.use("*", async (c, next) => {
     c.header("Cache-Control", "no-store");
@@ -71,6 +74,8 @@ export function createCe03LocalHost(options: Options) {
     return value; // opaque original value, never normalized
   };
   const readPreparation = async (accountId: string, selection: unknown, expectedSupportRevision: number) => {
+    if (presentation.mode === "APPROVED_VIEW_V1" && presentation.manifest === undefined) return fail("ce03_presentation_manifest_missing");
+    const presentationManifest = presentation.mode === "APPROVED_VIEW_V1" ? validatePresentationManifest(presentation.manifest) : undefined;
     const ownedSelection = await readLocalDepartureSelection(database, accountId, selection);
     const support = await readCe03SupportLoadout(database, accountId, catalog);
     if (support.revision !== expectedSupportRevision || support.rulesVersion !== catalog.rulesVersion || support.catalogVersion !== catalog.catalogVersion ||
@@ -91,7 +96,7 @@ export function createCe03LocalHost(options: Options) {
         if (!owned || !type || draft.template.cars.find(car => car.slot === row.slot)?.type !== type) return fail("ce03_carriage_ownership_mismatch");
         return { ...owned, slot: row.slot, type };
       }).sort((a, b) => a.slot - b.slot) };
-    const prepared = { ownedSelection, carriageOwnership, draft, commandContract };
+    const prepared = { ownedSelection, carriageOwnership, draft, commandContract, ...(presentationManifest === undefined ? {} : { presentationManifest }) };
     return { ...prepared, prepareSha256: await sha256Hex(canonicalJson(prepared)) };
   };
   const receipt = async (accountId: string, originalKey: string, hash: string) => {
@@ -134,13 +139,17 @@ export function createCe03LocalHost(options: Options) {
       expectedLoadoutRevision: pinned.loadoutRevision, expectedUltimateRevision: pinned.ultimateSelection?.revision };
       const prepared = await readPreparation(accountId, selection, b.expectedSupportRevision);
       if (prepared.prepareSha256 !== b.prepareSha256) return fail("ce03_preparation_changed");
-      const verified = await attestLocalConsumer(prepared.draft, await options.artifacts?.(), options.verifier, prepared.commandContract);
+      const verified = await attestLocalConsumer(prepared.draft, await options.artifacts?.(), options.verifier, prepared.commandContract,
+        prepared.presentationManifest === undefined ? undefined : { manifest: prepared.presentationManifest, prepareSha256: prepared.prepareSha256 });
       const { bindings, ...profileData } = prepared.draft;
       const baseProfile = profileSchema.parse({ schemaVersion: "ce03-isolated-profile-r4", ...profileData, executionEvidence: verified.executionEvidence });
       const profile = { schemaVersion: "ce03-isolated-command-profile-r5", baseProfile, commandContract: prepared.commandContract };
       const profileSha256 = await sha256Hex(canonicalJson(profile));
-      const contentManifest = contentSchema.parse({ schemaVersion: "ce03-isolated-content-r4", version: prepared.draft.profileId, profileSha256,
-        resolver: { mode: "UNITY_EDITOR_ASSET_DATABASE", playerBuildAllowed: false }, bindings });
+      const contentManifest = prepared.presentationManifest === undefined
+        ? contentSchema.parse({ schemaVersion: "ce03-isolated-content-r4", version: prepared.draft.profileId, profileSha256,
+          resolver: { mode: "UNITY_EDITOR_ASSET_DATABASE", playerBuildAllowed: false }, bindings })
+        : presentationContentSchema.parse({ schemaVersion: "ce03-isolated-presentation-content-r6", version: "ce03.approved-presentation.20260912.001", profileSha256,
+          resolver: { mode: "UNITY_EDITOR_ASSET_DATABASE", playerBuildAllowed: false }, legacyBindings: bindings, presentationManifest: prepared.presentationManifest });
       const contentSha256 = await sha256Hex(canonicalJson(contentManifest));
       // Freeze JSON before any transaction retry. The callback adds a fresh candidate
       // seed only after verification. A committed original-key replay never calls it.
