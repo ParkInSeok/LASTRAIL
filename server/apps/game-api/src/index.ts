@@ -25,6 +25,7 @@ import { registerFormationRoutes } from "./formation";
 import { registerUltimateRoutes } from "./ultimate-selection";
 import { registerMonthlyAttendanceRoutes } from "./monthly-attendance";
 import { objectiveFinishEvent } from "./objective-events";
+import { validateCombatRewardReference } from "./combat-reward-reference";
 import { registerShopRoutes } from "./shop-routes";
 import { registerRecurringRoutes } from "./recurring-routes";
 import { registerTrainLoadoutRoutes } from "./train-loadout";
@@ -6316,6 +6317,13 @@ app.post("/v1/runs/:runId/finish", async (c) => {
   }
 
   const previewMetadata = parseRunPreviewMetadata(row.preview_json, row.objective);
+  try {
+    const pinned = JSON.parse(row.snapshot_json ?? "{}") as { rewardReference?: unknown };
+    if (pinned.rewardReference !== undefined) await validateCombatRewardReference(pinned.rewardReference, row.config_json, row.balance_config_version, previewMetadata.operationId, risk);
+  } catch (error) {
+    return c.json(createRunFinishRejectedResponse({ runId, balanceVersion: String(row.balance_config_version),
+      errorCode: error instanceof ActivityError ? error.code : "combat_reward_reference_invalid", message: "Pinned reward source is unavailable or changed." }), 409);
+  }
   const allowedStartPackageRefs = [
     previewMetadata.startAugmentPackageRef,
     previewMetadata.startTacticPackageRef,

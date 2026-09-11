@@ -7,6 +7,7 @@ import { walletId } from "./crystal-wallet";
 import { formationSelection } from "./formation";
 import { ultimateSelection, type UltimateFormation } from "./ultimate-selection";
 import { describeCombatRequirements } from "./combat-readiness";
+import { combatRewardReference, validateCombatRewardReference } from "./combat-reward-reference";
 import { parseRunRewardsConfig, type RunRiskTier } from "../../../packages/balance/src/index";
 import { readTrainContext, parseSavedTrain, trainProgress, validateTrainSelection, trainOwnershipGuard } from "./train-loadout";
 
@@ -97,15 +98,16 @@ async function issue(db: D1Database, accountId: string, body: z.infer<typeof req
         raidId: raid ? body.operationId : null, bossId: raid ? "boss_raider_king_engine" : null, bossPhaseRefs: raid ? ["crown_chase", "trophy_break", "engine_stop"] : [],
         allowedOperatorSlots: 5, startAugmentPackageRef: "act1_full_start_package_v1", startTacticPackageRef: "act1_full_start_package_v1", contentVersion: "act1.launch.content.v1", firstClearEligible: s.firstClearEligible };
       const a = admission(s);
+      const rewardReference = await combatRewardReference(s.balance.config_json, s.balance.version, body.operationId, body.risk);
       const combatContract = describeCombatRequirements(JSON.stringify({ ...metadata, admission: a }), body.risk);
-      const response = { accepted: true, operationPreviewId: id, ...metadata, combatContract, risk: body.risk, expiresAt: new Date(expiresAt).toISOString(),
+      const response = { accepted: true, operationPreviewId: id, ...metadata, rewardReference, combatContract, risk: body.risk, expiresAt: new Date(expiresAt).toISOString(),
         formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision, admission: a,
         quote: { fuelCost: s.fuelCost, availableFuel: s.fuel, balanceVersion: String(s.balance.version) } };
       await db.batch([
         db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'DEPARTURE_PREVIEW',?,?)").bind(mutationId, accountId, sequence, key, now),
         ...guards(db, accountId, s),
         db.prepare("INSERT INTO operation_previews(id,account_id,mutation_id,objective,risk,balance_config_version,preview_json,status,expires_at,created_at,admission_version) VALUES(?,?,?,?,?,?,?,'ACTIVE',?,?,?)")
-          .bind(id, accountId, mutationId, body.operationId, body.risk, s.balance.version, JSON.stringify({ ...metadata, combatContract, admission: a, balanceConfigHash: await sha256Hex(s.balance.config_json) }), expiresAt, now, version),
+          .bind(id, accountId, mutationId, body.operationId, body.risk, s.balance.version, JSON.stringify({ ...metadata, rewardReference, combatContract, admission: a, balanceConfigHash: await sha256Hex(s.balance.config_json) }), expiresAt, now, version),
         db.prepare("INSERT INTO departure_preview_receipts(account_id,idempotency_key,request_hash,preview_id,response_json) VALUES(?,?,?,?,?)").bind(accountId, key, hash, id, JSON.stringify(response)),
         db.prepare("DELETE FROM train_loadout_write_guard"), db.prepare("DELETE FROM departure_write_guard"),
       ]);
@@ -141,7 +143,9 @@ export async function startDeparture(db: D1Database, accountId: string, initial:
       const a = admission(s), pinned = JSON.parse(row.preview_json) as { admission: JsonValue; balanceConfigHash: string };
       if (s.balance.version !== row.balance_config_version || await sha256Hex(s.balance.config_json) !== pinned.balanceConfigHash || canonicalJson(a) !== canonicalJson(pinned.admission)) throw new ActivityError(409, "departure_quote_changed");
       const now = Date.now(), runId = walletId("run"), mutationId = walletId("departure_start");
-      const response = { ...await createResponse(row, runId, now), admission: a, ultimateOperatorId: s.ultimate.operatorId, firstClearEligible: s.firstClearEligible };
+      const pinnedReference = (JSON.parse(row.preview_json) as { rewardReference?: unknown }).rewardReference;
+      const rewardReference = pinnedReference === undefined ? undefined : await validateCombatRewardReference(pinnedReference, s.balance.config_json, row.balance_config_version, row.objective, row.risk);
+      const response = { ...await createResponse(row, runId, now), ...(rewardReference ? { rewardReference } : {}), admission: a, ultimateOperatorId: s.ultimate.operatorId, firstClearEligible: s.firstClearEligible };
       await db.batch([
         db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'RUN_START',?,?)").bind(mutationId, accountId, sequence, key, now),
         ...guards(db, accountId, s),

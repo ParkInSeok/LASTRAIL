@@ -40,6 +40,42 @@ type RecoveryRow = { id: string; preview_id: string | null; status: string; star
 const startLookupBody = z.strictObject({ startIdempotencyKey: z.string().regex(/^[\x21-\x7e]{1,128}$/u), operationPreviewId: activityId });
 export function registerRunRecoveryRoutes(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<ActivityAuthResult>,
   restore: (row: RecoveryRow) => Record<string, unknown> | null) {
+  app.get("/v1/runs/:runId/lifecycle", async c => {
+    c.header("Cache-Control", "no-store");
+    const auth = await authenticate(c); if ("errorCode" in auth) return c.json({ accepted: false, errorCode: auth.errorCode }, auth.status);
+    const id = c.req.param("runId");
+    if (!activityId.safeParse(id).success || new URL(c.req.url).search || (await readBoundedBody(c)).length) return c.json({ accepted: false, errorCode: "contract_violation" }, 400);
+    const row = await c.env.DB.prepare(`SELECT r.id,r.preview_id,r.status,r.started_at,s.snapshot_json,
+      f.outcome,f.submitted_at,p.id AS reward_id,p.status AS reward_status,p.expires_at,p.reward_claim_id,t.reward_json,t.created_at AS reward_claimed_at,
+      CAST(ROUND(unixepoch('subsec')*1000) AS INTEGER) AS now
+      FROM runs r LEFT JOIN run_snapshots s ON s.run_id=r.id LEFT JOIN run_final_results f ON f.run_id=r.id
+      LEFT JOIN run_reward_previews p ON p.id=(SELECT id FROM run_reward_previews WHERE run_id=r.id AND account_id=r.account_id ORDER BY created_at DESC,id DESC LIMIT 1)
+      LEFT JOIN reward_transactions t ON t.id=p.reward_claim_id AND t.account_id=r.account_id AND t.run_id=r.id
+      WHERE r.id=? AND r.account_id=?`).bind(id, auth.accountId).first<RecoveryRow & {
+        outcome: string | null; submitted_at: number | null; reward_id: string | null; reward_status: string | null;
+        expires_at: number | null; reward_claim_id: string | null; reward_json: string | null; reward_claimed_at: number | null; now: number }>();
+    if (!row) return c.json({ accepted: false, errorCode: "run_not_found" }, 404);
+    const startResponse = restore(row);
+    let receipt: unknown = null;
+    try {
+      const rewardPlan: unknown = row.reward_json ? JSON.parse(row.reward_json) : null;
+      if (rewardPlan && typeof rewardPlan === "object" && !Array.isArray(rewardPlan) && Array.isArray((rewardPlan as { rewardLines?: unknown }).rewardLines)) {
+        receipt = { rewardTransactionId: row.reward_claim_id, runId: row.id, serverClaimedAt: row.reward_claimed_at, rewardPlan };
+      }
+    } catch { /* Keep missing/corrupt receipt explicitly unavailable. */ }
+    const rewardStatus = !row.reward_id ? "NOT_AVAILABLE" : row.reward_status === "CLAIMED" ? receipt ? "CLAIMED" : "UNAVAILABLE"
+      : row.reward_status === "EXPIRED" || (row.reward_status === "ACTIVE" && row.expires_at! <= row.now) ? "EXPIRED"
+      : row.reward_status === "ACTIVE" ? "CLAIMABLE" : "UNAVAILABLE";
+    const terminal = ["COMPLETED", "FAILED", "ABANDONED"].includes(row.status) && row.outcome !== null;
+    const nextAction = !startResponse || row.status === "QUARANTINED" ? "REVIEW_REQUIRED"
+      : terminal && rewardStatus === "CLAIMED" ? "RETURN_TO_LOBBY" : !row.outcome && !row.reward_id && row.status === "ACTIVE" ? "RECOVER_COMBAT_CONSUMER"
+      : !row.outcome && !row.reward_id && row.status === "FINISH_PENDING" ? "RESUME_FINISH" : terminal && rewardStatus === "CLAIMABLE" ? "REWARD_REVIEW" : "REVIEW_REQUIRED";
+    return c.json({ accepted: true, version: "run-lifecycle-v1", serverTime: row.now, runId: row.id, runStatus: row.status, startResponse,
+      finish: { status: row.outcome ? "RECORDED" : "NOT_RECORDED", outcome: row.outcome, submittedAt: row.submitted_at, rewardPreviewId: row.reward_id },
+      reward: { status: rewardStatus, rewardPreviewId: row.reward_id, expiresAt: row.expires_at, claimId: row.reward_claim_id, receipt },
+      nextAction, grantsOnRead: false, newAttemptAuthorized: false, uiReturnAllowed: true,
+      disposition: rewardStatus === "CLAIMED" ? "REWARDED" : rewardStatus === "EXPIRED" ? "EXPIRED_UNCLAIMED" : nextAction === "REVIEW_REQUIRED" ? "REVIEW_REQUIRED" : "PENDING" });
+  });
   // POST transports the original key in a bounded body, never a URL or echoed
   // lookup header. This route only SELECTs; it does not replay the start command.
   app.post("/v1/runs/start-result", async c => {
