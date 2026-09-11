@@ -70,8 +70,8 @@ describe("disposable authenticated CE03 host (synthetic verifier fixtures only)"
     const recovered = await f.request("/__local/ce03/start-result", { ...f.startBody, startIdempotencyKey: "original.start.key !" });
     expect((await recovered.json()).startResponse).toEqual(accepted);
     expect((await f.request("/__local/ce03/start", { ...f.startBody, prepareSha256: "0".repeat(64) })).status).toBe(409);
-    await mkdir("audit-results/ce03-local-host", { recursive: true });
-    await writeFile("audit-results/ce03-local-host/synthetic-accepted-exchange.json", JSON.stringify({
+    await mkdir("audit-results/ce03-local-host/synthetic-exchanges", { recursive: true });
+    await writeFile(`audit-results/ce03-local-host/synthetic-exchanges/${accepted.runId}.json`, JSON.stringify({
       scope: "SYNTHETIC_VERIFIER_TRANSPORT_ONLY", actualConsumerVerified: false, actualBattleExecuted: false,
       request: f.startBody, startResponse: accepted, originalReplayByteIdentical: true, fuelDebitedOnce: true,
     }, null, 2) + "\n");
