@@ -1,5 +1,9 @@
 # CE03 local producer stage 1
 
+The later isolated host and support/leader command contract are implemented in
+[ce03-local-host.md](ce03-local-host.md). This document retains the standalone
+stage1/r4 boundary; actual full-consumer evidence is still required for admission.
+
 Implements the adopted `ce03.local.qa.20260911.001` selection using the consolidated
 r4.1 field contract. This is local preparation, not accepted combat admission.
 

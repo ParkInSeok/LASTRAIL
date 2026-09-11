@@ -136,7 +136,8 @@ async function issue(db: D1Database, accountId: string, body: z.infer<typeof req
 }
 
 export async function startDeparture(db: D1Database, accountId: string, initial: Preview, key: string,
-  createResponse: (row: Preview, runId: string, now: number) => Promise<Record<string, unknown>>) {
+  createResponse: (row: Preview, runId: string, now: number) => Promise<Record<string, unknown>>,
+  additionalAtomicStatements?: (response: Record<string, unknown>) => Promise<D1PreparedStatement[]> | D1PreparedStatement[]) {
   if (initial.admission_version !== version) throw new ActivityError(409, "departure_preview_version_unsupported");
   const replay = async () => {
     const row = await db.prepare("SELECT r.preview_id,s.snapshot_json FROM idempotency_records i JOIN runs r ON r.id=i.result_ref JOIN run_snapshots s ON s.run_id=r.id WHERE i.account_id=? AND i.operation='run_start' AND i.idempotency_key=?")
@@ -159,6 +160,7 @@ export async function startDeparture(db: D1Database, accountId: string, initial:
       const pinnedReference = (JSON.parse(row.preview_json) as { rewardReference?: unknown }).rewardReference;
       const rewardReference = pinnedReference === undefined ? undefined : await validateCombatRewardReference(pinnedReference, s.balance.config_json, row.balance_config_version, row.objective, row.risk);
       const response = { ...await createResponse(row, runId, now), ...(rewardReference ? { rewardReference } : {}), admission: a, ultimateOperatorId: s.ultimate.operatorId, firstClearEligible: s.firstClearEligible };
+      const extraStatements = await additionalAtomicStatements?.(response) ?? [];
       await db.batch([
         db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'RUN_START',?,?)").bind(mutationId, accountId, sequence, key, now),
         ...guards(db, accountId, s),
@@ -170,6 +172,9 @@ export async function startDeparture(db: D1Database, accountId: string, initial:
         db.prepare("INSERT INTO runs(id,account_id,preview_id,mutation_id,balance_config_version,status,started_at) VALUES(?,?,?,?,?,'ACTIVE',?)").bind(runId, accountId, row.id, mutationId, row.balance_config_version, now),
         db.prepare("INSERT INTO run_snapshots(run_id,snapshot_json,created_at) VALUES(?,?,?)").bind(runId, JSON.stringify({ ...response, departureResponse: response }), now),
         db.prepare("INSERT INTO idempotency_records(id,account_id,idempotency_key,operation,result_ref,created_at) VALUES(?,?,?,'run_start',?,?)").bind(walletId("idem"), accountId, key, runId, now),
+        // Trusted local composition may add exact selection guards and immutable
+        // receipts to THIS transaction; never a caller-supplied SQL extension.
+        ...extraStatements,
         db.prepare("DELETE FROM train_loadout_write_guard"), db.prepare("DELETE FROM departure_write_guard"),
       ]);
       return response;

@@ -3,6 +3,7 @@ import { canonicalJson, sha256Hex } from "@lastrail/common";
 import { ActivityError } from "./activity-policy";
 import { bindingSchema, id, policySchema, pos, sha, sourceFileSchema, templateSchema } from "./ce03-local-schema";
 import { validateLocalBindingClosure } from "./ce03-local-producer";
+import { commandContractSchema } from "./ce03-command-contract";
 
 export const requiredConsumerCoverage = ["STRICT_PROFILE", "FULL_EFFECTS", "MANUAL_COMMANDS", "FIFTEEN_WAVES",
   "CHECKPOINT_RESTORE", "DETERMINISM", "OWNER_ISOLATION", "JOURNAL_RECOVERY"] as const;
@@ -12,6 +13,10 @@ const draftSchema = closed({ profileId: id, engineProfileVersion: id, effectiveS
 const reportSchema = closed({ schemaVersion: z.literal("ce03-consumer-runner-report-v1"), scope: z.literal("FULL_LOCAL_CONSUMER"), runId: id,
   simulationVersion: id, draftSha256: sha, algorithmSourceSha256: sha, vectorsSha256: sha, checkpointSchemaSha256: sha,
   results: z.array(closed({ caseId: id, coverage, status: z.literal("PASS") })).min(1), passed: pos, failed: z.literal(0), skipped: z.literal(0) });
+export const requiredCommandConsumerCoverage = [...requiredConsumerCoverage, "SUPPORT_SELECTION", "LEADER_CHARGE"] as const;
+const commandCoverage = z.enum(requiredCommandConsumerCoverage);
+const commandReportSchema = reportSchema.extend({ schemaVersion: z.literal("ce03-consumer-runner-report-v2"), commandContractSha256: sha,
+  results: z.array(closed({ caseId: id, coverage: commandCoverage, status: z.literal("PASS") })).min(1) });
 const artifactsSchema = closed({ algorithmSource: z.string().min(1).max(8_000_000), checkpointSchema: z.string().min(1).max(2_000_000),
   vectorsJson: z.string().min(1).max(2_000_000), reportJson: z.string().min(1).max(2_000_000) });
 
@@ -19,6 +24,7 @@ export type ConsumerAttestationRequest = Readonly<{
   reportJson: string; reportSha256: string; draftSha256: string; simulationVersion: string;
   algorithmSource: string; algorithmSourceSha256: string;
   vectorsJson: string; vectorsSha256: string; checkpointSchema: string; checkpointSchemaSha256: string;
+  commandContractJson?: string; commandContractSha256?: string;
 }>;
 export interface ConsumerAttestationVerifier {
   // Injected only by trusted local host composition, never by HTTP/body content.
@@ -44,7 +50,7 @@ function json(raw: string): unknown {
 
 /** Verification interface only: no registered route, no DB, no Profile/Content/S
  * freeze, no seed/start. A verified result is not an admission capability. */
-export async function attestLocalConsumer(draftInput: unknown, artifactInput: unknown, verifier: ConsumerAttestationVerifier | undefined) {
+export async function attestLocalConsumer(draftInput: unknown, artifactInput: unknown, verifier: ConsumerAttestationVerifier | undefined, commandInput?: unknown) {
   if (artifactInput === undefined || artifactInput === null) return fail("ce03_consumer_artifacts_missing");
   const parsed = artifactsSchema.safeParse(artifactInput);
   if (!parsed.success) return fail("ce03_consumer_report_invalid");
@@ -57,28 +63,32 @@ export async function attestLocalConsumer(draftInput: unknown, artifactInput: un
   if (draft.template.execution.policyVersion !== draft.executionPolicy.version ||
       draft.simulationVersion !== draft.executionPolicy.version ||
       draft.template.execution.policySha256 !== await sha256Hex(canonicalJson(draft.executionPolicy))) return fail("ce03_consumer_draft_invalid");
-  const checked = reportSchema.safeParse(json(a.reportJson));
+  const commands = commandInput === undefined ? undefined : commandContractSchema.parse(commandInput);
+  const commandContractJson = commands === undefined ? undefined : canonicalJson(commands);
+  const commandContractSha256 = commandContractJson === undefined ? undefined : await sha256Hex(commandContractJson);
+  const checked = (commands === undefined ? reportSchema : commandReportSchema).safeParse(json(a.reportJson));
   if (!checked.success) return fail("ce03_consumer_report_invalid");
   const report = checked.data;
   // New runner handoff reports use canonical JSON; this rejects duplicate keys,
   // parser-dependent spellings and implicit reserialization. Existing operation
   // journal/HTTP receipt bytes are unrelated and remain untouched.
   if (canonicalJson(report) !== a.reportJson) return fail("ce03_consumer_report_invalid");
-  const vectors = z.object({ cases: z.array(z.object({ id, coverage })).min(1) }).safeParse(json(a.vectorsJson));
+  const vectors = z.object({ cases: z.array(z.object({ id, coverage: commandCoverage })).min(1) }).safeParse(json(a.vectorsJson));
   if (!vectors.success) return fail("ce03_consumer_coverage_incomplete");
   const caseMap = new Map(vectors.data.cases.map(v => [v.id, v.coverage]));
   const results = new Map(report.results.map(r => [r.caseId, r.coverage]));
   if (caseMap.size !== vectors.data.cases.length || results.size !== report.results.length ||
       report.passed !== results.size || results.size !== caseMap.size ||
       report.results.some(r => caseMap.get(r.caseId) !== r.coverage) ||
-      requiredConsumerCoverage.some(c => !report.results.some(r => r.coverage === c))) return fail("ce03_consumer_coverage_incomplete");
+      (commands === undefined ? requiredConsumerCoverage : requiredCommandConsumerCoverage).some(c => !report.results.some(r => r.coverage === c))) return fail("ce03_consumer_coverage_incomplete");
   const request: ConsumerAttestationRequest = Object.freeze({ ...a,
     reportSha256: await sha256Hex(a.reportJson), draftSha256: await sha256Hex(canonicalJson(draft)), simulationVersion: draft.simulationVersion,
     algorithmSourceSha256: await sha256Hex(a.algorithmSource), vectorsSha256: await sha256Hex(a.vectorsJson),
-    checkpointSchemaSha256: await sha256Hex(a.checkpointSchema) });
+    checkpointSchemaSha256: await sha256Hex(a.checkpointSchema), ...(commands === undefined ? {} : { commandContractJson: commandContractJson!, commandContractSha256: commandContractSha256! }) });
   if (report.draftSha256 !== request.draftSha256 || report.simulationVersion !== request.simulationVersion ||
       report.algorithmSourceSha256 !== request.algorithmSourceSha256 || report.vectorsSha256 !== request.vectorsSha256 ||
-      report.checkpointSchemaSha256 !== request.checkpointSchemaSha256) return fail("ce03_consumer_evidence_mismatch");
+      report.checkpointSchemaSha256 !== request.checkpointSchemaSha256 ||
+      (commands !== undefined && (!("commandContractSha256" in report) || report.commandContractSha256 !== commandContractSha256))) return fail("ce03_consumer_evidence_mismatch");
   let accepted: boolean;
   try { accepted = await verifier.verify(request); } catch { return fail("ce03_consumer_verifier_unavailable"); }
   if (accepted !== true) return fail("ce03_consumer_attestation_rejected");
