@@ -66,6 +66,48 @@ No seed/S snapshot is generated. Real P/C/S freeze and start/debit integration
 remain the later stage after actual consumer evidence and atomicity verification.
 Proposal policy references pin the selected semantics, not executable code.
 
+### Full-consumer attestation interface
+
+`ce03-consumer-attestation.ts` adds the internal
+`attestLocalConsumer(draft, artifacts, verifier)` boundary. It does not register a
+route or feed start/freeze. The trusted local composition must supply a
+`ConsumerAttestationVerifier`; no default provider is installed. The provider must
+verify the actual runner/code/vector/checkpoint evidence, not just return true
+because JSON parses. HTTP clients cannot supply that verifier.
+
+Required artifact strings are `algorithmSource`, `checkpointSchema`, `vectorsJson`
+and `reportJson`. They are bounded and reject lone UTF16 surrogates. The algorithm,
+vector and checkpoint digests are computed from their exact UTF8 bytes. A source
+bundle may be represented as a stable textual archive; the real runner adapter
+must validate its complete code identity. Markdown provenance is not execution.
+
+The new runner handoff report is closed canonical JSON with fields:
+`schemaVersion:ce03-consumer-runner-report-v1`, `scope:FULL_LOCAL_CONSUMER`, `runId`,
+`simulationVersion`, `draftSha256`, `algorithmSourceSha256`, `vectorsSha256`,
+`checkpointSchemaSha256`, `results:[{caseId,coverage,status:PASS}]`, `passed`,
+`failed:0`, `skipped:0`. `draftSha256` covers the complete strict draft's canonical
+JSON. Existing operation-journal keys/raw response strings are unaffected by this
+new report serialization convention. Duplicate report keys reject.
+
+The vector artifact must have `cases` with unique `id` and `coverage`. Every vector
+must have one matching passed report result. Full coverage requires
+`STRICT_PROFILE`, `FULL_EFFECTS`, `MANUAL_COMMANDS`, `FIFTEEN_WAVES`,
+`CHECKPOINT_RESTORE`, `DETERMINISM`, `OWNER_ISOLATION`, `JOURNAL_RECOVERY`.
+These categories describe the already-required complete consumer scope; counts
+alone (including the current18 basic/vitals tests) cannot substitute for it.
+
+After shape, complete-coverage and exact-hash checks, the injected verifier receives
+one frozen request with the exact artifact strings and measured hashes. Rejection
+or exceptions fail closed. A successful result still says `ready:false`,
+`frozen:false`; it contains verified evidence digests, not a seed, accepted run,
+frozen P/C/S or admission capability. No actual provider or full Unity evidence is
+available yet. Test-only accepting/rejecting stubs verify this control flow only.
+
+Errors distinguish absent artifacts, absent verifier, invalid report/draft,
+incomplete coverage, changed evidence, rejected attestation and unavailable
+verifier. Actual runner adapter/attestation and consumer integration remain later
+work; this interface does not claim those have passed.
+
 ## Reproduction and verification
 
 From `server`, run the package's Vitest runner on
@@ -86,3 +128,12 @@ Verification for this slice: focused7PASS; full87files/586testsPASS20.45s;
 game-api/async-worker TypeScript and source ESLint PASS. Independent bounded review
 found no high-impact stage1 defect. No actual Unity battle/checkpoint/video test,
 new migration, deployment, public-ready gate or real-account mutation.
+
+Attestation interface verification: focused6PASS1.76s;
+full88files/592testsPASS17.24s; game-api/async-worker TypeScript and source
+ESLint PASS. Six tests cover absent providers/artifacts, partial coverage,
+tampered evidence, verifier rejection/errors, immutable exact requests and
+malformed/ambiguous reports. A slow element-wise DB assertion was replaced by
+byte comparison; the final full run passed without increasing its timeout.
+Independent bounded review found no high-impact defect. Accepting providers in
+these tests are synthetic fixtures; actual Unity conformance remains unverified.
