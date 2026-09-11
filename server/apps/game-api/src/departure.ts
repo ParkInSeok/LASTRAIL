@@ -64,6 +64,19 @@ function admission(s: State) {
   return { version, formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision,
     formation: s.squad, ultimateSelection: s.ultimate, loadout: s.selection, ownedState: JSON.parse(s.entities) as JsonValue, fuelCost: s.fuelCost, firstClearEligible: s.firstClearEligible };
 }
+
+// Read-only seam for the separately mounted disposable local producer. Reuses
+// current owner, growth, open-run, balance, fuel and selection checks. No quote,
+// seed, debit or run is created. Start must still revalidate atomically later.
+export async function readLocalDepartureSelection(db: D1Database, accountId: string, input: unknown) {
+  const parsed = requestSchema.safeParse(input);
+  if (!parsed.success) throw new ActivityError(400, "contract_violation");
+  const b = parsed.data, s = await state(db, accountId, b.operationId, b.risk);
+  if (s.formation.revision !== b.expectedFormationRevision || s.train.saved!.revision !== b.expectedLoadoutRevision || s.ultimate.revision !== b.expectedUltimateRevision)
+    throw new ActivityError(409, "departure_selection_changed");
+  if (s.ultimate.operatorId === null) throw new ActivityError(409, "ultimate_selection_required");
+  return { accountId, operationId: b.operationId, risk: b.risk, ...admission(s) };
+}
 function guards(db: D1Database, accountId: string, s: State) {
   return [trainOwnershipGuard(db, accountId, s.selection, s.train.progress, s.train.saved!.revision),
     db.prepare(`INSERT INTO departure_write_guard(valid) SELECT CASE WHEN

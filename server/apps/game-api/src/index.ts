@@ -2980,7 +2980,7 @@ function displayNameCooldownActive(updatedAt: number | null | undefined, now: nu
   return typeof updatedAt === "number" && updatedAt + displayNameCooldownMs > now;
 }
 
-async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | AuthFailure> {
+export async function resolveAuthContext(c: GameApiContext): Promise<AuthContext | AuthFailure> {
   const authorization = c.req.header("Authorization");
   if (authorization === undefined || !authorization.startsWith("Bearer ")) {
     return createAuthFailure(401, "auth_required", "Authorization bearer token is required.");

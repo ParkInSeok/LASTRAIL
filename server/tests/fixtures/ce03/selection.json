@@ -1,0 +1,277 @@
+{
+  "version": "ce03.local.qa.20260911.001",
+  "status": "PLAN_ADOPTED_LOCAL_SELECTION_NOT_RUNTIME_FREEZE",
+  "baseEvidenceManifestSha256": "034115a76319ed4abd8c21593a6533440a4d0dbe9cd62da182ac6c711e94b5a2",
+  "selectionSource": "C:/Users/dlstj/OneDrive/문서/ChatGPT/LASTRAIL/docs/ops/ce03-local-profile-selection-proposal-20260911.md",
+  "selectionSourceSha256": "d37cedffee41312d5ee2e04a7dbc082a6a8e2a8992ce45454a8f630250d97f83",
+  "operationId": "opn_01_last_departure",
+  "risk": "I",
+  "factionRef": null,
+  "factionDisposition": "UNSUPPORTED_IN_ISOLATED_PROFILE",
+  "actorSelection": "EXPLICIT_IDS",
+  "waves": [
+    {
+      "wave": 1,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout"
+      ],
+      "interiorMaxHp": [
+        494,
+        494
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 592
+    },
+    {
+      "wave": 2,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout"
+      ],
+      "interiorMaxHp": [
+        494,
+        494
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 592
+    },
+    {
+      "wave": 3,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout"
+      ],
+      "interiorMaxHp": [
+        494,
+        494
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 592
+    },
+    {
+      "wave": 4,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        449,
+        449,
+        336
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 741
+    },
+    {
+      "wave": 5,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        449,
+        449,
+        336
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 741
+    },
+    {
+      "wave": 6,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        449,
+        449,
+        336
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 741
+    },
+    {
+      "wave": 7,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        538,
+        538,
+        404
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 889
+    },
+    {
+      "wave": 8,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        538,
+        538,
+        404
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 889
+    },
+    {
+      "wave": 9,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        538,
+        538,
+        404
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 889
+    },
+    {
+      "wave": 10,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        461,
+        461,
+        461,
+        345
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1037
+    },
+    {
+      "wave": 11,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        461,
+        461,
+        461,
+        345
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1037
+    },
+    {
+      "wave": 12,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        461,
+        461,
+        461,
+        345
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1037
+    },
+    {
+      "wave": 13,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        564,
+        564,
+        423,
+        423
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1185
+    },
+    {
+      "wave": 14,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        564,
+        564,
+        423,
+        423
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1185
+    },
+    {
+      "wave": 15,
+      "interiorEnemyIds": [
+        "enemy_raider_scout",
+        "enemy_raider_scout",
+        "enemy_spike_cart_gunner",
+        "enemy_spike_cart_gunner"
+      ],
+      "interiorMaxHp": [
+        564,
+        564,
+        423,
+        423
+      ],
+      "exteriorEnemyId": "enemy_railbike_marauder",
+      "exteriorMaxHp": 1185
+    }
+  ],
+  "package": {
+    "scope": "ISOLATED_PROPOSAL_KEYS",
+    "augments": [
+      {
+        "id": "proposal_aug_squad_fire",
+        "category": "SQUAD",
+        "eventFilter": "OPERATOR_DAMAGE",
+        "valueBps": 800
+      },
+      {
+        "id": "proposal_aug_train_fire",
+        "category": "TRAIN",
+        "eventFilter": "LOCOMOTIVE_GUN_DAMAGE_INCLUDING_SUPPORT_EXCLUDING_COMBAT",
+        "valueBps": 800
+      },
+      {
+        "id": "proposal_aug_barrier_support",
+        "category": "SHIELD",
+        "eventFilter": "SHIELD_ISSUED",
+        "valueBps": 1000
+      }
+    ],
+    "tactic": {
+      "id": "proposal_tactic_precision",
+      "category": "TACTIC",
+      "eventFilter": "SINGLE_TARGET_OPERATOR_ACTIVE_DIRECT_DAMAGE",
+      "valueBps": 1200
+    }
+  },
+  "correction": "Actor HP allocation already exists in combat-stats-v1.md q/spawnHP formula. Earlier report called it new; source omission corrected. Selection is now adopted locally.",
+  "notWirePayload": true,
+  "remaining": "Runtime schema projection, importer/resource resolver execution proof, consumer vectors and canonical runtime hashes; no blanket selection/adoption wait."
+}
