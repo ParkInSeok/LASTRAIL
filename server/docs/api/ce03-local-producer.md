@@ -66,6 +66,32 @@ No seed/S snapshot is generated. Real P/C/S freeze and start/debit integration
 remain the later stage after actual consumer evidence and atomicity verification.
 Proposal policy references pin the selected semantics, not executable code.
 
+### Server-owned carriage type projection
+
+The authenticated isolated prepare response additionally contains
+`carriageOwnership:{rulesVersion:"train-loadout-v1",loadoutRevision,carriages}`.
+Each selected carriage has `{carriageId,slot,level,revision,type}` with the local
+closed type `Combat` or `Gun`. The producer joins the rechecked owned rows by ID
+to the selected loadout and uses `train-loadout.ts`'s authoritative
+`resolveCarriageType`, also used by existing loadout validation. It explicitly
+converts `COMBAT`/`GUN` and checks the corresponding draft slot's type. No client
+map, name parsing or array-position type inheritance is involved. Unknown types,
+missing ownership, changed revisions and exchanged selected IDs are rejected.
+
+The Unity caller can derive its required `trustedCarTypes` map from this response
+by `carriageId`, matching the projection's loadout revision and each ID/slot/owned
+level/revision to `ownedSelection`. Reject duplicates, missing rows or unknown
+types. Preserve that association with the same response; a projection detached
+from its authenticated response is not proof of ownership. The projection leaves
+the existing draft and ownedSelection fields unchanged, and does not require a
+second GET. Final atomic admission revalidation remains separate.
+
+Projection verification: absent projection first failed the new regression;
+focused producer/loadout/attestation24PASS; full88files593testsPASS20.02s;
+game-api TypeScript and changed-file ESLint PASS. Distinct owned revisions7/9,
+unchanged DB bytes, swapped selected IDs, missing ownership and caller-supplied
+projection rejection are covered. Independent review found no high-impact issue.
+
 ### Full-consumer attestation interface
 
 `ce03-consumer-attestation.ts` adds the internal

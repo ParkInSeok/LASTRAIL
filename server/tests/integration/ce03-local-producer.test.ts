@@ -35,6 +35,29 @@ describe("isolated CE03 producer without start/debit", () => {
     f.sql.run("UPDATE auth_sessions SET status='REVOKED' WHERE id='s'");
     expect((await f.request()).status).toBe(401);
   });
+  it("projects catalog types by owned ID with exact revisions and rejects swapped or missing ownership", async () => {
+    const f = await fixture();
+    f.sql.run("UPDATE account_carriages SET revision=7 WHERE carriage_id='car_combat'");
+    f.sql.run("UPDATE account_carriages SET revision=9 WHERE carriage_id='car_gun'");
+    const before = f.sql.export();
+    const result = await (await f.request()).json();
+    expect(result.carriageOwnership).toEqual({ rulesVersion: "train-loadout-v1", loadoutRevision: result.ownedSelection.loadoutRevision,
+      carriages: [{ carriageId: "car_combat", slot: 0, level: 1, revision: 7, type: "Combat" },
+        { carriageId: "car_gun", slot: 1, level: 1, revision: 9, type: "Gun" }] });
+    expect(Buffer.from(before).equals(Buffer.from(f.sql.export()))).toBe(true);
+    const forged = await f.request({ ...body, carriageOwnership: result.carriageOwnership });
+    expect(forged.status).toBe(400);
+    const saved = f.sql.exec("SELECT loadout_json FROM account_train_loadout")[0]!.values[0]![0] as string;
+    const swapped = JSON.parse(saved);
+    swapped.carriages.forEach((c: { slot: number }) => { c.slot = 1 - c.slot; });
+    f.sql.run("UPDATE account_train_loadout SET loadout_json=?", [JSON.stringify(swapped)]);
+    const response = await f.request();
+    expect(response.status).toBe(409);
+    expect(await response.json()).not.toHaveProperty("carriageOwnership");
+    f.sql.run("UPDATE account_train_loadout SET loadout_json=?", [saved]);
+    f.sql.run("DELETE FROM account_carriages WHERE carriage_id='car_gun'");
+    expect((await f.request()).status).toBe(403);
+  });
   it("rejects absent core ownership, changed growth and implicit ultimate", async () => {
     const f = await fixture();
     f.sql.run("DELETE FROM operator_training_core_slots WHERE slot_index=0");

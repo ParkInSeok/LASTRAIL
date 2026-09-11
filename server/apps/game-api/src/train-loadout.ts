@@ -8,6 +8,9 @@ import { walletId } from "./crystal-wallet";
 export const trainLoadoutRulesVersion = "train-loadout-v1";
 const water = "opn_03_water_stop", night = "opn_05_night_boarders";
 const types: Record<string, string> = { car_combat: "COMBAT", car_gun: "GUN", car_cargo: "CARGO", car_defense: "DEFENSE", car_medical: "MEDICAL" };
+export function resolveCarriageType(id: string): string | null {
+  return Object.hasOwn(types, id) ? types[id]! : null;
+}
 const slots = z.array(z.strictObject({ slot: z.number().int().min(0).max(3), carriageId: activityId })).min(2).max(4)
   .refine(rows => new Set(rows.map(r => r.carriageId)).size === rows.length && [...rows].sort((a, b) => a.slot - b.slot).every((r, i) => r.slot === i));
 export const trainSelection = z.strictObject({ rulesVersion: z.literal(trainLoadoutRulesVersion), trainId: activityId, carriages: slots });
@@ -49,7 +52,7 @@ export function trainProgress(context: TrainContext) {
 }
 
 function capability(id: string, progress: ReturnType<typeof trainProgress>) {
-  const type = Object.hasOwn(types, id) ? types[id]! : null;
+  const type = resolveCarriageType(id);
   const supported = type !== null && id !== "car_medical";
   const reason = !supported ? (id === "car_medical" ? "medical_unlock_unapproved" : "carriage_definition_unsupported")
     : progress.progressError ?? ((id === "car_cargo" && !progress.cleared.includes(water)) || (id === "car_defense" && !progress.cleared.includes(night)) ? "story_locked" : null);

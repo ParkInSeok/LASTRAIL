@@ -4,6 +4,7 @@ import { canonicalJson, sha256Hex } from "@lastrail/common";
 import { ActivityError } from "./activity-policy";
 import { readBoundedBody } from "./activity-routes";
 import { readLocalDepartureSelection } from "./departure";
+import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
 import { bindingSchema, contentSchema, effectSchema, enemyIds, id, nat, operatorIds, policySchema,
   pos, profileSchema, rulesSchema, sourceFileSchema, target, templateSchema } from "./ce03-local-schema";
 
@@ -206,7 +207,19 @@ export function registerLocalCombatProducer(app: Hono<{ Bindings: Env }>, authen
       const draft = await prepareLocalCombatDraft(options.inputs, ownedSelection);
       const rechecked = await readLocalDepartureSelection(c.env.DB, auth.accountId, request);
       if (canonicalJson(ownedSelection) !== canonicalJson(rechecked)) throw new ActivityError(409, "ce03_selection_changed_during_prepare");
-      return c.json({ ready: false, status: "MISSING_EXECUTION_EVIDENCE", missing: ["executionEvidence"], ownedSelection, draft });
+      // Project from the rechecked server-owned facts and the same catalog used
+      // by loadout validation. Never infer a type from array position or the ID.
+      const own = ownedSchema.parse(rechecked);
+      const carriageOwnership = { rulesVersion: trainLoadoutRulesVersion, loadoutRevision: own.loadoutRevision,
+        carriages: [...own.loadout.carriages].sort((a, b) => a.slot - b.slot).map(row => {
+          const owned = own.ownedState.carriages.find(c => c.carriageId === row.carriageId);
+          const catalogType = resolveCarriageType(row.carriageId);
+          const type = catalogType === "COMBAT" ? "Combat" : catalogType === "GUN" ? "Gun" : null;
+          if (!owned || type === null || draft.template.cars.find(c => c.slot === row.slot)?.type !== type)
+            return fail("ce03_carriage_ownership_mismatch");
+          return { ...owned, slot: row.slot, type };
+        }) };
+      return c.json({ ready: false, status: "MISSING_EXECUTION_EVIDENCE", missing: ["executionEvidence"], ownedSelection, carriageOwnership, draft });
     } catch (error) {
       if (error instanceof ActivityError) return c.json({ ready: false, errorCode: error.code }, error.status);
       if (error instanceof z.ZodError || error instanceof SyntaxError) return c.json({ ready: false, errorCode: "ce03_input_invalid" }, 400);
