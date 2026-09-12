@@ -122,6 +122,6 @@ export async function executeCe03ConsumerRunner(options: Options) {
         request.vectorsSha256 === hashes.vectorsSha256 && request.reportSha256 === hashes.reportSha256 && await sourceUnchanged();
     } catch { return false; }
   } };
-  return { artifacts, verifier: Object.freeze(verifier), execution: Object.freeze({ executableSha256, sourceBundleSha256: hashes.algorithmSourceSha256,
-    outputDirectory, startedAt, finishedAt: Date.now(), exitCode: 0 }) };
+  return { artifacts, verifier: Object.freeze(verifier), verifyExecutionIdentity: sourceUnchanged, execution: Object.freeze({ executableSha256, sourceBundleSha256: hashes.algorithmSourceSha256,
+    dynamicResourceFileCount: resourcesUnchanged === undefined ? 0 : 66, outputDirectory, startedAt, finishedAt: Date.now(), exitCode: 0 }) };
 }

@@ -550,3 +550,56 @@ GUID/localFileId/object type, importer semantics and complete resource usage are
 still checked by the reviewed Unity loader/runner. New resource pins do not
 extend r6 presentation roles or themselves prove consumer coverage. The next
 complete Unity source/resource packet and actual execution remain required.
+
+## Trusted terminal finish from UI output
+
+The generic helper is `scripts/local/ce03-trusted-finish.ts` (`trustedFinishCe03`).
+The existing persistent launcher holds its freshly reviewed execution and prepare
+in memory after successful `attest`. In that **same still-running host**, use:
+
+```text
+finish "E:/Projects/LASTRAIL/unity-project/QA/Ce03CommandIntegration/<resume-output>"
+```
+
+The argument is one JSON-quoted absolute directory; prefer forward slashes.
+This fresh UI finish path requires execution with `--dynamic-resource-closure`;
+the held execution must report66 pinned resource files. Older unpinned sessions
+cannot use the new finish command, while their historical runner behavior stays unchanged.
+There is no new HTTP verification endpoint or standalone tool that trusts an
+editable provider-status file. A missing verified session, concurrent command or
+any running Unity Editor refuses processing. Inspection failure also refuses.
+The guard conservatively requires all Unity.exe processes to have exited.
+
+The directory must contain `original-start.json`, `model-final.json`,
+`completion.json` (`ce03-actual-local-completion-v1`) and `finish-intent.json`.
+Files must remain within that real directory, be valid bounded UTF-8, and remain
+unchanged through final checks. The helper compares owner/origin/full original
+prepare and exact START bytes against the host's immutable receipt, including
+request and response hashes. Retained START's algorithmSourceSHA and completion
+run/seed/snapshot/source/prepare identities must match the current held execution.
+Raw model SHA, positive durableRevision, tick/wave/outcome and terminal train HP
+are checked. Victory requires15 waves and positive trainHP; Failure requires0
+trainHP. This is a terminal subset check, not independent full simulation replay;
+the reviewed producer must still verify its durable checkpoint/model binding.
+
+Unity absence and retained executable/source/dynamic resource identity are
+rechecked before HTTP. The exact original unsent intent must target the same run,
+contain ordinary Complete/wave0/outcome/completedWaves, empty tacticSelections,
+ISO clientCompletedAt and runtimeStateJson identical to the completion **raw
+text**. Reward fields or other body additions reject. No previous13ed hash or558
+source count is hardcoded. `restoredDuringRun` is not treated as process-restart
+proof; `process-restart.json` is a separate W02 audit input.
+
+Only after validation, the helper POSTs existing finish with its original key and
+body. Initial accepted200 or identity-matching DUPLICATE_REPLAY200 is accepted.
+The launcher atomically renames a new `finish-ack.json` containing version
+`ce03-trusted-finish-ack-v1`, runId, rewardPreviewId, key, body/source/model/completion
+hashes and responseRaw. It also writes session `finish-status.json` with FINISHED
+or FAILED. No claim is sent; explicit UI claim uses the returned preview identity
+through the existing recovery UI.
+
+On transport uncertainty or acknowledgment write failure, retry this command
+with the same directory and unchanged original intent. Do not replace its key,
+body or completion. A new attestation attempt clears the old in-memory finish
+context. Restarting the Node process loses this in-memory DB/session; this flow
+is for Unity process restart while retaining the Node host.

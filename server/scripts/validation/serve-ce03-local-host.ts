@@ -15,8 +15,9 @@ import { localSupportCatalog, localLeaderChargePolicy, commandContractSchema } f
 import { id, sha } from "../../apps/game-api/src/ce03-local-schema";
 import { loadPresentationFromAudit } from "../local/ce03-presentation-projection";
 import { executeCe03ConsumerRunner } from "../local/ce03-executed-runner";
-import { canonicalJson } from "@lastrail/common";
+import { canonicalJson, sha256Hex } from "@lastrail/common";
 import { attestLocalConsumer } from "../../apps/game-api/src/ce03-consumer-attestation";
+import { assertUnityExited, trustedFinishCe03 } from "../local/ce03-trusted-finish";
 
 // Explicit disposable local account bootstrap. No remote DB argument or provider
 // bypass. This executable NEVER installs a synthetic accepting verifier.
@@ -115,14 +116,52 @@ if (selfCheck) {
   // Only the trusted local terminal can request execution. There is no HTTP
   // accepting route, editable status-file bypass, or output-only provider load.
   let busy = false;
+  let finishContext: { prepared: Parameters<typeof executeCe03ConsumerRunner>[0]["prepare"]; executed: Awaited<ReturnType<typeof executeCe03ConsumerRunner>> } | undefined;
   const terminal = createInterface({ input: process.stdin });
   terminal.on("line", line => {
+    if (line.trim().startsWith("finish ")) {
+      if (busy || !reviewed || !finishContext || finishContext.executed.execution.dynamicResourceFileCount !== 66) { console.log("Trusted finish requires an idle verified session with dynamic resource pins."); return; }
+      const context = finishContext; busy = true;
+      void (async () => {
+        const finishStatusPath = resolve(output, "finish-status.json");
+        const finishStatus = async (value: object) => { await writeFile(finishStatusPath + ".pending", JSON.stringify(value, null, 2) + "\n"); await rename(finishStatusPath + ".pending", finishStatusPath); };
+        try {
+          const outputDirectory = z.string().min(1).parse(JSON.parse(line.trim().slice(7)));
+          await finishStatus({ status: "VERIFYING" });
+          const result = await trustedFinishCe03({ outputDirectory, owner: "a", origin, prepared: context.prepared,
+            sourceBundleSha256: context.executed.execution.sourceBundleSha256,
+            dynamicResourceFileCount: context.executed.execution.dynamicResourceFileCount,
+            assertUnityExited, verifyExecutionIdentity: context.executed.verifyExecutionIdentity,
+            lookupOriginalStart: async (key, request) => {
+              const receipt = await f.env.DB.prepare("SELECT request_hash,response_json,response_sha256 FROM ce03_start_receipts WHERE account_id=? AND idempotency_key=?")
+                .bind("a", key).first<{ request_hash: string; response_json: string; response_sha256: string }>();
+              if (!receipt || receipt.request_hash !== await sha256Hex(canonicalJson(request)) || receipt.response_sha256 !== await sha256Hex(receipt.response_json)) return null;
+              return receipt.response_json;
+            },
+            sendFinish: async (path, request, key) => {
+              const response = await fetch(origin + path, { method: "POST", headers: { ...headers, "Idempotency-Key": key }, body: JSON.stringify(request) });
+              return { status: response.status, responseRaw: await response.text() };
+            },
+          });
+          const ackPath = resolve(result.outputDirectory, "finish-ack.json"), temporary = ackPath + "." + randomBytes(8).toString("hex") + ".pending";
+          await writeFile(temporary, JSON.stringify({ version: "ce03-trusted-finish-ack-v1", ...result }, null, 2) + "\n", { flag: "wx" });
+          await rename(temporary, ackPath);
+          await finishStatus({ status: "FINISHED", runId: result.runId, rewardPreviewId: result.rewardPreviewId, ackPath, processRestartVerified: false });
+          console.log(JSON.stringify({ finishStatusPath, status: "FINISHED", runId: result.runId, ackPath }));
+        } catch (error) {
+          await finishStatus({ status: "FAILED", error: error instanceof Error ? error.message : "Trusted finish failed" });
+          console.log(JSON.stringify({ finishStatusPath, status: "FAILED" }));
+        } finally { busy = false; }
+      })().catch(() => { busy = false; console.error("Trusted finish status persistence failed; retry only the original intent."); });
+      return;
+    }
     if (line.trim() !== "attest" || busy || !reviewed) { console.log("Command unavailable; reviewed idle session accepts attest only."); return; }
     busy = true;
     void (async () => {
       // Clear the previous provider before any new attempt; original receipt
       // recovery remains available through the unchanged database.
       host = createCe03LocalHost(hostOptions);
+      finishContext = undefined;
       try {
         await publish({ status: "EXECUTING" });
         const uiPath = resolve(output, "ui-prepare.json");
@@ -148,14 +187,16 @@ if (selfCheck) {
         // START revalidates owner/revision/prepare and source on every new run;
         // a support edit during execution cannot turn this status into admission.
         host = createCe03LocalHost({ ...hostOptions, artifacts: async () => executed.artifacts, verifier: executed.verifier });
+        finishContext = { prepared: current, executed };
         await publish({ status: "VERIFIED", prepareSha256: current.prepareSha256, sourceBundleSha256: executed.execution.sourceBundleSha256,
           execution: executed.execution, sourceBundlePath: resolve(executed.execution.outputDirectory, "..", "source-input.json") });
         console.log(JSON.stringify({ providerStatusPath: statusPath, status: "VERIFIED", prepareSha256: current.prepareSha256 }));
       } catch (error) {
+        finishContext = undefined;
         host = createCe03LocalHost(hostOptions);
         await publish({ status: "FAILED", error: error instanceof Error ? error.message : "Local execution failed" });
         console.log(JSON.stringify({ providerStatusPath: statusPath, status: "FAILED" }));
       } finally { busy = false; }
-    })().catch(() => { host = createCe03LocalHost(hostOptions); busy = false; console.error("Local provider status persistence failed; provider removed."); });
+    })().catch(() => { host = createCe03LocalHost(hostOptions); finishContext = undefined; busy = false; console.error("Local provider status persistence failed; provider removed."); });
   });
 }
