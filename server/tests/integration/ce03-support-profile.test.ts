@@ -1,0 +1,20 @@
+import { expect, it } from "vitest";
+import { createSupportProfileDraft, parseSupportProfileDraft } from "../../apps/game-api/src/ce03-support-profile";
+import { ce03ProducerFixture } from "../helpers/ce03-producer-fixture";
+it("creates a closed full draft with exactly three projected support abilities and no reused admission evidence", async () => {
+  const f = await ce03ProducerFixture(), prepared = await (await f.request()).json();
+  const before = JSON.stringify(prepared.draft);
+  const selected = ["barrier", "ce03.role.medical_support", "ce03.role.electronic_disruption"];
+  const draft = await createSupportProfileDraft(prepared.draft, selected);
+  expect(draft.template.train.manual.map(x => x.id)).toEqual(selected);
+  expect(draft.template.waves).toHaveLength(15);
+  expect(draft.executionEvidence).toBeNull();
+  expect(draft.ready).toBe(false);
+  expect(JSON.stringify(prepared.draft)).toBe(before);
+  expect(await parseSupportProfileDraft(JSON.parse(JSON.stringify(draft)))).toEqual(draft);
+  await expect(parseSupportProfileDraft({ ...draft, ready: true })).rejects.toThrow();
+  const changed = structuredClone(draft); changed.template.train.manual[1]!.windupMs++;
+  await expect(parseSupportProfileDraft(changed)).rejects.toThrow();
+  const selectedChanged = structuredClone(draft); selectedChanged.selectedSupport.reverse();
+  await expect(parseSupportProfileDraft(selectedChanged)).rejects.toThrow();
+});
