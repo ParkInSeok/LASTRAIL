@@ -397,3 +397,52 @@ only for parser/journal transport tests; never load them as actual battle conten
 or consume them as admission. The original sample is
 `run_75f2337a-b608-4f5e-8c99-d53930107567.json`, raw SHA
 `533D29EBE07DD2A8C1A3138D1D5031FCD51F6363E852417595E2E33FD9589E26`.
+
+### Actual accepted local run — 2026-09-12 13:08 KST
+
+`verify-ce03-actual-run.ts` is a frozen, explicit disposable integration executable.
+It pins reviewed Unity packet runner-20260912T035826, 558 sources, canonical bundle
+SHA `13ed4e80b15615290038885cf383133e62a911c9731dfaa5c6da92f8fd393f09`.
+Independent review verified separate r6 version validation and concrete original
+START recovery assertions. The synthetic transport fixture remains transport-only.
+Fresh same-host prepare runs the real conformance helper before its returned
+process-bound verifier is installed into that exact disposable DB/owner host.
+The existing default launcher still has no accepting provider.
+
+Actual execution evidence is `audit-results/ce03-actual-runner/actual-integration-3vHm27`:
+
+- Fresh conformance exit0,11PASS,22.701 seconds; same Unity executable SHA as above.
+- Actual START200 for `run_b209dfb4-a280-45c6-92b8-cf854544752a`, original issued seed2901650177.
+- Original-key lookup and START byte replay preserve the accepted P/C/S and seed; one run and one fuel debit30→20.
+- Actual consumer exit0, 15waves VICTORY, tick3851,1146events, durableRevision443; in-process checkpoint restore and final durable ACK checked.
+- Original terminal outcome produces the sole UNSENT finish intent. Trusted server composition validates its run/seed/source/snapshot/model/result identities before using the existing HTTP sender.
+- Finish200 then original-key DUPLICATE_REPLAY with unchanged run/preview/version identities. No reward transaction before explicit claim.
+- Explicit claim200 then DUPLICATE_REPLAY with unchanged claim identity and exactly one reward transaction. Final lifecycle CLAIMED/RETURN_TO_LOBBY retains original START.
+- Actual consumer plus subsequent HTTP assertions87.185 seconds; this is not a pure model performance measurement.
+
+Evidence raw SHA256:
+
+| File | SHA256 |
+| --- | --- |
+| verification.json | 9A7DE0DECAADB54A92FC5F6A52E45F94DA2F4F4C03F1056B245A5D9E0C63C7CD |
+| actual-consumer/completion.json | 12664E8CB25270B7E14ECDBF44DBABF0CFCD7E44804ED817688847CEC374046A |
+| start-response.json | C07B56D18D5EAEC99DB0B17A61D1DC6DF34774B9719ACD01B55A7FCFA3E23241 |
+
+Existing finish/claim replay contracts intentionally change status/error fields;
+only START uses byte-identical replay. Initial finish/claim raw responses are
+retained separately from replay evidence and finish ACK. Review caught and fixed
+an incorrect byte-equality assertion before execution.
+
+Scope is a genuine simulated battle for a disposable fixture account, using an
+actual locally issued seed and authentic loopback account authentication. It is
+not a production account, remote deployment, normal login/lobby caller, Android
+Keystore test, visual capture, or whole-process restart proof. Editor checkpoint
+storage is explicitly plaintext. The host database lasts only this process and
+is closed after the assertions. Consumer restart script indexing/evidence
+preservation needs separate work before claiming process-restart equivalence.
+The CLI source pin deliberately refuses future Unity source changes.
+Validation: actual end-to-end execution above, Node/Worker typecheck, targeted
+ESLint and independent source/orchestration review. Previous full640 tests and
+host17 tests remain their earlier units; no full-suite rerun for this executable.
+After execution only stdout was shortened to avoid printing the full lifecycle;
+complete evidence remains on disk.
