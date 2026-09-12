@@ -30,7 +30,7 @@ async function textFile(path: string, maxBytes: number) {
  * program proves execution identity, not the sufficiency of its assertions. The
  * host still requires full strict report-v2 and actual consumer coverage. */
 export async function executeCe03ConsumerRunner(options: Options) {
-  if (!isAbsolute(options.executable) || options.sourceFiles.length < 1 || options.sourceFiles.length > 512 ||
+  if (!isAbsolute(options.executable) || options.sourceFiles.length < 1 || options.sourceFiles.length > 1024 ||
       new Set(options.sourceFiles.map(s => s.toLowerCase())).size !== options.sourceFiles.length) throw new Error("ce03_runner_configuration_invalid");
   const root = await realpath(options.sourceRoot), executable = await realpath(options.executable);
   const executableSha256 = await fileHash(executable);

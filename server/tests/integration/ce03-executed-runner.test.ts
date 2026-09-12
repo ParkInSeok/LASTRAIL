@@ -29,6 +29,22 @@ await writeFile(join(out,'runner-report-v2.json'),'synthetic report');`);
     timeoutMs: mode === "timeout" ? 100 : 5000 } };
 }
 describe("executed runner provider plumbing (synthetic process only)", () => {
+  it("includes a complete assembly up to 1024 source files without omitting files", async () => {
+    const f = await fixture();
+    for (let start = 0; start < 1022; start += 64) {
+      const names = Array.from({ length: Math.min(64, 1022 - start) }, (_, i) => `part-${start + i}.cs`);
+      await Promise.all(names.map(name => writeFile(join(f.root, name), "// source\n"))); f.options.sourceFiles.push(...names);
+    }
+    const result = await executeCe03ConsumerRunner(f.options);
+    expect(JSON.parse(result.artifacts.algorithmSource).files).toHaveLength(1024);
+    await expect(executeCe03ConsumerRunner({ ...f.options, sourceFiles: [...f.options.sourceFiles, "one-too-many.cs"] })).rejects.toThrow("ce03_runner_configuration_invalid");
+  });
+  it("retains the aggregate source bundle size limit even with the larger file count", async () => {
+    const f = await fixture();
+    await writeFile(f.source, "a".repeat(4_000_000)); await writeFile(join(f.root, "extra.cs"), "b".repeat(4_000_000));
+    f.options.sourceFiles.push("extra.cs");
+    await expect(executeCe03ConsumerRunner(f.options)).rejects.toThrow("ce03_runner_artifact_too_large");
+  });
   it("requires a successful new execution, preserves source bytes and binds only the exact outputs", async () => {
     const f = await fixture(), result = await executeCe03ConsumerRunner(f.options);
     const a = result.artifacts;

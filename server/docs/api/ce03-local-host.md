@@ -201,7 +201,11 @@ The source bundle uses canonical JSON:
 Paths are ordinal sorted project-relative forward-slash paths. Duplicate paths,
 parent traversal, symlink escape, invalid UTF8 and oversized bundles reject.
 Content preserves exact UTF8 text including original line endings/BOM. The
-explicit list must include the runner, engine, commands, adapter, checkpoint,
+source count limit is 1024 (increased from 512 after Unity reported 548 runtime
+sources in its single assembly). The existing total canonical bundle limit of
+8,000,000 characters and per-source 8,000,000-byte limit are unchanged. A larger
+file count does not authorize omitting dependencies or exceeding size bounds.
+The explicit list must include the runner, engine, commands, adapter, checkpoint,
 journal and relevant dependencies. Source inclusion/completeness and the actual
 runner assertions require review; spawning any arbitrary program is not proof
 of conformance. The runner must execute the corresponding current compiled code.
