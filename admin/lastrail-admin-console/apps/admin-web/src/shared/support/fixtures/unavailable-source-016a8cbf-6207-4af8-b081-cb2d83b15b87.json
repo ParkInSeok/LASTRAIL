@@ -1,0 +1,34 @@
+{
+  "permission": "SUPPORT_READ",
+  "permissionMode": "ROLE_PERMISSION",
+  "version": "admin-player-activities-v1",
+  "accountId": "a",
+  "observedAt": 1789187792969,
+  "consistency": "INDEPENDENT_LIVE_READS",
+  "readOnly": true,
+  "shop": {
+    "availability": "UNCONFIGURED",
+    "reason": "crystal_policy_unconfigured",
+    "data": null
+  },
+  "monthlyAttendance": {
+    "availability": "UNCONFIGURED",
+    "reason": "monthly_attendance_unconfigured",
+    "data": null
+  },
+  "pass": {
+    "availability": "UNCONFIGURED",
+    "reason": "recurring_policy_unconfigured",
+    "data": null
+  },
+  "ordinaryQuests": {
+    "availability": "UNCONFIGURED",
+    "reason": "recurring_policy_unconfigured",
+    "data": null
+  },
+  "mail": {
+    "availability": "UNAVAILABLE",
+    "reason": "source_read_failed",
+    "data": null
+  }
+}

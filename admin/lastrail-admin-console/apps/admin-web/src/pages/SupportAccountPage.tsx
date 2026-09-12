@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { SupportPolicyReads } from "../shared/support/SupportPolicyReads";
 import { adminApi } from "../shared/api/client";
 import { adminReadStatusLabel, adminReadValueLabel } from "../shared/api/errorDisplay";
 import {
@@ -501,7 +502,7 @@ export const supportRepairAuditCards: SupportCard[] = customerSupportRepairAudit
 }));
 
 export function SupportAccountPage() {
-  const { accountId = "연동 대기" } = useParams();
+  const { accountId = "pending" } = useParams();
   const isPlaceholderAccountId = accountId === "pending";
   const query = useQuery({
     queryKey: ["support-account", accountId],
@@ -509,8 +510,15 @@ export function SupportAccountPage() {
     retry: false,
     enabled: !isPlaceholderAccountId
   });
-  const summary = query.data ?? emptySupportAccountSummary(isPlaceholderAccountId ? "계정 ID 선택 필요" : accountId);
-  const hasSummaryData = Boolean(query.data);
+  const safeSummary = !query.isError && query.data?.account.accountId === accountId ? query.data : undefined;
+  const activities = useQuery({
+    queryKey: ["player-activities", accountId],
+    queryFn: () => adminApi.playerActivities(accountId),
+    enabled: !isPlaceholderAccountId,
+    retry: false
+  });
+  const summary = safeSummary ?? emptySupportAccountSummary(isPlaceholderAccountId ? "계정 ID 선택 필요" : accountId);
+  const hasSummaryData = Boolean(safeSummary);
   const opsErrorRows = supportOpsErrorEvidenceRows(summary.opsErrors, !hasSummaryData);
   const recentRunRows = supportRecentRunEvidenceRows(summary.recentRuns, !hasSummaryData);
   const loginBonusRows = supportLoginBonusEvidenceRows(summary.loginBonus);
@@ -521,6 +529,7 @@ export function SupportAccountPage() {
         <h1>CS 지원</h1>
         <p>{summary.account.displayName === "연동 대기" ? accountId : summary.account.displayName}</p>
       </header>
+      <SupportPolicyReads state={isPlaceholderAccountId ? { kind: "select_account" } : activities.isError ? { kind: "error", error: activities.error } : activities.data?.accountId === accountId ? { kind: "ready", sections: activities.data.sections } : { kind: "loading" }} />
       <section className="summary-grid" aria-label="CS 지원 요약">
         <div>
           <span>권한</span>
@@ -536,7 +545,7 @@ export function SupportAccountPage() {
           <span>연동 상태</span>
           <strong>
             {supportAccountReadStatusLabel({
-              hasData: Boolean(query.data),
+              hasData: hasSummaryData,
               isError: query.isError,
               isLoading: query.isLoading,
               isPlaceholderAccountId

@@ -1,0 +1,249 @@
+{
+  "permission": "SUPPORT_READ",
+  "permissionMode": "ROLE_PERMISSION",
+  "version": "admin-player-activities-v1",
+  "accountId": "a",
+  "observedAt": 1789187793042,
+  "consistency": "INDEPENDENT_LIVE_READS",
+  "readOnly": true,
+  "shop": {
+    "availability": "UNCONFIGURED",
+    "reason": "crystal_policy_unconfigured",
+    "data": null
+  },
+  "monthlyAttendance": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "activityId": "monthly",
+      "policyVersion": "monthly",
+      "cycleId": "2026-09",
+      "active": true,
+      "canAttend": false,
+      "unavailableReason": "elite_ticket_binding_missing",
+      "revision": 0,
+      "completedCells": 0,
+      "todayAttended": false,
+      "recoveryUsed": 0,
+      "recoverableCount": 7,
+      "cells": [
+        {
+          "cell": 1,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 2,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 3,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 4,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 5,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 6,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 7,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 8,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 9,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 10,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 11,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 12,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 13,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 14,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 15,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 16,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 17,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 18,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 19,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 20,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 21,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 22,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 23,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 24,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 25,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 26,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 27,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": null
+        },
+        {
+          "cell": 28,
+          "claimed": false,
+          "source": null,
+          "dayIndex": null,
+          "unavailableReason": "elite_ticket_binding_missing"
+        }
+      ]
+    }
+  },
+  "pass": {
+    "availability": "UNCONFIGURED",
+    "reason": "recurring_policy_unconfigured",
+    "data": null
+  },
+  "ordinaryQuests": {
+    "availability": "UNCONFIGURED",
+    "reason": "recurring_policy_unconfigured",
+    "data": null
+  },
+  "mail": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "limit": 100,
+      "hasMore": false,
+      "claimabilitySource": "RECORDED_RIGHT_AND_EXPIRY_NOT_MUTATION_PREFLIGHT",
+      "items": []
+    }
+  }
+}

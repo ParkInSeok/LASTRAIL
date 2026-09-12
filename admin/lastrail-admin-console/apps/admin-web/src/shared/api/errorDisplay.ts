@@ -34,6 +34,9 @@ function stringOrFallback(value: string | undefined, fallback: string): string {
 
 function reasonFor(error: unknown): Pick<AdminRequestFailureDisplay, "reason" | "nextStep"> {
   if (error instanceof AdminApiError) {
+    if (error.errorCode === "ADMIN_ACCOUNT_RESPONSE_MISMATCH") {
+      return { reason: "요청 계정과 응답 계정 확인 필요", nextStep: "다른 계정의 데이터는 표시하지 않습니다. 계정 목록과 API 응답을 확인하세요." };
+    }
     if (error.path.startsWith("/api/client-releases") && error.status === 404) {
       return { reason: "버전 등록 API 배포 확인 필요", nextStep: "현재 대상 Admin API의 registry 지원 여부를 확인하세요. 다른 서버로 자동 전환하지 않습니다." };
     }

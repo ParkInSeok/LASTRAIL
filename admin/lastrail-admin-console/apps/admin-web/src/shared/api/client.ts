@@ -1,4 +1,5 @@
 import { ticketList, ticketDetail } from "../support/tickets";
+import { mapPlayerActivities } from "../support/playerActivities";
 import { mapDeployment, type DeploymentService } from "../release/serverDeployment";
 import { buildRegistryCommand, mapClientRegistry, type ClientRegistry, type RegistryEditContext, type RegistryInput, type RegistryTarget } from "../release/clientReleaseRegistry";
 import {
@@ -300,10 +301,15 @@ export const adminApi = {
     );
   },
   async supportAccountSummary(accountId: string) {
-    return mapSupportAccountSummaryResponse(
-      await readJson(`/api/support/accounts/${encodeURIComponent(accountId)}`),
-      accountId
-    );
+    const path = `/api/support/accounts/${encodeURIComponent(accountId)}`;
+    const raw = await readJson(path);
+    const identity = raw && typeof raw === "object" ? (raw as { account?: { accountId?: unknown } }).account?.accountId : undefined;
+    if (identity !== accountId) throw new AdminApiError({ status: 200, path, errorCode: "ADMIN_ACCOUNT_RESPONSE_MISMATCH" });
+    return mapSupportAccountSummaryResponse(raw, accountId);
+  },
+  async playerActivities(accountId: string) {
+    const path = `/api/players/${encodeURIComponent(accountId)}/activity-summary`;
+    return mapPlayerActivities(await readJson(path), accountId);
   },
   async supportTickets(filters: Record<string, string>) {
     return ticketList(await readJson(`/api/support/tickets${queryString(filters)}`));
