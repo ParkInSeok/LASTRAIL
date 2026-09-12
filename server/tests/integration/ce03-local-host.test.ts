@@ -65,6 +65,11 @@ describe("disposable authenticated CE03 host (synthetic verifier fixtures only)"
     expect(prepareSha256).toBe(await sha256Hex(canonicalJson(context)));
     expect(f.verifier.verify).toHaveBeenCalledWith(expect.objectContaining({ prepareSha256,
       presentationManifestSha256: await sha256Hex(canonicalJson(f.prepared.presentationManifest)) }));
+    await mkdir("audit-results/ce03-local-host/synthetic-r6-exchanges", { recursive: true });
+    await writeFile(`audit-results/ce03-local-host/synthetic-r6-exchanges/${accepted.runId}.json`, JSON.stringify({
+      scope: "SYNTHETIC_VERIFIER_TRANSPORT_ONLY", actualConsumerVerified: false, actualBattleExecuted: false,
+      prepare: f.prepared, startRequest: f.startBody, startIdempotencyKey: "original.start.key !", startResponse: accepted,
+    }, null, 2) + "\n");
   });
   it.each(["v2", "manifestHash", "ownerHash", "coverage"])("refuses %s presentation evidence before admission", async mode => {
     const f = await fixture(true, true), artifacts = (await f.options.artifacts())!;

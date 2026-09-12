@@ -357,3 +357,43 @@ Manifest and verification file hashes equal the first reproduction above. The
 prepare's JSON property order changed with typed response validation; its canonical
 prepareSha256 is unchanged. Explicit historical `--legacy-r4 --self-check` also
 passed with no provider, zero runs and fuel30 unchanged.
+
+## First actual runner execution: review remains closed
+
+`scripts/validation/verify-ce03-runner-closed.ts` preserves the first frozen
+diagnostic packet, not an accepting provider launcher. It has no argument override
+and pins source bundle SHA
+`be341ad1bfe76ebe4828cf0a7b523c305f69407b12f1bd188215b57359327546`.
+It starts a fresh authenticated disposable HTTP host, saves support and reads its
+full prepare, executes Unity through `executeCe03ConsumerRunner`, then confirms
+the same host still refuses START without a provider. It never submits the
+runner's test-seed victory as an actual account result. Future source changes
+intentionally invalidate this historical diagnostic; review a new packet for the
+next integration unit rather than silently replacing its pin.
+
+2026-09-12 actual execution: 554 sources, bundle 2,393,158 bytes, Unity 6000.3.22f1
+executable SHA `36bafe49cfd65d4c91889167ca051f755195621a8f734392ad33ccccb5c1bba7`,
+20.409 seconds, exit0, runner-reported11PASS. Artifacts are under
+`audit-results/ce03-actual-runner/closed-review-ivKSvn/ce03-execution-KiWlUT/output`.
+Verification file in the parent `closed-review-ivKSvn` has raw SHA
+`29158BD00712A0FC14EB7D0B2AF36FA7126D7B9712AEAF744361BF373527CCD3`;
+report canonical/raw SHA is
+`fb2ca3d301285f102ca12b5c0d4e328125f1c24d3b65281c19d8d24927689c29`.
+This is actual process execution, separately from the earlier synthetic processes.
+
+Independent review still rejects treating that report as full admission proof:
+the frozen Unity `Ce03AcceptedCombat` erroneously requires r6 content.version to
+equal baseProfile.profileId, and its JOURNAL_RECOVERY case tests support saving
+without testing START receipt/key/seed recovery. The runner does execute effect
+value, waves, determinism, checkpoint and asset checks, but its accepted-envelope
+path is absent. Both findings were sent to Unity, which is adding explicit r6
+validation and START/accepted-consumer coverage. ProviderInstalled=false,
+actualAccountRun=false, START409 missing artifacts, zero runs and fuel30 remain.
+
+`ce03-local-host.test.ts` also exports clearly labeled
+`synthetic-r6-exchanges/<runId>.json` fixtures containing prepare, start request,
+original key and response. These use synthetic locators and verification, and are
+only for parser/journal transport tests; never load them as actual battle content
+or consume them as admission. The original sample is
+`run_75f2337a-b608-4f5e-8c99-d53930107567.json`, raw SHA
+`533D29EBE07DD2A8C1A3138D1D5031FCD51F6363E852417595E2E33FD9589E26`.
