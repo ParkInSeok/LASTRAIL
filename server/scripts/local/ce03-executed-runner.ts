@@ -6,12 +6,13 @@ import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { canonicalJson, sha256Hex } from "@lastrail/common";
 import type { ConsumerAttestationVerifier } from "../../apps/game-api/src/ce03-consumer-attestation";
 import { presentationSourcePaths, validatePresentationManifest } from "../../apps/game-api/src/ce03-presentation-manifest";
+import { dynamicResourceManifestPath, pinDynamicResources } from "./ce03-dynamic-resources";
 
 type Json = Parameters<typeof canonicalJson>[0];
 export type Ce03RunnerPaths = { outputDirectory: string; sourceBundlePath: string; preparePath: string };
 type Options = { executable: string; cwd: string; sourceRoot: string; sourceFiles: readonly string[]; outputRoot: string;
   prepare: { ownedSelection: Json; carriageOwnership: Json; draft: Json; commandContract: Json; prepareSha256: string; presentationManifest?: Json };
-  buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number; reviewedSourceBundleSha256?: string };
+  buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number; reviewedSourceBundleSha256?: string; dynamicResourceClosurePath?: string };
 async function fileHash(path: string) {
   const hash = createHash("sha256"); for await (const chunk of createReadStream(path)) hash.update(chunk);
   return hash.digest("hex");
@@ -48,12 +49,19 @@ export async function executeCe03ConsumerRunner(options: Options) {
   if (options.reviewedSourceBundleSha256 !== undefined &&
       (!/^[a-f0-9]{64}$/u.test(options.reviewedSourceBundleSha256) || await sha256Hex(algorithmSource) !== options.reviewedSourceBundleSha256))
     throw new Error("ce03_runner_reviewed_source_mismatch");
+  let resourcesUnchanged: (() => Promise<boolean>) | undefined;
+  if (options.dynamicResourceClosurePath !== undefined) {
+    const manifest = files.find(f => f.path === options.dynamicResourceClosurePath);
+    if (options.reviewedSourceBundleSha256 === undefined || options.dynamicResourceClosurePath !== dynamicResourceManifestPath || !manifest)
+      throw new Error("ce03_runner_dynamic_resource_configuration_invalid");
+    resourcesUnchanged = await pinDynamicResources(root, manifest.content);
+  }
   const sourceUnchanged = async () => {
     for (let i = 0; i < actualPaths.length; i++) {
       const current = await realpath(resolve(root, files[i]!.path)); inside(root, current);
       if (current !== actualPaths[i] || await fileHash(current) !== files[i]!.sha256) return false;
     }
-    return await fileHash(executable) === executableSha256;
+    return await fileHash(executable) === executableSha256 && (resourcesUnchanged === undefined || await resourcesUnchanged());
   };
   // All identity inputs are snapshotted before launching, with no credentials.
   const { ownedSelection, carriageOwnership, draft, commandContract, presentationManifest, prepareSha256 } = options.prepare;
@@ -80,6 +88,7 @@ export async function executeCe03ConsumerRunner(options: Options) {
   if (!args.every(a => typeof a === "string")) throw new Error("ce03_runner_arguments_invalid");
   const timeoutMs = options.timeoutMs ?? 600000;
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 1800000) throw new Error("ce03_runner_timeout_invalid");
+  if (resourcesUnchanged !== undefined && !await sourceUnchanged()) throw new Error("ce03_runner_source_changed");
   const startedAt = Date.now();
   await new Promise<void>((resolveRun, reject) => {
     const child = spawn(executable, args, { cwd: options.cwd, shell: false, windowsHide: true, stdio: "ignore" });

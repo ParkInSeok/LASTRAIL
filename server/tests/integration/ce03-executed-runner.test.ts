@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { mkdtemp, mkdir, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { createHash } from "node:crypto";
 import { canonicalJson, sha256Hex } from "@lastrail/common";
 import { executeCe03ConsumerRunner } from "../../scripts/local/ce03-executed-runner";
 import { presentationFixture } from "../helpers/ce03-presentation-fixture";
@@ -28,6 +29,63 @@ await writeFile(join(out,'runner-report-v2.json'),'synthetic report');`);
     buildArgs: (paths: { outputDirectory: string; sourceBundlePath: string }) => [entry, paths.outputDirectory, paths.sourceBundlePath, source],
     timeoutMs: mode === "timeout" ? 100 : 5000 } };
 }
+async function dynamicFixture(mode = "pass") {
+  const f = await fixture(mode), manifestPath = "QA/Ce03CommandIntegration/dynamic-resource-closure.json";
+  const abilities = ["op_kyle.active", "op_kyle.ultimate", "op_reina.active", "op_reina.ultimate", "op_eve.active", "op_eve.ultimate", "op_sera.active", "op_sera.ultimate", "op_mira.active", "op_mira.ultimate", "support_fire", "barrier", "emergency_repair"];
+  const keys = [...abilities.map(id => `CombatPresentation/Audio/${id}`), ...abilities.map(id => `CombatPresentation/EffectAudio/${id}-0`),
+    ...["op_kyle.active-1", "op_sera.active-1", "op_sera.active-2", "op_sera.ultimate-1", "op_mira.ultimate-1"].map(id => `CombatPresentation/EffectAudio/${id}`), "CombatPresentation/Audio/levels", "CombatPresentation/EffectAudio/bindings"].sort();
+  const rows = [];
+  for (const [i, resourceKey] of keys.entries()) {
+    const type = resourceKey.endsWith("/levels") || resourceKey.endsWith("/bindings") ? "TextAsset" : "AudioClip";
+    const path = `Assets/_LASTRAIL/Resources/${resourceKey}${type === "AudioClip" ? ".wav" : ".json"}`;
+    const raw = Buffer.from([0, 255, i]), meta = `guid: ${i.toString(16).padStart(32, "0")}\n`;
+    await mkdir(dirname(join(f.root, path)), { recursive: true }); await writeFile(join(f.root, path), raw); await writeFile(join(f.root, path + ".meta"), meta);
+    rows.push({ resourceKey, path, type, guid: i.toString(16).padStart(32, "0"), localFileId: "8300000", rawSha256: createHash("sha256").update(raw).digest("hex"), metaSha256: await sha256Hex(meta) });
+  }
+  await mkdir(dirname(join(f.root, manifestPath)), { recursive: true });
+  const manifest = { schema: "ce03-dynamic-resource-closure-v1", unityVersion: "6000.3.22f1", rows };
+  await writeFile(join(f.root, manifestPath), canonicalJson(manifest)); f.options.sourceFiles.push(manifestPath);
+  const repin = async () => {
+    const files = []; for (const path of [...f.options.sourceFiles].sort()) { const content = await readFile(join(f.root, path), "utf8"); files.push({ path, content, sha256: await sha256Hex(content) }); }
+    return sha256Hex(canonicalJson({ schemaVersion: "ce03-source-bundle-v1", files }));
+  };
+  return { ...f, manifest, manifestPath, repin, resource: join(f.root, rows[0]!.path), options: { ...f.options, dynamicResourceClosurePath: manifestPath, reviewedSourceBundleSha256: await repin() } };
+}
+
+it("pins dynamic raw and meta bytes before spawn, after execution and every provider verification", async () => {
+  const f = await dynamicFixture(), result = await executeCe03ConsumerRunner(f.options), a = result.artifacts;
+  const request = { ...a, reportSha256: await sha256Hex(a.reportJson), draftSha256: await sha256Hex(canonicalJson(f.options.prepare.draft)), simulationVersion: "fixture", algorithmSourceSha256: await sha256Hex(a.algorithmSource), vectorsSha256: await sha256Hex(a.vectorsJson), checkpointSchemaSha256: await sha256Hex(a.checkpointSchema), commandContractJson: canonicalJson({}), commandContractSha256: await sha256Hex(canonicalJson({})) };
+  expect(await result.verifier.verify(request)).toBe(true);
+  const raw = await readFile(f.resource); await writeFile(f.resource, "changed");
+  expect(await result.verifier.verify(request)).toBe(false);
+  await writeFile(f.resource, raw); await writeFile(f.resource + ".meta", "changed meta");
+  expect(await result.verifier.verify(request)).toBe(false);
+});
+it("rejects dynamic resource drift before and during the runner", async () => {
+  const before = await dynamicFixture(); await writeFile(before.resource, "changed");
+  await expect(executeCe03ConsumerRunner(before.options)).rejects.toThrow("ce03_runner_dynamic_resource_mismatch");
+  const during = await dynamicFixture("mutate");
+  await expect(executeCe03ConsumerRunner({ ...during.options, buildArgs: paths => [during.entry, paths.outputDirectory, paths.sourceBundlePath, during.resource] })).rejects.toThrow("ce03_runner_source_changed");
+});
+it("requires reviewed bundled canonical closure with the exact closed resource set", async () => {
+  const f = await dynamicFixture();
+  await expect(executeCe03ConsumerRunner({ ...f.options, dynamicResourceClosurePath: "missing.json" })).rejects.toThrow();
+  const { reviewedSourceBundleSha256: _pin, ...unreviewed } = f.options;
+  expect(_pin).toHaveLength(64);
+  await expect(executeCe03ConsumerRunner(unreviewed)).rejects.toThrow("ce03_runner_dynamic_resource_configuration_invalid");
+  f.manifest.rows.pop(); await writeFile(join(f.root, f.manifestPath), canonicalJson(f.manifest));
+  await expect(executeCe03ConsumerRunner({ ...f.options, reviewedSourceBundleSha256: await f.repin() })).rejects.toThrow();
+});
+it.each(["path", "duplicate", "unknown", "meta"])("rejects dynamic manifest mismatch %s before spawn", async mode => {
+  const f = await dynamicFixture("mutate");
+  if (mode === "path") f.manifest.rows[0]!.path = "../outside.wav";
+  if (mode === "duplicate") f.manifest.rows[1] = { ...f.manifest.rows[0]! };
+  const manifest = mode === "unknown" ? { ...f.manifest, permit: true } : f.manifest;
+  if (mode === "meta") await writeFile(f.resource + ".meta", "changed");
+  await writeFile(join(f.root, f.manifestPath), canonicalJson(manifest));
+  await expect(executeCe03ConsumerRunner({ ...f.options, reviewedSourceBundleSha256: await f.repin() })).rejects.toThrow();
+  expect(await readFile(f.source, "utf8")).toBe("synthetic simulation code\r\n");
+});
 describe("executed runner provider plumbing (synthetic process only)", () => {
   it("rejects a different reviewed source pin before executing any runner", async () => {
     const f = await fixture("mutate");

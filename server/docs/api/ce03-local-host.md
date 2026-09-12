@@ -517,3 +517,36 @@ FAILED followed by accountGET200, no provider; test listener was then stopped.
 The new positive persistent provider/UI/restart run awaits the next reviewed
 Unity source packet. Earlier actual15wave/claim evidence remains completed and
 is not being reclassified as normal UI or process-restart proof.
+
+## Opt-in dynamic resource byte pins
+
+Add `--dynamic-resource-closure` (boolean, no value) to a reviewed persistent
+Approved invocation. It requires the existing paired `--reviewed-source-files`
+and `--reviewed-source-sha256`; self-check and historical legacy mode reject it.
+The source list must include exactly the project-relative manifest path
+`QA/Ce03CommandIntegration/dynamic-resource-closure.json`. The helper API option
+is `dynamicResourceClosurePath` with that same relative path.
+
+The manifest must be canonical JSON emitted by the reviewed Unity exporter:
+`schema:ce03-dynamic-resource-closure-v1`, `unityVersion:6000.3.22f1`, and exactly
+33 ordinal resourceKey rows. Each row has only resourceKey, path, type, guid,
+localFileId, rawSha256 and metaSha256. The closed set is13 cast clips,18 effect
+clips, `Audio/levels` and `EffectAudio/bindings`. Resource paths are fixed to
+`Assets/_LASTRAIL/Resources/<resourceKey>.wav` for AudioClip or `.json` for
+TextAsset; meta is path plus `.meta`. GUIDs are distinct32lowerhex, local IDs
+canonical signed-int64 strings, hashes64lowerhex. Unknown/missing/reordered rows
+or fields, mismatched types/paths and noncanonical JSON reject.
+
+Only the manifest text enters the reviewed source bundle. Binary audio must not
+be decoded as source text. New `scripts/local/ce03-dynamic-resources.ts` resolves
+and pins all66 original/meta files, rejects paths escaping the real project root
+and duplicate resolved files, and streams raw SHA256 comparisons. Checks occur
+at pin creation, immediately before spawn, after successful execution and on
+every verifier call. Resource/manifest/source/executable drift prevents provider
+verification. Absence of this opt-in keeps the historical helper behavior.
+
+These Node checks prove bytes and physical path identity. Actual Resources.Load,
+GUID/localFileId/object type, importer semantics and complete resource usage are
+still checked by the reviewed Unity loader/runner. New resource pins do not
+extend r6 presentation roles or themselves prove consumer coverage. The next
+complete Unity source/resource packet and actual execution remain required.

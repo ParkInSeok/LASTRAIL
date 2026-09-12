@@ -23,14 +23,15 @@ import { attestLocalConsumer } from "../../apps/game-api/src/ce03-consumer-attes
 const args = process.argv.slice(2), flags = new Map<string, string>();
 for (let i = 0; i < args.length; i++) {
   const arg = args[i]!;
-  if (flags.has(arg) || !["--self-check", "--legacy-r4", "--lobby-bootstrap", "--presentation-audit", "--unity-project", "--ugui-package-root", "--reviewed-source-files", "--reviewed-source-sha256"].includes(arg)) throw new Error("Invalid or duplicate argument");
-  const value = ["--self-check", "--legacy-r4", "--lobby-bootstrap"].includes(arg) ? "true" : args[++i];
+  if (flags.has(arg) || !["--self-check", "--legacy-r4", "--lobby-bootstrap", "--dynamic-resource-closure", "--presentation-audit", "--unity-project", "--ugui-package-root", "--reviewed-source-files", "--reviewed-source-sha256"].includes(arg)) throw new Error("Invalid or duplicate argument");
+  const value = ["--self-check", "--legacy-r4", "--lobby-bootstrap", "--dynamic-resource-closure"].includes(arg) ? "true" : args[++i];
   if (!value || value.startsWith("--")) throw new Error("Missing argument value"); flags.set(arg, value);
 }
 const selfCheck = flags.has("--self-check"), legacy = flags.has("--legacy-r4");
 const reviewed = flags.has("--reviewed-source-files");
 if (reviewed !== flags.has("--reviewed-source-sha256") || reviewed && (legacy || selfCheck)) throw new Error("Reviewed source pair requires persistent Approved mode");
 if (reviewed) sha.parse(flags.get("--reviewed-source-sha256"));
+if (flags.has("--dynamic-resource-closure") && !reviewed) throw new Error("Dynamic resource closure requires reviewed persistent mode");
 if (legacy && flags.size > (selfCheck ? 2 : 1)) throw new Error("Legacy and presentation arguments cannot be combined");
 if (!legacy && ["--presentation-audit", "--unity-project", "--ugui-package-root"].some(k => !flags.has(k)))
   throw new Error("Approved view requires --presentation-audit, --unity-project and --ugui-package-root. Historical regression requires explicit --legacy-r4.");
@@ -138,6 +139,7 @@ if (selfCheck) {
         const executed = await executeCe03ConsumerRunner({ executable: "D:/Program Files/Unity/Hub/Editor/6000.3.22f1/Editor/Unity.exe",
           cwd: flags.get("--unity-project")!, sourceRoot: flags.get("--unity-project")!, sourceFiles, outputRoot: output,
           reviewedSourceBundleSha256: flags.get("--reviewed-source-sha256")!, prepare: current,
+          ...(flags.has("--dynamic-resource-closure") ? { dynamicResourceClosurePath: "QA/Ce03CommandIntegration/dynamic-resource-closure.json" } : {}),
           buildArgs: paths => ["-batchmode", "-nographics", "-projectPath", flags.get("--unity-project")!, "-executeMethod", "Ce03ConsumerEvidenceRunner.Run",
             "-ce03Output", paths.outputDirectory, "-ce03SourceBundle", paths.sourceBundlePath, "-ce03Prepare", paths.preparePath,
             "-logFile", resolve(paths.outputDirectory, "..", "unity.log")] });
