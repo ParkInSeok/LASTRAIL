@@ -5,5 +5,8 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
-  "include": ["src/**/*.ts", "worker-configuration.d.ts", "../../packages/common/src/**/*.ts"]
+  "include": ["src/**/*.ts", "worker-configuration.d.ts", "../../packages/common/src/**/*.ts",
+    "../game-api/src/activity-policy.ts", "../game-api/src/crystal-wallet.ts", "../game-api/src/monthly-attendance.ts",
+    "../game-api/src/monthly-attendance-policy.ts", "../game-api/src/recurring-policy.ts", "../game-api/src/activity-grant-plan.ts",
+    "../game-api/src/activity-routes.ts", "../game-api/src/activity-service.ts", "../game-api/src/crystal-orders.ts", "../game-api/src/objective-events.ts"]
 }

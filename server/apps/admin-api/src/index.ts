@@ -13,6 +13,7 @@ import {
 import { parseVersion, readVersionSnapshot, saveVersion, type VersionBucket } from "./version-store";
 import { opsLogSearch } from "./ops-log-search";
 import { describeClientReleaseRegistry, mutateClientReleaseRegistry } from "./client-release-registry";
+import { readAdminPlayerActivities } from "./player-activities";
 
 const app = new Hono<{ Bindings: Env & { VERSION_BUCKET?: VersionBucket } }>();
 
@@ -3541,6 +3542,19 @@ app.get("/v1/admin/players", async (c) => {
     })),
   });
 });
+app.get("/v1/admin/players/:accountId/activity-summary", async c => {
+  const principal = await authenticateAdmin(c);
+  if (principal instanceof Response) return principal;
+  if (!hasAdminPermission(principal, SUPPORT_READ_PERMISSION)) return adminPermissionDenied();
+  c.header("Cache-Control", "no-store");
+  if (hasRequestBody(c) || new URL(c.req.url).search || (await c.req.text()).length > 0)
+    return c.json({ error: "contract_violation" }, 400);
+  const accountId = c.req.param("accountId");
+  if (!/^[A-Za-z0-9_.:-]{1,200}$/u.test(accountId)) return c.json({ error: "contract_violation" }, 400);
+  const summary = await readAdminPlayerActivities(c.env.DB, accountId);
+  if (summary === null) return c.json({ error: "ADMIN_PLAYER_NOT_FOUND" }, 404);
+  return c.json({ permission: SUPPORT_READ_PERMISSION, permissionMode: "ROLE_PERMISSION", ...summary });
+});
 app.get("/v1/admin/players/:accountId", async (c) => {
   const principal = await authenticateAdmin(c);
   if (principal instanceof Response) return principal;
@@ -4798,4 +4812,3 @@ app.post("/v1/admin/balance-config/drafts/:draftId/publish", async (c) => {
 });
 
 export default app;
-
