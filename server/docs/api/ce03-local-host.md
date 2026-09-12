@@ -446,3 +446,74 @@ ESLint and independent source/orchestration review. Previous full640 tests and
 host17 tests remain their earlier units; no full-suite rerun for this executable.
 After execution only stdout was shortened to avoid printing the full lifecycle;
 complete evidence remains on disk.
+### Persistent host for normal lobby and Unity restart QA
+
+The Node listener can stay alive while Unity closes, executes the conformance
+runner, and reopens. This preserves the SAME in-memory DB, port, auth session,
+original START receipts and rewards during a Unity process restart. Restarting
+Node destroys that database; no server-process durability is claimed.
+
+Five explicit GET forwards reuse existing authenticated handlers behind the
+local exact-DB/loopback/owner allowlist: `/v1/account/state`, `/v1/wallet/crystals`,
+`/v1/growth/config`, `/v1/trains/loadout`, `/v1/formation/ultimate`. All forwarded
+responses receive `Cache-Control: no-store`. Public mutations and START remain
+unmounted. No mission API was added; Unity uses its supported display row and
+existing prepare/preview authority.
+
+Optional `--lobby-bootstrap` initializes the existing `launch-economy-v1.json`
+binding in the disposable fixture and a zero-balance `cur_crystal` read policy
+with ticketExchange/purchase=null. This is explicitly different from the older
+battle-only fixture, whose economy/wallet configuration remains absent. No
+currency grant or production activation is performed. Actual response handlers,
+rather than fabricated successful bodies, provide all five reads.
+
+Persistent Approved launcher optionally takes both `--reviewed-source-files`
+(absolute source-files.json path) and `--reviewed-source-sha256` (reviewed lowercase
+canonical bundle SHA256). They cannot be used with self-check or legacy mode.
+The caller must review the complete actual source packet before supplying them.
+`executeCe03ConsumerRunner` now supports `reviewedSourceBundleSha256` and refuses a
+different bundle BEFORE spawning; normal source/executable before/after checks
+remain intact. Historical callers may omit the new optional pin.
+
+Every launcher invocation receives a unique `session-*` directory, avoiding
+private bootstrap overwrite. `connection.private.json` retains origin/accountId/
+authorization/expiresAt/disposable/dataLifetime and adds sessionDirectory,
+providerStatusPath and uiPreparePath. It never appears in reports or console.
+Its initial consumerVerifierInstalled=false is a bootstrap fact; current state
+is in provider-status.json and is ultimately enforced by START.
+
+Trusted coordination protocol:
+
+1. Unity normal UI saves selected support and obtains a full current prepare.
+   Write that prepare JSON to `<sessionDirectory>/ui-prepare.json`, retaining its
+   original owner/context; no credential belongs in this file. Close Unity.
+2. Trusted server operator sends `attest` to the existing Node terminal stdin.
+   This is not an HTTP route, and a caller cannot install a provider by editing a
+   marker. Concurrent requests are refused; previous provider is cleared first.
+3. Node compares the UI prepare and all identity fields against a fresh prepare
+   from the SAME host, runs the real helper against the reviewed source pin,
+   validates full strict attestation, and only then installs the returned verifier.
+4. Atomic `provider-status.json` reports WAITING_FOR_PREPARE, EXECUTING, VERIFIED
+   or FAILED, with origin/accountId. VERIFIED includes prepareSha256,
+   sourceBundleSha256, execution and sourceBundlePath. FAILED leaves no provider.
+5. Reopen Unity using the same private bootstrap. Require marker/prepare/source
+   identity agreement, then use normal quote/START. Reacquire a quote if expired;
+   never change a submitted original START. A new support revision requires a
+   fresh prepare/execution. Actual START rechecks current revision and source,
+   even if an older VERIFIED marker is still visible.
+
+The supported display operation and original formation/loadout/ultimate revisions
+come from the explicit local fixture. This is not a general arbitrary-operation
+runner or public provider-management API.
+
+Verification for this unit: GET missing-route RED, missing local config503 and
+forwarded no-store loss reproduced, then actual existing five GET200. Source-pin
+pre-spawn mismatch RED then two focused PASS. Full93files645testsPASS21.08seconds;
+Node/Worker typecheck, targeted lint, independent review found no remaining high
+impact issue. Actual self-check evidence `self-check-OpLPz9/verification.json`
+records5GET200/noauth401/START409missingartifacts/zero runs/fuel30. Real persistent
+terminal `session-AsuD7w/stdin-failure-verification.json` records missingUIprepare
+FAILED followed by accountGET200, no provider; test listener was then stopped.
+The new positive persistent provider/UI/restart run awaits the next reviewed
+Unity source packet. Earlier actual15wave/claim evidence remains completed and
+is not being reclassified as normal UI or process-restart proof.

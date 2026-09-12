@@ -1,7 +1,8 @@
 import { createServer } from "node:http";
 import { randomBytes } from "node:crypto";
 import { Buffer } from "node:buffer";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, stat, writeFile, rename } from "node:fs/promises";
+import { createInterface } from "node:readline";
 import { resolve } from "node:path";
 import { z } from "zod";
 import { ce03ProducerFixture, ce03Inputs } from "../../tests/helpers/ce03-producer-fixture";
@@ -13,32 +14,39 @@ import { ce03SupportSchemaSql } from "../../apps/game-api/src/ce03-support-loado
 import { localSupportCatalog, localLeaderChargePolicy, commandContractSchema } from "../../apps/game-api/src/ce03-command-contract";
 import { id, sha } from "../../apps/game-api/src/ce03-local-schema";
 import { loadPresentationFromAudit } from "../local/ce03-presentation-projection";
+import { executeCe03ConsumerRunner } from "../local/ce03-executed-runner";
+import { canonicalJson } from "@lastrail/common";
+import { attestLocalConsumer } from "../../apps/game-api/src/ce03-consumer-attestation";
 
 // Explicit disposable local account bootstrap. No remote DB argument or provider
 // bypass. This executable NEVER installs a synthetic accepting verifier.
 const args = process.argv.slice(2), flags = new Map<string, string>();
 for (let i = 0; i < args.length; i++) {
   const arg = args[i]!;
-  if (flags.has(arg) || !["--self-check", "--legacy-r4", "--presentation-audit", "--unity-project", "--ugui-package-root"].includes(arg)) throw new Error("Invalid or duplicate argument");
-  const value = arg === "--self-check" || arg === "--legacy-r4" ? "true" : args[++i];
+  if (flags.has(arg) || !["--self-check", "--legacy-r4", "--lobby-bootstrap", "--presentation-audit", "--unity-project", "--ugui-package-root", "--reviewed-source-files", "--reviewed-source-sha256"].includes(arg)) throw new Error("Invalid or duplicate argument");
+  const value = ["--self-check", "--legacy-r4", "--lobby-bootstrap"].includes(arg) ? "true" : args[++i];
   if (!value || value.startsWith("--")) throw new Error("Missing argument value"); flags.set(arg, value);
 }
 const selfCheck = flags.has("--self-check"), legacy = flags.has("--legacy-r4");
+const reviewed = flags.has("--reviewed-source-files");
+if (reviewed !== flags.has("--reviewed-source-sha256") || reviewed && (legacy || selfCheck)) throw new Error("Reviewed source pair requires persistent Approved mode");
+if (reviewed) sha.parse(flags.get("--reviewed-source-sha256"));
 if (legacy && flags.size > (selfCheck ? 2 : 1)) throw new Error("Legacy and presentation arguments cannot be combined");
 if (!legacy && ["--presentation-audit", "--unity-project", "--ugui-package-root"].some(k => !flags.has(k)))
   throw new Error("Approved view requires --presentation-audit, --unity-project and --ugui-package-root. Historical regression requires explicit --legacy-r4.");
 const presentation = legacy ? undefined : await loadPresentationFromAudit(flags.get("--presentation-audit")!, flags.get("--unity-project")!,
   { "com.unity.ugui": flags.get("--ugui-package-root")! });
-const f = await ce03ProducerFixture();
+const f = await ce03ProducerFixture(flags.has("--lobby-bootstrap"));
 f.sql.run(ce03SupportSchemaSql); f.sql.run(ce03HostSchemaSql);
 const now = Date.now(), ttlMs = 8 * 60 * 60 * 1000, secret = randomBytes(32).toString("base64url");
 f.env.AUTH_SIGNING_KEY_CURRENT = secret;
 f.sql.run("UPDATE auth_sessions SET expires_at=? WHERE id='s'", [now + ttlMs]);
 const token = await createAccessToken({ secret, accountId: "a", sessionId: "s", nowMs: now, ttlMs });
 const headers = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" };
-const host = createCe03LocalHost({ disposableDatabase: f.env.DB, allowedAccountIds: ["a"], authenticate: resolveAuthContext,
-  presentation: presentation ? { mode: "APPROVED_VIEW_V1", manifest: presentation.manifest } : { mode: "LEGACY_R4" },
-  inputs: ce03Inputs(), supportCatalog: localSupportCatalog, leaderPolicy: localLeaderChargePolicy });
+const hostOptions = { disposableDatabase: f.env.DB, allowedAccountIds: ["a"], authenticate: resolveAuthContext,
+  presentation: presentation ? { mode: "APPROVED_VIEW_V1" as const, manifest: presentation.manifest } : { mode: "LEGACY_R4" as const },
+  inputs: ce03Inputs(), supportCatalog: localSupportCatalog, leaderPolicy: localLeaderChargePolicy };
+let host = createCe03LocalHost(hostOptions);
 let origin = "";
 const server = createServer(async (req, res) => {
   try {
@@ -60,7 +68,7 @@ await new Promise<void>(resolveListen => server.listen(0, "127.0.0.1", resolveLi
 const address = server.address(); if (!address || typeof address === "string") throw new Error("No loopback listener");
 origin = `http://127.0.0.1:${address.port}`;
 const outputRoot = resolve("audit-results/ce03-local-host"); await mkdir(outputRoot, { recursive: true });
-const output = selfCheck ? await mkdtemp(resolve(outputRoot, "self-check-")) : outputRoot;
+const output = await mkdtemp(resolve(outputRoot, selfCheck ? "self-check-" : "session-"));
 if (selfCheck) {
   try {
     const post = (path: string, data: unknown, key: string) => fetch(origin + path, { method: "POST", headers: { ...headers, "Idempotency-Key": key }, body: JSON.stringify(data) });
@@ -73,11 +81,17 @@ if (selfCheck) {
     const response = await post("/__local/ce03/start", { operationPreviewId: quote.operationPreviewId, expectedSupportRevision: 1, prepareSha256: prepared.prepareSha256 }, "self-check-start");
     const refused = z.object({ errorCode: z.string() }).parse(await response.json());
     if (denied.status !== 401 || saved.status !== 200 || response.status !== 409 || refused.errorCode !== "ce03_consumer_artifacts_missing" || f.scalar("SELECT COUNT(*) FROM runs") !== 0 || f.scalar("SELECT fuel FROM fuel_state WHERE account_id='a'") !== 30) throw new Error("Self-check failed");
+    const lobbyReads: Record<string, number> = {};
+    if (flags.has("--lobby-bootstrap")) for (const path of ["/v1/account/state", "/v1/wallet/crystals", "/v1/growth/config", "/v1/trains/loadout", "/v1/formation/ultimate"]) {
+      const read = await fetch(origin + path, { headers }); lobbyReads[path] = read.status;
+      if (read.status !== 200 || read.headers.get("Cache-Control") !== "no-store") throw new Error("Lobby bootstrap read failed");
+    }
     await writeFile(resolve(output, presentation ? "prepare-r6.json" : "prepare-v5.json"), JSON.stringify(prepared, null, 2) + "\n");
     if (presentation) await writeFile(resolve(output, "presentation-manifest.json"), JSON.stringify(presentation.manifest, null, 2) + "\n");
     const verification = { scope: "DISPOSABLE_LOOPBACK_HTTP", authenticated: true, unauthorizedStatus: denied.status,
       startStatus: response.status, errorCode: refused.errorCode, consumerVerifierInstalled: false,
       presentationVerification: presentation?.verification ?? null,
+      lobbyReads,
       runCreated: false, combatSeedIssued: false, fuel: 30, selectedSupport: prepared.commandContract.support, leaderPolicy: prepared.commandContract.leader };
     await writeFile(resolve(output, "verification.json"), JSON.stringify(verification, null, 2) + "\n");
     console.log(JSON.stringify({ output, ...verification }));
@@ -88,6 +102,58 @@ if (selfCheck) {
   // Credentials stay in a local private bootstrap file, never console logs or reports.
   const connection = resolve(output, "connection.private.json");
   await writeFile(connection, JSON.stringify({ origin, accountId: "a", authorization: headers.Authorization, expiresAt: now + ttlMs,
-    disposable: true, dataLifetime: "PROCESS", consumerVerifierInstalled: false }, null, 2) + "\n", { mode: 0o600 });
-  console.log(JSON.stringify({ origin, connection, disposable: true, consumerVerifierInstalled: false }));
+    disposable: true, dataLifetime: "PROCESS", sessionDirectory: output, consumerVerifierInstalled: false,
+    providerStatusPath: resolve(output, "provider-status.json"), uiPreparePath: resolve(output, "ui-prepare.json") }, null, 2) + "\n", { mode: 0o600 });
+  const statusPath = resolve(output, "provider-status.json");
+  const publish = async (value: object) => {
+    await writeFile(statusPath + ".pending", JSON.stringify({ origin, accountId: "a", ...value }, null, 2) + "\n");
+    await rename(statusPath + ".pending", statusPath);
+  };
+  await publish({ status: "WAITING_FOR_PREPARE", reviewedSourceBundleSha256: flags.get("--reviewed-source-sha256") ?? null });
+  console.log(JSON.stringify({ origin, connection, sessionDirectory: output, disposable: true, consumerVerifierInstalled: false }));
+  // Only the trusted local terminal can request execution. There is no HTTP
+  // accepting route, editable status-file bypass, or output-only provider load.
+  let busy = false;
+  const terminal = createInterface({ input: process.stdin });
+  terminal.on("line", line => {
+    if (line.trim() !== "attest" || busy || !reviewed) { console.log("Command unavailable; reviewed idle session accepts attest only."); return; }
+    busy = true;
+    void (async () => {
+      // Clear the previous provider before any new attempt; original receipt
+      // recovery remains available through the unchanged database.
+      host = createCe03LocalHost(hostOptions);
+      try {
+        await publish({ status: "EXECUTING" });
+        const uiPath = resolve(output, "ui-prepare.json");
+        if ((await stat(uiPath)).size > 8_000_000) throw new Error("UI prepare too large");
+        const ui = z.object({ prepareSha256: sha, commandContract: commandContractSchema }).passthrough().parse(JSON.parse(await readFile(uiPath, "utf8")));
+        const response = await fetch(origin + "/__local/ce03/prepare", { method: "POST", headers,
+          body: JSON.stringify({ selection: body, expectedSupportRevision: ui.commandContract.support.revision }) });
+        if (response.status !== 200) throw new Error("Current prepare rejected");
+        const current = await response.json() as Parameters<typeof executeCe03ConsumerRunner>[0]["prepare"];
+        if (current.prepareSha256 !== ui.prepareSha256) throw new Error("UI prepare changed");
+        for (const field of ["ownedSelection", "carriageOwnership", "draft", "commandContract", "presentationManifest"] as const)
+          if (canonicalJson(current[field] ?? null) !== canonicalJson(ui[field] as Parameters<typeof canonicalJson>[0])) throw new Error("UI context differs");
+        const sourceFiles = z.array(z.string()).min(1).max(1024).parse(JSON.parse(await readFile(flags.get("--reviewed-source-files")!, "utf8")));
+        const executed = await executeCe03ConsumerRunner({ executable: "D:/Program Files/Unity/Hub/Editor/6000.3.22f1/Editor/Unity.exe",
+          cwd: flags.get("--unity-project")!, sourceRoot: flags.get("--unity-project")!, sourceFiles, outputRoot: output,
+          reviewedSourceBundleSha256: flags.get("--reviewed-source-sha256")!, prepare: current,
+          buildArgs: paths => ["-batchmode", "-nographics", "-projectPath", flags.get("--unity-project")!, "-executeMethod", "Ce03ConsumerEvidenceRunner.Run",
+            "-ce03Output", paths.outputDirectory, "-ce03SourceBundle", paths.sourceBundlePath, "-ce03Prepare", paths.preparePath,
+            "-logFile", resolve(paths.outputDirectory, "..", "unity.log")] });
+        await attestLocalConsumer(current.draft, executed.artifacts, executed.verifier, current.commandContract,
+          { manifest: current.presentationManifest, prepareSha256: current.prepareSha256 });
+        // START revalidates owner/revision/prepare and source on every new run;
+        // a support edit during execution cannot turn this status into admission.
+        host = createCe03LocalHost({ ...hostOptions, artifacts: async () => executed.artifacts, verifier: executed.verifier });
+        await publish({ status: "VERIFIED", prepareSha256: current.prepareSha256, sourceBundleSha256: executed.execution.sourceBundleSha256,
+          execution: executed.execution, sourceBundlePath: resolve(executed.execution.outputDirectory, "..", "source-input.json") });
+        console.log(JSON.stringify({ providerStatusPath: statusPath, status: "VERIFIED", prepareSha256: current.prepareSha256 }));
+      } catch (error) {
+        host = createCe03LocalHost(hostOptions);
+        await publish({ status: "FAILED", error: error instanceof Error ? error.message : "Local execution failed" });
+        console.log(JSON.stringify({ providerStatusPath: statusPath, status: "FAILED" }));
+      } finally { busy = false; }
+    })().catch(() => { host = createCe03LocalHost(hostOptions); busy = false; console.error("Local provider status persistence failed; provider removed."); });
+  });
 }

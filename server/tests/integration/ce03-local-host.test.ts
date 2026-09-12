@@ -11,8 +11,8 @@ import { presentationFixture } from "../helpers/ce03-presentation-fixture";
 import { createAccessToken } from "../../apps/game-api/src/auth";
 import { mkdir, writeFile } from "node:fs/promises";
 
-async function fixture(evidence = true, approved = false) {
-  const f = await ce03ProducerFixture(); f.sql.run(ce03SupportSchemaSql); f.sql.run(ce03HostSchemaSql);
+async function fixture(evidence = true, approved = false, lobbyBootstrap = false) {
+  const f = await ce03ProducerFixture(lobbyBootstrap); f.sql.run(ce03SupportSchemaSql); f.sql.run(ce03HostSchemaSql);
   const artifacts = async () => {
     if (!evidence) return undefined;
     // Synthetic executed-report stand-in: tests host wiring, NOT Unity conformance.
@@ -45,6 +45,21 @@ async function fixture(evidence = true, approved = false) {
 }
 
 describe("disposable authenticated CE03 host (synthetic verifier fixtures only)", () => {
+  it("serves the owner's lobby reads while retaining local auth and explicit route scope", async () => {
+    const f = await fixture(false, false, true);
+    for (const path of ["/v1/account/state", "/v1/wallet/crystals", "/v1/growth/config", "/v1/trains/loadout", "/v1/formation/ultimate"]) {
+      const response = await f.request(path); expect(response.status, path).toBe(200);
+      expect(response.headers.get("Cache-Control")).toBe("no-store");
+      expect((await f.host.request(`http://127.0.0.1${path}`, {}, f.env)).status).toBe(401);
+      expect((await f.host.request(`https://example.com${path}`, { headers: f.headers }, f.env)).status).toBe(403);
+      expect((await f.request(path, {})).status).toBe(404);
+    }
+    expect((await f.request("/v1/account/state?accountId=b")).status).toBe(400);
+    expect((await f.request("/v1/profile")).status).toBe(404);
+    expect((await f.request("/v1/runs/start", {})).status).toBe(404);
+    expect(f.scalar("SELECT COUNT(*) FROM runs")).toBe(0);
+    expect(f.scalar("SELECT fuel FROM fuel_state WHERE account_id='a'")).toBe(30);
+  });
   it("requires an explicit presentation manifest for the approved view before preparing", async () => {
     const f = await fixture(), host = createCe03LocalHost({ ...f.options, presentation: { mode: "APPROVED_VIEW_V1" } });
     const response = await host.request("http://127.0.0.1/__local/ce03/prepare", { method: "POST", headers: f.headers,

@@ -57,6 +57,9 @@ export function createCe03LocalHost(options: Options) {
     if (!allowed.has(identity.accountId)) return c.json({ accepted: false, errorCode: "ce03_account_not_allowed" }, 403);
     if (new URL(c.req.url).search) return c.json({ accepted: false, errorCode: "contract_violation" }, 400);
     await next();
+    // Forwarded public handlers return their own Response, replacing headers
+    // prepared above. Reapply the local account response cache boundary.
+    c.header("Cache-Control", "no-store");
   });
   app.onError((error, c) => {
     if (error instanceof ActivityError) return c.json({ accepted: false, ready: false, errorCode: error.code }, error.status);
@@ -188,6 +191,10 @@ export function createCe03LocalHost(options: Options) {
     const raw = await receipt(await account(c), startIdempotencyKey, await sha256Hex(canonicalJson(original)));
     return c.json({ lookupStatus: raw === null ? "NOT_FOUND" : "COMMITTED", startResponse: raw === null ? null : JSON.parse(raw), newAttemptAuthorized: false });
   });
+  // Existing owner-scoped lobby reads, behind the same exact DB/loopback/auth
+  // boundary. Explicit GET allowlist does not mount public mutations or START.
+  for (const path of ["/v1/account/state", "/v1/wallet/crystals", "/v1/growth/config", "/v1/trains/loadout", "/v1/formation/ultimate"])
+    app.get(path, c => gameApi.fetch(c.req.raw, c.env));
   // Reuse existing settlement/recovery only for runs admitted by THIS host.
   // Do not forward ordinary START or arbitrary public endpoints.
   const lifecycle = async (c: Context<{ Bindings: Env }>) => {

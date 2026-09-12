@@ -29,6 +29,21 @@ await writeFile(join(out,'runner-report-v2.json'),'synthetic report');`);
     timeoutMs: mode === "timeout" ? 100 : 5000 } };
 }
 describe("executed runner provider plumbing (synthetic process only)", () => {
+  it("rejects a different reviewed source pin before executing any runner", async () => {
+    const f = await fixture("mutate");
+    await expect(executeCe03ConsumerRunner({ ...f.options, reviewedSourceBundleSha256: "0".repeat(64) }))
+      .rejects.toThrow("ce03_runner_reviewed_source_mismatch");
+    expect(await readFile(f.source, "utf8")).toBe("synthetic simulation code\r\n");
+  });
+  it("accepts only the exact reviewed canonical bundle when a pin is supplied", async () => {
+    const f = await fixture(), files = [];
+    for (const path of [...f.options.sourceFiles].sort()) {
+      const content = await readFile(join(f.root, path), "utf8"); files.push({ path, content, sha256: await sha256Hex(content) });
+    }
+    const pin = await sha256Hex(canonicalJson({ schemaVersion: "ce03-source-bundle-v1", files }));
+    const result = await executeCe03ConsumerRunner({ ...f.options, reviewedSourceBundleSha256: pin });
+    expect(result.execution.sourceBundleSha256).toBe(pin);
+  });
   it("includes a complete assembly up to 1024 source files without omitting files", async () => {
     const f = await fixture();
     for (let start = 0; start < 1022; start += 64) {

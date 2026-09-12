@@ -11,7 +11,7 @@ type Json = Parameters<typeof canonicalJson>[0];
 export type Ce03RunnerPaths = { outputDirectory: string; sourceBundlePath: string; preparePath: string };
 type Options = { executable: string; cwd: string; sourceRoot: string; sourceFiles: readonly string[]; outputRoot: string;
   prepare: { ownedSelection: Json; carriageOwnership: Json; draft: Json; commandContract: Json; prepareSha256: string; presentationManifest?: Json };
-  buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number };
+  buildArgs(paths: Ce03RunnerPaths): string[]; timeoutMs?: number; reviewedSourceBundleSha256?: string };
 async function fileHash(path: string) {
   const hash = createHash("sha256"); for await (const chunk of createReadStream(path)) hash.update(chunk);
   return hash.digest("hex");
@@ -45,6 +45,9 @@ export async function executeCe03ConsumerRunner(options: Options) {
   }
   const algorithmSource = canonicalJson({ schemaVersion: "ce03-source-bundle-v1", files });
   if (algorithmSource.length > 8_000_000) throw new Error("ce03_runner_artifact_too_large");
+  if (options.reviewedSourceBundleSha256 !== undefined &&
+      (!/^[a-f0-9]{64}$/u.test(options.reviewedSourceBundleSha256) || await sha256Hex(algorithmSource) !== options.reviewedSourceBundleSha256))
+    throw new Error("ce03_runner_reviewed_source_mismatch");
   const sourceUnchanged = async () => {
     for (let i = 0; i < actualPaths.length; i++) {
       const current = await realpath(resolve(root, files[i]!.path)); inside(root, current);

@@ -3,13 +3,23 @@ import { Hono } from "hono";
 import { resolveAuthContext } from "../../apps/game-api/src/index";
 import { registerLocalCombatProducer } from "../../apps/game-api/src/ce03-local-producer";
 import { setup, body } from "./departure-fixture";
+import { sha256Hex } from "@lastrail/common";
+import economySnapshot from "../../packages/balance/src/launch-economy-v1.json";
 
 export const ce03Inputs = () => ({ designJson: readFileSync("tests/fixtures/ce03/combat-stats.json", "utf8"),
   selectionJson: readFileSync("tests/fixtures/ce03/selection.json", "utf8"), bindingEvidenceJson: readFileSync("tests/fixtures/ce03/typed-bindings.json", "utf8") });
 export const ce03OperatorIds = ["op_kyle", "op_reina", "op_eve", "op_sera", "op_mira"];
 
-export async function ce03ProducerFixture() {
+export async function ce03ProducerFixture(lobbyBootstrap = false) {
   const f = await setup(false, false);
+  if (lobbyBootstrap) {
+    // Explicit UI QA bootstrap only; historical battle fixtures stay unchanged.
+    const json = JSON.stringify(economySnapshot);
+    f.sql.run("INSERT INTO economy_versions VALUES(?,?,?,0)", [economySnapshot.version, await sha256Hex(json), json]);
+    f.sql.run("INSERT INTO economy_version_bindings VALUES(1,?)", [economySnapshot.version]);
+    f.sql.run("INSERT INTO crystal_policies VALUES('ce03-lobby-read-only',?)", [JSON.stringify({ currencyId: "cur_crystal", ticketExchange: null, purchase: null })]);
+    f.sql.run("INSERT INTO crystal_policy_active VALUES(1,'ce03-lobby-read-only')");
+  }
   // In-memory DB only. Explicit named automated fixture chooses Reina; no UI default.
   for (let slot = 0; slot < 5; slot++) {
     f.sql.run("INSERT INTO account_operators(account_id,operator_id,acquired_at) VALUES('a',?,0)", [ce03OperatorIds[slot]!]);
