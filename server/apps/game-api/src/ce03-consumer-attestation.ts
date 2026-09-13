@@ -5,6 +5,7 @@ import { bindingSchema, id, policySchema, pos, sha, sourceFileSchema, templateSc
 import { validateLocalBindingClosure } from "./ce03-local-producer";
 import { commandContractSchema } from "./ce03-command-contract";
 import { validatePresentationManifest } from "./ce03-presentation-manifest";
+import { individualUltimatePolicyId, generalActivePolicyId } from "./ce03-ultimate-policy";
 
 export const requiredConsumerCoverage = ["STRICT_PROFILE", "FULL_EFFECTS", "MANUAL_COMMANDS", "FIFTEEN_WAVES",
   "CHECKPOINT_RESTORE", "DETERMINISM", "OWNER_ISOLATION", "JOURNAL_RECOVERY"] as const;
@@ -23,6 +24,13 @@ const presentationCoverage = z.enum(requiredPresentationConsumerCoverage);
 const presentationReportSchema = commandReportSchema.extend({ schemaVersion: z.literal("ce03-consumer-runner-report-v3"),
   presentationManifestSha256: sha, prepareSha256: sha,
   results: z.array(closed({ caseId: id, coverage: presentationCoverage, status: z.literal("PASS") })).min(1) });
+export const requiredIndividualConsumerCoverage = [...requiredConsumerCoverage, "SUPPORT_SELECTION", "INDIVIDUAL_ULTIMATES", "ULTIMATE_AUTO", "LEGACY_POLICY_BOUNDARY"] as const;
+export const requiredGeneralAutoConsumerCoverage = [...requiredIndividualConsumerCoverage, "GENERAL_ACTIVE_AUTO"] as const;
+const automaticCoverage = z.enum([...requiredGeneralAutoConsumerCoverage, "PRESENTATION_BINDINGS"]);
+const automaticReportSchema = commandReportSchema.extend({ schemaVersion: z.literal("ce03-consumer-runner-report-v4"),
+  results: z.array(closed({ caseId: id, coverage: automaticCoverage, status: z.literal("PASS") })).min(1) });
+const automaticPresentationReportSchema = automaticReportSchema.extend({ schemaVersion: z.literal("ce03-consumer-runner-report-v5"),
+  presentationManifestSha256: sha, prepareSha256: sha });
 const artifactsSchema = closed({ algorithmSource: z.string().min(1).max(8_000_000), checkpointSchema: z.string().min(1).max(2_000_000),
   vectorsJson: z.string().min(1).max(2_000_000), reportJson: z.string().min(1).max(2_000_000) });
 
@@ -72,6 +80,11 @@ export async function attestLocalConsumer(draftInput: unknown, artifactInput: un
       draft.simulationVersion !== draft.executionPolicy.version ||
       draft.template.execution.policySha256 !== await sha256Hex(canonicalJson(draft.executionPolicy))) return fail("ce03_consumer_draft_invalid");
   const commands = commandInput === undefined ? undefined : commandContractSchema.parse(commandInput);
+  const individual = draft.template.execution.ultimatePolicyId === individualUltimatePolicyId;
+  const general = draft.template.execution.activePolicyId === generalActivePolicyId;
+  if ((individual && commands?.version !== (general ? "ce03-command-contract-v3" : "ce03-command-contract-v2")) ||
+      (!individual && commands !== undefined && commands.version !== "ce03-command-contract-v1"))
+    return fail("ce03_consumer_command_policy_mismatch");
   const commandContractJson = commands === undefined ? undefined : canonicalJson(commands);
   const commandContractSha256 = commandContractJson === undefined ? undefined : await sha256Hex(commandContractJson);
   const presentation = presentationContext === undefined ? undefined : validatePresentationManifest(presentationContext.manifest);
@@ -79,21 +92,25 @@ export async function attestLocalConsumer(draftInput: unknown, artifactInput: un
   const presentationManifestJson = presentation === undefined ? undefined : canonicalJson(presentation);
   const presentationManifestSha256 = presentationManifestJson === undefined ? undefined : await sha256Hex(presentationManifestJson);
   const prepareSha256 = presentationContext === undefined ? undefined : sha.parse(presentationContext.prepareSha256);
-  const checked = (presentation !== undefined ? presentationReportSchema : commands === undefined ? reportSchema : commandReportSchema).safeParse(json(a.reportJson));
+  const checked = (individual ? (presentation !== undefined ? automaticPresentationReportSchema : automaticReportSchema) :
+    presentation !== undefined ? presentationReportSchema : commands === undefined ? reportSchema : commandReportSchema).safeParse(json(a.reportJson));
   if (!checked.success) return fail("ce03_consumer_report_invalid");
   const report = checked.data;
   // New runner handoff reports use canonical JSON; this rejects duplicate keys,
   // parser-dependent spellings and implicit reserialization. Existing operation
   // journal/HTTP receipt bytes are unrelated and remain untouched.
   if (canonicalJson(report) !== a.reportJson) return fail("ce03_consumer_report_invalid");
-  const vectors = z.object({ cases: z.array(z.object({ id, coverage: presentationCoverage })).min(1) }).safeParse(json(a.vectorsJson));
+  const vectors = z.object({ cases: z.array(z.object({ id, coverage: z.enum([...requiredPresentationConsumerCoverage, ...requiredGeneralAutoConsumerCoverage]) })).min(1) }).safeParse(json(a.vectorsJson));
   if (!vectors.success) return fail("ce03_consumer_coverage_incomplete");
   const caseMap = new Map(vectors.data.cases.map(v => [v.id, v.coverage]));
   const results = new Map(report.results.map(r => [r.caseId, r.coverage]));
+  const requiredCoverage = individual ? [...(general ? requiredGeneralAutoConsumerCoverage : requiredIndividualConsumerCoverage),
+    ...(presentation === undefined ? [] : ["PRESENTATION_BINDINGS"])] :
+    presentation !== undefined ? requiredPresentationConsumerCoverage : commands === undefined ? requiredConsumerCoverage : requiredCommandConsumerCoverage;
   if (caseMap.size !== vectors.data.cases.length || results.size !== report.results.length ||
       report.passed !== results.size || results.size !== caseMap.size ||
       report.results.some(r => caseMap.get(r.caseId) !== r.coverage) ||
-      (presentation !== undefined ? requiredPresentationConsumerCoverage : commands === undefined ? requiredConsumerCoverage : requiredCommandConsumerCoverage).some(c => !report.results.some(r => r.coverage === c))) return fail("ce03_consumer_coverage_incomplete");
+      requiredCoverage.some(c => !report.results.some(r => r.coverage === c))) return fail("ce03_consumer_coverage_incomplete");
   const request: ConsumerAttestationRequest = Object.freeze({ ...a,
     reportSha256: await sha256Hex(a.reportJson), draftSha256: await sha256Hex(canonicalJson(draft)), simulationVersion: draft.simulationVersion,
     algorithmSourceSha256: await sha256Hex(a.algorithmSource), vectorsSha256: await sha256Hex(a.vectorsJson),

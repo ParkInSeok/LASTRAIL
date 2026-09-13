@@ -68,13 +68,15 @@ function admission(s: State) {
 // Read-only seam for the separately mounted disposable local producer. Reuses
 // current owner, growth, open-run, balance, fuel and selection checks. No quote,
 // seed, debit or run is created. Start must still revalidate atomically later.
-export async function readLocalDepartureSelection(db: D1Database, accountId: string, input: unknown) {
-  const parsed = requestSchema.safeParse(input);
+export async function readLocalDepartureSelection(db: D1Database, accountId: string, input: unknown, options: { allOperatorUltimates?: true } = {}) {
+  const all = z.strictObject({ allOperatorUltimates: z.literal(true).optional() }).parse(options).allOperatorUltimates === true;
+  const parsed = (all ? requestSchema.omit({ expectedUltimateRevision: true }) : requestSchema).safeParse(input);
   if (!parsed.success) throw new ActivityError(400, "contract_violation");
   const b = parsed.data, s = await state(db, accountId, b.operationId, b.risk);
-  if (s.formation.revision !== b.expectedFormationRevision || s.train.saved!.revision !== b.expectedLoadoutRevision || s.ultimate.revision !== b.expectedUltimateRevision)
+  if (s.formation.revision !== b.expectedFormationRevision || s.train.saved!.revision !== b.expectedLoadoutRevision ||
+      (!all && (!('expectedUltimateRevision' in b) || s.ultimate.revision !== b.expectedUltimateRevision)))
     throw new ActivityError(409, "departure_selection_changed");
-  if (s.ultimate.operatorId === null) throw new ActivityError(409, "ultimate_selection_required");
+  if (!all && s.ultimate.operatorId === null) throw new ActivityError(409, "ultimate_selection_required");
   return { accountId, operationId: b.operationId, risk: b.risk, ...admission(s) };
 }
 function guards(db: D1Database, accountId: string, s: State) {

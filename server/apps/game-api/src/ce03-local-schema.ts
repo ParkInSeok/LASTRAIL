@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { canonicalJson } from "@lastrail/common";
 import { frontlineExecutionPolicy, frontlinePolicyId, frontlinePolicySha256, frontlineSimulationVersion } from "./ce03-targeting-policy";
+import { individualExecutionPolicy, individualExecutionPolicySha256, individualSimulationVersion, individualUltimatePolicyId,
+  generalActivePolicyId, generalAutoExecutionPolicy, generalAutoExecutionPolicySha256, generalAutoSimulationVersion } from "./ce03-ultimate-policy";
 
 // Isolated r4 wire projection. This module is not a shipping readiness contract.
 export const id = z.string().regex(/^[A-Za-z0-9_.:-]{1,128}$/u);
@@ -57,24 +59,28 @@ export const rulesSchema = obj({ armorCapBps: bps, outgoingBuffCapBps: bps, magn
 export const policySchema = obj({ version: id, orderedStages: z.array(id).min(1), targetTiePolicy: id, sameTickTerminalPolicy: id,
   interruptPolicy: id, statusReapplicationPolicy: id, shieldLayerPolicy: id, packageCombinationPolicy: id,
   damageRoundingPolicy: id, recoveryPolicy: id, waveActivationPolicy: id }).refine(p =>
-  (p.version !== frontlineSimulationVersion && p.targetTiePolicy !== frontlinePolicyId) ||
-  canonicalJson(p) === canonicalJson(frontlineExecutionPolicy), "frontline execution policy identity");
+  (p.version !== frontlineSimulationVersion && p.version !== individualSimulationVersion && p.version !== generalAutoSimulationVersion && p.targetTiePolicy !== frontlinePolicyId) ||
+  canonicalJson(p) === canonicalJson(frontlineExecutionPolicy) || canonicalJson(p) === canonicalJson(individualExecutionPolicy) ||
+  canonicalJson(p) === canonicalJson(generalAutoExecutionPolicy), "versioned execution policy identity");
 export const templateSchema = obj({
   operation: obj({ id: z.literal("opn_01_last_departure"), mode: z.literal("SOLO"), risk: z.literal("I"),
     encounterType: z.literal("ORDINARY_15_WAVE"), factionRef: z.null(), factionDisposition: z.literal("UNSUPPORTED_IN_ISOLATED_PROFILE"),
     actorSelection: z.literal("EXPLICIT_IDS"), raidId: z.null(), bossId: z.null(), bossPhaseRefs: z.array(z.never()).length(0) }),
-  selectedUltimateOperatorId: operatorId, operators: z.array(operator).length(5), train, cars: z.array(car).length(2),
+  selectedUltimateOperatorId: operatorId.nullable(), operators: z.array(operator).length(5), train, cars: z.array(car).length(2),
   enemyDefinitions: z.array(enemy).length(3), waves: z.array(wave).length(15),
   package: obj({ scope: z.literal("ISOLATED_PROPOSAL_KEYS"), version: id, augments: z.array(packageEffect).length(3), tactic: packageEffect }),
   rules: rulesSchema,
   execution: obj({ stepMs: z.literal(50), clock: z.literal("INTEGER_FIXED_STEP"), crit: z.literal(false), dodge: z.literal(false),
     policyVersion: id, policySha256: sha, targetingPolicyId: z.literal(frontlinePolicyId).optional(),
+    ultimatePolicyId: z.literal(individualUltimatePolicyId).optional(),
+    activePolicyId: z.literal(generalActivePolicyId).optional(),
     entranceMs: nat, frontSlots: z.array(nat.max(4)), rearSlots: z.array(nat.max(4)),
     queue: obj({ capacity: z.literal(1), expiryMs: pos, secondCommand: z.literal("REJECT"), cooldownAt: z.literal("CAST_ACCEPTANCE") }),
     noWallClockCatchup: z.literal(true), enemyBasicInterruptibleWindup: z.boolean(), trainActionChannel: z.literal("SHARED_BASIC_AND_MANUAL"),
     basicLogicalTravel: z.literal("DIRECT_IMPACT"), carriageDamageEvents: z.literal("UNSUPPORTED") })
-    .transform(({ targetingPolicyId, ...execution }): typeof execution & { targetingPolicyId?: typeof frontlinePolicyId } =>
-      targetingPolicyId === undefined ? execution : { ...execution, targetingPolicyId }),
+    .transform(({ targetingPolicyId, ultimatePolicyId, activePolicyId, ...execution }): typeof execution & { targetingPolicyId?: typeof frontlinePolicyId; ultimatePolicyId?: typeof individualUltimatePolicyId; activePolicyId?: typeof generalActivePolicyId } =>
+      ({ ...execution, ...(targetingPolicyId === undefined ? {} : { targetingPolicyId }), ...(ultimatePolicyId === undefined ? {} : { ultimatePolicyId }),
+        ...(activePolicyId === undefined ? {} : { activePolicyId }) })),
   presentation: obj({ interiorLane: id, exteriorLane: id, initialSquadInterior: id,
     vfx: obj({ basicHit: id, skillActivation: id, ultimateActivation: id, shield: id, heal: id }),
     transitions: obj({ victory: id, defeat: id }) }),
@@ -82,11 +88,18 @@ export const templateSchema = obj({
 }).superRefine((t, c) => {
   const fail = (message: string) => c.addIssue({ code: "custom", message });
   const e = t.execution;
-  if ((e.targetingPolicyId !== undefined || e.policyVersion === frontlineSimulationVersion || e.policySha256 === frontlinePolicySha256) &&
+  const general = e.activePolicyId !== undefined || e.policyVersion === generalAutoSimulationVersion || e.policySha256 === generalAutoExecutionPolicySha256;
+  const individual = general || e.ultimatePolicyId !== undefined || e.policyVersion === individualSimulationVersion || e.policySha256 === individualExecutionPolicySha256;
+  if (general && e.activePolicyId !== generalActivePolicyId) fail("general active identity");
+  if (individual && (e.ultimatePolicyId !== individualUltimatePolicyId || e.targetingPolicyId !== frontlinePolicyId ||
+      e.policyVersion !== (general ? generalAutoSimulationVersion : individualSimulationVersion) ||
+      e.policySha256 !== (general ? generalAutoExecutionPolicySha256 : individualExecutionPolicySha256) || t.selectedUltimateOperatorId !== null))
+    fail("individual ultimate identity");
+  if (!individual && (e.targetingPolicyId !== undefined || e.policyVersion === frontlineSimulationVersion || e.policySha256 === frontlinePolicySha256) &&
       (e.targetingPolicyId !== frontlinePolicyId || e.policyVersion !== frontlineSimulationVersion || e.policySha256 !== frontlinePolicySha256))
     fail("frontline targeting identity");
   if (new Set(t.operators.map(o => o.operatorId)).size !== 5 || t.operators.some((o, i) => o.slot !== i)) fail("operator ordering/identity");
-  if (!t.operators.some(o => o.operatorId === t.selectedUltimateOperatorId)) fail("ultimate not selected");
+  if (!individual && !t.operators.some(o => o.operatorId === t.selectedUltimateOperatorId)) fail("ultimate not selected");
   if (t.cars.some((car, i) => car.slot !== i || car.type !== ["Combat", "Gun"][i])) fail("car order");
   if (new Set(t.enemyDefinitions.map(e => e.definitionId)).size !== 3) fail("enemy identities");
   if (t.waves.some((w, i) => w.number !== i + 1)) fail("wave order");

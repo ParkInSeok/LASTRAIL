@@ -94,7 +94,8 @@ if (selfCheck) {
       startStatus: response.status, errorCode: refused.errorCode, consumerVerifierInstalled: false,
       presentationVerification: presentation?.verification ?? null,
       lobbyReads,
-      runCreated: false, combatSeedIssued: false, fuel: 30, selectedSupport: prepared.commandContract.support, leaderPolicy: prepared.commandContract.leader };
+      runCreated: false, combatSeedIssued: false, fuel: 30, selectedSupport: prepared.commandContract.support,
+      ...(prepared.commandContract.version === "ce03-command-contract-v1" ? { leaderPolicy: prepared.commandContract.leader } : { ultimatePolicy: prepared.commandContract.ultimates }) };
     await writeFile(resolve(output, "verification.json"), JSON.stringify(verification, null, 2) + "\n");
     console.log(JSON.stringify({ output, ...verification }));
   } finally {

@@ -7,14 +7,14 @@ import { readBoundedBody } from "./activity-routes";
 import { readLocalDepartureSelection, registerDepartureRoutes, startDeparture } from "./departure";
 import { prepareLocalCombatDraft, type LocalCombatInputs } from "./ce03-local-producer";
 import { attestLocalConsumer, type ConsumerAttestationVerifier } from "./ce03-consumer-attestation";
-import { createCommandContract, leaderPolicySchema } from "./ce03-command-contract";
+import { createCommandContract, createIndividualCommandContract, createAutomaticActiveCommandContract, leaderPolicySchema } from "./ce03-command-contract";
 import { ce03SupportLoadoutGuard, readCe03SupportLoadout, saveCe03SupportLoadout, type Ce03SupportCatalog } from "./ce03-support-loadout";
 import { issueLocalCombatSeed } from "./combat-seed-protocol";
 import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
 import { contentSchema, id, pos, profileSchema, sha } from "./ce03-local-schema";
 import gameApi from "./index";
 import { presentationContentSchema, validatePresentationManifest } from "./ce03-presentation-manifest";
-import { localTargetingOptionsSchema, type LocalTargetingOptions } from "./ce03-targeting-policy";
+import { captureCombatOptions, type LocalCombatOptions } from "./ce03-ultimate-policy";
 
 // Explicit local setup only. Not in migrations or public app registration.
 export const ce03HostSchemaSql = `
@@ -32,9 +32,9 @@ CREATE TRIGGER IF NOT EXISTS ce03_start_receipt_delete BEFORE DELETE ON ce03_sta
 type Auth = { accountId: string } | { status: 400 | 401 | 403 | 409 | 500 | 503; errorCode: string; message: string };
 type Options = { disposableDatabase: D1Database; allowedAccountIds: readonly string[];
   authenticate(c: Context<{ Bindings: Env }>): Promise<Auth>; inputs: LocalCombatInputs;
-  supportCatalog: Ce03SupportCatalog; leaderPolicy: unknown;
+  supportCatalog: Ce03SupportCatalog; leaderPolicy?: unknown;
   presentation?: { mode: "LEGACY_R4" } | { mode: "APPROVED_VIEW_V1"; manifest?: unknown };
-  artifacts?: () => Promise<unknown>; verifier?: ConsumerAttestationVerifier } & LocalTargetingOptions;
+  artifacts?: () => Promise<unknown>; verifier?: ConsumerAttestationVerifier } & LocalCombatOptions;
 const prepareBody = z.strictObject({ selection: z.unknown(), expectedSupportRevision: pos });
 const startBody = z.strictObject({ operationPreviewId: id, expectedSupportRevision: pos, prepareSha256: sha });
 const fail = (code: string): never => { throw new ActivityError(409, code); };
@@ -47,7 +47,8 @@ export function createCe03LocalHost(options: Options) {
   const database = options.disposableDatabase, allowed = new Set(options.allowedAccountIds);
   const catalog = structuredClone(options.supportCatalog), inputs = { ...options.inputs };
   const leader = structuredClone(options.leaderPolicy);
-  const targeting = localTargetingOptionsSchema.parse(options.targetingPolicyId === undefined ? {} : { targetingPolicyId: options.targetingPolicyId });
+  const targeting = captureCombatOptions(options);
+  const departureOptions = targeting.ultimatePolicyId === undefined ? {} : { allOperatorUltimates: true as const };
   const presentation = structuredClone(options.presentation ?? { mode: "LEGACY_R4" as const });
   const auth = options.authenticate;
   app.use("*", async (c, next) => {
@@ -81,16 +82,17 @@ export function createCe03LocalHost(options: Options) {
   const readPreparation = async (accountId: string, selection: unknown, expectedSupportRevision: number) => {
     if (presentation.mode === "APPROVED_VIEW_V1" && presentation.manifest === undefined) return fail("ce03_presentation_manifest_missing");
     const presentationManifest = presentation.mode === "APPROVED_VIEW_V1" ? validatePresentationManifest(presentation.manifest) : undefined;
-    const ownedSelection = await readLocalDepartureSelection(database, accountId, selection);
+    const ownedSelection = await readLocalDepartureSelection(database, accountId, selection, departureOptions);
     const support = await readCe03SupportLoadout(database, accountId, catalog);
     if (support.revision !== expectedSupportRevision || support.rulesVersion !== catalog.rulesVersion || support.catalogVersion !== catalog.catalogVersion ||
       support.slots.some(s => !catalog.skillIds.includes(s.skillId))) return fail("ce03_support_revision_changed");
     const draft = await prepareLocalCombatDraft(inputs, ownedSelection, targeting);
-    const commandContract = createCommandContract(support, leaderPolicySchema.parse(leader));
+    const commandContract = targeting.activePolicyId !== undefined ? createAutomaticActiveCommandContract(support) :
+      targeting.ultimatePolicyId === undefined ? createCommandContract(support, leaderPolicySchema.parse(leader)) : createIndividualCommandContract(support);
     const manuals = commandContract.support.slots.map(s => draft.template.train.manual.find(m => m.id === s.skillId));
     if (manuals.some(m => m === undefined)) return fail("ce03_support_effects_unavailable");
     draft.template.train.manual = manuals.map(m => m!);
-    const current = await readLocalDepartureSelection(database, accountId, selection);
+    const current = await readLocalDepartureSelection(database, accountId, selection, departureOptions);
     const currentSupport = await readCe03SupportLoadout(database, accountId, catalog);
     if (canonicalJson(current) !== canonicalJson(ownedSelection) || canonicalJson(currentSupport) !== canonicalJson(support)) return fail("ce03_selection_changed_during_prepare");
     const ownedCars = (ownedSelection.ownedState as { carriages: { carriageId: string; level: number; revision: number }[] }).carriages;
@@ -141,14 +143,15 @@ export function createCe03LocalHost(options: Options) {
     const metadata = JSON.parse(row.preview_json), pinned = metadata.admission;
     if (!pinned || row.admission_version !== "departure-v2") return fail("ce03_departure_quote_required");
     const selection = { operationId: row.objective, risk: row.risk, expectedFormationRevision: pinned.formationRevision,
-      expectedLoadoutRevision: pinned.loadoutRevision, expectedUltimateRevision: pinned.ultimateSelection?.revision };
+      expectedLoadoutRevision: pinned.loadoutRevision, ...(targeting.ultimatePolicyId === undefined ? { expectedUltimateRevision: pinned.ultimateSelection?.revision } : {}) };
       const prepared = await readPreparation(accountId, selection, b.expectedSupportRevision);
       if (prepared.prepareSha256 !== b.prepareSha256) return fail("ce03_preparation_changed");
       const verified = await attestLocalConsumer(prepared.draft, await options.artifacts?.(), options.verifier, prepared.commandContract,
         prepared.presentationManifest === undefined ? undefined : { manifest: prepared.presentationManifest, prepareSha256: prepared.prepareSha256 });
       const { bindings, ...profileData } = prepared.draft;
       const baseProfile = profileSchema.parse({ schemaVersion: "ce03-isolated-profile-r4", ...profileData, executionEvidence: verified.executionEvidence });
-      const profile = { schemaVersion: "ce03-isolated-command-profile-r5", baseProfile, commandContract: prepared.commandContract };
+      const profile = { schemaVersion: prepared.commandContract.version === "ce03-command-contract-v3" ? "ce03-isolated-command-profile-r9" :
+        prepared.commandContract.version === "ce03-command-contract-v2" ? "ce03-isolated-command-profile-r8" : "ce03-isolated-command-profile-r5", baseProfile, commandContract: prepared.commandContract };
       const profileSha256 = await sha256Hex(canonicalJson(profile));
       const contentManifest = prepared.presentationManifest === undefined
         ? contentSchema.parse({ schemaVersion: "ce03-isolated-content-r4", version: prepared.draft.profileId, profileSha256,

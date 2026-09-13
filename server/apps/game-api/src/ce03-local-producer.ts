@@ -5,7 +5,9 @@ import { ActivityError } from "./activity-policy";
 import { readBoundedBody } from "./activity-routes";
 import { readLocalDepartureSelection } from "./departure";
 import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
-import { frontlineExecutionPolicy, frontlinePolicySource, frontlineSimulationVersion, localTargetingOptionsSchema, type LocalTargetingOptions } from "./ce03-targeting-policy";
+import { frontlineExecutionPolicy, frontlinePolicySource, frontlineSimulationVersion } from "./ce03-targeting-policy";
+import { captureCombatOptions, individualExecutionPolicy, individualSimulationVersion, individualUltimateSource, localCombatOptionsSchema, type LocalCombatOptions,
+  generalAutoExecutionPolicy, generalAutoSimulationVersion, generalActiveAutoSource } from "./ce03-ultimate-policy";
 import { bindingSchema, contentSchema, effectSchema, enemyIds, id, nat, operatorIds, policySchema,
   pos, profileSchema, rulesSchema, sourceFileSchema, target, templateSchema } from "./ce03-local-schema";
 
@@ -37,7 +39,7 @@ const selectionSchema = object({ version: z.literal(version), operationId: z.lit
 const ownedSchema = object({ accountId: id, operationId: z.literal("opn_01_last_departure"), risk: z.literal("I"),
   formationRevision: pos, loadoutRevision: pos,
   formation: object({ operators: z.array(object({ slot: nat.max(4), operatorId: z.enum(operatorIds) })).length(5) }),
-  ultimateSelection: object({ operatorId: z.enum(operatorIds), revision: nat }),
+  ultimateSelection: object({ operatorId: z.enum(operatorIds).nullable(), revision: nat }),
   loadout: object({ trainId: id, carriages: z.array(object({ slot: nat.max(1), carriageId: z.enum(["car_combat", "car_gun"]) })).length(2) }),
   ownedState: object({ operators: z.array(object({ operatorId: z.enum(operatorIds), skillTraining: z.literal(1), promotion: z.literal(0), revision: pos })).length(5),
     trainingCoreSlots: z.array(object({ slot: nat.max(4), operatorId: z.enum(operatorIds), trainedLevel: z.literal(1), revision: pos })).length(5),
@@ -95,15 +97,18 @@ export function validateLocalBindingClosure(bindings: z.infer<typeof bindingSche
   const p = template.presentation;
   [p.interiorLane, p.exteriorLane, p.initialSquadInterior, ...Object.values(p.vfx), ...Object.values(p.transitions)].forEach(v => required(v, "Sprite"));
 }
-export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedInput: unknown, options: LocalTargetingOptions = {}): Promise<Draft> {
-  const targeting = localTargetingOptionsSchema.parse(options);
-  const selectedVersion = targeting.targetingPolicyId === undefined ? simulationVersion : frontlineSimulationVersion;
+export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedInput: unknown, options: LocalCombatOptions = {}): Promise<Draft> {
+  const targeting = localCombatOptionsSchema.parse(options);
+  const individual = targeting.ultimatePolicyId !== undefined;
+  const general = targeting.activePolicyId !== undefined;
+  const selectedVersion = general ? generalAutoSimulationVersion : individual ? individualSimulationVersion : targeting.targetingPolicyId === undefined ? simulationVersion : frontlineSimulationVersion;
   for (const key of Object.keys(sourceHashes) as (keyof LocalCombatInputs)[]) {
     if (await sha256Hex(inputs[key]) !== sourceHashes[key]) fail("ce03_source_hash_mismatch");
   }
   const checked = ownedSchema.safeParse(ownedInput);
   if (!checked.success) return fail("ce03_owned_fixture_mismatch");
   const own = checked.data, rows = [...own.formation.operators].sort((a, b) => a.slot - b.slot);
+  if (!individual && own.ultimateSelection.operatorId === null) fail("ce03_owned_fixture_mismatch");
   if (new Set(rows.map(o => o.operatorId)).size !== 5 || rows.some((o, i) => o.slot !== i) ||
       new Set(own.ownedState.operators.map(o => o.operatorId)).size !== 5 ||
       new Set(own.ownedState.trainingCoreSlots.map(c => c.slot)).size !== 5 ||
@@ -113,7 +118,7 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
       new Set(own.ownedState.carriages.map(c => c.carriageId)).size !== 2) fail("ce03_owned_fixture_mismatch");
   const d = sourceDesign.parse(JSON.parse(inputs.designJson)), selected = selectionSchema.parse(JSON.parse(inputs.selectionJson));
   const bindings = projectBindings(JSON.parse(inputs.bindingEvidenceJson));
-  const policy = policySchema.parse(targeting.targetingPolicyId === undefined ? { version: simulationVersion, orderedStages: ["P1.expire-recover-spawn", "P1.commands", "P1.schedule", "P1.sequential-effects", "P1.terminal-wave", "P1.checkpoint"],
+  const policy = policySchema.parse(general ? generalAutoExecutionPolicy : individual ? individualExecutionPolicy : targeting.targetingPolicyId === undefined ? { version: simulationVersion, orderedStages: ["P1.expire-recover-spawn", "P1.commands", "P1.schedule", "P1.sequential-effects", "P1.terminal-wave", "P1.checkpoint"],
     targetTiePolicy: "P2", sameTickTerminalPolicy: "P1.failure-priority", interruptPolicy: "P3", statusReapplicationPolicy: "P4.status",
     shieldLayerPolicy: "P4.shield", packageCombinationPolicy: "P5", damageRoundingPolicy: "P5.final-floor", recoveryPolicy: "P6", waveActivationPolicy: "P6.r2" } : frontlineExecutionPolicy);
   const ruleValues = { ...d.rules, magnitudeBonusCapBps: 3000 };
@@ -121,7 +126,7 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
   const template = templateSchema.parse({
     operation: { id: selected.operationId, mode: "SOLO", risk: selected.risk, encounterType: "ORDINARY_15_WAVE", factionRef: null,
       factionDisposition: selected.factionDisposition, actorSelection: selected.actorSelection, raidId: null, bossId: null, bossPhaseRefs: [] },
-    selectedUltimateOperatorId: own.ultimateSelection.operatorId,
+    selectedUltimateOperatorId: individual ? null : own.ultimateSelection.operatorId,
     operators: rows.map(row => {
       const o = d.operators.find(o => o.id === row.operatorId)!, kit = d.kits.find(k => k.operatorId === row.operatorId)!;
       return { operatorId: row.operatorId, slot: row.slot, level: 1, promotion: 0,
@@ -164,6 +169,8 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
       { logicalName: "executionPolicyR1", rawSha256: "7091e45209bce6fc7059f7e020a8d38fec19f2a50b60a00b7cb406984427bcec" },
       { logicalName: "executionPolicyR2", rawSha256: "b44d16bd48eafecb60d2c70ddb9a4e0a681868ccd73772f65d98a9378e9be9ec" },
       ...(targeting.targetingPolicyId === undefined ? [] : [{ logicalName: "frontlineFirstPolicyV1", rawSha256: await sha256Hex(frontlinePolicySource) }]),
+      ...(individual ? [{ logicalName: "individualUltimatePolicyV1", rawSha256: await sha256Hex(individualUltimateSource) }] : []),
+      ...(general ? [{ logicalName: "generalActiveAutoPolicyV1", rawSha256: await sha256Hex(generalActiveAutoSource) }] : []),
     ]).sort((a, b) => a.logicalName < b.logicalName ? -1 : 1) };
 }
 
@@ -194,8 +201,9 @@ export async function finalizeLocalCombatArtifacts(draft: Draft, evidence: unkno
 
 type LocalAuth = { accountId: string } | { status: 400 | 401 | 403 | 409 | 500 | 503; errorCode: string; message: string };
 export function registerLocalCombatProducer(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<LocalAuth>,
-  options: { inputs: LocalCombatInputs; disposableDatabase: D1Database; allowedAccountIds: readonly string[] } & LocalTargetingOptions) {
-  const targeting = localTargetingOptionsSchema.parse(options.targetingPolicyId === undefined ? {} : { targetingPolicyId: options.targetingPolicyId });
+  options: { inputs: LocalCombatInputs; disposableDatabase: D1Database; allowedAccountIds: readonly string[] } & LocalCombatOptions) {
+  const targeting = captureCombatOptions(options);
+  const departureOptions = targeting.ultimatePolicyId === undefined ? {} : { allOperatorUltimates: true as const };
   // NOT mounted in index.ts, no wrangler/service configuration. Explicit DB
   // identity + owner allowlist + loopback checked separately from authentication.
   app.post("/__local/ce03/prepare", async c => {
@@ -208,9 +216,9 @@ export function registerLocalCombatProducer(app: Hono<{ Bindings: Env }>, authen
     try {
       if (new URL(c.req.url).search) throw new ActivityError(400, "contract_violation");
       const request = JSON.parse(await readBoundedBody(c));
-      const ownedSelection = await readLocalDepartureSelection(c.env.DB, auth.accountId, request);
+      const ownedSelection = await readLocalDepartureSelection(c.env.DB, auth.accountId, request, departureOptions);
       const draft = await prepareLocalCombatDraft(options.inputs, ownedSelection, targeting);
-      const rechecked = await readLocalDepartureSelection(c.env.DB, auth.accountId, request);
+      const rechecked = await readLocalDepartureSelection(c.env.DB, auth.accountId, request, departureOptions);
       if (canonicalJson(ownedSelection) !== canonicalJson(rechecked)) throw new ActivityError(409, "ce03_selection_changed_during_prepare");
       // Project from the rechecked server-owned facts and the same catalog used
       // by loadout validation. Never infer a type from array position or the ID.
