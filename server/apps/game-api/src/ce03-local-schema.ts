@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { canonicalJson } from "@lastrail/common";
+import { frontlineExecutionPolicy, frontlinePolicyId, frontlinePolicySha256, frontlineSimulationVersion } from "./ce03-targeting-policy";
 
 // Isolated r4 wire projection. This module is not a shipping readiness contract.
 export const id = z.string().regex(/^[A-Za-z0-9_.:-]{1,128}$/u);
@@ -54,7 +56,9 @@ export const rulesSchema = obj({ armorCapBps: bps, outgoingBuffCapBps: bps, magn
   basicRecoveryMs: nat, skillRecoveryMs: nat, waveGapMs: nat, operatorDownMs: z.array(pos).length(3), carDownMs: z.array(pos).length(3) });
 export const policySchema = obj({ version: id, orderedStages: z.array(id).min(1), targetTiePolicy: id, sameTickTerminalPolicy: id,
   interruptPolicy: id, statusReapplicationPolicy: id, shieldLayerPolicy: id, packageCombinationPolicy: id,
-  damageRoundingPolicy: id, recoveryPolicy: id, waveActivationPolicy: id });
+  damageRoundingPolicy: id, recoveryPolicy: id, waveActivationPolicy: id }).refine(p =>
+  (p.version !== frontlineSimulationVersion && p.targetTiePolicy !== frontlinePolicyId) ||
+  canonicalJson(p) === canonicalJson(frontlineExecutionPolicy), "frontline execution policy identity");
 export const templateSchema = obj({
   operation: obj({ id: z.literal("opn_01_last_departure"), mode: z.literal("SOLO"), risk: z.literal("I"),
     encounterType: z.literal("ORDINARY_15_WAVE"), factionRef: z.null(), factionDisposition: z.literal("UNSUPPORTED_IN_ISOLATED_PROFILE"),
@@ -64,16 +68,23 @@ export const templateSchema = obj({
   package: obj({ scope: z.literal("ISOLATED_PROPOSAL_KEYS"), version: id, augments: z.array(packageEffect).length(3), tactic: packageEffect }),
   rules: rulesSchema,
   execution: obj({ stepMs: z.literal(50), clock: z.literal("INTEGER_FIXED_STEP"), crit: z.literal(false), dodge: z.literal(false),
-    policyVersion: id, policySha256: sha, entranceMs: nat, frontSlots: z.array(nat.max(4)), rearSlots: z.array(nat.max(4)),
+    policyVersion: id, policySha256: sha, targetingPolicyId: z.literal(frontlinePolicyId).optional(),
+    entranceMs: nat, frontSlots: z.array(nat.max(4)), rearSlots: z.array(nat.max(4)),
     queue: obj({ capacity: z.literal(1), expiryMs: pos, secondCommand: z.literal("REJECT"), cooldownAt: z.literal("CAST_ACCEPTANCE") }),
     noWallClockCatchup: z.literal(true), enemyBasicInterruptibleWindup: z.boolean(), trainActionChannel: z.literal("SHARED_BASIC_AND_MANUAL"),
-    basicLogicalTravel: z.literal("DIRECT_IMPACT"), carriageDamageEvents: z.literal("UNSUPPORTED") }),
+    basicLogicalTravel: z.literal("DIRECT_IMPACT"), carriageDamageEvents: z.literal("UNSUPPORTED") })
+    .transform(({ targetingPolicyId, ...execution }): typeof execution & { targetingPolicyId?: typeof frontlinePolicyId } =>
+      targetingPolicyId === undefined ? execution : { ...execution, targetingPolicyId }),
   presentation: obj({ interiorLane: id, exteriorLane: id, initialSquadInterior: id,
     vfx: obj({ basicHit: id, skillActivation: id, ultimateActivation: id, shield: id, heal: id }),
     transitions: obj({ victory: id, defeat: id }) }),
   variants: obj({ equipment: z.literal("OFF"), research: z.literal("OFF"), extraPressure: z.literal("OFF"), factionBonuses: z.literal("UNSUPPORTED") }),
 }).superRefine((t, c) => {
   const fail = (message: string) => c.addIssue({ code: "custom", message });
+  const e = t.execution;
+  if ((e.targetingPolicyId !== undefined || e.policyVersion === frontlineSimulationVersion || e.policySha256 === frontlinePolicySha256) &&
+      (e.targetingPolicyId !== frontlinePolicyId || e.policyVersion !== frontlineSimulationVersion || e.policySha256 !== frontlinePolicySha256))
+    fail("frontline targeting identity");
   if (new Set(t.operators.map(o => o.operatorId)).size !== 5 || t.operators.some((o, i) => o.slot !== i)) fail("operator ordering/identity");
   if (!t.operators.some(o => o.operatorId === t.selectedUltimateOperatorId)) fail("ultimate not selected");
   if (t.cars.some((car, i) => car.slot !== i || car.type !== ["Combat", "Gun"][i])) fail("car order");
@@ -96,6 +107,8 @@ export const sourceFileSchema = obj({ logicalName: id, rawSha256: sha });
 export const profileSchema = obj({ schemaVersion: z.literal("ce03-isolated-profile-r4"), profileId: id,
   engineProfileVersion: id, effectiveStatsVersion: id, roundingVersion: id, simulationVersion: id,
   sourceFiles: z.array(sourceFileSchema).min(1), template: templateSchema, executionPolicy: policySchema,
-  executionEvidence: obj({ algorithmSourceSha256: sha, conformanceVectorsSha256: sha }) });
+  executionEvidence: obj({ algorithmSourceSha256: sha, conformanceVectorsSha256: sha }) }).refine(p =>
+  p.simulationVersion === p.executionPolicy.version && p.template.execution.policyVersion === p.executionPolicy.version,
+  "execution version mismatch");
 export const contentSchema = obj({ schemaVersion: z.literal("ce03-isolated-content-r4"), version: id, profileSha256: sha,
   resolver: obj({ mode: z.literal("UNITY_EDITOR_ASSET_DATABASE"), playerBuildAllowed: z.literal(false) }), bindings: z.array(bindingSchema).min(1) });

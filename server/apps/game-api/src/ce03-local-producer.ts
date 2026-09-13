@@ -5,6 +5,7 @@ import { ActivityError } from "./activity-policy";
 import { readBoundedBody } from "./activity-routes";
 import { readLocalDepartureSelection } from "./departure";
 import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
+import { frontlineExecutionPolicy, frontlinePolicySource, frontlineSimulationVersion, localTargetingOptionsSchema, type LocalTargetingOptions } from "./ce03-targeting-policy";
 import { bindingSchema, contentSchema, effectSchema, enemyIds, id, nat, operatorIds, policySchema,
   pos, profileSchema, rulesSchema, sourceFileSchema, target, templateSchema } from "./ce03-local-schema";
 
@@ -94,7 +95,9 @@ export function validateLocalBindingClosure(bindings: z.infer<typeof bindingSche
   const p = template.presentation;
   [p.interiorLane, p.exteriorLane, p.initialSquadInterior, ...Object.values(p.vfx), ...Object.values(p.transitions)].forEach(v => required(v, "Sprite"));
 }
-export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedInput: unknown): Promise<Draft> {
+export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedInput: unknown, options: LocalTargetingOptions = {}): Promise<Draft> {
+  const targeting = localTargetingOptionsSchema.parse(options);
+  const selectedVersion = targeting.targetingPolicyId === undefined ? simulationVersion : frontlineSimulationVersion;
   for (const key of Object.keys(sourceHashes) as (keyof LocalCombatInputs)[]) {
     if (await sha256Hex(inputs[key]) !== sourceHashes[key]) fail("ce03_source_hash_mismatch");
   }
@@ -110,9 +113,9 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
       new Set(own.ownedState.carriages.map(c => c.carriageId)).size !== 2) fail("ce03_owned_fixture_mismatch");
   const d = sourceDesign.parse(JSON.parse(inputs.designJson)), selected = selectionSchema.parse(JSON.parse(inputs.selectionJson));
   const bindings = projectBindings(JSON.parse(inputs.bindingEvidenceJson));
-  const policy = policySchema.parse({ version: simulationVersion, orderedStages: ["P1.expire-recover-spawn", "P1.commands", "P1.schedule", "P1.sequential-effects", "P1.terminal-wave", "P1.checkpoint"],
+  const policy = policySchema.parse(targeting.targetingPolicyId === undefined ? { version: simulationVersion, orderedStages: ["P1.expire-recover-spawn", "P1.commands", "P1.schedule", "P1.sequential-effects", "P1.terminal-wave", "P1.checkpoint"],
     targetTiePolicy: "P2", sameTickTerminalPolicy: "P1.failure-priority", interruptPolicy: "P3", statusReapplicationPolicy: "P4.status",
-    shieldLayerPolicy: "P4.shield", packageCombinationPolicy: "P5", damageRoundingPolicy: "P5.final-floor", recoveryPolicy: "P6", waveActivationPolicy: "P6.r2" });
+    shieldLayerPolicy: "P4.shield", packageCombinationPolicy: "P5", damageRoundingPolicy: "P5.final-floor", recoveryPolicy: "P6", waveActivationPolicy: "P6.r2" } : frontlineExecutionPolicy);
   const ruleValues = { ...d.rules, magnitudeBonusCapBps: 3000 };
   const rules = rulesSchema.parse(Object.fromEntries(Object.keys(rulesSchema.shape).map(k => [k, ruleValues[k as keyof typeof ruleValues]])));
   const template = templateSchema.parse({
@@ -146,7 +149,7 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
         lane: "INTERIOR", logicalSlot, atTick: 0, resolvedMaxHp: w.interiorMaxHp[logicalSlot], requiredForCompletion: true })),
       { spawnId: `wave.${w.wave}.exterior.0`, definitionId: w.exteriorEnemyId, lane: "EXTERIOR", logicalSlot: 0, atTick: 0, resolvedMaxHp: w.exteriorMaxHp, requiredForCompletion: true }] })),
     package: { ...selected.package, version }, rules,
-    execution: { stepMs: 50, clock: "INTEGER_FIXED_STEP", crit: false, dodge: false, policyVersion: simulationVersion, policySha256: await sha256Hex(canonicalJson(policy)),
+    execution: { stepMs: 50, clock: "INTEGER_FIXED_STEP", crit: false, dodge: false, policyVersion: selectedVersion, policySha256: await sha256Hex(canonicalJson(policy)), ...targeting,
       entranceMs: 600, frontSlots: [3, 4], rearSlots: [0, 1, 2], queue: { capacity: 1, expiryMs: 1000, secondCommand: "REJECT", cooldownAt: "CAST_ACCEPTANCE" },
       noWallClockCatchup: true, enemyBasicInterruptibleWindup: true, trainActionChannel: "SHARED_BASIC_AND_MANUAL", basicLogicalTravel: "DIRECT_IMPACT", carriageDamageEvents: "UNSUPPORTED" },
     presentation: { interiorLane: "binding.scene.interiorLane", exteriorLane: "binding.scene.exteriorLane", initialSquadInterior: "binding.scene.initialSquadInterior",
@@ -156,10 +159,11 @@ export async function prepareLocalCombatDraft(inputs: LocalCombatInputs, ownedIn
   });
   validateLocalBindingClosure(bindings, template);
   return { profileId: version, engineProfileVersion: "train-combat-test-profile-v1", effectiveStatsVersion: "combat.design.2026-09-09.001",
-    roundingVersion: "ce03-rational-final-floor-v1", simulationVersion, template, executionPolicy: policy, bindings,
+    roundingVersion: "ce03-rational-final-floor-v1", simulationVersion: selectedVersion, template, executionPolicy: policy, bindings,
     sourceFiles: Object.entries(sourceHashes).map(([logicalName, rawSha256]): z.infer<typeof sourceFileSchema> => ({ logicalName, rawSha256 })).concat([
       { logicalName: "executionPolicyR1", rawSha256: "7091e45209bce6fc7059f7e020a8d38fec19f2a50b60a00b7cb406984427bcec" },
       { logicalName: "executionPolicyR2", rawSha256: "b44d16bd48eafecb60d2c70ddb9a4e0a681868ccd73772f65d98a9378e9be9ec" },
+      ...(targeting.targetingPolicyId === undefined ? [] : [{ logicalName: "frontlineFirstPolicyV1", rawSha256: await sha256Hex(frontlinePolicySource) }]),
     ]).sort((a, b) => a.logicalName < b.logicalName ? -1 : 1) };
 }
 
@@ -190,7 +194,8 @@ export async function finalizeLocalCombatArtifacts(draft: Draft, evidence: unkno
 
 type LocalAuth = { accountId: string } | { status: 400 | 401 | 403 | 409 | 500 | 503; errorCode: string; message: string };
 export function registerLocalCombatProducer(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<LocalAuth>,
-  options: { inputs: LocalCombatInputs; disposableDatabase: D1Database; allowedAccountIds: readonly string[] }) {
+  options: { inputs: LocalCombatInputs; disposableDatabase: D1Database; allowedAccountIds: readonly string[] } & LocalTargetingOptions) {
+  const targeting = localTargetingOptionsSchema.parse(options.targetingPolicyId === undefined ? {} : { targetingPolicyId: options.targetingPolicyId });
   // NOT mounted in index.ts, no wrangler/service configuration. Explicit DB
   // identity + owner allowlist + loopback checked separately from authentication.
   app.post("/__local/ce03/prepare", async c => {
@@ -204,7 +209,7 @@ export function registerLocalCombatProducer(app: Hono<{ Bindings: Env }>, authen
       if (new URL(c.req.url).search) throw new ActivityError(400, "contract_violation");
       const request = JSON.parse(await readBoundedBody(c));
       const ownedSelection = await readLocalDepartureSelection(c.env.DB, auth.accountId, request);
-      const draft = await prepareLocalCombatDraft(options.inputs, ownedSelection);
+      const draft = await prepareLocalCombatDraft(options.inputs, ownedSelection, targeting);
       const rechecked = await readLocalDepartureSelection(c.env.DB, auth.accountId, request);
       if (canonicalJson(ownedSelection) !== canonicalJson(rechecked)) throw new ActivityError(409, "ce03_selection_changed_during_prepare");
       // Project from the rechecked server-owned facts and the same catalog used

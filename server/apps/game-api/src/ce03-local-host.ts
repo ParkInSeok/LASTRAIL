@@ -14,6 +14,7 @@ import { resolveCarriageType, trainLoadoutRulesVersion } from "./train-loadout";
 import { contentSchema, id, pos, profileSchema, sha } from "./ce03-local-schema";
 import gameApi from "./index";
 import { presentationContentSchema, validatePresentationManifest } from "./ce03-presentation-manifest";
+import { localTargetingOptionsSchema, type LocalTargetingOptions } from "./ce03-targeting-policy";
 
 // Explicit local setup only. Not in migrations or public app registration.
 export const ce03HostSchemaSql = `
@@ -33,7 +34,7 @@ type Options = { disposableDatabase: D1Database; allowedAccountIds: readonly str
   authenticate(c: Context<{ Bindings: Env }>): Promise<Auth>; inputs: LocalCombatInputs;
   supportCatalog: Ce03SupportCatalog; leaderPolicy: unknown;
   presentation?: { mode: "LEGACY_R4" } | { mode: "APPROVED_VIEW_V1"; manifest?: unknown };
-  artifacts?: () => Promise<unknown>; verifier?: ConsumerAttestationVerifier };
+  artifacts?: () => Promise<unknown>; verifier?: ConsumerAttestationVerifier } & LocalTargetingOptions;
 const prepareBody = z.strictObject({ selection: z.unknown(), expectedSupportRevision: pos });
 const startBody = z.strictObject({ operationPreviewId: id, expectedSupportRevision: pos, prepareSha256: sha });
 const fail = (code: string): never => { throw new ActivityError(409, code); };
@@ -46,6 +47,7 @@ export function createCe03LocalHost(options: Options) {
   const database = options.disposableDatabase, allowed = new Set(options.allowedAccountIds);
   const catalog = structuredClone(options.supportCatalog), inputs = { ...options.inputs };
   const leader = structuredClone(options.leaderPolicy);
+  const targeting = localTargetingOptionsSchema.parse(options.targetingPolicyId === undefined ? {} : { targetingPolicyId: options.targetingPolicyId });
   const presentation = structuredClone(options.presentation ?? { mode: "LEGACY_R4" as const });
   const auth = options.authenticate;
   app.use("*", async (c, next) => {
@@ -83,7 +85,7 @@ export function createCe03LocalHost(options: Options) {
     const support = await readCe03SupportLoadout(database, accountId, catalog);
     if (support.revision !== expectedSupportRevision || support.rulesVersion !== catalog.rulesVersion || support.catalogVersion !== catalog.catalogVersion ||
       support.slots.some(s => !catalog.skillIds.includes(s.skillId))) return fail("ce03_support_revision_changed");
-    const draft = await prepareLocalCombatDraft(inputs, ownedSelection);
+    const draft = await prepareLocalCombatDraft(inputs, ownedSelection, targeting);
     const commandContract = createCommandContract(support, leaderPolicySchema.parse(leader));
     const manuals = commandContract.support.slots.map(s => draft.template.train.manual.find(m => m.id === s.skillId));
     if (manuals.some(m => m === undefined)) return fail("ce03_support_effects_unavailable");
