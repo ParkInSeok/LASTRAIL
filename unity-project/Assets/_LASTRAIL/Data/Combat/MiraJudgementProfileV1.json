@@ -1,0 +1,15 @@
+{
+ "version":"mira.judgement-authoring.v1.20261015",
+ "provenance":"APPROVED_FIRST_TEST_JUDGEMENT_MODEL_NOT_ART_MEASUREMENT",
+ "policy":"44#mira-judgement-authoring-v1-20261015",
+ "millimetresPerUnityUnit":1000,
+ "muzzleMm":[450,1250,180],
+ "carriage":{"sizeMm":[12000,2400,3000],"centerMm":[0,1200,0],"roofMm":[11600,2400,2800],"parallelCentersMm":6000,"longitudinalGapMm":800},
+ "targets":[
+  {"definitionId":"enemy_raider_scout","heightMm":1700,"radiusMm":300,"centerMm":[0,850,0],"hitAnchorMm":[0,1100,0]},
+  {"definitionId":"enemy_spike_cart_gunner","heightMm":1800,"radiusMm":350,"centerMm":[0,900,0],"hitAnchorMm":[0,1150,0]}
+ ],
+ "testBox":{"sizeMm":[1000,800,1200],"centerYmm":2800},
+ "ballistics":{"speedMmPerSecond":48000,"radiusMm":60,"maxDistanceMm":24000,"maxFlightUs":500000,"lengthUnitMm":12000,"adjacentCars":2},
+ "tieRule":"EXACT_TIME_SOLID_FIRST_THEN_INSTANCE_ID"
+}

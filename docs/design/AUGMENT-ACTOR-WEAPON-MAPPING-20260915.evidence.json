@@ -1,0 +1,105 @@
+{
+  "scope": "Static source mapping; local capture fixture, not production balance or executed augment validation",
+  "fixtureSha256": "7A32E2B3E61584E9C6723C725F333713EDF4B517DCAB68DC10347EE24E92B286",
+  "fixtureReady": false,
+  "operators": [
+    {
+      "id": "op_kyle",
+      "reach": "front",
+      "ultimateId": "op_kyle.ultimate",
+      "target": "all_allies",
+      "effects": [
+        "shield"
+      ]
+    },
+    {
+      "id": "op_reina",
+      "reach": "any",
+      "ultimateId": "op_reina.ultimate",
+      "target": "enemy_focus_any",
+      "effects": [
+        "damage"
+      ]
+    },
+    {
+      "id": "op_eve",
+      "reach": "any",
+      "ultimateId": "op_eve.ultimate",
+      "target": "all_allies",
+      "effects": [
+        "heal"
+      ]
+    },
+    {
+      "id": "op_sera",
+      "reach": "any",
+      "ultimateId": "op_sera.ultimate",
+      "target": "enemy_focus_any",
+      "effects": [
+        "damage",
+        "mark"
+      ]
+    },
+    {
+      "id": "op_mira",
+      "reach": "any",
+      "ultimateId": "op_mira.ultimate",
+      "target": "train",
+      "effects": [
+        "repair",
+        "train_damage_buff"
+      ]
+    }
+  ],
+  "trainManual": [
+    {
+      "id": "barrier",
+      "target": "train",
+      "effects": [
+        "train_shield"
+      ]
+    },
+    {
+      "id": "support_fire",
+      "target": "EXTERIOR_ENEMY_FOCUS",
+      "effects": [
+        "damage"
+      ]
+    },
+    {
+      "id": "emergency_repair",
+      "target": "train",
+      "effects": [
+        "repair"
+      ]
+    }
+  ],
+  "cars": [
+    {
+      "type": "Combat",
+      "target": "enemy_focus_any"
+    },
+    {
+      "type": "Gun",
+      "target": "EXTERIOR_ENEMY_FOCUS"
+    }
+  ],
+  "runtimeSourceHashes": [
+    {
+      "file": "ProducerCombatAdapter.cs",
+      "sha256": "23863C1FCFA29ED652DB0806876661B86656C2491C09A97871A0895F5033DBE3"
+    },
+    {
+      "file": "BasicCombatSimulation.cs",
+      "sha256": "F232130365BBDE0CD3EC81087E6489029581C5BA3D8CADDFF174D9738F8F942B"
+    },
+    {
+      "file": "CombatSkillCommands.cs",
+      "sha256": "EFF978EBAF061389DAC63A1579C8A60356FF0D15A015388FA47944D49636C04E"
+    },
+    {
+      "file": "CombatRailWorldView.cs",
+      "sha256": "C886110FD3C970984CC88AC5E145DA9D4039DE9AF1E4297B94CA1E75F54B08CD"
+    }
+  ]
+}

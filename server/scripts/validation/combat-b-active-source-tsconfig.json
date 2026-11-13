@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  },
+  "include": [
+    "../../apps/game-api/worker-configuration.d.ts",
+    "../../apps/game-api/src/combat-b-local-flow-source.ts",
+    "../../apps/game-api/src/combat-b-local-flow-http.ts",
+    "../../tests/integration/combat-b-source-binding.test.ts",
+    "../../tests/integration/combat-b-source-packet.test.ts",
+    "../../scripts/local/combat-b-source-socket.ts",
+    "../../apps/game-api/src/combat-b-local-rank-fixture.ts",
+    "../../scripts/local/combat-b-rank-socket.ts",
+    "../../tests/integration/combat-b-rank-fixture.test.ts",
+    "../../apps/game-api/src/combat-b-active-source.ts",
+    "../../apps/game-api/src/combat-b-active-http.ts",
+    "../../scripts/local/combat-b-active-socket.ts",
+    "../../tests/integration/combat-b-active-source.test.ts"
+  ]
+}

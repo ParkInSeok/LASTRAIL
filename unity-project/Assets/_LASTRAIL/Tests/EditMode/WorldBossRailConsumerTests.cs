@@ -1,0 +1,51 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using LastRail.Battle;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+namespace LastRail.Tests.EditMode {
+ public sealed class WorldBossRailConsumerTests {
+  static JArray Cases=>new JArray(((JArray)Trace()["cases"]).Concat((JArray)Trace()["extras"]));
+  static JObject FirstOpen()=> (JObject)Cases[0]["steps"][1]["before"].DeepClone();
+  static WorldBossRailController Open(string account="a"){var s=FirstOpen();return new WorldBossRailController(new WorldBossRailSnapshot(s,(JObject)s["definition"],"LOCAL_ATTEMPT"),account);}
+  public static int[] AllCases()=>Enumerable.Range(0,25).ToArray();
+  [TestCaseSource(nameof(AllCases))] public void ActualServerEighteenCasesCommandsReceiptsAndRestorationMatch(int index){
+   var c=Cases[index];var d=(JObject)c["initial"]["definition"];var accounts=new[]{(string)d["trainAccountId"],(string)d["operatorAccountId"]}.Distinct().ToArray();
+   var controllers=accounts.ToDictionary(a=>a,a=>new WorldBossRailController(new WorldBossRailSnapshot((JObject)c["initial"],d,"LOCAL_ATTEMPT"),a));int commands=0;foreach(var ctrl in controllers.Values)ctrl.CommandRequested+=b=>commands++;
+   foreach(var step in c["steps"]){foreach(var ctrl in controllers.Values)ctrl.ApplyAuthoritativeSnapshot((JObject)step["before"]);var e=step["event"];
+    if((string)e["kind"]=="COMMAND"){
+     var ctrl=controllers[(string)e["authenticatedAccount"]];var b=(JObject)e["body"];string round=(string)b["roundId"],key=(string)b["commandId"];var before=ctrl.State.Capture();JObject actual;
+     if((string)b["action"]["kind"]=="CONFIRM_ROUTE"){ctrl.PreviewRoute(round,(string)b["action"]["side"]);Assert.IsTrue(JToken.DeepEquals(before,ctrl.State.Capture()));actual=ctrl.ConfirmPreview(key);}else actual=ctrl.Internal(round,(string)b["action"]["actionId"],key);
+     Assert.IsTrue(JToken.DeepEquals(b,actual),"Original command differs");Assert.IsTrue(JToken.DeepEquals(before,ctrl.State.Capture()),"No confirmed state before receipt");
+     var restored=WorldBossRailController.RestoreLocal(ctrl.CaptureLocal(),d,"LOCAL_ATTEMPT",(string)e["authenticatedAccount"]);Assert.IsTrue(restored.AwaitingAuthorityRefresh);Assert.IsTrue(JToken.DeepEquals(b,restored.OriginalForReconciliation()));
+     actual["expectedRevision"]=999;Assert.IsTrue(JToken.DeepEquals(b,ctrl.OriginalForReconciliation()));
+     ctrl.AcceptOriginalReceipt((JObject)step["receipt"],(JObject)step["after"]);restored.AcceptOriginalReceipt((JObject)step["receipt"],(JObject)step["after"]);Assert.IsNull(ctrl.Pending);Assert.IsTrue(JToken.DeepEquals(ctrl.State.Capture(),restored.State.Capture()));restored.Dispose();
+    }
+    foreach(var ctrl in controllers.Values)ctrl.ApplyAuthoritativeSnapshot((JObject)step["after"]);
+   }
+   Assert.AreEqual(c["steps"].Count(s=>(string)s["event"]["kind"]=="COMMAND"),commands,"Display/snapshot refresh must not emit commands");
+   foreach(var ctrl in controllers.Values){Assert.IsTrue(JToken.DeepEquals(c["expected"],ctrl.State.Capture()));var r=WorldBossRailController.RestoreLocal(ctrl.CaptureLocal(),d,"LOCAL_ATTEMPT",accounts.First(a=>controllers[a]==ctrl));Assert.IsTrue(JToken.DeepEquals(c["expected"],r.State.Capture()));ctrl.Dispose();r.Dispose();}
+  }
+  [Test] public void PreviewAndUnknownReplyKeepOriginalWithoutPublishingRoute(){var c=Open();int n=0;c.CommandRequested+=_=>n++;c.PreviewRoute("p1r1","LEFT");c.ConfirmPreview("key");Assert.AreEqual("ENTRY",(string)c.State.Capture()["rounds"][0]["route"]);Assert.Throws<InvalidOperationException>(()=>c.ConfirmPreview("new"));Assert.AreEqual(1,n);Assert.AreEqual("key",(string)c.OriginalForReconciliation()["commandId"]);c.Dispose();}
+  [Test] public void NoCentralThirdSelectionOrAutomaticCommand(){var c=Open();int n=0;c.CommandRequested+=_=>n++;Assert.Throws<ArgumentException>(()=>c.PreviewRoute("p1r1","ENTRY"));c.ApplyAuthoritativeSnapshot(FirstOpen());Assert.AreEqual(0,n);Assert.AreEqual("ENTRY",(string)c.State.Capture()["rounds"][0]["route"]);}
+  [Test] public void WrongRoleAndDeadlineDoNotCreatePending(){var coop=(JObject)Cases[3]["steps"][1]["before"];var d=(JObject)coop["definition"];var c=new WorldBossRailController(new WorldBossRailSnapshot(coop,d,"LOCAL_ATTEMPT"),(string)d["operatorAccountId"]);c.PreviewRoute("p1r1","LEFT");Assert.Throws<InvalidOperationException>(()=>c.ConfirmPreview("wrong"));Assert.IsNull(c.Pending);var s=FirstOpen();s["now"]=(long)s["definition"]["startedAt"]+(long)s["definition"]["rounds"][0]["lockAt"];c= new WorldBossRailController(new WorldBossRailSnapshot(s,(JObject)s["definition"],"LOCAL_ATTEMPT"),"a");c.PreviewRoute("p1r1","LEFT");Assert.Throws<InvalidOperationException>(()=>c.ConfirmPreview("late"));Assert.IsNull(c.Pending);}
+  [Test] public void RestoreRequiresRefreshForNewIntentAndPreservesPendingKey(){var c=Open();c.PreviewRoute("p1r1","LEFT");var r=WorldBossRailController.RestoreLocal(c.CaptureLocal(),c.State.Definition,"LOCAL_ATTEMPT","a");Assert.Throws<InvalidOperationException>(()=>r.ConfirmPreview("fresh"));r.ApplyAuthoritativeSnapshot(FirstOpen());Assert.IsFalse(r.AwaitingAuthorityRefresh);r.ConfirmPreview("fresh");}
+  [Test] public void InvalidReceiptOrStaleSnapshotCannotPartiallyPublish(){var c=Open();c.PreviewRoute("p1r1","LEFT");c.ConfirmPreview("route");var s=(JObject)Cases[0]["steps"][1]["after"];var receipt=(JObject)Cases[0]["steps"][1]["receipt"].DeepClone();var before=c.CaptureLocal();receipt["route"]="RIGHT";Assert.Throws<ArgumentException>(()=>c.AcceptOriginalReceipt(receipt,s));Assert.AreEqual(before,c.CaptureLocal());s=(JObject)FirstOpen().DeepClone();s["now"]=0;Assert.Throws<ArgumentException>(()=>c.ApplyAuthoritativeSnapshot(s));Assert.AreEqual(before,c.CaptureLocal());}
+  [TestCase("version")][TestCase("definition")][TestCase("buff")][TestCase("result")][TestCase("receipt")][TestCase("orphan")][TestCase("unknown")]
+  public void CorruptSnapshotIsRejected(string kind){var s=(JObject)Cases[0]["expected"].DeepClone();var d=(JObject)s["definition"].DeepClone();if(kind=="version")s["version"]="old";if(kind=="definition")s["definition"]["geometry"]["trainLengthMm"]=999;if(kind=="buff")s["buff"]["multiplierBps"]=20000;if(kind=="result")s["results"][0]["directScore"]=1;if(kind=="receipt")s["receipts"][0]["receipt"]["acceptedRevision"]=999;if(kind=="orphan")s["results"][0]["roundId"]="other";if(kind=="unknown")s["auto"]=true;Assert.Throws<ArgumentException>(()=>new WorldBossRailSnapshot(s,d,"LOCAL_ATTEMPT"));}
+  [Test] public void CopiesAreIsolatedAndHistoricalSnapshotDoesNotUseNewDispatcher(){var c=Open();var s=c.State.Capture();s["revision"]=999;Assert.AreEqual(1,c.State.Revision);s=FirstOpen();s["version"]="world-boss-binding-v2";Assert.Throws<ArgumentException>(()=>new WorldBossRailSnapshot(s,(JObject)s["definition"],"LOCAL_ATTEMPT"));}
+  static JObject Trace()=>JObject.Parse(File.ReadAllText("D:/Project/LASTRAIL/QA/WorldBossRail-20261002/Consumer/server-traces.json"));
+  [Test] public void ActualServerDefinitiveRejectionUnlocksNextRoundWithoutChangingOriginal(){var x=Trace()["retryRejection"];var d=(JObject)x["before"]["definition"];var c=new WorldBossRailController(new WorldBossRailSnapshot((JObject)x["before"],d,"LOCAL_ATTEMPT"),"a");c.PreviewRoute("p1r1","LEFT");Assert.IsTrue(JToken.DeepEquals(x["body"],c.ConfirmPreview("rejected")));c.RejectOriginal((JObject)x["body"],(string)x["error"],(JObject)x["latest"]);Assert.IsNull(c.Pending);c.ApplyAuthoritativeSnapshot((JObject)x["next"]);c.PreviewRoute("p1r2","LEFT");Assert.AreEqual("next",(string)c.ConfirmPreview("next")["commandId"]);}
+  [Test] public void ServerBothRoutesWrongCombinationUnconfirmedDisconnectDownAndEndRemainExact(){var x=Trace();foreach(var e in x["extras"]){var s=(JObject)e["expected"];var m=new WorldBossRailSnapshot(s,(JObject)e["initial"]["definition"],"LOCAL_ATTEMPT");Assert.IsTrue(JToken.DeepEquals(s,m.Capture()));var result=((JArray)m.Capture()["results"]).Single(r=>(string)r["roundId"]==(string)e["roundId"]);Assert.AreEqual((string)e["outcome"],(string)result["outcome"]);Assert.LessOrEqual(((JArray)result["failureAttacks"]).Count,1);Assert.AreEqual(0,(int)result["directScore"]);}var end=(JObject)x["terminal"];var c=new WorldBossRailController(new WorldBossRailSnapshot(end,(JObject)end["definition"],"LOCAL_ATTEMPT"),"a");Assert.AreEqual(6,((JArray)c.State.Capture()["results"]).Count);Assert.Throws<InvalidOperationException>(()=>c.PreviewRoute("p1r1","LEFT"));}
+  [Test] public void ReentrantDetachDoesNotEmitSubsequentChangedOrAcceptLateResponse(){var c=Open();c.PreviewRoute("p1r1","LEFT");int changed=0;c.Changed+=()=>changed++;c.CommandRequested+=_=>c.Dispose();c.ConfirmPreview("route");Assert.AreEqual(0,changed);Assert.Throws<ObjectDisposedException>(()=>c.AcceptOriginalReceipt((JObject)Cases[0]["steps"][1]["receipt"],(JObject)Cases[0]["steps"][1]["after"]));}
+  [Test] public void UnknownOrForeignRejectionCannotEraseOriginal(){var c=Open();c.PreviewRoute("p1r1","LEFT");var p=c.ConfirmPreview("key");var before=c.CaptureLocal();Assert.Throws<ArgumentException>(()=>c.RejectOriginal(p,"timeout",FirstOpen()));p["commandId"]="other";Assert.Throws<ArgumentException>(()=>c.RejectOriginal(p,"rail_revision_conflict",FirstOpen()));Assert.AreEqual(before,c.CaptureLocal());}
+  [Test] public void DefinitiveRejectionCanReconcileOriginalAndUnlockFreshIntent(){
+   var c=Open();c.PreviewRoute("p1r1","LEFT");var body=c.ConfirmPreview("rejected");var method=typeof(WorldBossRailController).GetMethod("RejectOriginal");Assert.NotNull(method,"Definitive rejection reconciliation missing");
+   method.Invoke(c,new object[]{body,"rail_revision_conflict",FirstOpen()});Assert.IsNull(c.Pending);c.PreviewRoute("p1r1","RIGHT");Assert.AreEqual("fresh",(string)c.ConfirmPreview("fresh")["commandId"]);
+  }
+  [Test] public void DisposeRemovesOwnedCallbacksAndStopsCommands(){var c=Open();int n=0;c.CommandRequested+=_=>n++;c.Dispose();c.Dispose();Assert.Throws<ObjectDisposedException>(()=>c.PreviewRoute("p1r1","LEFT"));Assert.Throws<ObjectDisposedException>(()=>c.ApplyAuthoritativeSnapshot(FirstOpen()));Assert.AreEqual(0,n);}
+ }
+}
+#endif

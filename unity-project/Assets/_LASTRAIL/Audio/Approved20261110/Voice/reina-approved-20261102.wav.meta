@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: c488e2ed4a40419b9303f08c9794c522
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 0
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 1
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 0
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 0
+  userData: 'Approved original; SHA256 099f5065fb219389562b115d10b632ed72a7f13df6159bffa3291624be7a6a8d; see audio-cutscene intake manifest'
+  assetBundleName:
+  assetBundleVariant:

@@ -1,0 +1,512 @@
+import type {
+  AdminRole,
+  PlayerDetail,
+  PlayerSearchResponse,
+  RunDetail,
+  RunSearchResponse,
+  SuspiciousPlayerDetail,
+  SuspiciousPlayersResponse
+} from "@lastrail/admin-contracts";
+
+type AccountStatus = PlayerDetail["status"] | PlayerSearchResponse["items"][number]["status"];
+type AuditResult = SuspiciousPlayerDetail["decisions"][number]["result"];
+type Classification = SuspiciousPlayerDetail["riskSignals"][number]["classification"];
+type LevelSource =
+  | PlayerDetail["progression"]["operators"][number]["levelSource"]
+  | RunDetail["snapshot"]["operators"][number]["levelSource"];
+type Priority =
+  | NonNullable<PlayerSearchResponse["items"][number]["risk"]>
+  | SuspiciousPlayersResponse["items"][number]["priority"]
+  | SuspiciousPlayerDetail["summary"]["priority"];
+type ReviewState = "OPEN" | "IN_REVIEW" | "RESOLVED";
+type ReviewStatus =
+  | NonNullable<PlayerSearchResponse["items"][number]["reviewStatus"]>
+  | SuspiciousPlayersResponse["items"][number]["reviewStatus"]
+  | SuspiciousPlayerDetail["summary"]["reviewStatus"];
+type RunResult =
+  | RunSearchResponse["items"][number]["result"]
+  | SuspiciousPlayerDetail["suspiciousRuns"][number]["result"];
+type EncounterType = "ORDINARY_15_WAVE" | "RAID_BOSS";
+type GachaGuaranteeType = "RARE_OR_HIGHER_10" | "ELITE_30" | "PICKUP_ELITE_60" | "NONE";
+type GachaResultStatus = "ACCEPTED" | "DUPLICATE_REPLAY" | "REJECTED";
+type OpsEnvironment = "DEV" | "PRD";
+type OpsSeverity = "info" | "warning" | "warn" | "error" | "critical" | "fatal";
+type OpsErrorLogStatus = "open" | "acknowledged" | "resolved" | "ignored";
+type OpsErrorLogSource =
+  | "game_api"
+  | "admin_api"
+  | "worker_cron"
+  | "migration_verify"
+  | "support_read_model"
+  | "integrity_pipeline";
+type OfflineRewardClaimStatus = "CLAIMED" | "DUPLICATE_REPLAY" | "REJECTED";
+type OfflineRewardPreviewStatus = "AVAILABLE" | "EMPTY" | "REJECTED";
+type RewardCalculationSource = "SERVER_REWARD_PREVIEW" | "UNITY_DIAGNOSTIC_HINT";
+type StoryProgressStatus =
+  | "draft_exists"
+  | "localization_pending"
+  | "fixture_pending"
+  | "version_pending"
+  | "content_missing"
+  | "version_mismatch"
+  | "ready";
+type StoryProgressId =
+  | "none"
+  | "opn_01_last_departure"
+  | "opn_02_first_signal"
+  | "opn_03_water_stop"
+  | "opn_04_scrapstar_show"
+  | "opn_05_night_boarders"
+  | "opn_06_broken_line"
+  | "raid_raider_king_engine";
+
+function labelFor<T extends string>(labels: Record<T, string>, value: T | string): string {
+  return labels[value as T] ?? value;
+}
+
+export function accountStatusLabel(status: AccountStatus): string {
+  return labelFor(
+    {
+      ACTIVE: "활성",
+      SUSPENDED: "정지",
+      BANNED: "차단",
+      DELETED: "삭제"
+    },
+    status
+  );
+}
+
+export function auditResultLabel(result: AuditResult): string {
+  return labelFor({ SUCCESS: "성공", FAILURE: "실패" }, result);
+}
+
+export function auditActionLabel(action: string): string {
+  return labelFor(
+    {
+      PLAYER_NOTE_CREATE: "플레이어 노트 작성",
+      BALANCE_CONFIG_PUBLISH: "밸런스 설정 게시",
+      INTEGRITY_REVIEW_MARK: "무결성 판정 기록",
+      INTEGRITY_REVIEW_STATUS_CHANGE: "무결성 검토 상태 변경"
+    },
+    action
+  );
+}
+
+export function categoryLabel(category: string): string {
+  return labelFor(
+    {
+      DAMAGE_ANALYSIS: "피해량 분석",
+      CLEAR_TIME_ANALYSIS: "클리어 시간 분석",
+      ULTIMATE_USAGE_ANALYSIS: "얼티밋 전술 사용 분석",
+      CURRENCY_ANALYSIS: "재화 분석",
+      BALANCE_VERSION_ANALYSIS: "밸런스 버전 분석",
+      SCORE_PATTERN_ANALYSIS: "점수 패턴 분석"
+    },
+    category
+  );
+}
+
+export function classificationLabel(classification: Classification): string {
+  return labelFor(
+    {
+      SOFT_ANOMALY: "경미 이상",
+      HARD_VIOLATION: "중대 위반"
+    },
+    classification
+  );
+}
+
+export function evidenceCodeLabel(code: string | null): string {
+  if (!code) return "신호 없음";
+  return labelFor(
+    {
+      CHECKSUM_MISMATCH: "체크섬 불일치",
+      IMPOSSIBLE_SCORE: "불가능한 점수",
+      IMPOSSIBLE_DAMAGE: "불가능한 피해량",
+      BALANCE_VERSION_REWARD_MISMATCH: "밸런스 버전 보상 불일치",
+      ABNORMAL_CLEAR_TIME: "비정상 클리어 시간",
+      ABNORMAL_ULTIMATE_USAGE: "비정상 얼티밋 사용",
+      EXCESSIVE_RAID_SCORE_FOR_PROGRESSION: "성장 대비 과도한 레이드 점수",
+      CURRENCY_SPIKE: "비정상 재화 증가",
+      BOUNDARY_SCORE_PATTERN: "경계값 점수 반복",
+      DAMAGE_SPIKE: "피해량 급증"
+    },
+    code
+  );
+}
+
+export function encounterTypeLabel(encounterType: EncounterType | string): string {
+  return labelFor(
+    {
+      ORDINARY_15_WAVE: "일반 15공세 작전",
+      RAID_BOSS: "보스 전용 레이드"
+    },
+    encounterType
+  );
+}
+
+export function enforcementLabel(enforcement: string): string {
+  return labelFor(
+    {
+      NONE: "조치 없음",
+      SCORE_EXCLUDED: "순위 제외",
+      REWARD_HELD: "보상 보류",
+      ACTIONED: "조치 완료"
+    },
+    enforcement
+  );
+}
+
+export function levelSourceLabel(source: LevelSource): string {
+  return labelFor({ TRAINED: "훈련", SYNC: "동기화" }, source);
+}
+
+export function gachaErrorCodeLabel(code: string): string {
+  return labelFor(
+    {
+      insufficient_command_ticket: "지휘권 부족",
+      auth_required: "인증 필요",
+      banner_inactive: "비활성 모집 배너",
+      invalid_pull_count: "잘못된 모집 횟수",
+      contract_violation: "계약 위반",
+      gacha_pool_unavailable: "모집 풀 사용 불가",
+      gacha_state_conflict: "모집 상태 충돌",
+      gacha_temporarily_unavailable: "모집 일시 사용 불가"
+    },
+    code
+  );
+}
+
+export function gachaGuaranteeTypeLabel(guaranteeType: GachaGuaranteeType | string | null): string {
+  if (!guaranteeType) return "보장 정보 없음";
+  return labelFor(
+    {
+      RARE_OR_HIGHER_10: "10회 희귀 이상 보장",
+      ELITE_30: "30뽑 정예 확정",
+      PICKUP_ELITE_60: "60뽑 픽업 정예 확정",
+      NONE: "보장 없음"
+    },
+    guaranteeType
+  );
+}
+
+export function gachaResultStatusLabel(status: GachaResultStatus | string): string {
+  return labelFor(
+    {
+      ACCEPTED: "처리 완료",
+      DUPLICATE_REPLAY: "이전 결과 재조회",
+      REJECTED: "거절"
+    },
+    status
+  );
+}
+
+export function gachaResultTypeLabel(type: string): string {
+  return labelFor({
+    ELITE_OPERATOR: "정예 요원",
+    RARE_OPERATOR: "희귀 요원",
+    RARE_OPERATOR_TOKEN: "희귀 요원 증표",
+    TRAINING_MATERIAL: "훈련 재료",
+    WORK_SKILL_MATERIAL: "작업 기술 재료",
+    TACTICAL_MATERIAL: "전술 재료"
+  }, type);
+}
+
+export function firstClearLabel(isFirstClear: boolean): string {
+  return isFirstClear ? "첫 클리어 보너스" : "첫 클리어 보너스 없음";
+}
+
+export function opsEnvironmentLabel(environment: OpsEnvironment | string): string {
+  return labelFor({ DEV: "개발", PRD: "운영" }, environment);
+}
+
+export function opsErrorCodeLabel(code: string): string {
+  return labelFor(
+    {
+      reward_plan_mismatch: "보상 계획 불일치",
+      reward_multiplier_missing: "보상 배율 누락",
+      reward_plan_unavailable: "보상 계획 사용 불가",
+      risk_reward_policy_missing: "위험도 보상 정책 누락",
+      reward_integrity_restricted: "무결성 판정으로 보상 제한",
+      offline_story_progress_missing: "오프라인 보상 스토리 진행도 누락",
+      offline_reward_policy_missing: "오프라인 보상 정책 누락",
+      offline_reward_claim_unavailable: "오프라인 보상 수령 불가",
+      offline_reward_state_conflict: "오프라인 보상 상태 충돌",
+      google_auth_config_missing: "Google 인증 설정 누락",
+      google_auth_verifier_unavailable: "Google 인증 검증기 사용 불가",
+      run_start_state_conflict: "출격 시작 상태 충돌",
+      story_raid_stamina_refund_state_conflict: "스토리 레이드 stamina 환급 상태 충돌",
+      story_raid_stamina_refund_policy_missing: "스토리 레이드 stamina 환급 정책 누락",
+      gacha_state_conflict: "모집 상태 충돌",
+      duplicate_replay: "중복 재생",
+      offline_reward_not_claimable: "오프라인 보상 수령 대상 없음",
+      offline_reward_claim_conflict: "오프라인 보상 수령 충돌",
+      offline_reward_plan_mismatch: "오프라인 보상 계획 불일치",
+      economy_mutation_conflict: "경제 변경 충돌",
+      offline_reward_integrity_restricted: "무결성 판정으로 오프라인 보상 제한",
+      package_ref_mismatch: "시작 패키지 ref 불일치",
+      story_progress_policy_missing: "스토리 진행 정책 누락",
+      story_progress_state_conflict: "스토리 진행 상태 충돌",
+      narrative_content_missing: "내러티브 콘텐츠 누락",
+      narrative_version_mismatch: "내러티브 버전 불일치",
+      contract_violation: "계약 위반"
+    },
+    code
+  );
+}
+
+export function serverOwnedMutationLabel(code: string): string {
+  return labelFor(
+    {
+      STORY_RAID_STAMINA_REFUND: "스토리 레이드 stamina 환급"
+    },
+    code
+  );
+}
+
+export function fuelLedgerReasonLabel(code: string): string {
+  return labelFor(
+    {
+      STORY_RAID_FAILURE_REFUND: "스토리 레이드 실패 환급"
+    },
+    code
+  );
+}
+
+export function offlineRewardClaimStatusLabel(status: OfflineRewardClaimStatus | string): string {
+  return labelFor(
+    {
+      CLAIMED: "수령 완료",
+      DUPLICATE_REPLAY: "중복 재생",
+      REJECTED: "거절"
+    },
+    status
+  );
+}
+
+export function offlineRewardPreviewStatusLabel(status: OfflineRewardPreviewStatus | string): string {
+  return labelFor(
+    {
+      AVAILABLE: "수령 가능",
+      EMPTY: "수령 없음",
+      REJECTED: "거절"
+    },
+    status
+  );
+}
+
+export function offlineRewardStateSourceLabel(source: string): string {
+  return labelFor(
+    {
+      account_offline_reward_state: "오프라인 보상 상태 row",
+      "accounts.created_at_fallback": "계정 생성 시각 fallback"
+    },
+    source
+  );
+}
+
+export function opsServiceLabel(service: string): string {
+  return labelFor(
+    {
+      "Admin API": "Admin API",
+      "Game API": "Game API",
+      "Async Worker": "Async Worker",
+      "Pages Function": "Pages Function",
+      "Unity Client Diagnostic": "Unity 클라이언트 진단"
+    },
+    service
+  );
+}
+
+export function opsSeverityLabel(severity: OpsSeverity | string): string {
+  return labelFor(
+    {
+      info: "안내",
+      warning: "주의",
+      warn: "경고",
+      error: "오류",
+      critical: "치명",
+      fatal: "치명 오류"
+    },
+    severity
+  );
+}
+
+export function opsErrorLogStatusLabel(status: OpsErrorLogStatus | string): string {
+  return labelFor(
+    {
+      open: "열림",
+      acknowledged: "확인됨",
+      resolved: "해결됨",
+      ignored: "무시됨"
+    },
+    status
+  );
+}
+
+export function opsErrorLogSourceLabel(source: OpsErrorLogSource | string): string {
+  return labelFor(
+    {
+      game_api: "게임 API",
+      admin_api: "어드민 API",
+      worker_cron: "예약 작업",
+      migration_verify: "마이그레이션 검증",
+      support_read_model: "고객지원 조회 모델",
+      integrity_pipeline: "무결성 파이프라인"
+    },
+    source
+  );
+}
+
+export function permissionLabel(permission: string): string {
+  return labelFor(
+    {
+      ACCOUNT_READ: "계정 조회",
+      ACCOUNT_NOTE_WRITE: "계정 노트 작성",
+      RUN_READ: "출격 조회",
+      INTEGRITY_READ: "무결성 조회",
+      INCIDENT_READ: "사건 조회",
+      ENFORCEMENT_SUSPEND: "제재 처리",
+      ANALYTICS_READ: "지표 조회",
+      AUDIT_READ: "감사 로그 조회",
+      OFFLINE_REWARD_READ: "오프라인 보상 조회",
+      SUPPORT_READ: "CS 지원 조회",
+      OPS_ERROR_LOG_READ: "시스템 에러 로그 조회",
+      BALANCE_READ: "밸런스 조회",
+      BALANCE_DRAFT_CREATE: "밸런스 초안 생성",
+      BALANCE_DRAFT_EDIT: "밸런스 초안 수정",
+      BALANCE_DRAFT_DISCARD: "밸런스 초안 폐기",
+      BALANCE_VALIDATE: "밸런스 검증",
+      BALANCE_PUBLISH: "밸런스 게시",
+      BALANCE_ROLLBACK: "밸런스 롤백",
+      BALANCE_SIMULATION_READ: "밸런스 시뮬레이션 조회",
+      BALANCE_SIMULATION_RUN: "밸런스 시뮬레이션 실행",
+      BALANCE_SIMULATION_CANCEL: "밸런스 시뮬레이션 취소",
+      STORY_PROGRESS_READ: "스토리 진행 조회"
+    },
+    permission
+  );
+}
+
+export function priorityLabel(priority: Priority): string {
+  return labelFor(
+    {
+      LOW: "낮음",
+      MEDIUM: "보통",
+      HIGH: "높음",
+      CRITICAL: "긴급"
+    },
+    priority
+  );
+}
+
+export function resourceTypeLabel(resourceType: string): string {
+  return labelFor(
+    {
+      account: "계정",
+      run: "출격",
+      incident: "사건",
+      balance: "밸런스"
+    },
+    resourceType
+  );
+}
+
+export function reviewStateLabel(state: ReviewState): string {
+  return labelFor({ OPEN: "신규", IN_REVIEW: "검토 중", RESOLVED: "처리 완료" }, state);
+}
+
+export function reviewStatusLabel(status: ReviewStatus): string {
+  return labelFor(
+    {
+      UNREVIEWED: "미검토",
+      IN_REVIEW: "검토 중",
+      NEEDS_MORE_EVIDENCE: "추가 증거 필요",
+      CONFIRMED_VIOLATION: "위반 확인",
+      LINKED_INCIDENT: "사건 연결",
+      NEW: "신규",
+      REVIEWING: "검토 중",
+      CLEARED: "정상 처리",
+      SCORE_EXCLUDED: "순위 제외",
+      REWARD_HELD: "보상 보류",
+      ESCALATED: "제재 검토",
+      ACTIONED: "조치 완료",
+      FALSE_POSITIVE: "오탐"
+    },
+    status
+  );
+}
+
+export function rewardCalculationSourceLabel(source: RewardCalculationSource | string): string {
+  return labelFor(
+    {
+      SERVER_REWARD_PREVIEW: "서버 보상 미리보기",
+      UNITY_DIAGNOSTIC_HINT: "Unity 진단 참고 신호"
+    },
+    source
+  );
+}
+
+export function storyProgressLabel(progressId: StoryProgressId | string | null): string {
+  if (!progressId) return "스토리 진행 없음";
+  return labelFor(
+    {
+      none: "스토리 진행 없음",
+      opn_01_last_departure: "마지막 출발",
+      opn_02_first_signal: "첫 신호",
+      opn_03_water_stop: "급수 정차",
+      opn_04_scrapstar_show: "스크랩스타 쇼",
+      opn_05_night_boarders: "야간 승선전",
+      opn_06_broken_line: "끊어진 선로",
+      raid_raider_king_engine: "약탈왕 기관차"
+    },
+    progressId
+  );
+}
+
+export function storyProgressStatusLabel(status: StoryProgressStatus | string | null): string {
+  if (!status) return "상태 없음";
+  return labelFor(
+    {
+      draft_exists: "초안 존재",
+      localization_pending: "현지화 대기",
+      fixture_pending: "fixture 대기",
+      version_pending: "버전 대기",
+      content_missing: "콘텐츠 누락",
+      version_mismatch: "버전 불일치",
+      ready: "준비 완료"
+    },
+    status
+  );
+}
+
+export function riskLevelLabel(riskLevel: number | string): string {
+  const value = String(riskLevel);
+  const label = labelFor(
+    {
+      "1": "위험도 I",
+      "2": "위험도 II",
+      "3": "위험도 III",
+      "4": "위험도 IV",
+      "5": "위험도 V"
+    },
+    value
+  );
+  return label === value ? `위험도 ${value}` : label;
+}
+
+export function roleLabel(role: AdminRole): string {
+  return labelFor({ VIEWER: "조회자", OPERATOR: "운영자", OWNER: "소유자" }, role);
+}
+
+export function runResultLabel(result: RunResult): string {
+  return labelFor(
+    {
+      IN_PROGRESS: "진행 중",
+      CLEARED: "완료",
+      FAILED: "실패",
+      INVALIDATED: "무효 처리"
+    },
+    result
+  );
+}

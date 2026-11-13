@@ -1,0 +1,31 @@
+#if UNITY_EDITOR
+using System;
+using System.IO;
+using System.Linq;
+using LastRail.Battle;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+public static class CombatTitleBarCapture {
+ static string output;static Ce03RailPreparation prep;static JArray records;
+ public static void Run(){try{
+  output=Path.GetFullPath(Ce03NormalUiCapture.Arg("-kyleOutput"));if(!Application.isBatchMode||!output.StartsWith("D:\\Project\\LASTRAIL\\unity-project\\QA\\",StringComparison.OrdinalIgnoreCase)||Directory.Exists(output))throw new Exception("Fresh D output required");Directory.CreateDirectory(output);records=new JArray();
+  prep=new Ce03RailPreparation(Ce03NormalUiCapture.Read("D:/Project/LASTRAIL/unity-project/QA/Unity1Artifacts/Reports/Server2-RailJourney-20260914/synthetic-rail-preparation.json"),"a",1);
+  Capture(prep.CreateModel(1).CaptureLocalState(),"wave1",true);
+  var model=prep.CreateModel(1);model.SetUltimateAuto(true);for(int i=0;i<40000&&model.CompletedWaves<9&&model.Outcome==BasicCombatOutcome.Running;i++){var hud=model.ReadHudState();var offer=hud["railJourney"]["offer"] as JObject;if(offer!=null){model.PreviewRailRoute(0);model.ConfirmRailRoute((string)offer["id"],(string)offer["options"][0]["id"]);}if(i%15==0)foreach(var skill in (JArray)hud["manuals"])if((bool)skill["enabled"])model.RequestSkill("title-qa-"+i+"-"+(string)skill["ability"],(string)skill["actor"],(string)skill["ability"]);model.Advance(1000000,8);}if(model.CompletedWaves!=9||model.Outcome!=BasicCombatOutcome.Running)throw new Exception("Could not reach wave10 diagnostic naturally");Capture(model.CaptureLocalState(),"wave10",false);
+  Capture(File.ReadAllText("D:/Project/LASTRAIL/unity-project/QA/Unity1Artifacts/Reports/SecondFinal-20260913/ActualCapture03/executed-model.json"),"wave15-victory",false);
+  File.WriteAllText(output+"/complete.json",new JObject{["scope"]="Fresh actual Unity titlebar rendering. Wave1/10 use explicit local fixture simulation (wave10 reached through normal advance/skills/route API); wave15 restores historical actual HTTP final checkpoint. No new HTTP full run or device input claim.",["captures"]=records}.ToString());EditorApplication.Exit(0);
+ }catch(Exception e){if(output!=null)File.WriteAllText(output+"/failure.txt",e.ToString());Debug.LogException(e);EditorApplication.Exit(1);}}
+ static void Capture(string raw,string prefix,bool interactions){
+  string cp=null;var session=new Ce03RailSession(prep,"title-"+prefix,1);var store=new CombatCheckpointStore(output+"/"+prefix+".cp",()=>cp,s=>cp=s);store.SaveRailSession(session,BasicCombatSimulation.RestoreLocalState(raw,session.CreateModel),0);var driver=session.CreateDriver(store,()=>true);driver.Open();
+  var cg=new GameObject("HeaderCamera",typeof(Camera),typeof(AudioListener));var camera=cg.GetComponent<Camera>();camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.black;var target=new RenderTexture(720,1280,24);camera.targetTexture=target;
+  var go=new GameObject("HeaderCanvas",typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler));var view=go.AddComponent<ApprovedCombatView>();view.Bind(driver,LastRail.Resources.PreparedContent.Load<CombatPresentationAssets>("CombatPresentation/approved"));var canvas=go.GetComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=camera;canvas.planeDistance=1;
+  try{Still(prefix,driver,view,camera,target);var root=go.transform.Find("ApprovedBattle");if(interactions){root.Find("UltimateAuto").GetComponent<Button>().onClick.Invoke();root.Find("Speed").GetComponent<Button>().onClick.Invoke();Still(prefix+"-auto-on-1-5x",driver,view,camera,target);root.Find("Speed").GetComponent<Button>().onClick.Invoke();Still(prefix+"-2x",driver,view,camera,target);root.Find("Pause").GetComponent<Button>().onClick.Invoke();string paused=driver.StateJson;driver.Advance(100000000,8);if(paused!=driver.StateJson)throw new Exception("Pause changed state");Still(prefix+"-paused",driver,view,camera,target);root.Find("Pause").GetComponent<Button>().onClick.Invoke();var events=new GameObject("HeaderEvents",typeof(EventSystem));var press=root.Find("Speed").GetComponent<CombatTitleBarPress>();press.OnPointerDown(new PointerEventData(events.GetComponent<EventSystem>()));Still(prefix+"-pressed",driver,view,camera,target);press.OnPointerUp(new PointerEventData(events.GetComponent<EventSystem>()));UnityEngine.Object.DestroyImmediate(events);}
+   if(prefix=="wave10"){camera.targetTexture=null;target.Release();UnityEngine.Object.DestroyImmediate(target);target=new RenderTexture(720,1600,24);camera.targetTexture=target;Still(prefix+"-20-9",driver,view,camera,target);}
+  }finally{UnityEngine.Object.DestroyImmediate(go);UnityEngine.Object.DestroyImmediate(cg);target.Release();UnityEngine.Object.DestroyImmediate(target);}
+ }
+ static void Still(string name,CombatSceneDriver d,ApprovedCombatView view,Camera camera,RenderTexture target){string before=d.StateJson;Canvas.ForceUpdateCanvases();view.Refresh();Canvas.ForceUpdateCanvases();camera.Render();var previous=RenderTexture.active;RenderTexture.active=target;var pixels=new Texture2D(target.width,target.height,TextureFormat.RGB24,false);pixels.ReadPixels(new Rect(0,0,target.width,target.height),0,0);pixels.Apply();File.WriteAllBytes(output+"/"+name+".png",pixels.EncodeToPNG());UnityEngine.Object.DestroyImmediate(pixels);var header=new Texture2D(720,66,TextureFormat.RGB24,false);int top=(target.height-1280)/2;header.ReadPixels(new Rect(0,target.height-top-66,720,66),0,0);header.Apply();File.WriteAllBytes(output+"/"+name+"-header.png",header.EncodeToPNG());UnityEngine.Object.DestroyImmediate(header);RenderTexture.active=previous;if(before!=d.StateJson||d.RecoveryRequired)throw new Exception("Capture changed model/recovery");File.WriteAllText(output+"/"+name+".state.json",before);records.Add(new JObject{["name"]=name,["wave"]=d.HudState["wave"],["tick"]=d.Tick,["auto"]=d.HudState["ultimateAuto"],["speedHalfUnits"]=d.HudState["speedHalfUnits"],["paused"]=d.HudState["paused"],["stateUnchanged"]=true,["recoveryRequired"]=false,["width"]=target.width,["height"]=target.height});}
+}
+#endif

@@ -1,0 +1,1246 @@
+import { describe, expect, it } from "vitest";
+import app from "../../apps/game-api/src/index";
+import { createAccessToken } from "../../apps/game-api/src/auth";
+import { launchRunRewardsConfig } from "../../packages/balance/src/index";
+
+type TestEnv = Env & {
+  AUTH_SIGNING_KEY_CURRENT: string;
+};
+
+const authSecret = "test-secret-minimum-32-characters";
+
+async function createAuthorizationHeader(): Promise<string> {
+  const token = await createAccessToken({
+    secret: authSecret,
+    accountId: "account_1",
+    sessionId: "session_1",
+    nowMs: Date.now(),
+    ttlMs: 900000,
+  });
+  return `Bearer ${token}`;
+}
+
+describe("game-api run finish contract", () => {
+  it("accepts a completed run finish and creates a reward preview from frozen run state", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    expect(values).toEqual(["session_1", "account_1"]);
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    expect(values).toEqual(["account_1", "run-finish-idem-1"]);
+                    return null;
+                  }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
+                  if (sql.includes("FROM account_first_clears")) {
+                    expect(values).toEqual(["account_1", "opn_03_water_stop", "III"]);
+                    return null;
+                  }
+                  if (sql.includes("FROM account_story_progress")) {
+                    expect(values).toEqual(["account_1"]);
+                    return null;
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    expect(values).toEqual(["account_1"]);
+                    return { sequence: 1 };
+                  }
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    expect(values).toEqual(["run_1"]);
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_03_water_stop",
+                      risk: "III",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_03_water_stop",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run_1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      rewardClaimId: null,
+      balanceVersion: "1",
+      message: null,
+      errorCode: null,
+    });
+    expect(body.rewardPreviewId).toMatch(/^reward_preview_/u);
+    expect(body.serverReceivedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/u);
+    expect(batchSql.join("\n")).toContain("INSERT INTO run_final_results");
+    expect(batchSql.join("\n")).toContain("INSERT INTO run_reward_previews");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).toContain("INSERT OR IGNORE INTO account_unlocks");
+    expect(batchSql.join("\n")).toContain("INSERT INTO progression_ledger");
+    expect(batchSql.join("\n")).toContain("INSERT INTO idempotency_records");
+    expect(batchSql.join("\n")).not.toContain("reward amount");
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    expect(rewardPreviewInsertIndex).toBeGreaterThanOrEqual(0);
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      rewardLines: Array<{ source?: string }>;
+      calculation: { firstClearEligible: boolean; firstClearApplied: boolean };
+    };
+    expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
+    expect(rewardPlan.calculation.firstClearEligible).toBe(true);
+    expect(rewardPlan.calculation.firstClearApplied).toBe(true);
+    const storyProgressInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO account_story_progress"));
+    expect(storyProgressInsertIndex).toBeGreaterThanOrEqual(0);
+    expect(batchBinds[storyProgressInsertIndex]).toEqual([
+      "account_1",
+      "act_01_wasteland_railway",
+      "opn_03_water_stop",
+      "opn_03_water_stop",
+      JSON.stringify(["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop"]),
+      JSON.stringify(["operation_cleared:opn_03_water_stop"]),
+      "act1-narrative-v1",
+      "run_1",
+      expect.any(Number),
+    ]);
+  });
+
+  it("treats raid boss defeat as full completion without requiring 15 cleared waves", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
+                  if (sql.includes("FROM account_first_clears")) {
+                    expect(values).toEqual(["account_1", "raid_raider_king_engine", "V"]);
+                    return null;
+                  }
+                  if (sql.includes("FROM account_story_progress")) return null;
+                  if (sql.includes("MAX(sequence)")) return { sequence: 1 };
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_raid_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "raid_raider_king_engine",
+                      risk: "V",
+                      preview_json: JSON.stringify({
+                        operationId: "raid_raider_king_engine",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "RAID_BOSS",
+                        raidId: "raid_raider_king_engine",
+                        bossId: "boss_raider_king_engine",
+                        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+                        allowedOperatorSlots: 4,
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                        contentVersion: "act1.launch.content.v1",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: true,
+            completedPhaseCount: 3,
+            encounterDurationSeconds: 420,
+          },
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run_raid_1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      rewardClaimId: null,
+      balanceVersion: "1",
+      message: null,
+      errorCode: null,
+    });
+    expect(body.rewardPreviewId).toMatch(/^reward_preview_/u);
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_story_progress");
+
+    const finalResultInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_final_results"));
+    expect(batchBinds[finalResultInsertIndex]?.[2]).toBe(0);
+    const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
+      encounterType?: string;
+      raidResult?: { bossDefeated?: boolean; completedPhaseCount?: number };
+      serverPreviewMetadata?: {
+        encounterType?: string;
+        raidId?: string | null;
+        bossId?: string | null;
+        bossPhaseRefs?: string[];
+        allowedOperatorSlots?: number | null;
+        startAugmentPackageRef?: string | null;
+        startTacticPackageRef?: string | null;
+        balanceVersion?: string;
+        contentVersion?: string | null;
+      };
+    };
+    expect(storedPayload.encounterType).toBe("RAID_BOSS");
+    expect(storedPayload.raidResult).toMatchObject({
+      bossDefeated: true,
+      completedPhaseCount: 3,
+    });
+    expect(storedPayload.serverPreviewMetadata).toMatchObject({
+      encounterType: "RAID_BOSS",
+      raidId: "raid_raider_king_engine",
+      bossId: "boss_raider_king_engine",
+      bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+      allowedOperatorSlots: 4,
+      startAugmentPackageRef: "act1_full_start_package_v1",
+      startTacticPackageRef: "act1_full_start_package_v1",
+      balanceVersion: "1",
+      contentVersion: "act1.launch.content.v1",
+    });
+
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      rewardLines: Array<{ source?: string }>;
+      calculation: { clearedWaves: number; firstClearEligible: boolean; firstClearApplied: boolean };
+    };
+    expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(true);
+    expect(rewardPlan.calculation.clearedWaves).toBe(15);
+    expect(rewardPlan.calculation.firstClearEligible).toBe(true);
+    expect(rewardPlan.calculation.firstClearApplied).toBe(true);
+  });
+
+  it("rejects tactic selections that do not reference the server-authored start package", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind() {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_01_last_departure",
+                      risk: "II",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_01_last_departure",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "ORDINARY_15_WAVE",
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("invalid tactic package refs must not commit.");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-bad-package-ref",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          encounterType: "ORDINARY_15_WAVE",
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [
+            {
+              source: "START_PACKAGE",
+              packageRef: "client_forged_mid_wave_package",
+              selectedTacticId: "tactic_cover_fire",
+            },
+          ],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      resultStatus: "REJECTED",
+      errorCode: "contract_violation",
+      message: "Tactic selections must reference the server-authored start package.",
+    });
+  });
+
+  it("commits Act 1 story raid failure stamina refund without first clear or story progress", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) return null;
+                  if (sql.includes("FROM account_first_clears")) return null;
+                  if (sql.includes("FROM account_story_progress")) {
+                    throw new Error("failed story raid must not query story progress advancement");
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    expect(values).toEqual(["account_1"]);
+                    return { sequence: 4 };
+                  }
+                  if (sql.includes("FROM fuel_state")) {
+                    expect(values).toEqual(["account_1"]);
+                    return {
+                      fuel: 80,
+                      max_fuel: 100,
+                    };
+                  }
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_raid_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "raid_raider_king_engine",
+                      risk: "V",
+                      preview_json: JSON.stringify({
+                        operationId: "raid_raider_king_engine",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                        encounterType: "RAID_BOSS",
+                        raidId: "raid_raider_king_engine",
+                        bossId: "boss_raider_king_engine",
+                        bossPhaseRefs: ["crown_chase", "trophy_break", "engine_stop"],
+                        allowedOperatorSlots: 5,
+                        startAugmentPackageRef: "act1_full_start_package_v1",
+                        startTacticPackageRef: "act1_full_start_package_v1",
+                        contentVersion: "act1.launch.content.v1",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        fuel: { max: 100, runStartCost: 10, rechargeSeconds: 300 },
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: false,
+            completedPhaseCount: 2,
+            encounterDurationSeconds: 360,
+          },
+          outcome: "FAILURE",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      runId: "run_raid_1",
+      accepted: true,
+      resultStatus: "ACCEPTED",
+      rewardClaimId: null,
+      balanceVersion: "1",
+      staminaRefund: {
+        status: "COMMITTED",
+        refundType: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyRef: "act1_story_raid_failure_stamina_refund_v1",
+      },
+      message: null,
+      errorCode: null,
+    });
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_first_clears");
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).toContain("INSERT INTO account_mutations");
+    expect(batchSql.join("\n")).toContain("'STORY_RAID_STAMINA_REFUND'");
+    expect(batchSql.join("\n")).toContain("INSERT INTO fuel_ledger");
+    expect(batchSql.join("\n")).toContain("UPDATE fuel_state");
+
+    const finalResultInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_final_results"));
+    const storedPayload = JSON.parse(String(batchBinds[finalResultInsertIndex]?.[3])) as {
+      staminaRefund?: { status?: string; reason?: string; policyRef?: string };
+      raidResult?: { bossDefeated?: boolean };
+    };
+    expect(storedPayload.raidResult?.bossDefeated).toBe(false);
+    expect(storedPayload.staminaRefund).toMatchObject({
+      status: "COMMITTED",
+      reason: "STORY_RAID_FAILURE",
+      policyRef: "act1_story_raid_failure_stamina_refund_v1",
+    });
+    const fuelLedgerInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO fuel_ledger"));
+    expect(batchBinds[fuelLedgerInsertIndex]).toEqual([
+      expect.stringMatching(/^fuel_ledger_/u),
+      "account_1",
+      expect.stringMatching(/^mutation_/u),
+      10,
+      90,
+      expect.any(Number),
+    ]);
+    expect(batchSql[fuelLedgerInsertIndex]).toContain("'STORY_RAID_FAILURE_REFUND'");
+    const fuelStateUpdateIndex = batchSql.findIndex((sql) => sql.includes("UPDATE fuel_state"));
+    expect(batchBinds[fuelStateUpdateIndex]).toEqual([90, expect.any(Number), "account_1"]);
+
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      calculation: { staminaRefund?: { status?: string; reason?: string; policyRef?: string } };
+    };
+    expect(rewardPlan.calculation.staminaRefund).toMatchObject({
+      status: "COMMITTED",
+      reason: "STORY_RAID_FAILURE",
+      policyRef: "act1_story_raid_failure_stamina_refund_v1",
+    });
+  });
+
+  it("rejects raw rng or reward fields nested inside tactic selections", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`nested tactic contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-tactic-raw-rng",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [
+            {
+              packageRef: "act1_full_start_package_v1",
+              selectedTacticId: "tactic_cover_fire",
+              rawRngMaterial: "do-not-store",
+            },
+          ],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      accepted: false,
+      resultStatus: "REJECTED",
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("replays accepted run finish with the stored reward preview id", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    expect(values).toEqual(["session_1", "account_1"]);
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    expect(values).toEqual(["account_1", "run-finish-idem-1"]);
+                    return {
+                      result_ref: "reward_preview_1",
+                      created_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      reward_created_at: null,
+                      balance_config_version: 1,
+                      preview_run_id: "run_1",
+                      final_payload_json: JSON.stringify({runId:'run_1',currentStage:'Complete',currentWaveNumber:0,completedWaveCount:15,
+                        outcome:'VICTORY',runtimeStateJson:'{}',tacticSelections:[],clientCompletedAt:'2026-08-27T00:00:00.000Z'}),
+                    };
+                  }
+                  throw new Error(`duplicate replay must not query finishable run: ${sql}`);
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("duplicate replay must not write a second finish batch");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardClaimId: null,
+      rewardPreviewId: "reward_preview_1",
+      serverReceivedAt: "2026-08-27T00:00:00.000Z",
+      balanceVersion: "1",
+      staminaRefund: null,
+      runStartVersionSnapshot: null,
+      runFinishVersionSnapshot: null,
+      message: "Run finish was already accepted.",
+      errorCode: "duplicate_replay",
+    });
+  });
+
+  it("replays stored story raid failure stamina refund metadata without recalculating", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    expect(values).toEqual(["session_1", "account_1"]);
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    expect(values).toEqual(["account_1", "run-finish-raid-failure-idem-1"]);
+                    return {
+                      result_ref: "reward_preview_raid_failure_1",
+                      created_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      reward_created_at: null,
+                      balance_config_version: 1,
+                      preview_run_id: "run_raid_1",
+                      final_payload_json: JSON.stringify({
+                        runId:'run_raid_1',currentStage:'Complete',currentWaveNumber:0,completedWaveCount:0,
+                        outcome:'FAILURE',runtimeStateJson:'{}',tacticSelections:[],clientCompletedAt:'2026-08-27T00:00:00.000Z',
+                        encounterType: "RAID_BOSS",
+                        raidResult: { raidId:'raid_raider_king_engine',bossId:'boss_raider_king_engine',bossDefeated: false,completedPhaseCount:2 },
+                        staminaRefund: {
+                          status: "COMMITTED",
+                          refundType: "STAMINA",
+                          reason: "STORY_RAID_FAILURE",
+                          policyRef: "act1_story_raid_failure_stamina_refund_v1",
+                        },
+                      }),
+                    };
+                  }
+                  throw new Error(`duplicate replay must not query finishable raid run: ${sql}`);
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("duplicate replay must not write a second raid failure finish batch");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_raid_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-raid-failure-idem-1",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_raid_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 0,
+          encounterType: "RAID_BOSS",
+          raidResult: {
+            raidId: "raid_raider_king_engine",
+            bossId: "boss_raider_king_engine",
+            bossDefeated: false,
+            completedPhaseCount: 2,
+          },
+          outcome: "FAILURE",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_raid_1",
+      accepted: false,
+      resultStatus: "DUPLICATE_REPLAY",
+      rewardPreviewId: "reward_preview_raid_failure_1",
+      staminaRefund: {
+        status: "COMMITTED",
+        refundType: "STAMINA",
+        reason: "STORY_RAID_FAILURE",
+        policyRef: "act1_story_raid_failure_stamina_refund_v1",
+      },
+      errorCode: "duplicate_replay",
+    });
+  });
+
+  it("rejects idempotency replay when the stored reward preview belongs to another run", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind() {
+              return {
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    return {
+                      result_ref: "reward_preview_other",
+                      created_at: Date.parse("2026-08-27T00:00:00.000Z"),
+                      reward_created_at: null,
+                      balance_config_version: 1,
+                      preview_run_id: "run_other",
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch() {
+          throw new Error("idempotency run mismatch must not write");
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-reused-for-another-run",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("does not apply first-clear rewards when the account already cleared the operation risk", async () => {
+    const batchSql: string[] = [];
+    const batchBinds: unknown[][] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    return null;
+                  }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
+                  if (sql.includes("FROM account_first_clears")) {
+                    expect(values).toEqual(["account_1", "opn_03_water_stop", "III"]);
+                    return { cleared_at: Date.parse("2026-08-26T00:00:00.000Z") };
+                  }
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_03_water_stop",
+                      risk: "III",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_03_water_stop",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          batchBinds.push(...statements.map((statement) => (statement as { values?: unknown[] }).values ?? []));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-existing-first-clear",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_first_clears");
+    const rewardPreviewInsertIndex = batchSql.findIndex((sql) => sql.includes("INSERT INTO run_reward_previews"));
+    const rewardPlan = JSON.parse(String(batchBinds[rewardPreviewInsertIndex]?.[4])) as {
+      rewardLines: Array<{ source?: string }>;
+      calculation: { firstClearEligible: boolean; firstClearApplied: boolean };
+    };
+    expect(rewardPlan.rewardLines.some((line) => line.source === "FIRST_CLEAR")).toBe(false);
+    expect(rewardPlan.calculation.firstClearEligible).toBe(false);
+    expect(rewardPlan.calculation.firstClearApplied).toBe(false);
+  });
+
+  it("does not regress higher stored story progress when finishing a lower operation", async () => {
+    const batchSql: string[] = [];
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          return {
+            bind(...values: unknown[]) {
+              return {
+                sql,
+                values,
+                first: async () => {
+                  if (sql.includes("FROM auth_sessions")) {
+                    return {
+                      account_id: "account_1",
+                      session_id: "session_1",
+                      session_status: "ACTIVE",
+                      session_expires_at: Date.now() + 900000,
+                      account_status: "ACTIVE",
+                    };
+                  }
+                  if (sql.includes("FROM idempotency_records")) {
+                    return null;
+                  }
+                  if (sql.includes("FROM account_launch_entitlements")) return null;
+                  if (sql.includes("FROM account_first_clears")) {
+                    return { cleared_at: Date.parse("2026-08-26T00:00:00.000Z") };
+                  }
+                  if (sql.includes("FROM account_story_progress")) {
+                    expect(values).toEqual(["account_1"]);
+                    return {
+                      highest_story_progress_id: "opn_05_night_boarders",
+                      cleared_operations_json: JSON.stringify([
+                        "opn_01_last_departure",
+                        "opn_02_first_signal",
+                        "opn_03_water_stop",
+                        "opn_04_scrapstar_show",
+                        "opn_05_night_boarders",
+                      ]),
+                      story_flags_json: JSON.stringify(["operation_cleared:opn_05_night_boarders"]),
+                    };
+                  }
+                  if (sql.includes("MAX(sequence)")) {
+                    throw new Error("lower operation must not allocate a story progress mutation");
+                  }
+                  if (sql.startsWith('SELECT s.snapshot_json,m.state_json')) return null; // Historical fixture has no B binding.
+                  if (sql.includes("FROM runs")) {
+                    return {
+                      id: "run_1",
+                      account_id: "account_1",
+                      status: "ACTIVE",
+                      balance_config_version: 1,
+                      objective: "opn_03_water_stop",
+                      risk: "III",
+                      preview_json: JSON.stringify({
+                        operationId: "opn_03_water_stop",
+                        actId: "act_01_wasteland_railway",
+                        regionId: "region_wasteland_railway",
+                      }),
+                      snapshot_json: null, // Explicit historical absence, not an omitted SQL projection.
+                      config_json: JSON.stringify({
+                        runRewards: launchRunRewardsConfig,
+                      }),
+                    };
+                  }
+                  return null;
+                },
+              };
+            },
+          };
+        },
+        async batch(statements: Array<{ sql?: string }>) {
+          batchSql.push(...statements.map((statement) => String(statement.sql)));
+          return statements.map(() => ({ success: true }));
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-lower-story-progress",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(200);
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO account_story_progress");
+    expect(batchSql.join("\n")).not.toContain("INSERT OR IGNORE INTO account_unlocks");
+    expect(batchSql.join("\n")).not.toContain("INSERT INTO progression_ledger");
+    expect(batchSql.join("\n")).toContain("INSERT INTO run_reward_previews");
+  });
+
+  it("rejects client-supplied reward fields before using them as source of truth", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`reward field contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-client-reward-field",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+          rewardAmount: 999999,
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("rejects raw animation timeline fields before storing run finish payload", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`raw animation contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-raw-animation",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+          rawAnimationTimeline: [{ frame: 1, event: "hit_stop" }],
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+
+  it("rejects client-supplied story progress fields before using them as source of truth", async () => {
+    const env: TestEnv = {
+      ENVIRONMENT: "DEV",
+      ALLOWED_ADMIN_ORIGINS: "https://dev-admin.lastrail.app",
+      AUTH_SIGNING_KEY_CURRENT: authSecret,
+      DB: {
+        prepare(sql: string) {
+          throw new Error(`story progress contract violation must not touch DB: ${sql}`);
+        },
+      } as unknown as D1Database,
+    };
+
+    const response = await app.request(
+      "/v1/runs/run_1/finish",
+      {
+        method: "POST",
+        headers: {
+          "Idempotency-Key": "run-finish-idem-client-story-field",
+          Authorization: await createAuthorizationHeader(),
+        },
+        body: JSON.stringify({
+          runId: "run_1",
+          currentStage: "Complete",
+          currentWaveNumber: 0,
+          completedWaveCount: 15,
+          outcome: "VICTORY",
+          runtimeStateJson: "{}",
+          tacticSelections: [],
+          clientCompletedAt: "2026-08-27T00:00:00.000Z",
+          storyProgress: "opn_06_broken_line",
+        }),
+      },
+      env,
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      runId: "run_1",
+      accepted: false,
+      resultStatus: "REJECTED",
+      rewardPreviewId: null,
+      errorCode: "contract_violation",
+    });
+  });
+});

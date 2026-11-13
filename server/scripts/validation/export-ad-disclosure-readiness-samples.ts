@@ -1,0 +1,34 @@
+import {writeFileSync} from 'node:fs';
+import {setup} from '../../tests/helpers/departure-fixture';
+import app from '../../apps/admin-api/src/index';
+const f=await setup(false,true,null);
+f.sql.run("INSERT INTO admin_principals VALUES('OWNER','OWNER','OWNER','ACTIVE',NULL,0,0)");
+const env={...f.env,ADMIN_AUTH_MODE:'LOCAL_HEADER',ADMIN_ACCESS_ISSUER:'',ADMIN_ACCESS_AUD:'',ADMIN_DELEGATED_ACCESS_ISSUER:'',ADMIN_DELEGATED_ACCESS_AUD:''};
+const samples:Record<string,unknown>={};
+async function capture(name:string,response:Response,status:number){
+ const body=await response.json();if(response.status!==status)throw new Error(name+': '+response.status);
+ samples[name]={status:response.status,cacheControl:response.headers.get('Cache-Control'),body};
+ return body as {sourceDigest:string};
+}
+const read=()=>app.request('/v1/admin/runtime-policy/disclosure-readiness',{headers:{'Cf-Access-Subject':'OWNER'}},env);
+const post=(path:string,body:object,key:string)=>app.request(path,{method:'POST',headers:{'Cf-Access-Subject':'OWNER','Content-Type':'application/json','Idempotency-Key':key},body:JSON.stringify(body)},env);
+await capture('noConfiguredPolicies',await read(),200);
+const policy={version:'TEST_READY',environment:'DEV',placement:'OFFLINE_SUPPLY',weightsBps:[6000,3000,1000]};
+f.sql.run("INSERT INTO offline_ad_policies VALUES(?,'DEV','ACTIVE',?,0,'TEST_ONLY')",[policy.version,JSON.stringify(policy)]);
+await capture('unpublishedPolicy',await read(),200);
+const sourceResponse=await app.request('/v1/admin/probability-disclosures/source?consumer=OFFLINE&policyVersion=TEST_READY',{headers:{'Cf-Access-Subject':'OWNER'}},env);
+if(sourceResponse.status!==200)throw new Error('preview failed');
+const source=await sourceResponse.json() as {sourceDigest:string};
+const published=await post('/v1/admin/probability-disclosures',{environment:'DEV',consumer:'OFFLINE',policyVersion:policy.version,expectedSourceDigest:source.sourceDigest,reason:'TEST_ONLY approval'},'publish');
+if(published.status!==200)throw new Error('publish failed');
+await capture('publishedButEnableUnavailable',await read(),200);
+await capture('onStillBlocked',await post('/v1/admin/runtime-policy',{environment:'DEV',expectedRuntimePolicyRevision:null,adsEnabled:true,reason:'TEST_ONLY must remain blocked'},'on'),503);
+f.sql.run('DROP TRIGGER probability_disclosure_no_update');f.sql.run("UPDATE probability_disclosures SET payload_json='{}'");
+await capture('invalidDisclosure',await read(),200);
+f.sql.run("UPDATE offline_ad_policies SET config_json='{}'");
+await capture('invalidSource',await read(),200);
+f.sql.run('DROP TABLE offline_ad_policies');
+await capture('sourceStorageUnavailable',await read(),200);
+await capture('offStillWritable',await post('/v1/admin/runtime-policy',{environment:'DEV',expectedRuntimePolicyRevision:null,adsEnabled:false,reason:'TEST_ONLY OFF despite diagnostic failure'},'off'),200);
+writeFileSync('D:/Project/LASTRAIL/QA/AdDisclosureReadinessServer-20260922/http-fixtures.json',JSON.stringify({scope:'TEST_ONLY_LOCAL_HONO_SQLJS',samples},null,2)+'\n');
+f.sql.close();

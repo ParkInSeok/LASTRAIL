@@ -1,0 +1,1981 @@
+{
+  "version": "ordinary.native-geometry-definition.v1.20261031",
+  "definitionId": "ordinary-five-car-boarding-v1",
+  "units": "MILLIMETERS",
+  "millimetersPerUnit": 1000,
+  "axis": "X_FORWARD_Y_UP_Z_SIDE",
+  "coordinateSpace": "BOUND_FRAME_LOCAL",
+  "source": {
+    "scope": "LOCAL_AUTHORED_JUDGEMENT_GEOMETRY_NOT_APPROVED_ART_CALIBRATION",
+    "originalWorldToArcOffsetMm": 25000,
+    "scenePath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.unity",
+    "sceneHash": "472d034e0e4b57fbb8174b4c56c489ecdb1725d9b61e3e1dc794990ec8886107",
+    "prefabPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+    "prefabHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+    "originalAssetHashes": {
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryRoofSpawnV01/OrdinaryRoofSpawnV01.prefab": "f999d69e5fedde68526fad4d9befe0aff21686ce9b4d299ae3de4cd944f6c797",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryEnemyTrainV01/OrdinaryEnemyTrainV01.prefab": "5844aaa8e930bc2b97c0fd831fa0acddf2b7cf60900b1585670c5f2f5e992d02",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryFiniteRail1200mV01/OrdinaryFiniteRail1200mV01.prefab": "20276b26f4847803cdd0d1cb1e5d68f26058a6dd4ca875ed15705fa4b2b12acc",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV02/OrdinaryLiveGeometryV02.prefab": "cbd057ae12a48003aebb55e16d442909847ca4d7cefba5bb45bad3094881c2eb",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV02/definition.json": "642a36d851438d26b24103b28494d72a06d6bcf0c204e41ec4eadfcaa02b8bf2",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryBoardingV01/OrdinaryBoardingV01.prefab": "905eeb2e5b127e22754c41ceb1bfc3cc1f7192d0523a06aeea1f002813a6fb78",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryBoardingV01/definition.json": "b3713ea09cbd0cba85b2c996942af12ae275363abd61ce3e83e34dc540b751ed"
+    },
+    "liveLayout": {
+      "Engine": {
+        "originMm": [
+          91000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -6000,
+          0,
+          0
+        ],
+        "carOrder": 0
+      },
+      "Car0": {
+        "originMm": [
+          78000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -19000,
+          0,
+          0
+        ],
+        "carOrder": 1
+      },
+      "op_kyle": {
+        "originMm": [
+          81000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -16000,
+          3213,
+          0
+        ],
+        "carOrder": 1,
+        "formationSlot": 0,
+        "gunnerOrdinal": null
+      },
+      "Car1": {
+        "originMm": [
+          65000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -32000,
+          0,
+          0
+        ],
+        "carOrder": 2
+      },
+      "op_reina": {
+        "originMm": [
+          65000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -32000,
+          3213,
+          0
+        ],
+        "carOrder": 2,
+        "formationSlot": 1,
+        "gunnerOrdinal": null
+      },
+      "Car2": {
+        "originMm": [
+          52000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -45000,
+          0,
+          0
+        ],
+        "carOrder": 3
+      },
+      "op_eve": {
+        "originMm": [
+          49000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -48000,
+          3213,
+          0
+        ],
+        "carOrder": 3,
+        "formationSlot": 2,
+        "gunnerOrdinal": null
+      },
+      "Car3": {
+        "originMm": [
+          39000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -58000,
+          0,
+          0
+        ],
+        "carOrder": 4
+      },
+      "op_sera": {
+        "originMm": [
+          42000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -55000,
+          3213,
+          0
+        ],
+        "carOrder": 4,
+        "formationSlot": 3,
+        "gunnerOrdinal": null
+      },
+      "Car4": {
+        "originMm": [
+          26000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -71000,
+          0,
+          0
+        ],
+        "carOrder": 5
+      },
+      "op_mira": {
+        "originMm": [
+          23000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -74000,
+          3213,
+          0
+        ],
+        "carOrder": 5,
+        "formationSlot": 4,
+        "gunnerOrdinal": null
+      },
+      "Enemy": {
+        "originMm": [
+          107000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          10000,
+          0,
+          0
+        ],
+        "carOrder": 6
+      },
+      "Gunner0": {
+        "originMm": [
+          103000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          6000,
+          3213,
+          0
+        ],
+        "carOrder": 6,
+        "formationSlot": null,
+        "gunnerOrdinal": 0
+      },
+      "Gunner1": {
+        "originMm": [
+          107000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          10000,
+          3213,
+          0
+        ],
+        "carOrder": 6,
+        "formationSlot": null,
+        "gunnerOrdinal": 1
+      },
+      "FallingObstacle": {
+        "originMm": [
+          377000,
+          12200,
+          0
+        ],
+        "basis": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          280000,
+          12200,
+          0
+        ]
+      }
+    },
+    "obstacle": {
+      "targetXmm": 377000,
+      "zoneStart": 374000,
+      "zoneEnd": 380000,
+      "fallStartMs": 15400,
+      "fallSpeedMmPerSecond": 10000,
+      "landedCenterY": 3000,
+      "initialFront": 97000,
+      "trackLength": 1200000,
+      "initialCenterMm": [
+        377000,
+        12200,
+        0
+      ],
+      "sizeMm": [
+        6000,
+        6000,
+        6000
+      ],
+      "muzzleWorldMm": [
+        91000,
+        4000,
+        0
+      ],
+      "muzzleRelativeToInitialFrontMm": [
+        -6000,
+        4000,
+        0
+      ]
+    },
+    "boardingGeometry": {
+      "version": "ordinary.authored-boarding-geometry.v1.20261107",
+      "scope": "LOCAL_AUTHORED_JUDGEMENT_GEOMETRY_NOT_APPROVED_ART_CALIBRATION",
+      "coordinateSpace": "CARRIAGE_FRAME_LOCAL",
+      "units": "MILLIMETERS",
+      "cars": [
+        {
+          "carOrder": 0,
+          "authoringId": "Engine",
+          "framePath": "OrdinaryFiveCarV01/Allies/Engine",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Engine:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Engine/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Engine:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Engine/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "carOrder": 1,
+          "authoringId": "Car0",
+          "framePath": "OrdinaryFiveCarV01/Allies/Car0",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Car0:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car0/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Car0:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car0/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "carOrder": 2,
+          "authoringId": "Car1",
+          "framePath": "OrdinaryFiveCarV01/Allies/Car1",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Car1:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car1/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Car1:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car1/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "carOrder": 3,
+          "authoringId": "Car2",
+          "framePath": "OrdinaryFiveCarV01/Allies/Car2",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Car2:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car2/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Car2:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car2/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "carOrder": 4,
+          "authoringId": "Car3",
+          "framePath": "OrdinaryFiveCarV01/Allies/Car3",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Car3:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car3/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Car3:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car3/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "carOrder": 5,
+          "authoringId": "Car4",
+          "framePath": "OrdinaryFiveCarV01/Allies/Car4",
+          "roofMinMm": [
+            -5700,
+            3213,
+            -1200
+          ],
+          "roofMaxMm": [
+            5700,
+            3213,
+            1200
+          ],
+          "gunnerAnchorsMm": [
+            [
+              -4000,
+              3213,
+              -1000
+            ],
+            [
+              -4000,
+              3213,
+              1000
+            ],
+            [
+              4000,
+              3213,
+              -1000
+            ],
+            [
+              4000,
+              3213,
+              1000
+            ]
+          ],
+          "sockets": {
+            "left": {
+              "socketId": "Car4:left",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car4/Boarding/left",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  -4000
+                ],
+                [
+                  5200,
+                  0,
+                  -2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -2000
+                ],
+                [
+                  5200,
+                  3213,
+                  -1100
+                ]
+              ]
+            },
+            "right": {
+              "socketId": "Car4:right",
+              "framePath": "OrdinaryFiveCarV01/Allies/Car4/Boarding/right",
+              "approachPathMm": [
+                [
+                  5200,
+                  0,
+                  4000
+                ],
+                [
+                  5200,
+                  0,
+                  2000
+                ]
+              ],
+              "climbPathMm": [
+                [
+                  5200,
+                  0,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  2000
+                ],
+                [
+                  5200,
+                  3213,
+                  1100
+                ]
+              ]
+            }
+          }
+        }
+      ],
+      "bridges": [],
+      "enemyTemplates": [
+        {
+          "definitionRef": "enemy_raider_scout",
+          "framePath": "OrdinaryFiveCarV01/BoardingEnemyTemplates/enemy_raider_scout",
+          "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+          "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+          "anchors": [
+            {
+              "id": "Foot",
+              "role": "FOOT",
+              "positionMm": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "id": "Muzzle",
+              "role": "EMISSION",
+              "positionMm": [
+                -500,
+                1400,
+                0
+              ],
+              "abilityId": "enemy_raider_scout.basic"
+            },
+            {
+              "id": "HitAnchor",
+              "role": "HIT",
+              "positionMm": [
+                0,
+                900,
+                0
+              ]
+            }
+          ],
+          "shapes": [
+            {
+              "kind": "CAPSULE_Y",
+              "centerMm": [
+                0,
+                900,
+                0
+              ],
+              "radiusMm": 300,
+              "heightMm": 1800,
+              "id": "enemy_raider_scout",
+              "role": "HIT_VOLUME"
+            }
+          ]
+        },
+        {
+          "definitionRef": "enemy_spike_cart_gunner",
+          "framePath": "OrdinaryFiveCarV01/BoardingEnemyTemplates/enemy_spike_cart_gunner",
+          "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+          "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+          "anchors": [
+            {
+              "id": "Foot",
+              "role": "FOOT",
+              "positionMm": [
+                0,
+                0,
+                0
+              ]
+            },
+            {
+              "id": "Muzzle",
+              "role": "EMISSION",
+              "positionMm": [
+                -500,
+                1400,
+                0
+              ],
+              "abilityId": "enemy_spike_cart_gunner.basic"
+            },
+            {
+              "id": "HitAnchor",
+              "role": "HIT",
+              "positionMm": [
+                0,
+                900,
+                0
+              ]
+            }
+          ],
+          "shapes": [
+            {
+              "kind": "CAPSULE_Y",
+              "centerMm": [
+                0,
+                900,
+                0
+              ],
+              "radiusMm": 300,
+              "heightMm": 1800,
+              "id": "enemy_spike_cart_gunner",
+              "role": "HIT_VOLUME"
+            }
+          ]
+        }
+      ]
+    },
+    "formationGeometry": {
+      "status": "LOCAL_AUTHORING_INITIAL_PLACEMENT_PENDING_SERVER_START_PIN",
+      "physicalCarCount": 6,
+      "operatorCarCount": 5,
+      "bodyLengthMm": 12000,
+      "gapMm": 1000,
+      "totalLengthMm": 77000,
+      "initialFrontArcMm": 97000,
+      "initialTailArcMm": 20000,
+      "operatorFootprints": [
+        {
+          "operatorId": "op_kyle",
+          "carOrder": 1,
+          "formationSlot": 0,
+          "footLocalMm": [
+            3000,
+            3213,
+            0
+          ]
+        },
+        {
+          "operatorId": "op_reina",
+          "carOrder": 2,
+          "formationSlot": 1,
+          "footLocalMm": [
+            0,
+            3213,
+            0
+          ]
+        },
+        {
+          "operatorId": "op_eve",
+          "carOrder": 3,
+          "formationSlot": 2,
+          "footLocalMm": [
+            -3000,
+            3213,
+            0
+          ]
+        },
+        {
+          "operatorId": "op_sera",
+          "carOrder": 4,
+          "formationSlot": 3,
+          "footLocalMm": [
+            3000,
+            3213,
+            0
+          ]
+        },
+        {
+          "operatorId": "op_mira",
+          "carOrder": 5,
+          "formationSlot": 4,
+          "footLocalMm": [
+            -3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "physicalIdentityBinding": "SERVER_ORIGINAL_PHYSICAL_IDS_BY_CAR_ORDER_REQUIRED",
+      "equipmentRightsBinding": "SERVER_SELECTED_TYPES_RANKS_REVISIONS_REQUIRED",
+      "enemyPlacement": "ORIGINAL_RELATIVE_TO_FRONT_PLUS_10000_MM",
+      "obstaclePlacement": "ORIGINAL_RELATIVE_TO_FRONT_PLUS_280000_MM"
+    }
+  },
+  "entities": [
+    {
+      "authoringId": "Engine",
+      "role": "TRAIN",
+      "definitionRef": "train_a",
+      "framePath": "OrdinaryFiveCarV01/Allies/Engine",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "TrainMuzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            0,
+            4000,
+            0
+          ],
+          "abilityId": "train.basic"
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "Car0",
+      "role": "TRAIN",
+      "definitionRef": "LOCAL_CARRIAGE_TEMPLATE_NOT_AUTHORITY",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car0",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "SpawnFoot_0",
+          "role": "FOOT",
+          "positionMm": [
+            3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_kyle",
+      "role": "OPERATOR",
+      "definitionRef": "op_kyle",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car0/SpawnFoot_0/op_kyle",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_kyle.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_kyle",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Car1",
+      "role": "TRAIN",
+      "definitionRef": "LOCAL_CARRIAGE_TEMPLATE_NOT_AUTHORITY",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car1",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "SpawnFoot_1",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_reina",
+      "role": "OPERATOR",
+      "definitionRef": "op_reina",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car1/SpawnFoot_1/op_reina",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_reina.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_reina",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Car2",
+      "role": "TRAIN",
+      "definitionRef": "LOCAL_CARRIAGE_TEMPLATE_NOT_AUTHORITY",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car2",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "SpawnFoot_2",
+          "role": "FOOT",
+          "positionMm": [
+            -3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_eve",
+      "role": "OPERATOR",
+      "definitionRef": "op_eve",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car2/SpawnFoot_2/op_eve",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_eve.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_eve",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Car3",
+      "role": "TRAIN",
+      "definitionRef": "LOCAL_CARRIAGE_TEMPLATE_NOT_AUTHORITY",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car3",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "SpawnFoot_3",
+          "role": "FOOT",
+          "positionMm": [
+            3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_sera",
+      "role": "OPERATOR",
+      "definitionRef": "op_sera",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car3/SpawnFoot_3/op_sera",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_sera.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_sera",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Car4",
+      "role": "TRAIN",
+      "definitionRef": "LOCAL_CARRIAGE_TEMPLATE_NOT_AUTHORITY",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car4",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "SpawnFoot_4",
+          "role": "FOOT",
+          "positionMm": [
+            -3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_mira",
+      "role": "OPERATOR",
+      "definitionRef": "op_mira",
+      "framePath": "OrdinaryFiveCarV01/Allies/Car4/SpawnFoot_4/op_mira",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_mira.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_mira",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Enemy",
+      "role": "TRAIN",
+      "definitionRef": "enemy_train_first_battle",
+      "framePath": "OrdinaryFiveCarV01/Enemy",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "GunnerFoot_0",
+          "role": "FOOT",
+          "positionMm": [
+            -4000,
+            3213,
+            0
+          ]
+        },
+        {
+          "id": "GunnerFoot_1",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "Gunner0",
+      "role": "ENEMY",
+      "definitionRef": "enemy_spike_cart_gunner",
+      "framePath": "OrdinaryFiveCarV01/Enemy/GunnerFoot_0/Gunner0",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            -500,
+            1400,
+            0
+          ],
+          "abilityId": "enemy_spike_cart_gunner.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "Gunner0",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "Gunner1",
+      "role": "ENEMY",
+      "definitionRef": "enemy_spike_cart_gunner",
+      "framePath": "OrdinaryFiveCarV01/Enemy/GunnerFoot_1/Gunner1",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            -500,
+            1400,
+            0
+          ],
+          "abilityId": "enemy_spike_cart_gunner.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "Gunner1",
+          "role": "HIT_VOLUME"
+        }
+      ]
+    },
+    {
+      "authoringId": "FallingObstacle",
+      "role": "WORLD",
+      "definitionRef": "FallingObstacle",
+      "framePath": "OrdinaryFiveCarV01/FallingObstacle",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryFiveCarV01/OrdinaryFiveCarV01.prefab",
+      "assetHash": "aa4dc0224e60e4fb07ac3efb786f5bfe244564a9ad4adca7102a820cafbb26e5",
+      "anchors": [],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            0,
+            0
+          ],
+          "sizeMm": [
+            6000,
+            6000,
+            6000
+          ],
+          "id": "FallingObstacle",
+          "role": "OCCLUDER"
+        }
+      ]
+    }
+  ]
+}

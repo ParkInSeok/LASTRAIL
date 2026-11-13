@@ -1,0 +1,26 @@
+{
+  "sourceKind": "image_gen_generated_launch_asset",
+  "externalPaidAssetDependency": false,
+  "licenseNote": "Project-generated image resources; no external paid asset dependency.",
+  "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+  "resources": [
+    {
+      "id": "combat_train_exterior_advance_lane",
+      "sourcePath": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_qOwmlugtVmZ2cCWp5sVtpYTL.png",
+      "targetPath": "Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_exterior_advance_lane.png",
+      "width": 1536,
+      "height": 576,
+      "intendedUsage": "top exterior train advance lane for ordinary 15-wave and story raid combat HUD",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION"
+    },
+    {
+      "id": "combat_train_interior_boarding_lane",
+      "sourcePath": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_tNNiEOWLob4FB7jlGd3UTdHH.png",
+      "targetPath": "Assets/_LASTRAIL/UI/CombatResources/Lanes/combat_train_interior_boarding_lane.png",
+      "width": 1536,
+      "height": 768,
+      "intendedUsage": "bottom train interior boarding combat lane with squad-left and enemy-right slots",
+      "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION"
+    }
+  ]
+}

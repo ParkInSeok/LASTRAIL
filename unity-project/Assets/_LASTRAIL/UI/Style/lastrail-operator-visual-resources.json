@@ -1,0 +1,36 @@
+{
+  "name": "LAST RAIL Act 1 Operator Visual Resources",
+  "referenceResolution": "1080x1920",
+  "operatorCount": 15,
+  "initialFreeCount": 5,
+  "gachaEliteCount": 10,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "sourceType": "project_generated_launch_asset",
+  "cardFrameSourceType": "generated_high_fidelity_local_launch_ui_skin",
+  "cardFrameQualityClass": "HIGH_QUALITY_2D_UI_SKIN",
+  "serverTruthFieldsAllowed": false,
+  "railsChoiceIncluded": false,
+  "worldRaidIncluded": false,
+  "frames": [
+    { "id": "operator_card_initial_free", "displayScope": "initial_free", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" },
+    { "id": "operator_card_elite", "displayScope": "gacha_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" },
+    { "id": "operator_card_pickup_elite", "displayScope": "pickup_elite", "path": "Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png", "sourceType": "generated_high_fidelity_local_launch_ui_skin", "qualityClass": "HIGH_QUALITY_2D_UI_SKIN" }
+  ],
+  "operators": [
+    { "operatorId": "op_kyle", "displayLabel": "Kyle", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_kyle_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_kyle_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_kyle_icon.png", "frameId": "operator_card_initial_free" },
+    { "operatorId": "op_reina", "displayLabel": "Reina", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_reina_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_reina_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_reina_icon.png", "frameId": "operator_card_initial_free" },
+    { "operatorId": "op_eve", "displayLabel": "Eve", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_eve_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_eve_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_eve_icon.png", "frameId": "operator_card_initial_free" },
+    { "operatorId": "op_sera", "displayLabel": "Sera", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sera_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_sera_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_sera_icon.png", "frameId": "operator_card_initial_free" },
+    { "operatorId": "op_mira", "displayLabel": "Mira", "acquisition": "initial_free", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_mira_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_mira_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_mira_icon.png", "frameId": "operator_card_initial_free" },
+    { "operatorId": "op_vex", "displayLabel": "Vex", "acquisition": "gacha_elite", "isPickup": true, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_vex_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_vex_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_vex_icon.png", "frameId": "operator_card_pickup_elite" },
+    { "operatorId": "op_nyx", "displayLabel": "Nyx", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_nyx_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_nyx_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_nyx_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_sable", "displayLabel": "Sable", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_sable_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_sable_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_sable_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_marrow", "displayLabel": "Marrow", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_marrow_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_marrow_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_marrow_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_iris", "displayLabel": "Iris", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_iris_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_iris_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_iris_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_rail", "displayLabel": "Rail", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_rail_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_rail_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_rail_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_anchor", "displayLabel": "Anchor", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_anchor_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_anchor_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_anchor_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_lumen", "displayLabel": "Lumen", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_lumen_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_lumen_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_lumen_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_cinder", "displayLabel": "Cinder", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_cinder_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_cinder_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_cinder_icon.png", "frameId": "operator_card_elite" },
+    { "operatorId": "op_warden", "displayLabel": "Warden", "acquisition": "gacha_elite", "isPickup": false, "portraitPath": "Assets/_LASTRAIL/UI/Operators/Portraits/op_warden_portrait.png", "cardPath": "Assets/_LASTRAIL/UI/Operators/Cards/op_warden_card.png", "iconPath": "Assets/_LASTRAIL/UI/Operators/Icons/op_warden_icon.png", "frameId": "operator_card_elite" }
+  ]
+}

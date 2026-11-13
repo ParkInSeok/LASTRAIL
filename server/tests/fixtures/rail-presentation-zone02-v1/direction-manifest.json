@@ -1,0 +1,82 @@
+{
+  "status": "STAGED_CANDIDATES_NOT_APPLIED",
+  "assets": [
+    {
+      "file": "canyon-far-v02.png",
+      "width": 2037,
+      "height": 772,
+      "pixelFormat": "Format24bppRgb",
+      "sha256": "62A428B0B7DA7015CEE18D69BBC3DA197F50F77255A1102E86FA299DC46C67D0",
+      "cornerAlpha": 255,
+      "centerAlpha": 255,
+      "alphaZero": 0,
+      "alphaPartial": 0,
+      "alphaOpaque": 1572564,
+      "alphaAbove8BoundsTopLeft": [
+        0,
+        0,
+        2037,
+        772
+      ]
+    },
+    {
+      "file": "canyon-mid-ridge-v02.png",
+      "width": 2035,
+      "height": 773,
+      "pixelFormat": "Format32bppArgb",
+      "sha256": "89F888DAA1D2E71BB158E55981346F0A4E3F521813283B18F179240519504460",
+      "cornerAlpha": 0,
+      "centerAlpha": 0,
+      "alphaZero": 898469,
+      "alphaPartial": 674237,
+      "alphaOpaque": 349,
+      "alphaAbove8BoundsTopLeft": [
+        16,
+        62,
+        2003,
+        657
+      ]
+    },
+    {
+      "file": "canyon-road-v02.png",
+      "width": 2037,
+      "height": 772,
+      "pixelFormat": "Format24bppRgb",
+      "sha256": "803F3BA3E5DB907E4015E323668AB6C8507D669DCCCB40E35A401D33DA34E190",
+      "cornerAlpha": 255,
+      "centerAlpha": 255,
+      "alphaZero": 0,
+      "alphaPartial": 0,
+      "alphaOpaque": 1572564,
+      "alphaAbove8BoundsTopLeft": [
+        0,
+        0,
+        2037,
+        772
+      ]
+    },
+    {
+      "file": "exterior-bezel-v02.png",
+      "width": 2035,
+      "height": 773,
+      "pixelFormat": "Format32bppArgb",
+      "sha256": "A556204CE5ED0200744269A259DFD61469BBF19C69734044F738987875165DA0",
+      "cornerAlpha": 0,
+      "centerAlpha": 0,
+      "alphaZero": 1271941,
+      "alphaPartial": 299786,
+      "alphaOpaque": 1328,
+      "alphaAbove8BoundsTopLeft": [
+        50,
+        68,
+        1934,
+        635
+      ]
+    }
+  ],
+  "excluded": [
+    "exterior-bezel-v01-rejected.png"
+  ],
+  "guide": "SCOPE-AND-ANALYSIS.md",
+  "scope": "Zone02 candidates; Zone03 reuse analysis; later04-06 separate"
+}

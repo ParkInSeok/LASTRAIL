@@ -1,0 +1,686 @@
+{
+  "version": "ordinary.trial-consist-authoring.v1.20261027",
+  "approval": "ORDINARY-ENGINE-CARRIAGE-MAPPING-v1.20261027",
+  "classification": "NEW_APPROVED_TEST_ENGINE_NOT_HISTORICAL_MEASUREMENT",
+  "status": "MEASURED_SELECTION_ASSET_MAPPING_PENDING_SERVER_BINDING",
+  "sourceStartHash": "1df301ed85fc604070bf9d2c0373c4055a18a007fb0a2a17c5634e5b0fc2cdfc",
+  "sourceFixtureSha256": "d90c310f4063a63a7fd566dba7dd95984b2e902cae6f41a08b9698473c3e0445",
+  "selectedLoadout": {
+    "carriages": [
+      {
+        "carriageId": "car_combat",
+        "slot": 0
+      },
+      {
+        "carriageId": "car_gun",
+        "slot": 1
+      }
+    ],
+    "rulesVersion": "train-loadout-v1",
+    "trainId": "train_a"
+  },
+  "mappings": [
+    {
+      "role": "Engine",
+      "selectionId": "train_a",
+      "order": 0,
+      "sourceSlot": null,
+      "objectName": "Engine",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryTrialConsistV01/Engine.prefab",
+      "bodyLengthMm": 12000,
+      "bodyWidthMm": 3000,
+      "bodyHeightMm": 3200,
+      "gapAfterMm": 1000,
+      "physicalInstanceId": null,
+      "operatorPlacementAuthorized": false
+    },
+    {
+      "role": "Combat",
+      "selectionId": "car_combat",
+      "order": 1,
+      "sourceSlot": 0,
+      "objectName": "Combat",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryTrialConsistV01/Combat.prefab",
+      "bodyLengthMm": 12000,
+      "bodyWidthMm": 3000,
+      "bodyHeightMm": 3200,
+      "gapAfterMm": 1000,
+      "physicalInstanceId": null,
+      "operatorPlacementAuthorized": null
+    },
+    {
+      "role": "Gun",
+      "selectionId": "car_gun",
+      "order": 2,
+      "sourceSlot": 1,
+      "objectName": "Gun",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryTrialConsistV01/Gun.prefab",
+      "bodyLengthMm": 12000,
+      "bodyWidthMm": 3000,
+      "bodyHeightMm": 3200,
+      "gapAfterMm": 0,
+      "physicalInstanceId": null,
+      "operatorPlacementAuthorized": null
+    }
+  ],
+  "railDefinitionSha256": "e63bbc228c1f8c505e6dee6c3ef6dd5c054e1ef2034603bc8e23221f65da47cf",
+  "measuredComposition": {
+    "vehicles": [
+      {
+        "role": "Engine",
+        "selectionId": "train_a",
+        "order": 0,
+        "frontArcMm": 58000.0,
+        "rearArcMm": 46000.0,
+        "measurement": {
+          "packet": {
+            "version": "unity.combat-b.scene-measurement.v1.20261020",
+            "sourceId": "ordinary-trial-v01-Engine",
+            "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+            "unitContractId": "b-physical-authoring-millimeter-v01",
+            "millimetersPerUnit": 1000.0,
+            "coordinateSpace": "BOUND_FRAME_LOCAL",
+            "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+            "bodyCornersMm": [
+              [
+                -6000,
+                0,
+                -1500
+              ],
+              [
+                -6000,
+                0,
+                1500
+              ],
+              [
+                -6000,
+                3200,
+                -1500
+              ],
+              [
+                -6000,
+                3200,
+                1500
+              ],
+              [
+                6000,
+                0,
+                -1500
+              ],
+              [
+                6000,
+                0,
+                1500
+              ],
+              [
+                6000,
+                3200,
+                -1500
+              ],
+              [
+                6000,
+                3200,
+                1500
+              ]
+            ],
+            "anchors": [
+              {
+                "id": "CouplerFront",
+                "positionMm": [
+                  6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "CouplerRear",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Fire",
+                "positionMm": [
+                  350,
+                  4500,
+                  0
+                ]
+              },
+              {
+                "id": "Foot",
+                "positionMm": [
+                  0,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Hit",
+                "positionMm": [
+                  0,
+                  4100,
+                  0
+                ]
+              },
+              {
+                "id": "LeftApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -4000
+                ]
+              },
+              {
+                "id": "LeftClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "RightApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RightApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  4000
+                ]
+              },
+              {
+                "id": "RightClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RightClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofFrontLeft",
+                "positionMm": [
+                  6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofFrontRight",
+                "positionMm": [
+                  6000,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofRearLeft",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofRearRight",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  1500
+                ]
+              }
+            ],
+            "geometryHash": "sha256:a72cb0c4244782a41c7703ecc73ab88b2e428889e3d4f6b83ed04a18dd206804",
+            "sourceRevision": 1,
+            "packetHash": "sha256:d49820fe0a85394f14df5609c9220803574e761d12d699b60264ab9fb47a75b5"
+          },
+          "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Engine\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+          "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:a72cb0c4244782a41c7703ecc73ab88b2e428889e3d4f6b83ed04a18dd206804\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Engine\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+        }
+      },
+      {
+        "role": "Combat",
+        "selectionId": "car_combat",
+        "order": 1,
+        "frontArcMm": 45000.0,
+        "rearArcMm": 33000.0,
+        "measurement": {
+          "packet": {
+            "version": "unity.combat-b.scene-measurement.v1.20261020",
+            "sourceId": "ordinary-trial-v01-Combat",
+            "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+            "unitContractId": "b-physical-authoring-millimeter-v01",
+            "millimetersPerUnit": 1000.0,
+            "coordinateSpace": "BOUND_FRAME_LOCAL",
+            "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+            "bodyCornersMm": [
+              [
+                -6000,
+                0,
+                -1500
+              ],
+              [
+                -6000,
+                0,
+                1500
+              ],
+              [
+                -6000,
+                3200,
+                -1500
+              ],
+              [
+                -6000,
+                3200,
+                1500
+              ],
+              [
+                6000,
+                0,
+                -1500
+              ],
+              [
+                6000,
+                0,
+                1500
+              ],
+              [
+                6000,
+                3200,
+                -1500
+              ],
+              [
+                6000,
+                3200,
+                1500
+              ]
+            ],
+            "anchors": [
+              {
+                "id": "CouplerFront",
+                "positionMm": [
+                  6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "CouplerRear",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Fire",
+                "positionMm": [
+                  350,
+                  4500,
+                  0
+                ]
+              },
+              {
+                "id": "Foot",
+                "positionMm": [
+                  0,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Hit",
+                "positionMm": [
+                  0,
+                  4100,
+                  0
+                ]
+              },
+              {
+                "id": "LeftApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -4000
+                ]
+              },
+              {
+                "id": "LeftClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "RightApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RightApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  4000
+                ]
+              },
+              {
+                "id": "RightClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RightClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofFrontLeft",
+                "positionMm": [
+                  6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofFrontRight",
+                "positionMm": [
+                  6000,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofRearLeft",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofRearRight",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  1500
+                ]
+              }
+            ],
+            "geometryHash": "sha256:71fa3224caabc2066813cec4c504f09e86b97a0e69d7a8049c4b0efe80792f98",
+            "sourceRevision": 1,
+            "packetHash": "sha256:f3a2207cda7e215c4c544eb8d1de59e2325d7418a7051b5938a86d7573b28ae7"
+          },
+          "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Combat\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+          "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:71fa3224caabc2066813cec4c504f09e86b97a0e69d7a8049c4b0efe80792f98\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Combat\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+        }
+      },
+      {
+        "role": "Gun",
+        "selectionId": "car_gun",
+        "order": 2,
+        "frontArcMm": 32000.0,
+        "rearArcMm": 20000.0,
+        "measurement": {
+          "packet": {
+            "version": "unity.combat-b.scene-measurement.v1.20261020",
+            "sourceId": "ordinary-trial-v01-Gun",
+            "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+            "unitContractId": "b-physical-authoring-millimeter-v01",
+            "millimetersPerUnit": 1000.0,
+            "coordinateSpace": "BOUND_FRAME_LOCAL",
+            "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+            "bodyCornersMm": [
+              [
+                -6000,
+                0,
+                -1500
+              ],
+              [
+                -6000,
+                0,
+                1500
+              ],
+              [
+                -6000,
+                3200,
+                -1500
+              ],
+              [
+                -6000,
+                3200,
+                1500
+              ],
+              [
+                6000,
+                0,
+                -1500
+              ],
+              [
+                6000,
+                0,
+                1500
+              ],
+              [
+                6000,
+                3200,
+                -1500
+              ],
+              [
+                6000,
+                3200,
+                1500
+              ]
+            ],
+            "anchors": [
+              {
+                "id": "CouplerFront",
+                "positionMm": [
+                  6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "CouplerRear",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Fire",
+                "positionMm": [
+                  350,
+                  4500,
+                  0
+                ]
+              },
+              {
+                "id": "Foot",
+                "positionMm": [
+                  0,
+                  3200,
+                  0
+                ]
+              },
+              {
+                "id": "Hit",
+                "positionMm": [
+                  0,
+                  4100,
+                  0
+                ]
+              },
+              {
+                "id": "LeftApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -4000
+                ]
+              },
+              {
+                "id": "LeftClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "LeftClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  -1500
+                ]
+              },
+              {
+                "id": "RightApproachEnd",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RightApproachStart",
+                "positionMm": [
+                  0,
+                  0,
+                  4000
+                ]
+              },
+              {
+                "id": "RightClimbEnd",
+                "positionMm": [
+                  0,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RightClimbStart",
+                "positionMm": [
+                  0,
+                  0,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofFrontLeft",
+                "positionMm": [
+                  6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofFrontRight",
+                "positionMm": [
+                  6000,
+                  3200,
+                  1500
+                ]
+              },
+              {
+                "id": "RoofRearLeft",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  -1500
+                ]
+              },
+              {
+                "id": "RoofRearRight",
+                "positionMm": [
+                  -6000,
+                  3200,
+                  1500
+                ]
+              }
+            ],
+            "geometryHash": "sha256:bcbb8a8e370ee15d53ede0060034daded2cab751f1a04ebd6939c453acdf66a7",
+            "sourceRevision": 1,
+            "packetHash": "sha256:8374b34ae42e079307371198443baffb9f204ad2f2e936164d510139d60f196c"
+          },
+          "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Gun\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+          "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:bcbb8a8e370ee15d53ede0060034daded2cab751f1a04ebd6939c453acdf66a7\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"ordinary-trial-v01-Gun\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+        }
+      }
+    ],
+    "totalLengthMm": 38000,
+    "tailArcMm": 20000,
+    "headArcMm": 58000,
+    "carriageFootAnchors": 2,
+    "requiredOperators": 5,
+    "fiveActorPlacementVerified": false
+  }
+}

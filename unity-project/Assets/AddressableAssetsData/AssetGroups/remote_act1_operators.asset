@@ -1,0 +1,506 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_act1_operators
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_act1_operators
+  m_GUID: 84ff68c3ca96ee7428684184476f4ab8
+  m_SerializeEntries:
+  - m_GUID: 005a65774ecc02b4299fbeeb1a79d8ca
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_iris_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 028995cbe9a80094f94a24e68f0fabe7
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_reina_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 033f56e064c15dc42b58d2fb88739277
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_reina_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d0b2949d26d8764ab5e1df26f8df474
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/RoleIcons/operator_role_engineer.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 131bab7d8af86d4419704d0e8b7d339c
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Rarity/operator_rarity_initial_free.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 146739755121a6a4293ebe58da8a020a
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_vex_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16a6fad9334647e41827a0bf77ba19e3
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_cinder_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16c86f0fd2af22c4b8800d412180122b
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/RoleIcons/operator_role_guard.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19bb6a4316fc2e348883b4f63ce749af
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_marrow_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19bb74378c821a142a3779e7b86b5884
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Accents/operator_grid_section_rail.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20f4f0b746eb5a74fa424b031f56759c
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_rail_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21eda6e4adc1e5e4499165d9713e0a00
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Badges/operator_badge_upgrade.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22ec871b4c2670345be69ac94c03241a
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_eve_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2754be13e4e80f7478df34aa639e90fc
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_eve_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 352d24249ac1ee343acb20d9df3c6505
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_iris_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 35ac102653332904eb4baec166c5d707
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_rail_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e64365f315e79842ba67181d6e2c5a9
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_nyx_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 44c06c1125f04c24dbf71eccb62a49eb
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/RoleIcons/operator_role_support.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47fbca80e60e1254e985271214a42691
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_rail_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d32695f5862f8f4d9843ebc79a97911
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_lumen_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d508e29d212655419505a671aa6326c
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Frames/operator_card_slot_background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d6c414897d86264caff755dac1f6068
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_warden_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4db37f92d4c396441820cb2458f6402a
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Rarity/operator_rarity_pickup_elite.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51114c1e9ec71624eb31e8747828a060
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_sera_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5143bda0b10261e42bfd1b3235846054
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_marrow_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53825224392f9414caf72b9d165aaa0d
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_vex_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57e127437ba52054c8e37bf536b9bf35
+    m_Address: Assets/_LASTRAIL/UI/Operators/Frames/operator_card_pickup_elite.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 590d1cb93d093f645be4552def80bcd7
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Overlays/operator_state_locked_label_plate.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ed9a0f2c62da8645b86bd6cee3cc582
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_sable_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 665f413f73b7a254399c2d99c41010da
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Badges/operator_badge_level.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66e0f8926cf511f4daa81d7ea732ae6d
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_warden_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b9e310dd7863be40870dae8da74a415
+    m_Address: Assets/_LASTRAIL/UI/Operators/Frames/operator_card_elite.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72fd97ce5b27d5342891d6e511439eb2
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_eve_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76188fe129598fe4baa996c1af4b310e
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_anchor_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7beab953c8329bd42a0ee937a49a772c
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_nyx_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e59037f3bd88774f83494136914cce6
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Overlays/operator_grid_safe_mask.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83fa0b5865b24da47a97bfb805effacf
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_vex_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 889227c5180444044b5cf6f4acdd4bab
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_cinder_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93ca3336c45252c43b7d35e0f1277a5a
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Accents/operator_card_detail_panel_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99b66e654578fe14592ed52ca955ada8
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Overlays/operator_state_available_label_plate.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b124f519ea8c504e95fbcc9105acf9e
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_lumen_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e7463d3952d22e4bb83a703d218daeb
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Rarity/operator_rarity_rare.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a21a072d0175b5f4ab00013c21fbd1e2
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_kyle_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2ef0435b84c3b644930d03daec23130
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_warden_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a80fc0cdfbbe64f42b44363d0e7c2696
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/RoleIcons/operator_role_striker.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a82de6e14ed8fc34b926d22d86ef9350
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_mira_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aea9fdb94d363b644b5cecab2fb081e7
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_nyx_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2fb42c3660acd746af5c8b11dccec64
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Frames/operator_card_selected_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b472389acff47c2468a119eee476bc06
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_sable_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b50b57274abb32147bb70c67f483823e
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_sera_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5c63773752c18b4985cd531d3bb4d6a
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_cinder_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba76ba2e43b06cd4cab9cf62e448a2fe
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_mira_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be01c00dbbbea99459b2f582099ff1f9
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Rarity/operator_rarity_elite.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be4d90cef37fef045b6e33af2412611d
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_kyle_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c13aadeb031dc844d998cc5da4bdeec1
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_reina_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2996b79669ea9b4e83591d8e7d0310d
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_anchor_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5cf40da83833b6439a6dd101c0b1f67
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_mira_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6720836293dad74ab3c27a3a7e9b73a
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_sable_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7d9e618277194041801beb754342608
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_kyle_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c9fdfa2ba6fe82949b7c8dd88eff270a
+    m_Address: Assets/_LASTRAIL/UI/Operators/Portraits/op_iris_portrait.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6c8bf321b582ba4ab2bea130922e8de
+    m_Address: Assets/_LASTRAIL/UI/Operators/Icons/op_sera_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8b3240af3da6294bbfde6b22bd1346f
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Badges/operator_badge_new.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da09ca99d030cbb4b8bc1fe5dfd68a08
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Frames/operator_card_locked_overlay.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f57dd9f3ab5fd164690066736053b28e
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/Badges/operator_badge_owned.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f695857e23c49bb4fb9fd11e1aff9beb
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_lumen_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7319bc99aa4f3b47a6bc62ff7e1c6cf
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_anchor_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9f6b93653ffaa747936111786c1a559
+    m_Address: Assets/_LASTRAIL/UI/Operators/Frames/operator_card_initial_free.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb54e46f6aaf47246b1eb01fb4fd5934
+    m_Address: Assets/_LASTRAIL/UI/Operators/Cards/op_marrow_card.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcc193406203ccf4283be30284db898a
+    m_Address: Assets/_LASTRAIL/UI/Operators/CardPolish/RoleIcons/operator_role_medic.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 330c03156d5b3754b82deb15b0420921, type: 2}
+    - {fileID: 11400000, guid: 9af1028c742534340923ade5042b1e50, type: 2}

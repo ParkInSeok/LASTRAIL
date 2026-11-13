@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_equipment_icons
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_equipment_icons
+  m_GUID: 2fb85978afd9b1549be3a893f1e373b4
+  m_SerializeEntries:
+  - m_GUID: e8597d4e615b5cd09bde70284b83da06
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/items-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_equipment_icons
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 522ee84a10909bc4ea01220289b6c977, type: 2}
+    - {fileID: 11400000, guid: b7df60e3162e9b046bd690bf44730c7a, type: 2}

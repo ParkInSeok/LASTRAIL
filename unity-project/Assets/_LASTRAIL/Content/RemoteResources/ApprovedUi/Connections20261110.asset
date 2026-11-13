@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a45e9fb17be38458b2c8a550a0c1d6, type: 3}
+  m_Name: Connections20261110
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.Presentation.ApprovedUiConnections
+  DialogFrame: {fileID: 21300000, guid: 53fc3d0034b6526d948c7bc1a93cbf4f, type: 3}
+  ButtonFrame: {fileID: 21300000, guid: 04ce16a2a48c51ebb1b6363a00673828, type: 3}
+  PanelFrame: {fileID: 21300000, guid: 1d36b6df13af5ddb87b10e50e97c9a11, type: 3}
+  ItemFrame: {fileID: 21300000, guid: 9632463deaf75b18975862429731e688, type: 3}
+  Medal: {fileID: 2800000, guid: 3cabaf3e9ac450d4aab478019aded867, type: 3}
+  ButtonPlate: {fileID: 2800000, guid: 386edb0155985e32a3c62fb4fc40dd59, type: 3}
+  PanelTexture: {fileID: 2800000, guid: c0a7116965e854c18f9cf95446c0d859, type: 3}
+  MapBackground: {fileID: 2800000, guid: 78292cb58ac55de7a9470cb94b3b2872, type: 3}
+  Battle: {fileID: 2800000, guid: 3ac9e803648259e087b3718fe5b70aee, type: 3}
+  Elite: {fileID: 2800000, guid: b1c0028c2b3c50a0aa112f10d7beebf6, type: 3}
+  Boss: {fileID: 2800000, guid: 04a07a9ef33651908a968ff4c09f6b81, type: 3}
+  Equipment: {fileID: 2800000, guid: 2479546a89a35305ba57466d04e57926, type: 3}
+  Enchant: {fileID: 2800000, guid: 53baa875bb585badb12627628809938e, type: 3}
+  CurrentLocation: {fileID: 2800000, guid: 7513c81f8c22593eb8670c603bb644a3, type: 3}
+  Fuel: {fileID: 2800000, guid: 7435775ef9915954bad7ac6e2d94f916, type: 3}
+  DepartureCabin: {fileID: 2800000, guid: 17d17223420f52aa8c84b653983e78cf, type: 3}
+  Pilot: {fileID: 2800000, guid: 8a9d324822af5297857192658ca64cf1, type: 3}

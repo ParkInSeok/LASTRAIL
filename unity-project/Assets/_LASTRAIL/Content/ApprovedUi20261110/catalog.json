@@ -1,0 +1,1721 @@
+{
+  "version": "approved-ui-intake.20261110.v1",
+  "scope": "Approved independent visual intake and scoped consumer audit; asset references and composition-family completion are tracked separately.",
+  "runtimeIntegrationComplete": false,
+  "svgSupport": "com.unity.vectorgraphics absent from package manifest; derive independent icon PNG using existing sharp, preserving source viewBox and alpha.",
+  "entries": [
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "commander-room",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/commander-room.png",
+      "sourceSha256": "a0321c42a72e138fd8c67bfafc7408573ac74f33c622a3fcc5919b332a119206",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/commander-room.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "a0321c42a72e138fd8c67bfafc7408573ac74f33c622a3fcc5919b332a119206",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "departure-cabin",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/departure-cabin.png",
+      "sourceSha256": "91adbc71b3775d70294616b39118a3c9679e4ac96c951c0d273148655e40c613",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/departure-cabin.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "91adbc71b3775d70294616b39118a3c9679e4ac96c951c0d273148655e40c613",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "consumer": "DepartureScenePresentation",
+      "assetUsage": "DeparturePreparationView existing clipped scene"
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "map-landscape",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/map-landscape.png",
+      "sourceSha256": "86be5946dcd4c653b3d06187c37663b808a9ea2b350e2c2d7a1bb61bc495b08c",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/map-landscape.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "86be5946dcd4c653b3d06187c37663b808a9ea2b350e2c2d7a1bb61bc495b08c",
+      "outputDimensions": [
+        941,
+        1672
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "combat-preview",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/combat-preview.png",
+      "sourceSha256": "374ea498592533f90c7d42c3425262e3f1368e874ec80e8512a1e838cfe7f00a",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/combat-preview.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "374ea498592533f90c7d42c3425262e3f1368e874ec80e8512a1e838cfe7f00a",
+      "outputDimensions": [
+        2048,
+        768
+      ],
+      "connectionDisposition": "DESTINATION_PREVIEW_VIEW_REQUIRED",
+      "connectionReason": "Current OrdinaryTravelPanel shows destination choices; no confirmed destination-preview art consumer or node-specific environmental mapping. Do not present this as arbitrary current-node scenery."
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "panel-texture",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/panel-texture.png",
+      "sourceSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/panel-texture.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "outputDimensions": [
+        941,
+        1672
+      ],
+      "consumer": "LobbyDestinationPages.Notice",
+      "assetUsage": "LobbyDestinationPages.Notice"
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "items-atlas",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/items-atlas.png",
+      "sourceSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/items-atlas.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "KEYED_INVENTORY_CATEGORY_SUBSET_CONNECTED",
+      "connectionReason": "Authenticated inventory consumer uses HP/ATK/DEF icon keys only; unknown keys have no fallback. Merchant transactions/composition not integrated. See equipment-inventory/addressable-result.json.",
+      "runtimeRelocation": "2026-11-11 same bytes/GUID removed from Resources and registered in remote_equipment_icons / launch_required; authored original preserved",
+      "consumer": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary",
+      "assetUsage": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary"
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "pilot",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/pilot.png",
+      "sourceSha256": "426f19d34db7026ca38ab30d899468f06c81ebb66a3e4072e6143efdecdf211d",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/pilot.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "426f19d34db7026ca38ab30d899468f06c81ebb66a3e4072e6143efdecdf211d",
+      "outputDimensions": [
+        1219,
+        1290
+      ],
+      "consumer": "DepartureScenePresentation",
+      "assetUsage": "DeparturePreparationView existing clipped scene"
+    },
+    {
+      "family": "d01-remaining-art-v01",
+      "id": "tower",
+      "approvalManifest": "QA/DirectionImpact-20260921/d01-remaining-art-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/tower.png",
+      "sourceSha256": "eb30ea5b50c6482bc60ce754b19115189b5cbfad596902e0bf7c48ed518f8a46",
+      "consumerStatus": "EXISTING_SCOPED_RESOURCE_CONSUMER",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Resources/CombatSecondFinal/artillery_emplacement-v01.png",
+      "assetSha256": "eb30ea5b50c6482bc60ce754b19115189b5cbfad596902e0bf7c48ed518f8a46",
+      "method": "EXISTING_BYTE_EQUAL",
+      "intake": "REUSED_EXISTING_UNITY_ASSET",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "assetUsage": "ApprovedCombatView.Figure vehicle/lethalHit fallback; ApprovedCombatOrdinaryRoof.UseComparisonField editor/explicit-local-QA decoration",
+      "contextIntegration": "Existing legacy fallback and QA decoration only; no current ordinary artillery host integration claim."
+    },
+    {
+      "family": "common-dialog-independent-v02",
+      "id": "dialog-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/common-dialog-independent-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/dialog-frame.png",
+      "sourceSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/dialog-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "consumer": "LobbyDestinationPages.Notice",
+      "assetUsage": "LobbyDestinationPages.Notice"
+    },
+    {
+      "family": "common-dialog-independent-v02",
+      "id": "button-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/common-dialog-independent-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/button-frame.png",
+      "sourceSha256": "616842cf7ea02f33ca989d1452f41c1675b22e3cd17354294553817854f47136",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/button-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "616842cf7ea02f33ca989d1452f41c1675b22e3cd17354294553817854f47136",
+      "outputDimensions": [
+        2172,
+        724
+      ],
+      "consumer": "LobbyDestinationPages.Notice",
+      "assetUsage": "LobbyDestinationPages.Notice"
+    },
+    {
+      "family": "common-dialog-independent-v02",
+      "id": "medal",
+      "approvalManifest": "QA/DirectionImpact-20260921/common-dialog-independent-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/medal.png",
+      "sourceSha256": "84eafbfde61842b0bf7efdf3ca0999c3a7ece567099a832176879f44fb33f95f",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/medal.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "84eafbfde61842b0bf7efdf3ca0999c3a7ece567099a832176879f44fb33f95f",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "consumer": "LobbyDestinationPages.Notice",
+      "assetUsage": "LobbyDestinationPages.Notice"
+    },
+    {
+      "family": "common-dialog-independent-v02",
+      "id": "blue-plate",
+      "approvalManifest": "QA/DirectionImpact-20260921/common-dialog-independent-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/blue-plate.png",
+      "sourceSha256": "c8f4271b0bb3ecc1168cc1712f9b7095553d62305dc693d942d144e0d144bfc0",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/blue-plate.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "c8f4271b0bb3ecc1168cc1712f9b7095553d62305dc693d942d144e0d144bfc0",
+      "outputDimensions": [
+        2172,
+        724
+      ],
+      "consumer": "LobbyDestinationPages.Notice",
+      "assetUsage": "LobbyDestinationPages.Notice"
+    },
+    {
+      "family": "panel-frame-composition-v01",
+      "id": "panel-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/panel-frame-composition-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/panel-frame-composition-v01/assets/panel-frame.png",
+      "sourceSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/panel-frame-composition-v01/panel-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "map-battle",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/map-battle.svg",
+      "sourceSha256": "57dbcd9ed4e88bc20e9e75a631c79f0ec9806991f32e4e67164b2c5faf8d7bca",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/map-battle.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "89be27ecefc359a64ad7d17722dc1946e29ce5510480c0494e79d6c926c36b9d",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "map-current",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/map-current.svg",
+      "sourceSha256": "2b99f31fe00822f531c252f325694c0609b7c370bc8b3a47dd67729abfbd1f71",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/map-current.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "e2cbdabce41e014a8d021c9070161bfee9313794449650efbb32d3b73d0c2f04",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices confirmed current node",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices confirmed current node"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "map-enchant",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/map-enchant.svg",
+      "sourceSha256": "612acd308b8f2e793a5d0ba258dab9762ce3f2702efc501e0bb62f262e357f07",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/map-enchant.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "8a2ccef539713c80ad2a77b604816b1f1b2ec0dd6b4d91bf4c6720f344095274",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "map-equipment",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/map-equipment.svg",
+      "sourceSha256": "69f8630bf7923ca21a11e8b54eebc34fd250eb85f1443fb2a8d65cb2add58592",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/map-equipment.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "bafe6e489b02a885adeea77a7709dd04ef2dea21b3028dcd3f6d0706c89090fe",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "currency",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/currency.svg",
+      "sourceSha256": "86065d74a98d1536318ca84334f65de019c93d48069af58ff5edc42ed6db1e39",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/currency.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "7d1c0308b5c707d473ea71cb32f07ea2d86714171be895c9dfd2d44d97965904",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "DeparturePreparationView.CurrencyIcon0 fuel",
+      "assetUsage": "DeparturePreparationView.CurrencyIcon0 fuel"
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "skill-fire",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/skill-fire.png",
+      "sourceSha256": "125d11f5f96bd9b00dbfe4ac35f99c1a008691a2ffe15eb2682bcc8f1d5d7691",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-fire.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "125d11f5f96bd9b00dbfe4ac35f99c1a008691a2ffe15eb2682bcc8f1d5d7691",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "RETAIN_SHARED_SUPPORT_IDENTITY",
+      "connectionReason": "User Active55 correction retains existing combat support identity through CommanderSupportIconCatalog. Do not replace it with departure-only skill art merely to reduce the unbound count."
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "skill-barrier",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/skill-barrier.png",
+      "sourceSha256": "e9bba06c9121670c8811e9f14875e845e80c035bd151baea753291b22e029a4e",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-barrier.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "e9bba06c9121670c8811e9f14875e845e80c035bd151baea753291b22e029a4e",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "RETAIN_SHARED_SUPPORT_IDENTITY",
+      "connectionReason": "User Active55 correction retains existing combat support identity through CommanderSupportIconCatalog. Do not replace it with departure-only skill art merely to reduce the unbound count."
+    },
+    {
+      "family": "skill-map-icons-v01",
+      "id": "skill-repair",
+      "approvalManifest": "QA/DirectionImpact-20260921/skill-map-icons-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/skill-map-icons-v01/assets/skill-repair.png",
+      "sourceSha256": "9b68ae411a1001bef4d8345f2682cae8680d342360abf948c7fb692f1a1880b3",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-repair.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "9b68ae411a1001bef4d8345f2682cae8680d342360abf948c7fb692f1a1880b3",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "RETAIN_SHARED_SUPPORT_IDENTITY",
+      "connectionReason": "User Active55 correction retains existing combat support identity through CommanderSupportIconCatalog. Do not replace it with departure-only skill art merely to reduce the unbound count."
+    },
+    {
+      "family": "commander-icons-illustrated-v01",
+      "id": "TR01",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/assets/TR01.png",
+      "sourceSha256": "386fe097fbed53381fac855658895cb5e00b7cdd5e4998653a6eb02d75f28b34",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/TR01.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "386fe097fbed53381fac855658895cb5e00b7cdd5e4998653a6eb02d75f28b34",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v01",
+      "id": "TR03",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/assets/TR03.png",
+      "sourceSha256": "1b9224ece871f7ed7144f193df5136c3ad544861ec3e78aa6a2d190ae4bcb9c7",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/TR03.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "1b9224ece871f7ed7144f193df5136c3ad544861ec3e78aa6a2d190ae4bcb9c7",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v01",
+      "id": "OP01",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/assets/OP01.png",
+      "sourceSha256": "ff1ed14865d879a816ecfe4e32a42620d09b27a6431442d25a213eb0e0e6b280",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/OP01.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "ff1ed14865d879a816ecfe4e32a42620d09b27a6431442d25a213eb0e0e6b280",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v01",
+      "id": "DO04",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/assets/DO04.png",
+      "sourceSha256": "056176fae3993bc58e9c92455a4a77129bc1bce899684c6b26b790c3b76d8352",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/DO04.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "056176fae3993bc58e9c92455a4a77129bc1bce899684c6b26b790c3b76d8352",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v01",
+      "id": "OP03",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v01/assets/OP03.png",
+      "sourceSha256": "5e794a7f64cf18db2146506cd21a04e60386bc181b0253225cfcaf2d42f9aac0",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/OP03.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "5e794a7f64cf18db2146506cd21a04e60386bc181b0253225cfcaf2d42f9aac0",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "TR04",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/TR04.png",
+      "sourceSha256": "990f142176c1f789237fdb7b7ae7b9ee19caa1729ec778c8064d287a0ac2f20b",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/TR04.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "990f142176c1f789237fdb7b7ae7b9ee19caa1729ec778c8064d287a0ac2f20b",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "TR02",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/TR02.png",
+      "sourceSha256": "a6db6004c9780c71f7f66b0a9e9974ccd5c511847d74406ecb72efe18fdfda05",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/TR02.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "a6db6004c9780c71f7f66b0a9e9974ccd5c511847d74406ecb72efe18fdfda05",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "OP02",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/OP02.png",
+      "sourceSha256": "bfef7b0d0ee5b4b7e2492ed03319fff5e8538783eeded0ffa59028b91ba665d4",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/OP02.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "bfef7b0d0ee5b4b7e2492ed03319fff5e8538783eeded0ffa59028b91ba665d4",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "OP04",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/OP04.png",
+      "sourceSha256": "bba06ed3fb7a0c996d7cda674af2555026ac8de1ecec3af3c19029c7edbfbe0e",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/OP04.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "bba06ed3fb7a0c996d7cda674af2555026ac8de1ecec3af3c19029c7edbfbe0e",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "DO01",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/DO01.png",
+      "sourceSha256": "2d9017950bd258751c01306885f1673f221bfb142da1eb564e4afe15a66443b1",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO01.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "2d9017950bd258751c01306885f1673f221bfb142da1eb564e4afe15a66443b1",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "DO02",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/DO02.png",
+      "sourceSha256": "adbec2d51aef565db5a1d4e467af1e8762e6e342d15dd4da58680a619604d497",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO02.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "adbec2d51aef565db5a1d4e467af1e8762e6e342d15dd4da58680a619604d497",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "DO03",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/DO03.png",
+      "sourceSha256": "d6548ade4ca660f11982bf24b837f90ea0313b1ecdba51261a052b12718c6029",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO03.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "d6548ade4ca660f11982bf24b837f90ea0313b1ecdba51261a052b12718c6029",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "DO05",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/DO05.png",
+      "sourceSha256": "fd5a8b031c91713a563f99a9d80b1317dc4e3d84fb423c9a5a790c7f9e7fc783",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO05.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "fd5a8b031c91713a563f99a9d80b1317dc4e3d84fb423c9a5a790c7f9e7fc783",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X01",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X01.png",
+      "sourceSha256": "69c8b50b0bef6f2b3a7174910d68093d1eae7b0bf246ea42c1cecdd09c64dc29",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X01.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "69c8b50b0bef6f2b3a7174910d68093d1eae7b0bf246ea42c1cecdd09c64dc29",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X02",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X02.png",
+      "sourceSha256": "ba9b261b390b32a8af9e2c5bfa44d22d262636a45ee206318e2d28785ef9c918",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X02.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "ba9b261b390b32a8af9e2c5bfa44d22d262636a45ee206318e2d28785ef9c918",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X03",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X03.png",
+      "sourceSha256": "0c954f5d581b7fd38e4074900c632affcd0b3304b17ad8363793ac06092ccaa1",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X03.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "0c954f5d581b7fd38e4074900c632affcd0b3304b17ad8363793ac06092ccaa1",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X04",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X04.png",
+      "sourceSha256": "acf2880840ceac1ef0a784f3600d92dfdc2738419adf752b4364850f9f8ae3cf",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X04.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "acf2880840ceac1ef0a784f3600d92dfdc2738419adf752b4364850f9f8ae3cf",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X05",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X05.png",
+      "sourceSha256": "c6ec6ff53c8f085ea2d26d011c8ef05a5e3c36823f99ee41dba710850c331d9a",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X05.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "c6ec6ff53c8f085ea2d26d011c8ef05a5e3c36823f99ee41dba710850c331d9a",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X06",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X06.png",
+      "sourceSha256": "b43dccc91b64dbc407ef79dcdb75e7576fda34f0c46788fe04de6b464295877d",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X06.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "b43dccc91b64dbc407ef79dcdb75e7576fda34f0c46788fe04de6b464295877d",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X07",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X07.png",
+      "sourceSha256": "dd07d4b5ba67039712444d2f8c1d2d73be02c705c15967a0bf032429be90d400",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X07.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "dd07d4b5ba67039712444d2f8c1d2d73be02c705c15967a0bf032429be90d400",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X08",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X08.png",
+      "sourceSha256": "ddb330d2cd8d7b0fb1a9380d8f4c44554afd51847aa6aae43d3d8e5a96aa1503",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X08.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "ddb330d2cd8d7b0fb1a9380d8f4c44554afd51847aa6aae43d3d8e5a96aa1503",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X09",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X09.png",
+      "sourceSha256": "0d512f3b68f248ea258ac3dc4cb295f3a007c2b226a26615550c7bf1b5bcf29b",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X09.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "0d512f3b68f248ea258ac3dc4cb295f3a007c2b226a26615550c7bf1b5bcf29b",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X10",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X10.png",
+      "sourceSha256": "026c26accc8ee73d284501a2a396edc504203d7cecf75b5068bb2863ef6855c5",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X10.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "026c26accc8ee73d284501a2a396edc504203d7cecf75b5068bb2863ef6855c5",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X11",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X11.png",
+      "sourceSha256": "9de805cc0d4c546d8e1c2929644b6b7aed3a616c0781e064cceca4fb111d715b",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X11.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "9de805cc0d4c546d8e1c2929644b6b7aed3a616c0781e064cceca4fb111d715b",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X12",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X12.png",
+      "sourceSha256": "e6c6f0cac15a62dec77fc159f9d9a80fbf6b79a840250f2ed3378d8b01823146",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X12.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "e6c6f0cac15a62dec77fc159f9d9a80fbf6b79a840250f2ed3378d8b01823146",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X13",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X13.png",
+      "sourceSha256": "990abe82f7cdbf02fba361300bd5063aacb51365730fd007ae0dab0134435eb3",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X13.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "990abe82f7cdbf02fba361300bd5063aacb51365730fd007ae0dab0134435eb3",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X14",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X14.png",
+      "sourceSha256": "414c2af90bbc1e4b9321e1ac704c9022be5c0071f90659bb4f99a665b36ec304",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X14.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "414c2af90bbc1e4b9321e1ac704c9022be5c0071f90659bb4f99a665b36ec304",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X15",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X15.png",
+      "sourceSha256": "ceb719e1e872087f4212bf60cbcb8d49382b81a43981c152e87935aea3cb1447",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X15.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "ceb719e1e872087f4212bf60cbcb8d49382b81a43981c152e87935aea3cb1447",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X16",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X16.png",
+      "sourceSha256": "786310cc0e03f599017473aeb8cf7cd0c748c6068243d11c5d3549f1bee38f8b",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X16.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "786310cc0e03f599017473aeb8cf7cd0c748c6068243d11c5d3549f1bee38f8b",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X17",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X17.png",
+      "sourceSha256": "a11505cda60f16f02d7e4560a58b758e6edfb074daf41afe0335f4fb7c6f6e43",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X17.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "a11505cda60f16f02d7e4560a58b758e6edfb074daf41afe0335f4fb7c6f6e43",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X18",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X18.png",
+      "sourceSha256": "083ecd5374780ee05e981d310669a9ef14b36de2696232859ef43768eec74aef",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X18.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "083ecd5374780ee05e981d310669a9ef14b36de2696232859ef43768eec74aef",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X19",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X19.png",
+      "sourceSha256": "9f40ebda0c60567decde1c19d708d0e65d51a93d28daadf59ec17f0185f92a2f",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X19.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "9f40ebda0c60567decde1c19d708d0e65d51a93d28daadf59ec17f0185f92a2f",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X20",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X20.png",
+      "sourceSha256": "718ea628147ceb09cb4d9650753baeded88a8091b1e6f53deaba4e4472aa55e8",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X20.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "718ea628147ceb09cb4d9650753baeded88a8091b1e6f53deaba4e4472aa55e8",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X21",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X21.png",
+      "sourceSha256": "a90c392794427a60d5a0a2643d09511f94fa249ce12be8de0eee243b4aa3b17b",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X21.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "a90c392794427a60d5a0a2643d09511f94fa249ce12be8de0eee243b4aa3b17b",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X22",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X22.png",
+      "sourceSha256": "267325cc25c6b981a0ee404b7f32740c5a37027dbcbd3846597815fc6a3d1a94",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X22.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "267325cc25c6b981a0ee404b7f32740c5a37027dbcbd3846597815fc6a3d1a94",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X23",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X23.png",
+      "sourceSha256": "9cd6dcc67adfe52d8810b0e96f447657cfa7e5113d74f3b72c8882f9c2d51442",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X23.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "9cd6dcc67adfe52d8810b0e96f447657cfa7e5113d74f3b72c8882f9c2d51442",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "commander-icons-illustrated-v02",
+      "id": "X24",
+      "approvalManifest": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/commander-icons-illustrated-v02/assets/X24.png",
+      "sourceSha256": "8f0ea14844fb1611b3631c2156206913945eb4a426c7c0f7407ec720d4241b73",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X24.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "8f0ea14844fb1611b3631c2156206913945eb4a426c7c0f7407ec720d4241b73",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "COMMANDER_VIEW_REQUIRED",
+      "connectionReason": "Commander progression view and authoritative node-ID/state consumption absent in current Unity consumer paths; includes its room background. Operator growth is a different owner."
+    },
+    {
+      "family": "operation-map-polish-v02",
+      "id": "map-elite",
+      "approvalManifest": "QA/DirectionImpact-20260921/operation-map-polish-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/operation-map-polish-v02/assets/map-elite.svg",
+      "sourceSha256": "0347e0410e9876f936103a73d11ea67bbfc5c0116370d356a21a39d85b2e3535",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/operation-map-polish-v02/map-elite.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "c5f3d898aa2d9b17d114f73b4dc6abc64d96ca4ce60b5a1c9ca3338d1302776b",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "operation-map-polish-v02",
+      "id": "map-boss",
+      "approvalManifest": "QA/DirectionImpact-20260921/operation-map-polish-v02/manifest.json",
+      "approvalStatus": "final-art-approved",
+      "source": "QA/DirectionImpact-20260921/operation-map-polish-v02/assets/map-boss.svg",
+      "sourceSha256": "3f942c476ab49a6c58912fc786ac7d471922654fdb9b1e94b17ca006304346eb",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/operation-map-polish-v02/map-boss.png",
+      "method": "DERIVED_INDEPENDENT_SVG_RASTER_SHARP",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "sourceViewBox": "0 0 40 40",
+      "rasterDensity": 192,
+      "assetSha256": "7a4c24b293e50da501b7840cd2732db3224a7542c024d2b85a3e38348d51e0a7",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "consumer": "OrdinaryTravelPanel.ShowChoices",
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices"
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "gear-six",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/items-atlas.png",
+      "sourceSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/items-atlas.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "canonicalAssetEntry": {
+        "family": "d01-remaining-art-v01",
+        "id": "items-atlas"
+      },
+      "connectionDisposition": "KEYED_INVENTORY_CATEGORY_SUBSET_CONNECTED",
+      "connectionReason": "Authenticated inventory consumer uses HP/ATK/DEF icon keys only; unknown keys have no fallback. Merchant transactions/composition not integrated. See equipment-inventory/addressable-result.json.",
+      "runtimeRelocation": "2026-11-11 same bytes/GUID removed from Resources and registered in remote_equipment_icons / launch_required; authored original preserved",
+      "consumer": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary",
+      "assetUsage": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary"
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "panel-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/panel-frame-composition-v01/assets/panel-frame.png",
+      "sourceSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/panel-frame-composition-v01/panel-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices",
+      "canonicalAssetEntry": {
+        "family": "panel-frame-composition-v01",
+        "id": "panel-frame"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "item-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/frame.png",
+      "sourceSha256": "2d01c0012e50c04911ddcdf8672a18c6a18dd0158fb1de7504ba2436f94aeca3",
+      "consumerStatus": "BOUND_EXISTING_VIEW",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "2d01c0012e50c04911ddcdf8672a18c6a18dd0158fb1de7504ba2436f94aeca3",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "consumer": "LobbyDestinationPages.PresentEquipmentMultishot",
+      "assetUsage": "LobbyDestinationPages.PresentEquipmentMultishot"
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "dialog",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/dialog-frame.png",
+      "sourceSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/dialog-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "assetUsage": "LobbyDestinationPages.Notice",
+      "canonicalAssetEntry": {
+        "family": "common-dialog-independent-v02",
+        "id": "dialog-frame"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "plate",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/panel-texture.png",
+      "sourceSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/panel-texture.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        941,
+        1672
+      ],
+      "assetUsage": "LobbyDestinationPages.Notice",
+      "canonicalAssetEntry": {
+        "family": "d01-remaining-art-v01",
+        "id": "panel-texture"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "repair",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/skill-repair.png",
+      "sourceSha256": "090248d4d1e157c5528c75afa8d069b6dc09e3a0bc1f0c19ca3c88b350580b65",
+      "consumerStatus": "EXISTING_SCOPED_RESOURCE_CONSUMER",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Resources/CombatSecondFinal/support_repair-v01.png",
+      "assetSha256": "090248d4d1e157c5528c75afa8d069b6dc09e3a0bc1f0c19ca3c88b350580b65",
+      "method": "EXISTING_BYTE_EQUAL",
+      "intake": "REUSED_EXISTING_UNITY_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "assetUsage": "Ce03SupportSelectionPanel.SetSkillIcon(emergency_repair), opened by LobbyDeparture.OpenPreparationSupport",
+      "contextIntegration": "Shared support selection icon; equipment potion/merchant repair event is not connected."
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "potion",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/equipment-composition-v60-review/assets/healing-potion.png",
+      "sourceSha256": "744fe6160f5abada45551eba15b6a288e52efe441160284ffb43f8fbd7a3c369",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/healing-potion.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "744fe6160f5abada45551eba15b6a288e52efe441160284ffb43f8fbd7a3c369",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "connectionDisposition": "OPERATION_EVENT_VIEW_REQUIRED",
+      "connectionReason": "Approved operation equipment/merchant/repair artwork needs the matching event view and confirmed state/transaction owner; unrelated lobby shop is not that consumer."
+    },
+    {
+      "family": "equipment-composition-v60-review",
+      "id": "merchant-background",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-composition-v60-review/manifest.json",
+      "approvalStatus": "user-approved-independent-composition",
+      "source": "QA/DirectionImpact-20260921/equipment-supply-v08-art/assets/equipment-bay-v01.png",
+      "sourceSha256": "f0c2e571cd44903ae1b06c62996698ca33fdbf2a96471775ad3115bc721c3326",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/equipment-bay-v01.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "f0c2e571cd44903ae1b06c62996698ca33fdbf2a96471775ad3115bc721c3326",
+      "outputDimensions": [
+        941,
+        1672
+      ],
+      "connectionDisposition": "OPERATION_EVENT_VIEW_REQUIRED",
+      "connectionReason": "Approved operation equipment/merchant/repair artwork needs the matching event view and confirmed state/transaction owner; unrelated lobby shop is not that consumer."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "gear-six",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/items-atlas.png",
+      "sourceSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/items-atlas.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "f9744d2e0903a60b45ae45948a18514c8d5b844883248dff8619a515ea0dbb4e",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "canonicalAssetEntry": {
+        "family": "d01-remaining-art-v01",
+        "id": "items-atlas"
+      },
+      "connectionDisposition": "KEYED_INVENTORY_CATEGORY_SUBSET_CONNECTED",
+      "connectionReason": "Authenticated inventory consumer uses HP/ATK/DEF icon keys only; unknown keys have no fallback. Merchant transactions/composition not integrated. See equipment-inventory/addressable-result.json.",
+      "runtimeRelocation": "2026-11-11 same bytes/GUID removed from Resources and registered in remote_equipment_icons / launch_required; authored original preserved",
+      "consumer": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary",
+      "assetUsage": "EquipmentInventoryView via EquipmentIconResources server iconKey dictionary"
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "panel-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/panel-frame-composition-v01/assets/panel-frame.png",
+      "sourceSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/panel-frame-composition-v01/panel-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "35e25ccd608b54f2bfcc78075915fd2ef4d621dc05f801465c15760850090360",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "assetUsage": "OrdinaryTravelPanel.ShowChoices",
+      "canonicalAssetEntry": {
+        "family": "panel-frame-composition-v01",
+        "id": "panel-frame"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "item-frame",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/frame.png",
+      "sourceSha256": "2d01c0012e50c04911ddcdf8672a18c6a18dd0158fb1de7504ba2436f94aeca3",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "2d01c0012e50c04911ddcdf8672a18c6a18dd0158fb1de7504ba2436f94aeca3",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "assetUsage": "LobbyDestinationPages.PresentEquipmentMultishot",
+      "canonicalAssetEntry": {
+        "family": "equipment-composition-v60-review",
+        "id": "item-frame"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "dialog",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/common-dialog-independent-v02/assets/dialog-frame.png",
+      "sourceSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/common-dialog-independent-v02/dialog-frame.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "7c5ee147b5649b7c011925ea961bc4c03b9ab35f163d26c82947ffc8ee0a58c9",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1536,
+        1024
+      ],
+      "assetUsage": "LobbyDestinationPages.Notice",
+      "canonicalAssetEntry": {
+        "family": "common-dialog-independent-v02",
+        "id": "dialog-frame"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "plate",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/d01-independent-v01/assets/panel-texture.png",
+      "sourceSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "consumerStatus": "ASSET_BOUND_EXISTING_VIEW_CONTEXT_NOT_INTEGRATED",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/panel-texture.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "0e82d6aad228e671f519f6a6113c84574dfa8562d87fdccd7d895e3a92b76b45",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        941,
+        1672
+      ],
+      "assetUsage": "LobbyDestinationPages.Notice",
+      "canonicalAssetEntry": {
+        "family": "d01-remaining-art-v01",
+        "id": "panel-texture"
+      },
+      "contextIntegration": "Equipment/merchant composition family is not a completed runtime screen; shared file use elsewhere is not family completion."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "repair",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/assets/train-repair.png",
+      "sourceSha256": "2a9c1f2f3c4df2911aab7c7e49aa37892dbb2f95ea49afc0581a0e983ba7c5a4",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-merchant-independent-v61-review/train-repair.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "2a9c1f2f3c4df2911aab7c7e49aa37892dbb2f95ea49afc0581a0e983ba7c5a4",
+      "outputDimensions": [
+        1448,
+        1086
+      ],
+      "connectionDisposition": "OPERATION_EVENT_VIEW_REQUIRED",
+      "connectionReason": "Approved operation equipment/merchant/repair artwork needs the matching event view and confirmed state/transaction owner; unrelated lobby shop is not that consumer."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "potion",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/assets/healing-potion.png",
+      "sourceSha256": "744fe6160f5abada45551eba15b6a288e52efe441160284ffb43f8fbd7a3c369",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/healing-potion.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "assetSha256": "744fe6160f5abada45551eba15b6a288e52efe441160284ffb43f8fbd7a3c369",
+      "intake": "REUSED_SAME_INTAKE_ASSET",
+      "outputDimensions": [
+        1254,
+        1254
+      ],
+      "canonicalAssetEntry": {
+        "family": "equipment-composition-v60-review",
+        "id": "potion"
+      },
+      "connectionDisposition": "OPERATION_EVENT_VIEW_REQUIRED",
+      "connectionReason": "Approved operation equipment/merchant/repair artwork needs the matching event view and confirmed state/transaction owner; unrelated lobby shop is not that consumer."
+    },
+    {
+      "family": "equipment-merchant-independent-v61-review",
+      "id": "merchant-background",
+      "approvalManifest": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/manifest.json",
+      "approvalStatus": "user-approved-independent-merchant-art",
+      "source": "QA/DirectionImpact-20260921/equipment-merchant-independent-v61-review/assets/merchant-background.png",
+      "sourceSha256": "bb85b4b062c5c0e1bfb85db16a38dcfff957387a8e486589dd6b5d63e3d30f80",
+      "consumerStatus": "NO_MATCHING_RUNTIME_CONSUMER_BOUND",
+      "policy": "Art intake only; no node rules, merchant transactions, equipment state, or deprecated turret features enabled.",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-merchant-independent-v61-review/merchant-background.png",
+      "method": "SOURCE_PNG_BYTE_COPY",
+      "intake": "NEW_VERSIONED_CONTENT",
+      "assetSha256": "bb85b4b062c5c0e1bfb85db16a38dcfff957387a8e486589dd6b5d63e3d30f80",
+      "outputDimensions": [
+        1672,
+        941
+      ],
+      "connectionDisposition": "OPERATION_EVENT_VIEW_REQUIRED",
+      "connectionReason": "Approved operation equipment/merchant/repair artwork needs the matching event view and confirmed state/transaction owner; unrelated lobby shop is not that consumer."
+    }
+  ],
+  "svgJobs": [
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\skill-map-icons-v01\\assets\\map-battle.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\skill-map-icons-v01\\map-battle.png",
+      "sourceSha256": "57dbcd9ed4e88bc20e9e75a631c79f0ec9806991f32e4e67164b2c5faf8d7bca",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "89be27ecefc359a64ad7d17722dc1946e29ce5510480c0494e79d6c926c36b9d"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\skill-map-icons-v01\\assets\\map-current.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\skill-map-icons-v01\\map-current.png",
+      "sourceSha256": "2b99f31fe00822f531c252f325694c0609b7c370bc8b3a47dd67729abfbd1f71",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "e2cbdabce41e014a8d021c9070161bfee9313794449650efbb32d3b73d0c2f04"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\skill-map-icons-v01\\assets\\map-enchant.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\skill-map-icons-v01\\map-enchant.png",
+      "sourceSha256": "612acd308b8f2e793a5d0ba258dab9762ce3f2702efc501e0bb62f262e357f07",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "8a2ccef539713c80ad2a77b604816b1f1b2ec0dd6b4d91bf4c6720f344095274"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\skill-map-icons-v01\\assets\\map-equipment.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\skill-map-icons-v01\\map-equipment.png",
+      "sourceSha256": "69f8630bf7923ca21a11e8b54eebc34fd250eb85f1443fb2a8d65cb2add58592",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "bafe6e489b02a885adeea77a7709dd04ef2dea21b3028dcd3f6d0706c89090fe"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\skill-map-icons-v01\\assets\\currency.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\skill-map-icons-v01\\currency.png",
+      "sourceSha256": "86065d74a98d1536318ca84334f65de019c93d48069af58ff5edc42ed6db1e39",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "7d1c0308b5c707d473ea71cb32f07ea2d86714171be895c9dfd2d44d97965904"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\operation-map-polish-v02\\assets\\map-elite.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\operation-map-polish-v02\\map-elite.png",
+      "sourceSha256": "0347e0410e9876f936103a73d11ea67bbfc5c0116370d356a21a39d85b2e3535",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "c5f3d898aa2d9b17d114f73b4dc6abc64d96ca4ce60b5a1c9ca3338d1302776b"
+    },
+    {
+      "source": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\operation-map-polish-v02\\assets\\map-boss.svg",
+      "destination": "D:\\Project\\LASTRAIL\\unity-project\\Assets\\_LASTRAIL\\Content\\ApprovedUi20261110\\operation-map-polish-v02\\map-boss.png",
+      "sourceSha256": "3f942c476ab49a6c58912fc786ac7d471922654fdb9b1e94b17ca006304346eb",
+      "outputDimensions": [
+        107,
+        107
+      ],
+      "alpha": true,
+      "sha256": "7a4c24b293e50da501b7840cd2732db3224a7542c024d2b85a3e38348d51e0a7"
+    }
+  ],
+  "validation": {
+    "all76EntriesPresentAndDecodable": true,
+    "byteCopyHashesMatch": true,
+    "svgJobs": 7,
+    "unityImported": false,
+    "playerVerified": false
+  },
+  "connectionAudit20261110": {
+    "uniqueAssetsNewlyConnected": 18,
+    "newUnreferencedAssetsRemaining": 46,
+    "fullRuntimeIntegrationComplete": false,
+    "evidence": "QA/ResourceIntake-20261110/connection/equipment-inventory/addressable-result.json",
+    "verification": "Server5tests + game-api typecheck + Unity35tests, Play fixture capture; physical memory-return and production-account verification not established.",
+    "remainingDisposition": {
+      "COMMANDER_VIEW_REQUIRED": 38,
+      "DESTINATION_PREVIEW_VIEW_REQUIRED": 1,
+      "RETAIN_SHARED_SUPPORT_IDENTITY": 3,
+      "OPERATION_EVENT_VIEW_REQUIRED": 4
+    },
+    "remainingNote": "43 require remaining consumers/mapping;3 retain shared support identity. Equipment atlas now connected for known server keys; unknown categories remain unsupported.",
+    "aliasReconciliation20261111": {
+      "rows": 76,
+      "uniqueAssets": 66,
+      "uniqueAssetsHashVerified": 66,
+      "correctedRows": [
+        "equipment-composition-v60-review/panel-frame",
+        "equipment-composition-v60-review/dialog",
+        "equipment-composition-v60-review/plate",
+        "equipment-merchant-independent-v61-review/panel-frame",
+        "equipment-merchant-independent-v61-review/item-frame",
+        "equipment-merchant-independent-v61-review/dialog",
+        "equipment-merchant-independent-v61-review/plate",
+        "d01-remaining-art-v01/tower",
+        "equipment-composition-v60-review/repair"
+      ],
+      "newRuntimeBindings": 0,
+      "newlyImportedConnectedAssets": 17,
+      "newlyImportedUnreferencedAssets": 47,
+      "remainingConsumerGaps": 44,
+      "intentionalSharedSupportIdentity": 3,
+      "evidence": "Existing consumer source paths in assetUsage; original import/connection/departure test evidence reused. No new Unity execution or visual acceptance."
+    }
+  },
+  "equipmentAddressableConnection": {
+    "date": "2026-11-11",
+    "group": "remote_equipment_icons",
+    "initialLabel": "launch_required",
+    "tests": "82/82 local tests",
+    "evidence": "QA/ResourceIntake-20261110/connection/equipment-inventory/addressable-result.json",
+    "limits": "No new remote build/publication/live CDN or device memory proof"
+  }
+}

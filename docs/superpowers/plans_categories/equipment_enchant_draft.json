@@ -1,0 +1,2640 @@
+{
+  "authoringFormat": "lastrail-equipment-enchant-design-v3",
+  "reviewedAt": "2026-09-28",
+  "publishable": false,
+  "status": "NUMERIC_TABLES_COMPLETE_FOR_DESIGN_RUNTIME_UNBOUND",
+  "confirmedRules": {
+    "maxStar": 6,
+    "slotsPerOperator": 3,
+    "slotsPerTurret": 3,
+    "runOnly": true,
+    "setTagsPerItem": 1,
+    "setCountSource": "ACTUAL_EQUIPPED_SINGLE_TAGS_PER_OWNER",
+    "setCountFromMergeHistory": false,
+    "uniqueEffectsStartAtStar": 3,
+    "enchantScale": "FIX_AT_APPLICATION_STAR_NOT_CURRENT_STAR",
+    "turretUltimate": false,
+    "commanderSkillEquipmentModifiers": false,
+    "upgradePreview": [
+      "resultCategory",
+      "resultSingleSetTag",
+      "resultStats"
+    ],
+    "newRandomUniquePreview": "RANDOM_LABEL_THEN_REVEAL_COMMITTED_RESULT",
+    "turretOwnDurability": true,
+    "separateOperatorSynergy": false,
+    "virtualSetContribution": false,
+    "operatorSynergyIntegrationDecision": "2026-09-22 explicit user decision; existing SET01-SET06 actual-equipment set options only"
+  },
+  "categories": [
+    {
+      "categoryId": "CDR",
+      "name": "쿨감",
+      "starValues": [
+        0.5,
+        1.05,
+        2.21,
+        4.64,
+        9.74,
+        20.45
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        50,
+        105,
+        221,
+        464,
+        974,
+        2045
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_AUTO_ACTIVE_WITH_POSITIVE_COOLDOWN",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_REDUCTION_BPS_TO_EQUIPMENT_COOLDOWN_GROUP",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 50
+        },
+        {
+          "star": 2,
+          "valueBps": 105
+        },
+        {
+          "star": 3,
+          "valueBps": 221
+        },
+        {
+          "star": 4,
+          "valueBps": 464
+        },
+        {
+          "star": 5,
+          "valueBps": 974
+        },
+        {
+          "star": 6,
+          "valueBps": 2045
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    },
+    {
+      "categoryId": "ASPD",
+      "name": "공속",
+      "starValues": [
+        1.5,
+        3.15,
+        6.62,
+        13.91,
+        29.21,
+        61.34
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        150,
+        315,
+        662,
+        1391,
+        2921,
+        6134
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_BASIC_ATTACK",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_PERCENT_TO_PRE_EQUIPMENT_STAT",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 150
+        },
+        {
+          "star": 2,
+          "valueBps": 315
+        },
+        {
+          "star": 3,
+          "valueBps": 662
+        },
+        {
+          "star": 4,
+          "valueBps": 1391
+        },
+        {
+          "star": 5,
+          "valueBps": 2921
+        },
+        {
+          "star": 6,
+          "valueBps": 6134
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    },
+    {
+      "categoryId": "HP",
+      "name": "체력",
+      "starValues": [
+        3.0,
+        6.3,
+        13.23,
+        27.81,
+        58.41,
+        122.67
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        300,
+        630,
+        1323,
+        2781,
+        5841,
+        12267
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_OWN_MAX_HP",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_PERCENT_TO_PRE_EQUIPMENT_STAT",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 300
+        },
+        {
+          "star": 2,
+          "valueBps": 630
+        },
+        {
+          "star": 3,
+          "valueBps": 1323
+        },
+        {
+          "star": 4,
+          "valueBps": 2781
+        },
+        {
+          "star": 5,
+          "valueBps": 5841
+        },
+        {
+          "star": 6,
+          "valueBps": 12267
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    },
+    {
+      "categoryId": "DEF",
+      "name": "방어력",
+      "starValues": [
+        3.0,
+        6.3,
+        13.23,
+        27.81,
+        58.41,
+        122.67
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        300,
+        630,
+        1323,
+        2781,
+        5841,
+        12267
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_OWN_DEFENSE",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_PERCENT_TO_PRE_EQUIPMENT_STAT",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 300
+        },
+        {
+          "star": 2,
+          "valueBps": 630
+        },
+        {
+          "star": 3,
+          "valueBps": 1323
+        },
+        {
+          "star": 4,
+          "valueBps": 2781
+        },
+        {
+          "star": 5,
+          "valueBps": 5841
+        },
+        {
+          "star": 6,
+          "valueBps": 12267
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    },
+    {
+      "categoryId": "ATK",
+      "name": "공격력",
+      "starValues": [
+        2.0,
+        4.2,
+        8.82,
+        18.54,
+        38.94,
+        81.78
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        200,
+        420,
+        882,
+        1854,
+        3894,
+        8178
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_ATTACK_STAT",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_PERCENT_TO_PRE_EQUIPMENT_STAT",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 200
+        },
+        {
+          "star": 2,
+          "valueBps": 420
+        },
+        {
+          "star": 3,
+          "valueBps": 882
+        },
+        {
+          "star": 4,
+          "valueBps": 1854
+        },
+        {
+          "star": 5,
+          "valueBps": 3894
+        },
+        {
+          "star": 6,
+          "valueBps": 8178
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    },
+    {
+      "categoryId": "MANA_REGEN",
+      "name": "마나회복",
+      "starValues": [
+        3.0,
+        6.3,
+        13.23,
+        27.81,
+        58.41,
+        122.67
+      ],
+      "handlerId": null,
+      "starValuesBps": [
+        300,
+        630,
+        1323,
+        2781,
+        5841,
+        12267
+      ],
+      "valueUnit": "BPS",
+      "requiredCapability": "HAS_MANA_POOL_AND_NORMAL_REGEN",
+      "status": "NUMERIC_COMPLETE_NEW_BASELINE_UNTESTED",
+      "statOperation": "ADD_PERCENT_TO_PRE_EQUIPMENT_STAT",
+      "starRows": [
+        {
+          "star": 1,
+          "valueBps": 300
+        },
+        {
+          "star": 2,
+          "valueBps": 630
+        },
+        {
+          "star": 3,
+          "valueBps": 1323
+        },
+        {
+          "star": 4,
+          "valueBps": 2781
+        },
+        {
+          "star": 5,
+          "valueBps": 5841
+        },
+        {
+          "star": 6,
+          "valueBps": 12267
+        }
+      ],
+      "valueGenerationRule": "CEIL(base1StarBps * approvedGrowthIndex / 100); use materialized rows at runtime"
+    }
+  ],
+  "basicGrowthTrial": {
+    "baseIndex": 100,
+    "indexByStar": [
+      100,
+      210,
+      441,
+      927,
+      1947,
+      4089
+    ],
+    "isActualPercent": false,
+    "categoryBases": {
+      "CDR": {
+        "oneStarBps": 50
+      },
+      "ASPD": {
+        "oneStarBps": 150
+      },
+      "HP": {
+        "oneStarBps": 300
+      },
+      "DEF": {
+        "oneStarBps": 300
+      },
+      "ATK": {
+        "oneStarBps": 200
+      },
+      "MANA_REGEN": {
+        "oneStarBps": 300
+      }
+    },
+    "mergeMaterialCount": 2,
+    "status": "CATEGORY_VALUES_AUTHORED_1_TO_6_NUMERIC_COMPLETE",
+    "formula": "CEIL(oneStarBps * indexByStar / 100)",
+    "rounding": "UP_TO_INTEGER_BPS"
+  },
+  "equipmentUniqueEffects": [
+    {
+      "effectId": "EQ01",
+      "name": "관통자",
+      "description": "장착자의 직접 공격에 대해 대상 방어력 일부 무시",
+      "unit": "%",
+      "gradeValues": [
+        6.0,
+        12.0,
+        18.0,
+        24.0,
+        30.0,
+        36.0,
+        42.0,
+        48.0
+      ],
+      "requiredCapability": "DIRECT_ATTACK",
+      "ownerAggregateCapTrial": 60,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 600
+        },
+        {
+          "grade": 2,
+          "value": 1200
+        },
+        {
+          "grade": 3,
+          "value": 1800
+        },
+        {
+          "grade": 4,
+          "value": 2400
+        },
+        {
+          "grade": 5,
+          "value": 3000
+        },
+        {
+          "grade": 6,
+          "value": 3600
+        },
+        {
+          "grade": 7,
+          "value": 4200
+        },
+        {
+          "grade": 8,
+          "value": 4800
+        }
+      ],
+      "parameters": {
+        "damageSource": "OWNER_DIRECT_ATTACK"
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false,
+      "ownerAggregateCapBps": 6000
+    },
+    {
+      "effectId": "EQ02",
+      "name": "정예 사냥",
+      "description": "정예·보스 대상 직접 피해 증가",
+      "unit": "%",
+      "gradeValues": [
+        8.0,
+        16.0,
+        24.0,
+        32.0,
+        40.0,
+        48.0,
+        56.0,
+        64.0
+      ],
+      "requiredCapability": "DIRECT_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 800
+        },
+        {
+          "grade": 2,
+          "value": 1600
+        },
+        {
+          "grade": 3,
+          "value": 2400
+        },
+        {
+          "grade": 4,
+          "value": 3200
+        },
+        {
+          "grade": 5,
+          "value": 4000
+        },
+        {
+          "grade": 6,
+          "value": 4800
+        },
+        {
+          "grade": 7,
+          "value": 5600
+        },
+        {
+          "grade": 8,
+          "value": 6400
+        }
+      ],
+      "parameters": {
+        "targetTagsAny": [
+          "ELITE",
+          "BOSS"
+        ]
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ03",
+      "name": "마무리",
+      "description": "현재 체력35% 이하인 적 대상 직접 피해 증가",
+      "unit": "%",
+      "gradeValues": [
+        10.0,
+        20.0,
+        30.0,
+        40.0,
+        50.0,
+        60.0,
+        70.0,
+        80.0
+      ],
+      "requiredCapability": "DIRECT_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 1000
+        },
+        {
+          "grade": 2,
+          "value": 2000
+        },
+        {
+          "grade": 3,
+          "value": 3000
+        },
+        {
+          "grade": 4,
+          "value": 4000
+        },
+        {
+          "grade": 5,
+          "value": 5000
+        },
+        {
+          "grade": 6,
+          "value": 6000
+        },
+        {
+          "grade": 7,
+          "value": 7000
+        },
+        {
+          "grade": 8,
+          "value": 8000
+        }
+      ],
+      "parameters": {
+        "targetHpAtMostBps": 3500
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ04",
+      "name": "정밀 사격",
+      "description": "기본 공격 피해 증가",
+      "unit": "%",
+      "gradeValues": [
+        8.0,
+        16.0,
+        24.0,
+        32.0,
+        40.0,
+        48.0,
+        56.0,
+        64.0
+      ],
+      "requiredCapability": "BASIC_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 800
+        },
+        {
+          "grade": 2,
+          "value": 1600
+        },
+        {
+          "grade": 3,
+          "value": 2400
+        },
+        {
+          "grade": 4,
+          "value": 3200
+        },
+        {
+          "grade": 5,
+          "value": 4000
+        },
+        {
+          "grade": 6,
+          "value": 4800
+        },
+        {
+          "grade": 7,
+          "value": 5600
+        },
+        {
+          "grade": 8,
+          "value": 6400
+        }
+      ],
+      "parameters": {
+        "damageSource": "BASIC_ATTACK"
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ05",
+      "name": "기술 증폭",
+      "description": "자체 자동 액티브의 피해·치유·부여 보호막 증가",
+      "unit": "%",
+      "gradeValues": [
+        8.0,
+        16.0,
+        24.0,
+        32.0,
+        40.0,
+        48.0,
+        56.0,
+        64.0
+      ],
+      "requiredCapability": "AUTO_ACTIVE",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 800
+        },
+        {
+          "grade": 2,
+          "value": 1600
+        },
+        {
+          "grade": 3,
+          "value": 2400
+        },
+        {
+          "grade": 4,
+          "value": 3200
+        },
+        {
+          "grade": 5,
+          "value": 4000
+        },
+        {
+          "grade": 6,
+          "value": 4800
+        },
+        {
+          "grade": 7,
+          "value": 5600
+        },
+        {
+          "grade": 8,
+          "value": 6400
+        }
+      ],
+      "parameters": {
+        "source": "OWN_AUTO_ACTIVE",
+        "excludeEquipmentAndEnchantGenerated": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ06",
+      "name": "충격 완충",
+      "description": "자신의 체력50% 이하일 때 받는 직접 피해 감소",
+      "unit": "%",
+      "gradeValues": [
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0
+      ],
+      "requiredCapability": "SELF_HP_AND_DAMAGE",
+      "ownerAggregateCapTrial": 50,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 500
+        },
+        {
+          "grade": 2,
+          "value": 1000
+        },
+        {
+          "grade": 3,
+          "value": 1500
+        },
+        {
+          "grade": 4,
+          "value": 2000
+        },
+        {
+          "grade": 5,
+          "value": 2500
+        },
+        {
+          "grade": 6,
+          "value": 3000
+        },
+        {
+          "grade": 7,
+          "value": 3500
+        },
+        {
+          "grade": 8,
+          "value": 4000
+        }
+      ],
+      "parameters": {
+        "ownerHpAtMostBps": 5000,
+        "damageType": "DIRECT"
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false,
+      "ownerAggregateCapBps": 5000
+    },
+    {
+      "effectId": "EQ07",
+      "name": "펄스탄",
+      "description": "기본 공격5회 적중마다 주 대상에 공격력 비례 추가 피해",
+      "unit": "공격력%",
+      "gradeValues": [
+        25.0,
+        50.0,
+        75.0,
+        100.0,
+        125.0,
+        150.0,
+        175.0,
+        200.0
+      ],
+      "requiredCapability": "BASIC_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 2500
+        },
+        {
+          "grade": 2,
+          "value": 5000
+        },
+        {
+          "grade": 3,
+          "value": 7500
+        },
+        {
+          "grade": 4,
+          "value": 10000
+        },
+        {
+          "grade": 5,
+          "value": 12500
+        },
+        {
+          "grade": 6,
+          "value": 15000
+        },
+        {
+          "grade": 7,
+          "value": 17500
+        },
+        {
+          "grade": 8,
+          "value": 20000
+        }
+      ],
+      "parameters": {
+        "basicAttackCount": 5,
+        "extraDamageBasis": "ATTACK",
+        "maxCountPerAttackAction": 1
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ08",
+      "name": "자체 정비",
+      "description": "전투 중12초마다 자신의 최대 체력 비례 회복",
+      "unit": "최대체력%",
+      "gradeValues": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0,
+        6.0,
+        7.0,
+        8.0
+      ],
+      "requiredCapability": "SELF_HP_AND_HEAL",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 100
+        },
+        {
+          "grade": 2,
+          "value": 200
+        },
+        {
+          "grade": 3,
+          "value": 300
+        },
+        {
+          "grade": 4,
+          "value": 400
+        },
+        {
+          "grade": 5,
+          "value": 500
+        },
+        {
+          "grade": 6,
+          "value": 600
+        },
+        {
+          "grade": 7,
+          "value": 700
+        },
+        {
+          "grade": 8,
+          "value": 800
+        }
+      ],
+      "parameters": {
+        "intervalMs": 12000,
+        "healBasis": "OWNER_MAX_HP"
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ09",
+      "name": "집속 조준",
+      "description": "같은 주 대상 연속 기본 공격 시 중첩당 기본 공격 피해 증가, 최대5중첩",
+      "unit": "중첩당%",
+      "gradeValues": [
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0,
+        12.0,
+        14.0,
+        16.0
+      ],
+      "requiredCapability": "BASIC_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 200
+        },
+        {
+          "grade": 2,
+          "value": 400
+        },
+        {
+          "grade": 3,
+          "value": 600
+        },
+        {
+          "grade": 4,
+          "value": 800
+        },
+        {
+          "grade": 5,
+          "value": 1000
+        },
+        {
+          "grade": 6,
+          "value": 1200
+        },
+        {
+          "grade": 7,
+          "value": 1400
+        },
+        {
+          "grade": 8,
+          "value": 1600
+        }
+      ],
+      "parameters": {
+        "maxStacks": 5,
+        "resetOnTargetChange": true,
+        "resetNoAttackAfterMs": 4000
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ10",
+      "name": "탄막 증폭",
+      "description": "본래 광역인 공격이 적3명 이상을 타격할 때 그 직접 피해 증가",
+      "unit": "%",
+      "gradeValues": [
+        5.0,
+        10.0,
+        15.0,
+        20.0,
+        25.0,
+        30.0,
+        35.0,
+        40.0
+      ],
+      "requiredCapability": "NATIVE_AOE_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 500
+        },
+        {
+          "grade": 2,
+          "value": 1000
+        },
+        {
+          "grade": 3,
+          "value": 1500
+        },
+        {
+          "grade": 4,
+          "value": 2000
+        },
+        {
+          "grade": 5,
+          "value": 2500
+        },
+        {
+          "grade": 6,
+          "value": 3000
+        },
+        {
+          "grade": 7,
+          "value": 3500
+        },
+        {
+          "grade": 8,
+          "value": 4000
+        }
+      ],
+      "parameters": {
+        "minDistinctTargets": 3,
+        "requiresOriginalAreaAttack": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ11",
+      "name": "가속 순환",
+      "description": "자동 액티브 사용 성공 후4초간 공격속도 증가",
+      "unit": "%",
+      "gradeValues": [
+        3.0,
+        6.0,
+        9.0,
+        12.0,
+        15.0,
+        18.0,
+        21.0,
+        24.0
+      ],
+      "requiredCapability": "AUTO_ACTIVE_AND_BASIC_ATTACK",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 300
+        },
+        {
+          "grade": 2,
+          "value": 600
+        },
+        {
+          "grade": 3,
+          "value": 900
+        },
+        {
+          "grade": 4,
+          "value": 1200
+        },
+        {
+          "grade": 5,
+          "value": 1500
+        },
+        {
+          "grade": 6,
+          "value": 1800
+        },
+        {
+          "grade": 7,
+          "value": 2100
+        },
+        {
+          "grade": 8,
+          "value": 2400
+        }
+      ],
+      "parameters": {
+        "durationMs": 4000,
+        "refreshOnly": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ12",
+      "name": "재사용 동기화",
+      "description": "기본 공격8회 적중마다 대기 중인 자동 액티브 하나의 남은 쿨타임 감소",
+      "unit": "초",
+      "gradeValues": [
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0,
+        1.2,
+        1.4,
+        1.6
+      ],
+      "requiredCapability": "BASIC_ATTACK_AND_ACTIVE_COOLDOWN",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "MS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 200
+        },
+        {
+          "grade": 2,
+          "value": 400
+        },
+        {
+          "grade": 3,
+          "value": 600
+        },
+        {
+          "grade": 4,
+          "value": 800
+        },
+        {
+          "grade": 5,
+          "value": 1000
+        },
+        {
+          "grade": 6,
+          "value": 1200
+        },
+        {
+          "grade": 7,
+          "value": 1400
+        },
+        {
+          "grade": 8,
+          "value": 1600
+        }
+      ],
+      "parameters": {
+        "basicAttackCount": 8,
+        "targetCooldown": "LONGEST_REMAINING_VALID_AUTO_ACTIVE",
+        "floorMs": 0
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ13",
+      "name": "에너지 회수",
+      "description": "기본 공격6회 적중마다 자신의 최대 마나 비례 회복",
+      "unit": "최대마나%",
+      "gradeValues": [
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        2.5,
+        3.0,
+        3.5,
+        4.0
+      ],
+      "requiredCapability": "BASIC_ATTACK_AND_MANA",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 50
+        },
+        {
+          "grade": 2,
+          "value": 100
+        },
+        {
+          "grade": 3,
+          "value": 150
+        },
+        {
+          "grade": 4,
+          "value": 200
+        },
+        {
+          "grade": 5,
+          "value": 250
+        },
+        {
+          "grade": 6,
+          "value": 300
+        },
+        {
+          "grade": 7,
+          "value": 350
+        },
+        {
+          "grade": 8,
+          "value": 400
+        }
+      ],
+      "parameters": {
+        "basicAttackCount": 6,
+        "resourceType": "MANA",
+        "recoveryBasis": "OWNER_MAX_MANA",
+        "recursiveResourceAmplification": false
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ14",
+      "name": "제어 저항",
+      "description": "자신에게 적용되는 기절·속박·침묵 등 제어 지속시간 감소",
+      "unit": "%",
+      "gradeValues": [
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0,
+        12.0,
+        14.0,
+        16.0
+      ],
+      "requiredCapability": "RECEIVABLE_CONTROL",
+      "ownerAggregateCapTrial": 40,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 200
+        },
+        {
+          "grade": 2,
+          "value": 400
+        },
+        {
+          "grade": 3,
+          "value": 600
+        },
+        {
+          "grade": 4,
+          "value": 800
+        },
+        {
+          "grade": 5,
+          "value": 1000
+        },
+        {
+          "grade": 6,
+          "value": 1200
+        },
+        {
+          "grade": 7,
+          "value": 1400
+        },
+        {
+          "grade": 8,
+          "value": 1600
+        }
+      ],
+      "parameters": {
+        "controlTypes": [
+          "STUN",
+          "ROOT",
+          "SILENCE"
+        ],
+        "respectImmunity": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false,
+      "ownerAggregateCapBps": 4000
+    },
+    {
+      "effectId": "EQ15",
+      "name": "집중 치료",
+      "description": "자체 스킬로 체력35% 이하 대상을 치유할 때 치유량 증가",
+      "unit": "%",
+      "gradeValues": [
+        12.0,
+        24.0,
+        36.0,
+        48.0,
+        60.0,
+        72.0,
+        84.0,
+        96.0
+      ],
+      "requiredCapability": "NATIVE_HEAL_SKILL",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 1200
+        },
+        {
+          "grade": 2,
+          "value": 2400
+        },
+        {
+          "grade": 3,
+          "value": 3600
+        },
+        {
+          "grade": 4,
+          "value": 4800
+        },
+        {
+          "grade": 5,
+          "value": 6000
+        },
+        {
+          "grade": 6,
+          "value": 7200
+        },
+        {
+          "grade": 7,
+          "value": 8400
+        },
+        {
+          "grade": 8,
+          "value": 9600
+        }
+      ],
+      "parameters": {
+        "targetHpAtMostBps": 3500,
+        "source": "OWN_ACTIVE_OR_PASSIVE",
+        "excludeGeneratedEffects": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EQ16",
+      "name": "방벽 설계",
+      "description": "자체 액티브·패시브로 부여하는 보호막량 증가",
+      "unit": "%",
+      "gradeValues": [
+        10.0,
+        20.0,
+        30.0,
+        40.0,
+        50.0,
+        60.0,
+        70.0,
+        80.0
+      ],
+      "requiredCapability": "NATIVE_SHIELD_SKILL",
+      "ownerAggregateCapTrial": null,
+      "handlerId": null,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "gradeRows": [
+        {
+          "grade": 1,
+          "value": 1000
+        },
+        {
+          "grade": 2,
+          "value": 2000
+        },
+        {
+          "grade": 3,
+          "value": 3000
+        },
+        {
+          "grade": 4,
+          "value": 4000
+        },
+        {
+          "grade": 5,
+          "value": 5000
+        },
+        {
+          "grade": 6,
+          "value": 6000
+        },
+        {
+          "grade": 7,
+          "value": 7000
+        },
+        {
+          "grade": 8,
+          "value": 8000
+        }
+      ],
+      "parameters": {
+        "source": "OWN_ACTIVE_OR_PASSIVE",
+        "excludeGeneratedEffects": true
+      },
+      "sameEffectAggregation": "SUM_GRADES_PER_OWNER_ONE_COUNTER_OR_PROC",
+      "beyondGrade8": "OWNER_SUM_ONLY_LINEAR_SLOPE_SAME_CAP_NOT_AN_ITEM_GRADE",
+      "commanderSkillEligible": false
+    }
+  ],
+  "enchantUniqueEffects": [
+    {
+      "effectId": "EN01",
+      "name": "선제 방벽",
+      "description": "전투 시작 시 자신의 최대 체력 비례 보호막,6초 유지",
+      "unit": "최대체력%",
+      "valuesByApplicationStar": [
+        3,
+        5,
+        8,
+        12,
+        17,
+        23
+      ],
+      "requiredCapability": "SELF_HP_AND_SHIELD",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 300
+        },
+        {
+          "applicationStar": 2,
+          "value": 500
+        },
+        {
+          "applicationStar": 3,
+          "value": 800
+        },
+        {
+          "applicationStar": 4,
+          "value": 1200
+        },
+        {
+          "applicationStar": 5,
+          "value": 1700
+        },
+        {
+          "applicationStar": 6,
+          "value": 2300
+        }
+      ],
+      "parameters": {
+        "trigger": "NODE_BATTLE_START",
+        "durationMs": 6000,
+        "basis": "OWNER_MAX_HP"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN02",
+      "name": "준비 사격",
+      "description": "첫 기본 공격 적중에 공격력 비례 추가 피해",
+      "unit": "공격력%",
+      "valuesByApplicationStar": [
+        15,
+        25,
+        40,
+        60,
+        85,
+        115
+      ],
+      "requiredCapability": "BASIC_ATTACK",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1500
+        },
+        {
+          "applicationStar": 2,
+          "value": 2500
+        },
+        {
+          "applicationStar": 3,
+          "value": 4000
+        },
+        {
+          "applicationStar": 4,
+          "value": 6000
+        },
+        {
+          "applicationStar": 5,
+          "value": 8500
+        },
+        {
+          "applicationStar": 6,
+          "value": 11500
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_VALID_BASIC_ATTACK_HIT",
+        "basis": "ATTACK"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN03",
+      "name": "예비 축전",
+      "description": "전투 시작 시 자신의 최대 마나 비례 회복",
+      "unit": "최대마나%",
+      "valuesByApplicationStar": [
+        5,
+        8,
+        12,
+        18,
+        25,
+        33
+      ],
+      "requiredCapability": "MANA",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 500
+        },
+        {
+          "applicationStar": 2,
+          "value": 800
+        },
+        {
+          "applicationStar": 3,
+          "value": 1200
+        },
+        {
+          "applicationStar": 4,
+          "value": 1800
+        },
+        {
+          "applicationStar": 5,
+          "value": 2500
+        },
+        {
+          "applicationStar": 6,
+          "value": 3300
+        }
+      ],
+      "parameters": {
+        "trigger": "NODE_BATTLE_START",
+        "resourceType": "MANA",
+        "basis": "OWNER_MAX_MANA"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN04",
+      "name": "응급 차폐",
+      "description": "생존 상태에서 피해로 체력30% 이하가 되면 보호막,4초·노드당1회",
+      "unit": "최대체력%",
+      "valuesByApplicationStar": [
+        4,
+        7,
+        11,
+        16,
+        22,
+        29
+      ],
+      "requiredCapability": "SELF_HP_AND_SHIELD",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 400
+        },
+        {
+          "applicationStar": 2,
+          "value": 700
+        },
+        {
+          "applicationStar": 3,
+          "value": 1100
+        },
+        {
+          "applicationStar": 4,
+          "value": 1600
+        },
+        {
+          "applicationStar": 5,
+          "value": 2200
+        },
+        {
+          "applicationStar": 6,
+          "value": 2900
+        }
+      ],
+      "parameters": {
+        "trigger": "SURVIVED_DAMAGE_AT_OR_BELOW_HP_THRESHOLD",
+        "hpThresholdBps": 3000,
+        "durationMs": 4000,
+        "basis": "OWNER_MAX_HP",
+        "isRevive": false
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN05",
+      "name": "전후 정비",
+      "description": "전투 노드 클리어 시 생존한 장착자 회복",
+      "unit": "최대체력%",
+      "valuesByApplicationStar": [
+        2,
+        3,
+        5,
+        7,
+        10,
+        14
+      ],
+      "requiredCapability": "SELF_HP_AND_HEAL",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 200
+        },
+        {
+          "applicationStar": 2,
+          "value": 300
+        },
+        {
+          "applicationStar": 3,
+          "value": 500
+        },
+        {
+          "applicationStar": 4,
+          "value": 700
+        },
+        {
+          "applicationStar": 5,
+          "value": 1000
+        },
+        {
+          "applicationStar": 6,
+          "value": 1400
+        }
+      ],
+      "parameters": {
+        "trigger": "BATTLE_NODE_CLEARED",
+        "requiresAlive": true,
+        "basis": "OWNER_MAX_HP",
+        "isRevive": false
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN06",
+      "name": "시동 가속",
+      "description": "전투 시작 후6초간 공격속도 증가",
+      "unit": "%",
+      "valuesByApplicationStar": [
+        6,
+        9,
+        13,
+        18,
+        24,
+        31
+      ],
+      "requiredCapability": "BASIC_ATTACK",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 600
+        },
+        {
+          "applicationStar": 2,
+          "value": 900
+        },
+        {
+          "applicationStar": 3,
+          "value": 1300
+        },
+        {
+          "applicationStar": 4,
+          "value": 1800
+        },
+        {
+          "applicationStar": 5,
+          "value": 2400
+        },
+        {
+          "applicationStar": 6,
+          "value": 3100
+        }
+      ],
+      "parameters": {
+        "trigger": "NODE_BATTLE_START",
+        "durationMs": 6000
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN07",
+      "name": "절약 회로",
+      "description": "노드 내 처음 마나를 소비하는 자동 액티브의 마나 소모 감소",
+      "unit": "%",
+      "valuesByApplicationStar": [
+        10,
+        15,
+        22,
+        30,
+        40,
+        50
+      ],
+      "requiredCapability": "MANA_COST_AUTO_ACTIVE",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1000
+        },
+        {
+          "applicationStar": 2,
+          "value": 1500
+        },
+        {
+          "applicationStar": 3,
+          "value": 2200
+        },
+        {
+          "applicationStar": 4,
+          "value": 3000
+        },
+        {
+          "applicationStar": 5,
+          "value": 4000
+        },
+        {
+          "applicationStar": 6,
+          "value": 5000
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_VALID_MANA_CONSUMING_AUTO_ACTIVE",
+        "resourceType": "MANA",
+        "basis": "ACTUAL_PRE_DISCOUNT_COST"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN08",
+      "name": "재장전 예약",
+      "description": "첫 자동 액티브 성공 후 그 스킬에 새로 시작된 쿨타임 감소,노드당1회",
+      "unit": "%",
+      "valuesByApplicationStar": [
+        5,
+        8,
+        12,
+        17,
+        23,
+        30
+      ],
+      "requiredCapability": "AUTO_ACTIVE_COOLDOWN",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 500
+        },
+        {
+          "applicationStar": 2,
+          "value": 800
+        },
+        {
+          "applicationStar": 3,
+          "value": 1200
+        },
+        {
+          "applicationStar": 4,
+          "value": 1700
+        },
+        {
+          "applicationStar": 5,
+          "value": 2300
+        },
+        {
+          "applicationStar": 6,
+          "value": 3000
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_SUCCESSFUL_AUTO_ACTIVE_WITH_COOLDOWN",
+        "basis": "JUST_STARTED_COOLDOWN"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN09",
+      "name": "교란 탄두",
+      "description": "첫 공격형 자동 액티브 적중 시 주 대상 공격속도 감소,4초",
+      "unit": "%",
+      "valuesByApplicationStar": [
+        4,
+        6,
+        9,
+        13,
+        18,
+        24
+      ],
+      "requiredCapability": "OFFENSIVE_AUTO_ACTIVE",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 400
+        },
+        {
+          "applicationStar": 2,
+          "value": 600
+        },
+        {
+          "applicationStar": 3,
+          "value": 900
+        },
+        {
+          "applicationStar": 4,
+          "value": 1300
+        },
+        {
+          "applicationStar": 5,
+          "value": 1800
+        },
+        {
+          "applicationStar": 6,
+          "value": 2400
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_DAMAGING_AUTO_ACTIVE_HIT",
+        "durationMs": 4000,
+        "target": "PRIMARY",
+        "respectImmunity": true
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN10",
+      "name": "관성 제동",
+      "description": "이동 중인 적에게 처음 기본 공격 적중 시 이동속도 감소,4초",
+      "unit": "%",
+      "valuesByApplicationStar": [
+        10,
+        14,
+        19,
+        25,
+        32,
+        40
+      ],
+      "requiredCapability": "BASIC_ATTACK_AND_MOVING_TARGET",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1000
+        },
+        {
+          "applicationStar": 2,
+          "value": 1400
+        },
+        {
+          "applicationStar": 3,
+          "value": 1900
+        },
+        {
+          "applicationStar": 4,
+          "value": 2500
+        },
+        {
+          "applicationStar": 5,
+          "value": 3200
+        },
+        {
+          "applicationStar": 6,
+          "value": 4000
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_BASIC_HIT_ON_MOVING_TARGET",
+        "durationMs": 4000,
+        "respectImmunity": true
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN11",
+      "name": "응급 정화",
+      "description": "자신에게 처음 적용되는 해제 가능한 제어효과 남은 시간 감소,노드당1회",
+      "unit": "초",
+      "valuesByApplicationStar": [
+        0.2,
+        0.35,
+        0.55,
+        0.8,
+        1.1,
+        1.5
+      ],
+      "requiredCapability": "RECEIVABLE_REMOVABLE_CONTROL",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "MS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 200
+        },
+        {
+          "applicationStar": 2,
+          "value": 350
+        },
+        {
+          "applicationStar": 3,
+          "value": 550
+        },
+        {
+          "applicationStar": 4,
+          "value": 800
+        },
+        {
+          "applicationStar": 5,
+          "value": 1100
+        },
+        {
+          "applicationStar": 6,
+          "value": 1500
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_APPLIED_REDUCIBLE_CONTROL",
+        "floorMs": 0,
+        "respectImmunity": true
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN12",
+      "name": "위기 축전",
+      "description": "생존 상태에서 피해로 체력50% 이하가 되면 마나 회복,노드당1회",
+      "unit": "최대마나%",
+      "valuesByApplicationStar": [
+        3,
+        5,
+        8,
+        12,
+        17,
+        23
+      ],
+      "requiredCapability": "SELF_HP_AND_MANA",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 300
+        },
+        {
+          "applicationStar": 2,
+          "value": 500
+        },
+        {
+          "applicationStar": 3,
+          "value": 800
+        },
+        {
+          "applicationStar": 4,
+          "value": 1200
+        },
+        {
+          "applicationStar": 5,
+          "value": 1700
+        },
+        {
+          "applicationStar": 6,
+          "value": 2300
+        }
+      ],
+      "parameters": {
+        "trigger": "SURVIVED_DAMAGE_AT_OR_BELOW_HP_THRESHOLD",
+        "hpThresholdBps": 5000,
+        "resourceType": "MANA",
+        "basis": "OWNER_MAX_MANA",
+        "isRevive": false
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN13",
+      "name": "처치 가속",
+      "description": "액티브가 대기 중일 때 첫 직접 처치로 가장 긴 남은 쿨타임 하나 감소",
+      "unit": "초",
+      "valuesByApplicationStar": [
+        0.3,
+        0.5,
+        0.8,
+        1.2,
+        1.7,
+        2.3
+      ],
+      "requiredCapability": "DIRECT_KILL_AND_ACTIVE_COOLDOWN",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "MS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 300
+        },
+        {
+          "applicationStar": 2,
+          "value": 500
+        },
+        {
+          "applicationStar": 3,
+          "value": 800
+        },
+        {
+          "applicationStar": 4,
+          "value": 1200
+        },
+        {
+          "applicationStar": 5,
+          "value": 1700
+        },
+        {
+          "applicationStar": 6,
+          "value": 2300
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_DIRECT_KILL_WITH_ACTIVE_COOLDOWN",
+        "targetCooldown": "LONGEST_REMAINING_VALID_AUTO_ACTIVE",
+        "floorMs": 0
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN14",
+      "name": "연쇄 탄환",
+      "description": "유효한 추가 표적이 있는 첫 직접 처치 시 다른 적 하나에 추가 사격",
+      "unit": "공격력%",
+      "valuesByApplicationStar": [
+        15,
+        25,
+        40,
+        60,
+        85,
+        115
+      ],
+      "requiredCapability": "DIRECT_KILL_AND_ATTACK_RANGE",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1500
+        },
+        {
+          "applicationStar": 2,
+          "value": 2500
+        },
+        {
+          "applicationStar": 3,
+          "value": 4000
+        },
+        {
+          "applicationStar": 4,
+          "value": 6000
+        },
+        {
+          "applicationStar": 5,
+          "value": 8500
+        },
+        {
+          "applicationStar": 6,
+          "value": 11500
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_DIRECT_KILL_WITH_ANOTHER_VALID_TARGET",
+        "basis": "ATTACK",
+        "targetCount": 1,
+        "sameBattleSpace": true,
+        "recursiveProc": false
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN15",
+      "name": "과잉 치유 저장",
+      "description": "자체 스킬의 첫 과잉 치유량 일부를 대상 보호막으로 전환,6초",
+      "unit": "과잉치유%",
+      "valuesByApplicationStar": [
+        10,
+        15,
+        22,
+        30,
+        40,
+        52
+      ],
+      "requiredCapability": "NATIVE_HEAL_SKILL",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1000
+        },
+        {
+          "applicationStar": 2,
+          "value": 1500
+        },
+        {
+          "applicationStar": 3,
+          "value": 2200
+        },
+        {
+          "applicationStar": 4,
+          "value": 3000
+        },
+        {
+          "applicationStar": 5,
+          "value": 4000
+        },
+        {
+          "applicationStar": 6,
+          "value": 5200
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_OVERHEAL_FROM_OWN_SKILL",
+        "durationMs": 6000,
+        "basis": "OVERHEAL",
+        "targetMaxHpCapBps": 800,
+        "capStatus": "INITIAL_TEST_BASELINE"
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    },
+    {
+      "effectId": "EN16",
+      "name": "방벽 회수",
+      "description": "자체 스킬 보호막의 첫 잔량 자연 만료 시 잔량 일부만큼 대상 치유",
+      "unit": "잔여보호막%",
+      "valuesByApplicationStar": [
+        10,
+        15,
+        22,
+        30,
+        40,
+        52
+      ],
+      "requiredCapability": "NATIVE_SHIELD_SKILL",
+      "handlerId": null,
+      "valueRecomputedOnStarUpgrade": false,
+      "status": "NUMERIC_COMPLETE_BALANCE_UNVALIDATED_RUNTIME_UNBOUND",
+      "valueUnit": "BPS",
+      "applicationStarRows": [
+        {
+          "applicationStar": 1,
+          "value": 1000
+        },
+        {
+          "applicationStar": 2,
+          "value": 1500
+        },
+        {
+          "applicationStar": 3,
+          "value": 2200
+        },
+        {
+          "applicationStar": 4,
+          "value": 3000
+        },
+        {
+          "applicationStar": 5,
+          "value": 4000
+        },
+        {
+          "applicationStar": 6,
+          "value": 5200
+        }
+      ],
+      "parameters": {
+        "trigger": "FIRST_NATURAL_EXPIRY_OF_OWN_SKILL_SHIELD_WITH_REMAINDER",
+        "basis": "REMAINING_SHIELD",
+        "targetMaxHpCapBps": 800,
+        "capStatus": "INITIAL_TEST_BASELINE",
+        "ignoreDispelReplaceOrDepletion": true
+      },
+      "usesPerBattleNode": 1,
+      "resetOnWaveChange": false,
+      "fixedAtApplication": true,
+      "commanderSkillEligible": false
+    }
+  ],
+  "setEffects": [
+    {
+      "setId": "SET01",
+      "name": "화력",
+      "incrementalTierDescriptions": [
+        "공격력 +4%",
+        "기본 공격 피해 +6%",
+        "정예·보스 대상 직접 피해 +12%"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "ATK_BONUS",
+          "valueBps": 400,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "BASIC_DAMAGE_BONUS",
+          "valueBps": 600,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "ELITE_BOSS_DIRECT_DAMAGE_BONUS",
+          "valueBps": 1200,
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "setId": "SET02",
+      "name": "속사",
+      "incrementalTierDescriptions": [
+        "공격속도 +5%",
+        "공격속도 추가 +8%",
+        "기본 공격 적중당 공속+2%,최대5중첩;4초간 미공격 시 해제"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "ASPD_BONUS",
+          "valueBps": 500,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "ASPD_BONUS",
+          "valueBps": 800,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "ASPD_STACK_ON_BASIC_HIT",
+          "valueBps": 200,
+          "parameters": {
+            "maxStacks": 5,
+            "resetAfterNoAttackMs": 4000
+          }
+        }
+      ]
+    },
+    {
+      "setId": "SET03",
+      "name": "전술 제어",
+      "incrementalTierDescriptions": [
+        "자동 액티브 쿨감 +3%",
+        "자동 액티브 피해·치유·보호막 +8%",
+        "자동 액티브 사용 후4초간 공격력+10%;중첩 없이 시간 갱신"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "AUTO_ACTIVE_CDR",
+          "valueBps": 300,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "OWN_AUTO_ACTIVE_POWER",
+          "valueBps": 800,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "ATK_BONUS_AFTER_AUTO_ACTIVE",
+          "valueBps": 1000,
+          "parameters": {
+            "durationMs": 4000,
+            "refreshOnly": true
+          }
+        }
+      ]
+    },
+    {
+      "setId": "SET04",
+      "name": "철벽",
+      "incrementalTierDescriptions": [
+        "최대 체력 +6%",
+        "방어력 +10%",
+        "받는 직접 피해 -8%"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "HP_BONUS",
+          "valueBps": 600,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "DEF_BONUS",
+          "valueBps": 1000,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "DIRECT_DAMAGE_REDUCTION",
+          "valueBps": 800,
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "setId": "SET05",
+      "name": "정비",
+      "incrementalTierDescriptions": [
+        "받는 치유·수리 +8%",
+        "받는 보호막 +12%",
+        "체력30% 이하에서 받는 치유·수리 추가 +25%"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "HEAL_REPAIR_RECEIVED",
+          "valueBps": 800,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "SHIELD_RECEIVED",
+          "valueBps": 1200,
+          "parameters": {}
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "HEAL_REPAIR_RECEIVED_LOW_HP",
+          "valueBps": 2500,
+          "parameters": {
+            "hpThresholdBps": 3000
+          }
+        }
+      ]
+    },
+    {
+      "setId": "SET06",
+      "name": "축전",
+      "incrementalTierDescriptions": [
+        "정상 마나 회복량 +10%",
+        "정상 마나 회복량 추가 +15%",
+        "자동 액티브의 실제 마나 소모량12% 환급"
+      ],
+      "status": "NUMERIC_COMPLETE_PRIOR_VALUES_PRESERVED_RUNTIME_UNBOUND",
+      "tiers": [
+        {
+          "equippedCount": 1,
+          "incremental": true,
+          "effectKind": "NORMAL_MANA_REGEN",
+          "valueBps": 1000,
+          "parameters": {
+            "resourceType": "MANA"
+          }
+        },
+        {
+          "equippedCount": 2,
+          "incremental": true,
+          "effectKind": "NORMAL_MANA_REGEN",
+          "valueBps": 1500,
+          "parameters": {
+            "resourceType": "MANA"
+          }
+        },
+        {
+          "equippedCount": 3,
+          "incremental": true,
+          "effectKind": "REFUND_ACTUAL_AUTO_ACTIVE_MANA_COST",
+          "valueBps": 1200,
+          "parameters": {
+            "resourceType": "MANA",
+            "recursiveAmplification": false
+          }
+        }
+      ]
+    }
+  ],
+  "randomPreviewPolicy": {
+    "status": "APPROVED_J03",
+    "knownEffects": "SHOW_RESULT_NAME_GRADE_VALUES",
+    "newRandomEffects": "SHOW_RANDOM_PLACEHOLDER_AND_ELIGIBLE_POOL_NOT_RESULT",
+    "previewConsumesRng": false,
+    "previewConsumesItems": false,
+    "drawWhen": "COMMIT_MERGE_OR_UPGRADE_WITH_MATERIALS_AND_RECEIPT_ATOMICALLY",
+    "replay": "RETURN_ORIGINAL_COMMITTED_RESULT_NO_REDRAW"
+  },
+  "requiredDecisions": [],
+  "sources": [
+    "13_EQUIPMENT_ENCHANTMENTS.md",
+    "00_INDEX.md#open-decisions",
+    "CURRENT_CHAT_USER_PER_SKILL_TURRET_RESOURCE_AND_SIX_STAR_TABLE_REQUEST"
+  ],
+  "mergePolicy": {
+    "materialCount": 2,
+    "requireSameStar": true,
+    "requireSameCategory": true,
+    "requireSameSet": false,
+    "resultSet": "PRIMARY_MATERIAL_SINGLE_TAG",
+    "enchantInheritance": "PRIMARY_ONLY_OTHER_REMOVED",
+    "currencyCost": 0,
+    "uniqueGradeBudgetByStar": [
+      0,
+      0,
+      1,
+      2,
+      4,
+      8
+    ],
+    "status": "APPROVED_J02"
+  },
+  "enchantStackingPolicy": {
+    "slotsPerItem": 1,
+    "sameEffectAcrossItems": "HIGHEST_FIXED_APPLICATION_VALUE_ONLY",
+    "status": "APPROVED_J02"
+  },
+  "turretLifecycle": {
+    "status": "APPROVED_J01_HP_AND_PARENT_DEPENDENCY",
+    "ownDurability": true,
+    "parentType": "COMBAT_CARRIAGE",
+    "alivePredicate": "OWN_HP_GT_ZERO_AND_PARENT_ALIVE",
+    "parentDestroyedOutcome": "COMBAT_DISABLED_REGARDLESS_OF_REMAINING_TURRET_HP",
+    "hpModifiersTarget": "TURRET_SELF",
+    "manaAndCooldownModel": {
+      "status": "USER_CONFIRMED_PER_SKILL_RESOURCE_POLICY",
+      "currentContentBaseline": "COOLDOWN_ONLY_NO_NEW_RESOURCE_COSTS_ADDED",
+      "scope": "PER_SKILL_NOT_GLOBAL_TURRET_FLAG",
+      "fields": {
+        "cooldownMs": "nonnegative integer from actual skill definition",
+        "resourceType": "NONE | MANA | ENERGY",
+        "resourcePoolId": "null only for NONE; otherwise explicit pool on this turret",
+        "resourceCost": "nonnegative integer, zero only for NONE in spending profiles",
+        "normalRegenModelId": "declared resource definition; no invented regeneration from item possession"
+      },
+      "conditions": "OWNER_AND_PARENT_ALIVE_AND_TARGET_VALID_AND_COOLDOWN_READY_IF_DEFINED_AND_RESOURCE_SUFFICIENT_IF_REQUIRED",
+      "commit": "commit cost and cooldown once at the skill activation success boundary; post-commit interruption follows that skill definition, not blanket automatic refund",
+      "cooldownModifiers": "only skills with cooldownMs > 0",
+      "manaModifiers": "MANA resources only unless an explicit future balance rule authorizes ENERGY mapping",
+      "energyMappingIsAutomatic": false,
+      "resourceDoesNotCreateUltimate": true,
+      "commanderAndTrainResourceSharing": "NOT_IMPLICIT",
+      "currentCodeVerified": false
+    },
+    "reconstructionRule": null,
+    "definitionOwner": "04_COMBAT_RUN.md#turret-lifecycle"
+  },
+  "upgradeTrialPolicy": {
+    "status": "ACCEPTED_TRIAL_BASELINE_J06",
+    "increaseStars": 1,
+    "maxStar": 6,
+    "from2To3": "DRAW_ONE_GRADE_I_UNIQUE",
+    "from3OrAbove": "DOUBLE_EACH_EXISTING_UNIQUE_GRADE",
+    "enchantScalingOnUpgrade": false
+  },
+  "requiresAuthoringOrValidation": [
+    "EFFECT_HANDLERS_AND_SKILL_CATALOG",
+    "REBUILD_AND_REVIVE_RULE",
+    "ITEM_DROPS_AND_UPGRADE_VALUE_SIMULATION",
+    "SIX_STAR_BASELINE_SIMULATION",
+    "PUBLISHED_CLIENT_COMPATIBILITY_AND_HANDLERS"
+  ],
+  "tableRevision": "equipment-numeric-v1-20260921",
+  "numericTablesComplete": true,
+  "runtimeValidated": false,
+  "newNumbersSource": "USER_REQUESTED_AUTHORING_NOT_OBSERVED_BALANCE_DATA",
+  "unitConvention": {
+    "BPS": "100 bps = 1%; 10000 bps = 100%",
+    "MS": "1000 ms = 1 simulation second",
+    "rounding": "Integer value is authoritative; display percent = bps / 100",
+    "authoringOnly": true
+  },
+  "equipmentStarRules": [
+    {
+      "star": 1,
+      "oneStarEquivalent": 1,
+      "uniqueGradeBudget": 0,
+      "setTagCount": 1,
+      "canMerge": true,
+      "canEventUpgrade": true
+    },
+    {
+      "star": 2,
+      "oneStarEquivalent": 2,
+      "uniqueGradeBudget": 0,
+      "setTagCount": 1,
+      "canMerge": true,
+      "canEventUpgrade": true
+    },
+    {
+      "star": 3,
+      "oneStarEquivalent": 4,
+      "uniqueGradeBudget": 1,
+      "setTagCount": 1,
+      "canMerge": true,
+      "canEventUpgrade": true
+    },
+    {
+      "star": 4,
+      "oneStarEquivalent": 8,
+      "uniqueGradeBudget": 2,
+      "setTagCount": 1,
+      "canMerge": true,
+      "canEventUpgrade": true
+    },
+    {
+      "star": 5,
+      "oneStarEquivalent": 16,
+      "uniqueGradeBudget": 4,
+      "setTagCount": 1,
+      "canMerge": true,
+      "canEventUpgrade": true
+    },
+    {
+      "star": 6,
+      "oneStarEquivalent": 32,
+      "uniqueGradeBudget": 8,
+      "setTagCount": 1,
+      "canMerge": false,
+      "canEventUpgrade": false
+    }
+  ],
+  "statAggregation": {
+    "scope": "ONE_EQUIPPED_OWNER",
+    "baseStats": "Sum equipment basic modifiers and applicable set modifiers for the same stat before final combat aggregation",
+    "equipmentCooldownReductionCapBps": 4000,
+    "cooldownCapStatus": "INITIAL_TEST_BASELINE",
+    "uniqueAndEnchantEffects": "Separate proc/effect layers; not silently included in base stat group",
+    "commanderSkills": "EXCLUDED",
+    "globalCombatFormulaStatus": "BIND_EXISTING_COMBAT_FORMULA_AND_VALIDATE"
+  },
+  "dataCounts": {
+    "categoryStarRows": 36,
+    "uniqueGradeRows": 128,
+    "enchantStarRows": 96,
+    "setTierRows": 18,
+    "equipmentStarRuleRows": 6
+  },
+  "currentPolicyReferences": {
+    "mapAndWaves": "14_MAP_EVENTS_DROPS.md#operation-scale-trial-v02",
+    "finalEquipmentReward": "14_MAP_EVENTS_DROPS.md#battle-reward-approval-v01",
+    "equipmentSetPolicy": "13_EQUIPMENT_ENCHANTMENTS.md#equipment-set-integration-v01"
+  },
+  "authoringInterpretation": "Node policy approval is resolved within the cited approved profiles. Empty requiredDecisions does not imply runtime support or publication approval. All unbound handlerId values, numeric tables, runtimeValidated=false and publishable=false remain unchanged."
+}

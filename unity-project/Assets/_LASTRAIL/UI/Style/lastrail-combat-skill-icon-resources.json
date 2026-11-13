@@ -1,0 +1,47 @@
+{
+  "name": "LAST RAIL Act 1 Combat Skill Icon Resources",
+  "referenceResolution": "1080x1920",
+  "operatorCount": 15,
+  "initialFreeCount": 5,
+  "gachaEliteCount": 10,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "sourceAtlasPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/Sources/act1_operator_skill_icon_atlas_generated.png",
+  "sourceType": "project_generated_launch_asset",
+  "qualityClass": "HIGH_QUALITY_2D_GAME_SKILL_ICON",
+  "skillDefinitionSource": "Assets/_LASTRAIL/UI/CombatAnimations/*/skill_or_special animation state; no gameplay effect catalog found in project",
+  "presentationOnly": true,
+  "hasGameplayEffectDefinitions": false,
+  "hasCombatMath": false,
+  "hasServerSubmitPayload": false,
+  "hasRewardCalculation": false,
+  "hasEconomyMutation": false,
+  "railChoiceIncluded": false,
+  "worldRaidIncluded": false,
+  "hudConsumers": [
+    "LastRail.Presentation.Battle.FullyAnimatedCombatHudViewState.OperatorSkillIconRefs",
+    "LastRail.Presentation.Battle.FullyAnimatedCombatHudRootBehaviour.skillIconSlotImages",
+    "LastRail.Presentation.Battle.FullyAnimatedCombatHudRootBehaviour.skillIconSprites",
+    "Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab"
+  ],
+  "operators": [
+    { "operatorId": "op_kyle", "displayLabel": "Kyle", "acquisition": "initial_free", "skillId": "op_kyle_skill_or_special", "sourceMotif": "striker rail flare", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_kyle_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_reina", "displayLabel": "Reina", "acquisition": "initial_free", "skillId": "op_reina_skill_or_special", "sourceMotif": "guard shield brake", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_reina_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_eve", "displayLabel": "Eve", "acquisition": "initial_free", "skillId": "op_eve_skill_or_special", "sourceMotif": "engineer spark wrench", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_eve_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_sera", "displayLabel": "Sera", "acquisition": "initial_free", "skillId": "op_sera_skill_or_special", "sourceMotif": "medic pulse vial", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_sera_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_mira", "displayLabel": "Mira", "acquisition": "initial_free", "skillId": "op_mira_skill_or_special", "sourceMotif": "support signal prism", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_mira_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_vex", "displayLabel": "Vex", "acquisition": "gacha_elite", "skillId": "op_vex_skill_or_special", "sourceMotif": "elite voltage blade", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_vex_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_nyx", "displayLabel": "Nyx", "acquisition": "gacha_elite", "skillId": "op_nyx_skill_or_special", "sourceMotif": "shadow rail mark", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_nyx_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_sable", "displayLabel": "Sable", "acquisition": "gacha_elite", "skillId": "op_sable_skill_or_special", "sourceMotif": "black steel counter", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_sable_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_marrow", "displayLabel": "Marrow", "acquisition": "gacha_elite", "skillId": "op_marrow_skill_or_special", "sourceMotif": "bone rivet breaker", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_marrow_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_iris", "displayLabel": "Iris", "acquisition": "gacha_elite", "skillId": "op_iris_skill_or_special", "sourceMotif": "optic targeting lens", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_iris_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_rail", "displayLabel": "Rail", "acquisition": "gacha_elite", "skillId": "op_rail_skill_or_special", "sourceMotif": "rail spike surge", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_rail_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_anchor", "displayLabel": "Anchor", "acquisition": "gacha_elite", "skillId": "op_anchor_skill_or_special", "sourceMotif": "anchor lock field", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_anchor_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_lumen", "displayLabel": "Lumen", "acquisition": "gacha_elite", "skillId": "op_lumen_skill_or_special", "sourceMotif": "lumen beacon burst", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_lumen_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_cinder", "displayLabel": "Cinder", "acquisition": "gacha_elite", "skillId": "op_cinder_skill_or_special", "sourceMotif": "cinder thermal charge", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_cinder_skill_or_special.png", "consumer": "combat HUD current squad skill slot" },
+    { "operatorId": "op_warden", "displayLabel": "Warden", "acquisition": "gacha_elite", "skillId": "op_warden_skill_or_special", "sourceMotif": "warden barricade seal", "iconPath": "Assets/_LASTRAIL/UI/CombatResources/SkillIcons/op_warden_skill_or_special.png", "consumer": "combat HUD current squad skill slot" }
+  ],
+  "knownGaps": [
+    "No authored per-operator skill display names were found in the current Unity project.",
+    "No authored per-operator skill gameplay effect catalog was found; icons intentionally do not add or imply combat math."
+  ]
+}

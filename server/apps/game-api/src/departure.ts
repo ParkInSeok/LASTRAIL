@@ -1,0 +1,398 @@
+import type { OrdinaryNativeGeometryRegistry } from './ordinary-native-geometry';
+import {preparePersistedBDepartureSnapshot} from './combat-b-departure-assignment';
+import {initialOrdinaryRunActions} from './ordinary-run-automation';
+import {readStoredStartResponse} from './run-start-receipt';
+import {CombatRuntimeRegistry,createBDepartureCombatSourceOwner} from './combat-runtime-registry';
+import {loadPersistedBNativeO22Executors} from './combat-b-native-o22-executor';
+import {createAuthenticatedBNativeO22DepartureRuntime} from './combat-b-native-o22-departure-runtime';
+import type {BMeasuredPhysicalAuthoringOwner} from './combat-b-native-o22-physical-composer';
+import type {SelectionPrincipal} from './combat-b-selection-store';
+import {registerBNamedEffectiveSourceRoutes} from './combat-b-named-effective-source-routes';
+import {registerBNamedOperatorSourceRoutes} from './combat-b-named-operator-source-routes';
+import {registerBOperationRoutes} from './combat-b-operation-routes';
+import {BOperationCatalog,bOperationContentVersion,createBOperationBinding,readBOperationBinding,bOperationRuntime,bOperationFail} from './combat-b-operation-binding';
+import {registerBInterceptAbilityRoutes} from './combat-b-intercept-ability-routes';
+import {registerBBoardingEventRoutes} from './combat-b-boarding-events-routes';
+import {registerBScoutGunnerDefinitionRoutes} from './combat-b-scout-gunner-source-routes';
+import {registerBWaveManifestRoutes} from './combat-b-wave-manifest-routes';
+import {readEquipmentDeparturePin,type EquipmentDepartureSource} from './equipment-departure-source';
+import {prepareBDepartureCombatSnapshot,readBDepartureCombatPin,type BDepartureCombatSourceOwner} from './combat-b-departure-combat-pin';
+import {registerBDepartureCombatPinRoutes} from './combat-b-departure-combat-pin-routes';
+import {capturePublishedOperationMap} from "./operation-map-publisher";
+import {equipmentInventoryStartStatements} from "./equipment-inventory-start";
+import {initialRunSupplies,runSuppliesStartStatements} from "./run-supplies-start";
+import {readDepartureMap,operationMapStartStatements} from "./operation-map-departure";
+import { captureCombatAuthority } from "./combat-authority";
+import { captureCombatPolicyRequirements } from "./combat-policy-catalog";
+import { prepareOrdinaryFiveStatOrigin } from './combat-ordinary-stat-owner';
+import { captureOrdinaryInitialModifiers } from './combat-ordinary-initial-modifiers';
+import {readCommanderDeparture,commanderDepartureGuards} from './commander-departure';
+import {maintenanceAdmissionStatement,maintenanceContext,maintenanceAdmissionError} from './maintenance-admission';
+import type { Context, Hono } from "hono";
+import { z } from "zod";
+import { captureOrdinaryKitSourceV2 } from './combat-ordinary-kit-source';
+import { captureOrdinaryBasicSourceV3 } from './combat-ordinary-basic-source';
+import { captureOrdinaryRelocationSourceV7 } from './combat-ordinary-relocation-source';
+import { captureFirstBattleEncounterSourceV8 } from './combat-first-battle-source';
+import { assertOrdinaryStartResponseSize } from './departure-start-size';
+import { canonicalJson, EquipmentInventoryCapacity, sha256Hex } from "@lastrail/common";
+import { readBoundedBody, type ActivityAuthResult } from "./activity-routes";
+import { ActivityError } from "./activity-policy";
+import { walletId } from "./crystal-wallet";
+import { formationSelection } from "./formation";
+import { ultimateSelection, type UltimateFormation } from "./ultimate-selection";
+import { describeCombatRequirements } from "./combat-readiness";
+import { combatRewardReference, validateCombatRewardReference } from "./combat-reward-reference";
+import { parseRunRewardsConfig, type RunRiskTier } from "../../../packages/balance/src/index";
+import { readTrainContext, parseSavedTrain, trainProgress, validateTrainSelection, trainOwnershipGuard } from "./train-loadout";
+
+const operations = ["opn_01_last_departure", "opn_02_first_signal", "opn_03_water_stop", "opn_04_scrapstar_show", "opn_05_night_boarders", "opn_06_broken_line", "raid_raider_king_engine"] as const;
+const revision = z.number().int().min(1).max(Number.MAX_SAFE_INTEGER);
+const requestSchema = z.strictObject({ operationId: z.enum(operations), risk: z.enum(["I", "II", "III", "IV", "V"]), contentVersion: z.literal(bOperationContentVersion).optional(), expectedFormationRevision: revision, expectedLoadoutRevision: revision, expectedUltimateRevision: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER - 1) });
+export const departureVersion = "departure-v4";
+const version = departureVersion;
+type JsonValue = Parameters<typeof canonicalJson>[0];
+type Preview = { id: string; account_id: string; objective: string; risk: string; balance_config_version: number; preview_json: string; status: string; expires_at: number; admission_version?: string | null };
+type Formation = UltimateFormation;
+// Selected ownership and persisted growth facts, not effective combat stats.
+const entitiesSql = `SELECT json_object(
+ 'operators',json((SELECT json_group_array(json_object('operatorId',operator_id,'skillTraining',skill_training,'promotion',promotion,'revision',revision)) FROM
+   (SELECT * FROM account_operators WHERE account_id=?1 AND operator_id IN (SELECT json_extract(value,'$.operatorId') FROM json_each((SELECT formation_json FROM account_formation WHERE account_id=?1),'$.operators')) ORDER BY operator_id))),
+ 'trainingCoreSlots',json((SELECT json_group_array(json_object('slot',slot_index,'operatorId',operator_id,'trainedLevel',trained_level,'revision',revision)) FROM
+   (SELECT * FROM operator_training_core_slots WHERE account_id=?1 AND operator_id IN (SELECT json_extract(value,'$.operatorId') FROM json_each((SELECT formation_json FROM account_formation WHERE account_id=?1),'$.operators')) ORDER BY slot_index))),
+ 'train',(SELECT json_object('trainId',train_id,'level',level,'revision',revision) FROM account_train WHERE account_id=?1),
+ 'carriages',json((SELECT json_group_array(json_object('carriageId',carriage_id,'level',level,'revision',revision)) FROM
+   (SELECT * FROM account_carriages WHERE account_id=?1 AND carriage_id IN (SELECT json_extract(value,'$.carriageId') FROM json_each((SELECT loadout_json FROM account_train_loadout WHERE account_id=?1),'$.carriages')) ORDER BY carriage_id)))
+) AS value`;
+
+async function state(db: D1Database, accountId: string, operationId: string, risk: string) {
+  const train = await readTrainContext(db, accountId), selection = parseSavedTrain(train);
+  if (!selection || !train.saved) throw new ActivityError(409, "train_loadout_required");
+  if (train.openRun) throw new ActivityError(409, "departure_open_run");
+  validateTrainSelection(train, selection);
+  const progress = trainProgress(train);
+  const order = operations.indexOf(operationId as typeof operations[number]);
+  if (order < 0) throw new ActivityError(400, "contract_violation");
+  if (!operations.slice(0, order).every(id => progress.cleared.includes(id))) throw new ActivityError(409, "operation_locked");
+  const formation = await db.prepare("SELECT revision,formation_json,ultimate_operator_id,ultimate_revision FROM account_formation WHERE account_id=?").bind(accountId).first<Formation>();
+  if (!formation) throw new ActivityError(409, "formation_required");
+  let squad: z.infer<typeof formationSelection>;
+  try { squad = formationSelection.parse(JSON.parse(formation.formation_json)); }
+  catch { throw new ActivityError(409, "formation_schema_unsupported"); }
+  const entities = (await db.prepare(entitiesSql).bind(accountId).first<{ value: string }>())!.value;
+  if ((JSON.parse(entities) as { operators: unknown[] }).operators.length !== 5) throw new ActivityError(403, "formation_operator_not_owned");
+  const balance = await db.prepare("SELECT b.version,b.config_json FROM balance_config_active a JOIN balance_config_versions b ON b.version=a.version WHERE a.singleton_id=1").first<{ version: number; config_json: string }>();
+  let fuelCost: number;
+  try { fuelCost = z.number().int().positive().max(2147483647).parse(JSON.parse(balance!.config_json).fuel.runStartCost); }
+  catch { throw new ActivityError(503, "departure_cost_policy_unavailable"); }
+  try {
+    const rewards = parseRunRewardsConfig(JSON.parse(balance!.config_json).runRewards);
+    if (!Object.hasOwn(rewards.operations, operationId) || !rewards.operationProgressionMultipliersBps[operationId] || !rewards.riskMultipliersBps[risk as RunRiskTier]) throw new Error("missing operation reward");
+  } catch { throw new ActivityError(503, "departure_reward_policy_unavailable"); }
+  const fuel = await db.prepare("SELECT fuel FROM fuel_state WHERE account_id=?").bind(accountId).first<{ fuel: number }>();
+  if (!fuel) throw new ActivityError(409, "fuel_state_unavailable");
+  if (fuel.fuel < fuelCost) throw new ActivityError(409, "insufficient_fuel");
+  const firstClearEligible = !(await db.prepare("SELECT 1 FROM account_first_clears WHERE account_id=? AND operation_key=? AND risk=?").bind(accountId, operationId, risk).first());
+  const commander = await readCommanderDeparture(db, accountId);
+  return { train, selection, formation, squad, ultimate: ultimateSelection(formation), entities, balance: balance!, fuelCost, fuel: fuel.fuel, operationId, risk, firstClearEligible, commander };
+}
+type State = Awaited<ReturnType<typeof state>>;
+function admission(s: State) {
+  return { version, ...(s.operationId!=="raid_raider_king_engine"?{combatAuthority:captureCombatAuthority("ORDINARY_SOLO")}:{}), combatPolicyRequirements: captureCombatPolicyRequirements(), commanderTraits: s.commander.snapshot, formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision,
+    formation: s.squad, ultimateSelection: s.ultimate, loadout: s.selection, ownedState: JSON.parse(s.entities) as JsonValue, fuelCost: s.fuelCost, firstClearEligible: s.firstClearEligible };
+}
+
+const quoteFieldGroups = [
+  ['FORMATION', ['formationRevision', 'formation']],
+  ['LOADOUT', ['loadoutRevision', 'loadout']],
+  ['OWNED_STATE', ['ownedState']],
+  ['COST', ['fuelCost']],
+  ['POLICY', ['version', 'combatAuthority', 'combatPolicyRequirements']],
+  ['PROGRESSION', ['firstClearEligible']],
+  ['COMMANDER', ['commanderTraits']],
+  ['ULTIMATE', ['ultimateSelection']],
+  ['MAP', ['operationMapPlan']],
+] as const;
+
+export class DepartureQuoteChangedError extends ActivityError {
+  readonly departureChange;
+  constructor(operationPreviewId: string, changedFields: readonly string[]) {
+    super(409, 'departure_quote_changed');
+    this.departureChange = Object.freeze({ version: 'departure.quote-change.v1', operationPreviewId,
+      changedFields: Object.freeze([...changedFields]), newAttemptAuthorized: false });
+  }
+}
+
+/** Read-only current-condition check. This is not admission authorization;
+ * the start transaction must still retain its source CAS and runtime checks. */
+export async function inspectCurrentDepartureQuote(db: D1Database, accountId: string, row: Preview) {
+  if (row.account_id !== accountId || row.status !== "ACTIVE" || row.expires_at <= Date.now())
+    throw new ActivityError(409, "operation_preview_not_startable");
+  const pinned = JSON.parse(row.preview_json) as { admission: JsonValue; balanceConfigHash: string; operationMapContent?: unknown };
+  const s = await state(db, accountId, row.objective, row.risk);
+  const map = readDepartureMap(pinned);
+  if (!map && Object.hasOwn(pinned, "operationMapContent")) throw new ActivityError(409, "operation_map_profile_unsupported");
+  const a = { ...admission(s), ...(map ? { operationMapPlan: map } : {}) };
+  const balanceChanged = s.balance.version !== row.balance_config_version || await sha256Hex(s.balance.config_json) !== pinned.balanceConfigHash;
+  if (balanceChanged || canonicalJson(a) !== canonicalJson(pinned.admission)) {
+    const before = pinned.admission && typeof pinned.admission === 'object' && !Array.isArray(pinned.admission)
+      ? pinned.admission : {};
+    const after: Record<string, JsonValue> = a;
+    const field = (value: Record<string, JsonValue>, key: string) => canonicalJson({ present: Object.hasOwn(value, key), value: value[key] ?? null });
+    const changed: string[] = quoteFieldGroups.filter(([, keys]) => keys.some(key => field(before, key) !== field(after, key))).map(([group]) => group);
+    if (balanceChanged && !changed.includes('POLICY')) changed.push('POLICY');
+    if (!changed.length) changed.push('ADMISSION');
+    throw new DepartureQuoteChangedError(row.id, changed);
+  }
+  return { s, map, a };
+}
+
+// Read-only seam for the separately mounted disposable local producer. Reuses
+// current owner, growth, open-run, balance, fuel and selection checks. No quote,
+// seed, debit or run is created. Start must still revalidate atomically later.
+export async function readLocalDepartureSelection(db: D1Database, accountId: string, input: unknown, options: { allOperatorUltimates?: true } = {}) {
+  const all = z.strictObject({ allOperatorUltimates: z.literal(true).optional() }).parse(options).allOperatorUltimates === true;
+  const parsed = (all ? requestSchema.omit({ expectedUltimateRevision: true }) : requestSchema).safeParse(input);
+  if (!parsed.success) throw new ActivityError(400, "contract_violation");
+  const b = parsed.data, s = await state(db, accountId, b.operationId, b.risk);
+  if (s.formation.revision !== b.expectedFormationRevision || s.train.saved!.revision !== b.expectedLoadoutRevision ||
+      (!all && (!('expectedUltimateRevision' in b) || s.ultimate.revision !== b.expectedUltimateRevision)))
+    throw new ActivityError(409, "departure_selection_changed");
+  if (!all && s.ultimate.operatorId === null) throw new ActivityError(409, "ultimate_selection_required");
+  return { accountId, operationId: b.operationId, risk: b.risk, ...admission(s) };
+}
+function guards(db: D1Database, accountId: string, s: State) {
+  return [...commanderDepartureGuards(db,accountId,s.commander),trainOwnershipGuard(db, accountId, s.selection, s.train.progress, s.train.saved!.revision),
+    db.prepare(`INSERT INTO departure_write_guard(valid) SELECT CASE WHEN
+      EXISTS(SELECT 1 FROM account_formation WHERE account_id=?1 AND revision=?2 AND formation_json=?3 AND ultimate_revision=?11 AND ultimate_operator_id IS ?12)
+      AND (${entitiesSql})=?4
+      AND EXISTS(SELECT 1 FROM balance_config_active a JOIN balance_config_versions b ON b.version=a.version WHERE a.singleton_id=1 AND b.version=?5 AND b.config_json=?6)
+      AND EXISTS(SELECT 1 FROM fuel_state WHERE account_id=?1 AND fuel=?7)
+      AND (NOT EXISTS(SELECT 1 FROM account_first_clears WHERE account_id=?1 AND operation_key=?8 AND risk=?9))=?10
+      THEN 1 ELSE 0 END`).bind(accountId, s.formation.revision, s.formation.formation_json, s.entities, s.balance.version, s.balance.config_json, s.fuel, s.operationId, s.risk, s.firstClearEligible ? 1 : 0, s.ultimate.revision, s.ultimate.operatorId)];
+}
+async function nextSequence(db: D1Database, accountId: string) {
+  return (await db.prepare("SELECT COALESCE(MAX(sequence),0)+1 AS value FROM account_mutations WHERE account_id=?").bind(accountId).first<{ value: number }>())!.value;
+}
+const retryable = (error: unknown) => /UNIQUE constraint failed|CHECK constraint failed: valid=1|departure receipt immutable/iu.test(String(error));
+
+async function issue(db: D1Database, accountId: string, body: z.infer<typeof requestSchema>, key: string) {
+  const hash = await sha256Hex(canonicalJson(z.json().parse(body)));
+  const replay = async () => {
+    const row = await db.prepare("SELECT request_hash,response_json FROM departure_preview_receipts WHERE account_id=? AND idempotency_key=?").bind(accountId, key).first<{ request_hash: string; response_json: string }>();
+    if (!row) return null;
+    if (row.request_hash !== hash) throw new ActivityError(409, "idempotency_conflict");
+    return JSON.parse(row.response_json) as Record<string, unknown>;
+  };
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const previous = await replay(); if (previous) return previous;
+    try {
+      const sequence = await nextSequence(db, accountId), s = await state(db, accountId, body.operationId, body.risk);
+      if (s.formation.revision !== body.expectedFormationRevision || s.train.saved!.revision !== body.expectedLoadoutRevision || s.ultimate.revision !== body.expectedUltimateRevision) throw new ActivityError(409, "departure_selection_changed");
+      const now = Date.now(), id = walletId("preview"), mutationId = walletId("departure_preview"), expiresAt = now + 300000;
+      const raid = body.operationId === "raid_raider_king_engine";
+      const metadata = { operationId: body.operationId, actId: "act_01_wasteland_railway", regionId: "region_wasteland_railway", encounterType: raid ? "RAID_BOSS" : "ORDINARY_15_WAVE",
+        raidId: raid ? body.operationId : null, bossId: raid ? "boss_raider_king_engine" : null, bossPhaseRefs: raid ? ["crown_chase", "trophy_break", "engine_stop"] : [],
+        allowedOperatorSlots: 5, startAugmentPackageRef: "act1_full_start_package_v1", startTacticPackageRef: "act1_full_start_package_v1", contentVersion: "act1.launch.content.v1", firstClearEligible: s.firstClearEligible };
+      const catalog=body.contentVersion ? await new BOperationCatalog(db).read() : null;
+      if(catalog&&body.operationId!=="opn_01_last_departure")return bOperationFail("operation_unsupported");
+      const a = {...admission(s),...(catalog?{operationMapPlan:catalog.publication.plan}:{})};
+      const rewardReference = await combatRewardReference(s.balance.config_json, s.balance.version, body.operationId, body.risk);
+      const bOperationBinding=catalog?await createBOperationBinding(catalog.publication,rewardReference,catalog.revision):null;
+      const bMetadata=catalog?{encounterType:"ORDINARY_12_NODE",contentVersion:bOperationContentVersion,operationMapContent:catalog.publication,bOperationBinding,...bOperationRuntime}:{};
+      const combatContract = describeCombatRequirements(JSON.stringify({ ...metadata,...bMetadata, admission: a }), body.risk);
+      const response = { accepted: true, operationPreviewId: id, ...metadata,...bMetadata, rewardReference, combatContract, risk: body.risk, expiresAt: new Date(expiresAt).toISOString(),
+        formationRevision: s.formation.revision, loadoutRevision: s.train.saved!.revision, admission: a,
+        quote: { fuelCost: s.fuelCost, availableFuel: s.fuel, balanceVersion: String(s.balance.version) } };
+      await db.batch([
+        db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'DEPARTURE_PREVIEW',?,?)").bind(mutationId, accountId, sequence, key, now),
+        ...guards(db, accountId, s),...(catalog?[new BOperationCatalog(db).guard(catalog)]:[]),
+        db.prepare("INSERT INTO operation_previews(id,account_id,mutation_id,objective,risk,balance_config_version,preview_json,status,expires_at,created_at,admission_version) VALUES(?,?,?,?,?,?,?,'ACTIVE',?,?,?)")
+          .bind(id, accountId, mutationId, body.operationId, body.risk, s.balance.version, JSON.stringify({ ...metadata,...bMetadata, rewardReference, combatContract, admission: a, balanceConfigHash: await sha256Hex(s.balance.config_json) }), expiresAt, now, version),
+        db.prepare("INSERT INTO departure_preview_receipts(account_id,idempotency_key,request_hash,preview_id,response_json) VALUES(?,?,?,?,?)").bind(accountId, key, hash, id, JSON.stringify(response)),
+        db.prepare("DELETE FROM train_loadout_write_guard"), db.prepare("DELETE FROM departure_write_guard"),
+      ]);
+      return response;
+    } catch (error) {
+      const completed = await replay(); if (completed) return completed;
+      if (String(error).includes('commander_state_changed')) throw new ActivityError(409,'commander_state_changed');
+      if (retryable(error) && attempt < 3) continue;
+      if (retryable(error)) throw new ActivityError(409, "departure_write_conflict");
+      throw error;
+    }
+  }
+  throw new ActivityError(409, "departure_write_conflict");
+}
+
+/** Versioned B preparation used by the original departure owner; public START remains closed. */
+export const prepareBDepartureSnapshot=preparePersistedBDepartureSnapshot;
+
+export async function startDeparture(db: D1Database, accountId: string, initial: Preview, key: string,
+  createResponse: (row: Preview, runId: string, now: number) => Promise<Record<string, unknown>>,
+  additionalAtomicStatements?: (response: Record<string, unknown>) => Promise<D1PreparedStatement[]> | D1PreparedStatement[], environment?:unknown, bCombatSourceOwner?:BDepartureCombatSourceOwner, equipmentDepartureSource?:EquipmentDepartureSource, bPreparation?:{auth:SelectionPrincipal;sourceOwner?:BDepartureCombatSourceOwner;physicalAuthoring?:BMeasuredPhysicalAuthoringOwner}, ordinaryGeometry?:OrdinaryNativeGeometryRegistry) {
+  const replay = async () => {
+    const row = await db.prepare("SELECT r.id AS run_id,r.preview_id,s.snapshot_json FROM idempotency_records i JOIN runs r ON r.id=i.result_ref AND r.account_id=i.account_id JOIN run_snapshots s ON s.run_id=r.id WHERE i.account_id=? AND i.operation='run_start' AND i.idempotency_key=?")
+      .bind(accountId, key).first<{ run_id: string; preview_id: string; snapshot_json: string }>();
+    if (!row) return null;
+    if (row.preview_id !== initial.id) throw new ActivityError(409, "idempotency_conflict");
+    await readBDepartureCombatPin(row.snapshot_json,{accountId,runId:row.run_id});
+    await readEquipmentDeparturePin(row.snapshot_json,{accountId,runId:row.run_id});
+    const response = readStoredStartResponse((JSON.parse(row.snapshot_json) as { departureResponse: unknown }).departureResponse, row.run_id, row.preview_id);
+    if (!response) throw new ActivityError(409, "run_start_receipt_unavailable");
+    return response;
+  };
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const previous = await replay(); if (previous) return previous;
+    if (initial.admission_version !== version) throw new ActivityError(409, "departure_preview_version_unsupported");
+    try {
+      const sequence = await nextSequence(db, accountId);
+      const row = await db.prepare("SELECT * FROM operation_previews WHERE id=? AND account_id=?").bind(initial.id, accountId).first<Preview>();
+      if (!row || row.status !== "ACTIVE" || row.expires_at <= Date.now()) throw new ActivityError(409, "operation_preview_not_startable");
+      const pinned = JSON.parse(row.preview_json) as { admission: JsonValue; balanceConfigHash: string; encounterType?: string; operationMapContent?: unknown };
+      const bBinding=await readBOperationBinding(pinned);
+      if(bBinding){
+        if(bPreparation){
+          if(bPreparation.auth.accountId!==accountId)throw new ActivityError(403,'combat_b_assignment_account_conflict');
+          if(bPreparation.sourceOwner&&bPreparation.physicalAuthoring)throw new ActivityError(409,'combat_b_departure_source_owner_ambiguous');
+          let sourceOwner=bPreparation.sourceOwner;
+          if(!sourceOwner){
+            if(typeof environment!=='string')throw new ActivityError(409,'combat_runtime_environment_required');
+            sourceOwner=await createAuthenticatedBNativeO22DepartureRuntime(db,environment,accountId,row.id,bPreparation.auth,bPreparation.physicalAuthoring);
+          }
+          const runId=sourceOwner instanceof CombatRuntimeRegistry?(await sourceOwner.inspectPreview(accountId,row.id)).candidateRunId:walletId('run'),response={...await createResponse(row,runId,Date.now()),admission:pinned.admission};
+          await prepareBDepartureSnapshot(db,bPreparation.auth,runId,JSON.stringify({...JSON.parse(row.preview_json),...response,departureResponse:response}),sourceOwner);
+        }else{
+          // The installed registry supplies original source/executor validation;
+          // it cannot bypass the separate all-reachable-node admission gate.
+          if(typeof environment!=='string')throw new ActivityError(409,'combat_runtime_environment_required');
+          const sourceOwner=bCombatSourceOwner??createBDepartureCombatSourceOwner(db,environment,await loadPersistedBNativeO22Executors(db,environment,accountId,row.id));
+          const runId=sourceOwner instanceof CombatRuntimeRegistry?(await sourceOwner.inspectPreview(accountId,row.id)).candidateRunId:walletId('run'),response={...await createResponse(row,runId,Date.now()),admission:pinned.admission};
+          await prepareBDepartureCombatSnapshot(accountId,runId,JSON.stringify({...JSON.parse(row.preview_json),...response,departureResponse:response}),sourceOwner);
+        }
+        return bOperationFail('runtime_unsupported');
+      }
+      const { s, map, a } = await inspectCurrentDepartureQuote(db, accountId, row);
+      const mapContent = map ? await capturePublishedOperationMap(pinned.operationMapContent, map) : null;
+      const now = Date.now(), runId = walletId("run"), mutationId = walletId("departure_start");
+      const pinnedReference = (JSON.parse(row.preview_json) as { rewardReference?: unknown }).rewardReference;
+      const rewardReference = pinnedReference === undefined ? undefined : await validateCombatRewardReference(pinnedReference, s.balance.config_json, row.balance_config_version, row.objective, row.risk);
+      const response: Record<string, unknown> = { ...await createResponse(row, runId, now), ...(rewardReference ? { rewardReference } : {}), admission: a, ultimateOperatorId: s.ultimate.operatorId, firstClearEligible: s.firstClearEligible,
+        stateContractVersion:'departure.state.v1.20261021',owners:{account:{kind:'PATCH',coverage:['FUEL'],beforeMutationSequence:sequence-1,mutationSequence:sequence,
+          fuel:{current:s.fuel-s.fuelCost,updatedAt:new Date(now).toISOString()}}} };
+      if ((map || response.encounterType === "ORDINARY_12_NODE") && response.encounterType !== pinned.encounterType) throw new ActivityError(409, "operation_map_profile_unsupported");
+      const ordinaryRoster = captureCombatPolicyRequirements().scope.roster;
+      // The separately mounted CE03 host retains its hashed local protocol.
+      const ordinaryStats = response.scope !== 'DISPOSABLE_LOCAL' && row.risk === 'I' && ['ORDINARY_15_WAVE', 'ORDINARY_12_NODE'].includes(String(response.encounterType))
+        && s.squad.operators.length === 5 && s.squad.operators.every(o => ordinaryRoster.includes(o.operatorId))
+        ? await prepareOrdinaryFiveStatOrigin(db, accountId, runId, { expectedFormationRevision: s.formation.revision, expectedLoadoutRevision: s.train.saved!.revision }) : null;
+      // Only the independently approved publication owner selects a new run's geometry.
+      if (Object.hasOwn(response, 'ordinaryGeometryReference')) throw new ActivityError(409, 'ordinary_geometry_source_conflict');
+      const geometry = ordinaryStats && ordinaryGeometry ? await ordinaryGeometry.read() : undefined;
+      if (geometry) response.ordinaryGeometryReference = geometry.reference;
+      if (ordinaryStats) {
+        response.risk = row.risk;
+        response.ordinaryStatSource = { origin: ordinaryStats.origin, originHash: ordinaryStats.originHash };
+        response.ordinaryTrainSource = ordinaryStats.trainSource;
+        response.ordinaryRailSource = ordinaryStats.railSource;
+        if (ordinaryStats.roofSource) response.ordinaryRoofSource = ordinaryStats.roofSource;
+        else if (Object.hasOwn(response, 'ordinaryRoofSource')) throw new ActivityError(409, 'ordinary_roof_source_invalid');
+        response.ordinaryInitialModifiers = captureOrdinaryInitialModifiers(runId, ordinaryStats.originHash);
+        const kit = await captureOrdinaryKitSourceV2(ordinaryStats.origin, ordinaryStats.originHash, a);
+        response.ordinaryKitSource = kit;
+        const basic = await captureOrdinaryBasicSourceV3(kit);
+        response.ordinaryBasicSource = basic;
+        response.ordinaryRelocationSource = await captureOrdinaryRelocationSourceV7(basic, kit);
+        response.firstBattleEncounterSource = await captureFirstBattleEncounterSourceV8(ordinaryStats.origin, ordinaryStats.originHash, row.risk);
+      }
+      else if (Object.hasOwn(response, 'ordinaryRoofSource') || Object.hasOwn(response, 'ordinaryRailSource') || Object.hasOwn(response, 'ordinaryTrainSource') || Object.hasOwn(response, 'ordinaryStatSource') || Object.hasOwn(response, 'ordinaryInitialModifiers') || Object.hasOwn(response, 'ordinaryKitSource') || Object.hasOwn(response, 'ordinaryBasicSource') || Object.hasOwn(response, 'ordinaryRelocationSource') || Object.hasOwn(response, 'firstBattleEncounterSource')) throw new ActivityError(409, 'ordinary_stat_origin_unavailable');
+      const extraStatements = await additionalAtomicStatements?.(response) ?? [];
+      const do05Rank = s.commander.snapshot?.ranks.DO05 ?? 0;
+      const capacity = EquipmentInventoryCapacity.forNewStart(do05Rank);
+      const runSupplies = response.encounterType === 'ORDINARY_12_NODE'
+        ? { version: 'run.supplies.v02', do04Rank: s.commander.snapshot?.ranks.DO04 ?? 0,
+          initialBalance: initialRunSupplies(s.commander.snapshot?.ranks.DO04 ?? 0) } : null;
+      const baseSnapshot = { ...response, equipmentInventoryCapacity: { version: capacity.version, do05Rank, slots: capacity.slots },
+        ...(runSupplies ? { runSupplies } : {}),
+        ...(mapContent ? { operationMapContent: mapContent } : {}), departureResponse: response };
+      // New ordinary node origins share the canonical START hash with the game reader; retained bytes never change.
+      const baseSnapshotJson = ordinaryStats && map ? canonicalJson(z.json().parse(baseSnapshot)) : JSON.stringify(baseSnapshot);
+      const equipmentBase = equipmentDepartureSource ? await equipmentDepartureSource.prepare(accountId,runId,baseSnapshotJson) : null;
+      if (!equipmentBase && (Object.hasOwn(response,'equipmentDeparturePin') || Object.hasOwn(pinned,'equipmentDeparturePin'))) throw new ActivityError(409,'equipment_departure_source_unavailable');
+      const bCombat = bCombatSourceOwner ? await prepareBDepartureCombatSnapshot(accountId,runId,equipmentBase?.snapshotJson??baseSnapshotJson,bCombatSourceOwner) : null;
+      if (!bCombat && (Object.hasOwn(response,'bCombatPin') || Object.hasOwn(pinned,'bCombatPin'))) throw new ActivityError(409,'combat_b_departure_source_unavailable');
+      const snapshotJson=bCombat?.snapshotJson??equipmentBase?.snapshotJson??baseSnapshotJson;
+      const finalResponse=bCombat?.response??equipmentBase?.response??response;
+      if (ordinaryStats) assertOrdinaryStartResponseSize(finalResponse);
+      const mapStatements = operationMapStartStatements(db, accountId, runId, snapshotJson);
+      const equipmentStatements = equipmentInventoryStartStatements(db, accountId, runId, snapshotJson);
+      const suppliesStatements = runSuppliesStartStatements(db, accountId, runId, snapshotJson);
+      await db.batch([
+        maintenanceAdmissionStatement(db,maintenanceContext(environment)),
+        db.prepare("INSERT INTO account_mutations(id,account_id,sequence,mutation_type,idempotency_key,created_at) VALUES(?,?,?,'RUN_START',?,?)").bind(mutationId, accountId, sequence, key, now),
+        ...guards(db, accountId, s),
+        ...(ordinaryStats?.assertions ?? []),
+        ...(geometry ? [geometry.assertion] : []),
+        ...(equipmentBase?.assertions??[]),
+        db.prepare(`INSERT INTO departure_write_guard(valid) SELECT CASE WHEN EXISTS(SELECT 1 FROM operation_previews WHERE id=? AND account_id=? AND status='ACTIVE' AND expires_at>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER) AND preview_json=? AND balance_config_version=? AND admission_version=? AND objective=? AND risk=?) THEN 1 ELSE 0 END`)
+          .bind(row.id, accountId, row.preview_json, row.balance_config_version, version, row.objective, row.risk),
+        db.prepare("UPDATE operation_previews SET status='CONSUMED' WHERE id=? AND account_id=?").bind(row.id, accountId),
+        db.prepare("UPDATE fuel_state SET fuel=fuel-?,updated_at=? WHERE account_id=?").bind(s.fuelCost, now, accountId),
+        db.prepare("INSERT INTO fuel_ledger(id,account_id,mutation_id,delta,fuel_after,reason,created_at) VALUES(?,?,?,?,?,'RUN_START',?)").bind(walletId("fuel"), accountId, mutationId, -s.fuelCost, s.fuel - s.fuelCost, now),
+        db.prepare("INSERT INTO runs(id,account_id,preview_id,mutation_id,balance_config_version,status,started_at) VALUES(?,?,?,?,?,'ACTIVE',?)").bind(runId, accountId, row.id, mutationId, row.balance_config_version, now),
+        db.prepare("INSERT INTO run_snapshots(run_id,snapshot_json,created_at) VALUES(?,?,?)").bind(runId, snapshotJson, now),
+        ...(ordinaryStats ? [db.prepare("INSERT INTO ordinary_combat_phases VALUES(?,?,?,?,'PREPARED',1)")
+          .bind(runId, accountId, ordinaryStats.originHash, snapshotJson),
+          db.prepare('INSERT INTO ordinary_run_automation VALUES(?,?,1,0,?)')
+            .bind(runId, accountId, JSON.stringify(initialOrdinaryRunActions(ordinaryStats.origin)))] : []),
+        db.prepare("INSERT INTO idempotency_records(id,account_id,idempotency_key,operation,result_ref,created_at) VALUES(?,?,?,'run_start',?,?)").bind(walletId("idem"), accountId, key, runId, now),
+        ...mapStatements,
+        ...equipmentStatements,
+        ...suppliesStatements,
+        // Trusted local composition may add exact selection guards and immutable
+        // receipts to THIS transaction; never a caller-supplied SQL extension.
+        ...extraStatements,
+        ...(bCombat?.atomicAssertions??[]),
+        db.prepare("DELETE FROM train_loadout_write_guard"), db.prepare("DELETE FROM departure_write_guard"), db.prepare("DELETE FROM commander_trait_guard"),
+        ...(geometry ? [db.prepare("DELETE FROM operation_map_write_guard")] : []),
+      ]);
+      return finalResponse;
+    } catch (error) {
+      const committed=await replay();if(committed)return committed;
+      const maintenanceError=maintenanceAdmissionError(error);if(maintenanceError)throw maintenanceError;
+      const completed = await replay(); if (completed) return completed;
+      if (String(error).includes('commander_state_changed')) throw new ActivityError(409,'commander_state_changed');
+      if (retryable(error) && attempt < 3) continue;
+      if (error instanceof ActivityError) throw error;
+      throw new ActivityError(409, "run_start_state_conflict");
+    }
+  }
+  throw new ActivityError(409, "run_start_state_conflict");
+}
+
+export function registerDepartureRoutes(app: Hono<{ Bindings: Env }>, authenticate: (c: Context<{ Bindings: Env }>) => Promise<ActivityAuthResult>) {
+  registerBDepartureCombatPinRoutes(app,authenticate);
+  registerBWaveManifestRoutes(app,authenticate);
+  registerBScoutGunnerDefinitionRoutes(app,authenticate);
+  registerBBoardingEventRoutes(app,authenticate);
+  registerBInterceptAbilityRoutes(app,authenticate);
+  registerBOperationRoutes(app,authenticate);
+  registerBNamedOperatorSourceRoutes(app,authenticate);
+  registerBNamedEffectiveSourceRoutes(app,authenticate);
+  app.post("/v1/operations/preview", async c => {
+    c.header("Cache-Control", "no-store");
+    const auth = await authenticate(c);
+    if ("errorCode" in auth) return c.json({ accepted: false, errorCode: auth.errorCode }, auth.status);
+    try {
+      const key = c.req.header("Idempotency-Key") ?? "";
+      if (new URL(c.req.url).search || !/^[\x21-\x7e]{1,128}$/u.test(key)) throw new ActivityError(400, "contract_violation");
+      let raw: unknown;
+      try { raw = JSON.parse(await readBoundedBody(c)); } catch { throw new ActivityError(400, "contract_violation"); }
+      const parsed = requestSchema.safeParse(raw);
+      if (!parsed.success) throw new ActivityError(400, "contract_violation");
+      return c.json(await issue(c.env.DB, auth.accountId, parsed.data, key));
+    } catch (error) {
+      if (error instanceof ActivityError) return c.json({ accepted: false, errorCode: error.code }, error.status);
+      throw error;
+    }
+  });
+}

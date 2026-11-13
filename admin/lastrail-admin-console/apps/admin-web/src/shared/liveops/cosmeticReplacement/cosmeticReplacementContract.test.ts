@@ -1,0 +1,2 @@
+import {describe,it,expect} from 'vitest';import {cosmeticReplacementTableSchema} from './cosmeticReplacementContract';
+describe('replacement table producer boundary',()=>{it('refuses a partial or executable table rather than treating it as an approved bundle',()=>{expect(cosmeticReplacementTableSchema.safeParse({contractVersion:'admin.event-cosmetic-replacement-table.v1.20261020',executeSupported:true,definition:{rows:[]}}).success).toBe(false);});});

@@ -1,0 +1,40 @@
+{
+  "name": "lastrail-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p packages/common/tsconfig.json --noEmit && tsc -p apps/game-api/tsconfig.json --noEmit && tsc -p apps/admin-api/tsconfig.json --noEmit && tsc -p apps/async-worker/tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "d1:local:verify": "tsx scripts/validation/verify-local-d1.ts",
+    "d1:dev:seed:balance": "wrangler d1 execute DB --remote --env dev --file packages/db/seeds/dev/0001_balance_config_v1.sql --config apps/game-api/wrangler.jsonc",
+    "access:dev:apply-vars": "tsx scripts/cloudflare/apply-dev-admin-access-vars.ts",
+    "admin:dev:upsert-principal": "tsx scripts/cloudflare/upsert-dev-admin-principal.ts",
+    "preflight:server-deploy": "tsx scripts/cloudflare/server-deploy-preflight.ts",
+    "deploy:server:dry-run": "tsx scripts/cloudflare/server-deploy.ts --mode dry-run",
+    "wrangler:types": "pnpm --filter @lastrail/game-api wrangler types && pnpm --filter @lastrail/admin-api wrangler types && pnpm --filter @lastrail/async-worker wrangler types",
+    "dry-run:game-api:dev": "pnpm --filter @lastrail/game-api wrangler deploy --env dev --dry-run",
+    "dry-run:admin-api:dev": "pnpm --filter @lastrail/admin-api wrangler deploy --env dev --dry-run",
+    "dry-run:async-worker:dev": "pnpm --filter @lastrail/async-worker wrangler deploy --env dev --dry-run"
+  },
+  "dependencies": {
+    "hono": "^4.10.7",
+    "ulid": "^3.0.1",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260825.1",
+    "@eslint/js": "^9.39.2",
+    "@types/sql.js": "^1.4.9",
+    "eslint": "^9.39.2",
+    "jsonc-parser": "^3.3.1",
+    "sql.js": "^1.13.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.0",
+    "vitest": "^4.0.15",
+    "wrangler": "^4.125.0"
+  }
+}

@@ -1,0 +1,14 @@
+import {afterEach,describe,it,expect,vi} from "vitest";
+import {maintenanceSaveSchema,maintenanceReceiptSchema,newMaintenanceDocument} from "./maintenanceContract";
+import {adminApi} from "../api/client";
+import {onRequest} from "../../../functions/api/[[path]]";
+const body={environment:"DEV" as const,command:"SAVE_DRAFT" as const,expectedDraftRevision:2,reason:"계획 갱신",plan:{...newMaintenanceDocument(),applicationId:"lastrail",title:"점검",summary:"계획",startsAt:200,drainStartsAt:100}};
+const receipt={accepted:true,contractVersion:"admin-maintenance-draft-command-v1",environment:"DEV",maintenanceId:"p",draftRevision:3,planState:"DRAFT",applied:false,currentPolicyRevision:null,auditId:"audit",requestId:"request"};
+describe("maintenance save boundary",()=>{
+ afterEach(()=>vi.unstubAllGlobals());
+ it("only accepts draft save with reason and valid target plan",()=>{expect(maintenanceSaveSchema.safeParse(body).success).toBe(true);for(const change of [{command:"ACTIVATE"},{reason:" "},{expectedDraftRevision:0},{plan:{...body.plan,drainStartsAt:null}}])expect(maintenanceSaveSchema.safeParse({...body,...change}).success).toBe(false);});
+ it("receipt must not claim operational application",()=>{expect(maintenanceReceiptSchema.safeParse(receipt).success).toBe(true);for(const change of [{applied:true},{currentPolicyRevision:3},{planState:"ACTIVE"}])expect(maintenanceReceiptSchema.safeParse({...receipt,...change}).success).toBe(false);});
+ it.each([{environment:"PRD"},{maintenanceId:"other"},{draftRevision:4}])("rejects mismatched receipt %j",async change=>{vi.stubGlobal("fetch",vi.fn(async()=>Response.json({...receipt,...change})));await expect(adminApi.saveMaintenanceDraft("p",body,"key")).rejects.toThrow();});
+ it("sends exact reviewed document and idempotency key",async()=>{const fetcher=vi.fn(async()=>Response.json(receipt));vi.stubGlobal("fetch",fetcher);await adminApi.saveMaintenanceDraft("p",body,"key");const [url,init]=fetcher.mock.calls[0] as unknown as [string,RequestInit];expect(url).toBe("/api/maintenance-plans/p/commands");expect(init.method).toBe("POST");expect(JSON.parse(String(init.body))).toEqual(body);expect(new Headers(init.headers).get("Idempotency-Key")).toBe("key");});
+ it("Pages preserves key and conflict response with no-store",async()=>{const fetcher=vi.fn(async()=>Response.json({error:"maintenance_draft_revision_conflict"},{status:409}));vi.stubGlobal("fetch",fetcher);const result=await onRequest({request:new Request("https://admin.test/api/maintenance-plans/p/commands",{method:"POST",headers:{"Idempotency-Key":"exact"},body:JSON.stringify(body)}),env:{ADMIN_API_BASE_URL:"https://upstream.test"},params:{path:["maintenance-plans","p","commands"]}});const [,init]=fetcher.mock.calls[0] as unknown as [URL,RequestInit];expect(new Headers(init.headers).get("Idempotency-Key")).toBe("exact");expect(result.status).toBe(409);expect(result.headers.get("cache-control")).toBe("no-store");});
+});

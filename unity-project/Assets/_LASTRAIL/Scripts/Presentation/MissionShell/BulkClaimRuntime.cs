@@ -1,0 +1,35 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using LastRail.Auth;
+using LastRail.Run;
+using Newtonsoft.Json.Linq;
+namespace LastRail.Presentation.MissionShell {public sealed partial class AccountScreenRuntime {
+ long bulkReadRequest;
+ public BulkClaimResult LastBulkResult {get;private set;}
+ public bool BulkReading {get;private set;}
+ public string BulkNotice {get;private set;}="";
+ void ResetBulk(){passClaimAll=null;passClaimAllRunning=false;bulkReadRequest++;LastBulkResult=null;BulkReading=false;BulkNotice="";}
+ public bool IsBulkSelectionCurrent(BulkClaimSelection selection){SynchronizeSession();return selection!=null&&ReferenceEquals(selection.Owner,owner)&&selection.Generation==ownerGeneration&&!disposed;}
+ public BulkClaimSelection PrepareBulkSelection(string kind,string policy=null,string track=null){SynchronizeSession();if(Busy||Pending!=null||!RecurringReady||RecurringLoading||Recurring==null)return null;var rows=new JArray();
+  if(kind=="PASS_LEVEL"){if(track!="FREE"&&track!="PREMIUM")return null;var p=Recurring.Policies.FirstOrDefault(p0=>(string)p0["policyId"]==policy&&(string)p0["system"]=="PASS50");if(p==null)return null;foreach(JObject row in p["rewardRows"]){int level=(int)row["level"];var body=new JObject{["level"]=level,["track"]=track}.ToString();if(CanClaimRecurring("recurring-pass",policy,body))rows.Add(new JObject{["id"]=level.ToString(),["label"]="Lv."+level+" · "+RecurringContract.RewardText((JArray)row[track=="FREE"?"free":"premium"])});}}
+  else if(kind=="QUEST"||kind=="MAIL"){var source=kind=="MAIL"?Recurring.Mail.Select(a=>(string)a["award_id"]):Recurring.Progress!=null?Recurring.Progress.SystemState("QUESTS")["objectives"].Select(a=>(string)a["awardId"]):Recurring.Awards.Select(a=>(string)a["id"]);foreach(var id in source.Where(x=>x!=null).Distinct()){if(!CanClaimRecurring(kind=="MAIL"?"recurring-mail":"recurring-quest",id))continue;var a=Recurring.Awards.FirstOrDefault(a0=>(string)a0["id"]==id);rows.Add(new JObject{["id"]=id,["label"]=a==null?"임무 보상":RecurringContract.Objective((string)a["objective"])+" · "+RecurringContract.RewardText((JArray)a["rewards"])});}}
+  else return null;return new BulkClaimSelection(owner,ownerGeneration,kind,policy,track,rows);
+ }
+ public BulkClaimCommand PrepareBulkCommand(BulkClaimSelection selection,IEnumerable<string> selected){if(!IsBulkSelectionCurrent(selection)||Busy||Pending!=null||selected==null)return null;var ids=selected.ToArray();if(ids.Length<1||ids.Length>50||ids.Distinct().Count()!=ids.Length||ids.Any(id=>!selection.Rows.Any(r=>(string)r["id"]==id)))return null;var body=new JObject{["kind"]=selection.Kind};if(selection.Kind=="PASS_LEVEL"){body["policyId"]=selection.Policy;body["track"]=selection.Track;body["levels"]=new JArray(ids.Select(int.Parse));}else body["awardIds"]=new JArray(ids);BulkClaimContract.Request(body.ToString());return new BulkClaimCommand(owner,ownerGeneration,body.ToString());}
+ public Task SubmitBulkAsync(BulkClaimCommand command){SynchronizeSession();if(command==null||!ReferenceEquals(command.Owner,owner)||command.Generation!=ownerGeneration||Busy||Pending!=null)return Task.CompletedTask;return SubmitBulkStoredAsync(command.Payload);}
+ public Task ContinueBulkAsync(){SynchronizeSession();return Pending?.Kind=="recurring-bulk"?SubmitBulkStoredAsync(Pending.Payload):Task.CompletedTask;}
+ async Task SubmitBulkStoredAsync(string payload,bool passAllOwner=false){SynchronizeSession();var original=owner;var stamp=ownerGeneration;if(writing||passClaimAllRunning&&!passAllOwner||!Current(original,stamp))return;writing=true;bulkReadRequest++;BulkReading=false;BulkNotice="선택한 보상의 수령 결과를 확인하고 있습니다.";ActionErrorCode=null;Changed?.Invoke();bool refresh=false;try{
+  BulkClaimContract.Request(payload);if(journal==null)throw new InvalidOperationException();var action=journal.Read(original.AccountId);if(action!=null&&(action.Kind!="recurring-bulk"||action.Payload!=payload)){Pending=action;BulkNotice="이전 요청 결과를 먼저 확인해 주세요.";return;}if(action==null){action=new PendingAccountAction(original.AccountId,"recurring-bulk","bulk",0,Guid.NewGuid().ToString("N"),payload);if(!journal.Save(action))throw new InvalidOperationException();LastBulkResult=null;}Pending=action;
+  var reply=await wire.SendAsync(GameApiBearerAuthRequestFactory.WithBearerToken(new RunApiHttpRequest("POST","/v1/recurring/bulk-claims",payload,new[]{new RunApiHttpHeader("Idempotency-Key",action.Key)}),original.AccessToken));if(!Current(original,stamp))return;
+  if(!reply.IsNetworkError&&reply.StatusCode==200){var result=new BulkClaimResult(reply.BodyJson,payload,LastBulkResult?.Id);if(result.Complete){if(!journal.Remove(action))throw new InvalidOperationException();Pending=null;}LastBulkResult=result;BulkNotice=BulkSummary(result);refresh=true;}
+  else if(!reply.IsNetworkError&&(reply.StatusCode==400||reply.StatusCode==403||reply.StatusCode==409)){var error=GameApiJson.ReadObject(reply.BodyJson);if(GameApiJson.Boolean(error,"accepted"))throw new FormatException();ActionErrorCode=GameApiJson.String(error,"errorCode");if(!journal.Remove(action))throw new InvalidOperationException();Pending=null;BulkNotice="요청 조건을 확인하지 못했습니다. 최신 상태를 확인해 주세요.";refresh=true;}
+  else BulkNotice="수령 결과 확인이 필요합니다. 원래 선택 목록으로 이어받아 주세요.";
+ }catch{if(Current(original,stamp))BulkNotice="수령 결과를 확인하지 못했습니다. 원래 선택 목록으로 이어받아 주세요.";}finally{writing=false;if(!disposed)Changed?.Invoke();}if(refresh&&Current(original,stamp))await Task.WhenAll(RefreshSharedAsync(),RefreshRecurringAsync());}
+ static string BulkSummary(BulkClaimResult result)=>"성공 "+result.Success+" · 실패 "+result.Failed+" · 미확정 "+result.Pending+"\n"+(result.Complete?"선택한 요청의 처리가 끝났습니다.":"남은 항목을 원래 요청으로 이어받을 수 있습니다.");
+ public async Task RefreshBulkResultAsync(){SynchronizeSession();var original=owner;var stamp=ownerGeneration;var previous=LastBulkResult;if(previous==null||Busy||!Current(original,stamp))return;var request=++bulkReadRequest;BulkReading=true;Changed?.Invoke();bool refresh=false;try{
+  var reply=await wire.SendAsync(GameApiBearerAuthRequestFactory.WithBearerToken(new RunApiHttpRequest("GET","/v1/recurring/bulk-claims/"+previous.Id,null,null),original.AccessToken));if(!Current(original,stamp)||request!=bulkReadRequest)return;if(reply.IsNetworkError||reply.StatusCode!=200){BulkNotice="기록된 결과를 조회하지 못했습니다.";return;}
+  var result=new BulkClaimResult(reply.BodyJson,previous.RequestJson,previous.Id);if(result.Complete&&Pending?.Kind=="recurring-bulk"&&JToken.DeepEquals(BulkClaimContract.Request(Pending.Payload),BulkClaimContract.Request(result.RequestJson))){if(!journal.Remove(Pending))throw new InvalidOperationException();Pending=null;}LastBulkResult=result;BulkNotice=BulkSummary(result);refresh=true;
+ }catch{if(Current(original,stamp)&&request==bulkReadRequest)BulkNotice="수령 결과의 형식을 확인하지 못했습니다.";}finally{if(Current(original,stamp)&&request==bulkReadRequest){BulkReading=false;Changed?.Invoke();}}if(refresh&&Current(original,stamp))await Task.WhenAll(RefreshSharedAsync(),RefreshRecurringAsync());}
+} }

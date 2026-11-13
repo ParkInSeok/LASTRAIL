@@ -1,0 +1,41 @@
+{
+  "status": "PREPARATION_ONLY_NOT_APPROVED_BUILD_INPUT",
+  "designApproved": {
+    "bucket": "lastrail-content-dev",
+    "authority": "https://dev-content.lastrail.app",
+    "trustedCatalogRoot": "https://dev-content.lastrail.app/android/releases/",
+    "publicObjectTypes": ["catalog", "catalog hash", "bundles"],
+    "hostingExistenceAndMappingVerified": false
+  },
+  "proposedBuildInput": {
+    "environment": "DEV",
+    "target": "Android",
+    "trustedCatalogRoot": "https://dev-content.lastrail.app/android/releases/",
+    "releaseNamespace": "https://dev-content.lastrail.app/android/releases/dev-android-20260907-01/",
+    "releaseId": "dev-android-20260907-01",
+    "contentVersion": "android-dev-0001",
+    "appVersion": "0.1.0",
+    "versionCode": 1,
+    "minimumVersionCode": 1,
+    "maximumVersionCode": 1,
+    "sourceCommit": null,
+    "sourceManifest": null,
+    "sourceManifestSha256": null,
+    "outputId": "dev-android-20260907-01"
+  },
+  "proposalLimits": [
+    "Release identity and outputId are proposals only; searched local docs/settings showed no existing use before this packet was written, but remote collision was not checked.",
+    "App version/code match current source settings only. Exact-code compatibility 1..1 is a narrow proposed test scope, not verified compatibility.",
+    "No installation/upgrade or existing signed APK metadata was checked.",
+    "Observed source hashes are not a frozen source manifest; do not pass this wrapper or the observations to DevContentBuild.Build.",
+    "Host design approval is not permission to create/check DNS, upload objects, activate a release or execute a real build."
+  ],
+  "remainingDecisions": [
+    "Approve or replace the proposed releaseId/contentVersion/outputId and intended app compatibility scope.",
+    "Select source ownership/commit inclusion and explicit isolated source-copy/freeze scope, preserving ignored files and QA originals.",
+    "Approve removal of the one synthetic group reference only in the future isolated shipping configuration; do not remove original QA resources.",
+    "After the isolated configuration changes, generate and validate an exact frozen Assets/Packages/ProjectSettings/Tools provenance manifest.",
+    "Separately authorize actual local Android content build; APK generation/signing and device tests remain separate.",
+    "Separately authorize live hosting existence/ownership/public mapping checks, then any remote upload or pointer activation."
+  ]
+}

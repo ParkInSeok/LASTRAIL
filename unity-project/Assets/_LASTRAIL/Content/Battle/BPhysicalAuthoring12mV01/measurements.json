@@ -1,0 +1,1000 @@
+{
+  "version": "b.physical-authoring-export.12m.v1.20261027",
+  "instances": [
+    {
+      "templateSlot": 0,
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "b-authoring-12m-v01-car-0",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Fire",
+              "positionMm": [
+                350,
+                4500,
+                0
+              ]
+            },
+            {
+              "id": "Foot",
+              "positionMm": [
+                0,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Hit",
+              "positionMm": [
+                0,
+                4100,
+                0
+              ]
+            },
+            {
+              "id": "LeftApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftApproachStart",
+              "positionMm": [
+                0,
+                0,
+                -4000
+              ]
+            },
+            {
+              "id": "LeftClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftClimbStart",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "RightApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RightApproachStart",
+              "positionMm": [
+                0,
+                0,
+                4000
+              ]
+            },
+            {
+              "id": "RightClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RightClimbStart",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:d700cdd2bfadbd5b6eb19863108e7f4bfd5a8a1124f61c9cd6ac485dd1c1b29d",
+          "sourceRevision": 1,
+          "packetHash": "sha256:04c5773cfba18217919b1ad2aa697d5126fc733701f68b3989bce6a731e5afe1"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-0\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:d700cdd2bfadbd5b6eb19863108e7f4bfd5a8a1124f61c9cd6ac485dd1c1b29d\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-0\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      }
+    },
+    {
+      "templateSlot": 1,
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "b-authoring-12m-v01-car-1",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Fire",
+              "positionMm": [
+                350,
+                4500,
+                0
+              ]
+            },
+            {
+              "id": "Foot",
+              "positionMm": [
+                0,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Hit",
+              "positionMm": [
+                0,
+                4100,
+                0
+              ]
+            },
+            {
+              "id": "LeftApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftApproachStart",
+              "positionMm": [
+                0,
+                0,
+                -4000
+              ]
+            },
+            {
+              "id": "LeftClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftClimbStart",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "RightApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RightApproachStart",
+              "positionMm": [
+                0,
+                0,
+                4000
+              ]
+            },
+            {
+              "id": "RightClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RightClimbStart",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:fcf884a3d0bd2a342fa34a13df88c1fd5876f707ca18d7186af7baa5d85a785d",
+          "sourceRevision": 1,
+          "packetHash": "sha256:2f72b2eecd646de55698a737beb1e3a36772152b801b1b95824bea8b8b6f878c"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-1\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:fcf884a3d0bd2a342fa34a13df88c1fd5876f707ca18d7186af7baa5d85a785d\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-1\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      }
+    },
+    {
+      "templateSlot": 2,
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "b-authoring-12m-v01-car-2",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Fire",
+              "positionMm": [
+                350,
+                4500,
+                0
+              ]
+            },
+            {
+              "id": "Foot",
+              "positionMm": [
+                0,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Hit",
+              "positionMm": [
+                0,
+                4100,
+                0
+              ]
+            },
+            {
+              "id": "LeftApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftApproachStart",
+              "positionMm": [
+                0,
+                0,
+                -4000
+              ]
+            },
+            {
+              "id": "LeftClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftClimbStart",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "RightApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RightApproachStart",
+              "positionMm": [
+                0,
+                0,
+                4000
+              ]
+            },
+            {
+              "id": "RightClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RightClimbStart",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:6e7eae9be5f6846c99012d7e044917cad6204eacaee724ff27f229e45ad4564f",
+          "sourceRevision": 1,
+          "packetHash": "sha256:58c6b8f436cdf98bfb955fb569436241f02c090e4ec17668f18c1c7ac76e2eeb"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-2\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:6e7eae9be5f6846c99012d7e044917cad6204eacaee724ff27f229e45ad4564f\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-2\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      }
+    },
+    {
+      "templateSlot": 3,
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "b-authoring-12m-v01-car-3",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Fire",
+              "positionMm": [
+                350,
+                4500,
+                0
+              ]
+            },
+            {
+              "id": "Foot",
+              "positionMm": [
+                0,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Hit",
+              "positionMm": [
+                0,
+                4100,
+                0
+              ]
+            },
+            {
+              "id": "LeftApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftApproachStart",
+              "positionMm": [
+                0,
+                0,
+                -4000
+              ]
+            },
+            {
+              "id": "LeftClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftClimbStart",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "RightApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RightApproachStart",
+              "positionMm": [
+                0,
+                0,
+                4000
+              ]
+            },
+            {
+              "id": "RightClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RightClimbStart",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:7f48cd01d6e42aa2f55b901fd5b7430ca697aa0f19a1c308d24fcb7c88d93801",
+          "sourceRevision": 1,
+          "packetHash": "sha256:0206f76172911f96bf67ac143927b0c189772284868dc92d404559ead670353a"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-3\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:7f48cd01d6e42aa2f55b901fd5b7430ca697aa0f19a1c308d24fcb7c88d93801\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-3\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      }
+    },
+    {
+      "templateSlot": 4,
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "b-authoring-12m-v01-car-4",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Fire",
+              "positionMm": [
+                350,
+                4500,
+                0
+              ]
+            },
+            {
+              "id": "Foot",
+              "positionMm": [
+                0,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "Hit",
+              "positionMm": [
+                0,
+                4100,
+                0
+              ]
+            },
+            {
+              "id": "LeftApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftApproachStart",
+              "positionMm": [
+                0,
+                0,
+                -4000
+              ]
+            },
+            {
+              "id": "LeftClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "LeftClimbStart",
+              "positionMm": [
+                0,
+                0,
+                -1500
+              ]
+            },
+            {
+              "id": "RightApproachEnd",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RightApproachStart",
+              "positionMm": [
+                0,
+                0,
+                4000
+              ]
+            },
+            {
+              "id": "RightClimbEnd",
+              "positionMm": [
+                0,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RightClimbStart",
+              "positionMm": [
+                0,
+                0,
+                1500
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:6fce9eb4e2872963bf1f6dc98e453cc0f33c31e0be364eeda231269ef602710f",
+          "sourceRevision": 1,
+          "packetHash": "sha256:d9c26cad0288f6df8f3aa19ad6976054ea1af463dd1b83c4ff937a269cc37f55"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-4\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"Fire\",\"positionMm\":[350,4500,0]},{\"id\":\"Foot\",\"positionMm\":[0,3200,0]},{\"id\":\"Hit\",\"positionMm\":[0,4100,0]},{\"id\":\"LeftApproachEnd\",\"positionMm\":[0,0,-1500]},{\"id\":\"LeftApproachStart\",\"positionMm\":[0,0,-4000]},{\"id\":\"LeftClimbEnd\",\"positionMm\":[0,3200,-1500]},{\"id\":\"LeftClimbStart\",\"positionMm\":[0,0,-1500]},{\"id\":\"RightApproachEnd\",\"positionMm\":[0,0,1500]},{\"id\":\"RightApproachStart\",\"positionMm\":[0,0,4000]},{\"id\":\"RightClimbEnd\",\"positionMm\":[0,3200,1500]},{\"id\":\"RightClimbStart\",\"positionMm\":[0,0,1500]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:6fce9eb4e2872963bf1f6dc98e453cc0f33c31e0be364eeda231269ef602710f\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"b-authoring-12m-v01-car-4\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      }
+    }
+  ]
+}

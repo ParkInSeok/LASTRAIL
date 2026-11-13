@@ -1,0 +1,98 @@
+{
+  "kind": "read-only-static-design-evidence",
+  "date": "2026-09-15",
+  "runtimeValidated": false,
+  "sources": [
+    {
+      "path": "unity-project/Assets/_LASTRAIL/Scripts/Battle/BasicCombatSimulation.cs",
+      "sha256": "F232130365BBDE0CD3EC81087E6489029581C5BA3D8CADDFF174D9738F8F942B"
+    },
+    {
+      "path": "unity-project/Assets/_LASTRAIL/Scripts/Battle/CombatSkillCommands.cs",
+      "sha256": "EFF978EBAF061389DAC63A1579C8A60356FF0D15A015388FA47944D49636C04E"
+    },
+    {
+      "path": "unity-project/QA/Unity1Artifacts/Reports/Server2-RailJourney-20260914/synthetic-rail-preparation.json",
+      "sha256": "7A32E2B3E61584E9C6723C725F333713EDF4B517DCAB68DC10347EE24E92B286"
+    }
+  ],
+  "enemyDefinitions": [
+    {
+      "definitionId": "enemy_raider_scout",
+      "behavior": "assault",
+      "atk": 24,
+      "armorBps": 500,
+      "attackMs": 1600,
+      "windupMs": 350,
+      "target": "front_ally",
+      "presentation": {
+        "controller": "binding.enemy_raider_scout.controller",
+        "sprite": "binding.enemy_raider_scout.sprite"
+      }
+    },
+    {
+      "definitionId": "enemy_spike_cart_gunner",
+      "behavior": "ranged",
+      "atk": 28,
+      "armorBps": 500,
+      "attackMs": 2000,
+      "windupMs": 500,
+      "target": "rear_ally",
+      "presentation": {
+        "controller": "binding.enemy_spike_cart_gunner.controller",
+        "sprite": "binding.enemy_spike_cart_gunner.sprite"
+      }
+    },
+    {
+      "definitionId": "enemy_railbike_marauder",
+      "behavior": "exterior",
+      "atk": 22,
+      "armorBps": 500,
+      "attackMs": 1800,
+      "windupMs": 400,
+      "target": "train",
+      "presentation": {
+        "controller": "binding.enemy_railbike_marauder.controller",
+        "sprite": "binding.enemy_railbike_marauder.sprite"
+      }
+    }
+  ],
+  "wave1": {
+    "number": 1,
+    "spawns": [
+      {
+        "spawnId": "wave.1.interior.0",
+        "definitionId": "enemy_raider_scout",
+        "lane": "INTERIOR",
+        "logicalSlot": 0,
+        "atTick": 0,
+        "resolvedMaxHp": 494,
+        "requiredForCompletion": true
+      },
+      {
+        "spawnId": "wave.1.interior.1",
+        "definitionId": "enemy_raider_scout",
+        "lane": "INTERIOR",
+        "logicalSlot": 1,
+        "atTick": 0,
+        "resolvedMaxHp": 494,
+        "requiredForCompletion": true
+      },
+      {
+        "spawnId": "wave.1.exterior.0",
+        "definitionId": "enemy_railbike_marauder",
+        "lane": "EXTERIOR",
+        "logicalSlot": 0,
+        "atTick": 0,
+        "resolvedMaxHp": 592,
+        "requiredForCompletion": true
+      }
+    ],
+    "completion": "ALL_REQUIRED_ACTORS_AND_TERMINAL_IMPACTS_RESOLVED"
+  },
+  "limitations": [
+    "Local synthetic fixture; no production balance claim",
+    "Inspected source scope only; no project-wide movement absence claim",
+    "No new runtime effects or spawn changes"
+  ]
+}

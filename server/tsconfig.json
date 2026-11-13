@@ -1,0 +1,19 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/common" },
+    { "path": "./packages/contracts" },
+    { "path": "./packages/db" },
+    { "path": "./packages/domain" },
+    { "path": "./packages/economy" },
+    { "path": "./packages/progression" },
+    { "path": "./packages/operation" },
+    { "path": "./packages/run" },
+    { "path": "./packages/integrity" },
+    { "path": "./packages/balance" },
+    { "path": "./packages/analytics" },
+    { "path": "./apps/game-api" },
+    { "path": "./apps/admin-api" },
+    { "path": "./apps/async-worker" }
+  ]
+}

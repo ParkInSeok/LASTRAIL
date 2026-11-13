@@ -1,0 +1,33 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  },
+  "include": [
+    "../../apps/game-api/worker-configuration.d.ts",
+    "../../apps/game-api/src/combat-b-result-report.ts",
+    "../../apps/game-api/src/combat-b-result-report-routes.ts",
+    "../../apps/game-api/src/combat-b-result-consistency-owner.ts",
+    "../../tests/integration/combat-b-result-report.test.ts",
+    "../../scripts/validation/verify-combat-b-result-report.ts",
+    "../../scripts/validation/verify-combat-b-result-safe-link.ts",
+    "../../apps/game-api/src/combat-b-departure-runtime-input.ts",
+    "../../tests/integration/combat-b-result-v2.test.ts",
+    "../../tests/integration/combat-b-departure-runtime-input.test.ts",
+    "../../scripts/validation/verify-combat-b-result-v2.ts",
+    "../../apps/game-api/src/combat-b-departure-placement.ts",
+    "../../tests/integration/combat-b-departure-placement.test.ts",
+    "../../apps/game-api/src/combat-b-departure-assignment.ts",
+    "../../tests/integration/combat-b-persisted-departure.test.ts",
+    "../../apps/game-api/src/combat-b-result-budget.ts",
+    "../../tests/integration/combat-b-result-departure.test.ts",
+    "../../tests/integration/combat-b-departure-source-bundle.test.ts",
+    "../../tests/integration/combat-b-fresh-whole-budget.test.ts"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "verified_presentation_cues_with_explicit_data_gaps",
+  "generatedBy": "OpenAI built-in image_gen",
+  "generatedIconCount": 6,
+  "reusedResourceCount": 4,
+  "sourceAtlasCount": 1,
+  "sourceAtlas": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/Sources/combat_status_atlas_generated.png",
+  "sourceLayout": { "columns": 3, "rows": 2, "tileWidth": 512, "tileHeight": 512 },
+  "newAssetFormat": "Opaque icon tiles. No numeric values or progress fill baked into artwork. Selected-target art is an icon, not a transparent battlefield overlay.",
+  "rejectedVariant": "Transparent-background edit returned opaque baked checkerboard pixels; not imported.",
+  "consumer": "FullyAnimatedCombatHudRootBehaviour.Render -> CombatStatusHudView.Render",
+  "prefab": "Assets/_LASTRAIL/Prefabs/Screens/FullyAnimatedCombatHud.prefab",
+  "stateSource": "FullyAnimatedCombatPresentationState.PresentationCues.VfxCueId / SfxCueId",
+  "derivedViewField": "FullyAnimatedCombatHudViewState.StatusCueIds",
+  "displaySemantics": "Current presentation cues only; no persistent effect, target, stacks, magnitude, duration, skill availability or cooldown inference. Hidden when the next rendered state has no recognized cue.",
+  "currentProducerLimit": "Existing ordinary combat fixtures do not emit shield/heal/buff/debuff cues. The real HUD consumer accepts the existing explicit cue identifiers; no new gameplay producer is added. Screenshot tests inject explicitly labelled cue fixtures.",
+  "resources": [
+    { "id": "shield", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_shield_status.png", "reused": true, "connection": "presentation_cue_only", "exactVfxIds": ["vfx_shield_status"], "exactSfxIds": ["combat_shield", "sfx_combat_shield"] },
+    { "id": "heal", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_heal_status.png", "reused": true, "connection": "presentation_cue_only", "exactVfxIds": ["vfx_heal_status"], "exactSfxIds": ["combat_heal", "sfx_combat_heal"] },
+    { "id": "buff", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_buff.png", "reused": false, "connection": "presentation_cue_only", "exactSfxIds": ["combat_buff", "sfx_combat_buff"] },
+    { "id": "debuff", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_debuff.png", "reused": false, "connection": "presentation_cue_only", "exactSfxIds": ["combat_debuff", "sfx_combat_debuff"] },
+    { "id": "cooldown", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_cooldown.png", "reused": false, "connection": "prepared_hidden", "reason": "No remaining or total cooldown field." },
+    { "id": "available", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_available.png", "reused": false, "connection": "prepared_hidden", "reason": "No authoritative skill-availability field." },
+    { "id": "unavailable", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_unavailable.png", "reused": false, "connection": "prepared_hidden", "reason": "Unknown availability is not false/unavailable." },
+    { "id": "selected_target", "path": "Assets/_LASTRAIL/UI/CombatResources/StatusIcons/status_selected_target.png", "reused": false, "connection": "prepared_hidden", "reason": "No selected target id or target position field." },
+    { "id": "gauge_track", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_slider_track_9slice.png", "reused": true, "connection": "prepared_hidden" },
+    { "id": "gauge_fill", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_slider_fill_9slice.png", "reused": true, "connection": "prepared_hidden", "uiType": "UnityEngine.UI.Image.Filled.Horizontal", "numericText": "Separate TMP text, empty while unknown", "reason": "No cooldown or effect magnitude state. Zero fill is hidden, not presented as a real zero." }
+  ],
+  "notReusedForDiscreteStatus": "vfx_buff_debuff_status combines both categories and cannot identify either status unambiguously; existing VFX remains untouched.",
+  "verification": {
+    "standaloneDotNetCueChecks": "6 passed; not Unity EditMode",
+    "unityCompiler": "Runtime, Editor and EditMode test assemblies compiled using installed Unity compiler and references",
+    "unityEditorExecution": "13/13 focused EditMode tests passed in graphics batchmode; initial license error resolved on retry",
+    "actualRenderScreenshots": "6 Camera.Render fixture screenshots in QA/Act1Launch/Screenshots/CombatStatus; no synthetic fallback",
+    "mobileReadability": "360x640 and 1080x1920 rendered status icons and labels inspected; no text overflow",
+    "preparedRenderTests": "CombatStatusHudBindingTests; actual Camera.Render only, no synthetic fallback",
+    "videoCaptured": false
+  },
+  "gameplayOrApiChanges": false
+}

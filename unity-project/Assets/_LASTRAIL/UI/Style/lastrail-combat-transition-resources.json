@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "combat_transition_presentation_only",
+  "newArtCount": 2,
+  "reusedArtCount": 5,
+  "reusedAudioCount": 2,
+  "sourceAtlas": "Assets/_LASTRAIL/UI/CombatResources/Transitions/Sources/combat_outcomes_generated.png",
+  "sourceAtlasSize": [1254, 1254],
+  "sourceLayout": "two equal horizontal rows: victory, defeat",
+  "finalArtSize": [1024, 512],
+  "generatedBy": "OpenAI built-in image_gen",
+  "textInArtwork": false,
+  "resources": [
+    { "id": "common_transition_frame", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_status_chip_9slice.png", "reused": true },
+    { "id": "wave_accent", "path": "Assets/_LASTRAIL/UI/MissionShellResources/Badges/mission_wave_badge.png", "reused": true },
+    { "id": "warning_accent", "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Warning/warning_strip_banner_accent.png", "reused": true },
+    { "id": "boss_phase_accent", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_story_raid_danger.png", "reused": true },
+    { "id": "boss_entrance_art", "path": "Assets/_LASTRAIL/UI/KeyVisuals/kv_story_raid_boss_entrance.png", "reused": true },
+    { "id": "victory_art", "path": "Assets/_LASTRAIL/UI/CombatResources/Transitions/combat_victory.png", "reused": false },
+    { "id": "defeat_art", "path": "Assets/_LASTRAIL/UI/CombatResources/Transitions/combat_defeat.png", "reused": false }
+  ],
+  "transitions": [
+    { "id": "ordinary_wave_start", "connection": "adjacent_snapshot_consumer", "source": "FullyAnimatedCombatPresentationState.CurrentWaveNumber + PresentationCues.WaveTransitionCueId", "resources": ["common_transition_frame", "wave_accent"], "audio": "ui_toggle_or_tab", "limit": "Only observed N to N+1 within the same visible context; first load (including wave 1), jumps and reentry do not play." },
+    { "id": "ordinary_wave_complete", "connection": "art_prepared_only", "resources": ["common_transition_frame", "wave_accent"], "reason": "No completed-wave event or outcome in combat HUD state. Next-wave number does not prove completion; final wave 15 is not a victory event." },
+    { "id": "enemy_invasion", "connection": "art_prepared_only", "resources": ["warning_accent"], "reason": "No invasion event id in combat HUD state. Enemy counts and animation strings are not invasion evidence." },
+    { "id": "story_raid_boss_entrance", "connection": "art_prepared_only", "resources": ["boss_entrance_art", "warning_accent"], "reason": "BossId/role describes a snapshot, not a new entrance. Initial loading and encounter changes are baselines." },
+    { "id": "story_raid_phase_change", "connection": "adjacent_snapshot_consumer", "source": "FullyAnimatedCombatPresentationState.BossPhase + PresentationCues.BossPhaseTransitionCueId", "resources": ["common_transition_frame", "warning_accent", "boss_phase_accent"], "audio": "story_raid_warning", "limit": "Only observed phase N to N+1 for the same mission/encounter/boss; first load is silent." },
+    { "id": "victory", "connection": "art_prepared_only", "resources": ["victory_art"], "reason": "RunResultOutcome exists outside HUD but no result/event producer is wired to this combat presentation state. No new result or reward flow introduced." },
+    { "id": "defeat", "connection": "art_prepared_only", "resources": ["defeat_art"], "reason": "No terminal outcome in combat HUD state. Down animations or unit counts do not establish defeat." }
+  ],
+  "producerConsumer": {
+    "sourceFactories": ["FullyAnimatedCombatPresentationState.CreateOrdinary15Wave", "FullyAnimatedCombatPresentationState.CreateRaidBoss"],
+    "typedViewFields": ["CurrentWaveNumber", "BossPhase"],
+    "consumer": "FullyAnimatedCombatHudRootBehaviour.Render -> CombatHudTransitionTracker.Observe -> CombatHudTransitionView.Show",
+    "productionLimit": "Existing callers found for these presentation factories are QA fixtures. New gameplay/API event producer is not added. Screenshots explicitly exercise adjacent snapshot fixtures through the real HUD.",
+    "identityLimit": "No run instance or monotonic event id exists in this HUD contract. Identity uses visible mission/encounter/boss context plus progress high-water mark; reset/reentry establishes a silent baseline. This is not durable cross-run event deduplication."
+  },
+  "lifecycle": {
+    "duplicateRender": "does not restart fade or audio",
+    "rollbackOrJump": "clear active presentation and suppress inferred events",
+    "cancel": "CancelCombatTransition clears label, opacity and dedicated audio without replaying the consumed transition",
+    "disable": "cancel and reset tracker; next render establishes a silent baseline",
+    "audio": "dedicated non-looping AudioSource reuses existing clips, so cancellation does not stop unrelated combat audio/BGM",
+    "durationSeconds": 1.4,
+    "timerPurpose": "cosmetic fade/expiration only, never gameplay event generation",
+    "raycastBlocking": false,
+    "layout": "900x96 band in existing gap between exterior and tactical HUD, TMP text separate from art"
+  },
+  "verification": {
+    "focusedTransitionTests": "11/11 passed including real Play Mode enter/exit lifecycle within EditMode runner",
+    "finalCombinedRegression": "46/46 passed: transitions, status cues/bindings, launch prefab bindings, combat HUD presenter; TestResults-CombatTransition-Verified.xml",
+    "screenshots": "4 actual Camera.Render adjacent-snapshot fixtures, 1080x1920 and 360x640",
+    "screenshotDirectory": "QA/Act1Launch/Screenshots/CombatTransitions",
+    "syntheticCompositeUsed": false,
+    "videoCaptured": false
+  },
+  "gameplayApiEconomyOutcomeCalculationChanged": false
+}

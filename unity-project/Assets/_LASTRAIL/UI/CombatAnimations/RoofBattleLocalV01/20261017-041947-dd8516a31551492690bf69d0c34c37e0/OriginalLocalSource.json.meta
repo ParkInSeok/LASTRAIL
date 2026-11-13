@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: a1b64832246609a45adef590004bd03f
+labels:
+- EXISTING_EVE_BASIC
+- LOCAL_NOT_OPERATIONAL
+- NEUTRAL_BODY_ONLY
+- SPATIAL_FX_SUPPRESSED
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

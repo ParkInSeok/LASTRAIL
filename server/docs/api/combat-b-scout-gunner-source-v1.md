@@ -1,0 +1,41 @@
+# B Scout/Gunner immutable definition and generated source v1
+
+Task S-B-WAVE-MANIFEST-21 additional approved unit, 2026-10-03. This is a separate contract; combat.b-wave-manifest.v1.20261003 and its existing GET wire remain unchanged.
+
+Versions: combat.b-scout-gunner-source.v1.20261003; combat.b-scout-gunner-definition.v1.20261003; combat.b-scout-gunner-generation.v1.20261003; combat.b-scout-gunner-spatial.v1.20261003; combat.b-risk-spawn-cadence.v1.20261003. Authority: 44#combat-b-scout-gunner-approved-v04-20261003, #combat-b-range-projectile-movement-approved-v05-20261003, #combat-b-risk-spawn-cadence-approved-20261003. Historical A catalog unchanged. v06 boarding times/socket counts remain unapproved, boarding=null.
+
+## Definition API
+
+Authenticated GET /v1/combat/b-scout-gunner-definition, registered at original departure routes and existing game session authentication. Required X-Combat-B-Scout-Gunner-Version exactly combat.b-scout-gunner-source.v1.20261003. No query or body. Optional If-Match is bare lowercase SHA256 packetHash (same convention as original B APIs); ETag is same bare hash. Cache-Control:no-store; never retry a stale packet automatically. Authentication is rechecked before publication; account replacement is rejected. 401 or existing auth status for auth failure; 400 contract_violation for query/body; 409 combat_b_scout_gunner_version_conflict or combat_b_scout_gunner_stale. Unexpected failures propagate. No credentials in samples.
+
+200 object: version, definition, definitionAvailable:true, runtimeSupported:false, canStart:false, packetHash. packetHash is SHA256 canonical JSON of object excluding packetHash. definitionHash is SHA256 of definition excluding definitionHash; each typeHash excludes typeHash. This endpoint is immutable definition metadata, neither a run receipt nor admission. Consumer must not treat its hash as independent authorization for a source/START.
+
+LOCAL reproducible environment is isolated ephemeral loopback, original signed tester session fixture. Producer and exact actual request/response bodies are QA/CommanderS1-20260922/combat-b-scout-gunner-source-traces-20261003.mts/.json. Listener and private SQL fixture are disposed in finally. No persistent production URL/deployment is supplied.
+
+## Definitions and ownership
+
+Exact IDs enemy_raider_scout and enemy_spike_cart_gunner only. Original A ATK24 and28 source catalog version/hash/field are pinned; B coefficients1 and5/7 give raw24 and20 respectively. Period1600/2000ms, DEF53, preparation500/recovery300. Raw action risk/progress flags remain null; no copy of spawn-speed multiplier into damage, HP, movement or attack speed. S17 HP risk is applied once to whole EHP wave budget. No actor HP is fabricated as type-template HP.
+
+Spatial v05: Scout range1800mm/move1800mm/s; Gunner range24000mm/move1500mm/s/projectile24000mm/s. Actual coordinates/LOS/connected route/socket evidence is required, never pixels or slot-distance. Stop in preparation/recovery, no automatic retreat/teleport. Gunner period is launch-to-launch; first launch >=targetability+whole2000ms, source+target generation fixed. Flight utility uses exact distance/speed then ceil once to original step, minimum1. Already launched shots survive source death and simple distance exit; target loss/generation change MISS. Basic interception independent of AUTO; reflection/AOE only existing abilities. Existing Mira unchanged.
+
+Dynamic geometry/movement/projectile owners remain null. sameTickGunnerInterceptionPolicy=null: existing Unity BasicCombatSimulation due-event owner and Mira impact reservation sequence are evidence of existing ownership, not an invented Gunner interception priority. Existing Gunner same-tick interception executor is not supplied. Ordinary solo runtime HP/clock/position/impact/interception ownership stays Unity. START remains unsupported until actual profile/geometry/execution integration is verified.
+
+## Private generation and immutable original receipt
+
+BScoutGunnerSource.create accepts strict original S19 context(account/run/preview/operation/risk/departure version/base snapshot hash/map definition+plan hash/publication hash), original native context distinct from run ID, private64hex seed, original captured plan. Only COMBAT depths1..11, two waves each. Boss/elite/story mapping not invented. Private seed must come from actual owner; HTTP request never supplies it. RNG SHA256-counter64 domain B_SCOUT_GUNNER_V04_WAVE is independent of map RNG; 64-bit rejection sampling bounded128 attempts, no Math.random/modulo bias/unbounded redraw.
+
+Counts uniform6..8/9..12/13..16. Exact conditional binomial C(N,k)*2^k*3^(N-k), both kinds >=1 and Gunner<=floor(N/2). Previous identical(N,k) removed only when other legal choices exist. Deterministic Fisher-Yates preserves source order. prior original receipt must have independently expected original sourceHash and lower original visit depth; all run/context/native/seed hashes are checked.
+
+Whole EHP1600/3600/8000 times S17 risk once. Scout:Gunner exact weights1:4/5; record exact shares, floor to integers and distribute remaining units in fixed ordinal order, sum unchanged. HP=floor(integerEHP*1000/1053), zeroHP is error. Typed instances have stable original run/context/node/wave/ordinal-derived identity, definitionRef ID/version/typeHash, exactEhp/ehp/hp/remainder/risk version/DEF53, entryGroup and entryNotBeforeUs exact rational. No extra actors added to old rawProfiles, no template HP reinterpretation.
+
+Cadence v1 speeds I~V10/10,11/10,12/10,13/10,14/10. Base intervals1800/1500/1200ms divided once by speed. Source stores exact interval and group offset in microsecond rational numerator/denominator string pairs; consumer rounds the INTERVAL ONCE at original combat step, then multiplies that rounded interval by entryGroup. Exact entryNotBeforeUs is the nominal source offset, not a separately rounded execution time. bRiskSpawnCadenceAtClock performs this conversion explicitly. No server-rounded-ms value exists. First group and subsequent max2/group, simultaneous4/6/8, original600ms grace and recovery/slot rules remain original v03. Saturated opportunities are skipped, no accumulated catch-up spawn. Pause/speed use original combat clock. Existing generic manifest v1 entryNotBeforeMs is not replaced by these new fields.
+
+readNode(input,expectedHash) strictly verifies source structure, independent expected original source hash, full definition/hash/origin/native/seed/map/node/previous/count/ticket/shuffle/EHP allocations and wave hashes, returning original source without any RNG draws or current-profile lookup. Caller must persist the accepted original source and trusted hash together in original snapshot/journal; untrusted JSON's own hash is not sufficient trust.
+
+createBScoutGunnerDefinitionSourceOwner adds explicit metadata at original S19 seam only with scoutGunnerSourceVersion marker and original parent+private seed owner nonempty CAS assertions(max128 combined) in same original batch. Original rawProfiles retained. supports always false because actual dynamic source/executor remains absent, so original S19 builder refuses profile admission before a write. No synthetic execution profile is registered. LOCAL samples are model/source construction evidence, not accepted run admission.
+
+## Verification and followup
+
+Exact counts/weights including >uint32 totals, all5 risks and3 stages, deterministic order, tamper/foreign/hash/legacy semantics, v05 flight6/12/24m and boundaries, cadence original-rational+singleclock rounding, old raw preservation and unsupported original seam, authenticated GET/read-only/version/stale errors are covered in new scoped tests and actual TCP producer. Related old departure and generic manifest regression is run because additive route registration changed departure.ts. Unchanged historic evidence is reused.
+
+Consumer may implement immutable definition parsing and generated receipt/hash/capture models now. Actual generated-source HTTP for admitted runs, native geometry/routes/socket/movement/interception, scheduling/spawn execution and approved operation mapping are separate unsupplied boundaries. View waits for complete approved design; operating START/deploy/economy/rewards are not authorized here. Preserve original snapshots and old v1 wire.

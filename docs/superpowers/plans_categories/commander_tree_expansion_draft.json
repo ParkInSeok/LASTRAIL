@@ -1,0 +1,2725 @@
+{
+  "authoringFormat": "commander-unified-tree-design-v1.1",
+  "publishable": false,
+  "status": "DESIGN_POLICY_APPROVED_RUNTIME_AND_ART_PENDING",
+  "confirmed": {
+    "maxLevel": 50,
+    "pointsPerLevel": 1,
+    "capstoneMinLevel": 25,
+    "unifiedTree": true,
+    "parentLogic": "OR",
+    "capstonesConsumePoints": true,
+    "activeRunSnapshotPreserved": true
+  },
+  "proposed": {
+    "grantAtLevel1": true,
+    "maxPoints": 50,
+    "normalRankCost": 1,
+    "capstoneCost": 3,
+    "capstoneLimits": [
+      {
+        "level": 25,
+        "count": 1
+      },
+      {
+        "level": 40,
+        "count": 2
+      }
+    ],
+    "existingRankGates": [
+      1,
+      10,
+      20,
+      30
+    ],
+    "newRank2GateOffset": 10,
+    "xpFormula": "100+40*(L-1)",
+    "freeRespec": true,
+    "presets": 3
+  },
+  "nodes": [
+    {
+      "id": "TR01",
+      "name": "지휘 화력",
+      "area": "지휘",
+      "parents": [],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        3,
+        6,
+        9,
+        12
+      ],
+      "effect": "지휘 스킬 직접 피해 +3/6/9/12%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR03",
+      "name": "함체 보강",
+      "area": "열차",
+      "parents": [],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        3,
+        6,
+        9,
+        12
+      ],
+      "effect": "열차 최대 내구도 +3/6/9/12%; 객차/포탑 중복 전파 없음",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR04",
+      "name": "포대 교정",
+      "area": "포탑",
+      "parents": [],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "effect": "포탑 공격력 +2/4/6/8%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP01",
+      "name": "분대 화력",
+      "area": "요원",
+      "parents": [],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "effect": "요원 공격력 +2/4/6/8%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO04",
+      "name": "출격 보급",
+      "area": "운용",
+      "parents": [],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        5,
+        10,
+        15,
+        20
+      ],
+      "effect": "START 전술 보급 +5/10/15/20, 원 시작 거래1회",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR02",
+      "name": "명령 회전",
+      "area": "지휘",
+      "parents": [
+        "TR01",
+        "TR04"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "effect": "지휘 스킬 재사용 대기시간 -2/4/6/8%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP02",
+      "name": "생존 훈련",
+      "area": "요원",
+      "parents": [
+        "OP01",
+        "TR03"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        3,
+        6,
+        9,
+        12
+      ],
+      "effect": "요원 최대 체력 +3/6/9/12%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP03",
+      "name": "기술 숙련",
+      "area": "요원",
+      "parents": [
+        "OP01",
+        "TR04"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2.5,
+        5,
+        7.5,
+        10
+      ],
+      "effect": "요원 자체 액티브 피해/치유/보호막 +2.5/5/7.5/10%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP04",
+      "name": "지원 지휘",
+      "area": "지휘",
+      "parents": [
+        "TR01",
+        "TR03"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        3,
+        6,
+        9,
+        12
+      ],
+      "effect": "지휘 스킬 자체 치유/보호막 +3/6/9/12%",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO01",
+      "name": "전술 회수",
+      "area": "운용",
+      "parents": [
+        "DO04",
+        "OP01"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "effect": "기본 전투 완료 전술 보급 +2/4/6/8%; 환불·상위 추가 보상 제외",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO02",
+      "name": "추가 수색",
+      "area": "운용",
+      "parents": [
+        "DO04",
+        "TR04"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2.5,
+        5,
+        7.5,
+        10
+      ],
+      "effect": "적격 전투 노드 장비1개 추가 확률 2.5/5/7.5/10%, 노드당1회",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO03",
+      "name": "현장 협상",
+      "area": "운용",
+      "parents": [
+        "DO04",
+        "TR01"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "effect": "작전 장비 상인 양수 가격 -2/4/6/8%; 최종 올림·최소1, 상인 미지원 시 실행 미지원",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO05",
+      "name": "적재 공간 확장",
+      "area": "운용",
+      "parents": [
+        "DO04",
+        "TR03"
+      ],
+      "earned": 1,
+      "maxRank": 4,
+      "costPerRank": 1,
+      "values": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "effect": "작전 보관함 +6/12/18/24칸; 장착품 제외·보관 인스턴스1칸, 기본24 시험값 유지",
+      "kind": "existing-normal"
+    },
+    {
+      "id": "X01",
+      "name": "교대 명령",
+      "area": "지휘",
+      "earned": 10,
+      "parents": [
+        "TR02",
+        "OP03"
+      ],
+      "effect": "서로 다른 지휘 스킬의 정상 사용 간격6초 이하일 때 앞서 쓴 스킬의 남은 쿨타임 0.5/1초 감소. 공용 발동 간격8초; 같은 사용 이벤트1회",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X02",
+      "name": "구호 인계",
+      "area": "지휘",
+      "earned": 10,
+      "parents": [
+        "OP04",
+        "OP02"
+      ],
+      "effect": "지휘 스킬이 열차 또는 생존 요원의 HP를 실제 회복시키면 같은 대상에게 실제 회복량의10/20% 보호막4초. 대상 최대HP5% 상한; 같은 효과는 큰 값으로 교체·지속4초 갱신, 중첩 없음. 다운복귀/추가 수리 효과 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X03",
+      "name": "분산 장갑",
+      "area": "열차",
+      "earned": 10,
+      "parents": [
+        "TR03",
+        "OP02"
+      ],
+      "effect": "살아 있는 객차가 적 직접 피해를 실제 받은 뒤 동일 객차의 후속 적 직접 피해 -5/10%,3초. 객차별 발동 간격8초, 최초 타격 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X04",
+      "name": "비상 차폐",
+      "area": "열차",
+      "earned": 10,
+      "parents": [
+        "TR03",
+        "OP04"
+      ],
+      "effect": "열차 HP가 위에서40% 이하로 떨어질 때 최대HP의3/6% 열차 전용 보호막5초, 노드당1회; 회복으로 충전되지 않음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X05",
+      "name": "표적 유지",
+      "area": "포탑",
+      "earned": 10,
+      "parents": [
+        "TR04",
+        "TR02"
+      ],
+      "effect": "포탑이 같은 대상에게 연속3회 유효 기본 공격 후 후속 기본 공격 피해 +6/12%. 대상 변경·4초 미공격·포탑 비활성 시 초기화",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X06",
+      "name": "교대 엄호",
+      "area": "요원",
+      "earned": 10,
+      "parents": [
+        "OP01",
+        "OP03"
+      ],
+      "effect": "요원 액티브 성공 시 같은 객차의 다른 생존 요원1명에게 다음 기본 공격 +8/16%,4초. 안정 슬롯순 우선·발동자별8초 간격·버프 최대1",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X07",
+      "name": "보급 인수",
+      "area": "운용",
+      "earned": 10,
+      "parents": [
+        "DO02",
+        "DO05"
+      ],
+      "effect": "장비 보급 노드의 원 장비 묶음을 모두 실제 수령하면 기존 전술 보급 +3/6, 원 노드당1회. 조회·재접속 중복 지급 없음; 일부 수령/포기 정책은 원 계약 유지",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X08",
+      "name": "계획 소비",
+      "area": "운용",
+      "earned": 10,
+      "parents": [
+        "DO01",
+        "DO03"
+      ],
+      "effect": "작전 상인에서 해당 노드 첫1/2회 양수 구매 가격을 추가 -5%, 기존 할인과 가산 후 올림·최소1. 추가 구매/새 재화 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X09",
+      "name": "집중 지령",
+      "area": "지휘",
+      "earned": 20,
+      "parents": [
+        "X01",
+        "X05"
+      ],
+      "effect": "지휘 직접 공격이 외부 표적1명만 유효 타격하면 피해 +8/16%. 범위 공격의 실제 대상이1명인 경우 포함; 추가 포격 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X10",
+      "name": "연계 보호",
+      "area": "지휘",
+      "earned": 20,
+      "parents": [
+        "X02",
+        "X03"
+      ],
+      "effect": "치유/보호막 지휘 스킬 성공 후6초 안에 다음 다른 지휘 스킬을 사용하면 원 보호막/치유 스킬의 남은 쿨타임1/2초 감소. 공용12초 간격",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X11",
+      "name": "구획 복구",
+      "area": "열차",
+      "earned": 20,
+      "parents": [
+        "X03",
+        "X02"
+      ],
+      "effect": "열차 수리 지휘 스킬이 실제 회복시킨 양의10/20%를 HP비율 최저 생존 객차1개에 수리로 제공. 동률 슬롯순, 파괴 객차 부활 없음; 재귀발동 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X12",
+      "name": "충격 우회",
+      "area": "열차",
+      "earned": 20,
+      "parents": [
+        "X04",
+        "X06"
+      ],
+      "effect": "공용 방벽이 해당 적 직접 타격을 전량 흡수했을 때 열차/객차에 그 타격이 주는 감속 지속 -25/50%. 다른 상태이상·환경 피해 제외; TC02 또는 승인된 공용방벽 공급 필요",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X13",
+      "name": "사격 교대",
+      "area": "포탑",
+      "earned": 20,
+      "parents": [
+        "X05",
+        "X06"
+      ],
+      "effect": "포탑 액티브 성공 후 다른 포탑1개의 다음 기본 공격 +10/20%,4초. 안정 슬롯순, 공용8초 간격, 추가 공격 생성 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X14",
+      "name": "구조 대열",
+      "area": "요원",
+      "earned": 20,
+      "parents": [
+        "X06",
+        "X04"
+      ],
+      "effect": "요원 Down 발생 시 같은 객차의 생존 요원들에게 최대HP3/6% 보호막4초. 객차당12초 간격, 중첩 없이 큰 값 교체; 다운 시간 단축/부활 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X15",
+      "name": "현장 활용",
+      "area": "운용",
+      "earned": 20,
+      "parents": [
+        "X07",
+        "X05"
+      ],
+      "effect": "해당 노드에서 얻은 런 장비를 장착한 요원/포탑에게 다음 전투 첫6/10초 기본 공격 피해 +8%. 장착자당1회, 장비 이동으로 재발동/중첩 불가",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X16",
+      "name": "전술 예비",
+      "area": "운용",
+      "earned": 20,
+      "parents": [
+        "X08",
+        "X01"
+      ],
+      "effect": "현재 보유 전술 보급20/40 이상으로 전투 노드 진입 시 지휘 스킬 피해/치유/보호막 +4/8%를 그 노드에 고정. 소모/추가 지급 없음; 중간 잔고 변화로 켜고 끄지 않음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X17",
+      "name": "공격 후 지원",
+      "area": "지휘",
+      "earned": 30,
+      "parents": [
+        "X09",
+        "X14"
+      ],
+      "effect": "직접 피해 지휘 스킬 성공 뒤6초 안에 사용하는 다음 치유/보호막 지휘 스킬량 +10/20%. 공용12초 간격, 한 토큰만, 같은 스킬의 혼합효과로 자체 소비 금지",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X18",
+      "name": "지원 후 공격",
+      "area": "지휘",
+      "earned": 30,
+      "parents": [
+        "X10",
+        "X13"
+      ],
+      "effect": "치유/보호막 지휘 스킬 성공 뒤6초 안의 다음 직접 피해 지휘 스킬량 +10/20%. 공용12초 간격, 한 토큰만, 자체 소비 금지",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X19",
+      "name": "회복 차선",
+      "area": "열차",
+      "earned": 30,
+      "parents": [
+        "X11",
+        "X15"
+      ],
+      "effect": "객차가 실제 수리된 뒤 같은 객차 요원의 받는 치유량 +6/12%,5초. 같은 효과 지속 갱신·수치 중첩 없음; 현재 다운 요원 부활 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X20",
+      "name": "방벽 사격",
+      "area": "포탑",
+      "earned": 30,
+      "parents": [
+        "X12",
+        "X13"
+      ],
+      "effect": "유효한 열차/객차 공용 방벽 잔량이 양수일 때 포탑 기본 공격 피해 +6/12%. 공용 방벽 소진 즉시 종료, 요원 개별 실드 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X21",
+      "name": "돌파 인계",
+      "area": "요원",
+      "earned": 30,
+      "parents": [
+        "X14",
+        "X09"
+      ],
+      "effect": "요원이 정예/보스를 직접 처치하면 다른 생존 요원1명의 대기 중 자체 액티브 남은 쿨타임1/2초 감소. 가장 긴 남은 시간·슬롯순, 노드당2회; 소환물 처치/추가효과 처치 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X22",
+      "name": "기술 분업",
+      "area": "요원",
+      "earned": 30,
+      "parents": [
+        "X13",
+        "X10"
+      ],
+      "effect": "요원 자체 액티브가 동료를 실제 치유/보호막 부여하면 그 대상의 다음 기본 공격 +10/20%,5초. 요원당8초 간격, 최대1버프; 장비 생성효과 제외",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X23",
+      "name": "위험 예산",
+      "area": "운용",
+      "earned": 30,
+      "parents": [
+        "X15",
+        "X11"
+      ],
+      "effect": "엘리트 노드 또는 승인된 올인 노드 시작 시 열차 최대HP2/4% 보호막6초. 원 노드당1회, 증원 단계 재발동 없음",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X24",
+      "name": "목표 집중",
+      "area": "운용",
+      "earned": 30,
+      "parents": [
+        "X16",
+        "X14"
+      ],
+      "effect": "승인된 고가치 표적에 요원/포탑 기본 공격 +6/12%. 타이머·보상·목표 수 불변; DC02 없으면 효과 조건 미충족",
+      "maxRank": 2,
+      "costPerRank": 1,
+      "kind": "new-normal"
+    },
+    {
+      "id": "TC01",
+      "name": "총력전 교리",
+      "area": "상위",
+      "parents": [
+        "X09",
+        "X13"
+      ],
+      "effect": "서로 다른 지휘 스킬 정상 사용 간격6초 이하이면 유효 외부표적에 지휘 기본공격계수200% 보조 포격1회. 공용12초 간격. 표적 없으면 연계만 만료·포격 보류 없음. base는 승인 지휘 피해 정의 참조 필수",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    },
+    {
+      "id": "TC02",
+      "name": "이동요새 교리",
+      "area": "상위",
+      "parents": [
+        "X10",
+        "X11"
+      ],
+      "effect": "지휘 스킬 정상 사용마다 열차최대HP3%의 공용 방벽 추가, 상한6%, 지속6초 갱신. 적 직접 피해만 흡수. 적용 순서: 대상 방어→대상 개별실드→공용 방벽→실제 객차HP손실→기존 열차 전파. 전파에 재차 공용흡수 없음",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    },
+    {
+      "id": "OC01",
+      "name": "전술 교차 편성",
+      "area": "상위",
+      "parents": [
+        "X14",
+        "X16"
+      ],
+      "effect": "자신의 실제3슬롯에 서로 다른 세트태그 장비3개를 장착한 요원의 일반 받는피해10%감소. 기존 방어 후·보호막 전1회 적용. 가상태그/선호선택 없음; 세트1/2/3단계 불변.",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    },
+    {
+      "id": "OC02",
+      "name": "정예 기동 타격대",
+      "area": "상위",
+      "parents": [
+        "X13",
+        "X09"
+      ],
+      "effect": "요원 액티브의 정예/보스 적중 시 표식5초, 공용10초 간격. 다른 요원은 정상 사거리/행동 안에서 우선 공격, 표식당 요원별 첫 기본공격에 자기 장비 적용 전 공격력30% 추격1회. 대상 사망/이탈 종료; 기존 타겟 확정 공격 강제취소 없음",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    },
+    {
+      "id": "DC01",
+      "name": "올인",
+      "area": "상위",
+      "parents": [
+        "X15",
+        "X11"
+      ],
+      "effect": "최종 노드 아닌 적격 전투에서 전투 전 선택, 원전투 뒤 승인 정예 증원1단계. 전부 완료 시 해당 깊이 일반 드랍표 장비1개+기본 노드 전술보급25%(버림) 추가. 원 기본 보상1회, 실패는 원 완료조건 미충족. 증원 계획ID 미연결이면 올인 미지원",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    },
+    {
+      "id": "DC02",
+      "name": "표적 수익",
+      "area": "상위",
+      "parents": [
+        "X16",
+        "X14"
+      ],
+      "effect": "적격 노드 기존 적1명 지정, 진입 후 전투시간15초에 호출. 그 전에 정상 처치 시 기본 노드 전술보급20%(버림) 추가. 호출 완료시 승인 증원1묶음; 동일 tick 호출 우선. 노드당1표적, 소환/시나리오 제거 제외; 계획ID 필수",
+      "earned": 25,
+      "maxRank": 1,
+      "costPerRank": 3,
+      "kind": "capstone"
+    }
+  ],
+  "examples": [
+    {
+      "name": "command",
+      "valid": true,
+      "cost": 50,
+      "errs": [],
+      "ranks": {
+        "TR01": 4,
+        "TR02": 4,
+        "TR03": 4,
+        "OP04": 4,
+        "X01": 2,
+        "X02": 2,
+        "X03": 2,
+        "X09": 2,
+        "X10": 2,
+        "X11": 2,
+        "X17": 2,
+        "X18": 2,
+        "X19": 2,
+        "TC01": 1,
+        "TC02": 1,
+        "DO04": 4,
+        "DO01": 2,
+        "TR04": 4
+      }
+    },
+    {
+      "name": "squad",
+      "valid": true,
+      "cost": 50,
+      "errs": [],
+      "ranks": {
+        "OP01": 4,
+        "OP02": 4,
+        "OP03": 4,
+        "TR04": 4,
+        "X05": 2,
+        "X06": 2,
+        "X13": 2,
+        "X14": 2,
+        "X21": 2,
+        "X22": 2,
+        "X09": 2,
+        "X10": 2,
+        "OC01": 1,
+        "OC02": 1,
+        "DO04": 4,
+        "DO05": 2,
+        "X03": 2,
+        "TR03": 4
+      }
+    },
+    {
+      "name": "operations",
+      "valid": true,
+      "cost": 50,
+      "errs": [],
+      "ranks": {
+        "DO04": 4,
+        "DO01": 4,
+        "DO02": 4,
+        "DO05": 4,
+        "DO03": 4,
+        "X07": 2,
+        "X08": 2,
+        "X15": 2,
+        "X16": 2,
+        "X23": 2,
+        "X24": 2,
+        "DC01": 1,
+        "DC02": 1,
+        "TR03": 4,
+        "OP01": 2,
+        "TR01": 4,
+        "TR02": 2
+      }
+    }
+  ],
+  "levels": [
+    {
+      "level": 1,
+      "incrementPoints": 1,
+      "totalPoints": 1,
+      "cumulativeXp": 0,
+      "xpToNext": 100,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 2,
+      "incrementPoints": 1,
+      "totalPoints": 2,
+      "cumulativeXp": 100,
+      "xpToNext": 140,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 3,
+      "incrementPoints": 1,
+      "totalPoints": 3,
+      "cumulativeXp": 240,
+      "xpToNext": 180,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 4,
+      "incrementPoints": 1,
+      "totalPoints": 4,
+      "cumulativeXp": 420,
+      "xpToNext": 220,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 5,
+      "incrementPoints": 1,
+      "totalPoints": 5,
+      "cumulativeXp": 640,
+      "xpToNext": 260,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 6,
+      "incrementPoints": 1,
+      "totalPoints": 6,
+      "cumulativeXp": 900,
+      "xpToNext": 300,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 7,
+      "incrementPoints": 1,
+      "totalPoints": 7,
+      "cumulativeXp": 1200,
+      "xpToNext": 340,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 8,
+      "incrementPoints": 1,
+      "totalPoints": 8,
+      "cumulativeXp": 1540,
+      "xpToNext": 380,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 9,
+      "incrementPoints": 1,
+      "totalPoints": 9,
+      "cumulativeXp": 1920,
+      "xpToNext": 420,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 13
+    },
+    {
+      "level": 10,
+      "incrementPoints": 1,
+      "totalPoints": 10,
+      "cumulativeXp": 2340,
+      "xpToNext": 460,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 11,
+      "incrementPoints": 1,
+      "totalPoints": 11,
+      "cumulativeXp": 2800,
+      "xpToNext": 500,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 12,
+      "incrementPoints": 1,
+      "totalPoints": 12,
+      "cumulativeXp": 3300,
+      "xpToNext": 540,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 13,
+      "incrementPoints": 1,
+      "totalPoints": 13,
+      "cumulativeXp": 3840,
+      "xpToNext": 580,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 14,
+      "incrementPoints": 1,
+      "totalPoints": 14,
+      "cumulativeXp": 4420,
+      "xpToNext": 620,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 15,
+      "incrementPoints": 1,
+      "totalPoints": 15,
+      "cumulativeXp": 5040,
+      "xpToNext": 660,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 16,
+      "incrementPoints": 1,
+      "totalPoints": 16,
+      "cumulativeXp": 5700,
+      "xpToNext": 700,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 17,
+      "incrementPoints": 1,
+      "totalPoints": 17,
+      "cumulativeXp": 6400,
+      "xpToNext": 740,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 18,
+      "incrementPoints": 1,
+      "totalPoints": 18,
+      "cumulativeXp": 7140,
+      "xpToNext": 780,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 19,
+      "incrementPoints": 1,
+      "totalPoints": 19,
+      "cumulativeXp": 7920,
+      "xpToNext": 820,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 21
+    },
+    {
+      "level": 20,
+      "incrementPoints": 1,
+      "totalPoints": 20,
+      "cumulativeXp": 8740,
+      "xpToNext": 860,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 29
+    },
+    {
+      "level": 21,
+      "incrementPoints": 1,
+      "totalPoints": 21,
+      "cumulativeXp": 9600,
+      "xpToNext": 900,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 29
+    },
+    {
+      "level": 22,
+      "incrementPoints": 1,
+      "totalPoints": 22,
+      "cumulativeXp": 10500,
+      "xpToNext": 940,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 29
+    },
+    {
+      "level": 23,
+      "incrementPoints": 1,
+      "totalPoints": 23,
+      "cumulativeXp": 11440,
+      "xpToNext": 980,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 29
+    },
+    {
+      "level": 24,
+      "incrementPoints": 1,
+      "totalPoints": 24,
+      "cumulativeXp": 12420,
+      "xpToNext": 1020,
+      "capstoneLimit": 0,
+      "eligibleNodeCount": 29
+    },
+    {
+      "level": 25,
+      "incrementPoints": 1,
+      "totalPoints": 25,
+      "cumulativeXp": 13440,
+      "xpToNext": 1060,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 35
+    },
+    {
+      "level": 26,
+      "incrementPoints": 1,
+      "totalPoints": 26,
+      "cumulativeXp": 14500,
+      "xpToNext": 1100,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 35
+    },
+    {
+      "level": 27,
+      "incrementPoints": 1,
+      "totalPoints": 27,
+      "cumulativeXp": 15600,
+      "xpToNext": 1140,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 35
+    },
+    {
+      "level": 28,
+      "incrementPoints": 1,
+      "totalPoints": 28,
+      "cumulativeXp": 16740,
+      "xpToNext": 1180,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 35
+    },
+    {
+      "level": 29,
+      "incrementPoints": 1,
+      "totalPoints": 29,
+      "cumulativeXp": 17920,
+      "xpToNext": 1220,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 35
+    },
+    {
+      "level": 30,
+      "incrementPoints": 1,
+      "totalPoints": 30,
+      "cumulativeXp": 19140,
+      "xpToNext": 1260,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 31,
+      "incrementPoints": 1,
+      "totalPoints": 31,
+      "cumulativeXp": 20400,
+      "xpToNext": 1300,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 32,
+      "incrementPoints": 1,
+      "totalPoints": 32,
+      "cumulativeXp": 21700,
+      "xpToNext": 1340,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 33,
+      "incrementPoints": 1,
+      "totalPoints": 33,
+      "cumulativeXp": 23040,
+      "xpToNext": 1380,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 34,
+      "incrementPoints": 1,
+      "totalPoints": 34,
+      "cumulativeXp": 24420,
+      "xpToNext": 1420,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 35,
+      "incrementPoints": 1,
+      "totalPoints": 35,
+      "cumulativeXp": 25840,
+      "xpToNext": 1460,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 36,
+      "incrementPoints": 1,
+      "totalPoints": 36,
+      "cumulativeXp": 27300,
+      "xpToNext": 1500,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 37,
+      "incrementPoints": 1,
+      "totalPoints": 37,
+      "cumulativeXp": 28800,
+      "xpToNext": 1540,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 38,
+      "incrementPoints": 1,
+      "totalPoints": 38,
+      "cumulativeXp": 30340,
+      "xpToNext": 1580,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 39,
+      "incrementPoints": 1,
+      "totalPoints": 39,
+      "cumulativeXp": 31920,
+      "xpToNext": 1620,
+      "capstoneLimit": 1,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 40,
+      "incrementPoints": 1,
+      "totalPoints": 40,
+      "cumulativeXp": 33540,
+      "xpToNext": 1660,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 41,
+      "incrementPoints": 1,
+      "totalPoints": 41,
+      "cumulativeXp": 35200,
+      "xpToNext": 1700,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 42,
+      "incrementPoints": 1,
+      "totalPoints": 42,
+      "cumulativeXp": 36900,
+      "xpToNext": 1740,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 43,
+      "incrementPoints": 1,
+      "totalPoints": 43,
+      "cumulativeXp": 38640,
+      "xpToNext": 1780,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 44,
+      "incrementPoints": 1,
+      "totalPoints": 44,
+      "cumulativeXp": 40420,
+      "xpToNext": 1820,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 45,
+      "incrementPoints": 1,
+      "totalPoints": 45,
+      "cumulativeXp": 42240,
+      "xpToNext": 1860,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 46,
+      "incrementPoints": 1,
+      "totalPoints": 46,
+      "cumulativeXp": 44100,
+      "xpToNext": 1900,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 47,
+      "incrementPoints": 1,
+      "totalPoints": 47,
+      "cumulativeXp": 46000,
+      "xpToNext": 1940,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 48,
+      "incrementPoints": 1,
+      "totalPoints": 48,
+      "cumulativeXp": 47940,
+      "xpToNext": 1980,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 49,
+      "incrementPoints": 1,
+      "totalPoints": 49,
+      "cumulativeXp": 49920,
+      "xpToNext": 2020,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    },
+    {
+      "level": 50,
+      "incrementPoints": 1,
+      "totalPoints": 50,
+      "cumulativeXp": 51940,
+      "xpToNext": null,
+      "capstoneLimit": 2,
+      "eligibleNodeCount": 43
+    }
+  ],
+  "rankRows": [
+    {
+      "nodeId": "TR01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 9,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 9,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 15,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 9,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2.5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 7.5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 9,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2.5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 7.5,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 18,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 24,
+      "primaryField": "existingTableValue",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 0.5,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 1,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "effectiveHealToShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "effectiveHealToShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 5,
+      "primaryField": "followupDirectDamageReductionPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "followupDirectDamageReductionPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "trainMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "trainMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X05",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "basicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X05",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "basicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X06",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "nextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X06",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 16,
+      "primaryField": "nextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X07",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "tacticalSupplyBonus",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X07",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "tacticalSupplyBonus",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X08",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1,
+      "primaryValue": 1,
+      "primaryField": "discountedPurchaseCount",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X08",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "discountedPurchaseCount",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X09",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 8,
+      "primaryField": "commanderSingleTargetDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X09",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 16,
+      "primaryField": "commanderSingleTargetDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X10",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 1,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X10",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X11",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "effectiveTrainRepairToCarRepairPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X11",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "effectiveTrainRepairToCarRepairPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X12",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 25,
+      "primaryField": "slowDurationReductionPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X12",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 50,
+      "primaryField": "slowDurationReductionPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X13",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "otherTurretNextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X13",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "otherTurretNextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X14",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 3,
+      "primaryField": "operatorMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X14",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "operatorMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X15",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "openingBuffDurationSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X15",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "openingBuffDurationSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X16",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "minimumTacticalSupply",
+      "extraValues": {
+        "commanderAmountBonusPercent": 4
+      }
+    },
+    {
+      "nodeId": "X16",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 40,
+      "primaryField": "minimumTacticalSupply",
+      "extraValues": {
+        "commanderAmountBonusPercent": 8
+      }
+    },
+    {
+      "nodeId": "X17",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "nextCommanderRecoveryBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X17",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "nextCommanderRecoveryBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X18",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "nextCommanderDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X18",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "nextCommanderDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X19",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "receivedHealingBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X19",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "receivedHealingBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X20",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "turretBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X20",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "turretBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X21",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 1,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X21",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "remainingCooldownReductionSeconds",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X22",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 10,
+      "primaryField": "recipientNextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X22",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 20,
+      "primaryField": "recipientNextBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X23",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 2,
+      "primaryField": "trainMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X23",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 4,
+      "primaryField": "trainMaxHpShieldPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X24",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1,
+      "primaryValue": 6,
+      "primaryField": "highValueTargetBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "X24",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1,
+      "primaryValue": 12,
+      "primaryField": "highValueTargetBasicDamageBonusPercent",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": null,
+      "primaryField": "ruleEffectSeeNode",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "TC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": null,
+      "primaryField": "ruleEffectSeeNode",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "OC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": 10,
+      "primaryField": "ordinaryIncomingDamageReductionPercent",
+      "extraValues": {
+        "requiredOccupiedSlots": 3,
+        "requiredDistinctSetTags": 3,
+        "virtualSetContribution": 0
+      }
+    },
+    {
+      "nodeId": "OC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": null,
+      "primaryField": "ruleEffectSeeNode",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": null,
+      "primaryField": "ruleEffectSeeNode",
+      "extraValues": {}
+    },
+    {
+      "nodeId": "DC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25,
+      "primaryValue": null,
+      "primaryField": "ruleEffectSeeNode",
+      "extraValues": {}
+    }
+  ],
+  "uiContract": {
+    "version": "design-v1.1",
+    "saveActivatesPreset": false,
+    "activePresetChangeRequiresSavedValidPreset": true,
+    "refundMode": "draft-fixed-point-or-cascade",
+    "fullResetScope": "edited-preset-only",
+    "rootIds": [
+      "TR01",
+      "TR03",
+      "TR04",
+      "OP01",
+      "DO04"
+    ],
+    "canvas": "single graph; design positions non-authoritative",
+    "sharedDialogs": "common-dialog-v01",
+    "savingOverlay": "common-loading-overlay-v02 visual only"
+  },
+  "reviewDecisions": {
+    "firstLevelPoint": 1,
+    "capstoneCost": 3,
+    "maxCapstones": 2,
+    "secondCapstoneLevel": 40,
+    "xpExtension": "same formula through49",
+    "migration": "archive old builds; clear new allocation; replenish points only by deficit",
+    "status": "user approved single package 2026-09-22; runtime and visual verification pending"
+  },
+  "effectContract": {
+    "time": "combat clock; pause-aware",
+    "windowComparison": "elapsed <= duration; expiry at elapsed > duration",
+    "sameTickOrdering": "fixed simulation phase then stable event sequence; DC02 call wins exact deadline",
+    "triggerSource": "native successful action only unless node explicitly says otherwise",
+    "noTarget": "no generated reward/buff; qualifying action consumes attempt/cooldown unless node specifies otherwise",
+    "normalTimerRounding": "seconds to integer milliseconds",
+    "baseAmountRounding": "existing amount owner; supplemental shield/heal/damage floor final nonnegative amount",
+    "capstoneDamageModifier": "own native source once; generated effects do not reapply triggering node",
+    "compatibility": "data capability declaration required; unsupported saved builds block activation/START pending user edits, never silently zero"
+  },
+  "effectBindings": [
+    {
+      "nodeId": "X01",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "서로 다른 지휘 스킬의 정상 사용 간격6초 이하일 때 앞서 쓴 스킬의 남은 쿨타임 0.5/1초 감소. 공용 발동 간격8초; 같은 사용 이벤트1회"
+    },
+    {
+      "nodeId": "X02",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "지휘 스킬이 열차 또는 생존 요원의 HP를 실제 회복시키면 같은 대상에게 실제 회복량의10/20% 보호막4초. 대상 최대HP5% 상한; 같은 효과는 큰 값으로 교체·지속4초 갱신, 중첩 없음. 다운복귀/추가 수리 효과 제외"
+    },
+    {
+      "nodeId": "X03",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "살아 있는 객차가 적 직접 피해를 실제 받은 뒤 동일 객차의 후속 적 직접 피해 -5/10%,3초. 객차별 발동 간격8초, 최초 타격 제외"
+    },
+    {
+      "nodeId": "X04",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "열차 HP가 위에서40% 이하로 떨어질 때 최대HP의3/6% 열차 전용 보호막5초, 노드당1회; 회복으로 충전되지 않음"
+    },
+    {
+      "nodeId": "X05",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "포탑이 같은 대상에게 연속3회 유효 기본 공격 후 후속 기본 공격 피해 +6/12%. 대상 변경·4초 미공격·포탑 비활성 시 초기화"
+    },
+    {
+      "nodeId": "X06",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "요원 액티브 성공 시 같은 객차의 다른 생존 요원1명에게 다음 기본 공격 +8/16%,4초. 안정 슬롯순 우선·발동자별8초 간격·버프 최대1"
+    },
+    {
+      "nodeId": "X07",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "장비 보급 노드의 원 장비 묶음을 모두 실제 수령하면 기존 전술 보급 +3/6, 원 노드당1회. 조회·재접속 중복 지급 없음; 일부 수령/포기 정책은 원 계약 유지"
+    },
+    {
+      "nodeId": "X08",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "작전 상인에서 해당 노드 첫1/2회 양수 구매 가격을 추가 -5%, 기존 할인과 가산 후 올림·최소1. 추가 구매/새 재화 없음"
+    },
+    {
+      "nodeId": "X09",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "지휘 직접 공격이 외부 표적1명만 유효 타격하면 피해 +8/16%. 범위 공격의 실제 대상이1명인 경우 포함; 추가 포격 제외"
+    },
+    {
+      "nodeId": "X10",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "치유/보호막 지휘 스킬 성공 후6초 안에 다음 다른 지휘 스킬을 사용하면 원 보호막/치유 스킬의 남은 쿨타임1/2초 감소. 공용12초 간격"
+    },
+    {
+      "nodeId": "X11",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "열차 수리 지휘 스킬이 실제 회복시킨 양의10/20%를 HP비율 최저 생존 객차1개에 수리로 제공. 동률 슬롯순, 파괴 객차 부활 없음; 재귀발동 없음"
+    },
+    {
+      "nodeId": "X12",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "공용 방벽이 해당 적 직접 타격을 전량 흡수했을 때 열차/객차에 그 타격이 주는 감속 지속 -25/50%. 다른 상태이상·환경 피해 제외; TC02 또는 승인된 공용방벽 공급 필요"
+    },
+    {
+      "nodeId": "X13",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "포탑 액티브 성공 후 다른 포탑1개의 다음 기본 공격 +10/20%,4초. 안정 슬롯순, 공용8초 간격, 추가 공격 생성 없음"
+    },
+    {
+      "nodeId": "X14",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "요원 Down 발생 시 같은 객차의 생존 요원들에게 최대HP3/6% 보호막4초. 객차당12초 간격, 중첩 없이 큰 값 교체; 다운 시간 단축/부활 없음"
+    },
+    {
+      "nodeId": "X15",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "해당 노드에서 얻은 런 장비를 장착한 요원/포탑에게 다음 전투 첫6/10초 기본 공격 피해 +8%. 장착자당1회, 장비 이동으로 재발동/중첩 불가"
+    },
+    {
+      "nodeId": "X16",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "현재 보유 전술 보급20/40 이상으로 전투 노드 진입 시 지휘 스킬 피해/치유/보호막 +4/8%를 그 노드에 고정. 소모/추가 지급 없음; 중간 잔고 변화로 켜고 끄지 않음"
+    },
+    {
+      "nodeId": "X17",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "직접 피해 지휘 스킬 성공 뒤6초 안에 사용하는 다음 치유/보호막 지휘 스킬량 +10/20%. 공용12초 간격, 한 토큰만, 같은 스킬의 혼합효과로 자체 소비 금지"
+    },
+    {
+      "nodeId": "X18",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "치유/보호막 지휘 스킬 성공 뒤6초 안의 다음 직접 피해 지휘 스킬량 +10/20%. 공용12초 간격, 한 토큰만, 자체 소비 금지"
+    },
+    {
+      "nodeId": "X19",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "객차가 실제 수리된 뒤 같은 객차 요원의 받는 치유량 +6/12%,5초. 같은 효과 지속 갱신·수치 중첩 없음; 현재 다운 요원 부활 없음"
+    },
+    {
+      "nodeId": "X20",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "유효한 열차/객차 공용 방벽 잔량이 양수일 때 포탑 기본 공격 피해 +6/12%. 공용 방벽 소진 즉시 종료, 요원 개별 실드 제외"
+    },
+    {
+      "nodeId": "X21",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "요원이 정예/보스를 직접 처치하면 다른 생존 요원1명의 대기 중 자체 액티브 남은 쿨타임1/2초 감소. 가장 긴 남은 시간·슬롯순, 노드당2회; 소환물 처치/추가효과 처치 제외"
+    },
+    {
+      "nodeId": "X22",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "요원 자체 액티브가 동료를 실제 치유/보호막 부여하면 그 대상의 다음 기본 공격 +10/20%,5초. 요원당8초 간격, 최대1버프; 장비 생성효과 제외"
+    },
+    {
+      "nodeId": "X23",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "엘리트 노드 또는 승인된 올인 노드 시작 시 열차 최대HP2/4% 보호막6초. 원 노드당1회, 증원 단계 재발동 없음"
+    },
+    {
+      "nodeId": "X24",
+      "requiredOwner": "node-settlement",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "승인된 고가치 표적에 요원/포탑 기본 공격 +6/12%. 타이머·보상·목표 수 불변; DC02 없으면 효과 조건 미충족"
+    },
+    {
+      "nodeId": "TC01",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "서로 다른 지휘 스킬 정상 사용 간격6초 이하이면 유효 외부표적에 지휘 기본공격계수200% 보조 포격1회. 공용12초 간격. 표적 없으면 연계만 만료·포격 보류 없음. base는 승인 지휘 피해 정의 참조 필수"
+    },
+    {
+      "nodeId": "TC02",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "지휘 스킬 정상 사용마다 열차최대HP3%의 공용 방벽 추가, 상한6%, 지속6초 갱신. 적 직접 피해만 흡수. 적용 순서: 대상 방어→대상 개별실드→공용 방벽→실제 객차HP손실→기존 열차 전파. 전파에 재차 공용흡수 없음"
+    },
+    {
+      "nodeId": "OC01",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "TRIAL_POLICY_ADOPTED_RUNTIME_UNBOUND",
+      "effectText": "자신의 실제3슬롯에 서로 다른 세트태그 장비3개를 장착한 요원의 일반 받는피해10%감소. 기존 방어 후·보호막 전1회 적용. 가상태그/선호선택 없음; 세트1/2/3단계 불변."
+    },
+    {
+      "nodeId": "OC02",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "요원 액티브의 정예/보스 적중 시 표식5초, 공용10초 간격. 다른 요원은 정상 사거리/행동 안에서 우선 공격, 표식당 요원별 첫 기본공격에 자기 장비 적용 전 공격력30% 추격1회. 대상 사망/이탈 종료; 기존 타겟 확정 공격 강제취소 없음"
+    },
+    {
+      "nodeId": "DC01",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "최종 노드 아닌 적격 전투에서 전투 전 선택, 원전투 뒤 승인 정예 증원1단계. 전부 완료 시 해당 깊이 일반 드랍표 장비1개+기본 노드 전술보급25%(버림) 추가. 원 기본 보상1회, 실패는 원 완료조건 미충족. 증원 계획ID 미연결이면 올인 미지원"
+    },
+    {
+      "nodeId": "DC02",
+      "requiredOwner": "combat-or-node-owner",
+      "mappingStatus": "UNBOUND_DESIGN_ONLY",
+      "effectText": "적격 노드 기존 적1명 지정, 진입 후 전투시간15초에 호출. 그 전에 정상 처치 시 기본 노드 전술보급20%(버림) 추가. 호출 완료시 승인 증원1묶음; 동일 tick 호출 우선. 노드당1표적, 소환/시나리오 제거 제외; 계획ID 필수"
+    }
+  ],
+  "designValidation": {
+    "scope": "static authoring validation only; no runtime QA",
+    "tests": [
+      {
+        "name": "노드43·랭크106",
+        "passed": true
+      },
+      {
+        "name": "레벨1~50 매단계1P",
+        "passed": true
+      },
+      {
+        "name": "XP누적 연속",
+        "passed": true
+      },
+      {
+        "name": "각 노드 개방조건·경로비용 충족 시 투자가능",
+        "passed": true
+      },
+      {
+        "name": "상위24불가25가능",
+        "passed": true
+      },
+      {
+        "name": "2상위39불가40가능",
+        "passed": true
+      },
+      {
+        "name": "3상위50불가",
+        "passed": true
+      },
+      {
+        "name": "부모 개방만으로 투자불가",
+        "passed": true
+      },
+      {
+        "name": "OR 부모하나충족",
+        "passed": true
+      },
+      {
+        "name": "대체부모환불유지",
+        "passed": true
+      },
+      {
+        "name": "마지막부모연쇄환불",
+        "passed": true
+      },
+      {
+        "name": "부모랭크1유지",
+        "passed": true
+      },
+      {
+        "name": "50P예시3종",
+        "passed": true
+      },
+      {
+        "name": "기존2랭크9불가10가능",
+        "passed": true
+      },
+      {
+        "name": "신규2랭크19불가20가능",
+        "passed": true
+      }
+    ]
+  },
+  "policyApproval": {
+    "date": "2026-09-22",
+    "scope": "v1.1 complete recommended numeric and policy package",
+    "historicalProposalField": "proposed is retained as the original package data; now approved for design",
+    "runtimeReleaseApproved": false,
+    "visualFinalApproved": false
+  },
+  "oc01PolicyReview": {
+    "status": "POLICY_CONFLICT_RESOLVED_RUNTIME_PENDING",
+    "date": "2026-09-22",
+    "nodeIds": [
+      "OC01"
+    ],
+    "historicalIntegrationApproval": "CURRENT_EXPLICIT_USER_DECISION_2026_09_22",
+    "source": "09_COMMANDER_PROGRESSION.md#oc01-reconciliation-final-v01",
+    "preferredSynergyUi": "RETIRED_DO_NOT_RESUME",
+    "replacement": "ADOPTED_FIRST_TRIAL_BASELINE",
+    "preserveActiveRunSnapshot": true,
+    "note": "User directed resolution using previously proposed A and migration plan. Old synergy retired; actual equipped set counts unchanged. No runtime or art validation.",
+    "replacementCandidate": {
+      "status": "ADOPTED_FIRST_TRIAL_BASELINE",
+      "condition": "Three actual equipped items with three distinct set tags on the same operator",
+      "effect": "10% ordinary incoming damage reduction",
+      "virtualSetCount": 0
+    },
+    "oldEffectExecutable": false
+  }
+}

@@ -1,0 +1,1576 @@
+{
+  "rulesVersion": "TEST_ONLY_s1_v2",
+  "traitDefinitionVersion": "TEST_ONLY_effects_v2",
+  "sourceHash": "bd65ba2d697912bd6d5eed093848d6545e3809774c36ecf101bfb9a40bbfc09f",
+  "nodes": [
+    {
+      "id": "TR01",
+      "parents": [],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR03",
+      "parents": [],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR04",
+      "parents": [],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP01",
+      "parents": [],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO04",
+      "parents": [],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "TR02",
+      "parents": [
+        "TR01",
+        "TR04"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP02",
+      "parents": [
+        "OP01",
+        "TR03"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP03",
+      "parents": [
+        "OP01",
+        "TR04"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "OP04",
+      "parents": [
+        "TR01",
+        "TR03"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO01",
+      "parents": [
+        "DO04",
+        "OP01"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO02",
+      "parents": [
+        "DO04",
+        "TR04"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO03",
+      "parents": [
+        "DO04",
+        "TR01"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "DO05",
+      "parents": [
+        "DO04",
+        "TR03"
+      ],
+      "maxRank": 4,
+      "kind": "existing-normal"
+    },
+    {
+      "id": "X01",
+      "parents": [
+        "TR02",
+        "OP03"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X02",
+      "parents": [
+        "OP04",
+        "OP02"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X03",
+      "parents": [
+        "TR03",
+        "OP02"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X04",
+      "parents": [
+        "TR03",
+        "OP04"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X05",
+      "parents": [
+        "TR04",
+        "TR02"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X06",
+      "parents": [
+        "OP01",
+        "OP03"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X07",
+      "parents": [
+        "DO02",
+        "DO05"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X08",
+      "parents": [
+        "DO01",
+        "DO03"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X09",
+      "parents": [
+        "X01",
+        "X05"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X10",
+      "parents": [
+        "X02",
+        "X03"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X11",
+      "parents": [
+        "X03",
+        "X02"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X12",
+      "parents": [
+        "X04",
+        "X06"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X13",
+      "parents": [
+        "X05",
+        "X06"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X14",
+      "parents": [
+        "X06",
+        "X04"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X15",
+      "parents": [
+        "X07",
+        "X05"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X16",
+      "parents": [
+        "X08",
+        "X01"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X17",
+      "parents": [
+        "X09",
+        "X14"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X18",
+      "parents": [
+        "X10",
+        "X13"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X19",
+      "parents": [
+        "X11",
+        "X15"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X20",
+      "parents": [
+        "X12",
+        "X13"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X21",
+      "parents": [
+        "X14",
+        "X09"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X22",
+      "parents": [
+        "X13",
+        "X10"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X23",
+      "parents": [
+        "X15",
+        "X11"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "X24",
+      "parents": [
+        "X16",
+        "X14"
+      ],
+      "maxRank": 2,
+      "kind": "new-normal"
+    },
+    {
+      "id": "TC01",
+      "parents": [
+        "X09",
+        "X13"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    },
+    {
+      "id": "TC02",
+      "parents": [
+        "X10",
+        "X11"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    },
+    {
+      "id": "OC01",
+      "parents": [
+        "X14",
+        "X16"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    },
+    {
+      "id": "OC02",
+      "parents": [
+        "X13",
+        "X09"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    },
+    {
+      "id": "DC01",
+      "parents": [
+        "X15",
+        "X11"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    },
+    {
+      "id": "DC02",
+      "parents": [
+        "X16",
+        "X14"
+      ],
+      "maxRank": 1,
+      "kind": "capstone"
+    }
+  ],
+  "rankRows": [
+    {
+      "nodeId": "TR01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TR02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "OP04",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO01",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO02",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO03",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 1,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 3,
+      "cost": 1,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "DO05",
+      "rank": 4,
+      "cost": 1,
+      "totalNodeCost": 4,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X01",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X01",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X02",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X02",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X03",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X03",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X04",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X04",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X05",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X05",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X06",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X06",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X07",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X07",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X08",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 10,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X08",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X09",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X09",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X10",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X10",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X11",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X11",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X12",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X12",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X13",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X13",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X14",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X14",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X15",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X15",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X16",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 20,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X16",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X17",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X17",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X18",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X18",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X19",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X19",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X20",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X20",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X21",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X21",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X22",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X22",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X23",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X23",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X24",
+      "rank": 1,
+      "cost": 1,
+      "totalNodeCost": 1,
+      "minimumEarnedPoints": 30,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "X24",
+      "rank": 2,
+      "cost": 1,
+      "totalNodeCost": 2,
+      "minimumEarnedPoints": 40,
+      "minimumLevel": 1
+    },
+    {
+      "nodeId": "TC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    },
+    {
+      "nodeId": "TC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    },
+    {
+      "nodeId": "OC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    },
+    {
+      "nodeId": "OC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    },
+    {
+      "nodeId": "DC01",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    },
+    {
+      "nodeId": "DC02",
+      "rank": 1,
+      "cost": 3,
+      "totalNodeCost": 3,
+      "minimumEarnedPoints": 25,
+      "minimumLevel": 25
+    }
+  ],
+  "levels": [
+    {
+      "level": 1,
+      "totalPoints": 1,
+      "cumulativeXp": 0,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 2,
+      "totalPoints": 2,
+      "cumulativeXp": 100,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 3,
+      "totalPoints": 3,
+      "cumulativeXp": 240,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 4,
+      "totalPoints": 4,
+      "cumulativeXp": 420,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 5,
+      "totalPoints": 5,
+      "cumulativeXp": 640,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 6,
+      "totalPoints": 6,
+      "cumulativeXp": 900,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 7,
+      "totalPoints": 7,
+      "cumulativeXp": 1200,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 8,
+      "totalPoints": 8,
+      "cumulativeXp": 1540,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 9,
+      "totalPoints": 9,
+      "cumulativeXp": 1920,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 10,
+      "totalPoints": 10,
+      "cumulativeXp": 2340,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 11,
+      "totalPoints": 11,
+      "cumulativeXp": 2800,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 12,
+      "totalPoints": 12,
+      "cumulativeXp": 3300,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 13,
+      "totalPoints": 13,
+      "cumulativeXp": 3840,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 14,
+      "totalPoints": 14,
+      "cumulativeXp": 4420,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 15,
+      "totalPoints": 15,
+      "cumulativeXp": 5040,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 16,
+      "totalPoints": 16,
+      "cumulativeXp": 5700,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 17,
+      "totalPoints": 17,
+      "cumulativeXp": 6400,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 18,
+      "totalPoints": 18,
+      "cumulativeXp": 7140,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 19,
+      "totalPoints": 19,
+      "cumulativeXp": 7920,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 20,
+      "totalPoints": 20,
+      "cumulativeXp": 8740,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 21,
+      "totalPoints": 21,
+      "cumulativeXp": 9600,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 22,
+      "totalPoints": 22,
+      "cumulativeXp": 10500,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 23,
+      "totalPoints": 23,
+      "cumulativeXp": 11440,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 24,
+      "totalPoints": 24,
+      "cumulativeXp": 12420,
+      "capstoneLimit": 0
+    },
+    {
+      "level": 25,
+      "totalPoints": 25,
+      "cumulativeXp": 13440,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 26,
+      "totalPoints": 26,
+      "cumulativeXp": 14500,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 27,
+      "totalPoints": 27,
+      "cumulativeXp": 15600,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 28,
+      "totalPoints": 28,
+      "cumulativeXp": 16740,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 29,
+      "totalPoints": 29,
+      "cumulativeXp": 17920,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 30,
+      "totalPoints": 30,
+      "cumulativeXp": 19140,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 31,
+      "totalPoints": 31,
+      "cumulativeXp": 20400,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 32,
+      "totalPoints": 32,
+      "cumulativeXp": 21700,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 33,
+      "totalPoints": 33,
+      "cumulativeXp": 23040,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 34,
+      "totalPoints": 34,
+      "cumulativeXp": 24420,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 35,
+      "totalPoints": 35,
+      "cumulativeXp": 25840,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 36,
+      "totalPoints": 36,
+      "cumulativeXp": 27300,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 37,
+      "totalPoints": 37,
+      "cumulativeXp": 28800,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 38,
+      "totalPoints": 38,
+      "cumulativeXp": 30340,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 39,
+      "totalPoints": 39,
+      "cumulativeXp": 31920,
+      "capstoneLimit": 1
+    },
+    {
+      "level": 40,
+      "totalPoints": 40,
+      "cumulativeXp": 33540,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 41,
+      "totalPoints": 41,
+      "cumulativeXp": 35200,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 42,
+      "totalPoints": 42,
+      "cumulativeXp": 36900,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 43,
+      "totalPoints": 43,
+      "cumulativeXp": 38640,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 44,
+      "totalPoints": 44,
+      "cumulativeXp": 40420,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 45,
+      "totalPoints": 45,
+      "cumulativeXp": 42240,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 46,
+      "totalPoints": 46,
+      "cumulativeXp": 44100,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 47,
+      "totalPoints": 47,
+      "cumulativeXp": 46000,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 48,
+      "totalPoints": 48,
+      "cumulativeXp": 47940,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 49,
+      "totalPoints": 49,
+      "cumulativeXp": 49920,
+      "capstoneLimit": 2
+    },
+    {
+      "level": 50,
+      "totalPoints": 50,
+      "cumulativeXp": 51940,
+      "capstoneLimit": 2
+    }
+  ],
+  "handlers": {
+    "TR01": "TEST_ONLY_v1",
+    "TR03": "TEST_ONLY_v1",
+    "TR04": "TEST_ONLY_v1",
+    "OP01": "TEST_ONLY_v1",
+    "DO04": "TEST_ONLY_v1",
+    "TR02": "TEST_ONLY_v1",
+    "OP02": "TEST_ONLY_v1",
+    "OP03": "TEST_ONLY_v1",
+    "OP04": "TEST_ONLY_v1",
+    "DO01": "TEST_ONLY_v1",
+    "DO02": "TEST_ONLY_v1",
+    "DO03": "TEST_ONLY_v1",
+    "DO05": "TEST_ONLY_v1",
+    "X01": "TEST_ONLY_v1",
+    "X02": "TEST_ONLY_v1",
+    "X03": "TEST_ONLY_v1",
+    "X04": "TEST_ONLY_v1",
+    "X05": "TEST_ONLY_v1",
+    "X06": "TEST_ONLY_v1",
+    "X07": "TEST_ONLY_v1",
+    "X08": "TEST_ONLY_v1",
+    "X09": "TEST_ONLY_v1",
+    "X10": "TEST_ONLY_v1",
+    "X11": "TEST_ONLY_v1",
+    "X12": "TEST_ONLY_v1",
+    "X13": "TEST_ONLY_v1",
+    "X14": "TEST_ONLY_v1",
+    "X15": "TEST_ONLY_v1",
+    "X16": "TEST_ONLY_v1",
+    "X17": "TEST_ONLY_v1",
+    "X18": "TEST_ONLY_v1",
+    "X19": "TEST_ONLY_v1",
+    "X20": "TEST_ONLY_v1",
+    "X21": "TEST_ONLY_v1",
+    "X22": "TEST_ONLY_v1",
+    "X23": "TEST_ONLY_v1",
+    "X24": "TEST_ONLY_v1",
+    "TC01": "TEST_ONLY_v1",
+    "TC02": "TEST_ONLY_v1",
+    "OC01": "TEST_ONLY_v1",
+    "OC02": "TEST_ONLY_v1",
+    "DC01": "TEST_ONLY_v1",
+    "DC02": "TEST_ONLY_v1"
+  }
+}

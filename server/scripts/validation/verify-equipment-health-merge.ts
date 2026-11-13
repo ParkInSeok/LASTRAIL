@@ -1,0 +1,20 @@
+import {writeFile} from 'node:fs/promises';
+import {strict as assert} from 'node:assert';
+import {equipmentStatFixture} from '../../tests/helpers/equipment-run-stat-fixture';
+import {EquipmentMergeStore} from '../../apps/game-api/src/equipment-merge';
+import {EquipmentHealthMergeStore,equipmentHealthMergeVersion} from '../../apps/game-api/src/equipment-health-merge';
+import {EquipmentEffectStateStore} from '../../apps/game-api/src/equipment-effect-state';
+import {equipmentCoreStatVersion} from '../../apps/game-api/src/equipment-run-stat-owner';
+const f=await equipmentStatFixture();
+try{
+ f.sql.run('CREATE TABLE local_merge_safe(valid INTEGER NOT NULL)');f.sql.run('INSERT INTO local_merge_safe VALUES(1)');
+ await f.store.move('a',f.runId,f.move('hp-1','SAMPLE_EQUIP',{kind:'operator',wearerId:'op_kyle',slotIndex:0}));
+ const equipment=new EquipmentMergeStore(f.env.DB,{prepare:async()=>({sourceVersion:equipmentCoreStatVersion,resolvedEffects:[],assertions:[f.env.DB.prepare('INSERT INTO equipment_merge_write_guard(valid) SELECT valid FROM local_merge_safe')]})});
+ const command={version:equipmentHealthMergeVersion,merge:{commandId:'SAMPLE_EQUIPPED_MERGE',primaryInstanceId:'hp-1',secondaryInstanceId:'hp-2',expectedInventoryRevision:2,expectedPrimaryRevision:2,expectedSecondaryRevision:1,expectedPrimaryEffectRevision:1,expectedSecondaryEffectRevision:1,expectedSourceVersion:equipmentCoreStatVersion,confirmedLosses:true},expectedHealthRevision:2,expectedStatVersion:equipmentCoreStatVersion};
+ const before=await f.health.read('a',f.runId),prepared=await equipment.prepareMerge('a',f.runId,command.merge),statProof=await f.owner.prepareMerged({accountId:'a',runId:f.runId,expectedStatVersion:equipmentCoreStatVersion,merge:prepared});
+ assert.equal(f.scalar("SELECT star FROM run_equipment_instances WHERE instance_id='hp-1'"),1);assert.deepEqual(await f.health.read('a',f.runId),before);
+ const store=new EquipmentHealthMergeStore(f.env.DB,equipment,f.health,f.owner),receipt=await store.merge('a',f.runId,command);assert.deepEqual(await store.merge('a',f.runId,command),receipt);assert.equal(receipt.health[0]?.after.hp,917);assert.equal(receipt.health[0]?.after.maxHp,1834);assert.equal(f.scalar("SELECT count(*) FROM run_equipment_instances WHERE instance_id='hp-2'"),0);assert.equal(f.scalar('SELECT snapshot_json FROM run_snapshots'),f.originalSnapshot);
+ const currentEffect=await new EquipmentEffectStateStore(f.env.DB).read('a',f.runId,'hp-1'),currentStat=await f.owner.capture('a',f.runId,[{wearerKind:'operator',wearerId:'op_kyle',slots:[f.item('hp-1'),null,null]}]);assert.equal(currentStat.snapshot.actors[0]?.stats.maxHp,1834);
+ const sample={version:equipmentHealthMergeVersion,statVersion:equipmentCoreStatVersion,evidence:'INTERNAL_OWNED_SQL_SYNTHETIC_ACCOUNT_ORIGINAL_S27_LV1_BASE_NOT_PUBLIC_API_OR_OPERATING_START',command,preparedCandidate:{merge:prepared.receipt,projection:prepared.projection,targets:statProof.targets,statementCount:prepared.statements.length,statAssertionCount:statProof.assertions.length,committed:false},before,committedReceipt:receipt,currentEffect,currentStatSnapshot:currentStat.snapshot,after:await f.health.read('a',f.runId),originalRunSnapshotPreserved:true,materialConsumed:true,sameKeyReplayVerified:true,fullRuntimeSupported:false,missing:['OPERATING_ORIGINAL_BASE_AND_SAFE_MAINTENANCE_CONTEXT','UNIQUE_ENCHANT_CONDITIONAL_EFFECT_HANDLERS','PERSISTED_NATIVE_ATK_DEF_CONSUMPTION']};
+ await writeFile('D:/Project/LASTRAIL/QA/CommanderS1-20260922/equipment-health-merge-sql-sample-20261005.json',JSON.stringify(sample,null,2)+'\n');process.stdout.write(JSON.stringify({version:equipmentHealthMergeVersion,currentStatHash:currentStat.snapshot.packetHash,hpBefore:812,hpAfter:917,maxHpAfter:1834,materialConsumed:true,originalSnapshotPreserved:true})+'\n');
+}finally{f.sql.close();}

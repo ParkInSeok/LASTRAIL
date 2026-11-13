@@ -1,0 +1,18 @@
+{
+  "name": "LAST RAIL Act 1 Launch Audio Event Integration",
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "gameplayTimingChanged": false,
+  "rewardCalculationIncluded": false,
+  "economyMutationIncluded": false,
+  "connectedCueCount": 22,
+  "bgmAct1RailLoopAutoplay": false,
+  "surfaces": [
+    { "surface": "common_ui", "events": ["button_tap", "back", "confirm", "error", "tab_toggle"], "cueIds": ["ui_tap", "ui_back", "ui_confirm", "ui_error", "ui_toggle_or_tab"] },
+    { "surface": "gacha_screen", "events": ["reveal_start", "rare_result", "elite_result", "pickup_elite_result", "duplicate_conversion"], "cueIds": ["gacha_reveal_start", "gacha_result_rare", "gacha_result_elite", "gacha_result_pickup_elite", "gacha_duplicate_conversion"] },
+    { "surface": "reward_offline", "events": ["claim", "line_tick"], "cueIds": ["reward_claim", "reward_line_tick"] },
+    { "surface": "combat_hud", "events": ["hit", "skill", "ultimate", "shield", "heal", "buff", "debuff"], "cueIds": ["combat_hit", "combat_skill", "combat_ultimate", "combat_shield", "combat_heal", "combat_buff", "combat_debuff"] },
+    { "surface": "story_raid", "events": ["warning", "boss_defeat"], "cueIds": ["story_raid_warning", "boss_defeat"] },
+    { "surface": "launch_bgm", "events": ["opt_in_single_loop"], "cueIds": ["bgm_act1_rail_loop"] }
+  ]
+}

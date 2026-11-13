@@ -1,0 +1,30 @@
+using System;
+using System.Reflection;
+using LastRail.Battle;
+using LastRail.Run;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+
+public sealed class OrdinaryNodeArtilleryTests {
+ const BindingFlags Hidden=BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public;
+ static object Call(object owner,string name,params object[] args){try{return owner.GetType().GetMethod(name,Hidden).Invoke(owner,args);}catch(TargetInvocationException e){throw e.InnerException;}}
+ sealed class Fixture {
+  internal OrdinaryFiveCombatFactory Factory;internal BCombatLocalModel Health;internal JObject Hazard,Frame,Numeric;internal string Train;
+  internal Fixture(){
+   var f=((OrdinaryFiveStartInput Start,BRouteCommand Command,JObject Response))typeof(OrdinaryNodeCombatFactoryTests).GetMethod("Fixture",BindingFlags.Static|BindingFlags.NonPublic).Invoke(null,null);
+   var entry=f.Response["receipt"]["nodeStart"];entry["snapshot"]["runtime"]["actions"]["stepTimeSpanTicks"]=500000;
+   entry["snapshotHash"]=BDirectAttackInput.Digest(entry["snapshot"]).Substring(7);
+   var result=BRouteCommandResult.Read(200,f.Response.ToString(),f.Command);Factory=OrdinaryFiveCombatFactory.FromNodeStart(f.Start,result.NodeStart,result.Scaling,500000);
+   Health=(BCombatLocalModel)typeof(BasicCombatSimulation).GetField("ordinaryHealth",Hidden).GetValue(Factory.Create());Train=f.Start.Train.TrainId;
+   Hazard=new JObject{["version"]=RailArtilleryHazard.ExactVersion,["runId"]=f.Start.RunId,["eventId"]=result.Scaling.IssuedHazardId,["trainId"]=Train,["railSegmentId"]="fixture-rail",["carriageIds"]=new JArray("fixture-car"),["startMm"]=10000,["endMm"]=16000,["previewAtMs"]=0,["timing"]=new JObject{["kind"]="SINGLE",["impactAtMs"]=8000},["damage"]=result.Scaling.ArtilleryRawDamage.Snapshot()};
+   Frame=new JObject{["runId"]=f.Start.RunId,["trainId"]=Train,["atMs"]=8000,["spans"]=new JArray(new JObject{["carriageId"]="fixture-car",["railSegmentId"]="fixture-rail",["startMm"]=14000,["endMm"]=20000})};
+   Numeric=new JObject{["version"]=CombatNumericDefenseBudget.Version,["base"]=result.Scaling.ArtilleryRawDamage.Snapshot(),["effects"]=new JArray(),["defense"]=new JObject{["numerator"]="1000",["denominator"]="1"},["weakening"]=new JArray(),["penetration"]=new JArray(),["reductions"]=new JObject{["equipment"]=new JArray(),["guardStance"]=new JArray(),["independent"]=new JArray()}};
+  }
+  internal object Owner(){var type=typeof(FirstPlayableArtillery).Assembly.GetType("LastRail.Battle.OrdinaryNodeArtillery");Assert.NotNull(type,"Node artillery must use the existing HP kernel");try{return Activator.CreateInstance(type,Hidden,null,new object[]{Factory,Hazard,Health},null);}catch(TargetInvocationException e){throw e.InnerException;}}
+ }
+ [Test] public void ImpactConsumesOneKernelReceiptAndShieldWithoutNinthTarget(){var f=new Fixture();var owner=f.Owner();f.Health.ApplyResolvedShield("shield",f.Train,new CombatShieldSource(f.Train,"shield",0),13,200,0);Call(owner,"CommitLaunch",150L);int hp=f.Health.Hp(f.Train);var hit=(FirstPlayableArtilleryImpact)Call(owner,"ResolveImpact",f.Frame,f.Numeric,160L,false);Assert.AreEqual(13,(int)hit.Result["absorbed"]);Assert.AreEqual(hp-(int)hit.Result["hpLoss"],f.Health.Hp(f.Train));Assert.Greater((int)hit.Result["hpLoss"],0);var state=f.Health.CaptureLocal();Assert.AreEqual(2,((JArray)JObject.Parse(state)["events"]).Count);Assert.AreEqual(8,((JObject)JObject.Parse(state)["vitals"]).Count);Assert.IsFalse(((FirstPlayableArtilleryImpact)Call(owner,"ResolveImpact",f.Frame,f.Numeric,160L,false)).Applied);Assert.AreEqual(state,f.Health.CaptureLocal());}
+ [Test] public void OwnedCloneUsesNewKernelAndValidationFailurePublishesNeither(){var f=new Fixture();var owner=f.Owner();Call(owner,"CommitLaunch",150L);var copied=(BCombatLocalModel)Call(f.Health,"CloneOwnedNode");var clone=Call(owner,"CloneOwned",copied);string before=f.Health.CaptureLocal();var capture=(JObject)Call(clone,"Capture");var invalid=(JObject)f.Numeric.DeepClone();invalid["base"]["numerator"]="999";Assert.Throws<ArgumentException>(()=>Call(clone,"ResolveImpact",f.Frame,invalid,160L,false));Assert.AreEqual(before,copied.CaptureLocal());Assert.IsTrue(JToken.DeepEquals(capture,(JObject)Call(clone,"Capture")));Call(clone,"ResolveImpact",f.Frame,f.Numeric,160L,false);Assert.Less(copied.Hp(f.Train),f.Health.Hp(f.Train));Assert.AreEqual(before,f.Health.CaptureLocal());}
+ [Test] public void MissLeavesKernelUntouchedAndLauncherRemainsAlive(){var f=new Fixture();var owner=f.Owner();Call(owner,"CommitLaunch",150L);f.Frame["spans"][0]["railSegmentId"]="other";string before=f.Health.CaptureLocal();var hit=(FirstPlayableArtilleryImpact)Call(owner,"ResolveImpact",f.Frame,f.Numeric,160L,false);Assert.AreEqual("MISSED",(string)hit.Result["collision"]["outcome"]);Assert.AreEqual(before,f.Health.CaptureLocal());Assert.IsTrue((bool)owner.GetType().GetProperty("ThreatResolved",Hidden).GetValue(owner));Assert.Greater((int)owner.GetType().GetProperty("LauncherHp",Hidden).GetValue(owner),0);}
+ [TestCase(false)][TestCase(true)] public void OnlyActualTrainDamageCancelsBeforeLaunchAndDoesNotEraseLaunchedShot(bool launched){var f=new Fixture();var owner=f.Owner();if(launched)Call(owner,"CommitLaunch",150L);Call(owner,"ApplyResolvedTrainDamageToLauncher","train-shot",int.MaxValue,150L);var before=(JObject)Call(owner,"Capture");Call(owner,"ApplyResolvedTrainDamageToLauncher","train-shot",int.MaxValue,150L);Assert.IsTrue(JToken.DeepEquals(before,(JObject)Call(owner,"Capture")));Assert.AreEqual(!launched,(bool)owner.GetType().GetProperty("ThreatResolved",Hidden).GetValue(owner));if(launched)Assert.IsTrue(((FirstPlayableArtilleryImpact)Call(owner,"ResolveImpact",f.Frame,f.Numeric,160L,false)).Applied);}
+ [TestCase("eventId")][TestCase("runId")][TestCase("trainId")] public void WrongIssuedSourceRejectedBeforeHpMutation(string key){var f=new Fixture();f.Hazard[key]="wrong-source";string before=f.Health.CaptureLocal();Assert.Throws<ArgumentException>(()=>f.Owner());Assert.AreEqual(before,f.Health.CaptureLocal());}
+}

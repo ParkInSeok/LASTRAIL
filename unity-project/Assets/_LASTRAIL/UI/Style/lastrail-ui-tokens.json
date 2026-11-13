@@ -1,0 +1,24 @@
+{
+  "name": "LAST RAIL Act 1 Launch UI Kit",
+  "layout": { "referenceResolution": "1080x1920", "portraitSafeArea": true },
+  "touch": { "minDp": 48, "preferredDp": 56 },
+  "typography": {
+    "fontAsset": "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Pretendard-Regular SDF.asset",
+    "materialPreset": "Assets/_LASTRAIL/UI/Fonts/Pretendard/TMP/Materials/Pretendard-Regular SDF UI.mat"
+  },
+  "palette": {
+    "railBlue": "#2D89B4",
+    "accentCopper": "#CC7D3C",
+    "signalGreen": "#64BA8A",
+    "warningAmber": "#E0B450",
+    "dangerRed": "#BE4D48",
+    "coalInk": "#080C11"
+  },
+  "surface": { "maxCardRadiusPx": 8, "glowPolicy": "restrained-edge-cue" },
+  "policy": {
+    "decorativeOrbsAllowed": false,
+    "serverTruthFieldsAllowed": false,
+    "legacyTextAllowed": false,
+    "standaloneInputModuleAllowed": false
+  }
+}

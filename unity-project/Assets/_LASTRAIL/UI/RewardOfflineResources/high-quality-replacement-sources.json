@@ -1,0 +1,124 @@
+{
+  "sourceKind": "image_gen_generated_launch_assets",
+  "qualityClass": "HIGH_QUALITY_2D_ILLUSTRATION",
+  "externalPaidAssetDependency": false,
+  "resources": [
+    {
+      "id": "reward_result_plate",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_wxsoEaEN0hVc3wcowoMjsxeD.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_result_plate.png",
+      "size": [
+        1024,
+        512
+      ],
+      "trimmedSourceSize": [
+        1024,
+        499
+      ]
+    },
+    {
+      "id": "reward_line_item_frame",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_R6AlM9kfSNl4S3VlfWf8qhHV.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Frames/reward_line_item_frame.png",
+      "size": [
+        1024,
+        160
+      ],
+      "trimmedSourceSize": [
+        629,
+        160
+      ]
+    },
+    {
+      "id": "claim_success_badge",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_Q2Ml8EmaFfifbAgpM6corL8k.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_success_badge.png",
+      "size": [
+        512,
+        192
+      ],
+      "trimmedSourceSize": [
+        423,
+        192
+      ]
+    },
+    {
+      "id": "claim_pending_claimable_accent",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_uKY5mX155bu9NVJVD7TJOPXs.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Badges/claim_pending_claimable_accent.png",
+      "size": [
+        512,
+        192
+      ],
+      "trimmedSourceSize": [
+        482,
+        192
+      ]
+    },
+    {
+      "id": "offline_settlement_meter",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_Gm9ljSru46G5VkYjHakxiCjo.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_settlement_meter.png",
+      "size": [
+        1024,
+        256
+      ],
+      "trimmedSourceSize": [
+        1024,
+        225
+      ]
+    },
+    {
+      "id": "offline_duration_accumulation_strip",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_HIf2enIQKWW6ZdMpxjx8f9og.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Meters/offline_duration_accumulation_strip.png",
+      "size": [
+        1024,
+        192
+      ],
+      "trimmedSourceSize": [
+        1024,
+        163
+      ]
+    },
+    {
+      "id": "offline_empty_state_visual",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_wpIcF7KCIPral1YuEiGem53L.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Empty/offline_empty_state_visual.png",
+      "size": [
+        768,
+        512
+      ],
+      "trimmedSourceSize": [
+        763,
+        512
+      ]
+    },
+    {
+      "id": "reward_chest_supply_crate_accent",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_tw0xPHuQRfBOdjzS5JXuEEeU.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_chest_supply_crate_accent.png",
+      "size": [
+        512,
+        512
+      ],
+      "trimmedSourceSize": [
+        510,
+        512
+      ]
+    },
+    {
+      "id": "reward_material_glow",
+      "source": "C:\\Users\\dlstj\\.codex\\generated_images\\01a038be-d85d-7733-9bea-867c777c8116\\call_BfTw9hD009ZpP1MZBrFTIqJw.png",
+      "path": "Assets/_LASTRAIL/UI/RewardOfflineResources/Accents/reward_material_glow.png",
+      "size": [
+        512,
+        512
+      ],
+      "trimmedSourceSize": [
+        477,
+        512
+      ]
+    }
+  ]
+}

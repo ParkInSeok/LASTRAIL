@@ -1,0 +1,2587 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_resources
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_resources
+  m_GUID: 14f71690e9b6715469ddd193e697b4c7
+  m_SerializeEntries:
+  - m_GUID: 00cf8ec3c2cf4559b2ea922d08c2d414
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/barrier-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0154143de8af4264803685c2427071d9
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-reward-icons.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01899a92d07440f6a92d551261f4b570
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/portrait-reina.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 018f1d37bd729a54b9775a16171caf2c
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-00.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 019e52c67b807a74f8e7815ec390710f
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-dust-sheet-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01e3f2e731ddbad4f8d11277e3141d5c
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/TabIcon.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 022595b511b91bb41be05db06b8b5b83
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-slim-glow-1.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 024040fbbb6c4f81bd83ee594b2c0ff6
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/charge-fill.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 029999c070c04330add49959b2bce762
+    m_Address: Assets/_LASTRAIL/Resources/EntryUi/recovery.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02f5cc2e7a954ac48208d3c7be4b2b06
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-glow-0.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 036082fb14aa404ebd3906b92d438668
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/ReinaCinematicVoiceFxV15.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 040b7474b8375f24ba70fa7d75463e2b
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/support_fire-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0444a2af9c883a241b7290744772444a
+    m_Address: Assets/_LASTRAIL/Resources/CommanderSupportIcons/support_repair-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 04630f48a3798c54fb5bf29246985d64
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-08.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07c793711fc0cde4983f2bf8a34c52d7
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-slim-glow-2.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 08073d8bb268e20479e07a1a12d5e093
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-kyle.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 082935ac7e50aae4ab3a901c27621771
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/operators-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0931f763650c4b87af85b4f5caf5e337
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/ready-flash.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0970274b305eeb24f90aafa2af2f5d8c
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/console_bezel-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b466aa480cac1142bab02f1baac8937
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/console_plate-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b90cf4f008844e0b626b4645729b7a6
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/marrow-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c27472384d6888478aa2fe34502becf
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_cinder.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c4e02b2995566147ae77d0cc9529c9f
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/StartupRail.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c9a2cf307ecb35498cd7090906ff283
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/SupportAdditive.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d9093a30a5b45eaa43603aedb6623e1
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-glass-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1040f3ee5a196c747b703dac6b314e87
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_reina.active-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12fe7e310e907f54498161378b69e9da
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatCodex/kyle-alpha-baseline-v05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14bd40b256398ab42a4fc52a2bbe7277
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/raid_raider_king_engine.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1562ddf36fc449df94c737af0b27c5d0
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/throttle-guide.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15b80e518c39d4349991a8ae401d22f5
+    m_Address: Assets/Resources/CombatPresentation/KyleGuard/guard-flow-02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15e8675ea49b845489ccca83886df26b
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_eve.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1765d944682450e68bfad267cedb5790
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/OP01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 177386320f71f4a4aa5ee225a34752ea
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_eve.ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1793e2989e2e15748a56c3f883688b76
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/carriage-gun-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 193e2966a143c3a4fa30d9066977262c
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/train-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19a6ef94726070f4f82b20fb9fa11ee2
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_04_scrapstar_show.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c1c96b590c65e949a26dac3634499aa
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-09.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d4f0ec09a5092846a4017732f1e0c91
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_sable.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1daf7259d8ac7254ab013461eb6bc4e6
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-sunset-cleanplate-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1e16592dce00419bab1c6fca845a7d9b
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/support_fire-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ee09071620dd634db037ba2ae818cbf
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/eve-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ef4c9dd1e0049f0ae63e045ff51f0d9
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-frame-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f872ff6257a539aa6a3e54d2ec29760
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X19.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 200d3ffeeefe7a1429ea325d5307191e
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 204b0e9410cc4a0db851aea57a13dbd5
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/rate-arrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 206dcbd135e401d479cb8e6d6d7a3c2e
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/barrier-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2112f6f07a8c43e1b9e5ee8f5252d372
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-glow-1.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2136f3fdd37a4d34690afbd612632baf
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-sky-mountains-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21778c08a23e7564dbda6d07e36ffd75
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/carriage-combat-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2303a7ca3a2f931459f6888de7a0cfce
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/RailwayNode.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2355a63ebf5b6ec42b87888c64649bea
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23f5fcad84348824fb8a688ab69c6020
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/recruit-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 250e44151c468f044bf23c6c1f4331b7
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25515ffa37d4580eaff3fc3d48e0a39c
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-merchant-independent-v61-review/train-repair.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25930b5868acf184cb4839b3ae6285a2
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-steam-sheet-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26d5b75d4c1074e4f976987b7a8cd5cf
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_anchor.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26fcabc20cae1a241b070d4d33fc6c36
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/sera-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27118f0e87823254b895632d27b3e93c
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/room.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 275b6ff342c659de892c0598cec1ff99
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/DO04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27b3f713f435ab145933848a33705d19
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_rail.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 282383b3c61f416caeb69423a7a1632f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/pause-rim.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28ad7f7a7f2d6ac4695dbbd8eeb586a4
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-slim-glow-0.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28b39d6d926ccd64cb3db569d70996fe
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/fx-additive-source-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2974d54d021ab82468adc9b8593b5e14
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/slot-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 297f5dc20c4f4d147a5a4da38331a941
+    m_Address: Assets/_LASTRAIL/Resources/LobbyDeck/CabinMotion.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29ddf3b0a9ef59f4496ea19a18405788
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/formation-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b32ada677212a448a68c434294a3aa5
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/RigCacheBake.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b72710951f4bb5469148144c5f4fb6b
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/driver-v04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bf627a9a20b17147afb0c7f44b07621
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_mira-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ca30d4c1f5e5c26baa49ba49370b866
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cd7734ea42d96843af9c6f39b92e245
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art53/locomotive-side-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2da66d50e4c177546924c69d97ef61fb
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_sera-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30659574c2b81894ead855bc5e20157e
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30cc1d608f6143e40a9a06e825c12fe6
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/hardware-metadata-v01.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 316a2607d938412ebcb6f9ff8d6354e9
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/eve-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 323e9eb8a373e744688fae35b948793d
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/barrier.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32420a3314c8429eb0a20f4a1ec3b875
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-glass-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 325ade0eb6e74eb6ae16ce3e1ec0de63
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/confirm-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 336bcda9ab7b49b448a6f1f514bcaf38
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_01_last_departure.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33f30a3ee81543d4a6684efc5bdb28ed
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-grip.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 348d9dc805fa583499ede050837be170
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-near-terrain-loop-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 350e5f9fa249db441b4c990c1017eae9
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3528029055c85b178ba8799247fd6aa2
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/OP03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 362c61a2d83a21e42b51286e6c4bd4e8
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/login-route-emissive-mask-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39b440fdcb9a4c9cb31003df3817c200
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/sera-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39fb455004e7d8f40836dd79fa382ee0
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_reina-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ad60257be2055509a2c1b21279ad810
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X24.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b2df4fbaa82477093d69bf130effe4d
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/shield-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b9005b3bb61ebf498009908e55f4910
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-loop-rail-sleepers-ground-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c4ea796a3521344a99766254200922a
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/login-map-base-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dc58581cd6135442aa20a001253d3ed
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fb929eafad5e954f9ac29285f887341
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/hardware-source-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 415ad8ea908c2714ea37f2c010ba8727
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/RepairDrone/rig-v01.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41d1beaa9b0747bea3e0dca1a1945f01
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/portrait-sera.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 423cf38ed26c402e8ee904407e675b50
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/barrier-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42adec58202e08745836614aea5a2129
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_reina.active.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42b8e4ee0cefa8c4e826dc670a509624
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4871948cd42f041469507563ce0a7b34
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_sera.active.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 488d434f7f57bdb4dafcf21a5e25a38f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a292bd25cb45798b94b36beb85ce18a
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X16.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a523856873e8c84a9ea12da1855028b
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/SharedRailwayPath.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4bea815e783fbbb429f68de7e5682919
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/operators-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ca4ab13205bd3941b30a800fc0434f3
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-room.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d86a39d70e98f444b8929d329050bff
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d8e9e85bbc8ea34e95ffa0b61f496e6
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/OrdinaryLiveGeometryV02.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4de52f3b73870de4eaa5e763dafc179f
+    m_Address: Assets/Resources/CombatPresentation/OrdinaryBinding.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e3fb3b3c6f55274dae8ae20fe5ed7d8
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_eve.active-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e7216d938d7405992606eccc2bc29b7
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-track.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 500fca7a55d25634bbf3917a1c8d63db
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50129636f510559386f5654f0d78518e
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 507510719df944449c0b29ded31b0ecd
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/Rewards/cur_operator_exp.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 507e5abb34372504e90eb599aac96e16
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 534188b2f5eaaa049ba11ae8280e3dbf
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-08.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5440d622a19a4ca4d948e266fae4c1f1
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/RepairDrone/weld-fx-source-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5441495344b19204c95aeea2909d98aa
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/cabin-landscape-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 544541cb5a0e5153a07770db08edae65
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/OP04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5539fb612beb4f64a890fc719a7f3f97
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/RepairDrone/parts-source-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 565471b63d1852c1a23fbf055dd99ea3
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/OP02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 568ab8ad1f8854abbe0b7bd52f983509
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/TR03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 569a4f0cc4bcf824d873e7adeaae4597
+    m_Address: Assets/_LASTRAIL/Resources/NumberedFormation/op_kyle.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 56d2329d011ca13409a8c26a7c27e69b
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_kyle.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57cf3574e02c5a8ea130b097e0a74cf8
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/TR04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 590aa5e95ceb1744da9da7306e7c4790
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/BlueArrivalBloom.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59d6e9ac1db23f7489a5654b48b47f8f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_mira.active.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a045e765d9cdcc46ac26135df2d722e
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_01_last_departure.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a6ede32bbb75d44a9966caf00622fec
+    m_Address: Assets/_LASTRAIL/Resources/HealingAugmentCopy.ko.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b39d4a9ef17487cb0f5bfd75481477e
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-room-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c3bf3ca378c4c34aa31581a2848e32f
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatOffline/room-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d2880c8592ebba4bafff4c71eba4a79
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-mira.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d9d23ec6e23b90438f01ce4d9c339f6
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/train-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e9d7672ea1eb7c4fb3fa2383db730d8
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/missions-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f554be939fa0cd45b65f1addfc123b6
+    m_Address: Assets/_LASTRAIL/Resources/NumberedFormation/op_reina.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f92942e3de77a74692b0c217f686fe5
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatCodex/codex-dark-steel-surface-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 602a6a8d89649c4479ad9b4c38f29c33
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-sunset-reference-v01.jpg
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 605df75bd91fa5a4f8bf7c02829ab58a
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/BlueRoute.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6069c131b56fd6842bea0cd5b74ab0bb
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_lumen.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6130ea820630fb243a68089ef0b973e1
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/bindings.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 639a0713b276e904ebf5d7b136310bea
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-09.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63ac6006d778584cb26e44df3430addd
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63acceee902c2974f98dd01cc756492a
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/support-fire-v02-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 641b10647f5c9cf40806662d3da25a05
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/CinematicV03.mp4
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64d1a8f42b4c9424fb2a226b94585634
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatSupport/support-room.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65b8c3f31fdd4014eb73876b82277b73
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/recruit-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66166a892c8ad3546bb60ae9c8e2481b
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/events.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6686bbffa9d5d844a8bc247025b4c8d8
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_kyle.active.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67641211569e5b6d9961806af291d234
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67af2ced18ed2ab418fb728829a4470c
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 684798d0fb6f4d5fbca4b9714995bddf
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/role-buff_heal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 68dec028b4af34d4f98507b2317f4f47
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-10.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6934e105d7a75b66a069dbe91249381e
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-repair.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69e8e0a796c144eead6bb5bb067bc416
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/support_fire-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a044efdcdba5f7691968a9c2dbeccff
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X13.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a9496de1866bfd4aac0c0d79532cc3a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_mira.ultimate-1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a9e5b0304533bc459ed0062ffe61e78
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/tab-states-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b03778f767fe3e4dbf7d01bb8af5d23
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_sera.ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6be997ad686c4987812aa1d55938ce03
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/role-debuff.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c506817946b88f40ace54074cfa270d
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fcf1d89b214355438f15ef16fc4e111
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-11.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fecdec12468dba499b19c35238a6ce6
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-distant-ruins-loop-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 717e5be804424f82a98b5205a92a4c76
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/support_fire-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71c5722950122f84bae8dc0767b80749
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/support_fire-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7294e8100bf862a4189347a88577d05b
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_03_water_stop.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72e75c9174f85454f904cc26c51a9a4c
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_eve.ultimate-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 734b38bdbf173a440bfe5a16d52ed188
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_sera.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73c55151783a5359876a6e1b912e2c1c
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X17.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75402c1de5005254eb34f073501245b4
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/support_repair-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75c1eafc38c4cfd44b79b8b574984334
+    m_Address: Assets/_LASTRAIL/Resources/NumberedFormation/op_eve.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 781b0e9bf72ffa74b83508df74aca5af
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-00.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7866b055309831e44bf90269cf90f16d
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_marrow.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 786786051e1fca9469cccc48d21c1c74
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_kyle.ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7899a4752b0ae3946b66d7629c997fdc
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79459efec17a4d00a321bdcc27bbc385
+    m_Address: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF
+      - Outline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79e6afeb12999ff4e90bbff13b55599c
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-pointer.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a18ea06d5f2ec8439a36e560d8869bc
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-09.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7abb911459e1b354e9cbad316ae84645
+    m_Address: Assets/_LASTRAIL/Resources/NumberedFormation/op_sera.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b7672281655496683095db5b62ecd1f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/emergency_repair-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d16d7d8ce705f82b42c75e7e43a9beb
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-barrier.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d9ead7f3c90c714fabd325029adbb63
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7da5632546995879b62e6dfc0bc6546a
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X22.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ec835d74d889df4295dcb7d8d32510f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/ImpactV03.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f406e07568708c4bacb306d89a3d36f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/fx-metadata-v01.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81f93dc8f44d4ae080e59c143f9f8ee6
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/throttle-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82089c6f03b7433d8d0acde6371d9987
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/rate-rim.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 825ffc30a5d9714438af32cef1baf90f
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_reina.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82fd590d8bd87b74b9f1621d25d86feb
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-reina.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8336fdba96099a64f93e641b263efaf2
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_sera.ultimate-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8367115571244060a9f1541642270132
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/barrier-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83f454cc9c2602046ab722946e7afbcf
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/support-barrier-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 845d3014c73874348b143c9ee9383626
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/support_barrier-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84e05c5a624c36a4fb5b921243e63cea
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 898fdc0e4ebf8db4ab72cd73933eb6ef
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_05_night_boarders.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89964789faab473b906f1377e8e02005
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/portrait-kyle.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a53c564a5e8796459437a07a4f1ef5d
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ab6a229a4225cbaa3bb88e23baf86ab
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X15.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c2c817a9c344c9e9badb608d729b9e9
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/emergency_repair-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cf39ad02e25406090fd21e98a1595ce
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/ApprovedResults.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d04fc948c164a55b48113353cf8de50
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/sera-additional-1-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d55fd69d50ca474980094abd462d495
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-08.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8eeb97e1feee56a7a84893a3a347f9a8
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X21.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ff25c6c21a75e51a34f0668f8732e0b
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X14.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 902970bdfcdc5453bd04ea0c49ef76e3
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-composition-v60-review/healing-potion.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9061642947204749818814099875e18f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/train-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9160e47e4e076c14e9ac19a37f3a67c5
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_reina-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 919cc6d46299b014baa7d895bee3d4f3
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9200c06b2ebd3bd498c7ad3b7fab93a3
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/shop-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 920edf12995b4ff282ae8dc5dee7ed80
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/operator-card-rim-d-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92280c340c4bac44096ceeb2690613b2
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 935bbd40f84c4956b8cc243bcd08514e
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/playback-bars.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 938c5c8cfaa14f948f3cd14a93121068
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/kyle-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 939a7307936d1284f96c24ebac8af50d
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_kyle.active-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 962c5a13882d6854e88cd3b24991f18f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/reina-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97bcc04be27458a4f99353e80b3aa6c2
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_eve.active.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97cc92c5c4ade3a40ae1dc0646489a0d
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_sera.active-1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9833bc8cdb8218543adeeebe2c904288
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art53/support-wall-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 997019a5251d0d44589d36072a409559
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/CombatSecondFinal/DConsole/system-icon-v19.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a0fabcd9c2a29c49aa1d630bb6e669a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a6285c877320184eb8bf31f1eeaa51c
+    m_Address: Assets/_LASTRAIL/Resources/NumberedFormation/op_nyx.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a7ad83bffc95d5f9a19a763aec97096
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X08.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a9660696e9941d794009968d640ec4e
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/LobbyDepartureV01.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ac8869ed1b94d8ea0d02db21396030f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/title-emblem.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b327aad2827516fba7d0b3d65684e8b
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/equipment-merchant-independent-v61-review/merchant-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c94d335bd34b29419b785fa921dc047
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/kyle-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ce54c63c829510c8b4616c1947e33d1
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d833d0f5b62043488dbb8247b03a440
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_eve-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e005d57662adb94bb8d569a59724f00
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ed88c9d08145864cb0536e77f2d91a7
+    m_Address: Assets/Resources/CombatPresentation/KyleGuard/guard-fx.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f89799b6b23415381fb9117e7f447be
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/ready-wash.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fbf16a0d06f7704090da3f0e41e121c
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/JunctionLightFill.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a00434a12b3096047b7e24249b55342f
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_05_night_boarders.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a02d24cc74b45e44ac77ba4733d634e7
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X09.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a135fc8a79915cea94c7ab77cb58bae3
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v01/TR01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a27dac8e2f2dafe4cb47c51d0aba1226
+    m_Address: Assets/_LASTRAIL/Resources/ApprovedUi/Connections20261110.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3738f8f269e9fe4fa92265bcec99bd5
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_sera.ultimate-1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a40b1d209bebfdd499a20828fb89a177
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_mira.active-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a456f39304c405a4e809566a38f264c8
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/frame-landscape-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a507d868f6db1ca4a853d7e05d9007bb
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/locomotive-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5c4750d515583a4ea030599e29711c0
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/operator-rigs.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a609988a17e219c4f80527b5f566f8e4
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-11.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6a2ce7abd89fa94db2124efb9789e17
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_kyle-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6c90daad03045341925370a9da9fd3a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7b5a7e1de279344eb0cdcf7adbef4d9
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatResult/train.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a82cbea1b3a7444429c5fec5ee2a7f8a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-00.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a85c7004ca04aba44986ae276bdce6c2
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-ring.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8a1c12e64465d948e9726aa05b86091
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X12.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8ae938eb75d5934182f9f8bf36f182c
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/room.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8e7e936a29c1794e98cc283933a9983
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/support-missile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a91d3cf8c06e9be468e7dea4e8e4ff1b
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-04.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a91db04881385db4b9ff7ebaf77f9f9b
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/support_fire.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9b387228d9e4742a8cf301d1a171274
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/confirm-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa61ab977439aee42bbe007b9d08bc79
+    m_Address: Assets/_LASTRAIL/Resources/CommanderSupportIcons/support_barrier-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa705debf7ed0234a9bee19a1e8085e7
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_sera.active-2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abd2fb73386cd0e4cb59c19ad24987d9
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/icons-landscape-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac7fb7cbffea3f942921121d6507a903
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_reina.ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad70dbdbd8f79b74e9a59cc0fbcbab6a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-10.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: add5340035fe29347a4ecf4e33c7ef5a
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatVictory/environment.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae0f967dcc4586745ba1e5a39d2f0bfc
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-sera.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae79bf24c6df4c328a791b88e2d4b885
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/role-defense.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af52beb04e675567a50bb0e51dba5ee9
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af896a863e9412748aa883f04b36f3ab
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_nyx.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afa081f3328b58179a4565a8209c2aeb
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X23.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b00914448fed5b8799c669c3aa3741a6
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/skill-map-icons-v01/skill-fire.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1009183152390b4697dd6280de22551
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-eve.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1ca9318339b1214282acdc5f0daca12
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-10.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b24abdecf1835ce4da9f52327b49c666
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_reina.ultimate-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b2dd64c51eae6cf4ea369701ce824633
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-11.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4ba788a0b3bce34c86d6573edf77d5f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5b0c148700fb1e478830050b751ff88
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatAttendance/banner-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b60cb5387a5f4a418934c8fd1d6c9712
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-glow-2.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6b018ddf78957947a116c45580feaef
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/CombatSecondFinal/DConsole/train-icon-v19.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7db0fb676dc5e3893c3b4a2f7a2cbd1
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X11.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8e703c2d05944e5b1d60e46567e1b44
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-confirm-icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b962278fb5ac3794f9d187a680973f76
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_06_broken_line.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9cfe4f640e1a65418f2ead3c97bcdd5
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_warden.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb345be6aaaf44918cf33bbecbdd679e
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/sera-additional-0-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb5caa4703af5bc4f9ce7fc5fc767aed
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-08.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc1b6a87b3bc4e039f2c60174c0f0015
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/pause-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc4c1c70eb8869f4cb563a6541a47321
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_mira.ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bcd5cb1bf8d5e7a4bac57d41ff717049
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art54/train-depot-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bceb077be8cbde74483e19872a19ba75
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_vex.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd52eda618e57d149a8992bc9f0fc097
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_sera.active-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be46a46574eb21f498ad719102dbedaa
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/train_carriage_cargo-v03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bec07fa8ccb01444fbcc485907a82983
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/control_handle-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf6b528fe4185e846b2244f2b6242874
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/shop-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfe9c156401b9874ea01874432ea3e8a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-11.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c126492f5c6213445998829a67bb5edf
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c137a0fa60993b2419ae1de695a28aa4
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/additive.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c14369ef68a98404ba8eb144876b58ac
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/train_carriage_armored-v03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1deaa15e19442b4b7c78626fb32da06
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/portrait-nyx.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2b353f6ef1b42298e6d6425e9d86c1f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/throttle-grip.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3bff9f310537bb4481d19eb16c8f51c
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/approved.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c488e2ed4a40419b9303f08c9794c522
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/reina-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c704287e0cf28eb47858865bb90915bd
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/artillery_ledge-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7157c7cb97b5f2aa5c167a390d337e5
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO05.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c795a9d11383c1c42b2ecb4268b2ec03
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-00.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c853ffdbcad04d778e41d7815dc7f675
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/rate-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c97f589fcb630da43b77c716c7a58c45
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/RigPremultiplied.shader
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: caafa38e3d735454bb10eacae6cf6097
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/V02/opn_02_first_signal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb7a7f6b7502497aa8edbe829166352f
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/role-attack.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc35e563951b8f44892f1454b2804f92
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/missions-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd399e02f9d74b04db48540d48c3bc77
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-slim-grip.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce677f0705fb4eb2a973dd2ceaf5c152
+    m_Address: Assets/_LASTRAIL/Audio/Approved20261110/Voice/nyx-approved-20261102.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cecbd49603cb65f4b9f2b9af1f185c66
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/support-repair-v01-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cef6ef3c654dcb641964cc3dda249986
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/cockpit-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf79a21bda481024688fec12012503b7
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatResult/environment.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfda6bf6b11ff4c499b408ebca48b961
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_06_broken_line.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d00a09628020ce04ea501be8be471aff
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPass/banner-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d18c6a66c5e787a4081354a83c303321
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_03_water_stop.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d19662c010c78ff42ad7ef0c342f9f66
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art53/wagon-chassis-v02-alpha.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1e656005cae4f05b390cc9b698d1520
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/portrait-eve.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4ea4742fe54dff4fa22d7196190cdfb
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d61bba0b85da4592b347d649bbecb6e7
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6431b5da9b4af34b96e3d787515f0a5
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/raid_raider_king_engine.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d70e6a69dc2f3a14b8286b29975599f4
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/artillery_emplacement-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7e035bfb84ee5f4eadcf9bff1b90a20
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_kyle.ultimate-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dc6c4bd132d32a54caf0bc3320e02724
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_mira.ultimate-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcd43f284cc05f73b01fb1b22f23042a
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/DO01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddc2bacc74a12e6468439f84f306c451
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_04_scrapstar_show.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddfcef29623a2734b8e6329ca4bdc327
+    m_Address: Assets/Resources/CombatPresentation/KyleGuard/guard-flow-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0948be0cb944040aae2aea59ca472d4
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/title-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1f2fe13bceb45b6b5a6d093988e1be4
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/emergency_repair-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e249f21809e35aa47be639d2515fc755
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/opening-train-body-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e43b46faff15f6043b00234e027cf858
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/emergency_repair.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e45b29d4deae29545b480a6c724cc65c
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/skill-names.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4dbf049901547718be5b4b85e1b7a9c
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-hub-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4fc12dc22144163b798569ee6d868ea
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/selected-corners.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e514875d67c0526cbd624a7c76fbd957
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X10.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e556304b798e3d64399a975d0f610d59
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/minor_core-10.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e609dd8b1fa4f5e4d89b2c913d737fe7
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/SupportMissile/hardware-cache-rig-v01.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e67f4ee02f527364a8f92cfbecbb1b2d
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatArchive/opn_02_first_signal.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e70af9f5c3806c74aa7a1fd2f7fa84ad
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatSupport/support-host.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e73a58f6e2794ae7b1b7e50b7fb811b0
+    m_Address: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF
+      - Drop Shadow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7764d79d4eea414495cd3d5760e6049
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/catalog.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8a95f1146a41994285a6116e266d440
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb8419ded1488774e9155554c7e042c7
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_iris.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eba998e46bd34cb984ea42395cc73301
+    m_Address: Assets/_LASTRAIL/Resources/EntryPopup/roulette-button-glass-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec6d83c040c975249ac8df9f8f14143a
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_kyle.active-1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec918eda23af773488541012a0df11f9
+    m_Address: Assets/_LASTRAIL/Resources/NoncombatSettings/room-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed0d8b37bcf0616469a0caaef4b6e063
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/mira-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef2def561bc7a8045b600026e8b0eaca
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/major_core-09.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef55301d14635c15a3ec08f8d2980181
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/combat-preview.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efa974fe780ab2a48bee855aabecb35f
+    m_Address: Assets/Resources/CombatPresentation/OrdinaryPresentation.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efedb64f03a284d429ed062de5661b88
+    m_Address: Assets/_LASTRAIL/Resources/OperatorIdentity/op_mira.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0091b4aac70d5441979f2fe986a8501
+    m_Address: Assets/_LASTRAIL/Resources/DestinationPages/formation-atlas.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f05c2a8fe05f43a5930dfb943eccd3d9
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/train-face.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f20670ed05bf425fb4b99f41cb99f3db
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/charge-track.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2660f156a5e512fae429566d4907177
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/d01-remaining-art-v01/commander-room.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f26e4f85b20b48018364b61b9bb2460c
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DHeader/title-rim.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3e82a8c7f7f3ec4991f70e3170cf682
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/StartupSunset.mat
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3f0e537b3235b5fa283e4dbd2755b91
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X20.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5f31b8b9da34e4db2515d40ee982260
+    m_Address: Assets/_LASTRAIL/Resources/StartupMotion/login-map-detail-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f600181b19be53c6b975bf90873579b0
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f729598952854cd28aabb94d5c99382c
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/support-rack.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f74fc9eeb987c76459ffdb3e9508a156
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-nyx.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f889438733125a14a1452ecd9e42f703
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/TR02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8b848f650889a645bf14674df07a553
+    m_Address: Assets/_LASTRAIL/Resources/CommanderSupportIcons/support_fire-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fab632b9c48849ed9f397f24535b4603
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/train-frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb765d9f90551ad4793830fe016da89e
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/levels.json
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb9bd5c0e22663d418bab5a1eea7dd66
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbda2b7c60722b94380bed6bd2323d4b
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/shockwave-06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbe8cd0db1b95f8090b90c3047936077
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd5f06b5ee8730d40ac4f70eea3c6e7f
+    m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/emergency_repair-0.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd9c8cab4006fef4980beb2f62ba7f23
+    m_Address: Assets/Resources/CombatPresentation/OrdinaryRoof.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff62b250a98f5f0eb623a8b22b5ccb49
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff71275c15a254699cdbd7af8b80164f
+    m_Address: Assets/_LASTRAIL/Content/ApprovedUi20261110/commander-icons-illustrated-v02/X18.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff8cd0c94f011aa4e99fb72d1b30de9e
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/DConsole/rail-slim-fixed.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ffdea8b5959c2b94587f73615fbb976d
+    m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/train_locomotive-v03.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 9a70e7473dab41146ae2cbdecc770a44, type: 2}
+    - {fileID: 11400000, guid: 358f7386d640be748b22bfef95dd493d, type: 2}

@@ -1,0 +1,74 @@
+{
+  "version": "ordinary.finite-rail-authoring.v2.20261028",
+  "approval": "ORDINARY-FIRST-PLAYER-TRAVEL-BUDGET-v1.20261028",
+  "status": "AUTHORED_ASSET_NOT_START_BOUND",
+  "measurement": {
+    "rootScale": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "millimetersPerUnit": 1000,
+    "axis": "X_FORWARD_Y_UP_Z_SIDE",
+    "startMm": [
+      -25000.0,
+      0.0,
+      0.0
+    ],
+    "endMm": [
+      1175000.0,
+      0.0,
+      0.0
+    ],
+    "lengthMm": 1200000.0,
+    "collisionBounds": [
+      {
+        "path": "Rail/Rail_-1",
+        "minimumMm": [
+          -25000.0,
+          -175.000015,
+          -1060.0
+        ],
+        "maximumMm": [
+          1175000.0,
+          -24.9999981,
+          -940.0
+        ]
+      },
+      {
+        "path": "Rail/Rail_1",
+        "minimumMm": [
+          -25000.0,
+          -175.000015,
+          940.0
+        ],
+        "maximumMm": [
+          1175000.0,
+          -24.9999981,
+          1060.0
+        ]
+      }
+    ],
+    "warningFrameOriginMm": [
+      -25000.0,
+      0.0,
+      0.0
+    ],
+    "issuedHazardCount": 0
+  },
+  "railSegmentId": null,
+  "runGeometryBinding": null,
+  "initialConsistPosition": null,
+  "capacityPolicy": {
+    "minimumMm": 1200000,
+    "tailMarginMm": 20000,
+    "forecastMs": 10000,
+    "endMarginMm": 20000,
+    "requiresOriginalConsistAndSpeedEffects": true,
+    "requiresPreWarningTravelBudget": true,
+    "qaObservationMs": 42000,
+    "productTimeLimit": false
+  },
+  "warningFramePath": "WarningFrame",
+  "sourcePrefabSha256": "b0d632d500a6b40beee7a0b6a011938ab0f253d97b39b8f32c59533eae2b9eef"
+}

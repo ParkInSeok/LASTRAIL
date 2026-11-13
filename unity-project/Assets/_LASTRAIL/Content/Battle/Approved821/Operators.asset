@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e586f52dd74393e4aae6b96ff544ce5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.Battle.CombatOperatorFrames
+  Entries:
+  - OperatorId: op_kyle
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 901, y: 1230}
+    BodySpan: 1209
+    IdleFrames:
+    - {fileID: 2800000, guid: 131971c01f959414abc8ab8f05a9b3da, type: 3}
+    DurationsMs: e8030000
+    Portrait: {fileID: 2800000, guid: 131971c01f959414abc8ab8f05a9b3da, type: 3}
+    Emblem: {fileID: 2800000, guid: 27b3da124b41cd14980adff10e8d65b6, type: 3}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.36
+      y: 0.74
+      width: 0.28
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 660.5
+      y: 325.5
+      width: 61
+      height: 61
+  - OperatorId: op_reina
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 619, y: 1081}
+    BodySpan: 891
+    IdleFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 80f6345f55f1b064789b59ac143d1de2, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    DurationsMs: 78000000780000007800000078000000
+    Portrait: {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.32
+      y: 0.58
+      width: 0.36
+      height: 0.3
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_eve
+    CanvasSize: {x: 1263, y: 1245}
+    FootAnchorTopLeft: {x: 642, y: 1245}
+    BodySpan: 1194
+    IdleFrames:
+    - {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    - {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    - {fileID: 2800000, guid: 561c67d17899ad14bb2d4a4c844b41fa, type: 3}
+    - {fileID: 2800000, guid: 561c67d17899ad14bb2d4a4c844b41fa, type: 3}
+    - {fileID: 2800000, guid: 599a16a5da2152d44a62dc2247f7cd13, type: 3}
+    - {fileID: 2800000, guid: db49caeb62fc151498f370d3adb50f27, type: 3}
+    - {fileID: 2800000, guid: db49caeb62fc151498f370d3adb50f27, type: 3}
+    - {fileID: 2800000, guid: 599a16a5da2152d44a62dc2247f7cd13, type: 3}
+    - {fileID: 2800000, guid: 561c67d17899ad14bb2d4a4c844b41fa, type: 3}
+    - {fileID: 2800000, guid: 561c67d17899ad14bb2d4a4c844b41fa, type: 3}
+    - {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    - {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    DurationsMs: 540100000401000004010000040100000401000004010000040100000401000004010000040100000401000004010000
+    Portrait: {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.35
+      y: 0.7
+      width: 0.3
+      height: 0.28
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_sera
+    CanvasSize: {x: 1024, y: 1536}
+    FootAnchorTopLeft: {x: 548.5, y: 1510}
+    BodySpan: 1536
+    IdleFrames:
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    DurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    Portrait: {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.27
+      y: 0.74
+      width: 0.43
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_mira
+    CanvasSize: {x: 0, y: 0}
+    FootAnchorTopLeft: {x: 0, y: 0}
+    BodySpan: 0
+    IdleFrames: []
+    DurationsMs: 
+    Portrait: {fileID: 2800000, guid: be63704e9bab47b49903c5748d480f37, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0

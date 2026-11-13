@@ -1,0 +1,42 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lastrail-game-api-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "durable_objects": {
+    "bindings": [{ "name": "REALTIME_COOP_ROOMS", "class_name": "RealtimeCoopRoom" }]
+  },
+  "migrations": [{ "tag": "v1_realtime_coop_rooms", "new_sqlite_classes": ["RealtimeCoopRoom"] }],
+  "vars": {
+    "ENVIRONMENT": "LOCAL",
+    "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173",
+    "CLIENT_ADMISSION_MODE": "DISABLED"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "lastrail-core-local", "database_id": "local", "migrations_dir": "../../packages/db/migrations" }
+  ],
+  "env": {
+    // DEV intentionally has no room binding: co-op is unavailable until its rollout is approved.
+    // Do not inherit LOCAL Durable Objects to silence Wrangler; deployment preparation rejects them.
+    "dev": {
+      "name": "lastrail-game-api-dev",
+      "version_metadata": { "binding": "CF_VERSION_METADATA" },
+      "workers_dev": false,
+      "routes": [{ "pattern": "dev-api.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "CLIENT_ADMISSION_MODE": "ENFORCED" },
+      "r2_buckets": [{ "binding": "VERSION_BUCKET", "bucket_name": "lastrail-versions-dev" }],
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }]
+    },
+    "prd": {
+      "name": "lastrail-game-api-prd",
+      "workers_dev": false,
+      "routes": [{ "pattern": "api.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "PRD", "ALLOWED_ADMIN_ORIGINS": "https://admin.lastrail.app", "CLIENT_ADMISSION_MODE": "ENFORCED" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-prd", "database_id": "__PRD_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }]
+    }
+  }
+}
+

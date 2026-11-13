@@ -1,0 +1,995 @@
+{
+  "version": "ordinary.native-geometry-definition.v1.20261031",
+  "definitionId": "ordinary-live-obstacle-and-five-v1",
+  "units": "MILLIMETERS",
+  "millimetersPerUnit": 1000,
+  "axis": "X_FORWARD_Y_UP_Z_SIDE",
+  "coordinateSpace": "BOUND_FRAME_LOCAL",
+  "source": {
+    "scope": "LOCAL_AUTHORED_JUDGEMENT_GEOMETRY_NOT_APPROVED_ART_CALIBRATION",
+    "originalWorldToArcOffsetMm": 25000,
+    "scenePath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.unity",
+    "sceneHash": "ebfa4070fdfee8beb141139827a3fd81528163734d74948cdedb3adb17e2ff20",
+    "prefabPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+    "prefabHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+    "originalAssetHashes": {
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryRoofSpawnV01/OrdinaryRoofSpawnV01.prefab": "f999d69e5fedde68526fad4d9befe0aff21686ce9b4d299ae3de4cd944f6c797",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryEnemyTrainV01/OrdinaryEnemyTrainV01.prefab": "5844aaa8e930bc2b97c0fd831fa0acddf2b7cf60900b1585670c5f2f5e992d02",
+      "Assets/_LASTRAIL/Content/Battle/OrdinaryFiniteRail1200mV01/OrdinaryFiniteRail1200mV01.prefab": "20276b26f4847803cdd0d1cb1e5d68f26058a6dd4ca875ed15705fa4b2b12acc"
+    },
+    "liveLayout": {
+      "Engine": {
+        "originMm": [
+          52000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -6000,
+          0,
+          0
+        ]
+      },
+      "Combat": {
+        "originMm": [
+          39000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -19000,
+          0,
+          0
+        ]
+      },
+      "Gun": {
+        "originMm": [
+          26000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -32000,
+          0,
+          0
+        ]
+      },
+      "Enemy": {
+        "originMm": [
+          68000,
+          0,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          10000,
+          0,
+          0
+        ]
+      },
+      "op_kyle": {
+        "originMm": [
+          42000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -16000,
+          3213,
+          0
+        ],
+        "carOrder": 1,
+        "formationSlot": 0,
+        "gunnerOrdinal": null
+      },
+      "op_reina": {
+        "originMm": [
+          39000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -19000,
+          3213,
+          0
+        ],
+        "carOrder": 1,
+        "formationSlot": 1,
+        "gunnerOrdinal": null
+      },
+      "op_eve": {
+        "originMm": [
+          36000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -22000,
+          3213,
+          0
+        ],
+        "carOrder": 1,
+        "formationSlot": 2,
+        "gunnerOrdinal": null
+      },
+      "op_sera": {
+        "originMm": [
+          29000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -29000,
+          3213,
+          0
+        ],
+        "carOrder": 2,
+        "formationSlot": 3,
+        "gunnerOrdinal": null
+      },
+      "op_mira": {
+        "originMm": [
+          23000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          -35000,
+          3213,
+          0
+        ],
+        "carOrder": 2,
+        "formationSlot": 4,
+        "gunnerOrdinal": null
+      },
+      "Gunner0": {
+        "originMm": [
+          64000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          6000,
+          3213,
+          0
+        ],
+        "carOrder": 3,
+        "formationSlot": null,
+        "gunnerOrdinal": 0
+      },
+      "Gunner1": {
+        "originMm": [
+          68000,
+          3213,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          10000,
+          3213,
+          0
+        ],
+        "carOrder": 3,
+        "formationSlot": null,
+        "gunnerOrdinal": 1
+      },
+      "FallingObstacle": {
+        "originMm": [
+          338000,
+          12200,
+          0
+        ],
+        "basis": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "relativeToInitialFrontMm": [
+          280000,
+          12200,
+          0
+        ]
+      }
+    },
+    "obstacle": {
+      "targetXmm": 338000,
+      "zoneStart": 335000,
+      "zoneEnd": 341000,
+      "fallStartMs": 15400,
+      "fallSpeedMmPerSecond": 10000,
+      "landedCenterY": 3000,
+      "initialFront": 58000,
+      "trackLength": 1200000,
+      "initialCenterMm": [
+        338000,
+        12200,
+        0
+      ],
+      "sizeMm": [
+        6000,
+        6000,
+        6000
+      ],
+      "muzzleWorldMm": [
+        52000,
+        4000,
+        0
+      ],
+      "muzzleRelativeToInitialFrontMm": [
+        -6000,
+        4000,
+        0
+      ]
+    }
+  },
+  "entities": [
+    {
+      "authoringId": "Engine",
+      "role": "TRAIN",
+      "definitionRef": "train_a",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Engine",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "TrainMuzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            0,
+            4000,
+            0
+          ],
+          "abilityId": "train.basic"
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "Combat",
+      "role": "TRAIN",
+      "definitionRef": "car_combat",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Combat",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "SpawnFoot_0",
+          "role": "FOOT",
+          "positionMm": [
+            3000,
+            3213,
+            0
+          ]
+        },
+        {
+          "id": "SpawnFoot_1",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            3213,
+            0
+          ]
+        },
+        {
+          "id": "SpawnFoot_2",
+          "role": "FOOT",
+          "positionMm": [
+            -3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "Gun",
+      "role": "TRAIN",
+      "definitionRef": "car_gun",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Gun",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "SpawnFoot_3",
+          "role": "FOOT",
+          "positionMm": [
+            3000,
+            3213,
+            0
+          ]
+        },
+        {
+          "id": "SpawnFoot_4",
+          "role": "FOOT",
+          "positionMm": [
+            -3000,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "Enemy",
+      "role": "TRAIN",
+      "definitionRef": "enemy_train_first_battle",
+      "framePath": "OrdinaryLiveGeometryV01/Enemy",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryEnemyTrainV01/OrdinaryEnemyTrainV01.prefab",
+      "assetHash": "5844aaa8e930bc2b97c0fd831fa0acddf2b7cf60900b1585670c5f2f5e992d02",
+      "anchors": [
+        {
+          "id": "GunnerFoot_0",
+          "role": "FOOT",
+          "positionMm": [
+            -4000,
+            3213,
+            0
+          ]
+        },
+        {
+          "id": "GunnerFoot_1",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            3213,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            1600,
+            0
+          ],
+          "sizeMm": [
+            12000,
+            3200,
+            3000
+          ],
+          "id": "BodyCollider",
+          "role": "OCCLUDER"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_kyle",
+      "role": "OPERATOR",
+      "definitionRef": "op_kyle",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Combat/SpawnFoot_0/op_kyle",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_kyle.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_kyle",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_reina",
+      "role": "OPERATOR",
+      "definitionRef": "op_reina",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Combat/SpawnFoot_1/op_reina",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_reina.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_reina",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_eve",
+      "role": "OPERATOR",
+      "definitionRef": "op_eve",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Combat/SpawnFoot_2/op_eve",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_eve.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_eve",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_sera",
+      "role": "OPERATOR",
+      "definitionRef": "op_sera",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Gun/SpawnFoot_3/op_sera",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_sera.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_sera",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "op_mira",
+      "role": "OPERATOR",
+      "definitionRef": "op_mira",
+      "framePath": "OrdinaryLiveGeometryV01/Allies/Gun/SpawnFoot_4/op_mira",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            500,
+            1400,
+            0
+          ],
+          "abilityId": "op_mira.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "op_mira",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "Gunner0",
+      "role": "ENEMY",
+      "definitionRef": "enemy_spike_cart_gunner",
+      "framePath": "OrdinaryLiveGeometryV01/Enemy/GunnerFoot_0/Gunner0",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            -500,
+            1400,
+            0
+          ],
+          "abilityId": "enemy_spike_cart_gunner.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "Gunner0",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "Gunner1",
+      "role": "ENEMY",
+      "definitionRef": "enemy_spike_cart_gunner",
+      "framePath": "OrdinaryLiveGeometryV01/Enemy/GunnerFoot_1/Gunner1",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [
+        {
+          "id": "Foot",
+          "role": "FOOT",
+          "positionMm": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "Muzzle",
+          "role": "EMISSION",
+          "positionMm": [
+            -500,
+            1400,
+            0
+          ],
+          "abilityId": "enemy_spike_cart_gunner.basic"
+        },
+        {
+          "id": "HitAnchor",
+          "role": "HIT",
+          "positionMm": [
+            0,
+            900,
+            0
+          ]
+        }
+      ],
+      "shapes": [
+        {
+          "kind": "CAPSULE_Y",
+          "centerMm": [
+            0,
+            900,
+            0
+          ],
+          "radiusMm": 300,
+          "heightMm": 1800,
+          "id": "Gunner1",
+          "role": "HIT"
+        }
+      ]
+    },
+    {
+      "authoringId": "FallingObstacle",
+      "role": "WORLD",
+      "definitionRef": "FallingObstacle",
+      "framePath": "OrdinaryLiveGeometryV01/FallingObstacle",
+      "assetPath": "Assets/_LASTRAIL/Content/Battle/OrdinaryLiveGeometryV01/OrdinaryLiveGeometryV01.prefab",
+      "assetHash": "ff39385a50d854027fc676566c3fdc81293819fdd6d538ad6124ff3410235029",
+      "anchors": [],
+      "shapes": [
+        {
+          "kind": "BOX",
+          "centerMm": [
+            0,
+            0,
+            0
+          ],
+          "sizeMm": [
+            6000,
+            6000,
+            6000
+          ],
+          "id": "FallingObstacle",
+          "role": "OCCLUDER"
+        }
+      ]
+    }
+  ]
+}

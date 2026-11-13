@@ -1,0 +1,1 @@
+{"extends":"../../tsconfig.base.json","compilerOptions":{"types":["node"],"composite":false,"declaration":false,"declarationMap":false,"noEmit":true},"include":["../../apps/game-api/worker-configuration.d.ts","../../apps/game-api/src/combat-b-completed-progress.ts","../../tests/integration/combat-b-defeat-progress.test.ts"]}

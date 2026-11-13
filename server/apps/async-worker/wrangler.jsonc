@@ -1,0 +1,102 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lastrail-async-worker-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "ENVIRONMENT": "LOCAL",
+    "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-local"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lastrail-core-local",
+      "database_id": "local",
+      "migrations_dir": "../../packages/db/migrations"
+    }
+  ],
+  "queues": {
+    "consumers": [
+      {
+        "queue": "lastrail-admin-jobs-local",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30
+      }
+    ]
+  },
+  "env": {
+    "dev": {
+      "name": "lastrail-async-worker-dev",
+      "workers_dev": false,
+      "vars": {
+        "ENVIRONMENT": "DEV",
+        "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-dev"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "lastrail-core-dev",
+          "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436",
+          "migrations_dir": "../../packages/db/migrations"
+        }
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "lastrail-admin-jobs-dev",
+            "max_batch_size": 10,
+            "max_batch_timeout": 30
+          }
+        ]
+      },
+      "triggers": {
+        "crons": [
+          "*/5 * * * *"
+        ]
+      }
+    },
+    "prd": {
+      "name": "lastrail-async-worker-prd",
+      "workers_dev": false,
+      "vars": {
+        "ENVIRONMENT": "PRD",
+        "ADMIN_JOBS_QUEUE_NAME": "lastrail-admin-jobs-prd"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "lastrail-core-prd",
+          "database_id": "__PRD_D1_DATABASE_ID__",
+          "migrations_dir": "../../packages/db/migrations"
+        }
+      ],
+      "queues": {
+        "consumers": [
+          {
+            "queue": "lastrail-admin-jobs-prd",
+            "max_batch_size": 10,
+            "max_batch_timeout": 30
+          }
+        ]
+      },
+      "triggers": {
+        "crons": [
+          "*/5 * * * *"
+        ]
+      }
+    }
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 9a9660696e9941d794009968d640ec4e
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 0
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 1
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 0
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 0
+  userData: 'Runway approved master; 44100 Hz stereo; full loop [0,5292001); SHA256 30a9d8940bce518c05c07ebdb22d2d345ec2cfccf5d81e8159a62bb87298b3db'
+  assetBundleName:
+  assetBundleVariant:

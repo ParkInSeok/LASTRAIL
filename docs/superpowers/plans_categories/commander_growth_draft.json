@@ -1,0 +1,1239 @@
+{
+  "authoringFormat": "lastrail-commander-design-v4",
+  "status": "SUPERSEDED_GROWTH_AND_ACCESS_POLICY_REFERENCE_ONLY",
+  "publishable": false,
+  "scopeNote": "J05에서 기존 일반 성장/특성 수치 시험안과 검증 방향을 채택. 상위 특성6종 기믹은 승인. 실제 API/handler와 null 매개변수는 별도 작성·검증 전이므로 발행 불가.",
+  "commanderProgressionRulesId": "commander-progression-design-1",
+  "inheritedFramework": {
+    "levelRange": [
+      1,
+      20
+    ],
+    "maxTraitPoints": 12,
+    "freeRespec": true,
+    "presetCount": 3,
+    "trees": [
+      "TRAIN",
+      "OPERATOR",
+      "DOPAMINE"
+    ],
+    "capstoneAtTreePoints": 8,
+    "capstoneChoicesPerTree": 2
+  },
+  "levelCurve": {
+    "status": "ACCEPTED_TRIAL_BASELINE_J05",
+    "formula": "xpToNext(L)=100+40*(L-1), 1<=L<20",
+    "xpAtCap": "RETAIN_TOTAL_XP_WITHOUT_AUTOMATIC_EXTRA_LEVEL_OR_POINTS",
+    "inventoryAutoReward": false
+  },
+  "levels": [
+    {
+      "level": 1,
+      "cumulativeXpRequired": 0,
+      "xpToNextLevel": 100,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 0,
+      "fuelCapacityBonus": 0
+    },
+    {
+      "level": 2,
+      "cumulativeXpRequired": 100,
+      "xpToNextLevel": 140,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 0,
+      "fuelCapacityBonus": 0
+    },
+    {
+      "level": 3,
+      "cumulativeXpRequired": 240,
+      "xpToNextLevel": 180,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 0,
+      "fuelCapacityBonus": 0
+    },
+    {
+      "level": 4,
+      "cumulativeXpRequired": 420,
+      "xpToNextLevel": 220,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 1,
+      "fuelCapacityBonus": 5
+    },
+    {
+      "level": 5,
+      "cumulativeXpRequired": 640,
+      "xpToNextLevel": 260,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 2,
+      "fuelCapacityBonus": 5
+    },
+    {
+      "level": 6,
+      "cumulativeXpRequired": 900,
+      "xpToNextLevel": 300,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 3,
+      "fuelCapacityBonus": 5
+    },
+    {
+      "level": 7,
+      "cumulativeXpRequired": 1200,
+      "xpToNextLevel": 340,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 4,
+      "fuelCapacityBonus": 10
+    },
+    {
+      "level": 8,
+      "cumulativeXpRequired": 1540,
+      "xpToNextLevel": 380,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 5,
+      "fuelCapacityBonus": 10
+    },
+    {
+      "level": 9,
+      "cumulativeXpRequired": 1920,
+      "xpToNextLevel": 420,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 6,
+      "fuelCapacityBonus": 10
+    },
+    {
+      "level": 10,
+      "cumulativeXpRequired": 2340,
+      "xpToNextLevel": 460,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 7,
+      "fuelCapacityBonus": 15
+    },
+    {
+      "level": 11,
+      "cumulativeXpRequired": 2800,
+      "xpToNextLevel": 500,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 7,
+      "fuelCapacityBonus": 15
+    },
+    {
+      "level": 12,
+      "cumulativeXpRequired": 3300,
+      "xpToNextLevel": 540,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 8,
+      "fuelCapacityBonus": 15
+    },
+    {
+      "level": 13,
+      "cumulativeXpRequired": 3840,
+      "xpToNextLevel": 580,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 8,
+      "fuelCapacityBonus": 20
+    },
+    {
+      "level": 14,
+      "cumulativeXpRequired": 4420,
+      "xpToNextLevel": 620,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 9,
+      "fuelCapacityBonus": 20
+    },
+    {
+      "level": 15,
+      "cumulativeXpRequired": 5040,
+      "xpToNextLevel": 660,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 9,
+      "fuelCapacityBonus": 20
+    },
+    {
+      "level": 16,
+      "cumulativeXpRequired": 5700,
+      "xpToNextLevel": 700,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 10,
+      "fuelCapacityBonus": 25
+    },
+    {
+      "level": 17,
+      "cumulativeXpRequired": 6400,
+      "xpToNextLevel": 740,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 10,
+      "fuelCapacityBonus": 25
+    },
+    {
+      "level": 18,
+      "cumulativeXpRequired": 7140,
+      "xpToNextLevel": 780,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 11,
+      "fuelCapacityBonus": 25
+    },
+    {
+      "level": 19,
+      "cumulativeXpRequired": 7920,
+      "xpToNextLevel": 820,
+      "traitPointsGranted": 0,
+      "traitPointsAvailable": 11,
+      "fuelCapacityBonus": 25
+    },
+    {
+      "level": 20,
+      "cumulativeXpRequired": 8740,
+      "xpToNextLevel": null,
+      "traitPointsGranted": 1,
+      "traitPointsAvailable": 12,
+      "fuelCapacityBonus": 30
+    }
+  ],
+  "traits": [
+    {
+      "traitId": "TR01",
+      "treeId": "TRAIN",
+      "displayName": "지휘 화력",
+      "targetScope": "COMMANDER_SKILL",
+      "modifier": "DIRECT_DAMAGE_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "지휘관 스킬이 직접 발생시키는 피해",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "TR02",
+      "treeId": "TRAIN",
+      "displayName": "명령 회전",
+      "targetScope": "COMMANDER_SKILL",
+      "modifier": "COOLDOWN_REDUCTION_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "재사용 대기시간이 있는 지휘관 스킬",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "TR03",
+      "treeId": "TRAIN",
+      "displayName": "함체 보강",
+      "targetScope": "TRAIN",
+      "modifier": "MAX_HP_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "열차 전체 내구도. 객차/포탑으로 중복 전달하지 않음",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "TR04",
+      "treeId": "TRAIN",
+      "displayName": "포대 교정",
+      "targetScope": "TURRET",
+      "modifier": "ATTACK_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "탑재 포탑 공격력. 지휘관 스킬 계수에는 전파하지 않음",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "OP01",
+      "treeId": "OPERATOR",
+      "displayName": "분대 화력",
+      "targetScope": "OPERATOR",
+      "modifier": "ATTACK_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "출격 요원 공격력",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "OP02",
+      "treeId": "OPERATOR",
+      "displayName": "생존 훈련",
+      "targetScope": "OPERATOR",
+      "modifier": "MAX_HP_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "출격 요원 최대 체력",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "OP03",
+      "treeId": "OPERATOR",
+      "displayName": "기술 숙련",
+      "targetScope": "OPERATOR",
+      "modifier": "AUTO_ACTIVE_MAGNITUDE_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "요원 자체 자동 액티브의 피해/치유/보호막",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "OP04",
+      "treeId": "OPERATOR",
+      "displayName": "지원 지휘",
+      "targetScope": "COMMANDER_SKILL",
+      "modifier": "HEAL_SHIELD_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "지휘관 스킬 자체의 치유/보호막량",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "DO01",
+      "treeId": "DOPAMINE",
+      "displayName": "전술 회수",
+      "targetScope": "RUN_ECONOMY",
+      "modifier": "COMBAT_TACTICAL_SUPPLY_BONUS_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "완료한 전투 노드의 승인된 전술 보급. 환불/분해/구매에는 미적용",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "DO02",
+      "treeId": "DOPAMINE",
+      "displayName": "추가 수색",
+      "targetScope": "RUN_LOOT",
+      "modifier": "EXTRA_EQUIPMENT_CHANCE_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "장비 드랍 대상 전투 노드 완료 시 장비 1개 추가 확률",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "DO03",
+      "treeId": "DOPAMINE",
+      "displayName": "현장 협상",
+      "targetScope": "RUN_SHOP",
+      "modifier": "EQUIPMENT_PRICE_DISCOUNT_BPS",
+      "unit": "BPS",
+      "maxRank": 4,
+      "description": "작전 장비 상인의 양수 재화 가격. 유료상품/영구상점 제외",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "DO04",
+      "treeId": "DOPAMINE",
+      "displayName": "출격 보급",
+      "targetScope": "RUN_START",
+      "modifier": "TACTICAL_SUPPLY_FLAT",
+      "unit": "FLAT",
+      "maxRank": 4,
+      "description": "작전 시작 시 전술 보급 추가. 시작 원거래에 한 번만 반영",
+      "rankValuesAreCumulative": true
+    },
+    {
+      "traitId": "DO05",
+      "treeId": "DOPAMINE",
+      "displayName": "적재 공간 확장",
+      "targetScope": "RUN_INVENTORY",
+      "modifier": "EQUIPMENT_BAG_SLOTS_FLAT",
+      "unit": "SLOTS",
+      "maxRank": 4,
+      "description": "선택한 지휘관 프리셋에 투자한 랭크만큼 작전 장비 보관함을 확장한다. 레벨만으로 자동 적용하지 않는다.",
+      "rankValuesAreCumulative": true,
+      "effectStatus": "NEW_BALANCE_DRAFT",
+      "activation": "ALLOCATED_IN_ACTIVE_PRESET_AT_RUN_START"
+    }
+  ],
+  "traitRanks": [
+    {
+      "traitId": "TR01",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 300
+    },
+    {
+      "traitId": "TR01",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 600
+    },
+    {
+      "traitId": "TR01",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 900
+    },
+    {
+      "traitId": "TR01",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1200
+    },
+    {
+      "traitId": "TR02",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 200
+    },
+    {
+      "traitId": "TR02",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 400
+    },
+    {
+      "traitId": "TR02",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 600
+    },
+    {
+      "traitId": "TR02",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 800
+    },
+    {
+      "traitId": "TR03",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 300
+    },
+    {
+      "traitId": "TR03",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 600
+    },
+    {
+      "traitId": "TR03",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 900
+    },
+    {
+      "traitId": "TR03",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1200
+    },
+    {
+      "traitId": "TR04",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 200
+    },
+    {
+      "traitId": "TR04",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 400
+    },
+    {
+      "traitId": "TR04",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 600
+    },
+    {
+      "traitId": "TR04",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 800
+    },
+    {
+      "traitId": "OP01",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 200
+    },
+    {
+      "traitId": "OP01",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 400
+    },
+    {
+      "traitId": "OP01",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 600
+    },
+    {
+      "traitId": "OP01",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 800
+    },
+    {
+      "traitId": "OP02",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 300
+    },
+    {
+      "traitId": "OP02",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 600
+    },
+    {
+      "traitId": "OP02",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 900
+    },
+    {
+      "traitId": "OP02",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1200
+    },
+    {
+      "traitId": "OP03",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 250
+    },
+    {
+      "traitId": "OP03",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 500
+    },
+    {
+      "traitId": "OP03",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 750
+    },
+    {
+      "traitId": "OP03",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1000
+    },
+    {
+      "traitId": "OP04",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 300
+    },
+    {
+      "traitId": "OP04",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 600
+    },
+    {
+      "traitId": "OP04",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 900
+    },
+    {
+      "traitId": "OP04",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1200
+    },
+    {
+      "traitId": "DO01",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 200
+    },
+    {
+      "traitId": "DO01",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 400
+    },
+    {
+      "traitId": "DO01",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 600
+    },
+    {
+      "traitId": "DO01",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 800
+    },
+    {
+      "traitId": "DO02",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 250
+    },
+    {
+      "traitId": "DO02",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 500
+    },
+    {
+      "traitId": "DO02",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 750
+    },
+    {
+      "traitId": "DO02",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 1000
+    },
+    {
+      "traitId": "DO03",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 200
+    },
+    {
+      "traitId": "DO03",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 400
+    },
+    {
+      "traitId": "DO03",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 600
+    },
+    {
+      "traitId": "DO03",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 800
+    },
+    {
+      "traitId": "DO04",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 5
+    },
+    {
+      "traitId": "DO04",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 10
+    },
+    {
+      "traitId": "DO04",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 15
+    },
+    {
+      "traitId": "DO04",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 20
+    },
+    {
+      "traitId": "DO05",
+      "rank": 1,
+      "requiredCommanderLevel": 4,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 1,
+      "totalValue": 6
+    },
+    {
+      "traitId": "DO05",
+      "rank": 2,
+      "requiredCommanderLevel": 8,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 2,
+      "totalValue": 12
+    },
+    {
+      "traitId": "DO05",
+      "rank": 3,
+      "requiredCommanderLevel": 12,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 3,
+      "totalValue": 18
+    },
+    {
+      "traitId": "DO05",
+      "rank": 4,
+      "requiredCommanderLevel": 16,
+      "additionalPointCost": 1,
+      "totalAllocatedPoints": 4,
+      "totalValue": 24
+    }
+  ],
+  "capstones": [
+    {
+      "capstoneId": "TC01",
+      "treeId": "TRAIN",
+      "displayName": "Total War Doctrine",
+      "displayNameKo": "총력전 교리",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "COMMANDER_AND_TRAIN_EXTERNAL_BATTLE",
+      "ruleType": "COMMANDER_DISTINCT_SKILL_COMBO_BARRAGE",
+      "description": "지휘 스킬의 정상 사용 후 연계 시간 안에 다른 지휘 스킬을 정상 사용하면 외부 유효 표적에 보조 포격을 한 번 발생시킨다.",
+      "trigger": {
+        "rootEvent": "COMMANDER_SKILL_USE_SUCCEEDED",
+        "sequence": "TWO_DISTINCT_SKILL_IDS_WITHIN_COMBO_WINDOW",
+        "generatedEffectsCountAsSkillUse": false
+      },
+      "behavior": {
+        "firstUse": "OPEN_COMBO_WINDOW",
+        "secondDistinctUse": "CONSUME_WINDOW_AND_EMIT_ONE_AUXILIARY_BARRAGE",
+        "normalCostsAndCooldowns": "UNCHANGED",
+        "damageSource": "COMMANDER_MASTERY",
+        "turretUltimate": false
+      },
+      "limits": [
+        "한 연계 쌍에서 보조 포격 한 번; 생성 포격은 다음 연계의 사용으로 계산하지 않음",
+        "유효한 외부 표적이 없는 경우의 소모/보류 처리는 발행 전 확정; 새 외부 표적을 만들거나 내부 표적에 임의 전환하지 않음",
+        "요원/포탑 장비 능력치를 지휘관 포격의 기반값으로 끌어오지 않음"
+      ],
+      "runtimeStateFields": [
+        "firstSkillId",
+        "comboWindowRemainingSimulationMs",
+        "comboSequenceId",
+        "lastConsumedComboSequenceId"
+      ],
+      "validation": [
+        "서로 다른 실제 스킬 두 번만 연계",
+        "발생 포격으로 재귀 연계 0회",
+        "정지 중 연계시간 정지",
+        "복원 후 소모 연계 재지급 0회",
+        "기존 지원 버튼3개 유지"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_TC01_RULE_V1"
+      ],
+      "parameterBindings": {
+        "comboWindowSimulationMs": null,
+        "auxiliaryBarrageEffectDefinitionId": null,
+        "auxiliaryBarrageMagnitude": null,
+        "noValidTargetPolicy": null,
+        "sameSkillRepeatAndExpiryPolicy": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    },
+    {
+      "capstoneId": "TC02",
+      "treeId": "TRAIN",
+      "displayName": "Mobile Fortress Doctrine",
+      "displayNameKo": "이동요새 교리",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "TRAIN_AND_CARRIAGE_SHARED_DEFENSE",
+      "ruleType": "COMMANDER_SKILL_SHARED_TRAIN_BARRIER",
+      "description": "지휘 스킬 정상 사용 시 열차 공용 방벽을 형성해 열차·객차에 들어오는 적 직접 피해를 공용 용량으로 먼저 흡수한다.",
+      "trigger": {
+        "rootEvent": "COMMANDER_SKILL_USE_SUCCEEDED",
+        "generatedEffectsCountAsSkillUse": false
+      },
+      "behavior": {
+        "grant": "CREATE_OR_REPLENISH_ONE_SHARED_BARRIER",
+        "protectedTargets": [
+          "TRAIN",
+          "CARRIAGE"
+        ],
+        "intercept": "ELIGIBLE_ENEMY_DIRECT_DAMAGE",
+        "effectSource": "COMMANDER_MASTERY"
+      },
+      "limits": [
+        "공용 방벽 하나만 유지; 무제한 중첩 금지",
+        "흡수량을 객차/열차에 재적용하거나 객차→열차 전파에서 중복 차감하지 않음",
+        "기존 방어/저항/개별 보호막/피해 전파와의 순서를 한 피해 경로에 명시",
+        "요원의 개인 체력·기믹 피해·환경 피해까지 자동 확장하지 않음"
+      ],
+      "runtimeStateFields": [
+        "sharedBarrierRemaining",
+        "sharedBarrierRemainingSimulationMs",
+        "lastSourceSkillUseId",
+        "processedDamageEventIds"
+      ],
+      "validation": [
+        "복수 객차 동시피해의 순서 결정적 처리",
+        "흡수 피해 이중 전달 0회",
+        "반복 스킬 사용 상한 검사",
+        "복원 시 방벽/남은 시간 유지"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_TC02_RULE_V1"
+      ],
+      "parameterBindings": {
+        "sharedBarrierCapacity": null,
+        "sharedBarrierDurationSimulationMs": null,
+        "replenishAndRefreshPolicy": null,
+        "damagePipelineIntegrationId": null,
+        "barrierVisualDefinitionId": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    },
+    {
+      "capstoneId": "OC01",
+      "treeId": "OPERATOR",
+      "displayName": "Tactical Cross-Composition",
+      "displayNameKo": "전술 교차 편성",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "OPERATOR_SYNERGY_ONLY",
+      "ruleType": "SELECTED_EXISTING_SYNERGY_VIRTUAL_MEMBER",
+      "description": "출격 편성에 실제 존재하는 요원 시너지 태그 하나를 지정하고, 그 태그의 시너지 계산에 가상 인원1명을 추가한다.",
+      "trigger": {
+        "rootEvent": "RUN_START_SNAPSHOT_AND_NATIVE_SYNERGY_RECALCULATION"
+      },
+      "behavior": {
+        "configuration": "CHOOSE_ONE_TAG_PRESENT_IN_DEPLOYED_SQUAD",
+        "virtualMemberCount": 1,
+        "additionalOperatorCount": 0,
+        "equipmentSetContribution": 0,
+        "tagChangeDuringRun": false
+      },
+      "limits": [
+        "요원 시너지 전용; 장비의 실장착 세트 태그 개수는 변경하지 않음",
+        "없는 태그 생성/실제 요원 추가/작전 중 지정태그 변경 금지",
+        "실제 시너지 임계값·상한·요원 전투불능/이탈 계산과의 결합을 발행 전 확인"
+      ],
+      "runtimeStateFields": [
+        "selectedSynergyTagId",
+        "sourceSquadSnapshotId"
+      ],
+      "validation": [
+        "실편성에 없는 태그 거부",
+        "지정 태그 한 개에만+1",
+        "5인 및 세트1/2/3 계산 불변",
+        "프리셋변경으로 현재작전 지정태그 교체 금지"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_OC01_RULE_V1"
+      ],
+      "parameterBindings": {
+        "eligibleOperatorSynergyCatalogId": null,
+        "nativeSynergyLifecyclePolicyId": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    },
+    {
+      "capstoneId": "OC02",
+      "treeId": "OPERATOR",
+      "displayName": "Elite Mobile Strike Team",
+      "displayNameKo": "정예 기동 타격대",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "OPERATOR_SQUAD_ELITE_BOSS_TARGET",
+      "ruleType": "ACTIVE_HIT_BREAKTHROUGH_MARK_AND_PURSUIT",
+      "description": "요원의 자동 액티브가 정예·보스에게 적중하면 돌파 표식을 남긴다. 다른 요원들이 표적을 우선 공격하고 각자의 첫 유효 기본 공격에 추격 피해를 한 번 추가한다.",
+      "trigger": {
+        "rootEvent": "OPERATOR_AUTO_ACTIVE_HIT",
+        "targetKinds": [
+          "ELITE",
+          "BOSS"
+        ]
+      },
+      "behavior": {
+        "mark": "ONE_ACTIVE_TARGET",
+        "pursuers": "OTHER_DEPLOYED_OPERATORS",
+        "targeting": "PRIORITIZE_WITHIN_NATIVE_RANGE_AND_VALID_ACTION_RULES",
+        "proc": "ONE_PURSUIT_PER_ELIGIBLE_OPERATOR_PER_MARK"
+      },
+      "limits": [
+        "객차 간 자동 추격/전장 영역 월경/공격 준비 무한 취소 금지",
+        "재발동 간격 및 표적 사망/이탈·동시적중 순서 정의",
+        "추격 추가피해로 표식/추격을 재귀 생성하지 않음"
+      ],
+      "runtimeStateFields": [
+        "markedTargetId",
+        "markSourceOperatorId",
+        "markSequenceId",
+        "markRemainingSimulationMs",
+        "markRearmRemainingSimulationMs",
+        "pursuitConsumedOperatorIds"
+      ],
+      "validation": [
+        "각 요원 표식당1회",
+        "발동자 자신은 다른요원 조건에 포함하지 않음",
+        "사거리/객차/공격가능성 준수",
+        "표적사망·복원·다단적중 처리"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_OC02_RULE_V1"
+      ],
+      "parameterBindings": {
+        "markDurationSimulationMs": null,
+        "markRearmSimulationMs": null,
+        "pursuitDamageEffectDefinitionId": null,
+        "pursuitDamageCoefficient": null,
+        "markRetargetAndDeathPolicy": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    },
+    {
+      "capstoneId": "DC01",
+      "treeId": "DOPAMINE",
+      "displayName": "ALL IN",
+      "displayNameKo": "올인",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "ELIGIBLE_COMBAT_NODE_AND_RUN_REWARD",
+      "ruleType": "PRECOMBAT_ALL_IN_REINFORCEMENT_CONTRACT",
+      "description": "지원 전투 노드 진입 전에 일반/올인 진행을 선택한다. 올인은 원래 전투 뒤 정예 증원 단계를 추가하며 전체 완료 시 강화된 작전 보상을 지급한다.",
+      "trigger": {
+        "rootEvent": "BEFORE_ELIGIBLE_COMBAT_NODE_ENTRY",
+        "choiceOwner": "PLAYER_WITH_SERVER_COMMIT"
+      },
+      "behavior": {
+        "choices": [
+          "NORMAL",
+          "ALL_IN"
+        ],
+        "allIn": "APPEND_APPROVED_ELITE_REINFORCEMENT_STAGE",
+        "completion": "BASE_AND_REINFORCEMENT_COMPLETE",
+        "rewardScope": [
+          "RUN_EQUIPMENT",
+          "TACTICAL_SUPPLY"
+        ],
+        "rewardGrant": "ONE_ATOMIC_NODE_SETTLEMENT"
+      },
+      "limits": [
+        "원래 전투 결과를 본 뒤 올인 전환 금지",
+        "추가 단계도 같은 노드; 개전/노드당1회 인챈트 재초기화 금지",
+        "증원/보상 원본을 노드 계획에 고정; 추가 증강 보장 없음",
+        "런 장비를 쓸 다음 전투가 없는 최종 노드는 별도 적격성 확인",
+        "DO02 일반 추가장비 판정과 올인 보상계획을 중복 생성하지 않음"
+      ],
+      "runtimeStateFields": [
+        "nodeId",
+        "choice",
+        "choiceReceiptId",
+        "nodePlanVersion",
+        "reinforcementStageState",
+        "rewardSettlementReceiptId"
+      ],
+      "validation": [
+        "NORMAL은 기존 전투 유지",
+        "ALL_IN선택 원자 저장/재시도",
+        "중간 원전투 완료를 노드완료로 조기정산 금지",
+        "인챈트 초기화 0회",
+        "추가 영구/광고보상 자동생성 금지"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_DC01_RULE_V1"
+      ],
+      "parameterBindings": {
+        "eligibleCombatNodePolicyId": null,
+        "reinforcementPlanPolicyId": null,
+        "allInRewardPlanPolicyId": null,
+        "failureAndAbortRewardPolicyId": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    },
+    {
+      "capstoneId": "DC02",
+      "treeId": "DOPAMINE",
+      "displayName": "Marked for Profit",
+      "displayNameKo": "표적 수익",
+      "requiredTreePoints": 8,
+      "additionalPointCost": 0,
+      "exclusiveGroup": "TREE_CAPSTONE",
+      "targetScope": "ELIGIBLE_COMBAT_NODE_TARGET_OBJECTIVE",
+      "ruleType": "HIGH_VALUE_TARGET_REINFORCEMENT_OBJECTIVE",
+      "description": "지원 전투 노드의 기존 적 하나를 고가치 표적으로 지정한다. 지원 호출 완료 전 제거하면 추가 작전 보상, 방치하면 예정 증원이 발생한다.",
+      "trigger": {
+        "rootEvent": "SERVER_APPROVED_COMBAT_NODE_PLAN"
+      },
+      "behavior": {
+        "target": "EXISTING_ELIGIBLE_ENEMY",
+        "objective": "KILL_BEFORE_SUPPORT_CALL_COMPLETES",
+        "failureConsequence": "APPROVED_REINFORCEMENTS",
+        "rewardGrant": "RECORD_OUTCOME_THEN_ONE_NODE_SETTLEMENT",
+        "rewardScope": [
+          "RUN_EQUIPMENT",
+          "TACTICAL_SUPPLY"
+        ]
+      },
+      "limits": [
+        "표적·호출·증원·보상 계획 고정; 재접속/창재열기 재추첨 금지",
+        "동일 적/소환물 반복수익 금지; 통과·시나리오제거는 성공처치 아님",
+        "최대 표적수 및 deadline동시처치 순서 발행 전 확정",
+        "DC02를 엘리트 재화 단순+20%로 계산하지 않음"
+      ],
+      "runtimeStateFields": [
+        "nodeId",
+        "targetEntityId",
+        "objectiveId",
+        "callRemainingSimulationMs",
+        "objectiveOutcome",
+        "reinforcementTriggered",
+        "rewardSettlementReceiptId"
+      ],
+      "validation": [
+        "표적 고정",
+        "호출완료와 처치 순서 결정적",
+        "통과 보상0",
+        "노드당 수령1회",
+        "복원후 표적/타이머/원정산 유지"
+      ],
+      "effectStatus": "RULE_APPROVED_PARAMETERS_UNBOUND",
+      "implementationStatus": "NOT_IMPLEMENTED_OR_VERIFIED_BY_THIS_DOCUMENT",
+      "requiredCapabilities": [
+        "COMMANDER_CAPSTONE_DC02_RULE_V1"
+      ],
+      "parameterBindings": {
+        "eligibleTargetPolicyId": null,
+        "supportCallDelaySimulationMs": null,
+        "maxMarkedTargetsPerNode": null,
+        "reinforcementPlanPolicyId": null,
+        "objectiveRewardPlanPolicyId": null,
+        "deadlineTieBreakPolicyId": null
+      },
+      "parameterBindingPolicy": "ALL_REQUIRED_BEFORE_PUBLISH; NULL_IS_NOT_ZERO_OR_DEFAULT"
+    }
+  ],
+  "unlocks": [
+    {
+      "displayContentKey": "VEX",
+      "requiredCommanderLevel": 4,
+      "status": "INHERITED_RULE",
+      "runtimeContentIdBinding": "REQUIRED_FROM_EXISTING_CATALOG"
+    }
+  ],
+  "modifierPolicies": [
+    {
+      "modifier": "COMMANDER_SKILL_MAGNITUDE",
+      "allowedSources": [
+        "COMMANDER_MASTERY",
+        "EXPLICIT_AUGMENT"
+      ],
+      "blockedSources": [
+        "EQUIPMENT_BASE",
+        "EQUIPMENT_UNIQUE",
+        "EQUIPMENT_SET",
+        "INDEPENDENT_ENCHANT"
+      ],
+      "formula": "base*(1+masteryBps/10000)*(1+augmentBps/10000)",
+      "numericStatus": "NEW_COMPOSITION_DRAFT",
+      "appliesTo": "NUMERIC_MAGNITUDE_MODIFIERS_ONLY; CAPSTONE_BEHAVIOR_USES_RULE_HANDLERS"
+    },
+    {
+      "modifier": "COMMANDER_SKILL_COOLDOWN",
+      "minRemainingRatioBps": 5000,
+      "combineReductionBps": "ADD_MASTERY_AND_EXPLICIT_AUGMENT_THEN_CLAMP",
+      "formula": "max(base*0.5,base*(1-(masteryReductionBps+augmentReductionBps)/10000))",
+      "numericStatus": "TRIAL_LIMIT"
+    },
+    {
+      "modifier": "EXTRA_EQUIPMENT_CHANCE_BPS",
+      "combine": "ADDITIVE",
+      "maxExtraItemsPerEligibleNode": 1,
+      "guard": "NO_FINAL_NODE_WITHOUT_FURTHER_RUN_EQUIPMENT_USE; NO_AUGMENT_GUARANTEE",
+      "sourceBoundary": "DO02_AND_OTHER_EXPLICIT_NUMERIC_BONUSES_ONLY; DC01_DC02_USE_APPROVED_NODE_REWARD_PLANS_NOT_OLD_PERCENTAGES"
+    },
+    {
+      "modifier": "EQUIPMENT_PRICE_DISCOUNT_BPS",
+      "rounding": "CEILING_AFTER_COMBINING_ELIGIBLE_DISCOUNTS",
+      "minimumPositivePrice": 1,
+      "guard": "NO_PERMANENT_STORE; NO_NEGATIVE_COST; NO_REFUND_MULTIPLIER"
+    }
+  ],
+  "snapshotPolicy": {
+    "when": "FIRST_ACCEPTED_RUN_START",
+    "fields": [
+      "commanderLevel",
+      "commanderProgressionRulesId",
+      "commanderRevision",
+      "presetId",
+      "traitRanks",
+      "capstoneIds",
+      "equipmentBagSlots",
+      "resolvedModifiers",
+      "capstoneRuleDefinitions",
+      "capstoneRequiredCapabilities",
+      "selectedCapstoneConfiguration"
+    ],
+    "mutationDuringRun": "NEXT_RUN_ONLY",
+    "consistency": "PIN_SELECTED_TRAITS_AND_BAG_CAPACITY_TOGETHER; DO_NOT_COMBINE_OLD_CAPACITY_WITH_NEW_PRESET_COMBAT_BONUSES",
+    "runtimeState": "NODE_AND_SIMULATION_CHECKPOINT_WITH_PINNED_CAPSTONE_STATE_AND_SERVER_RECEIPTS; NOT_ACCOUNT_PERMANENT_CURRENCY"
+  },
+  "inventoryPolicy": {
+    "equippedItemsUseBagSlots": false,
+    "oneUnequippedInstanceUsesOneSlot": true,
+    "overflow": "HOLD_CURRENT_REWARD_BATCH_AND_BLOCK_NEXT_NODE_UNTIL_RESOLVED",
+    "endOfRun": "REMOVE_RUN_ITEMS_KEEP_UNLOCKED_TRAITS_POINTS_AND_PRESETS; RECOMPUTE_CAPACITY_FOR_NEXT_RUN",
+    "baseSlots": 24,
+    "baseSlotsStatus": "BALANCE_DRAFT",
+    "capacitySource": "BASE_PLUS_ALLOCATED_ACTIVE_PRESET_TRAIT",
+    "capacityTraitId": "DO05",
+    "capacityFormula": "baseSlots + traitTotalValue(DO05, selectedPreset.rank), rank0 = 0",
+    "levelDirectGrowth": false,
+    "rank0Bonus": 0,
+    "calculationAt": "FIRST_ACCEPTED_RUN_START",
+    "progressionRole": "COMMANDER_LEVEL_UNLOCKS_POINTS_AND_RANK_ELIGIBILITY_NOT_AUTOMATIC_BAG_CAPACITY",
+    "sameRunRespec": "DO_NOT_CHANGE_ANY_PINNED_TRAIT_MODIFIERS_OR_BAG_CAPACITY",
+    "numericStatus": "BASE24_AND_RANK_PLUS6_12_18_24_ARE_INITIAL_TRIAL_VALUES"
+  },
+  "requiresBindings": [
+    "existing_account_profile_and_commander_xp_ledger",
+    "existing_fuel_base_capacity_and_refill_policy",
+    "actual_three_commander_skill_definitions_and_effect_kinds",
+    "actual_trait_handler_and_item_catalog_ids",
+    "production_progression_migration_policy",
+    "capstone_rule_handlers_and_numeric_bindings",
+    "operator_synergy_catalog_and_lifecycle_policy",
+    "eligible_node_reinforcement_and_reward_plans",
+    "capstone_schema_capability_client_admission_mapping"
+  ],
+  "productionGates": [
+    "APPROVED_NUMERIC_BALANCE",
+    "HANDLER_AND_REFERENCE_VALIDATION",
+    "PROGRESSION_RULE_FINGERPRINT_EQUAL_ACROSS_CONCURRENT_PRODUCTION_BUILDS",
+    "NO_DUPLICATE_LEVEL_REWARDS",
+    "SERVER_SIDE_ATOMIC_RUN_START_AND_PROGRESS_GRANT",
+    "NO_AUTOMATIC_LEVEL_BAG_GROWTH; ACTIVE_PRESET_CAPACITY_TRAIT_AND_RUN_SNAPSHOT_CONSISTENCY",
+    "ALL_CAPSTONE_REQUIRED_BINDINGS_RESOLVED",
+    "CAPSTONE_HANDLER_CAPABILITY_COMPATIBILITY",
+    "CAPSTONE_RECURSION_PAUSE_RESTORE_AND_REWARD_IDEMPOTENCY_TESTS",
+    "NO_OLD_FLAT_CAPSTONE_MODIFIER_APPLICATION"
+  ],
+  "authoringRevision": 5,
+  "designBasis": {
+    "latestUserCorrection": "지휘관 내실은 지휘 스킬 강화 등 작전 전투 보너스 특성 체계이며 장비 보관함 확장도 그중 선택하는 특성이다.",
+    "inventoryLevelAutoGrowth": false,
+    "numericStatus": "ACCEPTED_AS_TRIAL_BASELINE_NOT_SIMULATION_VALIDATED",
+    "existingTraitEffects": "RETAINED_FROM_PREVIOUS_DRAFT",
+    "additionalTrait": "DO05",
+    "latestUserApproval": "2026-09-20: 규칙 변경형 상위 특성6종 교체안 ㄱㄱ 승인. 세부 계수/시간/보상/실제처리기·wire 연결은 미확정.",
+    "capstoneRulesStatus": "APPROVED; OLD_FLAT_STAT_CAPSTONES_REPLACED",
+    "environmentPolicy": "DEV_ONLY_FOR_ALL_NONPRODUCTION_TESTS; FUTURE_PROD_SEPARATE; NO_STG_OR_SAME_PROD_TEST_MODE_IN_CURRENT_SCOPE",
+    "latestAudit": "2026-09-21: 이 세션의 최신 사용자 결정을 우선. 수치/미연결 binding은 미확정 유지",
+    "latestJ05Approval": "2026-09-21: 추천 구조와 이미 제시한 수치 시험안을 채택; 제시되지 않은 값을 임의 확정하지 않음."
+  },
+  "capstoneRuntimePolicy": {
+    "owner": "RUN_LOCAL_SIMULATION_PLUS_SERVER_APPROVED_PLAN_AND_REWARD_OWNERS",
+    "effectSource": "COMMANDER_MASTERY",
+    "numericModifierFallback": false,
+    "generatedEffectRecursion": "DENY_UNLESS_EXPLICITLY_APPROVED_IN_FIXED_RULE",
+    "clock": "SIMULATION_CLOCK; RESPECT_PAUSE_AND_AUGMENT_HOLD",
+    "equipmentSetCount": "ACTUAL_EQUIPPED_SINGLE_TAGS_ONLY",
+    "turretUltimate": false,
+    "guaranteedAugmentGrants": false,
+    "parameterPolicy": "BLOCK_PUBLISH_AND_RUN_IF_REQUIRED_BINDING_OR_HANDLER_IS_MISSING",
+    "definitionVersion": "PIN_WITH_RUN_BALANCE_VERSION",
+    "restorePolicy": "RESTORE_ORIGINAL_NODE_STATE_AND_RECEIPTS_WITHOUT_RETRIGGER_OR_REDRAW",
+    "draftCapabilityNames": "LOGICAL_PROPOSALS_NOT_EXISTING_PRODUCTION_HANDLER_IDS"
+  },
+  "reviewedAt": "2026-09-21",
+  "references": {
+    "deployment": "08_BALANCE_RELEASE.md",
+    "commander": "09_COMMANDER_PROGRESSION.md",
+    "equipment": "13_EQUIPMENT_ENCHANTMENTS.md",
+    "map": "14_MAP_EVENTS_DROPS.md",
+    "decisions": "00_INDEX.md#open-decisions"
+  },
+  "supersededBy": "commander_tree_expansion_draft.json",
+  "supersededScope": "Old12P/8P/free-capstone/point schedule; historical authoring data only. New design requires approval and validation."
+}

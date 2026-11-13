@@ -1,0 +1,7 @@
+import {afterEach,it,expect,vi} from 'vitest';
+import {buildServer} from './server';
+import {createUpstreamClient} from './upstream';
+const config={profile:'local' as const,host:'127.0.0.1',port:0,adminApiBaseUrl:'https://test.invalid',localAccessSubject:'synthetic'};
+const version='community.moderation-grants.v1.20261008';
+afterEach(()=>vi.unstubAllGlobals());
+it('local BFF carries version/key/body and upstream error without auth expansion',async()=>{const f=vi.fn(async()=>Response.json({error:'community_grant_revision_conflict'},{status:409}));vi.stubGlobal('fetch',f);const server=buildServer({config,upstream:createUpstreamClient(config)});try{const r=await server.inject({method:'POST',url:'/api/community/moderator-grants/owner',headers:{'Idempotency-Key':'key','X-Community-Moderation-Grant-Version':version},payload:{reason:'test'}});expect(r.statusCode).toBe(409);expect(r.json().error).toBe('community_grant_revision_conflict');expect(r.headers['cache-control']).toBe('no-store');const [url,init]=f.mock.calls[0] as unknown as [URL,RequestInit];expect(url.pathname).toBe('/v1/admin/community/moderator-grants/owner');expect(new Headers(init.headers).get('X-Community-Moderation-Grant-Version')).toBe(version);expect(new Headers(init.headers).get('Idempotency-Key')).toBe('key');expect((await server.inject('/api/community/moderator-grants/owner?environment=PRD')).statusCode).toBe(400);expect((await server.inject('/api/community/moderator-grants/bad%20id')).statusCode).toBe(400);}finally{await server.close();}});

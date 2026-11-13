@@ -1,0 +1,30 @@
+# Original run / operation risk metadata binding
+
+Contract: `combat.b-risk-run-binding.v1.20261003` (S-B-RISK-RUN-BINDING-18).
+
+`GET /v1/runs/{runId}/operation-risk-binding`
+
+Required: existing signed game Bearer, active original session/account, exact `X-Combat-B-Risk-Binding-Version`. No query or body. Optional `If-Match` is the exact bare lowercase 64-character packetHash returned by this contract; weak, quoted or list values fail as stale. Responses always `Cache-Control: no-store`; success ETag is that same bare hash. No automatic retry of a write exists: there are no writes. On stale, consumers discard the progress projection and reread; do not resubmit invented risk/progress/context values.
+
+## Authoritative owners and response
+
+One SQL join reads owned `runs`, consumed owned `operation_previews`, `run_snapshots`, `operation_map_states`, `accounts`. It checks run/preview/operation/risk/balance/admission identity, exact original snapshot bytes, original response consistency, original map and private pinned publication using existing owner kernels. Original publication hashes validate integrity, not executor support. No current catalog lookup or historical upgrade occurs. Async validation and the final authentication await are followed by fresh source fences. Original snapshots have no assumed B profile or risk application version.
+
+- `frozen`: authenticated accountId, runId, operationPreviewId, operationId, original selectedRisk, original balanceVersion/contentVersion/departureVersion, SHA256 of exact UTF8 start snapshot. `originalCombatContextId` and `riskApplicationVersion` are null because this original owner does not pin these supported B contracts. Run ID never substitutes for native context ID.
+- `progress`: original persisted revision, SHA256 of exact state JSON, phase, current visited node, visitDepth, pendingEdgeId, pending-transaction blocking. Actual visited depths 1..4 EARLY,5..8 MIDDLE,9..11 LATE; entry0 has null band/NO_VISITED_NODE, boss12 null band/BOSS_SEPARATE_PROFILE. Pending destination is not visited. This classification identifies position, not authorization to apply S17 multipliers to a legacy snapshot.
+- `originalProfile`: original ORDINARY_12_NODE profile and definitionVersion, canonical planHash, original publication version/hash, visited node encounter reference/version/definitionHash. Historical missing publication remains null. Encounter payloads and private rewards are not exposed or reinterpreted as raw HP/damage.
+- `runStatus` and `support`: metadata=true, activeRun is exactly original status ACTIVE, scaling=false, missionStart=false. Terminal metadata may be read but never becomes command/combat authority.
+- `missingSources`: ORIGINAL_PINNED_RISK_APPLICATION_VERSION, ORIGINAL_NATIVE_COMBAT_CONTEXT, ORIGINAL_UNSCALED_HP_OR_EHP, ORIGINAL_RAW_ACTION_DAMAGE, ORIGINAL_RISK_PROGRESS_APPLIED_FLAGS, SUPPORTED_B_RUNTIME_PROFILE.
+- `packetHash`: SHA256 of canonical complete packet excluding itself. `readPinnedRiskRunBinding` is async, strict, and requires externally trusted authenticated account/run/startHash/current revision/packetHash. A packet's own hash is never trusted by itself. `requireRiskRunScalingSource` always rejects this metadata version with combat_b_risk_run_raw_profile_unavailable.
+
+## Errors and environment
+
+Existing auth errors: auth_required/access_token_invalid/auth_session_invalid 401, account_not_active 403, auth_not_configured 500. Query/body/bounded contract violations 400. Version conflict, stale, run_not_found (including another account), account_inactive, source_missing, departure_conflict, profile_unsupported, plan_conflict, source_invalid and pinned_conflict are 409 `combat_b_risk_run_*`. Original invalid map/publication/state errors retain `operation_map_*` 409. Legacy ORDINARY_15_WAVE/raid/world profiles are not relabelled B. Unknown storage failures propagate through the existing error owner rather than returning success.
+
+Verified environment is isolated LOCAL SQL.js with all original 98 migrations, original signed auth and actual game app route. No DEV/production deployment or usable public URL is established by this change. Real TCP recipe and sanitized packet examples: QA/CommanderS1-20260922/combat-b-risk-run-binding-traces-20261003.mts and .json. Run from canonical server with `node node_modules/tsx/dist/cli.mjs --tsconfig tsconfig.base.json D:/Project/LASTRAIL/QA/CommanderS1-20260922/combat-b-risk-run-binding-traces-20261003.mts`. Recipe binds ephemeral127.0.0.1, restricts to this GET route, keeps credentials private, compares SQL bytes before/after every request and closes the listener/SQL owner. Retained rows and depth changes are explicit test metadata, not real player admission or native combat source. No 700/60 projection or Scout mapping is seeded.
+
+## Consumer release and remaining dependency
+
+U17 has actual 73 PASS / 15 signed combinations and 15 current pins. U18 may implement this metadata transport/strict pinned reader/progress source and unsupported scaling behavior now. Preserve the existing U17 numeric-defense/shield/native HP pipeline; do not feed a legacy metadata packet into it as supported B physics or open START. UI screen connection remains a separate task after approved art.
+
+Actual B combat requires a supported original operation/enemy executor definition supplying original unscaled HP or EHP, rawACTION, applied-version flags and native combat context, plus original departure pinning of the approved risk application version. Recommended boundary: a new B-specific departure/profile contract with these actual immutable sources; leave all old runs on original snapshots and do not retrofit S17 versions. Scout same-car targeting and ATK24-to-raw60 coefficient mapping are separate unapproved policy choices. No operating admission, resources/rewards, new unlock rules, deployment or world/raid policies are authorized here.

@@ -1,0 +1,20 @@
+import {setupBDeparturePinFixture} from './combat-b-departure-pin-fixture';
+import {BSelectionStore,selectionVersion} from '../../apps/game-api/src/combat-b-selection-store';
+import {BRefitStore} from '../../apps/game-api/src/combat-b-refit-store';
+import {PersistedBSelectionCatalog,PersistedBRefitSource} from '../../apps/game-api/src/combat-b-persisted-sources';
+import {prepareBDepartureSnapshot} from '../../apps/game-api/src/departure';
+const selection={version:'combat.b-placement.v2.20261002',mountedTurrets:[],placements:[{slot:0,carriageId:'LOCAL_KIND',occupant:{kind:'OPERATOR',operatorId:'op_kyle'}},{slot:4,carriageId:'LOCAL_KIND',occupant:{kind:'CARGO'}}]};
+export async function persistedBDepartureFixture(operatorId='op_kyle'){const f=await setupBDeparturePinFixture(),now=Date.now();
+ f.sql.run("DELETE FROM account_formation; DELETE FROM account_train_loadout; INSERT INTO account_carriages(account_id,carriage_id) VALUES('a','LOCAL_KIND')");
+ f.sql.run("INSERT OR IGNORE INTO account_operators(account_id,operator_id,acquired_at) VALUES('a',?,0)",[operatorId]);
+ for(let slot=0;slot<5;slot++)f.sql.run('INSERT INTO operator_training_core_slots(account_id,slot_index,operator_id,trained_level,revision) VALUES(?,?,?,?,1)',['a',slot,slot===0?operatorId:'op'+slot,10]);
+ f.sql.run('INSERT INTO combat_b_account_catalog VALUES(?,1,?)',['a',JSON.stringify({version:'LOCAL_EXPLICIT_PERSISTED_CATALOG',status:'PERSISTED_ACCOUNT_SOURCE',unlockedSlotCount:5,carriages:[{carriageId:'LOCAL_KIND',occupants:['OPERATOR','CARGO']}]})]);
+ for(const instance of ['physical-0','physical-4'])f.sql.run('INSERT INTO combat_b_carriage_instances VALUES(?,?,?,1)',['a',instance,'LOCAL_KIND']);
+ const source={status:'PERSISTED_ACCOUNT_SOURCE',ranks:['BCB01','BCB02','BCB03','BCB04','BCB05','BCB06','BCB07'].map(type=>({type,rank:1})),instances:[{slot:0,instanceId:'physical-0',carriageId:'LOCAL_KIND'},{slot:4,instanceId:'physical-4',carriageId:'LOCAL_KIND'}]};
+ const auth={accountId:'a',sessionId:'s',accessExpiresAt:now+30000},catalog=new PersistedBSelectionCatalog(),store=new BSelectionStore(f.env.DB,catalog);
+ await store.save(auth,{version:selectionVersion,expectedRevision:0,catalogVersion:'LOCAL_EXPLICIT_PERSISTED_CATALOG',expectedCatalogRevision:1,selection:{...selection,placements:selection.placements.map(p=>p.occupant.kind==='OPERATOR'?{...p,occupant:{kind:'OPERATOR',operatorId}}:p)}},'b-selected');
+ f.sql.run('INSERT INTO combat_b_account_refit_sources VALUES(?,1,1,?)',['a',JSON.stringify(source)]);
+ const refitStore=new BRefitStore(f.env.DB,new PersistedBRefitSource(),catalog),r=await refitStore.read(auth);
+ await refitStore.save(auth,{version:r.version,expectedRevision:0,selectionRevision:1,rankRevision:1,definitionHash:r.definitionHash,sourceHash:r.sourceHash,refits:[{slot:0,type:'BCB01',rank:1},{slot:4,type:'BCB06',rank:1}]},'b-refit');
+ return {...f,auth,prepare:(owner=f.owner,baseJson=f.baseJson)=>prepareBDepartureSnapshot(f.env.DB,auth,f.newRunId,baseJson,owner)};
+}

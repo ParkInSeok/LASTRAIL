@@ -1,0 +1,659 @@
+{
+  "version": "unity.ordinary-native-authoring.candidate.v1.20261031",
+  "scope": "AUTHORING_MEASUREMENTS_AND_EXPLICIT_CANDIDATES_NOT_REGISTERED_RUNTIME",
+  "executionVerified": false,
+  "axis": "X_FORWARD_Y_UP_Z_SIDE",
+  "millimetersPerUnit": 1000,
+  "sourceHashes": {
+    "Assets/_LASTRAIL/Content/Battle/OrdinaryRoofSpawnV01/OrdinaryRoofSpawnV01.prefab": "f999d69e5fedde68526fad4d9befe0aff21686ce9b4d299ae3de4cd944f6c797",
+    "Assets/_LASTRAIL/Content/Battle/OrdinaryEnemyTrainV01/OrdinaryEnemyTrainV01.prefab": "5844aaa8e930bc2b97c0fd831fa0acddf2b7cf60900b1585670c5f2f5e992d02",
+    "Assets/_LASTRAIL/QA/MiraJudgementV1/MiraApprovedJudgementV1.prefab": "5c39aac70c7dde84f6f1353ccf1f4a4a3061485971030b250d80bdb9b802d59b",
+    "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png": "0bdfbbe9c0cd122faf578ffb0029b6c457dd2b6e78bbe2bf5e8b6a3a02b7b831"
+  },
+  "bodies": [
+    {
+      "role": "Engine",
+      "sourceFrame": "Engine",
+      "frameToAuthoringWorldMm": [
+        1.0,
+        0.0,
+        0.0,
+        27000.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "Engine",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            }
+          ],
+          "geometryHash": "sha256:e0c1ab8738d0c567e51f2e2600409db4524e1ea1656cf114db094814d25211f4",
+          "sourceRevision": 1,
+          "packetHash": "sha256:f6476b6d4bbf1ad716f8701ab4c0b910172ed182978f021a490a51ecf96ab68b"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Engine\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:e0c1ab8738d0c567e51f2e2600409db4524e1ea1656cf114db094814d25211f4\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Engine\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      },
+      "twoDirectionBodyRaycastVerified": true
+    },
+    {
+      "role": "Combat",
+      "sourceFrame": "Combat",
+      "frameToAuthoringWorldMm": [
+        1.0,
+        0.0,
+        0.0,
+        14000.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "Combat",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "SpawnFoot_0",
+              "positionMm": [
+                3000,
+                3213,
+                0
+              ]
+            },
+            {
+              "id": "SpawnFoot_1",
+              "positionMm": [
+                0,
+                3213,
+                0
+              ]
+            },
+            {
+              "id": "SpawnFoot_2",
+              "positionMm": [
+                -3000,
+                3213,
+                0
+              ]
+            }
+          ],
+          "geometryHash": "sha256:44e0cc8cdd3171d84e8c87d94ec746e4961f3fc4c4494a8f9439a6c995b532a6",
+          "sourceRevision": 1,
+          "packetHash": "sha256:2cbb253ca30fe0c10b449a58158640c600623bd9f7c793316d00c53997b349ae"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]},{\"id\":\"SpawnFoot_0\",\"positionMm\":[3000,3213,0]},{\"id\":\"SpawnFoot_1\",\"positionMm\":[0,3213,0]},{\"id\":\"SpawnFoot_2\",\"positionMm\":[-3000,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Combat\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]},{\"id\":\"SpawnFoot_0\",\"positionMm\":[3000,3213,0]},{\"id\":\"SpawnFoot_1\",\"positionMm\":[0,3213,0]},{\"id\":\"SpawnFoot_2\",\"positionMm\":[-3000,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:44e0cc8cdd3171d84e8c87d94ec746e4961f3fc4c4494a8f9439a6c995b532a6\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Combat\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      },
+      "twoDirectionBodyRaycastVerified": true
+    },
+    {
+      "role": "Gun",
+      "sourceFrame": "Gun",
+      "frameToAuthoringWorldMm": [
+        1.0,
+        0.0,
+        0.0,
+        1000.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "Gun",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "CouplerFront",
+              "positionMm": [
+                6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "CouplerRear",
+              "positionMm": [
+                -6000,
+                3200,
+                0
+              ]
+            },
+            {
+              "id": "RoofFrontLeft",
+              "positionMm": [
+                6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofFrontRight",
+              "positionMm": [
+                6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "RoofRearLeft",
+              "positionMm": [
+                -6000,
+                3200,
+                -1500
+              ]
+            },
+            {
+              "id": "RoofRearRight",
+              "positionMm": [
+                -6000,
+                3200,
+                1500
+              ]
+            },
+            {
+              "id": "SpawnFoot_3",
+              "positionMm": [
+                3000,
+                3213,
+                0
+              ]
+            },
+            {
+              "id": "SpawnFoot_4",
+              "positionMm": [
+                -3000,
+                3213,
+                0
+              ]
+            }
+          ],
+          "geometryHash": "sha256:d135a81f466b7f0671b430d62c06ecf6b635f85350bba35b4d402ddb1a41bcb5",
+          "sourceRevision": 1,
+          "packetHash": "sha256:5e33a807d5b1e47f9291fceaece6cfd6050cc6a5fa65f626567be05f4f9e9e9f"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]},{\"id\":\"SpawnFoot_3\",\"positionMm\":[3000,3213,0]},{\"id\":\"SpawnFoot_4\",\"positionMm\":[-3000,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Gun\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"CouplerFront\",\"positionMm\":[6000,3200,0]},{\"id\":\"CouplerRear\",\"positionMm\":[-6000,3200,0]},{\"id\":\"RoofFrontLeft\",\"positionMm\":[6000,3200,-1500]},{\"id\":\"RoofFrontRight\",\"positionMm\":[6000,3200,1500]},{\"id\":\"RoofRearLeft\",\"positionMm\":[-6000,3200,-1500]},{\"id\":\"RoofRearRight\",\"positionMm\":[-6000,3200,1500]},{\"id\":\"SpawnFoot_3\",\"positionMm\":[3000,3213,0]},{\"id\":\"SpawnFoot_4\",\"positionMm\":[-3000,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:d135a81f466b7f0671b430d62c06ecf6b635f85350bba35b4d402ddb1a41bcb5\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Gun\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      },
+      "twoDirectionBodyRaycastVerified": true
+    },
+    {
+      "role": "Enemy",
+      "sourceFrame": "Enemy",
+      "frameToAuthoringWorldMm": [
+        1.0,
+        0.0,
+        0.0,
+        43000.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "measurement": {
+        "packet": {
+          "version": "unity.combat-b.scene-measurement.v1.20261020",
+          "sourceId": "Enemy",
+          "provenance": "UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY",
+          "unitContractId": "b-physical-authoring-millimeter-v01",
+          "millimetersPerUnit": 1000.0,
+          "coordinateSpace": "BOUND_FRAME_LOCAL",
+          "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO",
+          "bodyCornersMm": [
+            [
+              -6000,
+              0,
+              -1500
+            ],
+            [
+              -6000,
+              0,
+              1500
+            ],
+            [
+              -6000,
+              3200,
+              -1500
+            ],
+            [
+              -6000,
+              3200,
+              1500
+            ],
+            [
+              6000,
+              0,
+              -1500
+            ],
+            [
+              6000,
+              0,
+              1500
+            ],
+            [
+              6000,
+              3200,
+              -1500
+            ],
+            [
+              6000,
+              3200,
+              1500
+            ]
+          ],
+          "anchors": [
+            {
+              "id": "GunnerFoot_0",
+              "positionMm": [
+                -4000,
+                3213,
+                0
+              ]
+            },
+            {
+              "id": "GunnerFoot_1",
+              "positionMm": [
+                0,
+                3213,
+                0
+              ]
+            }
+          ],
+          "geometryHash": "sha256:190d0cd8edefe917696b0efd13b2178abf94ff1e818eab4e554e35ba00be3be0",
+          "sourceRevision": 1,
+          "packetHash": "sha256:aaf90b22fd88b702968cd15c601df02a898c8566caae2a94c4801d549b2a1611"
+        },
+        "geometryCanonicalJson": "{\"anchors\":[{\"id\":\"GunnerFoot_0\",\"positionMm\":[-4000,3213,0]},{\"id\":\"GunnerFoot_1\",\"positionMm\":[0,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Enemy\",\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}",
+        "packetCanonicalJson": "{\"anchors\":[{\"id\":\"GunnerFoot_0\",\"positionMm\":[-4000,3213,0]},{\"id\":\"GunnerFoot_1\",\"positionMm\":[0,3213,0]}],\"bodyCornersMm\":[[-6000,0,-1500],[-6000,0,1500],[-6000,3200,-1500],[-6000,3200,1500],[6000,0,-1500],[6000,0,1500],[6000,3200,-1500],[6000,3200,1500]],\"coordinateSpace\":\"BOUND_FRAME_LOCAL\",\"geometryHash\":\"sha256:190d0cd8edefe917696b0efd13b2178abf94ff1e818eab4e554e35ba00be3be0\",\"millimetersPerUnit\":1000.0,\"provenance\":\"UNITY_SCENE_MEASUREMENT_NOT_EXECUTION_AUTHORITY\",\"quantization\":\"NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO\",\"sourceId\":\"Enemy\",\"sourceRevision\":1,\"unitContractId\":\"b-physical-authoring-millimeter-v01\",\"version\":\"unity.combat-b.scene-measurement.v1.20261020\"}"
+      },
+      "twoDirectionBodyRaycastVerified": true
+    }
+  ],
+  "enemyCandidates": [
+    {
+      "role": "enemy_spike_cart_gunner",
+      "authoringOrdinal": 0,
+      "footPath": "GunnerFoot_0",
+      "physicalInstanceId": null,
+      "generation": null,
+      "hitVolume": {
+        "kind": "CAPSULE",
+        "centerMm": [
+          0.0,
+          900.0,
+          0.0
+        ],
+        "radiusMm": 350.0,
+        "heightMm": 1800.0,
+        "axis": "Y",
+        "status": "REUSED_ISOLATED_APPROVED_TEST_SHAPE_PENDING_FIRST_BATTLE_REGISTRATION",
+        "sourcePrefab": "Assets/_LASTRAIL/QA/MiraJudgementV1/MiraApprovedJudgementV1.prefab",
+        "sourceObject": "FIRST_TEST_GUNNER"
+      },
+      "muzzleCandidate": {
+        "localMm": [
+          966.0,
+          1408.0,
+          0.0
+        ],
+        "status": "MANUALLY_AUTHORED_VISUAL_LANDMARK_CANDIDATE_NOT_APPROVED",
+        "sourceAsset": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png",
+        "sourceTopLeftPx": [
+          676,
+          174
+        ],
+        "candidateFootPx": [
+          370,
+          620
+        ],
+        "candidateBodyTopPx": [
+          370,
+          50
+        ],
+        "scaleBasis": "1800mm isolated test capsule height / 570 source pixels; candidate mapping, not measured art scale",
+        "depthMm": 0,
+        "depthStatus": "CANDIDATE_PLANAR_DEPTH_NOT_MEASURED"
+      }
+    },
+    {
+      "role": "enemy_spike_cart_gunner",
+      "authoringOrdinal": 1,
+      "footPath": "GunnerFoot_1",
+      "physicalInstanceId": null,
+      "generation": null,
+      "hitVolume": {
+        "kind": "CAPSULE",
+        "centerMm": [
+          0.0,
+          900.0,
+          0.0
+        ],
+        "radiusMm": 350.0,
+        "heightMm": 1800.0,
+        "axis": "Y",
+        "status": "REUSED_ISOLATED_APPROVED_TEST_SHAPE_PENDING_FIRST_BATTLE_REGISTRATION",
+        "sourcePrefab": "Assets/_LASTRAIL/QA/MiraJudgementV1/MiraApprovedJudgementV1.prefab",
+        "sourceObject": "FIRST_TEST_GUNNER"
+      },
+      "muzzleCandidate": {
+        "localMm": [
+          966.0,
+          1408.0,
+          0.0
+        ],
+        "status": "MANUALLY_AUTHORED_VISUAL_LANDMARK_CANDIDATE_NOT_APPROVED",
+        "sourceAsset": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png",
+        "sourceTopLeftPx": [
+          676,
+          174
+        ],
+        "candidateFootPx": [
+          370,
+          620
+        ],
+        "candidateBodyTopPx": [
+          370,
+          50
+        ],
+        "scaleBasis": "1800mm isolated test capsule height / 570 source pixels; candidate mapping, not measured art scale",
+        "depthMm": 0,
+        "depthStatus": "CANDIDATE_PLANAR_DEPTH_NOT_MEASURED"
+      }
+    }
+  ],
+  "miraMuzzleReference": {
+    "localMm": [
+      450.0,
+      1250.0,
+      180.0
+    ],
+    "sourceProfileHash": "sha256:62c02563c14f0b77c34e5d2d9884eff7b606be318243b2fed5cb004a16bf0e4e",
+    "sourcePrefab": "Assets/_LASTRAIL/QA/MiraJudgementV1/MiraApprovedJudgementV1.prefab",
+    "status": "APPROVED_ISOLATED_TEST_ONLY_NOT_FULL5_OR_ART_SOCKET",
+    "boundFormationSlot": null
+  },
+  "missing": [
+    "op_kyle: current martial contact shape/origin and own hit volume",
+    "op_reina: source visual muzzle-to-world transform and own hit volume",
+    "op_eve: moving drone emitter-to-world transform and own hit volume",
+    "op_sera: three moving crystal emitters-to-world transform and own hit volume",
+    "op_mira: current art socket and own hit volume; isolated judgement origin retained",
+    "enemy gunners: candidate muzzle and first-battle capsule registration",
+    "authoritative node/attempt/physical instance generation"
+  ]
+}

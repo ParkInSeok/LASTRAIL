@@ -1,0 +1,23 @@
+{
+  "name": "LAST RAIL Act 1 Auth Profile Resources",
+  "referenceResolution": "1080x1920",
+  "sourceType": "OpenAI image generation high-quality 2D local launch UI atlas",
+  "sourcePath": "Assets/_LASTRAIL/UI/AuthProfileResources/Sources/auth_profile_hifi_v1_source.png",
+  "resourceCount": 9,
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "hasRealOAuthValues": false,
+  "authStateSourceOwnedByServer": true,
+  "secureStorageStateSourceOwnedByDevice": true,
+  "resources": [
+    { "id": "auth_profile_status_panel", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Panels/auth_profile_status_panel.png", "width": 1024, "height": 512, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "auth_guest_badge", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_guest_badge.png", "width": 256, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "auth_google_provider_badge", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_google_provider_badge.png", "width": 512, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "auth_keystore_lock_badge", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_keystore_lock_badge.png", "width": 256, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "auth_session_safe_badge", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Badges/auth_session_safe_badge.png", "width": 256, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "profile_nameplate_frame", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Frames/profile_nameplate_frame.png", "width": 1024, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "settings_toggle_panel", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Panels/settings_toggle_panel.png", "width": 512, "height": 384, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "settings_audio_haptic_toggles", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Buttons/settings_audio_haptic_toggles.png", "width": 512, "height": 256, "intendedUsage": "auth_profile_settings_visual_skin" },
+    { "id": "auth_bottom_nav_accent", "path": "Assets/_LASTRAIL/UI/AuthProfileResources/Buttons/auth_bottom_nav_accent.png", "width": 512, "height": 160, "intendedUsage": "auth_profile_settings_visual_skin" }
+  ]
+}

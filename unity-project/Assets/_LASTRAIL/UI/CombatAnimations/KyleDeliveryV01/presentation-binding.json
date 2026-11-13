@@ -1,0 +1,95 @@
+{
+  "version": "kyle-delivery-v01",
+  "operatorId": "op_kyle",
+  "sourceZipSha256": "943db4ac6c6240d97b54150fbc0d4a6e9630daa3546a03e8b5672bff4012aa1d",
+  "directionAdapter": [
+    {
+      "direction": 1,
+      "semantic": "FrontOpponentCarriage",
+      "pivotYUp": [
+        0.5374349,
+        0.131510437
+      ],
+      "canvasDisplaySize": [
+        115.526,
+        115.526
+      ],
+      "muzzleLocalYUp": [
+        -47.9887352,
+        76.77291
+      ],
+      "rotationYUpDegrees": 150.0,
+      "displayHeight": 88.5248
+    },
+    {
+      "direction": 2,
+      "semantic": "SideOpponentCarriage",
+      "pivotYUp": [
+        0.546875,
+        0.178125024
+      ],
+      "canvasDisplaySize": [
+        143.432587,
+        143.432587
+      ],
+      "muzzleLocalYUp": [
+        -48.26606,
+        52.8073158
+      ],
+      "rotationYUpDegrees": -180.0,
+      "displayHeight": 88.5248
+    },
+    {
+      "direction": 3,
+      "semantic": "RearOpponentCarriage",
+      "pivotYUp": [
+        0.512743652,
+        0.095952034
+      ],
+      "canvasDisplaySize": [
+        109.955383,
+        109.955383
+      ],
+      "muzzleLocalYUp": [
+        -40.3311844,
+        32.6098824
+      ],
+      "rotationYUpDegrees": -150.0,
+      "displayHeight": 88.5248
+    },
+    {
+      "direction": 4,
+      "semantic": "TrainForward",
+      "pivotYUp": [
+        0.5219298,
+        0.0534290075
+      ],
+      "canvasDisplaySize": [
+        104.039459,
+        104.039459
+      ],
+      "muzzleLocalYUp": [
+        -1.58925247,
+        96.72146
+      ],
+      "rotationYUpDegrees": 90.0,
+      "displayHeight": 88.5248
+    }
+  ],
+  "fireAttackMs": 380,
+  "attackDurationMs": 1040,
+  "idleDurationMs": 1440,
+  "projectile": "Sources/fx/tool/projectile.png",
+  "impactFrames": [
+    "Sources/fx/tool/impact/001.png",
+    "Sources/fx/tool/impact/002.png",
+    "Sources/fx/tool/impact/003.png",
+    "Sources/fx/tool/impact/004.png",
+    "Sources/fx/tool/impact/005.png",
+    "Sources/fx/tool/impact/006.png",
+    "Sources/fx/tool/impact/007.png",
+    "Sources/fx/tool/impact/008.png"
+  ],
+  "flash": "Independent KyleMuzzleFlashGraphic port; original Canvas reference preserved, visual comparison pending",
+  "scope": "IMPORT_AND_EXPLICIT_2D_FIXTURE_NOT_GAMEPLAY_CONNECTION"
+}

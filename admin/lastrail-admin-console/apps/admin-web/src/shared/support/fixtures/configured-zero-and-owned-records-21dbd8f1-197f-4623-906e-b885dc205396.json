@@ -1,0 +1,98 @@
+{
+  "permission": "SUPPORT_READ",
+  "permissionMode": "ROLE_PERMISSION",
+  "version": "admin-player-activities-v1",
+  "accountId": "a",
+  "observedAt": 1789187792894,
+  "consistency": "INDEPENDENT_LIVE_READS",
+  "readOnly": true,
+  "shop": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "policyVersion": "wallet",
+      "currencyId": "cur_crystal",
+      "wallet": {
+        "freeBalance": 0,
+        "paidBalance": 0,
+        "totalBalance": 0
+      },
+      "dayStart": 1789153200000,
+      "nextResetAt": 1789239600000,
+      "ticketOffersConfigured": true,
+      "dailyRemaining": 1,
+      "ticketUnavailableReason": null,
+      "purchaseConfigured": false,
+      "configuredProductCount": 0,
+      "purchaseVerificationAvailable": null,
+      "purchaseVerificationReason": "GAME_RUNTIME_NOT_OBSERVED",
+      "cashPrice": null,
+      "cashPriceSource": "STORE_REQUIRED",
+      "materialShopAvailability": "UNCONFIGURED"
+    }
+  },
+  "monthlyAttendance": {
+    "availability": "UNCONFIGURED",
+    "reason": "monthly_attendance_unconfigured",
+    "data": null
+  },
+  "pass": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "policyId": "pass",
+      "startAt": 1788202800000,
+      "endAt": 1790794800000,
+      "earnedXp": 0,
+      "xp": 0,
+      "level": 0,
+      "premium": false,
+      "purchaseConfigured": false,
+      "cosmeticBindingsComplete": false,
+      "progressSyncPending": false,
+      "progressSource": "PERSISTED_AWARDS_NO_SYNC_ON_ADMIN_READ"
+    }
+  },
+  "ordinaryQuests": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "policyId": "quests",
+      "startAt": 1788721200000,
+      "endAt": 1789326000000,
+      "limit": 100,
+      "hasMore": false,
+      "progressSyncPending": false,
+      "progressSource": "PERSISTED_AWARDS_NO_SYNC_ON_ADMIN_READ",
+      "items": [
+        {
+          "awardId": "award-a",
+          "objectiveId": "D2",
+          "periodId": "period",
+          "earnedAt": 1789187792883,
+          "periodEnd": 1789274192893,
+          "status": "MAILED"
+        }
+      ]
+    }
+  },
+  "mail": {
+    "availability": "AVAILABLE",
+    "reason": null,
+    "data": {
+      "limit": 100,
+      "hasMore": false,
+      "claimabilitySource": "RECORDED_RIGHT_AND_EXPIRY_NOT_MUTATION_PREFLIGHT",
+      "items": [
+        {
+          "awardId": "award-a",
+          "policyId": "quests",
+          "objectiveId": "D2",
+          "sentAt": 1789187792893,
+          "expiresAt": 1790397392893,
+          "status": "CLAIMABLE"
+        }
+      ]
+    }
+  }
+}

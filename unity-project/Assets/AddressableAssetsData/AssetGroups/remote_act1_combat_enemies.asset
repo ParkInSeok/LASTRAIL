@@ -1,0 +1,1577 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_act1_combat_enemies
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_act1_combat_enemies
+  m_GUID: 11456b6065296f64c8f90e2449be3ce9
+  m_SerializeEntries:
+  - m_GUID: 0092de0c6a8a84540ab4c7feb2b17dae
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_scrapshield_brute/enemy_scrapshield_brute_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0150b7a2a4aa2e447b28a88d223c5407
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/hit/enemy_cinder_hound_mech_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01c68c07552145c45b14a966ac3d9291
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/skill_or_special/enemy_spike_cart_gunner_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 01e7acd8e6d0cf14294680ca40291437
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_broadcast_executioner/elite_broadcast_executioner_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0282bfea2dd586e40b35720b0571898e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/attack/enemy_railbike_marauder_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03dc2d4e3b7882f41af4c1646c996c8f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_signal_jammer_drone/enemy_signal_jammer_drone_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 066bf20b56053e34189de744f7fad2f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/idle/elite_ironclad_boarder_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b0d67c2264c1cd48ade1fee9d1a78e9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/attack/enemy_spike_cart_gunner_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c7c63d72894a564090318259f8c83fd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/attack/enemy_railbike_marauder_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e9b7300a15d152499eed11f6554c7f0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_raider_scout/enemy_raider_scout_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1086268def0d1e04db2496d787d361b7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_signal_jammer_drone/enemy_signal_jammer_drone_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1358a4eb537af7948bfcc442c5215593
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/down_or_defeated/enemy_spike_cart_gunner_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14fe579b54560d34db2ba7b02b93e882
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/skill_or_special/elite_ironclad_boarder_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16269ceff69965742bf39578a34a4bb1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/hit/enemy_scrapshield_brute_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 167512f333d97ea48b3fb2c10352e52e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/skill_or_special/enemy_raider_scout_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1760c410550f9a24190485a3a94c2c89
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/skill_or_special/enemy_raider_scout_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18536c76147de7643944a52126d8b7f6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_scrapshield_brute/enemy_scrapshield_brute_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 18a64acbe62801d4394f539237a86e55
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/down_or_defeated/enemy_railbike_marauder_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1915a7d1b80e05343aebd6c903a13616
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/skill_or_special/enemy_spike_cart_gunner_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19b949c3c242e9840ae6337657a5e92e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/hit/enemy_scrapshield_brute_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b69df38fcfa3c64f961002f6927ef75
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/idle/enemy_raider_scout_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1bb4e6f799ab4c9478718a9c9ae42bfd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/skill_or_special/enemy_scrapshield_brute_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20e7a2a07b3aabf42a8c8f719dfad28c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/attack/enemy_signal_jammer_drone_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20faa642c29289d4b8d21c34b6a3d96c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_scrapshield_brute.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2250de371e81b934fa4ee8113bf3487b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/hit/enemy_spike_cart_gunner_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22924a1fd64691a46b7060a35530e275
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/idle/elite_ironclad_boarder_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2444db3bf59481d4a8265176c352e1f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/down_or_defeated/enemy_cinder_hound_mech_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2502beaa49e83734cb0667c710163a1f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/down_or_defeated/elite_broadcast_executioner_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2546697e05dbf6743aa6665d21955b11
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/idle/enemy_cinder_hound_mech_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 25de01169ca36fd47a2ef9abc193a3f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/EliteEnemies/elite_ironclad_boarder.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2798bffac9a0f0241a7914278ca7c89a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/idle/enemy_scrapshield_brute_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27d037b6245a0d54d97e44ba1c2e2079
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/hit/elite_ironclad_boarder_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a381077aecb12145a824b48587699ee
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/hit/elite_broadcast_executioner_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2dbc022a9daa349408ef00fdd71e430c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/attack/enemy_raider_scout_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f7c3d5deb215654491b6aca38cc2c62
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/idle/elite_broadcast_executioner_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30059b7cae20b2c45a59be46183de610
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 302d3812397dc2f4eb2a19431337efb8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/hit/enemy_cinder_hound_mech_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 304f87d83367ab4429c6f49145d8d6b3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/hit/elite_broadcast_executioner_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3054159a47faa4d4280a04598c4a0d57
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/attack/enemy_signal_jammer_drone_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30e40c54143f53243b9fb6af72df7407
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/attack/elite_broadcast_executioner_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32358fbf19e05cf4daeffefb8fa82ba2
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_cinder_hound_mech.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34ebb74e5c671494398923fbfd00a53c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/skill_or_special/enemy_spike_cart_gunner_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 360fa1d50930d3f4b8327481c46f2c66
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/skill_or_special/elite_broadcast_executioner_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36826f0f93767254e80174b5e0fb56e7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/skill_or_special/elite_broadcast_executioner_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 374b44d0e67d8b743a192e5c3015b6fe
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/hit/enemy_signal_jammer_drone_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3779cc7e27627f14ba4fd9ed0e483ef0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_cinder_hound_mech/enemy_cinder_hound_mech_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a15d575ac9bcd641be76d82cc9be2d4
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_scrapshield_brute.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ad380d31b0fc1d47959d3c7377e9d54
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_railbike_marauder/enemy_railbike_marauder_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b009350b23105a459baf61942067eca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/attack/enemy_signal_jammer_drone_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b924c98aa353e845948048c37139657
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/down_or_defeated/elite_ironclad_boarder_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c989ee1793523a4f987bd8b28227fd3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/attack/elite_ironclad_boarder_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ccd9c0550eac194db31f7d721387704
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/attack/enemy_scrapshield_brute_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d80b41ffefc86d4a9976b3cf7bec605
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_cinder_hound_mech/enemy_cinder_hound_mech_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 402f52336ac3e734090d0a44bb0fbc65
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/skill_or_special/elite_broadcast_executioner_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4167b1d7b7c301c4c8d16c2ef3cf2d77
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_raider_scout.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4446e0a11cbe3f04999e2bce1fd7724d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/idle/enemy_signal_jammer_drone_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46410fd5ad980ae42b1243172e4491fd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/hit/elite_broadcast_executioner_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 479b7198ea45f4249ba41b9957169ea2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/idle/enemy_railbike_marauder_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48b0eaea1a3345443af8ba59753c93e6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_signal_jammer_drone/enemy_signal_jammer_drone_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f68a16f81aef1b40aba4f80d0f6ea23
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/hit/enemy_spike_cart_gunner_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 513a29f6646e39d47b72e4986b69e10b
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_raider_scout.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52d91694bcbd20c4d8fa8cf02e8ccff9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_ironclad_boarder/elite_ironclad_boarder_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52e6ab433ecab114faa039ae36c7e9d2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/skill_or_special/enemy_signal_jammer_drone_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54e162ec192ed404086ba13e810af854
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/down_or_defeated/enemy_signal_jammer_drone_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5722107fc2cb3e0458ba94a038a0455e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/skill_or_special/enemy_railbike_marauder_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 576714c1aa05a0f4b8da0f202a6c2620
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/down_or_defeated/enemy_raider_scout_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a36f5125f0c17140aa6113bc2f32a64
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/down_or_defeated/elite_broadcast_executioner_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a913f7edc07ae842a6e1542339d77df
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/attack/enemy_railbike_marauder_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e372a76c1227b843b1258aa301688bb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/hit/enemy_scrapshield_brute_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f5615741a9500f4c98c2bd1fbf39d21
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_scrapshield_brute/enemy_scrapshield_brute_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6004af2399142ac4a8cea97b643e745e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_broadcast_executioner/elite_broadcast_executioner_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6155219f8a81fff469d4e0d1590ddb1d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/idle/enemy_scrapshield_brute_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62be562664d5a8545afbb20f1086147c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/attack/enemy_raider_scout_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62c3eaa059342a445bcb633f9bba262f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/skill_or_special/enemy_cinder_hound_mech_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 637040c7ec629694ba38041c6be70ab6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_ironclad_boarder/elite_ironclad_boarder_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 640ef6bd2cf302b4aafe1d392a4dc854
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_raider_scout/enemy_raider_scout_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6476f709efd77ea47922fefc6e09589c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/down_or_defeated/enemy_cinder_hound_mech_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 65e378df5c22d834e875165e819968a2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/attack/enemy_cinder_hound_mech_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67744542b2289bd439069bff9655962a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_raider_scout/enemy_raider_scout_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 67c91fe34419dd64dbf5c6fc50cb6154
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/skill_or_special/elite_ironclad_boarder_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6858f0573739fd84c8a3e089ed2e9efc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/hit/enemy_cinder_hound_mech_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6922cab70a31d7d49be6da0645eccbc8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/down_or_defeated/enemy_signal_jammer_drone_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 697d8468cec417144b61b90c21bfba90
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/idle/enemy_railbike_marauder_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69efa441d3f9f884799ee13457c37600
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_spike_cart_gunner/enemy_spike_cart_gunner_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a000bbbff10dcc43b09fc1d1f4144e4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/hit/enemy_railbike_marauder_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a1d3781ff7fe944694cb85644189616
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/attack/elite_broadcast_executioner_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6af94dd58af0df440bb0bfee986f07f7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/EliteEnemies/elite_broadcast_executioner.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b9fff48ce505ae46ac38b3de6f29775
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/down_or_defeated/elite_ironclad_boarder_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bd32a3de16828f48a6714e5cea4710a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/attack/enemy_spike_cart_gunner_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c18b37deeaee0247b48f309186b2842
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/down_or_defeated/enemy_cinder_hound_mech_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c294de7845490e48b20edbb6f134ac2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_spike_cart_gunner/enemy_spike_cart_gunner_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 728b8cc87d40b7046be73b71e5b0c1c1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/down_or_defeated/enemy_cinder_hound_mech_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 728c4cfcb83714545bb35cccdf314dde
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/attack/enemy_spike_cart_gunner_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7341113144d20004d81a93414bd4fc18
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/hit/enemy_signal_jammer_drone_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 737bc44b7d392fe48ace0996586e46c3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/idle/enemy_signal_jammer_drone_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 739529c430ca23748889140572c9014d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_railbike_marauder/enemy_railbike_marauder_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7544275ba829050478bb1fd0d6781def
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/hit/enemy_raider_scout_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 755ea225080eb7d458736e4bc90cdd83
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/hit/elite_ironclad_boarder_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7650eadfc8ebabc4d84d72e6c4cba6ae
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/idle/enemy_cinder_hound_mech_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a36961b94811b94cb9db0623c41ea55
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/attack/enemy_cinder_hound_mech_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b918ed9fe4fc4c4ebf53edac8958b98
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/hit/enemy_railbike_marauder_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7dcb919b57c5ec848869b985d5227d99
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/skill_or_special/enemy_signal_jammer_drone_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e8789739dcfcca4a896a8268a3be066
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/hit/enemy_raider_scout_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7fb494fa34f5ff24daa52b376acfcc6d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_spike_cart_gunner.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 813cc77f8f39bea4ab701535dc9b8adc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/idle/elite_ironclad_boarder_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 826d6732e782e7942b61295a83a964f9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_cinder_hound_mech.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 851c06bdbcce16a4f9cc576a639b6360
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/skill_or_special/enemy_raider_scout_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 854b70a5aa60fd84ba9ea6429594690a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/idle/enemy_spike_cart_gunner_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 85f5f5a53c2fbeb47b2c9abaa8d2c44d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/skill_or_special/enemy_railbike_marauder_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8921663978eb73f41b289047a921199f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/idle/enemy_signal_jammer_drone_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a384d3fdd464634b963882f48f339ac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/idle/enemy_scrapshield_brute_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a7e4919b969022419146610dde99540
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/attack/enemy_spike_cart_gunner_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c2343743debe9642ad070ae8b1fe04a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/idle/enemy_scrapshield_brute_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e45dd6203c1c6d48bd45c51bdf7b3f7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/attack/enemy_scrapshield_brute_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e683304d273c2e40a973ac3854e5b2a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/idle/enemy_cinder_hound_mech_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8eb50e3aed3abe340bcb696c0db2042b
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_signal_jammer_drone.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ee76a65b92ebda4f89f7f3d8ba1cd16
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/skill_or_special/enemy_raider_scout_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f336ecfdbe07d3499e5cc6a615eaa8a
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/enemy_combat_2048.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f3efa27df8f7d546ab7bd73ff5fc801
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/hit/enemy_signal_jammer_drone_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8faf21ff6509bf84bae000300428f5fb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_scrapshield_brute/enemy_scrapshield_brute_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fff92271105c9546aac41b7ccaa0943
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/skill_or_special/enemy_scrapshield_brute_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 920d17f8751299e4c92540be53141840
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/skill_or_special/enemy_cinder_hound_mech_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92f6ef63d14d38141bd6bc86b89626f5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/attack/enemy_signal_jammer_drone_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95454ec20588fd648bb8d957dfcfae97
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/down_or_defeated/enemy_signal_jammer_drone_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 971f0043f6150fc49b8045ac55081a66
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_railbike_marauder/enemy_railbike_marauder_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 975ab4a31a929714485c038302977a86
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/attack/enemy_cinder_hound_mech_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97a914be3dd54f2458b6f5522e1197b5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/idle/enemy_spike_cart_gunner_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97f6105fb416fd447b524e4ad35d88f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_broadcast_executioner/elite_broadcast_executioner_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98d43ac33641af34e862c9cf57b40968
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/hit/elite_ironclad_boarder_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b822a72415a941459f1bdd8d128e196
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Enemies/enemy_raider_grunt/enemy_raider_grunt_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c7012b7827120d48bb5b9a52f363353
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/down_or_defeated/enemy_raider_scout_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9e4fc9e0fe5277f4e9848cc6b5c6d6c9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/idle/enemy_railbike_marauder_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ef470db86b92904fb489a79931c3333
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/down_or_defeated/enemy_railbike_marauder_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a08fe3488c6af9849a6c5680397fafc3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/attack/enemy_railbike_marauder_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a25ea684432dca344a1c27d8d245414f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_spike_cart_gunner/enemy_spike_cart_gunner_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4855e6c11f8f7445852e0d4a7409ed4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/hit/enemy_raider_scout_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5c3cdbb52ea935478838de02346ebd8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/hit/elite_ironclad_boarder_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6822531fb76e064e9a8e04b71fa9e54
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/idle/enemy_spike_cart_gunner_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7894193aa4cf444f8bc584a960439fb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_spike_cart_gunner/enemy_spike_cart_gunner_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a80f423c0de861243bb51e054528abe6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/enemy_combat_1024.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8840343f895a324a98bc5ac4eed0c6e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/down_or_defeated/enemy_raider_scout_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8880f761dd00c947970bb29c8c7ca0e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/down_or_defeated/enemy_raider_scout_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8c0094e2b676e44fbec4ac1011409f4
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Enemies/enemy_raider_grunt/enemy_raider_grunt_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8c348cb6eccc7f4f98213d348eb6815
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_broadcast_executioner/elite_broadcast_executioner_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a91e8e52712983a45acda2bec71679d7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/skill_or_special/enemy_railbike_marauder_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a927eeee8e069dd48b678df7ba43a23d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/skill_or_special/elite_ironclad_boarder_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9d693e848296944bb688d3e91376f7c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_scrapshield_brute/enemy_scrapshield_brute_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab02586b4804935498d220b22e483d07
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/attack/enemy_scrapshield_brute_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab46e353b7658944caef1757df68c4e7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/hit/enemy_raider_scout_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abc2ef3a0def6ef419639cea85a2c184
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/attack/enemy_raider_scout_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac51597788403e040b8ffb4b11cbac00
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Enemies/enemy_raider_grunt/enemy_raider_grunt_down_or_destroyed.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad1f987bf0ec1b3458ecd02ee2101918
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/down_or_defeated/elite_broadcast_executioner_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae013a5e8e700704fa104f8df44ca7b7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/down_or_defeated/elite_ironclad_boarder_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afbaa7153a9b99041b5908a68c1cf26f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_signal_jammer_drone/enemy_signal_jammer_drone_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b51864fc97ed8444da2b2aaeb494d0e3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/down_or_defeated/enemy_scrapshield_brute_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5da1819b111b274b8a06e5d658d3c96
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_ironclad_boarder/elite_ironclad_boarder_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6b00322ea16d9842a79d5ca1cc5392d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/skill_or_special/enemy_spike_cart_gunner_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6bd37187e22d6d44990fde84cf88040
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Enemies/enemy_raider_grunt/enemy_raider_grunt_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d07ddd4f7605640ab6ec620ad1bd40
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/idle/elite_ironclad_boarder_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b96ee884b60a2ac47ba0a1f7ff793908
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/down_or_defeated/elite_broadcast_executioner_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b98a10dc2b9cbc5418d2ea2d42209ab3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/skill_or_special/enemy_cinder_hound_mech_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba2346d9ebc091740ad7d28bda7e83c2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/skill_or_special/elite_ironclad_boarder_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bafdb7915aa88494b933653b00eef7e9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/idle/enemy_signal_jammer_drone_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb96904c16a5b07449cb6f691e2479d6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_broadcast_executioner/elite_broadcast_executioner_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb98656e92ce40249bfc8921d88dd1dd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/hit/enemy_signal_jammer_drone_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc64cca00586d9142a2b78cf1a5e16a2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_ironclad_boarder/elite_ironclad_boarder_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc6a7907c7b3cdb49b3df826b4a6fa06
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_railbike_marauder.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd86ba1f60971264d981179a52812dd6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/hit/enemy_scrapshield_brute_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: be9355cfee37bae4d9faa2b7ebf7b316
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/down_or_defeated/enemy_spike_cart_gunner_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: beaaacead365ada40951c025087ea81a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_railbike_marauder/enemy_railbike_marauder_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bedd40d899cf18142989169cb1611479
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_railbike_marauder.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf205b8ffc01a0d4e9b97df0ac4d8d94
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/skill_or_special/enemy_railbike_marauder_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0665a277ee92e94dbe83f963a257940
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/skill_or_special/enemy_signal_jammer_drone_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0728b975cd93be4ea11afb0c33923f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/attack/enemy_cinder_hound_mech_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c132379d23c744e40908a4700d8a1a28
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/idle/elite_broadcast_executioner_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1d5ac97a251d7447906c207477ab97e
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Enemies/enemy_raider_grunt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1f0a5c54e9954f4d99ff12a507f737c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_raider_scout/enemy_raider_scout_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2cb77ac075065e408568c62c1798ce1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/down_or_defeated/enemy_scrapshield_brute_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c36af2b0be4b56a4baffadaa656a510c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/skill_or_special/enemy_scrapshield_brute_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c446c7b847da5a447b24b9651ff43249
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/down_or_defeated/enemy_scrapshield_brute_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c49c1741a9ceabf4484f63173da9f4e8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/skill_or_special/enemy_scrapshield_brute_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4b92e26d0a13a944acda8aa2a6b2160
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/skill_or_special/enemy_signal_jammer_drone_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5560c22a5dda274c9c9ef304d3ae27d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/hit/enemy_railbike_marauder_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c58e63be3a23bc9459b64bb89c75a77a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/skill_or_special/enemy_cinder_hound_mech_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5976ca5cab2cd34f8de15392ba09926
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/hit/enemy_cinder_hound_mech_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6541b7586d9390468174f2fb489b706
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/attack/enemy_scrapshield_brute_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6b38194c4e769943881d2ead530da9c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/attack/elite_ironclad_boarder_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c82c90726b332ae428194c5c47825166
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_cinder_hound_mech/enemy_cinder_hound_mech_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c92c62f2f85e1744a9f5369fa2ac5124
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Enemies/enemy_raider_grunt/enemy_raider_grunt_move_or_advance.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca5229a4fcd9d844fbf34a666a55885b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/hit/enemy_spike_cart_gunner_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce2617bfd2a9e974d8cf1a2648f3d306
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/idle/enemy_spike_cart_gunner_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cedbd672605836a40b424e213222e29f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/attack/elite_ironclad_boarder_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf677db35b56a9249865305862312319
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/down_or_defeated/enemy_railbike_marauder_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1661142414ee2a4caddd13aa05801c3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/idle/enemy_raider_scout_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d5a6e1573c78d134a9204bc73a90b73c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/skill_or_special/elite_broadcast_executioner_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7ec7842e5ec2a444b9f01acd168686f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/idle/enemy_railbike_marauder_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7fe05e0b01b8404b896411befcc17cf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Enemies/enemy_signal_jammer_drone.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8169a5de8109a541b151c1829b65e20
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/down_or_defeated/enemy_railbike_marauder_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9a0be67c8bc9ee42852569ae6460437
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/EliteEnemies/elite_ironclad_boarder/elite_ironclad_boarder_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de1a6f044d2d9794d8d602aec6dd76f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_railbike_marauder/hit/enemy_railbike_marauder_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de4a1ddd8a34d0d488f640dbbb496c3b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/attack/elite_broadcast_executioner_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dff69019cbb3abd4ba1dad5b7ca0dd52
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_cinder_hound_mech/idle/enemy_cinder_hound_mech_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e04266835017cf845ad0d5939e9d333a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_railbike_marauder/enemy_railbike_marauder_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e42e1ad02f36a184bb6287f1866324a1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_spike_cart_gunner/enemy_spike_cart_gunner_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7951493dfa4dc149adb46e51abbb215
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/idle/enemy_raider_scout_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb9fd50358006b04dba10ca07ec89bdb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/attack/enemy_raider_scout_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eba0d27a692d7ce4884d8f5a1e7ad74e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/idle/elite_broadcast_executioner_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ec115cf6abd598b42bf848f17bd6a4f9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_cinder_hound_mech/enemy_cinder_hound_mech_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eccea270afdda014db8621a2534c8e81
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_raider_scout/idle/enemy_raider_scout_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef3a3ba9d39f1dd48b1a330d43420bf3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_cinder_hound_mech/enemy_cinder_hound_mech_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0897fc3bcafbc9409bedd3f62558835
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/down_or_defeated/enemy_spike_cart_gunner_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f300453421140794fbda75ec50a1c163
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_signal_jammer_drone/down_or_defeated/enemy_signal_jammer_drone_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f84e8f2e730d2414c9bd5db1ffb1bc4a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/down_or_defeated/enemy_spike_cart_gunner_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8d9077dc5d07c0409d252a02074ffc0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_signal_jammer_drone/enemy_signal_jammer_drone_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa3fa12f5d8a2fb4eb8fd58203ef5be2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/idle/elite_broadcast_executioner_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa47fc6a18177154586800968457c7b7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/down_or_defeated/elite_ironclad_boarder_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc75b0d64396171479d078e221dc52a5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Enemies/enemy_raider_scout/enemy_raider_scout_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcffae1f511af3840aefc5e9fd721526
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_scrapshield_brute/down_or_defeated/enemy_scrapshield_brute_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd2010ddcd5ec904ca2552dc93bd082e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/hit/elite_broadcast_executioner_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fd5562d20539f0a49bee5e8699fb7c8e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_broadcast_executioner/attack/elite_broadcast_executioner_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff626b162cf43dd4fa9818700d44e5c6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/EliteEnemies/elite_ironclad_boarder/attack/elite_ironclad_boarder_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fffdf2f126a34fb44b1b2625e27639b8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Enemies/enemy_spike_cart_gunner/hit/enemy_spike_cart_gunner_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_enemies
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: b90ffaa1744eb664f8b026d5b345064e, type: 2}
+    - {fileID: 11400000, guid: 276f5074a7b4de54bb66e21c521debaf, type: 2}

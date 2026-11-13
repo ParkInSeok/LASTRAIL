@@ -1,0 +1,225 @@
+{
+  "scope": "APPROVED_D2_IDLE_AND_UI_CROPS_NOT_FULL_COMBAT_ART",
+  "approvalSource": "QA/DirectionImpact-20260921/four-agent-final-review-v01/UNITY-APPLICATION.md; Kyle collar-fold-v04 approved_source; Mira bible portraits manifest",
+  "anchorScope": "FIXED_DISPLAY_REGISTRATION_NOT_MUZZLE_OR_PHYSICS",
+  "sources": [
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/kyle-pure-martial-art-v01/collar-fold-v04/candidate.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_kyle-idle.png",
+      "sha256": "6e5be957c0d30507717624be4387b8434fa109db4f2fc435eb8846ccc36ee9a9",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/kyle-pure-martial-art-v01/emblem-v02/emblem.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/kyle-emblem.png",
+      "sha256": "3fa3f30b21a43a0c4ade2e7062a7b07340c85570ec3a5178a2fefe8c565d1175",
+      "pixelsAltered": false
+    },
+    {
+      "source": "Tools/FrameStudio/data/assets/164aae9a9a8644cf882c1e4913644f79.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_reina-idle-0.png",
+      "sha256": "d830494ae723fbec014ec980df843a7fb48f435bc17155b35e9c0670c1f6b5db",
+      "pixelsAltered": false
+    },
+    {
+      "source": "Tools/FrameStudio/data/assets/31fd6f2e036f43548bf213e16087529c.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_reina-idle-1.png",
+      "sha256": "639492bcc9b8f049bce20319d9fbb9ccb58fbe0bf19713ee771dc91877a92cc5",
+      "pixelsAltered": false
+    },
+    {
+      "source": "Tools/FrameStudio/data/assets/e06ebcca99124d1686001ad3ac389695.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_reina-idle-2.png",
+      "sha256": "3275ab7df43059bfa249a9938ca6a2a2a21e563b011dc629cebeda113b69e7a2",
+      "pixelsAltered": false
+    },
+    {
+      "source": "Tools/FrameStudio/data/assets/b054079c401342d8a1acc6e27c78ff50.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_reina-idle-3.png",
+      "sha256": "3c41e9fc7de87e6c3c86f659216d4238b4e5600518f7329f890fa42a424ea661",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-01.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-0.png",
+      "sha256": "792d215f6f7ee0a02e31168cd350cd802708d37bb4f56e5b9ecb13ad46e64f5f",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-02.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-0.png",
+      "sha256": "792d215f6f7ee0a02e31168cd350cd802708d37bb4f56e5b9ecb13ad46e64f5f",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-03.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-2.png",
+      "sha256": "8bf6e1684ff014b7528dafcf4c00291e80cc1668eca634d5f783cce936c6e63d",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-04.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-2.png",
+      "sha256": "8bf6e1684ff014b7528dafcf4c00291e80cc1668eca634d5f783cce936c6e63d",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-05.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-4.png",
+      "sha256": "2d8b54f797951dc02e896ba7ba5f1b9d9a18719dd08b4d9055315f12a95a2c9c",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-06.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-5.png",
+      "sha256": "305cda58796a8b6ad37b195564fa7cdf78597f750ce1ff34208f8cdceb22a3b6",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-07.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-5.png",
+      "sha256": "305cda58796a8b6ad37b195564fa7cdf78597f750ce1ff34208f8cdceb22a3b6",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-08.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-4.png",
+      "sha256": "2d8b54f797951dc02e896ba7ba5f1b9d9a18719dd08b4d9055315f12a95a2c9c",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-09.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-2.png",
+      "sha256": "8bf6e1684ff014b7528dafcf4c00291e80cc1668eca634d5f783cce936c6e63d",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-10.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-2.png",
+      "sha256": "8bf6e1684ff014b7528dafcf4c00291e80cc1668eca634d5f783cce936c6e63d",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-11.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-0.png",
+      "sha256": "792d215f6f7ee0a02e31168cd350cd802708d37bb4f56e5b9ecb13ad46e64f5f",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/eve-camera-d2-idle-wind-v14/frame-12.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_eve-idle-0.png",
+      "sha256": "792d215f6f7ee0a02e31168cd350cd802708d37bb4f56e5b9ecb13ad46e64f5f",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-01.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-0.png",
+      "sha256": "11db3bf1d32611f28e6d9952c9203e001250d0f583cd6b5cda80d168b16f323b",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-02.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-1.png",
+      "sha256": "6b5fdb2cd86529ac83a24b68b6bdfdb569502522beb5a5d782ad39513e4c6dfd",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-03.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-2.png",
+      "sha256": "f1a9803f6aac57436541ff6d51ca4115fc51874773e0becb7ded0afeb7b96bd9",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-04.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-3.png",
+      "sha256": "55d662b21e3d06375bc4dfd92f7ad0daf19e78128d19b99f8d48bde54f735e52",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-05.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-4.png",
+      "sha256": "5891254afaf1a8361aaa6a395eb823162ce5fb0d4f89b02b32797a617af7ad24",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-06.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-5.png",
+      "sha256": "8a4e6eb8cb774f07482571cffcc85283d084bb79adc96ada5cac96fe5fbeeca2",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-07.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-5.png",
+      "sha256": "8a4e6eb8cb774f07482571cffcc85283d084bb79adc96ada5cac96fe5fbeeca2",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-08.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-4.png",
+      "sha256": "5891254afaf1a8361aaa6a395eb823162ce5fb0d4f89b02b32797a617af7ad24",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-09.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-3.png",
+      "sha256": "55d662b21e3d06375bc4dfd92f7ad0daf19e78128d19b99f8d48bde54f735e52",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-10.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-2.png",
+      "sha256": "f1a9803f6aac57436541ff6d51ca4115fc51874773e0becb7ded0afeb7b96bd9",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-11.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-1.png",
+      "sha256": "6b5fdb2cd86529ac83a24b68b6bdfdb569502522beb5a5d782ad39513e4c6dfd",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/PlanImpact-20261015/eve-drone-motion-review-v01/sera-camera-d2-idle-wind-v01/frame-12.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/op_sera-idle-0.png",
+      "sha256": "11db3bf1d32611f28e6d9952c9203e001250d0f583cd6b5cda80d168b16f323b",
+      "pixelsAltered": false,
+      "sharedExposure": true
+    },
+    {
+      "source": "QA/DirectionImpact-20260921/operator-bible-portraits-v01/assets/mira.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/mira-portrait.png",
+      "sha256": "1ff79f72a03ff702696f99c9a96f5e606813bea84cb7ba9288744c71b0e1da05",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/DirectionImpact-20260921/train-modular-v01/assets/engine.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/car-engine.png",
+      "sha256": "e263a62bfc2abbb8e2bcdca56aa846a826e89a665bbd3ca1e28b9632bf986f7e",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/DirectionImpact-20260921/train-modular-v01/assets/Combat.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/car-combat.png",
+      "sha256": "9ea6ac4aea051e64c5ba27d8d66f458bf24e3a0f5a08d5cfbe4885e710d7519c",
+      "pixelsAltered": false
+    },
+    {
+      "source": "QA/DirectionImpact-20260921/gun-carriage-two-turrets-v01/assets/chassis.png",
+      "path": "Assets/_LASTRAIL/Content/Battle/Approved821/car-gun-chassis.png",
+      "sha256": "f197db2607660ffca1927c65c58e429cebdefe5104111990a5999edbb61679a1",
+      "pixelsAltered": false
+    }
+  ]
+}

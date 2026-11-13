@@ -1,0 +1,2 @@
+import {it,expect,vi} from 'vitest';import {ReviewLifetime} from './ReviewLifetime';
+it('effect replay keeps the same owner; actual unmount disposes it exactly once',async()=>{const dispose=vi.fn(),lifetime=new ReviewLifetime(dispose);const first=lifetime.enter();first();const second=lifetime.enter();await Promise.resolve();expect(dispose).not.toHaveBeenCalled();second();await Promise.resolve();expect(dispose).toHaveBeenCalledTimes(1);second();await Promise.resolve();expect(dispose).toHaveBeenCalledTimes(1);});

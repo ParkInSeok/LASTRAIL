@@ -1,0 +1,31 @@
+# Equipped equipment merge and HP v1
+
+Version `equipment.health-merge.v1.20261005`; stat version `equipment.run-hp-atk-def.v1.20261005`. Internal server composition only. No new public route, operating adapter or START support.
+
+## Ownership and request
+`EquipmentHealthMergeStore(db,equipment,health,source)` coordinates original `EquipmentMergeStore`, `CombatHealthStore` and the small `EquipmentMergedHealthSource.prepareMerged` boundary. `RunEquipmentStatOwner` implements that boundary. Domain merge/effect rules and HP ratio/anchor rules remain in their original owners.
+
+Request: `{version, merge:{commandId,primaryInstanceId,secondaryInstanceId,expectedInventoryRevision,expectedPrimaryRevision,expectedSecondaryRevision,expectedPrimaryEffectRevision,expectedSecondaryEffectRevision,expectedSourceVersion,confirmedLosses:true}, expectedHealthRevision,expectedStatVersion}`. It accepts no client maxima or source stats. At least one material must be equipped; a wholly stored merge continues through the original merge owner.
+
+Original approved 13/J02 rules remain: two same-category/same-star materials, primary identity and its single set tag/enchantment retained, auxiliary consumed, primary location retained, auxiliary equipped slot vacated, no supplies charge. Safe maintenance and eligibility must be proved by the original source in the same transaction. No extra movement ban is introduced.
+
+## Preparation and single commit
+`EquipmentMergeStore.prepareMerge` performs original validation/reads and returns `{receipt,statements,replay,projection}`. Projection pins account/run, original primary/secondary rows and original resolved effect snapshot; it is a candidate, not committed state. A replay has no statements/projection and cannot authorize historical HP backfill. The original `merge` wrapper still commits original statements and returns its existing `equipment.merge-receipt.v1`; it does not itself implement the new linked HP policy. New-policy equipment integration must use the linked coordinator.
+
+`RunEquipmentStatOwner.prepareMerged` verifies candidate versus current original inventory, builds final real three-slot assignments for each affected wearer, removes the consumed item and uses the primary result's approved star/effect source. Existing unchanged items and effects are validated and guarded. Final maxima are calculated once per wearer using original pre-equipment bases. The result is source proof plus mapped maxHP targets, not an alternate HP owner or persisted ATK/DEF journal.
+
+The coordinator commits original stat assertions, original merge/material/effect/history/receipt statements, original HP grouped preparation, guard cleanup and new immutable linked receipt in ONE D1 batch. No intermediate equipment/HP state is published. One or two affected wearers are ordered by wearer kind/ID and update the original health checkpoint once. `MAX_HP_REBASE` preserves the original anchor and dead HP0; it is not an actual heal/damage event.
+
+## Response, replay and errors
+Response `{version,commandId,statVersion,merge,targets,health}` contains the original merge receipt, mapped wearer/target/maxHp and original `combat.health-receipt.v2` entries. The new migration 0102 owns `run_equipment_health_merge_links` with immutable records and SQL guards requiring matching original MERGE_EQUIPMENT and HP receipts. Existing 0094 placement links/guards are unchanged.
+
+The complete strict request is hashed. Same key/same request restores the original linked response only if original merge and HP receipts agree, without current-source lookup, including completed runs. Changed requests conflict; an original standalone merge without the linked HP receipt is rejected as partial replay, never backfilled.
+
+400 `equipment_health_merge_command_invalid`; 409 `equipment_health_merge_request_conflict`, `equipment_health_merge_partial_replay`, `equipment_health_merge_equipped_required`, `equipment_health_merge_stat_invalid`, `equipment_health_merge_state_conflict`; 503 `equipment_health_merge_receipt_invalid`. Original merge, health and `equipment_stat_*` errors propagate. Revision, account/run, original snapshot and safe-maintenance conflicts roll back all candidate writes. This internal contract defines no new browser auth/cache/HTTP transport behavior.
+
+## Verified scope and remaining integration
+Actual equipped HP/ATK/DEF 1->2 and no unique/enchantment execution verified, including same wearer, different wearer, stored primary with equipped auxiliary, exact resulting effects/stats and HP anchors, same-key replay, safe/inventory/material/health/snapshot races, final-link failure rollback and reopened SQL restore. A valid 2->3 unique-effect result is rejected before material/HP changes because its handler is unavailable. Pure stars1–5 arithmetic is distinct from higher-star executable support.
+
+New18 + prior related52 = 70 PASS/0FAIL; scoped type/lint exit0; one fresh read-only production review found no actionable P1/P2. QA `D:/Project/LASTRAIL/QA/CommanderS1-20260922/equipment-health-merge-validation-20261005.json`; actual isolated SQL sample `equipment-health-merge-sql-sample-20261005.json`. LOCAL original S27 Lv1 base; HP812/1624 ->917/1834, material consumed and original run snapshot preserved. This is not public TCP/operating START evidence.
+
+Next integration order: original immutable pre-equipment base/target/definition pin plus authoritative safe-maintenance adapter; native ATK/DEF consumption; independent approved unique/enchantment/conditional effect handlers. Current original departure snapshot stores owned growth facts, not a pinned final base and runtime target mapping. BRefitStore is predeparture selection, not an in-run paused/safe context. Reading current owned stats or treating ACTIVE as safe would fabricate missing authority, so no operating adapter is installed here. Existing 52-test QA is preserved as the earlier bounded unit; S29 remains partial only for these exact missing sources/consumers. No live grants, economy, reward, deployment or full-runtime capability change.

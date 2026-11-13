@@ -1,0 +1,417 @@
+{
+  "version": "combat-audio.sample-edit.20260912.002",
+  "baseVersion001ManifestSha256": "84b3ccf56db6a4b0f968fb0860a850c0fe38d81688612f2fdc36f5d4c94806fc",
+  "primaryEffects": [
+    {
+      "abilityId": "op_kyle.active",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_kyle.active.effect.wav",
+      "sourceSha256": "e99a4edda460a85c1eecd8dff79735a4be6c0b9e723b443e4f4f9a389403b6d6",
+      "recommendedLevel": 0.26787,
+      "rmsDbFS": -14.558483109210254,
+      "playCondition": "shield_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_kyle.ultimate",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_kyle.ultimate.effect.wav",
+      "sourceSha256": "13326f5e8bfa9214ab05a911e33b4cecbde1602b8cbafac25ff0ce3f794d2c34",
+      "recommendedLevel": 0.37102,
+      "rmsDbFS": -17.38802254427707,
+      "playCondition": "shield_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_reina.active",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_reina.active.effect.wav",
+      "sourceSha256": "a1798afed0ecfa1f9587dba160550ddc8eedfe863dcc9bfb7b15545ded236aa6",
+      "recommendedLevel": 0.45784,
+      "rmsDbFS": -19.214301254308563,
+      "playCondition": "damage_or_absorption_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_reina.ultimate",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_reina.ultimate.effect.wav",
+      "sourceSha256": "bcd0e1a2746c895a97dd04e14c6f54ed596d9dfd3bbca3836469d134721fa603",
+      "recommendedLevel": 0.51315,
+      "rmsDbFS": -20.20489087942726,
+      "playCondition": "damage_or_absorption_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_eve.active",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_eve.active.effect.wav",
+      "sourceSha256": "2c106be47db38d42352efdd67396e8e39fc73e91d83880593d0674b3c23413fd",
+      "recommendedLevel": 0.69472,
+      "rmsDbFS": -22.836201806428363,
+      "playCondition": "heal_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_eve.ultimate",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_eve.ultimate.effect.wav",
+      "sourceSha256": "f8607043534bad881f547d60b60be6fbcd7486336cf10aa964cf9ce7afe5492b",
+      "recommendedLevel": 0.64074,
+      "rmsDbFS": -22.133615930054464,
+      "playCondition": "heal_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_sera.active.effect.wav",
+      "sourceSha256": "8fc0a5438677999da68a5084f71e479c98fa5de16959f0980bb2516816f0dd80",
+      "recommendedLevel": 0.27522,
+      "rmsDbFS": -14.793722999457659,
+      "playCondition": "damage_or_absorption_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_sera.ultimate",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_sera.ultimate.effect.wav",
+      "sourceSha256": "3d8212837795603175c047174845a1ccb1a55ddc8c89152fd4f144e9d74070f0",
+      "recommendedLevel": 0.30041,
+      "rmsDbFS": -15.554204900052648,
+      "playCondition": "damage_or_absorption_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_mira.active",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_mira.active.effect.wav",
+      "sourceSha256": "2b2d3117d75a962f40fa87eebb05852913407d229e40f37809285e3cd5158a5c",
+      "recommendedLevel": 0.58703,
+      "rmsDbFS": -21.373207405769456,
+      "playCondition": "repair_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "op_mira.ultimate",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_mira.ultimate.effect.wav",
+      "sourceSha256": "e4cc5398396f91ff4a43d1bc74199e74c71a71bcae17feb9149b92bf2a5da792",
+      "recommendedLevel": 0.33154,
+      "rmsDbFS": -16.410782341028533,
+      "playCondition": "repair_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "support_fire",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\support_fire.effect.wav",
+      "sourceSha256": "00c80f22e6fc54b2eb2e925772c50e6dac3e5059862b8444f62dc629f32e48f8",
+      "recommendedLevel": 0.42772,
+      "rmsDbFS": -18.623205107465886,
+      "playCondition": "damage_or_absorption_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "barrier",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\barrier.effect.wav",
+      "sourceSha256": "c1602394332578ad4961f7471a2142a6cf9211973b7c33cc799c6d55ee94e7a5",
+      "recommendedLevel": 0.3271,
+      "rmsDbFS": -16.293492124221792,
+      "playCondition": "shield_positive",
+      "runtimeRegistered": false
+    },
+    {
+      "abilityId": "emergency_repair",
+      "effectIndex": 0,
+      "sourceFile": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\emergency_repair.effect.wav",
+      "sourceSha256": "2c12218cf1315bb8d52a8268fc75ee5c07d74e0f05d3be74c501f8a2ab5c17d1",
+      "recommendedLevel": 0.54273,
+      "rmsDbFS": -20.691691072132762,
+      "playCondition": "repair_positive",
+      "runtimeRegistered": false
+    }
+  ],
+  "secondaryEffects": [
+    {
+      "abilityId": "op_kyle.active",
+      "effectIndex": 1,
+      "effectType": "taunt",
+      "phase": "effect",
+      "file": "op_kyle.active.effect1.taunt.wav",
+      "sha256": "d4b37fd82489fd580fd7e94be08b7923f4ae5bcc973f9848fdf95356413eeffc",
+      "sourceLicense": "Kenney CC0",
+      "design": "guard challenge: a dry latch and short air emphasis; no voice/no extra hit",
+      "edits": [
+        {
+          "source": "sources\\rpg\\Audio\\metalLatch.ogg",
+          "sourceSha256": "ba9ba60b172b3ebc131a940f25793cd2e207aca7af73dc80d637277f060f1708",
+          "startSeconds": 0.0113125,
+          "durationSeconds": 0.14,
+          "layerGain": 0.65,
+          "highpassHz": 350,
+          "lowpassHz": 7000,
+          "pitchRatio": 1,
+          "placementSeconds": 0
+        },
+        {
+          "source": "sources\\rpg\\Audio\\clothBelt2.ogg",
+          "sourceSha256": "d545b1d9f20e6188140aaf551a96f1e82fe0d15f7ca066fac8b065e1231e0038",
+          "startSeconds": 0.0590625,
+          "durationSeconds": 0.18,
+          "layerGain": 0.45,
+          "highpassHz": 400,
+          "lowpassHz": 4500,
+          "pitchRatio": 1,
+          "placementSeconds": 0.07
+        }
+      ],
+      "durationSeconds": 0.32,
+      "sampleRate": 48000,
+      "channels": 1,
+      "pcmBits": 16,
+      "rmsDbFS": -31.563783429562182,
+      "peak": 0.399993896484375,
+      "recommendedLevel": 1,
+      "candidateOnly": true,
+      "subjectiveListeningPerformed": false,
+      "runtimeRegistered": false,
+      "typedMappingStatus": "awaiting actual consumer schema"
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 1,
+      "effectType": "interrupt",
+      "phase": "effect",
+      "file": "op_sera.active.effect1.interrupt.wav",
+      "sha256": "efb26772a6c2e1d687624cecfadeb531c9166f3ec0a7d07dba414a08e9ac8fae",
+      "sourceLicense": "Kenney CC0",
+      "design": "short electronic cutoff crack; plays only when a pending action was removed",
+      "edits": [
+        {
+          "source": "sources\\scifi\\Audio\\computerNoise_002.ogg",
+          "sourceSha256": "6ae9bb261c6536d1699972da0cdbf6e0762cf7e9b925adb64a06ff375255cb71",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.19,
+          "layerGain": 0.65,
+          "highpassHz": 1600,
+          "lowpassHz": 9000,
+          "pitchRatio": 1,
+          "placementSeconds": 0
+        },
+        {
+          "source": "sources\\impact\\Audio\\impactGeneric_light_003.ogg",
+          "sourceSha256": "0e8896706130f6bc88cdf1f0157aaacdbe88dce86cf0330f9136e44eb1209e81",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.13508333333333333,
+          "layerGain": 0.3,
+          "highpassHz": 1000,
+          "lowpassHz": 6000,
+          "pitchRatio": 1,
+          "placementSeconds": 0.015
+        }
+      ],
+      "durationSeconds": 0.24,
+      "sampleRate": 48000,
+      "channels": 1,
+      "pcmBits": 16,
+      "rmsDbFS": -21.428363260691384,
+      "peak": 0.399993896484375,
+      "recommendedLevel": 0.41823,
+      "candidateOnly": true,
+      "subjectiveListeningPerformed": false,
+      "runtimeRegistered": false,
+      "typedMappingStatus": "awaiting actual consumer schema"
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 2,
+      "effectType": "mark",
+      "phase": "effect",
+      "file": "op_sera.active.effect2.mark.wav",
+      "sha256": "0eb1d980da1108363f7a94bf5eb3add20dd8eb217d3a3c109f91e27b1090da57",
+      "sourceLicense": "Kenney CC0",
+      "design": "narrow single targeting lock, softer than interrupt",
+      "edits": [
+        {
+          "source": "sources\\scifi\\Audio\\computerNoise_001.ogg",
+          "sourceSha256": "29b4842f6d8c0ba2b0cb00bfaff3b852b492bb43197a82e697917aacbe106757",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.28,
+          "layerGain": 0.6,
+          "highpassHz": 2100,
+          "lowpassHz": 4800,
+          "pitchRatio": 1,
+          "placementSeconds": 0
+        },
+        {
+          "source": "sources\\scifi\\Audio\\forceField_001.ogg",
+          "sourceSha256": "5574e69dd04e5f59322c5ddffde5978f077b09170ae5e29cec0bd9901828cd90",
+          "startSeconds": 0.0018333333333333333,
+          "durationSeconds": 0.23,
+          "layerGain": 0.22,
+          "highpassHz": 2200,
+          "lowpassHz": 5000,
+          "pitchRatio": 1,
+          "placementSeconds": 0.06
+        }
+      ],
+      "durationSeconds": 0.37,
+      "sampleRate": 48000,
+      "channels": 1,
+      "pcmBits": 16,
+      "rmsDbFS": -17.895374741238967,
+      "peak": 0.399993896484375,
+      "recommendedLevel": 0.27846,
+      "candidateOnly": true,
+      "subjectiveListeningPerformed": false,
+      "runtimeRegistered": false,
+      "typedMappingStatus": "awaiting actual consumer schema"
+    },
+    {
+      "abilityId": "op_sera.ultimate",
+      "effectIndex": 1,
+      "effectType": "mark",
+      "phase": "effect",
+      "file": "op_sera.ultimate.effect1.mark.wav",
+      "sha256": "9ea93100fb647665f649f74cfbdfc1750dc1c277205b2b1b2a15bf24af319900",
+      "sourceLicense": "Kenney CC0",
+      "design": "two restrained targeting locks with a low electronic undertone",
+      "edits": [
+        {
+          "source": "sources\\scifi\\Audio\\computerNoise_003.ogg",
+          "sourceSha256": "5b1b73bbe6e6ad1b1d39422f640f1bbee3376e8e18916f9305b04b9d143f5cf3",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.18,
+          "layerGain": 0.5,
+          "highpassHz": 1100,
+          "lowpassHz": 5500,
+          "pitchRatio": 1,
+          "placementSeconds": 0
+        },
+        {
+          "source": "sources\\scifi\\Audio\\computerNoise_000.ogg",
+          "sourceSha256": "1527944e16eb14b48ee03fe3e7ce6aae94262833a4e1f83928d451a7414fe4e1",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.22,
+          "layerGain": 0.35,
+          "highpassHz": 1800,
+          "lowpassHz": 6500,
+          "pitchRatio": 1,
+          "placementSeconds": 0.18
+        },
+        {
+          "source": "sources\\scifi\\Audio\\spaceEngineSmall_003.ogg",
+          "sourceSha256": "78f6c1f0a46e3693f56ed6922bd23e5af9a4093aac9b653c1ce9ee7b33081c29",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.39,
+          "layerGain": 0.12,
+          "highpassHz": 350,
+          "lowpassHz": 1800,
+          "pitchRatio": 1,
+          "placementSeconds": 0.025
+        }
+      ],
+      "durationSeconds": 0.49,
+      "sampleRate": 48000,
+      "channels": 1,
+      "pcmBits": 16,
+      "rmsDbFS": -20.23998266000898,
+      "peak": 0.399993896484375,
+      "recommendedLevel": 0.36475,
+      "candidateOnly": true,
+      "subjectiveListeningPerformed": false,
+      "runtimeRegistered": false,
+      "typedMappingStatus": "awaiting actual consumer schema"
+    },
+    {
+      "abilityId": "op_mira.ultimate",
+      "effectIndex": 1,
+      "effectType": "train_damage_buff",
+      "phase": "effect",
+      "file": "op_mira.ultimate.effect1.train_damage_buff.wav",
+      "sha256": "74b0ac42d42110b23c103aedef95cf3c7bed194c1307dbf0ec099e5e83532a4b",
+      "sourceLicense": "Kenney CC0",
+      "design": "mechanical engagement and stable train-power motor, no healing or explosion cue",
+      "edits": [
+        {
+          "source": "sources\\rpg\\Audio\\metalClick.ogg",
+          "sourceSha256": "9851a69d0c613e13bceef08060ecc4148f098ef487927cbebe270d642398a3b3",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.15,
+          "layerGain": 0.3,
+          "highpassHz": 250,
+          "lowpassHz": 4500,
+          "pitchRatio": 1,
+          "placementSeconds": 0
+        },
+        {
+          "source": "sources\\scifi\\Audio\\spaceEngineSmall_001.ogg",
+          "sourceSha256": "a87d5d8b2233f7bd803df78927b52c27be251e8d1354c6cc9ea00ce26215e3da",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.38,
+          "layerGain": 0.6,
+          "highpassHz": 180,
+          "lowpassHz": 4800,
+          "pitchRatio": 1,
+          "placementSeconds": 0.055
+        },
+        {
+          "source": "sources\\impact\\Audio\\impactMetal_light_000.ogg",
+          "sourceSha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d",
+          "startSeconds": 0.0,
+          "durationSeconds": 0.15,
+          "layerGain": 0.15,
+          "highpassHz": 500,
+          "lowpassHz": 6000,
+          "pitchRatio": 1,
+          "placementSeconds": 0.25
+        }
+      ],
+      "durationSeconds": 0.52,
+      "sampleRate": 48000,
+      "channels": 1,
+      "pcmBits": 16,
+      "rmsDbFS": -21.786805696459876,
+      "peak": 0.399993896484375,
+      "recommendedLevel": 0.43585,
+      "candidateOnly": true,
+      "subjectiveListeningPerformed": false,
+      "runtimeRegistered": false,
+      "typedMappingStatus": "awaiting actual consumer schema"
+    }
+  ],
+  "masterGainProposal": 0.65,
+  "primaryTargetRmsDbFS": -26,
+  "secondaryTargetRmsDbFS": -29,
+  "subjectiveListening": false,
+  "runtimeMixValidated": false,
+  "auditionTimeline": [
+    {
+      "file": "op_kyle.active.effect1.taunt.wav",
+      "startSeconds": 0,
+      "durationSeconds": 0.32
+    },
+    {
+      "file": "op_sera.active.effect1.interrupt.wav",
+      "startSeconds": 0.77,
+      "durationSeconds": 0.24
+    },
+    {
+      "file": "op_sera.active.effect2.mark.wav",
+      "startSeconds": 1.46,
+      "durationSeconds": 0.37
+    },
+    {
+      "file": "op_sera.ultimate.effect1.mark.wav",
+      "startSeconds": 2.28,
+      "durationSeconds": 0.49
+    },
+    {
+      "file": "op_mira.ultimate.effect1.train_damage_buff.wav",
+      "startSeconds": 3.22,
+      "durationSeconds": 0.52
+    }
+  ]
+}

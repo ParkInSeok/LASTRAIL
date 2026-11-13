@@ -1,0 +1,26 @@
+{
+  "name": "LastRail.Tests.EditMode",
+  "rootNamespace": "LastRail.Tests.EditMode",
+  "references": [
+    "Unity.Addressables.Editor",
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "LastRail.Runtime",
+    "LastRail.MapGrayboxFixture.Qa",
+    "Unity.TextMeshPro",
+    "Unity.InputSystem",
+    "UnityEngine.AudioModule"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
+

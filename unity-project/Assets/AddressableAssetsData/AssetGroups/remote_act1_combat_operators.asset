@@ -1,0 +1,3677 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_act1_combat_operators
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_act1_combat_operators
+  m_GUID: d3fc268e39be5e948b5ef570c4541b6a
+  m_SerializeEntries:
+  - m_GUID: 007dc775bba76f84299e033ed24ea818
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/hit/op_marrow_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 009f046d06974ad47a007aed07cd22b4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/idle/op_warden_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00e009fb92a13ed47a0c709b3127332c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/down_or_defeated/op_eve_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0151197563fae0748a63cdfbd7689942
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/attack/op_sera_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0195bb9ff9569d948bf058606f83a6d3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 02bb6c2649800e34cb75c9f560858354
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/hit/op_iris_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 041ae56ef0d15ef42a926ac9420ef0be
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/attack/op_mira_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0498ae92ae6c5c447bf2f3e328c3ef25
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/skill_or_special/op_nyx_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 055ac349ef99e454aa41b7422f6d0bea
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/down_or_defeated/op_rail_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 055dc364cd2cc2244b2f69561548e9ef
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05a46dcae8ed04d4f906f8ba19f06ae7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/down_or_defeated/op_mira_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05df03a7f113bd94b98583be13e7daa1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/skill_or_special/op_eve_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 05f2ceeb90ea2b34d86f8b5e05153c51
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/idle/op_iris_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 060c3d0bce52a214fa2cfe1a84a0e7db
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/skill_or_special/op_rail_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06610638b53195847b545da80e44d2b4
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0676c702b9ff15f499fc2784ab4a02b5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/down_or_defeated/op_anchor_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06951cc0e9eb29b48ac0600e1f2265b5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/idle/op_kyle_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06ea537d5f16f5447a0dba7a94441a92
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sera/op_sera_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07550fd4aa80a844689fbae6bc5ad3cc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/down_or_defeated/op_mira_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07a1a3fa3df12b64c8591f94424e99ae
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07ffafa8ddc902245ab43b47e61733f4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/attack/op_mira_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0946b5b7ddd92174ba7f2e768e70ef35
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0966f8520245431479a7da8dabc9fa5e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/attack/op_lumen_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 099cf464f2f6be44a9e311d12ac42bbf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/hit/op_cinder_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09ba39dad0559fd438b282f7a5fdcf2d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/skill_or_special/op_reina_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09e42029b33f37a4c87898b865b32ae9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/hit/op_anchor_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0a2765ff0b8d34044a80fbaff4689b30
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_mira.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0b9eb06ba06f88848abddb334af09abc
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_screen_shake_small.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0be8f499aaf641645b6a66e05164e3c8
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c640f64a24879b4484d484325c5bf98
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/skill_or_special/op_reina_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c871c57dbed27c458584f5fba58285a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/skill_or_special/op_vex_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cda883ff3d241644b8469e6a4210afc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/hit/op_cinder_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d180de7b26cc82429615eb43cb94719
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/skill_or_special/op_kyle_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d1a2629b499aa14ab5d6b71be200760
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_warden.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0da5f6a25eab6c740bcf1e6458182f82
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/down_or_defeated/op_iris_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0da6010e5f274f248bef4d38e5248b64
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/attack/op_eve_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e1dd99db89eb9f428b649b6f0d2dce5
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e4b7eb5a70b76c4e801c763e32621d1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/idle/op_rail_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0eb7657f17724b148a49335b9de5dd09
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/sprite_sheet_vfx_2048.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f30d40c58371594f92a3aad017cfb6c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_nyx/op_nyx_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1073f0ad6cb05de4088df35709fe5cac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_rail/op_rail_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 112c22132421e5a4dbfeddb08c4b74ff
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/attack/op_kyle_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 113375ab8a33a374d958303a8c7b25a5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/down_or_defeated/op_sera_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 114b15dbbfdbf7243b6c13cbaa19c3ac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/hit/op_sable_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11a05c8eadce6fa44bfbe3bdeb790ea0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_marrow.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11c4bf108de84224c9681380a81a8bd1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/attack/op_warden_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 123ad9eafe689e641aec959ef075d9ba
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/attack/op_rail_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12bbcc0cfb1582b40a7f449756553c75
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/down_or_defeated/op_nyx_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 136ca356dc5e0904dbf34c3aafecefd4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/down_or_defeated/op_vex_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1372f1c54c7b94449b695b08ef9aa642
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 137949f81c0c0ca4baa20e57fae64b3b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13a4150de05446244aee6a2051b9d074
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_full_screen_flash.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13a4d05264dfd654f9bfacb45163e930
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_nyx.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13c2a737c5c0d2b428d22faf4f1d5cb5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_cinder/op_cinder_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 162a3ee3b64c1044b8bea29933ef3ec0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_eve/op_eve_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16493f4defd85dc4bbca0521bb60eab2
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_rail.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 17e4afa55f71e2943906b6de39143baa
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/attack/op_iris_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1894fda3211280744a9855b0b272cba8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_rail.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 189af13bafb3fff4592c206b1fa6d7cf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_reina/op_reina_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19a187e7b33b0c24bb32985c240d49b8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/attack/op_reina_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19ace1c43221af647ba720f06611c461
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_nyx/op_nyx_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19dbe32e43f23654588a9e8b01fc1f4f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/skill_or_special/op_anchor_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19e5142cd56564b448a5df60a092b171
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sera/op_sera_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 19eb15b835a7bd14c93181b8e3871d4e
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a2b4573cb010774ea4ae23d6a9d4b31
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/idle/op_marrow_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1af360eca2e5de54299b044dc08157ab
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/attack/op_reina_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b4efbd11f81f4b42ad8ba82e62615a9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sera/op_sera_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b6c97c3432ab6348924dbe2532e719f
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1be089819ddf93a40b7602dd7f224d56
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/skill_or_special/op_lumen_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c08ba85ded6b0f43b56fffb4590c518
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/down_or_defeated/op_mira_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d240a4b6c8e60f4792dd63660af865a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/skill_or_special/op_cinder_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1eaf8517f678d60408c671cd67ea473f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/idle/op_sera_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f905a314b715894281a6ac39b15a4e1
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ff9c96fd58e82d41b9a29534fb3ed44
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/hit/op_warden_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 200fb0010c1d1604c8dac52cfdaecdef
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/down_or_defeated/op_reina_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20404e4ee79a7b1439dd1c0e62e6aa11
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_eve/op_eve_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21bf94c0280d20c4e9bb24cba755f184
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/hit/op_iris_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21ceb15ed1b2619419d4cf366ab85c94
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/idle/op_reina_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 21dacaeaed00ae948a7a3b6f9935e161
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/skill_or_special/op_anchor_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 224fe45b05468754dba756dae2f4db30
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_marrow/op_marrow_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2254c544996bb6e4c888cc2425665544
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22c78dd6624977a48934ef01982b3410
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/hit/op_kyle_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2452723b4c5eac84688ba4fd0df65dca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sable/op_sable_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 245cea090d8d4ed4dab439a39db0f0d1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/idle/op_vex_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2463fce0ad1405b46811dca3745b2411
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/hit/op_sera_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2500232446bfe18419ec773f41b6069f
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2509034a158d888449d7631bafa2d856
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 262a4577190a6de43b6d5fa444acc4ed
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/idle/op_nyx_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26be19c6ffc7fec4bb978aef82ff3074
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/down_or_defeated/op_marrow_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26de3efe765694c4a875f7a32ef62851
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/attack/op_cinder_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 26f012df06a30ad4b867d860a8428c59
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27ac475c5f8622846ae46b6f1322480b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27aed97b790783848ba2d4a6129de203
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27dda0dde694f454cb04ba7aadf3976b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/idle/op_mira_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28a303932d69b614ca3ee5f66f00ef3c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/idle/op_kyle_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28ab02f334dc8fc45ad8b628c0f56207
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/hit/op_sable_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 28b3ebae6e3079744bca6490aed491ea
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29617caa64bce364194d92c4cdca7bac
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a5d1e327420aff4691ede16fff8d7b6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a68e9a72c3657b4dbf67f1c000f5301
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_lumen/op_lumen_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b43fd4925db15848a1b2f76b3dab680
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/skill_or_special/op_marrow_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2b4e55d1e350f5847a9f5255001c439c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/skill_or_special/op_warden_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ba29564b2ee08b4a951397bdeac4454
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/hit/op_sera_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ba3a1be17d854e4584f30aa00852785
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/idle/op_nyx_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bf3a73495659c64e934631e7a56a663
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/idle/op_marrow_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cef12b694d390249a2a0ca16d5dc746
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/skill_or_special/op_lumen_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e92d4d6a2ab83c4bb77a70a40e0268b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/skill_or_special/op_marrow_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f9116d73d9756243b1fd833353d8c27
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ff98b066af943c41b9d0118405bc1fe
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/down_or_defeated/op_iris_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ffe33b68e64ec7469f1263706797fac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_kyle/op_kyle_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 305f35fa452eee4479df6517f0156bb1
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 307011fd854e3de46b44ead38b845b44
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/down_or_defeated/op_eve_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 30793262f09937b43ac44f46f05fb9f0
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 319323dea5e617d448d001885ed92136
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/down_or_defeated/op_nyx_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31daf7bfb7b983c47804c7cb9fcd9acd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_vex/op_vex_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31fceb67885300f49b4c9c87ed41e52d
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32498054ffd6fc84caa09684a915efd6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/skill_or_special/op_reina_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 327bca8492c21434f888f3ac2cf3f700
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/down_or_defeated/op_reina_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 337495319aca1e544af237c64ba1cc9e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/idle/op_eve_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 337f511eddc85b044bb60585a3885696
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/attack/op_vex_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33fc5d9d3a51e1e42bcfa170e2707ea1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/idle/op_eve_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34eba2bee4345f844a2c2b1d387db445
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/attack/op_marrow_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3580da389abdc274098dba6021c15852
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/skill_or_special/op_mira_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36165e56f766c6c43adfbe1fc4376a9b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/hit/op_anchor_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 362771102b4722948877df46856025da
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/idle/op_mira_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3720147f42de7914fab8e0fdb8f1f7db
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 378f6d8dfb450604eb582866cc503003
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/attack/op_nyx_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 396e8a1c5408cd24785b17c843c05e40
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/idle/op_rail_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39cf8e74093700b42b8b4987ab7a2ce6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 39ff6d2b2652fc44998ed6b86112b854
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/hit/op_rail_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a5649f811f7bb845a6b0d8ff4069b39
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/idle/op_anchor_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a791c4bfb66a8a4398fdb75359e5e8d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/down_or_defeated/op_rail_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a87e88468648d343bb0abc0fff763fb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/hit/op_vex_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3a8d2fc30225dd040b9d530f4ef83ce8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/idle/op_sera_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b5c207b338fd154381cbe6e9ad8d202
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/skill_or_special/op_cinder_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bb2326943a3d184194c903cbb95b081
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3bcbb20c68bcfd241b1bc0953eef2f6d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/attack/op_anchor_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c8047ad476ab464dbd35534303cfb48
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cb05eef9c9399b4b887413bb2268bdf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/skill_or_special/op_warden_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dd41345406bf24488e707e7a7f8c457
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/skill_or_special/op_warden_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3de5a30e00526824492c3536a86fd857
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/down_or_defeated/op_warden_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3df294fd28304634ead3a1f526965c5a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/hit/op_rail_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3faec8ac520f12f48bb2b0ffe037ec79
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/idle/op_cinder_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4041266f9ecfd954380784697e7aeebb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/skill_or_special/op_vex_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40d0d541de0e4dd47a97ff3df4fb62af
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/skill_or_special/op_anchor_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40eaf7d8dd7d8a144bc3eb8c0e3eec45
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/hit/op_kyle_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4186515d667c4b249bc3febc5be08548
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_warden/op_warden_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 419e1529ff08a7646b3be7a743e90955
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 41d73c2a62993c74fb1611d2ffda6281
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 432f6b8095c60f64eb17957ed0ec9bef
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 433666e6948f9494fad078d4236146cd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sable/op_sable_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43fe2d674c2849243a7915e29246ebae
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4537f959e7568df4a90907a9159aa1d1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/idle/op_lumen_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 454296fff0cef424aa239ba3fcc1f7d0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/down_or_defeated/op_warden_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 457d601c30f6ae34fb1be93c71df9892
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/hit/op_sera_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47022a33900e6da44ae14f9f4d8dafb4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/attack/op_mira_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4999c9ee32b3e1f4189200e47c56cc9a
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a40bc35bd99a5845ae5554577d7521d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/skill_or_special/op_kyle_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ac14a09d6bc75a4794838f8a145efd4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/hit/op_nyx_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b2ddca8294e5054b80a8790afa7656a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_vex.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b5a2fcd435be0f448e1969ae49e3357
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b7de69d5b08d5b4191a2d72197d13cf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_reina/op_reina_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce0bbde32142ae47b151663360928c3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/down_or_defeated/op_cinder_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ce1eb5d0e78ec14ab4ee4edc5254361
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/hit/op_kyle_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4d7b0c4ab6dff704aaa7b7d596bfae17
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/hit/op_marrow_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dd471e1c853d024b92ea7677884ad23
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/down_or_defeated/op_lumen_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4df154ef2005808489f0f892efaa3b3b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/hit/op_anchor_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4dfe69f62542d7d4caad79250259f15e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/skill_or_special/op_nyx_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e22e0f8f5cb6f4409cd8c64f0a99962
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e8812089253ede4aaa58c3a26947d03
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e891a34cde836c41aea63816ae677ad
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/down_or_defeated/op_nyx_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f32e8494c47b154a8f41904fb7ecf88
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/idle/op_mira_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f701cde5ec97b84582201510d1ddb40
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fcc489db5477c942a247732ab9c3401
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/attack/op_marrow_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4fe2e5d460103a74e938a1a5dd9ea103
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/hit/op_lumen_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 501cbb4de2419644cba23a6e3dde6aa0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/down_or_defeated/op_lumen_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 503fa4c5f1320e742b59d3259a458d33
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/attack/op_lumen_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 506d11cdeca19fe4e988a7cee259b536
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_vex.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5082c4ddaffd34b45b8f4649d296c278
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/hit/op_nyx_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52439330029693e4cae0b6c674318619
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 535813fd8b0c6fe439c4c2bd43faaf9a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/attack/op_cinder_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53aa18e0ac52c524a8b594c37ca4fb4b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_eve.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 541492d22db526147a4fe85fd7be0fff
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/hit/op_reina_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54eac7481c4ac564a9b9c1481c7ea904
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/attack/op_warden_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54eae3997041a704588a4bb859a51ea2
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55dd4df6a22377d4898a07d1d38c931e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/down_or_defeated/op_sera_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55ebb4e439371b7448aec47d1c9b18a9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/skill_or_special/op_lumen_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f155a6f16242d40a3e3d2a116482bb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_iris/op_iris_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 570f5f0caab161445ab2667d2db1a46d
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 572c2941ead147e4b9ca639169fcdb7a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/hit/op_lumen_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5749dfe2a26feda41b511c72574462c9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/hit/op_eve_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5897ab9935a323f44ab3c73ead85e75f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/down_or_defeated/op_sera_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 598a411bfbf38594e83371f3affe3004
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/skill_or_special/op_sable_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59e9eb5931b36ed40aa5e3968222c393
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/hit/op_lumen_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59fe5ec5ddb6b8f4daaff34dbb16c90b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/hit/op_rail_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a8e24aa6acf15a48a98b95bcb185142
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_lumen/op_lumen_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b779fa706788a44a9296d13ee721503
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b90d14e4b3f1964dad26027762c6b17
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/skill_or_special/op_rail_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5bc08ba3b2e3f0d41bc038c7d9ffbb6d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/skill_or_special/op_nyx_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c3cd92f6c43a8e4faec6b0001c79881
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5d7f11be8b8e89b45901aac0073abe7a
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5db04cfbbbd15174da248c1576862bf4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/down_or_defeated/op_lumen_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e40c131c8cc6c24a8ced7c06752c413
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/attack/op_warden_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e889df78bc09f84cbc03299b28c3681
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5eceacb27268be84c9965b7c860cd0eb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_lumen/op_lumen_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ee196dab10fc4747a955c03a116b1f2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/attack/op_rail_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fb38c3013932604bbba64ea9a70bc90
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6176e33f2efafb44db3850288ee22893
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/operator_portrait_icon_2048.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 617afd7fc42bb6543a47ae668259ecbc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/idle/op_mira_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61c17396a181c064694fe3eec25d7f86
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_vex/op_vex_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 61f0f6e05966d2e479d425fcb241e074
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/down_or_defeated/op_iris_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6201929c09e69e447bc3b31f91ff4688
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/attack/op_eve_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6314acb5118fdc942a7121d2349fd540
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_sera.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6329ef0c553fc5842862599cc9d8284d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/attack/op_sable_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 636aef3b5c14af44995518a3fb3cc655
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_cinder.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6741f4850d8651b408a820213d28ce3e
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_nyx.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6814078c92e226549b0f2e9b9cf6d617
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/idle/op_cinder_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 689f790853c01fd44afbb3e2f526f004
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/attack/op_sera_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 695a73448ee48414f9a816869dd4d4bf
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69d06093afbb22e4a97e238606b1d560
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/hit/op_marrow_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6bb59c6a22b414b94c5eaf3f8c154c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_sable.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aba3c1b8ef60644b92bf430ca939bec
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/attack/op_reina_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b6a217dc8749bc46a340f0523bc47fe
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_marrow/op_marrow_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cbc125e8e797ab488d233da54594bcf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/skill_or_special/op_mira_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e033037175e13d47806a595dbeed816
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/idle/op_nyx_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e4d622695d70c641b5dd8ce3d6602a3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_lumen/op_lumen_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ee686b4e0054d741bbe088df1ec3fc0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/down_or_defeated/op_reina_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6f531904946b9824b8576d7c0feb5e24
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_kyle.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6fcffeb47ef30a440be9508eae497de0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/skill_or_special/op_mira_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7025b4d7458caba42a2812780aaa064e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/attack/op_cinder_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70a31eb2dbcaecc459afa100c969f2c7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/down_or_defeated/op_cinder_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70b39a678542c5e45b0c099d31d5d473
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/hit/op_iris_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71cb8ad18fd762f499e80d6a34a2c293
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/down_or_defeated/op_cinder_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71fdc172e24d8bf4db8f577d9f12faa1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_iris/op_iris_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 731d48ecfc352cf4294b00e964bca266
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_iris.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 734f5f32ef8eee748b6dcbc38e64fd96
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_mira/op_mira_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 746b016a5e7942a4ebc1535500cbe3c5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/hit/op_nyx_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74a0532b8ac15b24da5312acf15a5206
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_screen_shake_heavy.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75aae8ed4935b7a46bdf6b295a068b6c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/skill_or_special/op_warden_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75c5217b930ecea42a3ea438beab2764
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/skill_or_special/op_sera_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 75f6264806928804b9e3e06d885a9245
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_iris/op_iris_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 760693cadbd2eb3498b0b2988ea5b79a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/skill_or_special/op_eve_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76625d8e2546f9645b098aa894f6490f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_kyle/op_kyle_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77ade86b9c860f34a9f8f947bb161ace
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_sera.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7805fffe429e6e94a8bdee62bcb4767e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_lumen/op_lumen_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 784a7f0ac8734e54eb4b644d4a571410
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78cdb1d8b65f2b344b14bd25221928b8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/down_or_defeated/op_kyle_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 790e888f118082149bdddf3ae25e039e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/idle/op_nyx_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 792e2d8506a879745a8982964e671643
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/down_or_defeated/op_iris_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 793508734237ae84189c4a5e73795f4c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_anchor/op_anchor_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79cfa60cd9cdf0f49a39565500aeaec1
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79effa88ad9737946be0ccb7c697d5e7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/hit/op_vex_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7af346fe6d4557f48997fe56cb91f89d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/attack/op_sera_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b30a0305a3b3a5449ee0c41a6991476
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/skill_or_special/op_reina_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b7556f98f6382d4093f6050fd8aa1d3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_reina/op_reina_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7bc31443824e6684d904809c9ac39b20
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/idle/op_anchor_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c2c810299ed7d942aaf0b4d74acd541
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_warden/op_warden_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7cae035d1d608fe46909e87dbe0c19a3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ccf5f5f4004d34448f2dcc0b6513b08
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/attack/op_anchor_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d188eeabe490254db53b01eda096035
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/down_or_defeated/op_lumen_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d7a1748d2a6d4c419ace7058cfa6ca0
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d80c222cabc25d47ba60e19fac2be71
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_rail/op_rail_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e26cbebd2e6345419231e0102ec9928
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_rail/op_rail_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e3eef27c5e710043acf4f01064c01f5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/hit/op_reina_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f1cda5dad8f54e459eb02bfca2fd489
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/idle/op_vex_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f56057f7aaf66e4e9eb89dd1cbc2615
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_anchor/op_anchor_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81e235d45a9cfd749beb75d0e3a97f9c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82d03a46395cf524aa9a09166486afa5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/hit/op_rail_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83ce2ae724e111045a3f4359d7fde425
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83fb2c30993d9bc42a1be934bbfd5c42
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/hit/op_marrow_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 842beb10a4bc79c469db95d465356740
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8670006a2b5d6b54b9d1d672f3338951
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_screen_shake_medium.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 869e83d6520d4a744964fb99e25d0b35
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/attack/op_vex_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8707f8e5ebe4ba349a94704d2f1b41ce
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87950d26a3299204cb7b4cdff9bca66d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/skill_or_special/op_anchor_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87cb67fd647831e49984151e2ecae436
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/attack/op_anchor_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87f42ac6ed3216f47b36485bd98034b8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/idle/op_sable_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8912aa12aec90454b903119abf2c8b51
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/idle/op_warden_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 893e514257ff9d847aec505f95612585
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89401785b207b524e84f2617e8cc5563
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_iris/op_iris_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 895a50e0c61fabe42affa669d3184340
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/attack/op_kyle_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 895e1859172ca494faaf501ba6af7783
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/skill_or_special/op_iris_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a119d342e1ce064cb69e884497b008c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a55ba5083d7d474199b657b93c7d61a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/hit/op_vex_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a679787dcf0ce64481e8cf8f69cbf8a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/idle/op_kyle_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c01c7bc3f528a241b526b60e92feb15
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/attack/op_iris_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c9486f2c993c9740a6789ea793cf1fa
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/skill_or_special/op_marrow_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d23c9652c27eaa40a7d5910d77c4b02
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d2465f80948ba04491620eea756566a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/skill_or_special/op_iris_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d7af586f56ec5441bd29b796199d430
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sera/op_sera_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ddad96cd912a964bb64992cd165df21
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/idle/op_anchor_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8e159def423937b4fafc59982449b3c4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/idle/op_eve_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ebc2c26a96e7ea49aed5bf1aa906f69
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/skill_or_special/op_cinder_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f4e1b2459fbaa04b85b22995092fd45
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fb1d43d1feea52429d7aa5e00bb1925
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/attack/op_kyle_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9054678268bacdb418cea472d468fd6e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/idle/op_reina_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90971e65a12195d4ebf28fe3f9d0c6c9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/skill_or_special/op_sera_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9115d9881b230554e87b167ac2f9c9e4
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 913cc3130015ef647b91bf2187d9b11d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/idle/op_lumen_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91483657eed447e4e827ccde6b32c882
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_hit_spark.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91725587b2f5ab7489dfa2e8b8c3adf4
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 917c3d13f9635b444b8a21ba5315a5f1
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91b00bb76c27e464687b8e49fb22cad3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/skill_or_special/op_kyle_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91e16dfd8c6ff9f4fa932c6dc35f8212
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/attack/op_nyx_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 920a1751ee9eaab4c82b5009155d0ff8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/skill_or_special/op_eve_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 928c0bfc8a577864c8ce25185b9a35d4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_eve/op_eve_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 946e2f47d0773f043aed4e074377f5ca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_reina.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94acc917e21ef034ca764f425354142b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_anchor.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 953e5ad2613ec3f4dac72f94003e79d8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/skill_or_special/op_sera_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9569aba2928017d4ab49b80994726dca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_kyle/op_kyle_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95929040d8c0aca4d8a291ab1464101d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/attack/op_rail_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9595e2b9c3bc49e4b899635c205e540e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/idle/op_vex_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96c33deca6ebc3143bf9d513cc705a86
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_mira/op_mira_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 978ac74bb77ce3142bf2e0745b748641
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/attack/op_nyx_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 979ef3ebfbfe88d439909bf546b79100
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/down_or_defeated/op_sable_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97c1d550920493a4bad936e304291f29
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/attack/op_nyx_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98d828cdebb1a4c42b6e89ff5bbd6f6d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/idle/op_marrow_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 995b2184f246232428c8da455e049b65
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_cinder/op_cinder_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99bc19943bb69dd46beb2ba134a1a732
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/down_or_defeated/op_kyle_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99e1ca525c3be5d48a21a9bfd7c9ca6c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9a166b5660ad1694ab9f34232212b5ad
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_warden/op_warden_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9af4c5d487ece5644b02390f5bfb515c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_marrow.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b4304768009afc45a2b8ea5fa6870d0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/down_or_defeated/op_sable_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9c5f2028fbbcc484aa90158722fcd427
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/hit/op_cinder_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ca5d4418dc24374a9f9cdb395ff5a8b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cfe0d597d27d034a85805bf91501484
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/hit/op_sable_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9df376b85bc655049942a99470dd1ccd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_kyle/op_kyle_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fe41b43701d71a4c816c3a6853155ed
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/attack/op_reina_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a07435bf548c7674090017fbac57d034
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0b2d1a94e0df974c9b266021cd29370
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a192683d10fc14f4ebc065e4c7dc8b14
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1d61a0ca4c11d64aadd180d4880246c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a27a263f55c3b2c45b9566cf12881adb
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a34f9996be7f8ea43a8fd001f30b4670
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_vex/op_vex_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3a0c4f86fba27c458c31c49e75e96bd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/idle/op_rail_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4b1276af97c3bd4487b9e0a90b9c1f7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_anchor/op_anchor_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4b90714aee23a54e870e325ecf36422
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_nyx/op_nyx_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a516c7118c3c34d4eb7ae38354c1bffc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/hit/op_warden_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5991d5d6352dcc43b03f12ed721a838
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/down_or_defeated/op_mira_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5c7cc89f6d24bd42990eacae796cc3b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6fe22a28f516134ab4687032ff7edca
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6fed0881090bf74e87e8878d72672e7
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_rail/op_rail_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a70f4fb64972e114f8937540b9945e12
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/operator_combat_2048.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7e1a098a72f6834588f984a06dbedc4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/hit/op_warden_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8193728259245d488e798f9e35e76a9
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a8c922a022dda8c4a92cf5eb6225c9fd
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/skill_or_special/op_sable_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aab8d06121d7849489c97ac3cb0c91d2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/hit/op_mira_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aacf52885b8eca241a1b71b570b8abba
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/idle/op_anchor_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aae944fdb020d944faf0f9ed27efc466
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/down_or_defeated/op_sera_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad804b6ae64902a47bd4668835a730be
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad949d41d90e4d4498df4ec626c49116
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/attack/op_marrow_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae30022c397a2a04ebd2833eae279760
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae5eacdc62486854b9b878298ef39138
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af54e1508d7940248a0ba2788e249d2c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/down_or_defeated/op_vex_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afb6206ead2f53d4997c3cbbdd306f2f
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_lumen.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b017933d53f07254780d5c26ec73ab52
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_cinder/op_cinder_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1275c68940127d43beb0251502ded19
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/hit/op_sera_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b165054eede9c094293b61c68e73cd74
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/idle/op_kyle_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1d4d5ce35be3a146ae0788ab6fef818
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/idle/op_marrow_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3c0c85617a17254990e5e7b682cf211
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/idle/op_lumen_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b44e37945f7ffdf4c9b44f6391195d99
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4a52fa83065b734da3acd6d521b0e00
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b519f727d3631c249a9f5cd0b925bd3b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/down_or_defeated/op_kyle_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b53a270a338a0de49880e769f56311a3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5f04ec9cd70fea4bac3cb01eaeb74fc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/skill_or_special/op_lumen_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b60e0b89965720c448f354dfdb9210d1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/attack/op_vex_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b618b2c7fa665ea428c1fe0119f0076d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_marrow/op_marrow_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6cc944da58da5d49994128a152737fb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/attack/op_warden_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8e2f532389c1bf4394ae64f180c12dd
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/sprite_sheet_vfx_1024.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9121d20f20ddbc42b02fa20c4a2b47c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/hit/op_mira_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b98648e36e2dd514396c62507f35d7ff
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_iris.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9bf369cdb7cd9041a2b4aaf55fd98da
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/down_or_defeated/op_vex_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9c66e60a1d4a9046be4dcc2bf93925f
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_anchor/op_anchor_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ba990ec8a29e3ca4c8e2e307544804ed
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/skill_or_special/op_iris_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: baa34600ebbb03047ad9fa1fcbad4ca4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/skill_or_special/op_kyle_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bae5906bb3f59574ca38ec461c975102
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_lumen.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbb026d6c75a4fd4fb6bb3050061f552
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_warden/op_warden_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc9eb260125b05c448a30f18de9441c1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_eve.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bca898477db89a5498a55bd95a8cb88e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/idle/op_sable_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bce4d5678471cbf4ab47baa7d74f339f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/hit/op_mira_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd54eecaa06641d47a1e2f09ce4f56ba
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/hit/op_cinder_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd6276058d969bd429e787f4a117360e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/down_or_defeated/op_sable_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd6c40ac53bbec44fad20bf3db25e746
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/down_or_defeated/op_cinder_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bec06f2b42478e1428505dffe55ef872
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/hit/op_nyx_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfca749b13f1ec34e8bd4be0c51f6caf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/attack/op_anchor_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfd905132ef58af4aabb25c6bc19efe2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sera/op_sera_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c07a7c2436ba3d540a190711ed595e50
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/down_or_defeated/op_anchor_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c18c23ae6fdccd341b0091807247b549
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/attack/op_eve_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c21bdf189d248f048afe62892415dff6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_rail/op_rail_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2985d922bb5e064e9e1c15d91fec05b
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c2f73b4f4c9f26e4b8d3f06a94f599ae
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_reina/op_reina_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c356b97d0b957474785fd47d32042ceb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_marrow/op_marrow_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c38086fe3913b6a4abcdbca717d7af3b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/skill_or_special/op_rail_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3e1da44714f869418c0b3a2281206d8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/idle/op_sera_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c568aa3655b4eea48b00ebea9cf3667d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_mira/op_mira_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5b42fa22d149d84d83e7461441a10ef
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6169af8bc349364c9ed4b3451d7d58c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/hit/op_lumen_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6a3ec5c5b251c24f87639ff98fa4ff2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_iris/op_iris_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6a48ee31e897f9428f45095dd82c9af
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_kyle.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6fa59164b372224f84937cdf22fcec4
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6fe4bf68b8637343ba86f838575d520
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/idle/op_iris_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c70d3dab30fe46a4ea08b8a35c9661fe
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/attack/op_eve_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c725371b93da188498daa9c0caad2537
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7eb01638b965f5469dc2be3dfb909cc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/idle/op_sable_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7f2064e3d38ade4f903503ca8479e47
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/skill_or_special/op_mira_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c837e2e2ab0a67c4ea1f0736c5e8b3b6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/attack/op_iris_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8594f7864e104b40b352445da3dff0e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/down_or_defeated/op_anchor_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c95d0a40fc0a30141b403252a904a6de
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cabdd544e826c5345b4b2883a80224e8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_kyle/op_kyle_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cad25921827a54b4290c1bb1b54e4a00
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/attack/op_lumen_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb02a31debd4a594180c454760d69ee6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/attack/op_marrow_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb63e465d3f536947a7d80ea75836f86
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/skill_or_special/op_sable_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc7015b9ea8fb214eab7d026337af75f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/hit/op_reina_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc78b13b14d25cb45acff2eb3087a639
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc8e6e9d1c918a34d866bc057037daf3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sera/op_sera_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cccd7d94ae7471940a613dc1118e79d0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/skill_or_special/op_eve_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd14cbc46bb96a74dab06edba9618b37
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/hit/op_eve_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd5b802b6ca16b94a85220ee199df54a
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_iris/op_iris_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd70f1863f22b2b46896e351a1f2d90c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/idle/op_lumen_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cda64bdb9e88e4548ba9b7b075a7315d
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cde61fe47f8956a43b50e08bd092a679
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/down_or_defeated/op_eve_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d017686206461534ab8bc73a82a8cc32
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/idle/op_cinder_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0704b5cacb31f74fbbf29c93bff5838
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_anchor/op_anchor_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d09b6994fee2a0f4386aac65be6d9b81
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/down_or_defeated/op_reina_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1ab5927fa0e7ee44a29ed081476d279
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_sable.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1d28b2e05c86ef46bf93c78ea1bf0ed
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/down_or_defeated/op_rail_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d217a0a042a4eef45b5158f53e3ee1dc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sable/op_sable_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d29289cb5f1e54c4ba6cf3d51890bad9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_reina/op_reina_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d330ef9e336968648905ac199d8418ee
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/attack/op_cinder_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3549bcdae9a60146ae561c737eda875
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_large_impact.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d361d8ba114abe043a6c5dd4239b07be
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_mira/op_mira_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d512342ae4f89e24bb20dd12ac2e4a44
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/down_or_defeated/op_vex_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d512e211dc3c5e1419458a036bf50c6c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/down_or_defeated/op_anchor_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d563f948ed4e79c4ca0a4db77e1b36c3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/operator_portrait_icon_1024.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6bbbbf265d5f6c4e986fd4ee3875756
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/idle/op_warden_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d73337d906e98754ba117efa31166304
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_marrow/op_marrow_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d73d28955d0a3a145830240d5653ae31
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/attack/op_kyle_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7a3d29f1b63f0e4c9222105bafffcbc
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_vex/op_vex_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8006a090eaccb8459594db4fc8be5ac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_anchor.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d82cd3f79acf4c34999d01205f961c19
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/attack/op_sable_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d980087fb0f201e44bcadf7d1f891fd0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/attack/op_iris_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da595e67a74fa874f8c347dbfb695e38
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/down_or_defeated/op_marrow_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db8f7e24a1259ef4c836682e8e443773
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_anchor/op_anchor_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dba0fa83eb4ac714c8025f497004f4c2
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_down_or_retreat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dcc086a6b54828043bf84b8b98bcfba6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd03f2d0e9ec3c04d9e1d77df66cab14
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/idle/op_iris_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd5d4827c42800844b6410f71565566d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sable/op_sable_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de0a77b10bb2ecd42a56a85d7e077c72
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_sable/op_sable_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: def5c18bf980b7d4ab7e67ada2e479b9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_nyx/op_nyx_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df4ef50a439a1a74d8514ee4cca4a0ad
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/down_or_defeated/op_marrow_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df8b9594fb6370743a29d3d8b77003d1
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/skill_or_special/op_cinder_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e00da593369d28d41bc5143dce4f46f9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/attack/op_sable_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0e9b230054e42f42baa5a0aa260250f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/hit/op_eve_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e10a38ef9a566264b8369ae201bac0c9
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_mira/op_mira_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e186399ddb9dae84997a00c00cb45521
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_rail/op_rail_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1ce507a72394674a9cdead0073a0815
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/hit/op_mira_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1f2b72638b05e14ba9d7e810efb74ca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/attack/op_vex_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e20f715d4c692b74ba401b8489cda3bc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/down_or_defeated/op_marrow_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2161a2032488874ba48940f623c151f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/skill_or_special/op_sera_skill_or_special_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e270433fa473aab4b8cdd25d5d0a64aa
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e31ae58a33e5fc64eb844670a59aac1a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/skill_or_special/op_rail_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e43fcd56738c26c458a960a6ff541452
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/hit/op_kyle_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e444a86b27cbeb744a427547b6c762fc
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_sable/op_sable_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4ceaae77dca1734497f19928be7f66c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_cinder/op_cinder_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e52429ad431643643aa2d63c84b4921a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/skill_or_special/op_iris_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5351ef1b73426c42a69223d75ee3b4d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Operators/op_cinder.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5e49cb36a260464b98598102d24ab6d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/idle/op_sera_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5fff805fa29c624cbf8d66aaa7f7f68
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_marrow/skill_or_special/op_marrow_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e66e9c6e8f1d98249bc330e5c46d37e2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/hit/op_vex_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6a937a58508615408c0b2804f6454ec
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/down_or_defeated/op_warden_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6af946aabac0fe4f9bc708500ccf7bb
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_nyx/op_nyx_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6f5f665a2a668e4fb547293cee0ee7d
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_lumen/op_lumen_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6f76ff917b9afd4689aeaf4c4568ba3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/idle/op_sable_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7a2be925bb7b3d4dbee4ad39e6dbda3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/operator_combat_1024.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e89f4cf1e638cf14ca76c90c368818ac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/down_or_defeated/op_sable_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8b3a5ba2d1a43145a2780966b0f839f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_vex/op_vex_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8bf6cc83f9acc0449ad847896ddac61
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_cinder/idle/op_cinder_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e912824a083ff7544ac713a2472acc8e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_marrow/op_marrow_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eafd2c3c2b521c24fa0c49f3a03b9668
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_warden/op_warden_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb3e8c872d109284a9b82a7ba21f90f6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_kyle/op_kyle_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb5e6b3e6270e2a4ebd952ee6b16d957
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_mira/attack/op_mira_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb775ee9a583c5f409761586d5ced067
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_reina.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecd650920cff3484a95e5c45aba101b8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/hit/op_sable_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: edb27d364e2ae6549a156cbb35f070fd
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_reina/op_reina_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee116204b08c9a345bd9f822cf115fc4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/attack/op_rail_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef4ee2ec61a7b6648b1c2b7d429acf63
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/skill_or_special/op_nyx_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef50e2d251aaa804db7dbb823ba027a3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/idle/op_warden_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efd4f381ef0ea144a997584317f78994
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/down_or_defeated/op_rail_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0b30512144cb794387fe932b0b91c06
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/down_or_defeated/op_warden_down_or_defeated_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f100be47310872941b6c0be72096c3f4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_mira/op_mira_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f10353d34f830d64b9ec6d7678ca957d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/idle/op_vex_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f15fd91eb8d0fb046a007bd9c412d280
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/hit/op_iris_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1c7e21f05629a14084c17f1385634b2
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_warden/op_warden_down_or_defeated.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3738fb5019ca32478b68847ded28074
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_mira.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4ab195c442935043bbf0f0f7ad4a2ab
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_iris/idle/op_iris_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f4d8ffcb39522fc4aaf1a51a656b3332
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/skill_or_special/op_sable_skill_or_special_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f54285569f348f14cbbb108f802ecfda
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_move_or_slot_shift.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f56ef8865fb99884bba04d0da671025a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_anchor/hit/op_anchor_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5be5255a7cd5a9448ac975d263402d9
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_nyx/op_nyx_skill_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5f57c645dc0b4d4ea98cc28ea3d7cfe
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/down_or_defeated/op_eve_down_or_defeated_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f65a1f7e31268ba4d95ba270b2b69f5a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_lumen/attack/op_lumen_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7817d2009543684faae830faeac6d5f
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_eve/op_eve_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8259e3a1d29c97459eddf2a1f287591
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/Operators/op_warden.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f892f534dffc95f499c1b78b36cd44eb
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8aba59397e96904883192ae25839b6c
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/hit/op_eve_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8b16d089dcb6354c9d7b59e5c9102e3
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/skill_or_special/op_vex_skill_or_special_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f8bf0c941981fb545bcf6f98853220e3
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_eve/op_eve_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9f71ec7ced489e4ab09f7af3f75a0cc
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/idle/op_reina_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa21a706b3c835441b8a500318a0b3d9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sera/attack/op_sera_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa321a01b2f099347ac355cf45b44072
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_rail/idle/op_rail_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa6cde6330d3419479718059b9e3c89b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_kyle/down_or_defeated/op_kyle_down_or_defeated_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb13b061d7c38a6499b8dc229397efa4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_nyx/down_or_defeated/op_nyx_down_or_defeated_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb6e8fd13ca98024481c33d8f2ba811e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_eve/op_eve_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fbb233402c687464fba8089e4c853e5b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/hit/op_reina_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc8f40ecc9bf0ab4d8137f3806a94868
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_reina/idle/op_reina_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdbcc1f4555094f4a8dcd68719496825
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_vex/skill_or_special/op_vex_skill_or_special_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fdf1c5d2d5083bf498859f6b8800aae0
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_cinder/op_cinder_skill_or_special.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe1434bd3791a52488b755eafe917115
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_eve/idle/op_eve_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe9e96f0b12fcc046bf5f79228328f18
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Operators/op_vex/op_vex_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fea75972d3b485c4c89f932a287b8d69
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/Operators/op_cinder/op_cinder_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: feca8c1935f5d394fb5b291f986c9bca
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_sable/attack/op_sable_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff920c6e638a6084ba73be97eec397e4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Operators/op_warden/hit/op_warden_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_combat_operators
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d4c782e1f087eae41b22a7ddb39cbded, type: 2}
+    - {fileID: 11400000, guid: 7c64bc584bfc72a449728c3ef2fe03c3, type: 2}

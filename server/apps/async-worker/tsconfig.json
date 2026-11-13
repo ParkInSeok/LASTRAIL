@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "../..",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+  },
+  "include": ["src/**/*.ts", "worker-configuration.d.ts", "../../packages/common/src/**/*.ts",
+    "../game-api/src/recurring-jobs.ts", "../game-api/src/recurring-grants.ts", "../game-api/src/recurring-progress.ts",
+    "../game-api/src/recurring-policy.ts", "../game-api/src/recurring-objective-state.ts", "../game-api/src/recurring-bulk-hooks.ts", "../game-api/src/activity-policy.ts", "../game-api/src/crystal-wallet.ts",
+    "../game-api/src/activity-grant-plan.ts", "../game-api/src/monthly-attendance-policy.ts"]
+}

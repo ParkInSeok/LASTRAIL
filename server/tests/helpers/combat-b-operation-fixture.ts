@@ -1,0 +1,25 @@
+import {setup} from './departure-fixture';
+import {plan} from './operation-map-fixture';
+import {OperationMapPublisher} from '../../apps/game-api/src/operation-map-publisher';
+import {OperationMapStore} from '../../apps/game-api/src/operation-map-store';
+import {captureCombatAuthority} from '../../apps/game-api/src/combat-authority';
+import {canonicalJson} from '@lastrail/common';
+import {bOperationContentVersion,createBOperationBinding} from '../../apps/game-api/src/combat-b-operation-binding';
+import {BOperationProgressStore} from '../../apps/game-api/src/combat-b-operation-progress';
+/** All evidence/geometry/reward data below are LOCAL synthetic; never production approval. */
+export async function setupBOperationFixture(retainRun=true){const f=await setup(true),p=plan(),runId='LOCAL_B12_RUN';p.nodes.find(n=>n.nodeId==='n1-1')!.eventKind='MERCHANT';p.enabledEventKinds.push('MERCHANT');
+ for(const n of p.nodes){n.encounterProfileRef='local-encounter-'+n.eventKind;n.rewardPlanRef='local-reward-'+n.eventKind;}
+ const kinds=[...new Set(p.nodes.map(n=>n.eventKind))];
+ const catalog={read:async()=>({version:'operation.map-catalog.v1',catalogId:'LOCAL_S24_METADATA',revision:1,definitionVersion:p.definitionVersion,encounters:kinds.map(eventKind=>({ref:'local-encounter-'+eventKind,version:'LOCAL_ORIGINAL_V1',profile:'ORDINARY_12_NODE',eventKind,definition:{executor:'LOCAL_UNSUPPORTED',...(eventKind==='ELITE'||eventKind==='BOSS'?{completedWaveContract:{version:'LOCAL_ONLY_ORIGINAL_WAVE_V1',completedWaves:eventKind==='BOSS'?2:1}}:{})}})),rewards:kinds.map(eventKind=>({ref:'local-reward-'+eventKind,version:'LOCAL_ORIGINAL_V1',profile:'ORDINARY_12_NODE',eventKind,definition:{}}))})};
+ const publication=await new OperationMapPublisher(catalog).publish(p);f.sql.run('INSERT INTO b_operation_catalog VALUES(1,?)',[canonicalJson(publication)]);f.sql.run('INSERT INTO b_operation_catalog_active VALUES(1,1)');
+ const rewardReference={status:'LOCAL_UNCHANGED_ORIGINAL_REWARD_REFERENCE'},binding=await createBOperationBinding(publication,rewardReference,1);
+ const response={runId,operationPreviewId:'LOCAL_B12_PREVIEW',operationId:'opn_01_last_departure',risk:'I',contentVersion:bOperationContentVersion,encounterType:'ORDINARY_12_NODE',rewardReference,bOperationBinding:binding,admission:{version:'departure-v4',combatAuthority:captureCombatAuthority('ORDINARY_SOLO'),operationMapPlan:p}};
+ const snapshot={...response,operationMapContent:publication,departureResponse:structuredClone(response)},snapshotText=JSON.stringify(snapshot);
+ if(retainRun){f.sql.run("INSERT INTO account_mutations VALUES('local-b-mutation','a',100,'RUN_START','local-b-run',0)");f.sql.run("INSERT INTO operation_previews(id,account_id,mutation_id,objective,risk,balance_config_version,preview_json,status,expires_at,created_at,admission_version) VALUES('LOCAL_B12_PREVIEW','a','local-b-mutation','opn_01_last_departure','I',1,?,'CONSUMED',0,0,'departure-v4')",[JSON.stringify(response)]);f.sql.run("INSERT INTO runs(id,account_id,preview_id,mutation_id,balance_config_version,status,started_at) VALUES(?,'a','LOCAL_B12_PREVIEW','local-b-mutation',1,'ACTIVE',0)",[runId]);f.sql.run('INSERT INTO run_snapshots VALUES(?,?,0)',[runId,snapshotText]);}
+ f.sql.run('CREATE TABLE b_test_evidence(run_id TEXT,node_id TEXT,wave INTEGER,revision INTEGER,PRIMARY KEY(run_id,node_id,wave))');
+ const map=new OperationMapStore(f.env.DB,{prepare:async({command})=>({proof:{kind:command.kind,verificationId:'LOCAL_MAP_PROOF',holdIds:[]},assertions:[f.env.DB.prepare('INSERT INTO operation_map_write_guard VALUES(1)')]})});if(retainRun)await map.initialize('a',runId);
+ const progress=new BOperationProgressStore(f.env.DB,{prepare:async({runId,command})=>({verificationId:'LOCAL_ORIGINAL_WAVE_PROOF',assertions:[f.env.DB.prepare('INSERT INTO operation_map_write_guard SELECT CASE WHEN EXISTS(SELECT 1 FROM b_test_evidence WHERE run_id=? AND node_id=? AND wave=? AND revision=1) THEN 1 ELSE 0 END').bind(runId,command.nodeId,command.waveOrdinal)]})});
+ async function wave(nodeId:string,waveOrdinal:number,eventId=nodeId+'-wave-'+waveOrdinal){f.sql.run('INSERT OR IGNORE INTO b_test_evidence VALUES(?,?,?,1)',[runId,nodeId,waveOrdinal]);return progress.completeWave('a',runId,{nodeId,waveOrdinal,eventId,evidenceRef:'LOCAL_ORIGINAL',expectedMapRevision:(await map.read('a',runId)).revision});}
+ async function visit(nodeId:string){const m=await map.read('a',runId),edge=p.edges.find(e=>e.fromNodeId===m.view.currentNodeId&&e.toNodeId===nodeId)!;await map.commit('a',runId,{kind:'CONFIRM',edgeId:edge.edgeId,eventId:nodeId+'-choose',expectedRevision:m.revision});await map.commit('a',runId,{kind:'ARRIVE',edgeId:edge.edgeId,eventId:nodeId+'-arrive',expectedRevision:m.revision+1,evidenceRef:'LOCAL_ARRIVAL'});}
+ async function complete(nodeId:string,eventId=nodeId+'-complete'){return map.commit('a',runId,{kind:'COMPLETE',nodeId,eventId,expectedRevision:(await map.read('a',runId)).revision,evidenceRef:'LOCAL_OBJECTIVES'});}
+ return {...f,p,runId,snapshot,snapshotText,binding,publication,map,progress,wave,visit,complete,close:()=>f.sql.close()};}

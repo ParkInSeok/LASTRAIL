@@ -1,0 +1,11 @@
+import {writeFile} from 'node:fs/promises';
+import {strict as assert} from 'node:assert';
+import {equipmentStatFixture} from '../../tests/helpers/equipment-run-stat-fixture';
+import {equipmentCoreStatVersion,readPinnedRunEquipmentStats} from '../../apps/game-api/src/equipment-run-stat-owner';
+const f=await equipmentStatFixture(),qa='D:/Project/LASTRAIL/QA/CommanderS1-20260922/';
+try{
+ const proposed=await f.owner.capture('a',f.runId,[{wearerKind:'operator',wearerId:'op_kyle',slots:[f.item('hp-1'),null,null]}]);const command=f.move('hp-1','LOCAL_SAMPLE_EQUIP',{kind:'operator',wearerId:'op_kyle',slotIndex:0}),equipped=await f.store.move('a',f.runId,command);assert.equal(equipped.health[0]?.after.hp,812);assert.deepEqual(await f.store.move('a',f.runId,command),equipped);
+ const unequipped=await f.store.move('a',f.runId,f.move('hp-1','LOCAL_SAMPLE_UNEQUIP',null,2,2,2));assert.equal(unequipped.health[0]?.after.hp,700);assert.deepEqual(await readPinnedRunEquipmentStats(proposed.snapshot,proposed.snapshot,proposed.snapshot.packetHash),proposed.snapshot);assert.equal(f.scalar('SELECT snapshot_json FROM run_snapshots'),f.originalSnapshot);
+ const sample={evidence:'INTERNAL_OWNED_SQL_SYNTHETIC_ACCOUNT_ORIGINAL_S27_LV1_BASE_NOT_PUBLIC_API_OR_OPERATING_START',version:equipmentCoreStatVersion,proposedStatSnapshot:proposed.snapshot,proposedHash:proposed.snapshot.packetHash,assertionCount:proposed.assertions.length,equippedReceipt:equipped,unequippedReceipt:unequipped,finalHealth:await f.health.read('a',f.runId),originalRunSnapshotPreserved:true,fullRuntimeSupported:false,missing:['OPERATING_ORIGINAL_BASE_AND_SAFE_MAINTENANCE_CONTEXT','EQUIPPED_MERGE_AND_HP_ATOMIC_LINK','UNIQUE_ENCHANT_CONDITIONAL_EFFECT_HANDLERS']};
+ await writeFile(qa+'equipment-run-stat-owner-sql-sample-20261005.json',JSON.stringify(sample,null,2)+'\n');process.stdout.write(JSON.stringify({sampleHash:proposed.snapshot.packetHash,hpEquipped:812,hpUnequipped:700,originalSnapshotPreserved:true})+'\n');
+}finally{f.sql.close();}

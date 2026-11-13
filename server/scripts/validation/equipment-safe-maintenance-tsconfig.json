@@ -1,0 +1,1 @@
+{"extends":"../../tsconfig.base.json","compilerOptions":{"types":["node"],"composite":false,"declaration":false,"declarationMap":false,"noEmit":true},"include":["../../apps/game-api/worker-configuration.d.ts","../../apps/game-api/src/equipment-safe-maintenance.ts","../../tests/integration/equipment-safe-maintenance.test.ts"]}

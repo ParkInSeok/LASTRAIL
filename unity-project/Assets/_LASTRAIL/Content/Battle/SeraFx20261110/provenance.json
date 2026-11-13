@@ -1,0 +1,31 @@
+{
+  "textures": [
+    {
+      "source": "QA/SideViewReuse-20261023/reina-battle-hud-v01/sera-heal/art/crystal.png",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/Battle/SeraFx20261110/casting-crystal.png",
+      "sha256": "d7d5258126c4371742423e0fe6c95494e3b32f8a3950a3766ed1a383012d8cad",
+      "method": "BYTE_EQUAL_ORIGINAL_TEXTURE_NO_NEW_ART"
+    },
+    {
+      "source": "QA/SideViewReuse-20261023/reina-battle-hud-v01/sera-heal/right-idle-v01/crystal-camera.png",
+      "asset": "unity-project/Assets/_LASTRAIL/Content/Battle/SeraFx20261110/idle-crystal-camera.png",
+      "sha256": "bd7fbd75e7840c58521c59db1b9a4e7737798ff8e8396d36eb20649a398b5507",
+      "method": "BYTE_EQUAL_ORIGINAL_TEXTURE_NO_NEW_ART"
+    }
+  ],
+  "scope": "Display only; approved source procedural paths port, no gameplay effects",
+  "sourceModules": [
+    "sera-heal/crystal-orbit.js",
+    "sera-heal/one-hand-motion.js",
+    "sera-heal/right-active-v01/crystal-orbit.js",
+    "sera-heal/right-attack-v01/effects.js",
+    "sera-ultimate/two-hand-v01/orbit.js",
+    "sera-ultimate/right-v01/orbit.js"
+  ],
+  "knownLimitations": [
+    "Left basic independent emitter not identified; retains idle orbit only in this component, existing consumer must retain its own emission.",
+    "Unity mesh ring sampling and GPU alpha mask require real Player visual comparison; web Canvas shadowBlur is not reproduced as a Gaussian filter.",
+    "Cross-motion standalone preview clocks differ (idle6480 vs ultimate4320); root clock/transition acceptance requires integration verification."
+  ],
+  "unityExecuted": false
+}

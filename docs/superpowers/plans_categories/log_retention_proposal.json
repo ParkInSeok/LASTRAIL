@@ -1,0 +1,309 @@
+{
+  "authoringFormat": "lastrail-retention-proposal-v2",
+  "researchedAt": "2026-09-21",
+  "status": "APPROVED_OPERATING_POLICY_PENDING_SCOPE_REVIEW_AND_IMPLEMENTATION",
+  "publishable": false,
+  "isIndustryStandard": false,
+  "isLegalCertification": false,
+  "storagePeriodsIncludeHotPeriod": true,
+  "periodConvention": "ISO8601 duration; month/year are calendar durations, not 30/365-day aliases",
+  "gameplayResumePolicyReference": "04_COMBAT_RUN.md#run-expiry",
+  "rows": [
+    {
+      "id": "RT01",
+      "kind": "BATTLE_DEBUG_TRACE",
+      "name": "전투 tick·성능·상세 디버그",
+      "start": "CREATED_AT",
+      "hot": "P14D",
+      "total": "P14D",
+      "basis": "사용자 승인 운영정책",
+      "notes": "전원 상시 수집하지 않음; 마스킹/표본화. 사건 선택 증거만 보존hold",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT02",
+      "kind": "SANITIZED_ERROR",
+      "name": "마스킹된 오류·크래시 요약",
+      "start": "CREATED_AT",
+      "hot": "P30D",
+      "total": "P90D",
+      "basis": "사용자 승인 운영정책",
+      "notes": "원토큰/비밀번호/요청본문 금지. 기존 enum producer 유지",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT03",
+      "kind": "RUN_CHECKPOINT_EVIDENCE",
+      "name": "종결 작전의 마지막·필요 경계 체크포인트",
+      "start": "RUN_TERMINATED_AT",
+      "hot": "P30D",
+      "total": "P180D",
+      "basis": "사용자 승인 운영정책,기존7일안대체",
+      "notes": "조사전용;재개자격없음;원장/영수증과 별도",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT04",
+      "kind": "RUN_CRITICAL_EVENT",
+      "name": "장비획득·합성·인챈트·증강·노드·스킬자원 핵심행위",
+      "start": "RUN_TERMINATED_AT",
+      "hot": "P90D",
+      "total": "P1Y",
+      "basis": "사용자 승인 운영정책",
+      "notes": "실제 승인 전후 상태·설정/버전·거래ID를 보존; 모든 프레임아님",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT05",
+      "kind": "RUN_TERMINAL_SUMMARY",
+      "name": "작전결과·노드요약·입장비·지급참조",
+      "start": "RUN_TERMINATED_AT",
+      "hot": "P90D",
+      "total": "P3Y",
+      "basis": "사용자 승인 운영정책",
+      "notes": "최소 필드만. 탈퇴/삭제시 별도보관 적법성 심사",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT06",
+      "kind": "PAID_TRANSACTION",
+      "name": "실제 계약·결제·공급·청약철회·환불 증빙",
+      "start": "LEGALLY_APPLICABLE_TRANSACTION_RECORD_DATE",
+      "hot": "P90D",
+      "total": "P5Y",
+      "basis": "해당 전자상거래 법정기록에 한해",
+      "notes": "각 기록별 법적 적용과 기산점 확인; 모든 무료 게임행위로 확대금지",
+      "policyApproval": "APPROVED",
+      "scopeAndStartReviewRequired": true
+    },
+    {
+      "id": "RT07",
+      "kind": "CONSUMER_COMPLAINT",
+      "name": "소비자 불만·분쟁·관련 문의/답변·선별 증거",
+      "start": "CASE_CLOSED_AT",
+      "hot": "P90D",
+      "total": "P3Y",
+      "basis": "해당 법정분쟁기록 및 보관목적 검토",
+      "notes": "불필요한 첨부 개인정보는 조기제거; 모든 원시로그 자동3년 아님",
+      "policyApproval": "APPROVED",
+      "scopeAndStartReviewRequired": true
+    },
+    {
+      "id": "RT08",
+      "kind": "ADMIN_AUDIT",
+      "name": "Admin 열람·다운로드·수정·지급·제재·권한변경",
+      "start": "ACTION_AT",
+      "hot": "P90D",
+      "total": "P3Y",
+      "basis": "사용자 승인 운영정책;개인정보 접속기록 법적1/2년 요건 별도확인",
+      "notes": "일반 플레이어 로그와 구분; 운영자 원문삭제 권한 분리",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT09",
+      "kind": "LOGIN_ACCESS",
+      "name": "로그인·웹접속·원 IP 기록",
+      "start": "CREATED_AT",
+      "hot": "P1M",
+      "total": "P3M",
+      "basis": "공개 회사사례 참고;LASTRAIL 법적적용 확인",
+      "notes": "3개월과90일은 동일하지 않음; 보안사건으로선별한증거별도",
+      "policyApproval": "APPROVED",
+      "scopeAndStartReviewRequired": true
+    },
+    {
+      "id": "RT10",
+      "kind": "BACKUP",
+      "name": "DB·개인정보 포함 시스템 백업",
+      "start": "BACKUP_CREATED_AT",
+      "hot": "P35D",
+      "total": "P35D",
+      "basis": "사용자 승인 운영정책",
+      "notes": "백업으로장기보관우회금지;복원후삭제명세재적용",
+      "policyApproval": "APPROVED"
+    },
+    {
+      "id": "RT11",
+      "kind": "PUBLIC_BALANCE_HISTORY",
+      "name": "개인정보없는 불변 밸런스·공시·배포 산출물",
+      "start": "PUBLISHED_AT",
+      "hot": "AS_NEEDED",
+      "total": "PERMANENT_NONPERSONAL",
+      "basis": "기존정책유지",
+      "notes": "운영자이름/IP등개인감사데이터는분리;빌드보존은배포내역재현용",
+      "policyApproval": "APPROVED"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "name": "NC 개인정보 처리 현황 / NC 개인정보처리방침",
+      "effectiveDate": "2026-08-07",
+      "url": "https://www.plaync.com/policy/privacy_status/nc",
+      "scope": "NC 서비스",
+      "finding": "부정이용기록1년; 상담/불만3년; 결제5년; 웹방문3개월. 일반 전투 체크포인트 일괄기간은 확인 불가."
+    },
+    {
+      "id": "S2",
+      "name": "펄어비스 개인정보처리방침",
+      "effectiveDate": "2026-07-08",
+      "url": "https://account.pearlabyss.com/ko-KR/Policy/policy/index?_policyNo=2",
+      "scope": "펄어비스 서비스",
+      "finding": "오류 해결용 덤프·에러 로그·세이브 데이터는 회원탈퇴 시; 부정이용/제재기록 제재기간 경과 시; 웹방문3개월; 불만3년; 거래5년. 공개 처리기간이며 개별 원시파일 TTL을 확인한 것은 아님."
+    },
+    {
+      "id": "S3",
+      "name": "넥슨 DNF Duel 개인정보처리방침",
+      "effectiveDate": "2023-12-18",
+      "url": "https://m.nexon.com/terms/801",
+      "scope": "DNF Duel 서비스, 넥슨 전체로 일반화 금지",
+      "finding": "로그인3개월; 소비자 불만3년; 거래/공급5년. 일반 프레임 로그기간은 미기재."
+    },
+    {
+      "id": "S4",
+      "name": "개인정보의 안전성 확보조치 기준 제8조",
+      "effectiveDate": "2026-07-01",
+      "url": "https://www.law.go.kr/LSW/admRulSideInfoP.do?admRulSeq=2100000281400&chrClsCd=010201&dashNo=&docCls=jo&joBrNo=00&joNo=0008&urlMode=admRulScJoRltInfoR",
+      "scope": "개인정보처리시스템 접속자(정보주체 제외)의 접속기록",
+      "finding": "기본1년 이상;5만명 이상 처리/고유식별정보·민감정보 처리 등 조건은2년 이상. 일반 플레이어 전투로그 규정 아님."
+    },
+    {
+      "id": "S5",
+      "name": "개인정보 보호법 제21조",
+      "effectiveDate": "2025-10-02",
+      "url": "https://www.law.go.kr/LSW//lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0021&lsiSeq=270351&urlMode=lsScJoRltInfoR",
+      "scope": "불필요해진 개인정보 파기 및 법정 보관 정보 분리",
+      "finding": "목적달성/보유기간 경과 등 불필요하면 파기. 다른 법률의 보존의무는 예외·분리보관."
+    }
+  ],
+  "holdPolicy": {
+    "explicitScopeRequired": true,
+    "reasonAndAuthorityRequired": true,
+    "caseIdRequired": true,
+    "reviewEveryDays": 30,
+    "resetOriginalRetentionClock": false,
+    "deletionAfterHold": "if original deadline passed and no lawful case-record retention remains, delete promptly",
+    "caseEvidence": "minimal selected copy follows lawful case retention, not entire unrelated account"
+  },
+  "controlRules": [
+    "LIVE_RUN_EXPIRY_IS_NOT_LOG_DELETION",
+    "ARCHIVE_VERIFICATION_BEFORE_HOT_PURGE",
+    "NO_AUTOMATIC_PERMANENT_BAN",
+    "NO_SECRETS_OR_RAW_SUPPORT_BODY_IN_DIAGNOSTIC_LOG",
+    "NO_UNTRUSTED_REPLAY_IMPORT_INTO_LIVE_RUN",
+    "NO_GC_OF_UNRESOLVED_SETTLEMENT_OR_ACTIVE_RIGHTS",
+    "DELETE_REQUEST_PROPAGATES_TO_ARCHIVE_SEARCH_AND_BACKUPS",
+    "NO_SYNTHETIC_NEW_REWARD_IF_OLD_RECEIPT_PURGED"
+  ],
+  "policyApproved": true,
+  "approvedAt": "2026-09-21",
+  "approvalBasis": "이전 보관기간 추천과 서버/Admin 아카이브·조회·삭제 보류 연결에 대한 사용자의 ㄱㄱ",
+  "implementationStatus": "NOT_IMPLEMENTED",
+  "scopeReviewRequired": true,
+  "approvalExcludes": [
+    "LEGAL_COMPLIANCE_CERTIFICATION",
+    "LIVE_STORAGE_DELETION",
+    "ART_STYLE_ADOPTION"
+  ],
+  "relatedPolicyApprovals": [
+    {
+      "policy": "RUN_RESUME_EXPIRY_AND_ENTRY_COST",
+      "status": "APPROVED",
+      "approvedAt": "2026-09-21",
+      "approvalBasis": "사용자: 미확정사항 추천대로 확정시켜",
+      "reference": "04_COMBAT_RUN.md#run-expiry",
+      "implementationStatus": "NOT_IMPLEMENTED",
+      "altersRetentionDurations": false
+    },
+    {
+      "policy": "KOREA_COMMUNITY_RETENTION",
+      "status": "APPROVED",
+      "approvedAt": "2026-09-30",
+      "reference": "11_WEBSITE_COMMUNITY.md#community-retention-korea-approved-v3-20260930",
+      "implementationStatus": "NOT_VERIFIED"
+    },
+    {
+      "policy": "SECURITY_AND_COMMUNITY_SCOPE_SEPARATION",
+      "status": "APPROVED",
+      "approvedAt": "2026-09-30",
+      "reference": "15_LOG_RETENTION.md#security-retention-approved-sync-20260930",
+      "implementationStatus": "NOT_VERIFIED"
+    }
+  ],
+  "lastPolicySyncAt": "2026-09-30",
+  "scopePolicyReference": "15_LOG_RETENTION.md#security-retention-approved-sync-20260930",
+  "scopeResolution": {
+    "status": "APPROVED_AUTHORING_ONLY_PENDING_RUNTIME_BINDING",
+    "legacyRowsUnchanged": true,
+    "legacyRowsAreNotUniversalFallback": true,
+    "unknownOrMixedScope": "REQUIRE_EXPLICIT_CLASSIFICATION_NO_AUTOMATIC_PURGE",
+    "communityOverrides": [
+      "RT07 only for ordinary community reports, not confirmed consumer/legal cases",
+      "RT08 only for general community operation metadata, not privacy/security audit",
+      "RT10 only for separately classified community backup; mixed backup unresolved"
+    ],
+    "runtimeFieldsAndStorageBindings": "NOT_VERIFIED"
+  },
+  "communityPolicies": [
+    {
+      "id": "CR01",
+      "kind": "COMMUNITY_CURRENT_BODY",
+      "endEvents": [
+        "AUTHOR_DELETE",
+        "ACCOUNT_DELETION",
+        "SERVICE_PURPOSE_END"
+      ],
+      "action": "ERASE_WITHOUT_DELAY_AFTER_PURPOSE_END",
+      "separateLawfulEvidenceOnly": true
+    },
+    {
+      "id": "CR02",
+      "kind": "COMMUNITY_SUPERSEDED_BODY",
+      "start": "NEW_REVISION_COMMITTED",
+      "action": "ERASE_WITHOUT_DELAY",
+      "separateLawfulEvidenceOnly": true
+    },
+    {
+      "id": "CR03",
+      "kind": "COMMUNITY_CASE_EVIDENCE",
+      "start": "FINAL_DISPOSITION_NOTIFIED_AT",
+      "maximum": "P90D",
+      "necessityRequired": true,
+      "eraseEarlierWhenUnnecessary": true,
+      "unresolvedReviewEvery": "P30D",
+      "viewOrRepeatedReportResetsClock": false,
+      "legalCaseClassificationRequired": true
+    },
+    {
+      "id": "CR04",
+      "kind": "COMMUNITY_GENERAL_OPERATION_METADATA",
+      "start": "ACTION_AT",
+      "maximum": "P180D",
+      "bodyExcluded": true,
+      "privacySecurityAuditExcluded": true
+    },
+    {
+      "id": "CR05",
+      "kind": "COMMUNITY_BACKUP",
+      "start": "BACKUP_CREATED_AT",
+      "targetMaximum": "P7D",
+      "deletionGracePeriod": false,
+      "providerErasureCapability": "NOT_VERIFIED",
+      "mixedBackupWithRT10": "BLOCK_MAPPING_UNTIL_RESOLVED"
+    }
+  ],
+  "securityPolicyBindings": {
+    "privacyAccessAudit": "RT08",
+    "accessGrantChangeRevocation": "RT08",
+    "operatingTotal": "P3Y",
+    "calendarYears": true,
+    "securityBodyCopyAllowed": false,
+    "regularReview": "MONTHLY",
+    "additionalReviewEvents": [
+      "ACCESS_PERMISSION_CHANGED",
+      "ANOMALOUS_DOWNLOAD_DETECTED"
+    ],
+    "reviewFrequencyBasis": "USER_APPROVED_OPERATION_NOT_FIXED_STATUTORY_MONTHLY_REQUIREMENT",
+    "legalScopeValidationRequired": true
+  }
+}

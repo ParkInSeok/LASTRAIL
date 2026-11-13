@@ -1,0 +1,85 @@
+{
+  "operators": [
+    {
+      "operatorId": "op_kyle",
+      "displayLabel": "Kyle",
+      "displayLabelKo": "카일",
+      "portraitResource": "OperatorIdentity/op_kyle"
+    },
+    {
+      "operatorId": "op_reina",
+      "displayLabel": "Reina",
+      "displayLabelKo": "레이나",
+      "portraitResource": "OperatorIdentity/op_reina"
+    },
+    {
+      "operatorId": "op_eve",
+      "displayLabel": "Eve",
+      "displayLabelKo": "이브",
+      "portraitResource": "OperatorIdentity/op_eve"
+    },
+    {
+      "operatorId": "op_sera",
+      "displayLabel": "Sera",
+      "displayLabelKo": "세라",
+      "portraitResource": "OperatorIdentity/op_sera"
+    },
+    {
+      "operatorId": "op_mira",
+      "displayLabel": "Mira",
+      "displayLabelKo": "미라",
+      "portraitResource": "OperatorIdentity/op_mira"
+    },
+    {
+      "operatorId": "op_vex",
+      "displayLabel": "Vex",
+      "portraitResource": "OperatorIdentity/op_vex"
+    },
+    {
+      "operatorId": "op_nyx",
+      "displayLabel": "Nyx",
+      "portraitResource": "OperatorIdentity/op_nyx",
+      "displayLabelKo": "닉스"
+    },
+    {
+      "operatorId": "op_sable",
+      "displayLabel": "Sable",
+      "portraitResource": "OperatorIdentity/op_sable"
+    },
+    {
+      "operatorId": "op_marrow",
+      "displayLabel": "Marrow",
+      "portraitResource": "OperatorIdentity/op_marrow"
+    },
+    {
+      "operatorId": "op_iris",
+      "displayLabel": "Iris",
+      "portraitResource": "OperatorIdentity/op_iris"
+    },
+    {
+      "operatorId": "op_rail",
+      "displayLabel": "Rail",
+      "portraitResource": "OperatorIdentity/op_rail"
+    },
+    {
+      "operatorId": "op_anchor",
+      "displayLabel": "Anchor",
+      "portraitResource": "OperatorIdentity/op_anchor"
+    },
+    {
+      "operatorId": "op_lumen",
+      "displayLabel": "Lumen",
+      "portraitResource": "OperatorIdentity/op_lumen"
+    },
+    {
+      "operatorId": "op_cinder",
+      "displayLabel": "Cinder",
+      "portraitResource": "OperatorIdentity/op_cinder"
+    },
+    {
+      "operatorId": "op_warden",
+      "displayLabel": "Warden",
+      "portraitResource": "OperatorIdentity/op_warden"
+    }
+  ]
+}

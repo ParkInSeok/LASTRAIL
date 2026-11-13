@@ -1,0 +1,76 @@
+{
+  "version": "ordinary.roof-spawn-authoring.v1.20261027",
+  "approval": "ORDINARY-FIVE-ROOF-THREE-TWO-v1.20261027",
+  "physicalDefinitionHash": "c2e5e813adfc3fb74755124c7aed8d17de0b79002a6ae82ec7509cb7cb83f497",
+  "millimetersPerUnit": 1000,
+  "slots": [
+    {
+      "formationSlot": 0,
+      "vehicleOrder": 1,
+      "role": "Combat",
+      "anchorPath": "Combat/SpawnFoot_0",
+      "localPositionMm": [
+        3000,
+        3213,
+        0
+      ],
+      "measuredRoofSurfaceLocalYmm": 3212.5,
+      "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO"
+    },
+    {
+      "formationSlot": 1,
+      "vehicleOrder": 1,
+      "role": "Combat",
+      "anchorPath": "Combat/SpawnFoot_1",
+      "localPositionMm": [
+        0,
+        3213,
+        0
+      ],
+      "measuredRoofSurfaceLocalYmm": 3212.5,
+      "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO"
+    },
+    {
+      "formationSlot": 2,
+      "vehicleOrder": 1,
+      "role": "Combat",
+      "anchorPath": "Combat/SpawnFoot_2",
+      "localPositionMm": [
+        -3000,
+        3213,
+        0
+      ],
+      "measuredRoofSurfaceLocalYmm": 3212.5,
+      "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO"
+    },
+    {
+      "formationSlot": 3,
+      "vehicleOrder": 2,
+      "role": "Gun",
+      "anchorPath": "Gun/SpawnFoot_3",
+      "localPositionMm": [
+        3000,
+        3213,
+        0
+      ],
+      "measuredRoofSurfaceLocalYmm": 3212.5,
+      "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO"
+    },
+    {
+      "formationSlot": 4,
+      "vehicleOrder": 2,
+      "role": "Gun",
+      "anchorPath": "Gun/SpawnFoot_4",
+      "localPositionMm": [
+        -3000,
+        3213,
+        0
+      ],
+      "measuredRoofSurfaceLocalYmm": 3212.5,
+      "quantization": "NEAREST_MM_MIDPOINT_AWAY_FROM_ZERO"
+    }
+  ],
+  "existingExplicitPlacementAndProgressTakePriority": true,
+  "newMovementPermission": false,
+  "engineDeployment": false
+}

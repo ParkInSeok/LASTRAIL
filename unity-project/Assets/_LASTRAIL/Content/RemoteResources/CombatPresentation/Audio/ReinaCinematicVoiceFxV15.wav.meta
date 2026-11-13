@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 036082fb14aa404ebd3906b92d438668
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 8
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 48000
+    compressionFormat: 0
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 1
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 0
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 0
+  userData: 'role=full-cinematic-voice-fx-no-bgm-only; source=QA/AudioProduction-20261020/reina-battle-audio-v15/cinematic-voice-fx-no-bgm.wav; sha256=f874d72396c4219aa78b5faee88cb8ec9f96656cdc0dde435f55b75d74712a08; no-mix-or-independent-stem-double-play; no-impact-candidate; listening-and-player-unverified'
+  assetBundleName:
+  assetBundleVariant:

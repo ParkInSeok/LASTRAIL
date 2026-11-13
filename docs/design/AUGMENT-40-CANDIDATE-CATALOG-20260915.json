@@ -1,0 +1,6008 @@
+{
+  "kind": "40-design-candidates-not-release-catalog",
+  "runtimeValidated": false,
+  "sourcePins": [
+    {
+      "path": "docs/design/AUGMENT-SCRAP-REPAIR-REVISION-20260915.md",
+      "sha256": "B832CDC86D768E178951AC41115CCC5EBFE5BD8B9DE7A8B344D94E76D0C2EE11"
+    },
+    {
+      "path": "docs/design/AUGMENT-GUARD-COUNTER-REVISION-20260915.md",
+      "sha256": "341099428EAD929D81526A14F68F7489555B6006C14CF4CF4CF00F70DDF42BC0"
+    },
+    {
+      "path": "docs/design/AUGMENT-SUPPRESSION-RESIDUAL-DETAIL-20260915.md",
+      "sha256": "31D18CD2D0B131BE1EBBF4A6A7BBA96E156A0B70CBBD89AD199A62CEF964F075"
+    },
+    {
+      "path": "docs/design/AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md",
+      "sha256": "5A7773B3751185160ED47567328495027B2CD0087BBA18E54D2A73B61EAE1969"
+    }
+  ],
+  "initial32Reassessment": {
+    "nodes": 32,
+    "designRelations": 64,
+    "belowThree": [
+      "T03",
+      "O09",
+      "O16"
+    ],
+    "reviewed": 92
+  },
+  "newHypothesisPairs": 23,
+  "nodes": [
+    {
+      "id": "T01",
+      "name": "기동 사격",
+      "cohort": "initial32",
+      "designPartners": [
+        "T04",
+        "T05",
+        "T09",
+        "T10",
+        "T12"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T02",
+      "name": "차폐 반격",
+      "cohort": "initial32",
+      "designPartners": [
+        "T04",
+        "T06",
+        "T08",
+        "T09",
+        "T14"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T03",
+      "name": "정비 우선",
+      "cohort": "initial32",
+      "designPartners": [
+        "T06",
+        "T13"
+      ],
+      "newHypothesisPartners": [
+        "T18"
+      ]
+    },
+    {
+      "id": "T04",
+      "name": "포대 사냥꾼",
+      "cohort": "initial32",
+      "designPartners": [
+        "T01",
+        "T02",
+        "T08",
+        "T09",
+        "T11",
+        "T16"
+      ],
+      "newHypothesisPartners": [
+        "T19"
+      ]
+    },
+    {
+      "id": "T05",
+      "name": "후방 엄호",
+      "cohort": "initial32",
+      "designPartners": [
+        "T01",
+        "T10",
+        "T13"
+      ],
+      "newHypothesisPartners": [
+        "T18"
+      ]
+    },
+    {
+      "id": "T06",
+      "name": "잔해 재활용",
+      "cohort": "initial32",
+      "designPartners": [
+        "T02",
+        "T03",
+        "T07",
+        "T12",
+        "T13",
+        "O06"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T07",
+      "name": "차폐 방출",
+      "cohort": "initial32",
+      "designPartners": [
+        "T06",
+        "T11",
+        "T12",
+        "T14"
+      ],
+      "newHypothesisPartners": [
+        "T19"
+      ]
+    },
+    {
+      "id": "T08",
+      "name": "제압 포격",
+      "cohort": "initial32",
+      "designPartners": [
+        "T02",
+        "T04",
+        "T09",
+        "T12",
+        "T15"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T09",
+      "name": "관통 포신",
+      "cohort": "initial32",
+      "designPartners": [
+        "T01",
+        "T02",
+        "T04",
+        "T08"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T10",
+      "name": "후미 기뢰",
+      "cohort": "initial32",
+      "designPartners": [
+        "T01",
+        "T05",
+        "T15"
+      ],
+      "newHypothesisPartners": [
+        "T18"
+      ]
+    },
+    {
+      "id": "T11",
+      "name": "요격 포대",
+      "cohort": "initial32",
+      "designPartners": [
+        "T04",
+        "T07",
+        "T14"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T12",
+      "name": "이동 탄막",
+      "cohort": "initial32",
+      "designPartners": [
+        "T01",
+        "T06",
+        "T07",
+        "T08",
+        "T15"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T13",
+      "name": "정비 전력 전환(변경 후보)",
+      "cohort": "initial32",
+      "designPartners": [
+        "T03",
+        "T05",
+        "T06",
+        "O11"
+      ],
+      "newHypothesisPartners": [
+        "T19",
+        "T20"
+      ]
+    },
+    {
+      "id": "T14",
+      "name": "맥동 방어막",
+      "cohort": "initial32",
+      "designPartners": [
+        "T02",
+        "T07",
+        "T11"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "T15",
+      "name": "충격 견인탄",
+      "cohort": "initial32",
+      "designPartners": [
+        "T08",
+        "T10",
+        "T12"
+      ],
+      "newHypothesisPartners": [
+        "T20"
+      ]
+    },
+    {
+      "id": "T16",
+      "name": "통합 화력망",
+      "cohort": "initial32",
+      "designPartners": [
+        "T04",
+        "O01",
+        "O04",
+        "O11"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O01",
+      "name": "연계 지휘",
+      "cohort": "initial32",
+      "designPartners": [
+        "T16",
+        "O06",
+        "O11"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O02",
+      "name": "과잉 치료 전환",
+      "cohort": "initial32",
+      "designPartners": [
+        "O05",
+        "O06",
+        "O12"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O03",
+      "name": "처형 연쇄",
+      "cohort": "initial32",
+      "designPartners": [
+        "O06",
+        "O10",
+        "O11",
+        "O14"
+      ],
+      "newHypothesisPartners": [
+        "O18"
+      ]
+    },
+    {
+      "id": "O04",
+      "name": "약점 인계",
+      "cohort": "initial32",
+      "designPartners": [
+        "T16",
+        "O07",
+        "O09",
+        "O14",
+        "O16"
+      ],
+      "newHypothesisPartners": [
+        "O20"
+      ]
+    },
+    {
+      "id": "O05",
+      "name": "응급 전술",
+      "cohort": "initial32",
+      "designPartners": [
+        "O02",
+        "O06",
+        "O08",
+        "O12",
+        "O13",
+        "O15"
+      ],
+      "newHypothesisPartners": [
+        "T17"
+      ]
+    },
+    {
+      "id": "O06",
+      "name": "전력 보류",
+      "cohort": "initial32",
+      "designPartners": [
+        "T06",
+        "O01",
+        "O02",
+        "O03",
+        "O05",
+        "O11",
+        "O12",
+        "O13",
+        "O14",
+        "O15"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O07",
+      "name": "추격 명령",
+      "cohort": "initial32",
+      "designPartners": [
+        "O04",
+        "O09",
+        "O10"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O08",
+      "name": "단독 돌파",
+      "cohort": "initial32",
+      "designPartners": [
+        "O05",
+        "O10",
+        "O15"
+      ],
+      "newHypothesisPartners": [
+        "O19"
+      ]
+    },
+    {
+      "id": "O09",
+      "name": "제압 교리",
+      "cohort": "initial32",
+      "designPartners": [
+        "O04",
+        "O07"
+      ],
+      "newHypothesisPartners": [
+        "O17",
+        "O20"
+      ]
+    },
+    {
+      "id": "O10",
+      "name": "도탄 탄창",
+      "cohort": "initial32",
+      "designPartners": [
+        "O03",
+        "O07",
+        "O08"
+      ],
+      "newHypothesisPartners": [
+        "O17",
+        "O20"
+      ]
+    },
+    {
+      "id": "O11",
+      "name": "예비 탄창",
+      "cohort": "initial32",
+      "designPartners": [
+        "T13",
+        "T16",
+        "O01",
+        "O03",
+        "O06"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O12",
+      "name": "집중 구호",
+      "cohort": "initial32",
+      "designPartners": [
+        "O02",
+        "O05",
+        "O06",
+        "O16"
+      ],
+      "newHypothesisPartners": []
+    },
+    {
+      "id": "O13",
+      "name": "호위 방벽",
+      "cohort": "initial32",
+      "designPartners": [
+        "O05",
+        "O06",
+        "O15"
+      ],
+      "newHypothesisPartners": [
+        "O19"
+      ]
+    },
+    {
+      "id": "O14",
+      "name": "잔류 전술",
+      "cohort": "initial32",
+      "designPartners": [
+        "O03",
+        "O04",
+        "O06"
+      ],
+      "newHypothesisPartners": [
+        "O17",
+        "O18"
+      ]
+    },
+    {
+      "id": "O15",
+      "name": "방벽 사격",
+      "cohort": "initial32",
+      "designPartners": [
+        "O05",
+        "O06",
+        "O08",
+        "O13"
+      ],
+      "newHypothesisPartners": [
+        "T17"
+      ]
+    },
+    {
+      "id": "O16",
+      "name": "구호 사격",
+      "cohort": "initial32",
+      "designPartners": [
+        "O04",
+        "O12"
+      ],
+      "newHypothesisPartners": [
+        "O19"
+      ]
+    },
+    {
+      "id": "T17",
+      "name": "장갑 배분",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "O05",
+        "O15",
+        "O19"
+      ]
+    },
+    {
+      "id": "T18",
+      "name": "예비 배선",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "T03",
+        "T05",
+        "T10"
+      ]
+    },
+    {
+      "id": "T19",
+      "name": "계류 방벽",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "T04",
+        "T07",
+        "T13"
+      ]
+    },
+    {
+      "id": "T20",
+      "name": "거점 전개",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "T13",
+        "T15",
+        "O18"
+      ]
+    },
+    {
+      "id": "O17",
+      "name": "빈틈 사격",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "O09",
+        "O10",
+        "O14"
+      ]
+    },
+    {
+      "id": "O18",
+      "name": "외부 지원 탄창",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "O03",
+        "O14",
+        "T20"
+      ]
+    },
+    {
+      "id": "O19",
+      "name": "호위 교대",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "O08",
+        "O13",
+        "O16",
+        "T17"
+      ]
+    },
+    {
+      "id": "O20",
+      "name": "사격 유예",
+      "cohort": "last8-draft",
+      "designPartners": [],
+      "newHypothesisPartners": [
+        "O04",
+        "O09",
+        "O10"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "a": "T01",
+      "b": "T02",
+      "status": "TENSION",
+      "reason": "반격 우선→보존 장전분 저속 방출 순서는 명확해짐. 동시발동 상승연계와 구분",
+      "source": "보정안2"
+    },
+    {
+      "a": "T01",
+      "b": "T03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T04",
+      "status": "DIRECT",
+      "reason": "고속 장전과 목표 조준을 충족해 같은 주포의 파쇄 일제 실행",
+      "source": "기존16/실사용매핑"
+    },
+    {
+      "a": "T01",
+      "b": "T05",
+      "status": "OPERATING",
+      "reason": "고속 장전 중 Gun 후방 엄호, 감속해 전방 역할로 복귀",
+      "source": "핵심철학"
+    },
+    {
+      "a": "T01",
+      "b": "T06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T08",
+      "status": "CONDITIONAL",
+      "reason": "기동 일제가 포격을 대체한다는 정의만 있고 범위·제압 승계 불명확; 이름만 합친 포격 일제로 세지 않음",
+      "source": "기존16"
+    },
+    {
+      "a": "T01",
+      "b": "T09",
+      "status": "DIRECT",
+      "reason": "감속 방출을 관통 패턴으로 합성해 적 정렬 시점을 선택",
+      "source": "T09"
+    },
+    {
+      "a": "T01",
+      "b": "T10",
+      "status": "OPERATING",
+      "reason": "후미 기뢰로 고속 준비 구간 추격을 처리하고 주포는 전방 감속 방출",
+      "source": "T10"
+    },
+    {
+      "a": "T01",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T12",
+      "status": "OPERATING",
+      "reason": "고속 분산 탄막 뒤 감속 주포 방출로 주변/중심 공략 분리",
+      "source": "T12"
+    },
+    {
+      "a": "T01",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T04",
+      "status": "DIRECT",
+      "reason": "현재 주포의 조준·파쇄 형태를 유지한 반격. 반격창 안 조준 완료/표적 변경 비용 명시",
+      "source": "보정안2"
+    },
+    {
+      "a": "T02",
+      "b": "T05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T06",
+      "status": "DIRECT",
+      "reason": "원본방벽파괴후 독립장갑으로 반격구간보호. 장갑흡수량 반격충전 제외",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T02",
+      "b": "T07",
+      "status": "TENSION",
+      "reason": "적에게 깨져 반격하거나 자발 방출하거나 양자선택; 동시발동 아님",
+      "source": "기존16"
+    },
+    {
+      "a": "T02",
+      "b": "T08",
+      "status": "DIRECT",
+      "reason": "범위 형태를 유지한 시간차 반격포격. 한 준비과정/적 이탈 위험 유지",
+      "source": "보정안2"
+    },
+    {
+      "a": "T02",
+      "b": "T09",
+      "status": "DIRECT",
+      "reason": "원래 사격선을 유지하는 관통 반격. 새 관계",
+      "source": "보정안2"
+    },
+    {
+      "a": "T02",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T14",
+      "status": "DIRECT",
+      "reason": "부모당 첫 적격파괴로 반격, 남은 펄스는 보호만 수행하여 반격 중 보호 재개 가능. 반복발동 금지",
+      "source": "보정안2"
+    },
+    {
+      "a": "T02",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T06",
+      "status": "DIRECT",
+      "reason": "키트 기여만 고속복구 유지. 원래T03저속촉진은 종료",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T03",
+      "b": "T07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T13",
+      "status": "DIRECT",
+      "reason": "Gun 정상공격을 기존 적격 복구촉진으로 배분. 고속복귀하면 공격으로 전환",
+      "source": "보정안4"
+    },
+    {
+      "a": "T03",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T08",
+      "status": "DIRECT",
+      "reason": "최신 매핑의 하나의 조준→범위 파쇄포격; 중심만 장갑 취약",
+      "source": "실사용매핑6"
+    },
+    {
+      "a": "T04",
+      "b": "T09",
+      "status": "DIRECT",
+      "reason": "조준 중심에 파쇄, 뒤의 적에는 관통; 하나의 공격 예산",
+      "source": "T09"
+    },
+    {
+      "a": "T04",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T11",
+      "status": "OPERATING",
+      "reason": "Gun 공격을 요격으로 돌려 기관차 조준이 끝날 노출 시간을 확보",
+      "source": "T11"
+    },
+    {
+      "a": "T04",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T16",
+      "status": "DIRECT",
+      "reason": "레이나·세라 또는 미라 원본으로 외부 공격을 예약해 주포 취약시간에 사용. 카일·이브 예약을 동일 압축사격으로 가정하지 않음",
+      "source": "보정안6"
+    },
+    {
+      "a": "T04",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T10",
+      "status": "DIRECT",
+      "reason": "고속은 후방 기뢰, 저속은 전방 사격으로 Gun 역할 전환",
+      "source": "T10"
+    },
+    {
+      "a": "T05",
+      "b": "T11",
+      "status": "CONDITIONAL",
+      "reason": "요격 우선/없을 때 고속후방 규칙 명시. 장기요격으로 후방역할이 사라지는지 미검증",
+      "source": "보정안7"
+    },
+    {
+      "a": "T05",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T13",
+      "status": "DIRECT",
+      "reason": "저속·순항은 정비, 고속은 후방 엄호. 동일 Gun을 속도로 역할 전환",
+      "source": "보정안4/7"
+    },
+    {
+      "a": "T05",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T16",
+      "status": "CONDITIONAL",
+      "reason": "예약이 후방역할보다 우선. 후방억제 중단/예약형별실익 비교 필요",
+      "source": "보정안7"
+    },
+    {
+      "a": "T05",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T07",
+      "status": "DIRECT",
+      "reason": "원본방벽 방출+재활용 파편을 하나의 지원공격으로 합성. 장갑을 방출자원으로 쓰는 것은 아님",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "T08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T12",
+      "status": "DIRECT",
+      "reason": "한 파편예산을 이동탄막 전체에분배",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "T13",
+      "status": "DIRECT",
+      "reason": "고속에서도 키트대상 Gun정비를 선택하며 사격 포기",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T15",
+      "status": "CONDITIONAL",
+      "reason": "집결+파편 예산/이동면역 경계가남은추가후보",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O06",
+      "status": "OPERATING",
+      "reason": "미라원본분할수리와 고속키트작업으로 탈출중정비. 부모1회,실전순수회복증가만이면재심사",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O11",
+      "status": "CONDITIONAL",
+      "reason": "미라저장분의키트소비시점선택이 기본수리량외차이있는지미검증",
+      "source": "재활용보정"
+    },
+    {
+      "a": "T06",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T11",
+      "status": "DIRECT",
+      "reason": "요격으로 보존한 원본 방어 잔량을 범위 방출로 전환",
+      "source": "T11"
+    },
+    {
+      "a": "T07",
+      "b": "T12",
+      "status": "DIRECT",
+      "reason": "소비한 방어 잔량을 단발이 아닌 이동 탄막 전체에 배분",
+      "source": "T12"
+    },
+    {
+      "a": "T07",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T14",
+      "status": "DIRECT",
+      "reason": "현재 보호 펄스만 방출하고 미래 펄스 포기; 방출 시점 선택",
+      "source": "T14"
+    },
+    {
+      "a": "T07",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T09",
+      "status": "DIRECT",
+      "reason": "원형 폭발을 좁고 긴 폭발 회랑으로 합성",
+      "source": "T09"
+    },
+    {
+      "a": "T08",
+      "b": "T10",
+      "status": "CONDITIONAL",
+      "reason": "제압이 추격자를 기뢰 쪽에 밀집시킬 수도 접근을 막을 수도 있음; 영역/배치/이동 검증 전 상승연계 제외",
+      "source": "T10"
+    },
+    {
+      "a": "T08",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T12",
+      "status": "OPERATING",
+      "reason": "적격 이동 적의 이동 억제로 낙탄 구간 체류 확보; 실제 정지/면역과 구분",
+      "source": "T12"
+    },
+    {
+      "a": "T08",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T15",
+      "status": "DIRECT",
+      "reason": "이동 적을 집결시킨 뒤 범위 포격; 제어면역에는 불성립",
+      "source": "T15"
+    },
+    {
+      "a": "T08",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T15",
+      "status": "CONDITIONAL",
+      "reason": "점 집결만으로 앞뒤 관통 사격선 성립 보장 안 됨; 논리 배치 규칙 필요",
+      "source": "T15"
+    },
+    {
+      "a": "T09",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T11",
+      "status": "CONDITIONAL",
+      "reason": "요격 우선/이후 기뢰. 역할선택은 정의됐으나 지속포격에서 기뢰기회 소멸 가능",
+      "source": "보정안7"
+    },
+    {
+      "a": "T10",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T13",
+      "status": "CONDITIONAL",
+      "reason": "저속정비 중 기뢰중단,고속기뢰가능. T05동시보유 여부별 정상역할/무손상 상태 검증 필요",
+      "source": "보정안7"
+    },
+    {
+      "a": "T10",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T15",
+      "status": "DIRECT",
+      "reason": "적격 추격자를 기존 후미 기뢰 구역으로 모아 기폭 유도",
+      "source": "T15"
+    },
+    {
+      "a": "T10",
+      "b": "T16",
+      "status": "CONDITIONAL",
+      "reason": "피해형궁극기 예약은 기뢰에 합성, 나머지 역할은 유예. 카일·이브·미라 예약 굶음/만료 미검증",
+      "source": "보정안7"
+    },
+    {
+      "a": "T10",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T13",
+      "status": "CONDITIONAL",
+      "reason": "요격우선→정비. 반복포격에서 정비가 계속 불발할 수 있음",
+      "source": "보정안7"
+    },
+    {
+      "a": "T11",
+      "b": "T14",
+      "status": "DIRECT",
+      "reason": "펄스 보호 구간에만 Gun 요격, 빈틈에는 원래 공격 역할",
+      "source": "T11"
+    },
+    {
+      "a": "T11",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T16",
+      "status": "CONDITIONAL",
+      "reason": "카일 예약은 기존요격1회로 이행. 중복소비 방지는 해결했지만 추가연계 실익/다른예약실행은 미검증",
+      "source": "보정안7"
+    },
+    {
+      "a": "T11",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T15",
+      "status": "DIRECT",
+      "reason": "첫 낙탄만 집결,나머지 탄막으로 구간 공략; 반복끌기 금지",
+      "source": "T15"
+    },
+    {
+      "a": "T12",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "T14",
+      "status": "WEAK",
+      "reason": "치료를 방어로 덮는 일반 병용; 정비 회차와 펄스의 조절권/동기화 정의 없음",
+      "source": "T13"
+    },
+    {
+      "a": "T13",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "T16",
+      "status": "CONDITIONAL",
+      "reason": "정비우선→Gun예약. 미라가 정비와공격예약을 동시에 열면 예약 만료위험. 조건부 충돌 유지",
+      "source": "보정안4/7"
+    },
+    {
+      "a": "T13",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O06",
+      "status": "WEAK",
+      "reason": "미라 분할회복이 정비창을 연장하지 않음. 호환은 가능하지만 새 연계로 세지 않음",
+      "source": "보정안6"
+    },
+    {
+      "a": "T13",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O11",
+      "status": "OPERATING",
+      "reason": "미라 저장 원본 궁극기2회를 다른 교전에 배치해 정비/화력 전환창 선택. 미라 한정, 회복량만 늘면 재심사",
+      "source": "보정안4/6"
+    },
+    {
+      "a": "T13",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "T16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O01",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "T16",
+      "status": "OPERATING",
+      "reason": "원본 궁극기 역할마다 Gun요격/관통/제압을 달리 예약. A-B 순서와 Gun빈슬롯 시점을 동시에 선택",
+      "source": "보정안6"
+    },
+    {
+      "a": "T16",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "T16",
+      "status": "OPERATING",
+      "reason": "표식 적은 요원에게 맡기고 새 내부 집중 구역은 Combat 예약제압으로 대응",
+      "source": "T16"
+    },
+    {
+      "a": "T16",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O11",
+      "status": "OPERATING",
+      "reason": "저장 원본 궁극기를 Gun기회에 맞춰 나눠 사용. 슬롯당1개/연타적립 없음",
+      "source": "보정안6"
+    },
+    {
+      "a": "T16",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O02",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O06",
+      "status": "DIRECT",
+      "reason": "첫/후속 궁극기 형태를 보류변형하고 별도 연계 지원; 파생발동 제외",
+      "source": "기존16/실사용매핑"
+    },
+    {
+      "a": "O01",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O08",
+      "status": "TENSION",
+      "reason": "다음 궁극기는 기존 돌파를 종료하고 연계; 양쪽을 동시에 유지하는 증폭 아님",
+      "source": "기존16"
+    },
+    {
+      "a": "O01",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O11",
+      "status": "DIRECT",
+      "reason": "저장한 원본 궁극기로 A-B-A 순서를 선택; 각 시전 별도 소비",
+      "source": "O11"
+    },
+    {
+      "a": "O01",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O16",
+      "status": "TENSION",
+      "reason": "이브→다른궁극기는 구호를 끝내고 연계. 구호유지와빠른연계를 동시에 얻는 조합 아님",
+      "source": "보정안5"
+    },
+    {
+      "a": "O02",
+      "b": "O03",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O05",
+      "status": "DIRECT",
+      "reason": "실제회복으로준비,초과분보호로받아낸원본공격에반격. 초과만이면준비없음",
+      "source": "보호반격보정"
+    },
+    {
+      "a": "O02",
+      "b": "O06",
+      "status": "DIRECT",
+      "reason": "이브 원본 분할회복의 초과분을 시점별 보호로 전환; 총상한 유지",
+      "source": "실사용매핑"
+    },
+    {
+      "a": "O02",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O12",
+      "status": "DIRECT",
+      "reason": "원본 집중 치료의 초과분을 한 명의 선제 보호로 전환",
+      "source": "O12"
+    },
+    {
+      "a": "O02",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O15",
+      "status": "UNSUPPORTED",
+      "reason": "과잉치료 파생 보호는 방벽 사격 소비원 제외",
+      "source": "O15"
+    },
+    {
+      "a": "O02",
+      "b": "O16",
+      "status": "UNSUPPORTED",
+      "reason": "구호사격은 증강 파생치료라 과잉치료 전환 발동 금지",
+      "source": "O16"
+    },
+    {
+      "a": "O03",
+      "b": "O04",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O06",
+      "status": "DIRECT",
+      "reason": "변형 피해궁극기의 처형 시작점 확장; 원본전체1경로",
+      "source": "기존16"
+    },
+    {
+      "a": "O03",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O10",
+      "status": "OPERATING",
+      "reason": "도탄으로 주변 적을 약화시킨 뒤 궁극기 처형 전달 경로 선택",
+      "source": "O10"
+    },
+    {
+      "a": "O03",
+      "b": "O11",
+      "status": "OPERATING",
+      "reason": "별도 두 궁극기를 서로 다른 약한 적에서 시작해 연쇄 경로를 나눔",
+      "source": "O11"
+    },
+    {
+      "a": "O03",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O14",
+      "status": "DIRECT",
+      "reason": "고정 구역 잔류 피해에서 첫 처형 전파; 부모궁극기 전체1경로",
+      "source": "O14"
+    },
+    {
+      "a": "O03",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O05",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O06",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O07",
+      "status": "OPERATING",
+      "reason": "추적 요원을 제외한 분대의 다음 집중을 지휘; 분산의 화력대가 유지",
+      "source": "기존16"
+    },
+    {
+      "a": "O04",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O09",
+      "status": "DIRECT",
+      "reason": "표식 요원을 제외한 분대가 새 집중 적 제압을 담당; 추적공격은 새 집중 진행에 합산 안 함",
+      "source": "O09"
+    },
+    {
+      "a": "O04",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O14",
+      "status": "OPERATING",
+      "reason": "생존강적에 시전자추적+잔류를맡기고나머지집중전환. 과잉투자비교필요",
+      "source": "제압잔류상세"
+    },
+    {
+      "a": "O04",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O16",
+      "status": "OPERATING",
+      "reason": "먼저 피해궁극기 표식→집중변경→이브 궁극기 구호. 표식 요원과 새 위협 피해자 치료를 분담. 역순이면 구호종료",
+      "source": "보정안5"
+    },
+    {
+      "a": "O05",
+      "b": "O06",
+      "status": "DIRECT",
+      "reason": "분할치료 부모+대상별최초실회복1준비. 후속틱재준비금지",
+      "source": "보호반격보정"
+    },
+    {
+      "a": "O05",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O08",
+      "status": "DIRECT",
+      "reason": "이브치료→해당요원돌파→적공격 순서의돌파형반격",
+      "source": "보호반격보정"
+    },
+    {
+      "a": "O05",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O12",
+      "status": "DIRECT",
+      "reason": "실제로 부상 회복된 한 명에게 응급반격 집중; 다른 요원 회복 포기",
+      "source": "O12"
+    },
+    {
+      "a": "O05",
+      "b": "O13",
+      "status": "DIRECT",
+      "reason": "실부상치료준비 후 원본적공격을호위로전량막아도 생존시1회반격",
+      "source": "보호반격보정"
+    },
+    {
+      "a": "O05",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O15",
+      "status": "DIRECT",
+      "reason": "반격대상에 남은원본보호를소비해형태확장. 자체소모로반격시작금지",
+      "source": "보호반격보정"
+    },
+    {
+      "a": "O05",
+      "b": "O16",
+      "status": "UNSUPPORTED",
+      "reason": "구호사격은 증강 파생치료라 응급태세 재발동 금지",
+      "source": "O16"
+    },
+    {
+      "a": "O06",
+      "b": "O07",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O09",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O11",
+      "status": "DIRECT",
+      "reason": "첫 저장분 보류변형 후 두 번째 즉시/추가보류 선택; 보류시간 재시작",
+      "source": "O11"
+    },
+    {
+      "a": "O06",
+      "b": "O12",
+      "status": "DIRECT",
+      "reason": "전체 분할 회복 대신 고정된 한 명에게 시간차 구호",
+      "source": "O12"
+    },
+    {
+      "a": "O06",
+      "b": "O13",
+      "status": "DIRECT",
+      "reason": "한 호위 대상의 보호 갱신을 시간차로 나눔",
+      "source": "O13"
+    },
+    {
+      "a": "O06",
+      "b": "O14",
+      "status": "DIRECT",
+      "reason": "변형 궁극기 영역에 잔류 공격 예산 분배; 틱별 증식 금지",
+      "source": "O14"
+    },
+    {
+      "a": "O06",
+      "b": "O15",
+      "status": "DIRECT",
+      "reason": "카일 시간차 원본 보호를 나눠 받아 공격 변형 구간 분할",
+      "source": "O15"
+    },
+    {
+      "a": "O06",
+      "b": "O16",
+      "status": "WEAK",
+      "reason": "분할회복+구호사격의 지속회복 총량 외 운영 변화 불명확",
+      "source": "O16"
+    },
+    {
+      "a": "O07",
+      "b": "O08",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O09",
+      "status": "DIRECT",
+      "reason": "다음 정상 공격을 같은 표적에 모아 제압 도달 시점을 집중",
+      "source": "O09"
+    },
+    {
+      "a": "O07",
+      "b": "O10",
+      "status": "DIRECT",
+      "reason": "다음 공격 일제의 첫 표적을 바꿔 도탄 중심을 재배치",
+      "source": "O10"
+    },
+    {
+      "a": "O07",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O09",
+      "status": "WEAK",
+      "reason": "변환 다중타를 원본1회로 집계하므로 제압 가속 보장 없음; 같이 공격함만으로 연계 아님",
+      "source": "O09"
+    },
+    {
+      "a": "O08",
+      "b": "O10",
+      "status": "DIRECT",
+      "reason": "5명별 돌파 형태 뒤 방문하지 않은 적으로 도탄1경로. 다중타별 경로복제 금지",
+      "source": "보정안3"
+    },
+    {
+      "a": "O08",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O15",
+      "status": "DIRECT",
+      "reason": "5명별 돌파의 폭/관통/분산을 원본 보호 소비로 확장. 공격기회당1소비",
+      "source": "보정안3"
+    },
+    {
+      "a": "O08",
+      "b": "O16",
+      "status": "TENSION",
+      "reason": "이브 돌파보다 구호 우선; 다른요원궁극기는 둘다 종료. 다른요원돌파와 동시유지 가정 금지",
+      "source": "보정안5"
+    },
+    {
+      "a": "O09",
+      "b": "O10",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O14",
+      "status": "UNSUPPORTED",
+      "reason": "제압 교리는 준비행동 interrupt이지 이동구속이 아님; 구역에 머물게 한다는 초안 근거 없음",
+      "source": "O14"
+    },
+    {
+      "a": "O09",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O11",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O12",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O16",
+      "status": "CONDITIONAL",
+      "reason": "저장한 이브 재시전시 기존구호 갱신/교체 규칙 미명시. 무한태세로 가정하지 않음",
+      "source": "보정안5"
+    },
+    {
+      "a": "O12",
+      "b": "O13",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O16",
+      "status": "OPERATING",
+      "reason": "원본 집중치료로 한명 구조 후 현재 집중적 피해자 우선구호로 분담. 기존 최저HP순회만으로 설명하지 않음",
+      "source": "보정안5"
+    },
+    {
+      "a": "O13",
+      "b": "O14",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "O15",
+      "status": "DIRECT",
+      "reason": "호위 대상의 보호를 공격 패턴 변환 자원으로 집중",
+      "source": "O13"
+    },
+    {
+      "a": "O13",
+      "b": "O16",
+      "status": "WEAK",
+      "reason": "호위궁극기 먼저→이브구호는 병용가능, 반대순서는 구호종료. 일반보호/치료를 넘는 연계는 미확보",
+      "source": "보정안5"
+    },
+    {
+      "a": "O14",
+      "b": "O15",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "O16",
+      "status": "NOT_REVIEWED",
+      "reason": "기존 문서에 명시한 연계와 이번 슬롯 교차 검토 범위 밖. 호환·무효·시너지 판정 아님.",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T01",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T02",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "Gun복구촉진으로기관차대행종료",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T03",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T03",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "T19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "고정방벽안에서주포조준",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T04",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T04",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "대행기관차의후방역할매핑",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T05",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T05",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T06",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "T19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "사격지점과방벽영역겹칠때방출",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T07",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T07",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T08",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T09",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "대행기뢰역할,무료Gun복제금지",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T10",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T10",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T11",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T12",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "T19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "고정방벽안저속정비",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T13",
+      "b": "T20",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "수리회수후정비전환",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T13",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T13",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T14",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "T20",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "전개영역적집결",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T15",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T15",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T16",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O01",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O02",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "명시외부전파변형",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O03",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O03",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O04",
+      "b": "O20",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "표식고정대상저장사격방출",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O05",
+      "b": "T17",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "열차분배보호로응급반격지원",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O05",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O05",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O06",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O07",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O08",
+      "b": "O19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "다음돌파요원으로보호교대",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O08",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O17",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "공격차단뒤Ready공백활용",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O09",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O09",
+      "b": "O20",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "소비했던서로다른원본공격기회방출집계",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O10",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O17",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "후열도탄사거리/순서조건미정",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O10",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O10",
+      "b": "O20",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "원본기회별도탄형태",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O11",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O11",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O12",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O13",
+      "b": "O19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "호위잔량이관",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O13",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "O17",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "전열은잔류,기본공격후열",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O14",
+      "b": "O18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "명시외부구역잔류변형",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O14",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O14",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "T17",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "명시원본분배보호를사격자원에추가",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O15",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O15",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "T17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O16",
+      "b": "O19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "이브시전자호위후구호유지/다음궁극기로교대종료",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "O16",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "T18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T17",
+      "b": "O19",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "분배보호잔량을새시전자에게이관",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T17",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "T19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T18",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T19",
+      "b": "T20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T19",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T19",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T19",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T19",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T20",
+      "b": "O17",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T20",
+      "b": "O18",
+      "status": "PROPOSED_LAST8_NOT_AUDITED",
+      "reason": "전개외부구역에요원지원",
+      "source": "AUGMENT-40-FINAL-EIGHT-DRAFT-20260915.md"
+    },
+    {
+      "a": "T20",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "T20",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O17",
+      "b": "O18",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O17",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O17",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O18",
+      "b": "O19",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O18",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    },
+    {
+      "a": "O19",
+      "b": "O20",
+      "status": "NOT_REVIEWED",
+      "reason": "Last8 relationship not reviewed",
+      "source": null
+    }
+  ]
+}

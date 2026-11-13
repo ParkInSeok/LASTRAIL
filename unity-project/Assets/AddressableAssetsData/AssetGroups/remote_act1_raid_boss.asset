@@ -1,0 +1,317 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_act1_raid_boss
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_act1_raid_boss
+  m_GUID: d2f58d55ba3ce5d45be196e43b38fdb1
+  m_SerializeEntries:
+  - m_GUID: 0431cda985e19d647a986f3490a9d972
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/hit/boss_raider_king_engine_hit_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 167c6166be9fb2a44b1279b4be6db7f5
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/warning/boss_raider_king_engine_warning_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c58eb5de8fe6eb48a4691597e208d31
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/idle/boss_raider_king_engine_idle_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 205d454ba08a64f4991e6332900bcc05
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Bosses/boss_raider_king_engine.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22ff7f0672e43d14b9f3a8aaab3f2c9e
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/defeat/boss_raider_king_engine_defeat_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24a318271731f3744b6b42a8a6ce3ef2
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Accents/boss_hp_bar_accent.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2889b1cf63ad86a4fae531cb394052bc
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_attack_or_cast.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bbd38a2012deef448778668dabca418
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/raid_boss_combat_2048.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32319dfd4af1c08479d44e9cc13c0106
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/idle/boss_raider_king_engine_idle_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47592c41d2677e849bfca880657b9ae6
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_phase_transition.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 48f5da3ef0925ba42a5126edd7013fcf
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/warning/boss_raider_king_engine_warning_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ef55569c14a3b84481a8d97bb3ab8c7
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Bosses/boss_raider_king_engine/boss_raider_king_engine_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5102f1f1d97008740a648d7d32d57c79
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/warning/boss_raider_king_engine_warning_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53bc4231954148747956b49da203560b
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/idle/boss_raider_king_engine_idle_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55f841b71cd60ef47a8e648a7c524ce8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Bosses/boss_raider_king_engine/boss_raider_king_engine_defeat.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 55fb651e99de89f48bd15df26dafa697
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/warning/boss_raider_king_engine_warning_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64319bd4cd6bc3a4bba4729ebcacb1c2
+    m_Address: Assets/_LASTRAIL/Art/Animation/Animators/RaidBosses/boss_raider_king_engine.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6934270380902b143b66cc575c706644
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/hit/boss_raider_king_engine_hit_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a8cab5c617dee2498c159ee6d5df55f
+    m_Address: Assets/_LASTRAIL/Art/Animation/Atlases/raid_boss_combat_1024.spriteatlas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d84309e4830ec54389ea49e06d67832
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/attack/boss_raider_king_engine_attack_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b4707a641cb8724fa863c75ef3578d4
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Bosses/boss_raider_king_engine/boss_raider_king_engine_attack.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8925bfcf9aa9f36418409970b36ee03d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/hit/boss_raider_king_engine_hit_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f31f739290ce394a9bd5400dd98db60
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Bosses/boss_raider_king_engine/boss_raider_king_engine_warning.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9584d2f2d4a5caa4e8f37b18f48d7e5a
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_hit.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0bf0a292d028f84c975b9bf947a1f2c
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_down_or_destroyed.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a32406995bfea3d4bb2bf25df3d4b6d4
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/Accents/boss_danger_frame.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a4a7792813a07dd479557af57a6bceb6
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Animators/Bosses/boss_raider_king_engine.controller
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a91098e8d84c5d349b0422a353b092ac
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/idle/boss_raider_king_engine_idle_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9656324456e6174c9439696dbce7278
+    m_Address: Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_boss_defeat_burst.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aa1e41e184efa624aa0695665881e1f5
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_ultimate_cue.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad76249c12377294498b962feee12ca9
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/defeat/boss_raider_king_engine_defeat_001.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae1be2b34318a0b4da353f194950a44a
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/defeat/boss_raider_king_engine_defeat_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc0d86bc89305074da837550f1a714ee
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/VFX/vfx_boss_phase.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfa78bf29f5632f479f8c03f1c562a28
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/defeat/boss_raider_king_engine_defeat_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3d1208b963dd7042b592d7e1d4ede03
+    m_Address: Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_boss_only_badge.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c53023996d31f6e408fd570d597b5b2d
+    m_Address: Assets/_LASTRAIL/Art/Animation/Clips/RaidBosses/boss_raider_king_engine/boss_raider_king_engine_idle_loop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c86cac2bd1e75444a851be8a8b7827f8
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/attack/boss_raider_king_engine_attack_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d864bdd529aa1a343ae0d91825b5b737
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/attack/boss_raider_king_engine_attack_003.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da3508e9958688543b7a36a6e38f1fc3
+    m_Address: Assets/_LASTRAIL/UI/KeyVisuals/kv_story_raid_boss_entrance.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de4e5052bc45c4d4dabd92230b05384d
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/hit/boss_raider_king_engine_hit_002.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ea17675f4138bb14c8f32a4ce16b8352
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Bosses/boss_raider_king_engine/attack/boss_raider_king_engine_attack_004.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f66a4d69ed5c3234381fa58049902c65
+    m_Address: Assets/_LASTRAIL/UI/CombatAnimations/Clips/Bosses/boss_raider_king_engine/boss_raider_king_engine_idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_act1_raid_boss
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ef9e539b476f4e64db14d2d8f7b79aa8, type: 2}
+    - {fileID: 11400000, guid: 62b9be7cd9075204d9438e96a1419b53, type: 2}

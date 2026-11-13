@@ -1,0 +1,41 @@
+{
+  "name": "LAST RAIL Act 1 Combat Art Resources",
+  "referenceResolution": "1080x1920",
+  "normalEnemyCount": 6,
+  "eliteEnemyCount": 2,
+  "bossCount": 1,
+  "vfxCount": 8,
+  "accentCount": 2,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "sourceType": "project_generated_launch_asset",
+  "serverTruthFieldsAllowed": false,
+  "combatMathIncluded": false,
+  "railsChoiceIncluded": false,
+  "worldRaidIncluded": false,
+  "vfxBudget": { "largeConcurrentMax": 2, "hitSparkConcurrentRange": "8-12", "fullScreenFlashSecondsMax": 0.15, "bossPhaseSecondsRange": "1-2", "hudReadabilityFirst": true },
+  "enemies": [
+    { "id": "enemy_raider_scout", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_raider_scout.png", "width": 768, "height": 768, "intendedUsage": "frontline_small", "sourceType": "generated_local_launch_asset" },
+    { "id": "enemy_railbike_marauder", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_railbike_marauder.png", "width": 768, "height": 768, "intendedUsage": "fast_flanker", "sourceType": "generated_local_launch_asset" },
+    { "id": "enemy_scrapshield_brute", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_scrapshield_brute.png", "width": 768, "height": 768, "intendedUsage": "shield_pressure", "sourceType": "generated_local_launch_asset" },
+    { "id": "enemy_signal_jammer_drone", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_signal_jammer_drone.png", "width": 768, "height": 768, "intendedUsage": "drone_signal", "sourceType": "generated_local_launch_asset" },
+    { "id": "enemy_spike_cart_gunner", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_spike_cart_gunner.png", "width": 768, "height": 768, "intendedUsage": "rail_cart_ranged", "sourceType": "generated_local_launch_asset" },
+    { "id": "enemy_cinder_hound_mech", "type": "normal", "path": "Assets/_LASTRAIL/UI/CombatResources/Enemies/enemy_cinder_hound_mech.png", "width": 768, "height": 768, "intendedUsage": "mechanical_pursuit", "sourceType": "generated_local_launch_asset" },
+    { "id": "elite_broadcast_executioner", "type": "elite", "path": "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_broadcast_executioner.png", "width": 896, "height": 896, "intendedUsage": "elite_pressure", "sourceType": "generated_local_launch_asset" },
+    { "id": "elite_ironclad_boarder", "type": "elite", "path": "Assets/_LASTRAIL/UI/CombatResources/Elites/elite_ironclad_boarder.png", "width": 896, "height": 896, "intendedUsage": "elite_boarding", "sourceType": "generated_local_launch_asset" },
+    { "id": "boss_raider_king_engine", "type": "boss", "path": "Assets/_LASTRAIL/UI/CombatResources/Bosses/boss_raider_king_engine.png", "width": 1536, "height": 1024, "intendedUsage": "story_raid_boss", "sourceType": "generated_local_launch_asset" }
+  ],
+  "vfx": [
+    { "id": "vfx_basic_hit_spark", "category": "hit", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_basic_hit_spark.png", "width": 512, "height": 512, "usage": "short_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_skill_activation", "category": "skill", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_skill_activation.png", "width": 512, "height": 512, "usage": "short_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_ultimate_activation", "category": "ultimate", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_ultimate_activation.png", "width": 512, "height": 512, "usage": "short_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_shield_status", "category": "shield", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_shield_status.png", "width": 512, "height": 512, "usage": "status_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_heal_status", "category": "heal", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_heal_status.png", "width": 512, "height": 512, "usage": "status_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_buff_debuff_status", "category": "buff_debuff", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_buff_debuff_status.png", "width": 512, "height": 512, "usage": "status_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_story_raid_danger", "category": "raid_danger", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_story_raid_danger.png", "width": 512, "height": 512, "usage": "boss_warning_overlay", "sourceType": "generated_local_launch_asset" },
+    { "id": "vfx_boss_defeat_burst", "category": "boss_defeat", "path": "Assets/_LASTRAIL/UI/CombatResources/VFX/vfx_boss_defeat_burst.png", "width": 512, "height": 512, "usage": "short_overlay", "sourceType": "generated_local_launch_asset" }
+  ],
+  "accents": [
+    { "id": "boss_danger_frame", "path": "Assets/_LASTRAIL/UI/CombatResources/Accents/boss_danger_frame.png", "width": 1536, "height": 1024, "usage": "boss_frame_overlay" },
+    { "id": "boss_hp_bar_accent", "path": "Assets/_LASTRAIL/UI/CombatResources/Accents/boss_hp_bar_accent.png", "width": 1024, "height": 128, "usage": "boss_hud_accent" }
+  ]
+}

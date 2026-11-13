@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: remote_audio
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: remote_audio
+  m_GUID: d5a74a9783624ab40840ce3de51aaf6f
+  m_SerializeEntries:
+  - m_GUID: 13ddfd8e3e0f22b49a567e67cc69e95c
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/UI/ui_error.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1df01e0d6679bf94cb5a33480b103bdb
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_buff.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 32e567054cd10954a99225e5c0e10c66
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_reveal_start.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3adb403968084254aa77fe3229417c7c
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_skill.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 42088fe99cd5025459f35024ec308d02
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_duplicate_conversion.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8235aeb40bd8bcd4ab3c1c5508557443
+    m_Address: Assets/_LASTRAIL/Audio/Bgm/bgm_act1_rail_loop.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 854e009b68af3094794eab3f56c693ba
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Reward/reward_line_tick.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 866b828a3a3a6584d82f600698bf1c93
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_heal.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 898ac5a9127e53f458f156e10e991d2f
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/UI/ui_toggle_or_tab.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ef3117c880dfbe48b9d9b7400396870
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_ultimate.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8f40af5fde6c5a344b110f7a74bf0292
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/StoryRaid/story_raid_warning.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92972dbdea2a4aa40b8e429a5b414200
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_shield.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9b6022684c8d3174e860ea51d0e71f7d
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Reward/reward_claim.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a54ad7cbb658cde46915a16256eddc8c
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/StoryRaid/boss_defeat.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a5c1c7e2fdc9b544c80ae799b8a7f8e8
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/UI/ui_tap.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf6b47f8e970b4e458ace628b1d75010
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_elite.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d3acfd44aba0da448a0ba9534a63203f
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/UI/ui_back.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d57bba05ab7030b40a4b5a428852c001
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_pickup_elite.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: da1a67253a6f2b14689d6e5fca742375
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/UI/ui_confirm.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eba52513f268d774e95d6539308ad402
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_hit.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efe672c57ace1e24696b147a81c43a5f
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Gacha/gacha_result_rare.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f52711ba57914ae46bdee0ce64d903f7
+    m_Address: Assets/_LASTRAIL/Audio/Sfx/Combat/combat_debuff.wav
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_audio
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 2463052427dfc194ab9a473b7408bee4, type: 2}
+    - {fileID: 11400000, guid: 384e939405e29e246a6fbb16cb1fab27, type: 2}

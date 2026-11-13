@@ -1,0 +1,45 @@
+import {canonicalJson,sha256Hex} from '@lastrail/common';
+import type {CommunityContentSnapshot} from '../../../packages/common/src/community-content';
+import {communityModerationReceipt,communityCommentLockReceipt} from '../../../packages/common/src/community-moderation-contract';
+import {CommunityStoreError,communityEditReceiptSchema} from './community-content-store';
+import {communityPostCreateReceiptSchema} from './community-post-contract';
+import {communityCommentCreateReceiptSchema} from './community-comment-creator';
+import {communityMarkdownVersion} from './community-markdown';
+type Proof={command_id:string;content_id:string;previous_revision:number;next_revision:number;action:string;next_state_hash:string;created_at:string;response_json:string;environment?:string;actor_id?:string;renderer_version?:string};
+async function verifiedProof(db:D1Database,state:CommunityContentSnapshot){
+ const {accountId, id:contentId}=state;
+ let proofs=await db.prepare(`SELECT a.command_id,a.content_id,a.previous_revision,a.next_revision,a.action,a.next_state_hash,a.created_at,r.response_json FROM community_content_edit_audit a JOIN community_content_receipts r ON r.account_id=a.account_id AND r.command_id=a.command_id WHERE a.account_id=? AND a.content_id=? AND a.next_revision=? LIMIT 2`).bind(accountId,contentId,state.revision).all<Proof>();
+ if(!proofs.success)throw new CommunityStoreError(503,'community_storage_unavailable');
+ if(proofs.results.length===0&&state.revision===1){const table=state.kind==='POST'?'community_post_create_audit':'community_content_create_audit';proofs=await db.prepare(`SELECT a.command_id,a.content_id,0 AS previous_revision,a.next_revision,a.action,a.next_state_hash,a.created_at,r.response_json FROM ${table} a JOIN community_content_receipts r ON r.account_id=a.account_id AND r.command_id=a.command_id WHERE a.account_id=? AND a.content_id=? AND a.next_revision=? LIMIT 2`).bind(accountId,contentId,state.revision).all<Proof>();if(!proofs.success)throw new CommunityStoreError(503,'community_storage_unavailable');}
+ if(proofs.results.length===0){proofs=await db.prepare(`SELECT a.request_key AS command_id,a.content_id,a.previous_revision,a.next_revision,a.action,a.next_state_hash,a.created_at,r.response_json,a.environment,a.actor_id,a.renderer_version FROM (SELECT * FROM community_content_moderation_proof UNION ALL SELECT * FROM community_content_comment_lock_proof) a JOIN community_moderation_commands r ON r.environment=a.environment AND r.actor_id=a.actor_id AND r.request_key=a.request_key WHERE a.content_id=? AND a.next_revision=? AND r.resource_type='CONTENT' AND r.resource_id=a.content_id LIMIT 2`).bind(contentId,state.revision).all<Proof>();if(!proofs.success)throw new CommunityStoreError(503,'community_storage_unavailable');}
+ if(proofs.results.length===0)throw new CommunityStoreError(503,'community_render_source_unavailable');
+ try{
+  if(proofs.results.length!==1)throw new Error();const proof=proofs.results[0]!;const isCreate=['CREATE_POST','CREATE_COMMENT'].includes(proof.action),isLock=['LOCK_COMMENTS','UNLOCK_COMMENTS'].includes(proof.action),isModeration=isLock||['HIDE','RESTORE'].includes(proof.action);
+  const receipt=isModeration?(isLock?communityCommentLockReceipt:communityModerationReceipt).parse(JSON.parse(proof.response_json)):(proof.action==='CREATE_POST'?communityPostCreateReceiptSchema:isCreate?communityCommentCreateReceiptSchema:communityEditReceiptSchema).parse(JSON.parse(proof.response_json));
+  if(isModeration){if(!('resourceType' in receipt)||receipt.resourceType!=='CONTENT'||receipt.resourceId!==contentId||receipt.environment!==proof.environment||proof.renderer_version!==communityMarkdownVersion||proof.action==='RESTORE'&&receipt.visibility!=='VISIBLE'||proof.action==='HIDE'&&receipt.visibility!=='HIDDEN')throw new Error();}
+  if(isLock&&(!('commentLocked' in receipt)||receipt.commentLocked!==state.commentLocked||state.kind!=='POST'||proof.action==='LOCK_COMMENTS'&&!state.commentLocked||proof.action==='UNLOCK_COMMENTS'&&state.commentLocked))throw new Error();
+  if(!isModeration&&(!('commandId' in receipt)||receipt.commandId!==proof.command_id||receipt.contentId!==contentId))throw new Error();
+  if(isCreate&&(!('parentId' in receipt)||receipt.parentId!==state.parentId||!('kind' in receipt)||receipt.kind!==state.kind||state.revision!==1))throw new Error();
+  const updatedAt=Date.parse(proof.created_at);if(!Number.isSafeInteger(updatedAt)||updatedAt<0||new Date(updatedAt).toISOString()!==proof.created_at)throw new Error();
+  if(isCreate&&(!('createdAt' in receipt)||receipt.createdAt!==updatedAt))throw new Error();
+  const creation=await db.prepare('SELECT created_at FROM community_content_creation WHERE content_id=? AND account_id=?').bind(contentId,accountId).first<{created_at:number}>();if(creation&&(!Number.isSafeInteger(creation.created_at)||creation.created_at<0||updatedAt<creation.created_at||isCreate&&updatedAt!==creation.created_at))throw new Error();
+  if(receipt.revision!==state.revision||!('visibility' in receipt)||receipt.visibility!==state.visibility||proof.content_id!==contentId||!['AUTHOR_EDIT','CREATE_COMMENT','CREATE_POST','HIDE','RESTORE','LOCK_COMMENTS','UNLOCK_COMMENTS'].includes(proof.action)||proof.previous_revision+1!==proof.next_revision||proof.next_revision!==state.revision||proof.next_state_hash!==await sha256Hex(canonicalJson(state)))throw new Error();
+  return {proof,updatedAt};
+ }catch{throw new CommunityStoreError(503,'community_storage_invalid');}
+}
+/** Public/private-owner callers still mask non-VISIBLE body/time. Moderation may verify current hidden provenance without publishing it. */
+export async function verifyCommunityRenderedContent(db:D1Database,state:CommunityContentSnapshot,includePrivate=false):Promise<number|null>{if(state.visibility==='AUTHOR_DELETED'||state.visibility!=='VISIBLE'&&!includePrivate)return null;return (await verifiedProof(db,state)).updatedAt;}
+/** Exact current source assertions for a transaction, including receipt/time, never a historical body copy. */
+export async function communityRenderSourceGuards(db:D1Database,state:CommunityContentSnapshot){
+ const {proof}=await verifiedProof(db,state);let sql:string,values:(string|number)[];
+ const noPriorityEdit="NOT EXISTS(SELECT 1 FROM community_content_edit_audit e JOIN community_content_receipts er ON er.account_id=e.account_id AND er.command_id=e.command_id WHERE e.account_id=? AND e.content_id=? AND e.next_revision=?)";
+ if(['HIDE','RESTORE','LOCK_COMMENTS','UNLOCK_COMMENTS'].includes(proof.action)){
+  sql=`EXISTS(SELECT 1 FROM (SELECT * FROM community_content_moderation_proof UNION ALL SELECT * FROM community_content_comment_lock_proof) a JOIN community_moderation_commands r ON r.environment=a.environment AND r.actor_id=a.actor_id AND r.request_key=a.request_key WHERE a.environment=? AND a.actor_id=? AND a.request_key=? AND a.content_id=? AND a.previous_revision=? AND a.next_revision=? AND a.action=? AND a.next_state_hash=? AND a.created_at=? AND a.renderer_version=? AND r.response_json=? AND r.resource_type='CONTENT' AND r.resource_id=a.content_id) AND (SELECT COUNT(*) FROM (SELECT content_id,next_revision FROM community_content_moderation_proof UNION ALL SELECT content_id,next_revision FROM community_content_comment_lock_proof) WHERE content_id=? AND next_revision=?)=1 AND ${noPriorityEdit}`;
+  values=[proof.environment!,proof.actor_id!,proof.command_id,state.id,proof.previous_revision,state.revision,proof.action,proof.next_state_hash,proof.created_at,communityMarkdownVersion,proof.response_json,state.id,state.revision,state.accountId,state.id,state.revision];
+ }else{
+  const edit=proof.action==='AUTHOR_EDIT',table=edit?'community_content_edit_audit':state.kind==='POST'?'community_post_create_audit':'community_content_create_audit';
+  sql=`EXISTS(SELECT 1 FROM ${table} a JOIN community_content_receipts r ON r.account_id=a.account_id AND r.command_id=a.command_id WHERE a.account_id=? AND a.command_id=? AND a.content_id=? ${edit?'AND a.previous_revision=?':''} AND a.next_revision=? AND a.action=? AND a.next_state_hash=? AND a.created_at=? AND r.response_json=?) AND (SELECT COUNT(*) FROM ${table} a JOIN community_content_receipts r ON r.account_id=a.account_id AND r.command_id=a.command_id WHERE a.account_id=? AND a.content_id=? AND a.next_revision=?)=1 ${edit?'':`AND ${noPriorityEdit}`}`;
+  values=[state.accountId,proof.command_id,state.id,...(edit?[proof.previous_revision]:[]),state.revision,proof.action,proof.next_state_hash,proof.created_at,proof.response_json,state.accountId,state.id,state.revision,...(edit?[]:[state.accountId,state.id,state.revision])];
+ }
+ return [db.prepare(`INSERT INTO community_content_write_guard(valid) SELECT CASE WHEN ${sql} THEN 1 ELSE 0 END`).bind(...values)];
+}

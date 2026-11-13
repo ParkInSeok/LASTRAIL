@@ -1,0 +1,20 @@
+{
+  "name": "LAST RAIL Act 1 Launch Art Resources",
+  "referenceResolution": "1080x1920",
+  "resourceCount": 8,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "uiOverlayReadable": true,
+  "serverTruthFieldsAllowed": false,
+  "railsChoiceIncluded": false,
+  "worldRaidIncluded": false,
+  "resources": [
+    { "id": "main_lobby_train_interior", "surface": "MainLobby", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_main_lobby_train_interior.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "mission_select_rail_map", "surface": "MissionSelect", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_mission_select_rail_map.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "combat_wasteland_rail", "surface": "CombatHud", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_combat_wasteland_rail.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "gacha_recruitment_chamber", "surface": "Gacha", "path": "Assets/_LASTRAIL/UI/KeyVisuals/kv_gacha_recruitment_chamber.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "codex_archive_records_room", "surface": "CodexArchive", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_codex_archive_records_room.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "reward_result_supply_bay", "surface": "RewardReview", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_reward_result_supply_bay.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "offline_reward_settlement", "surface": "OfflineReward", "path": "Assets/_LASTRAIL/UI/Backgrounds/bg_offline_reward_settlement.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." },
+    { "id": "story_raid_boss_entrance", "surface": "StoryRaidBoss", "path": "Assets/_LASTRAIL/UI/KeyVisuals/kv_story_raid_boss_entrance.png", "sourceType": "generated_local_launch_asset", "licenseNote": "Project-generated image resource; no external paid asset dependency." }
+  ]
+}

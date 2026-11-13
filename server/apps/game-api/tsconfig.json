@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "../..",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+  },
+  "include": [
+    "src/**/*.ts",
+    "worker-configuration.d.ts",
+    "../../packages/balance/src/**/*.ts",
+    "../../packages/common/src/**/*.ts"
+  ]
+}

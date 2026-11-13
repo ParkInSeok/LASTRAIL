@@ -1,0 +1,10 @@
+{
+ "version":"mira.judgement-layout.v1.20261015",
+ "provenance":"EXPLICIT_ISOLATED_FIRST_TEST_LAYOUT_NOT_OWNED_PLACEMENT",
+ "source":{"id":"op_mira","generation":1,"slot":0,"feetMm":[0,2400,0],"yawDegrees":90,"domain":"FIRST_TEST_EXTERNAL"},
+ "cars":[{"id":"FIRST_TEST_CAR_A","slot":0,"centerMm":[0,0,0]},{"id":"FIRST_TEST_CAR_B","slot":1,"centerMm":[0,0,6000]}],
+ "targets":[
+  {"id":"FIRST_TEST_SCOUT","definitionId":"enemy_raider_scout","generation":1,"slot":1,"feetMm":[0,2400,6000],"eligible":true,"domain":"FIRST_TEST_EXTERNAL"},
+  {"id":"FIRST_TEST_GUNNER","definitionId":"enemy_spike_cart_gunner","generation":1,"slot":1,"feetMm":[2000,2400,6000],"eligible":true,"domain":"FIRST_TEST_EXTERNAL"}
+ ]
+}

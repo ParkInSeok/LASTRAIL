@@ -1,0 +1,47 @@
+import {afterEach,expect,it} from 'vitest';
+import {setup} from '../helpers/departure-fixture';
+import {SoloAugmentStore} from '../../apps/game-api/src/solo-augment-store';
+import {augmentUtilityDefinitionVersion} from '../../apps/game-api/src/augment-utility-definition';
+import {readOrdinaryAugmentOwnership,ordinaryAugmentOwnershipAssertion} from '../../apps/game-api/src/ordinary-augment-ownership';
+import {readFileSync,writeFileSync} from 'node:fs';
+import initSqlJs from 'sql.js';
+import {SqlJsD1Database} from '../helpers/growth-d1';
+import {OrdinaryLocalExecutionStore} from '../../apps/game-api/src/ordinary-local-execution';
+const cleanup:(()=>void)[]=[];afterEach(()=>{for(const close of cleanup.splice(0))close();});
+it('captures the existing local battle database without inventing absence',async()=>{
+ const path='D:/Project/LASTRAIL/QA/ObstacleTrial-20261106/kyle-right-01/boarding-session-preparation-v01/';
+ const input=JSON.parse(readFileSync(path+'prepared-input.json','utf8'));
+ const SQL=await initSqlJs(),sql=new SQL.Database(readFileSync(path+'preparation.sqlite'));cleanup.push(()=>sql.close());
+ const result=await readOrdinaryAugmentOwnership(new SqlJsD1Database(sql) as unknown as D1Database,input.accountId,input.runId);
+ expect(result.runId).toBe(input.runId);expect(result.selected).toEqual([]);
+ const pin=JSON.parse(String(sql.exec('SELECT engine_pin_json FROM ordinary_local_node_scope')[0]!.values[0]![0]));
+ const delivered=await new OrdinaryLocalExecutionStore(new SqlJsD1Database(sql) as unknown as D1Database,{pin,inputVersion:'ordinary.local-execution-input.v3.20261109',replay:async()=>{throw new Error('read only');}}).source(input.accountId,{runId:input.runId,nodeId:input.nodeStart.nodeId,attemptGeneration:input.currentAttempt.generation,snapshotHash:input.currentAttempt.snapshotHash});
+ expect(delivered.input.version).toBe('ordinary.local-execution-input.v3.20261109');expect(delivered.input.augmentOwnership).toEqual(result);
+ const legacy=await new OrdinaryLocalExecutionStore(new SqlJsD1Database(sql) as unknown as D1Database,{pin,replay:async()=>{throw new Error('read only');}}).source(input.accountId,{runId:input.runId,nodeId:input.nodeStart.nodeId,attemptGeneration:input.currentAttempt.generation,snapshotHash:input.currentAttempt.snapshotHash});
+ expect(legacy.input.version).toBe('ordinary.local-execution-input.v2.20261107');expect(legacy.input).not.toHaveProperty('augmentOwnership');
+ writeFileSync('D:/Project/LASTRAIL/QA/CutsceneProduction-20261020/reina/runway-final-v01/server-delivered-input.json',JSON.stringify({...delivered.input,inputs:[]},null,2));
+ writeFileSync('D:/Project/LASTRAIL/QA/CutsceneProduction-20261020/reina/runway-final-v01/actual-augment-ownership.json',JSON.stringify(result,null,2));
+ // In-memory copy only: exercise a real confirmed selection without altering the saved battle DB.
+ const grants=new SoloAugmentStore(new SqlJsD1Database(sql) as unknown as D1Database,()=>0),eventId='reina-ownership-fixture';
+ await grants.issue({accountId:input.accountId,selectionOwner:input.accountId,environment:'DEV',runId:input.runId,eventId,stageId:'fixture',catalogVersion:augmentUtilityDefinitionVersion,eligibleIds:['O22']});
+ await grants.execute({accountId:input.accountId,environment:'DEV'},input.runId,eventId,'select',{operation:'SELECT',command:{eventId,expectedRevision:0,slotIndex:0,candidateId:'O22'}});
+ const owned=await readOrdinaryAugmentOwnership(new SqlJsD1Database(sql) as unknown as D1Database,input.accountId,input.runId);
+ expect(owned.o22Original).not.toBeNull();
+ writeFileSync('D:/Project/LASTRAIL/QA/CutsceneProduction-20261020/reina/runway-final-v01/owned-selection-fixture.json',JSON.stringify(owned,null,2));
+});
+it('reads actual absence and confirmed acquisition without changing the grant or health',async()=>{
+ const f=await setup(true);cleanup.push(()=>f.sql.close());const p=await(await f.preview()).json();const runId=(await(await f.start(p.operationPreviewId)).json()).runId as string;
+ const before=await readOrdinaryAugmentOwnership(f.env.DB,'a',runId);
+ expect(before.selected).toEqual([]);expect(before.o22Original).toBeNull();
+ const grants=new SoloAugmentStore(f.env.DB,()=>0),eventId='ownership-o22';
+ await grants.issue({accountId:'a',selectionOwner:'a',environment:'DEV',runId,eventId,stageId:'stage',catalogVersion:augmentUtilityDefinitionVersion,eligibleIds:['O22']});
+ await expect(readOrdinaryAugmentOwnership(f.env.DB,'a',runId)).rejects.toThrow();
+ await grants.execute({accountId:'a',environment:'DEV'},runId,eventId,'select',{operation:'SELECT',command:{eventId,expectedRevision:0,slotIndex:0,candidateId:'O22'}});
+ const after=await readOrdinaryAugmentOwnership(f.env.DB,'a',runId);
+ expect(after.selected.map(x=>x.effectId)).toEqual(['O22']);expect(after.o22Original?.effectId).toBe('O22');
+ const stale=await ordinaryAugmentOwnershipAssertion(f.env.DB,before);expect(()=>stale.run()).toThrow();
+ await (await ordinaryAugmentOwnershipAssertion(f.env.DB,after)).run();
+ expect(await readOrdinaryAugmentOwnership(f.env.DB,'a',runId)).toEqual(after);
+ await expect(readOrdinaryAugmentOwnership(f.env.DB,'other',runId)).rejects.toThrow();
+ expect(f.scalar('SELECT count(*) FROM combat_damage_states')).toBe(0);
+});

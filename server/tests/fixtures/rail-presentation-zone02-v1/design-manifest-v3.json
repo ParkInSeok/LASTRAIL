@@ -1,0 +1,362 @@
+{
+  "version": 3,
+  "status": "APPLIED_VISUAL_PASS_CAPTURE03_CAPTURE07_FINALSTATIC02",
+  "imageMethod": "built-in imagegen",
+  "assets": [
+    {
+      "file": "artillery_emplacement-v01.png",
+      "sha256": "EB30EA5B50C6482BC60CE754B19115189B5CBFAD596902E0BF7C48ED518F8A46",
+      "width": 1536,
+      "height": 1024,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        22,
+        188,
+        1500,
+        727
+      ],
+      "usage": "independent emplacement live projectile/reticle separate",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "console_bezel-v01.png",
+      "sha256": "A79C3564FB355BD117A10EB1AF2B651BFF4E5EA0A4B40281952ACC8D2C18A8B7",
+      "width": 1672,
+      "height": 941,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        18,
+        97,
+        1636,
+        748
+      ],
+      "usage": "individual decorative UI component see DELIVERY.md",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "console_plate-v01.png",
+      "sha256": "A8B6614FB6D40C417B55A985445608A94BADC84B986D2DDF2CFDAE3342D69522",
+      "width": 1254,
+      "height": 1254,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "usage": "individual decorative UI component see DELIVERY.md",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "control_handle-v01.png",
+      "sha256": "CBFAAC81030532729EB0030B0DD3A58D7142C0698C7EF216970FBC24CFDA2AAB",
+      "width": 2172,
+      "height": 724,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        354,
+        196,
+        1464,
+        335
+      ],
+      "usage": "individual decorative UI component see DELIVERY.md",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "eve-v02.png",
+      "sha256": "C4640B67E41AC37257BE6013DC1B9848DC12BD0380FE0A39B82E08C2C29C9BE8",
+      "width": 1440,
+      "height": 1092,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1440,
+        1092
+      ],
+      "usage": "portrait120x91 fullUV",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "kyle-v02.png",
+      "sha256": "DC9E628B1F8FD0089E937731B8346CC2EAEB0F6799B25D1C1F250406EB44EAE5",
+      "width": 1440,
+      "height": 1092,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1440,
+        1092
+      ],
+      "usage": "portrait120x91 fullUV",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "mira-v02.png",
+      "sha256": "83168B7A0B1124F5AE0FBEB3A2D21D7A51AA431A91DCCB07C140CBD848C985C8",
+      "width": 1441,
+      "height": 1092,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1441,
+        1092
+      ],
+      "usage": "portrait120x91 fullUV",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "reina-v02.png",
+      "sha256": "BCC1AA348F73F028FD265CC68FB834409BECBAAB4C830BEB172A7493FB7FFD2E",
+      "width": 1439,
+      "height": 1093,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1439,
+        1093
+      ],
+      "usage": "portrait120x91 fullUV",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "sera-v02.png",
+      "sha256": "8E28AEB2C8671FF1B717B73D4F4473FF5F7483458F4B5CA4753DA18A099D1168",
+      "width": 1440,
+      "height": 1092,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1440,
+        1092
+      ],
+      "usage": "portrait120x91 fullUV",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "support_barrier-v01.png",
+      "sha256": "99D1100174A0B103638CA11FD14083547E2C0F0800DBD1980AADC57005D858BB",
+      "width": 1254,
+      "height": 1254,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        131,
+        119,
+        992,
+        958
+      ],
+      "usage": "support icon48x48 live label separate",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "support_fire-v01.png",
+      "sha256": "5AD5D11A4F233304195DE91E9B170E0D882BAA9A374997E8DAEB5FAD478DFB64",
+      "width": 1254,
+      "height": 1254,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        148,
+        284,
+        1005,
+        755
+      ],
+      "usage": "support icon48x48 live label separate",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "support_repair-v01.png",
+      "sha256": "090248D4D1E157C5528C75AFA8D069B6DC09E3A0BC1F0C19CA3C88B350580B65",
+      "width": 1254,
+      "height": 1254,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        101,
+        118,
+        1059,
+        1042
+      ],
+      "usage": "support icon48x48 live label separate",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "title_emblem-v01.png",
+      "sha256": "1C96306662DEA95028B4B44DBF1B55D816FB48FE714CD662670423ED68CB48DC",
+      "width": 2172,
+      "height": 724,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        18,
+        140,
+        2125,
+        461
+      ],
+      "usage": "individual decorative UI component see DELIVERY.md",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "train_carriage_armored-v03.png",
+      "sha256": "BD5AC392062F1A98DFC31124D3FAABBF32EC8FB204269BE3A62C3D9480C1CD63",
+      "width": 1774,
+      "height": 887,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        16,
+        191,
+        1742,
+        484
+      ],
+      "usage": "independent actual-consist sprite wheel baseline align",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "train_carriage_cargo-v03.png",
+      "sha256": "D2982137CABB7CCFBC245518E1E5C687ECD169808D34C90AF6C26F4DEE045D27",
+      "width": 1918,
+      "height": 820,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        32,
+        112,
+        1854,
+        606
+      ],
+      "usage": "independent actual-consist sprite wheel baseline align",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "train_locomotive-v03.png",
+      "sha256": "3F853AB74590E6638D0ABB64674D5F679534D380EC79DBDB3695FC2E0387E6AA",
+      "width": 1774,
+      "height": 887,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        20,
+        140,
+        1734,
+        567
+      ],
+      "usage": "independent actual-consist sprite wheel baseline align",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "ultimate_eve-v01.png",
+      "sha256": "685FFF0D79D9E87F44C774D6C27B73FA3C993E1D9C28AEF257A05FCA204AA3F1",
+      "width": 1595,
+      "height": 986,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1595,
+        986
+      ],
+      "usage": "B insert108x62 preserve aspect within120x74",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "ultimate_kyle-v01.png",
+      "sha256": "A3D9E6858D39836A6A16B315CF8AC16D4209FB8744A8499253CE6CACFC268704",
+      "width": 1596,
+      "height": 985,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1596,
+        985
+      ],
+      "usage": "B insert108x62 preserve aspect within120x74",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "ultimate_mira-v01.png",
+      "sha256": "908CAD0EC6EE9F67D49B7AEE93E665B2F077DAEBC0E634BF017EB76622DCEFB9",
+      "width": 1596,
+      "height": 985,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1596,
+        985
+      ],
+      "usage": "B insert108x62 preserve aspect within120x74",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "ultimate_reina-v02.png",
+      "sha256": "1A3D85D77AE328998F37D52501A19D1DD0C0063A1DCF7CEABAE122CDB8ABE87D",
+      "width": 1597,
+      "height": 985,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1597,
+        985
+      ],
+      "usage": "B insert108x62 preserve aspect within120x74",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "ultimate_sera-v01.png",
+      "sha256": "39BE703EA7CFDD5F6FD1F29424DD65AA0CD71053E9C05E9C5BFFA1AB7FD3B3DA",
+      "width": 1596,
+      "height": 985,
+      "hasTransparentPixels": false,
+      "contentBoundsTopLeft": [
+        0,
+        0,
+        1596,
+        985
+      ],
+      "usage": "B insert108x62 preserve aspect within120x74",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    },
+    {
+      "file": "artillery_ledge-v01.png",
+      "sha256": "85E8F1F012AFC30B4F8652C5D596A85C7823CBC46308FD23E7214AE5CEFB66F9",
+      "width": 2172,
+      "height": 724,
+      "hasTransparentPixels": true,
+      "contentBoundsTopLeft": [
+        21,
+        227,
+        2147,
+        449
+      ],
+      "usage": "Rock ledge behind artillery; shared world anchor and lifecycle; align visible platform to top surface; visible width 145-160px",
+      "raycastTarget": false,
+      "runtimeQA": "CAPTURE03_APPLIED_VISUAL_PASS_LIMITED_STATE_COVERAGE"
+    }
+  ],
+  "excluded": "portrait v01, ultimate_reina v01, all train v01/v02; never import by wildcard",
+  "applicationGuide": "DELIVERY.md",
+  "verification": "manifest-image-verification.json"
+}

@@ -1,0 +1,13 @@
+{
+  "generated": true,
+  "colliders": 5,
+  "anchorsPerCar": 17,
+  "measurementReuse": true,
+  "unityImportAndRender": true,
+  "serverReaderVerified": true,
+  "runtimeAdmission": false,
+  "playerVerified": false,
+  "serverReaderEvidence": "QA/CommanderS1-20260922/physical-authoring-cross-wire-20261020.json",
+  "savedPrefabReloadMeasured": true,
+  "independentBodyRoofColliderVisibility": true
+}

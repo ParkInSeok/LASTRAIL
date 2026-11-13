@@ -1,0 +1,34 @@
+{
+  "name": "LAST RAIL Act 1 Mission Story Thumbnail Resources",
+  "referenceResolution": "1080x1920",
+  "thumbnailResolution": "1024x576",
+  "missionCount": 7,
+  "ordinaryCount": 6,
+  "storyRaidCount": 1,
+  "overlayCount": 6,
+  "generatedBy": "Unity procedural texture builder",
+  "sourceType": "procedurally generated local launch UI assets",
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "durableProgressionIncluded": false,
+  "operationAccessIncluded": false,
+  "rewardCalculationIncluded": false,
+  "economyMutationIncluded": false,
+  "missions": [
+    { "missionId": "opn_01_last_departure", "category": "ordinary", "displayLabel": "마지막 출발", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_01_last_departure_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "opn_02_first_signal", "category": "ordinary", "displayLabel": "첫 신호", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_02_first_signal_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "opn_03_water_stop", "category": "ordinary", "displayLabel": "급수 정차", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_03_water_stop_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "opn_04_scrapstar_show", "category": "ordinary", "displayLabel": "스크랩스타 쇼", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_04_scrapstar_show_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "opn_05_night_boarders", "category": "ordinary", "displayLabel": "야간 승선전", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_05_night_boarders_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "opn_06_broken_line", "category": "ordinary", "displayLabel": "끊어진 선로", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/opn_06_broken_line_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" },
+    { "missionId": "raid_raider_king_engine", "category": "story_raid", "displayLabel": "약탈왕 기관차", "thumbnailPath": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Thumbnails/raid_raider_king_engine_thumbnail.png", "intendedUsage": "mission_select_story_progress_codex_archive" }
+  ],
+  "overlays": [
+    { "id": "mission_state_locked_overlay", "category": "overlay", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_locked_overlay.png", "width": 1024, "height": 576, "intendedUsage": "locked_visual_state" },
+    { "id": "mission_state_available_accent", "category": "accent", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_available_accent.png", "width": 1024, "height": 576, "intendedUsage": "available_visual_accent" },
+    { "id": "mission_state_cleared_stamp", "category": "badge", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_cleared_stamp.png", "width": 256, "height": 96, "intendedUsage": "cleared_visual_stamp" },
+    { "id": "mission_state_first_clear_badge", "category": "badge", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_first_clear_badge.png", "width": 256, "height": 96, "intendedUsage": "first_clear_visual_badge" },
+    { "id": "mission_state_risk_accent", "category": "badge", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_risk_accent.png", "width": 256, "height": 96, "intendedUsage": "difficulty_risk_visual_accent" },
+    { "id": "mission_state_boss_only_badge", "category": "badge", "path": "Assets/_LASTRAIL/UI/MissionStoryThumbnails/Overlays/mission_state_boss_only_badge.png", "width": 256, "height": 96, "intendedUsage": "story_raid_boss_only_badge" }
+  ]
+}

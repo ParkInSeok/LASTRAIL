@@ -1,0 +1,13 @@
+using System;
+using System.IO;
+using System.Linq;
+using LastRail.Battle;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.UI;
+public sealed class CombatOperatorUiTests {
+ static BasicCombatSimulation Fresh(bool general){string folder=general?"ce03-general-active-auto-hM29XX":"ce03-individual-ultimates-cbVWkL";var p=JObject.Parse(File.ReadAllText("D:/Project/LASTRAIL/unity-project/QA/Unity1Artifacts/Fixtures/"+folder+"/prepared.json"));var c=new Ce03CommandContract((JObject)p["commandContract"]);return c.CreateLocalTest(p,(string)p["ownedSelection"]["accountId"],c.Revision,1);}
+ [TestCase(false)][TestCase(true)]public void FiveUltimateCardsAndLegacyGeneralInputArePolicyScoped(bool general){var driver=new CombatSceneDriver(()=>Fresh(general),()=>null,(s,r)=>r+1,()=>true);driver.Open();var go=new GameObject("operator-ui-test",typeof(RectTransform),typeof(Canvas));try{var view=go.AddComponent<ApprovedCombatView>();view.Bind(driver,LastRail.Resources.PreparedContent.Load<CombatPresentationAssets>("CombatPresentation/approved"));view.Refresh();var buttons=go.GetComponentsInChildren<Button>();Assert.AreEqual(5,buttons.Count(b=>b.name.StartsWith("Ultimate_")));Assert.AreEqual(general?0:5,buttons.Count(b=>b.name.StartsWith("General_")));Assert.AreEqual(5,go.GetComponentsInChildren<CombatMeter>().Count(m=>m.name.StartsWith("GeneralCooldown_")));Assert.AreEqual(1,buttons.Count(b=>b.name=="UltimateAuto"));if(!general){buttons.Single(b=>b.name=="General_op_kyle").onClick.Invoke();driver.Advance(500000,1);Assert.IsTrue(((JArray)driver.HudState["casts"]).Any(c=>(string)c["ability"]=="op_kyle.active"));}}finally{UnityEngine.Object.DestroyImmediate(go);}}
+ [Test] public void DownOperatorRetainsChargeThenGeneralAutoResumesAfterRecovery(){var raw=JObject.Parse(Fresh(true).CaptureLocalState());foreach(var a in (JArray)raw["actors"])a["ready"]=10000;foreach(var r in (JArray)raw["skillReady"])r["ready"]=0;var kyle=((JArray)raw["actors"]).Single(a=>(string)a["id"]=="op_kyle");kyle["vitals"]["hp"]=0;kyle["downCount"]=1;kyle["recoverAt"]=3;raw["operatorAutomation"]["charge"]["op_kyle"]=80;var s=BasicCombatSimulation.RestoreLocalState(raw.ToString(),()=>Fresh(true));s.Advance(500000,1);var row=((JArray)s.ReadHudState()["ultimates"]).Single(r=>(string)r["actor"]=="op_kyle");Assert.AreEqual(80,(int)row["charge"]);Assert.IsFalse((bool)row["enabled"]);Assert.IsFalse(((JArray)s.ReadHudState()["casts"]).Any(c=>(string)c["actor"]=="op_kyle"));s.Advance(1000000,2);Assert.Greater(s.GetHp("op_kyle"),0);Assert.IsTrue(((JArray)s.ReadHudState()["casts"]).Any(c=>(string)c["ability"]=="op_kyle.active"));}
+}

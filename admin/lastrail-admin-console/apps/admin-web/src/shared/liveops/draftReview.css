@@ -1,0 +1,9 @@
+.draft-review-host nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+.draft-review-host fieldset { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr)); gap:12px; margin:14px 0; padding:16px; border:1px solid #d8dde5; border-radius:6px; }
+.draft-review-host fieldset > p,.draft-review-host fieldset > h3,.draft-review-host fieldset > fieldset { grid-column:1 / -1; }
+.draft-review-host label { display:flex; flex-direction:column; gap:6px; min-width:0; font-size:14px; }
+.draft-review-host label:has(input[type=checkbox]) { flex-direction:row; align-items:center; }
+.draft-review-host input:not([type=checkbox]),.draft-review-host textarea,.draft-review-host select { width:100%; box-sizing:border-box; }
+.draft-review-host textarea { min-height:80px; }
+.draft-review-host > div > section { margin-top:16px; }
+.draft-review-host details { overflow-wrap:anywhere; margin:10px 0; }

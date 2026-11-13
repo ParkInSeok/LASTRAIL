@@ -1,0 +1,124 @@
+{
+  "source": "fx-additive-source-v01.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "blend": "additive RGB; black optical zero; never opaque alpha rectangle",
+  "items": [
+    {
+      "id": "exhaust",
+      "sourceRectTopLeftPx": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.0,
+        0.5,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        48,
+        245
+      ]
+    },
+    {
+      "id": "ignition",
+      "sourceRectTopLeftPx": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.3333333333333333,
+        0.5,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        768,
+        256
+      ]
+    },
+    {
+      "id": "trail_haze",
+      "sourceRectTopLeftPx": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.6666666666666666,
+        0.5,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        1280,
+        256
+      ]
+    },
+    {
+      "id": "impact_fire",
+      "sourceRectTopLeftPx": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        256,
+        768
+      ]
+    },
+    {
+      "id": "impact_embers",
+      "sourceRectTopLeftPx": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.3333333333333333,
+        0.0,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        768,
+        768
+      ]
+    },
+    {
+      "id": "impact_haze",
+      "sourceRectTopLeftPx": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "uvBottomLeft": [
+        0.6666666666666666,
+        0.0,
+        0.3333333333333333,
+        0.5
+      ],
+      "pivotSourceTopLeftPx": [
+        1280,
+        768
+      ]
+    }
+  ]
+}

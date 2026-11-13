@@ -1,0 +1,69 @@
+{
+  "name": "LAST RAIL Act 1 System Feedback Visual Resources",
+  "referenceResolution": "1080x1920",
+  "resourceCount": 9,
+  "generatedBy": "OpenAI image_gen built-in tool",
+  "presentationOnly": true,
+  "serverContractChanged": false,
+  "hasNetworkSourceOfTruth": false,
+  "hasAuthSourceOfTruth": false,
+  "hasErrorSourceOfTruth": false,
+  "rewardCalculationIncluded": false,
+  "economyMutationIncluded": false,
+  "resources": [
+    {
+      "id": "loading_rail_indicator",
+      "category": "loading",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Loading/loading_rail_indicator.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "feedback_success_badge",
+      "category": "badge",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_success_badge.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "feedback_failure_badge",
+      "category": "badge",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_failure_badge.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "feedback_network_error_badge",
+      "category": "error",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Badges/feedback_network_error_badge.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "maintenance_notice_panel",
+      "category": "notice",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Notices/maintenance_notice_panel.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "retry_refresh_accent",
+      "category": "retry",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Retry/retry_refresh_accent.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "warning_strip_banner_accent",
+      "category": "warning",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Warning/warning_strip_banner_accent.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "disabled_unavailable_overlay",
+      "category": "disabled",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Disabled/disabled_unavailable_overlay.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    },
+    {
+      "id": "inline_status_dot_set",
+      "category": "status",
+      "path": "Assets/_LASTRAIL/UI/SystemFeedbackResources/Status/inline_status_dot_set.png",
+      "sourceType": "generated_image_gen_launch_asset"
+    }
+  ]
+}

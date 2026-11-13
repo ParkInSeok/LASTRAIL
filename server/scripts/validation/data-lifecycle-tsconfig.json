@@ -1,0 +1,5 @@
+{
+ "extends":"../../tsconfig.base.json",
+ "compilerOptions":{"types":["node"],"composite":false,"declaration":false,"declarationMap":false,"noEmit":true},
+ "include":["../../apps/game-api/worker-configuration.d.ts","../../tests/integration/data-lifecycle-http.test.ts","../../tests/integration/data-lifecycle-loopback.test.ts","../../tests/integration/account-exit.test.ts","../../tests/integration/multiview-command.test.ts","../../tests/integration/data-response-size.test.ts","../../tests/integration/start-result.test.ts","../../scripts/local/serve-data-lifecycle-loopback-http.ts"]
+}

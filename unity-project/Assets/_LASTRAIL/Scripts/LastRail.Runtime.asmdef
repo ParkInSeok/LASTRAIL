@@ -1,0 +1,20 @@
+{
+  "name": "LastRail.Runtime",
+  "rootNamespace": "LastRail",
+  "references": [
+    "Unity.Addressables",
+    "Unity.ResourceManager",
+    "Unity.TextMeshPro",
+    "Unity.InputSystem",
+    "UnityEngine.AudioModule"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

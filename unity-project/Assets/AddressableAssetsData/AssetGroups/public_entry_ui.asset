@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: public_entry_ui
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: public_entry_ui
+  m_GUID: 019e159836b7baa41accfdf772a0c23e
+  m_SerializeEntries:
+  - m_GUID: 51da06bf36c34028b67fdee406932732
+    m_Address: Assets/_LASTRAIL/Content/PublicEntry/profile.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - public_entry_ui
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: afc3ec459d2e46edb9f74524dc764a81
+    m_Address: Assets/_LASTRAIL/Content/PublicEntry/primary.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - public_entry_ui
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c8b0905261ac451ba0401dbb5ac27c4d
+    m_Address: Assets/_LASTRAIL/Content/PublicEntry/secondary.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - public_entry_ui
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7b85e91645c41843ba1d86015bfdc39
+    m_Address: Assets/_LASTRAIL/Content/PublicEntry/login-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - public_entry_ui
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a7ba616c3cef252439a71c48e359ccc5, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 7a1f3c47b40d4d246aac8d1b314a2670, type: 2}
+    - {fileID: 11400000, guid: 1682d09df3c21f94295938386d786f3b, type: 2}

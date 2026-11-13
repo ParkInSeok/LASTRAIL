@@ -1,0 +1,13 @@
+import {describe,it,expect} from 'vitest';
+import {buildProcessingCommand,processingSchema,grantStateSchema,assertGrantReceipt} from './supportProcessing';
+const ticket={ticketId:'test-ticket',category:'BUG_OTHER',status:'IN_REVIEW',bodyPreview:'preview',body:'body',serverReceivedAt:'2026-10-01T00:00:00.000Z',revision:3,publicReply:'earlier answer',assigneePrincipalId:null,history:[],historyTruncated:false} as const;
+describe('support processing contracts and approved transitions',()=>{
+ it('requires a new final reply despite an earlier reply',()=>{expect(()=>buildProcessingCommand(ticket,'reply','CLOSED',' ','')).toThrow();});
+ it('requires an internal reason on return to reception',()=>{expect(()=>buildProcessingCommand(ticket,'status','OPEN','','')).toThrow();expect(buildProcessingCommand(ticket,'status','OPEN','','return reason')).toEqual({expectedRevision:3,status:'OPEN',internalNote:'return reason'});});
+ it('keeps note-only saves in current status and excludes reply draft',()=>{expect(buildProcessingCommand(ticket,'note','CLOSED','unsent reply','note')).toEqual({expectedRevision:3,status:'IN_REVIEW',internalNote:'note'});});
+ it('prevents accidental omission of a reply on status-only save',()=>{expect(()=>buildProcessingCommand(ticket,'status','IN_REVIEW','unsent','')).toThrow();});
+ it('permits a closed historical ticket without a public reply and preserves history',()=>{const parsed=processingSchema.parse({contractVersion:'admin-support-processing-v1',ticket:{...ticket,status:'CLOSED',publicReply:null}});expect(parsed.ticket.publicReply).toBeNull();expect(buildProcessingCommand(parsed.ticket,'note','CLOSED','','note').status).toBe('CLOSED');});
+ it('rejects reopening a closed ticket and unchanged commands',()=>{expect(()=>buildProcessingCommand({...ticket,status:'CLOSED'},'status','OPEN','','')).toThrow();expect(()=>buildProcessingCommand(ticket,'status','IN_REVIEW','','')).toThrow();});
+ it('checks environment and principal in grant replies, including NO_CHANGE',()=>{const body={action:'REVOKE',permission:'SUPPORT_TICKET_PROCESS',expectedRevision:4,reason:'reason'} as const; const r={contractVersion:'support-grant-management-v1',environment:'DEV',result:{principalId:'target',permission:'SUPPORT_TICKET_PROCESS',granted:false,revision:4,outcome:'NO_CHANGE'}};expect(assertGrantReceipt(r,'DEV','target',body).result.revision).toBe(4);expect(()=>assertGrantReceipt(r,'DEV','other',body)).toThrow();expect(()=>assertGrantReceipt(r,'PRD','target',body)).toThrow();});
+ it('does not interpret a missing grant state as zero or an enabled grant',()=>{expect(()=>grantStateSchema.parse({contractVersion:'support-grant-management-v1',environment:'DEV',state:{principalId:'target'}})).toThrow();});
+});

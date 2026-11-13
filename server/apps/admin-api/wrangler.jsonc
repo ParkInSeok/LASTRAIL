@@ -1,0 +1,44 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "lastrail-admin-api-local",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": {
+    "ENVIRONMENT": "LOCAL",
+    "ALLOWED_ADMIN_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173",
+    "ADMIN_AUTH_MODE": "LOCAL_HEADER",
+    "ADMIN_ACCESS_ISSUER": "",
+    "ADMIN_ACCESS_AUD": "",
+    "ADMIN_DELEGATED_ACCESS_ISSUER": "",
+    "ADMIN_DELEGATED_ACCESS_AUD": ""
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "lastrail-core-local", "database_id": "local", "migrations_dir": "../../packages/db/migrations" }
+  ],
+  "queues": {
+    "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-local" }]
+  },
+  "env": {
+    "dev": {
+      "name": "lastrail-admin-api-dev",
+      "r2_buckets": [{ "binding": "VERSION_BUCKET", "bucket_name": "lastrail-versions-dev" }],
+      "workers_dev": false,
+      "routes": [{ "pattern": "dev-admin.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "DEV", "ALLOWED_ADMIN_ORIGINS": "https://dev-admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED", "ADMIN_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0", "ADMIN_DELEGATED_ACCESS_ISSUER": "https://withered-star-bfb8.cloudflareaccess.com", "ADMIN_DELEGATED_ACCESS_AUD": "6eadff73156863b478a9915a66ecc516887e1f01cea734e586e1d58a25ca33a0" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-dev", "database_id": "14c31f63-3b9d-46b9-bd4a-8e093aaba436", "migrations_dir": "../../packages/db/migrations" }],
+      "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-dev" }] }
+    },
+    "prd": {
+      "name": "lastrail-admin-api-prd",
+      "workers_dev": false,
+      "routes": [{ "pattern": "admin.lastrail.app", "custom_domain": true }],
+      "vars": { "ENVIRONMENT": "PRD", "ALLOWED_ADMIN_ORIGINS": "https://admin.lastrail.app", "ADMIN_AUTH_MODE": "ACCESS_JWT_REQUIRED", "ADMIN_ACCESS_ISSUER": "__PRD_ACCESS_ISSUER__", "ADMIN_ACCESS_AUD": "__PRD_ACCESS_AUD__", "ADMIN_DELEGATED_ACCESS_ISSUER": "__PRD_PAGES_ACCESS_ISSUER__", "ADMIN_DELEGATED_ACCESS_AUD": "__PRD_ADMIN_PAGES_ACCESS_AUD__" },
+      "d1_databases": [{ "binding": "DB", "database_name": "lastrail-core-prd", "database_id": "__PRD_D1_DATABASE_ID__", "migrations_dir": "../../packages/db/migrations" }],
+      "queues": { "producers": [{ "binding": "ADMIN_JOBS_QUEUE", "queue": "lastrail-admin-jobs-prd" }] }
+    }
+  }
+}
+

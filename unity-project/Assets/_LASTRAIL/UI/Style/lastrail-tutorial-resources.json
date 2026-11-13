@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "scope": "reusable_nonmodal_tutorial_guide",
+  "newArtCount": 0,
+  "reusedArtCount": 3,
+  "sourceNote": "Assets/_LASTRAIL/UI/TutorialResources/README.md",
+  "resources": [
+    { "id": "guide_panel", "path": "Assets/_LASTRAIL/UI/Common/Skins/ui_tooltip_panel_9slice.png", "reused": true },
+    { "id": "pointer_and_next", "path": "Assets/_LASTRAIL/UI/Icons/ic_back.png", "reused": true, "rotation": "Faces target or right for next" },
+    { "id": "close", "path": "Assets/_LASTRAIL/UI/Icons/ic_close.png", "reused": true }
+  ],
+  "highlight": "Four non-raycast Unity Image borders outside live target bounds; no new bitmap",
+  "text": "Externally resolved plain TMP text and step/string id, no baked labels/numbers",
+  "prefab": "Assets/_LASTRAIL/Prefabs/Screens/TutorialGuide.prefab",
+  "consumer": "TutorialGuideView.Show / Refresh / Clear",
+  "producerConnected": false,
+  "productionRouteInstalled": false,
+  "existingData": "Narrative TutorialAdjacentLines and string-id coverage only; not a tutorial step producer",
+  "missing": ["Approved step sequence/copy", "Runtime step producer", "Screen owner calling Show and handling next/close"],
+  "placement": "Same-canvas target bounds updated in LateUpdate; avoid target, nonempty existing TMP, buttons and owner-supplied protected RectTransforms",
+  "safeArea": "Externally supplied live device-safe RectTransform; not the existing extra design inset",
+  "invalidTarget": "Clear when destroyed/inactive/invisible/clipped/offscreen or owner/guide disabled; no automatic reentry",
+  "insufficientSpace": "Clear instead of covering controls; omit pointer if only pointer positions are unsafe",
+  "input": "Nonmodal target/outside pass-through, panel blocks underlying hits, absent next/close owner disables action, callbacks clear before dispatch",
+  "verification": {
+    "results": "TestResults-Tutorial-Verified.xml",
+    "screenshots": "QA/Act1Launch/Screenshots/Tutorial/fixture_{button,operator,skill}_{1080,360}.png",
+    "screenshotCount": 6,
+    "fixtureInput": true,
+    "actualCameraRender": true,
+    "syntheticComposite": false,
+    "video": false,
+    "fullSuiteRun": false
+  },
+  "progressPersistenceOrGameplayRulesAdded": false
+}

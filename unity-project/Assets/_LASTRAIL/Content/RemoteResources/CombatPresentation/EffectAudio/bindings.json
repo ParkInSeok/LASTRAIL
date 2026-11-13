@@ -1,0 +1,150 @@
+[
+  {
+    "abilityId": "op_kyle.active",
+    "effectIndex": 0,
+    "eventKinds": [
+      "SHIELD_ISSUE"
+    ],
+    "effectiveGain": 0.174116
+  },
+  {
+    "abilityId": "op_kyle.ultimate",
+    "effectIndex": 0,
+    "eventKinds": [
+      "SHIELD_ISSUE"
+    ],
+    "effectiveGain": 0.241163
+  },
+  {
+    "abilityId": "op_reina.active",
+    "effectIndex": 0,
+    "eventKinds": [
+      "DAMAGE"
+    ],
+    "effectiveGain": 0.297596
+  },
+  {
+    "abilityId": "op_reina.ultimate",
+    "effectIndex": 0,
+    "eventKinds": [
+      "DAMAGE"
+    ],
+    "effectiveGain": 0.333547
+  },
+  {
+    "abilityId": "op_eve.active",
+    "effectIndex": 0,
+    "eventKinds": [
+      "HEAL"
+    ],
+    "effectiveGain": 0.451568
+  },
+  {
+    "abilityId": "op_eve.ultimate",
+    "effectIndex": 0,
+    "eventKinds": [
+      "HEAL"
+    ],
+    "effectiveGain": 0.416481
+  },
+  {
+    "abilityId": "op_sera.active",
+    "effectIndex": 0,
+    "eventKinds": [
+      "DAMAGE"
+    ],
+    "effectiveGain": 0.178893
+  },
+  {
+    "abilityId": "op_sera.ultimate",
+    "effectIndex": 0,
+    "eventKinds": [
+      "DAMAGE"
+    ],
+    "effectiveGain": 0.195267
+  },
+  {
+    "abilityId": "op_mira.active",
+    "effectIndex": 0,
+    "eventKinds": [
+      "REPAIR"
+    ],
+    "effectiveGain": 0.38157
+  },
+  {
+    "abilityId": "op_mira.ultimate",
+    "effectIndex": 0,
+    "eventKinds": [
+      "REPAIR"
+    ],
+    "effectiveGain": 0.215501
+  },
+  {
+    "abilityId": "support_fire",
+    "effectIndex": 0,
+    "eventKinds": [
+      "DAMAGE"
+    ],
+    "effectiveGain": 0.278018
+  },
+  {
+    "abilityId": "barrier",
+    "effectIndex": 0,
+    "eventKinds": [
+      "SHIELD_ISSUE"
+    ],
+    "effectiveGain": 0.212615
+  },
+  {
+    "abilityId": "emergency_repair",
+    "effectIndex": 0,
+    "eventKinds": [
+      "REPAIR"
+    ],
+    "effectiveGain": 0.352775
+  },
+  {
+    "abilityId": "op_kyle.active",
+    "effectIndex": 1,
+    "eventKinds": [
+      "STATUS_ADD",
+      "STATUS_REFRESH"
+    ],
+    "effectiveGain": 0.65
+  },
+  {
+    "abilityId": "op_sera.active",
+    "effectIndex": 1,
+    "eventKinds": [
+      "INTERRUPT"
+    ],
+    "effectiveGain": 0.27185
+  },
+  {
+    "abilityId": "op_sera.active",
+    "effectIndex": 2,
+    "eventKinds": [
+      "STATUS_ADD",
+      "STATUS_REFRESH"
+    ],
+    "effectiveGain": 0.180999
+  },
+  {
+    "abilityId": "op_sera.ultimate",
+    "effectIndex": 1,
+    "eventKinds": [
+      "STATUS_ADD",
+      "STATUS_REFRESH"
+    ],
+    "effectiveGain": 0.237088
+  },
+  {
+    "abilityId": "op_mira.ultimate",
+    "effectIndex": 1,
+    "eventKinds": [
+      "STATUS_ADD",
+      "STATUS_REFRESH"
+    ],
+    "effectiveGain": 0.283303
+  }
+]

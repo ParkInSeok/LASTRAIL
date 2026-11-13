@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RestoreIgnoreFailedSources>true</RestoreIgnoreFailedSources>
+    <NuGetAudit>false</NuGetAudit>
+  </PropertyGroup>
+  <Target Name="RequireSharedCore" BeforeTargets="ResolveReferences">
+    <Error Condition="!Exists('$(SharedCoreDirectory)/LastRail.Combat.Core.dll')" Text="Specify the Unity-owned SharedCoreDirectory; no replacement combat rules are compiled." />
+  </Target>
+  <ItemGroup>
+    <Reference Include="LastRail.Combat.Core"><HintPath>$(SharedCoreDirectory)/LastRail.Combat.Core.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(SharedCoreDirectory)/Newtonsoft.Json.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

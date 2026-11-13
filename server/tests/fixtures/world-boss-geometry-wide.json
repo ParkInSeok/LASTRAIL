@@ -1,0 +1,136 @@
+{
+  "version": "world-boss.rail-geometry.v1.20261002",
+  "status": "LOCAL_TEST_PROFILE",
+  "geometryRef": "LOCAL_WIDE_TRIAL",
+  "contentVersion": "LOCAL_GEO",
+  "roundId": "p1r1",
+  "frame": "PATH_LOCAL_FORWARD_RIGHT_MM",
+  "maxVehicles": 6,
+  "maxConsistLengthMm": 60000,
+  "maxSpeedMmPerSecond": 20000,
+  "maxAccelerationMmPerSecondSquared": 10000,
+  "maxSampleMs": 1000,
+  "paths": {
+    "LEFT": {
+      "splitSmm": 100000,
+      "mergeSmm": 500000,
+      "points": [
+        {
+          "sMm": 0,
+          "xMm": -100000,
+          "yMm": 0
+        },
+        {
+          "sMm": 100000,
+          "xMm": 0,
+          "yMm": 0
+        },
+        {
+          "sMm": 500000,
+          "xMm": 400000,
+          "yMm": 0
+        },
+        {
+          "sMm": 700000,
+          "xMm": 600000,
+          "yMm": 0
+        }
+      ]
+    },
+    "RIGHT": {
+      "splitSmm": 100000,
+      "mergeSmm": 505612,
+      "points": [
+        {
+          "sMm": 0,
+          "xMm": -100000,
+          "yMm": 0
+        },
+        {
+          "sMm": 100000,
+          "xMm": 0,
+          "yMm": 0
+        },
+        {
+          "sMm": 120000,
+          "xMm": 20000,
+          "yMm": 0
+        },
+        {
+          "sMm": 132806,
+          "xMm": 30000,
+          "yMm": 8000
+        },
+        {
+          "sMm": 472806,
+          "xMm": 370000,
+          "yMm": 8000
+        },
+        {
+          "sMm": 485612,
+          "xMm": 380000,
+          "yMm": 0
+        },
+        {
+          "sMm": 505612,
+          "xMm": 400000,
+          "yMm": 0
+        },
+        {
+          "sMm": 705612,
+          "xMm": 600000,
+          "yMm": 0
+        }
+      ]
+    }
+  },
+  "vehicles": [
+    {
+      "id": "v0",
+      "lengthMm": 9000,
+      "gapAfterMm": 1000,
+      "halfWidthMm": 500
+    },
+    {
+      "id": "v1",
+      "lengthMm": 9000,
+      "gapAfterMm": 1000,
+      "halfWidthMm": 500
+    },
+    {
+      "id": "v2",
+      "lengthMm": 9000,
+      "gapAfterMm": 1000,
+      "halfWidthMm": 500
+    },
+    {
+      "id": "v3",
+      "lengthMm": 9000,
+      "gapAfterMm": 1000,
+      "halfWidthMm": 500
+    },
+    {
+      "id": "v4",
+      "lengthMm": 9000,
+      "gapAfterMm": 1000,
+      "halfWidthMm": 500
+    },
+    {
+      "id": "v5",
+      "lengthMm": 10000,
+      "gapAfterMm": 0,
+      "halfWidthMm": 500
+    }
+  ],
+  "attack": {
+    "impactAtMs": 25000,
+    "areas": [
+      {
+        "minXmm": 0,
+        "maxXmm": 390000,
+        "minYmm": -200,
+        "maxYmm": 200
+      }
+    ]
+  }
+}

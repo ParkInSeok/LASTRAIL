@@ -1,0 +1,376 @@
+{
+  "status": "Current instructed active candidate; idle v09 and basic v27 approval remain scoped separately",
+  "foot": [
+    686,
+    1238
+  ],
+  "registrationSource": "All three source browser renderers: k=100/1224, top=(595-686*k,148-14*k)",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "operatorId": "op_kyle",
+  "bodySpan": 1224,
+  "frames": [
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/cd4276675c5a4e338ad446a04ed29f04.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-00.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 0,
+      "sha256": "08bdc60085e6327decbb4a7d2e4c754a4459f777024a42990354f44181b13242"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/34f6f9f13dd2406fb7ceef7a41fa62e6.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-01.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 1,
+      "sha256": "925c59fab2a2c0bc138c6001b608537b7de60ed1881372f95d3d718a2dd0beb8"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/48babe5424ef421d83afc011c74ea07e.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-02.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 2,
+      "sha256": "71379ccd73b65b778ec40dc41bad780acb118a9d691653c9ca3ef49efd3e46e2"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/e914bc36be544eafb4037f4f72e78a22.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-03.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 3,
+      "sha256": "afe5568eb3a3ecc5c1e2a2ce83e1f0cbb4a1204376fc7e770bd186189cdabae1"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/b978b373ccb447208d7ff0b0192c3f58.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-04.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 4,
+      "sha256": "4f7ea87ebe6e2840b3dc8c043c66f7000e3a46344a3f101797cb64cb39eb2bb0"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/9b07de861abd4641a7817545e6c41e5b.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-05.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 5,
+      "sha256": "423c6543d9700e126681291ac19db23073eabdb48ff5213b12ca9381aa03a5de"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/47759451715a423e97da76b2fbd9afc1.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-06.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 6,
+      "sha256": "02e852ad038e3196d770bc9128aafdbb57ca6d7463bacdfb8b185da0e30c3fbc"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/a3446e1896f545d88087f2a3e1c3b2f3.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-07.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 7,
+      "sha256": "37ff5080b5897ef32d8eded1f7972a956280e2f28ffd9b1dc42b3599115ff104"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/0d1f70b24cc244dc86edfc9568d6e62e.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-08.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 8,
+      "sha256": "285cf8ca616792d99d1ba1ed4af3959549d1401a5d3c07032d060361c6047412"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/ae10f15e19fb475aaebf871b78929671.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-09.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 9,
+      "sha256": "8fd9f1d051585a5434f9c0d9e78af8166373ca1ed38e1f38f14d0a78806255a0"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/c94d005c7fc34881887169c6dd3e8eb6.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-10.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 10,
+      "sha256": "11a3384157622a8913213d8311c0b0bcd69d71f2cc715586ffbfe88c1001d337"
+    },
+    {
+      "project": "3024176caf444fa3972992d557f02465",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/3d2b97bc4d824dc490880609fa784b0f.png",
+      "kind": "idle",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/idle-11.png",
+      "revision": 535,
+      "durationMs": 100,
+      "index": 11,
+      "sha256": "27b0aa591a475dfa17b6835cf14a5192a6b74df6dc50543a3c9d473f0ac4e5db"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/7ce71d1efd3e4d4eae22b2150767da5f.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-00.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 0,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/299b9293435e4a2fbf9ba5528169a21f.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-01.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 1,
+      "sha256": "c48f08f71a33efe4a83f29ec7dffb11fc9f5154f5b9c6072b9da0c37ef2eace7"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/e9232f451fa54d5ebd941370da100fc7.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-02.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 2,
+      "sha256": "17a06280271073c4d1a5fd9a33ec8463796d0d9e97df5baf04858c3d4c1379f0"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/eae57b7a6af9476eaea36d74b3b08f5f.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-03.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 3,
+      "sha256": "25bfdb65e14fc42b1eb3ed7f262d4a5cb752e7453ffde6216c104d3174c1da62"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/f5bc3b4f54d94930a15409bddb50feed.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-04.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 4,
+      "sha256": "1b9e50753fee833bf7a2c08d9129883e9b43a7f1749b451d2577961675311407"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/bf99cd7a4ed8410898703c29b1a17658.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-05.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 5,
+      "sha256": "78c14dcbb871b695da8f56ea22eaecce44eac0c02284d3078745078ac33630ce"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/ab223dfd011d4542a979b49d9b1bbed4.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-06.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 6,
+      "sha256": "25bfdb65e14fc42b1eb3ed7f262d4a5cb752e7453ffde6216c104d3174c1da62"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/034fd16277bb461ba3a23735ec366a60.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-07.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 7,
+      "sha256": "6edeb55aeb9f28aee875080d73e240990fb8b53d3c16b77b98beb82c3f18e947"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/a6a46fb8997443bc9a5dceec68448fc4.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-08.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 8,
+      "sha256": "19c25a3431665dda121990f41f504d30069a1d5bf3b5724061b4f16f5d7f9eac"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/b09a31997424442a9803cf2f890fd978.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-09.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 9,
+      "sha256": "c3531aed412dfabf72b9b523211a519a8b44e9b0e46b5b97fff70d7fe8b466bd"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/fb07567e265f4128a55a0f5055eb72f5.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-10.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 10,
+      "sha256": "e374d103c49237b582c9963d2afdde022fca2c9940aaa088dd967875c68ff61a"
+    },
+    {
+      "project": "e8f4f88f2069447ea9c3f95acbf47746",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/aff5adbdd27b4f399d0c81be19346c82.png",
+      "kind": "basic",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/basic-11.png",
+      "revision": 912,
+      "durationMs": 100,
+      "index": 11,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/4f0489488b214326a57260b1c6212b27.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-00.png",
+      "revision": 69,
+      "durationMs": 400,
+      "index": 0,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/04c4b5f58b304eb688cb59b57af5e5ed.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-01.png",
+      "revision": 69,
+      "durationMs": 120,
+      "index": 1,
+      "sha256": "506cabfc0ec3d6de8cfe9d2a57f4e20ccc3fc341794390e4847050cd47f1ae7a"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/ef763fbfeb5249c2812e38700c40f1b2.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-02.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 2,
+      "sha256": "58448ac986df9cb21398c63b5ed8d67bc7af616bf84cd16dbf2075b3e101b67a"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/15e686ff425a4ca8a8834a3a8b6dc9fb.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-03.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 3,
+      "sha256": "2054e742981b010fbb121dc3dc27ffc3a9128fcd5e2f8528391b2129f0debafe"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/ec7903f9fb07460db7c3f6cd2cbf9d60.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-04.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 4,
+      "sha256": "2054e742981b010fbb121dc3dc27ffc3a9128fcd5e2f8528391b2129f0debafe"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/4349ba06fb714f98aceb8892efcb299d.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-05.png",
+      "revision": 69,
+      "durationMs": 350,
+      "index": 5,
+      "sha256": "2054e742981b010fbb121dc3dc27ffc3a9128fcd5e2f8528391b2129f0debafe"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/a58839fc34554c25bfa58de7d59e2d71.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-06.png",
+      "revision": 69,
+      "durationMs": 650,
+      "index": 6,
+      "sha256": "2054e742981b010fbb121dc3dc27ffc3a9128fcd5e2f8528391b2129f0debafe"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/9d6c7ba3a70e465c9fe9eb087c0e921b.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-07.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 7,
+      "sha256": "58448ac986df9cb21398c63b5ed8d67bc7af616bf84cd16dbf2075b3e101b67a"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/fc834d158d13401d8341ab4105e4f589.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-08.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 8,
+      "sha256": "506cabfc0ec3d6de8cfe9d2a57f4e20ccc3fc341794390e4847050cd47f1ae7a"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/df1ba1524c494a77891003823f47948d.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-09.png",
+      "revision": 69,
+      "durationMs": 130,
+      "index": 9,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/08e6ee1c7d5d4b0a8b380ccb1cc67c79.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-10.png",
+      "revision": 69,
+      "durationMs": 120,
+      "index": 10,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    },
+    {
+      "project": "7c231a638b3340bd80cf9fcfa98ee3c9",
+      "source": "D:/Project/LASTRAIL/Tools/FrameStudio/data/assets/5b5f062ff0d546fdbbc77b88a58cf6b5.png",
+      "kind": "active",
+      "path": "Assets/_LASTRAIL/Content/Battle/KyleRightActive02/active-11.png",
+      "revision": 69,
+      "durationMs": 580,
+      "index": 11,
+      "sha256": "d06174a7dd7165f71e17a5c65a1f79cc0bcd88371b5e3df3857188834e1c4a99"
+    }
+  ]
+}

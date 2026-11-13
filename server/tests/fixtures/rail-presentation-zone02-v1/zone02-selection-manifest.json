@@ -1,0 +1,77 @@
+{
+  "schema": "combat-zone02-selection-v1",
+  "profile": "second-final-zone02-v1",
+  "scope": "APPLICATION_ASSET_IDENTIFICATION",
+  "directionManifest": {
+    "path": "D:/Project/LASTRAIL/unity-project/QA/Unity1Artifacts/Design/Zone02-03-Quality-20260914/manifest.json",
+    "sha256": "902bc04decee0236506a70aada60c465dcc994d57006d1965319dbbdaf41466d"
+  },
+  "resources": [
+    {
+      "path": "Assets/_LASTRAIL/UI/ApprovedCombat/ExteriorQuality/canyon-far-v02.png",
+      "assetRawSha256": "62a428b0b7da7015cee18d69bbc3da197f50f77255a1102e86fa299dc46c67d0",
+      "metaRawSha256": "15feb13ecb7d4fdedc386aac56e4357456cf6361ea357cdff4ab9cb9e8d6f413",
+      "guid": "a6675023a6d75bc4db6b8a08eaef50a8",
+      "localFileId": "2800000",
+      "type": "UnityEngine.Texture2D",
+      "roles": [
+        "approved.DistantFar",
+        "approved.ExteriorMap"
+      ],
+      "sourceFile": "canyon-far-v02.png",
+      "sourceRawSha256": "62a428b0b7da7015cee18d69bbc3da197f50f77255a1102e86fa299dc46c67d0"
+    },
+    {
+      "path": "Assets/_LASTRAIL/UI/ApprovedCombat/ExteriorQuality/canyon-mid-ridge-v02.png",
+      "assetRawSha256": "89f888daa1d2e71bb158e55981346f0a4e3f521813283b18f179240519504460",
+      "metaRawSha256": "dd403731e9d94102a3f1102a58b8264e9900bf7764003fee47fa9ddda649625f",
+      "guid": "0901e357f8c086c418b2384490c54319",
+      "localFileId": "2800000",
+      "type": "UnityEngine.Texture2D",
+      "roles": [
+        "approved.PursuitRidges"
+      ],
+      "sourceFile": "canyon-mid-ridge-v02.png",
+      "sourceRawSha256": "89f888daa1d2e71bb158e55981346f0a4e3f521813283b18f179240519504460"
+    },
+    {
+      "path": "Assets/_LASTRAIL/UI/ApprovedCombat/ExteriorQuality/canyon-road-v02.png",
+      "assetRawSha256": "803f3ba3e5db907e4015e323668ab6c8507d669dcccb40e35a401d33da34e190",
+      "metaRawSha256": "eb7a5ba3823508cce4fa0d2619431527ef49d6b1e9e8e3f432b5008c818865d8",
+      "guid": "ca0c1d8d14f75ec409fdb011e39fdd5e",
+      "localFileId": "2800000",
+      "type": "UnityEngine.Texture2D",
+      "roles": [
+        "approved.PursuitRoad"
+      ],
+      "sourceFile": "canyon-road-v02.png",
+      "sourceRawSha256": "803f3ba3e5db907e4015e323668ab6c8507d669dcccb40e35a401d33da34e190"
+    },
+    {
+      "path": "Assets/_LASTRAIL/UI/ApprovedCombat/ExteriorQuality/exterior-bezel-v02.png",
+      "assetRawSha256": "a556204ce5ed0200744269a259dfd61469bbf19c69734044f738987875165da0",
+      "metaRawSha256": "f3e856534e8dd10ac1860d8e2ab23365840667bfaebde97fcbfe8bd06ec2d451",
+      "guid": "42a09df29c30bc745866c529da0d18a1",
+      "localFileId": "2800000",
+      "type": "UnityEngine.Texture2D",
+      "roles": [
+        "approved.ExteriorBezel"
+      ],
+      "sourceFile": "exterior-bezel-v02.png",
+      "sourceRawSha256": "a556204ce5ed0200744269a259dfd61469bbf19c69734044f738987875165da0"
+    },
+    {
+      "path": "Assets/_LASTRAIL/UI/ApprovedCombat/ExteriorQuality/pursuit-layout-v02.json",
+      "assetRawSha256": "10704f5ea8c28f0289dc99811d503a2fa37b6227a21b9a34d79f35b168645e27",
+      "metaRawSha256": "20fc6969b2ccca9ff89e5588679e2f05f294f16479aeb3eefcd2798721575e63",
+      "guid": "7b82e675a0d165f45a1415d03bb5afaa",
+      "localFileId": "4900000",
+      "type": "UnityEngine.TextAsset",
+      "roles": [
+        "approved.PursuitLayout"
+      ],
+      "sourceFile": null,
+      "sourceRawSha256": null
+    }
+  ]
+}

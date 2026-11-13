@@ -1,0 +1,2 @@
+-keep class app.lastrail.network.NetworkBridge { *; }
+-keep interface app.lastrail.network.NetworkBridge$Listener { *; }

@@ -1,0 +1,43 @@
+# Combat B same-run target lifecycle LOCAL contract v1
+
+Task: S-B-TARGET-LIFECYCLE-15@after-active-consume-14. Source version `combat.b-target-lifecycle-source.v1.20261003`; new wire version `combat.b-mira-lifecycle-wire.v2.20261003`. Original projectile root remains `combat.b-active-projectile-source.v1.20261003` and original wire/reader remain unchanged. This is a trusted LOCAL projection, not an operational spawn or solo server HP authority.
+
+## Start and authenticated read
+
+From the canonical server directory with TEMP/TMP/TMPDIR under D:/Project/LASTRAIL/LocalTemp, use `startBTargetLifecycleSocket` in `scripts/local/combat-b-target-lifecycle-socket.ts` with the existing tsx runner and `scripts/validation/combat-b-target-lifecycle-tsconfig.json`. It opens an ephemeral 127.0.0.1 listener, applies the original 98 migrations in isolated SQL.js memory, and exposes creator-only `intake('a'|'b')`, `replaceTarget`, `transitionRanks`, `checkpoint`, `lifecycleCheckpoint`, `close`. No fixed endpoint is left running. Intake credentials are memory-only; never put them in a web page, repository, QA, saved checkpoint, or message.
+
+Use original selection/refit GET/POST to select owned Mira and save eligible original refits before the first binding. `GET /_local/combat-b/target-lifecycle` requires current signed Bearer/session/account/expiry and exact `X-Combat-B-Lifecycle-Version`. First binding additionally uses the original projectile/refit version headers from intake and original source checks. GET has no body/query, only LOCAL HTTP loopback and same Origin (when supplied). Response is no-store. Other routes delegate unchanged to the original supplier. No public lifecycle write route exists.
+
+Response: version, immutable rootPacketHash/contextId/accountId/originalSource; revision/currentTarget/journalHash/snapshot; resetProfile/resetProfileHash; runtimeReset=false; wireVersion/wireSchemas; ownership/policy; canExecute=false/startReady=false; changing wrapper packetHash. The source packet carries exact JSON schemas for replacement, snapshot, lock, emission, suffix. Repeated GET does not produce an event, replace a run, reset Ready/clock/buffs, or read a new rank into the bound run. After rank changes the current projectile GET may be stale, while bound lifecycle GET still returns the original run. New-run binding is outside this contract.
+
+## Producer, receipt and ownership
+
+Only the trusted creator calls `replaceTarget(role, input)` with exact strict fields:
+
+```json
+{"version":"combat.b-target-lifecycle-source.v1.20261003","kind":"REPLACE_SAME_ID_FROM_ORIGINAL_PROFILE","eventId":"original-lifetime-event","rootPacketHash":"sha256:<original-root>","contextId":"<original-context>","expectedRevision":0,"originalTick":350,"originalSequence":4,"previous":{"targetId":"<original-target>","generation":"<original-generation>","battlefieldGeneration":"<original-battlefield>"},"resetProfileHash":"sha256:<original-reset-profile>"}
+```
+
+The original Unity lifetime owner must supply the actual event/tick/sequence and previous identity. This producer does not detect death, invent spawn events, accept client chosen generations or advance gameplay. Generation is deterministic `LOCAL_LIFECYCLE:` plus SHA256 of root/context/eventId/new revision. Target ID and battlefield generation stay unchanged. Receipt fields: version/eventId/root/context/revision/originalTick/originalSequence/previous/current/resetProfileHash/previousJournalHash/receiptHash/runtimeReset=false. Receipt hash covers exact input and receipt body. Snapshot holds strict ordered input/receipt records, current identity, revision and journal hash. Original profile derives original LOCAL_ENEMY definition/runtime input/shields and pristine original status, not previous immunity/status. No new enemy numbers/geometry/route/multi-target policy is introduced.
+
+Checks: current authorization before replay and again before commit; exact original root/context/reset profile/previous identity and expected revision; strictly ordered original (tick,sequence) tuple; same-key different-body conflict; final CAS; LOCAL journal bound 1024. Exact retries return the original receipt, including same-event concurrency; distinct concurrent events commit one. All fallible parsing, hashing and authorization precede journal publication. Capacity failure has no partial journal mutation. This 1024 bound is an implementation validation limit, not a gameplay spawn cap.
+
+## New command locks and v2 readers
+
+`fixture.commandLock({commandId,acceptedTick,acceptedSequence})` is a projection from the journal prefix before the original acceptance event. It returns version/root/context/command/acceptance tick and sequence/target/lifecycleRevision/receiptHash. Equal event keys conflict. Old commands and shots retain their old lock; a new accepted command after replacement locks the verified new generation. Creating a lock does not accept a skill or reset CD.
+
+`readLifecycleMiraEmission` checks strict v2 emission plus lifecycleLock, root, exact journal-prefix lock, target and emission sequence, then delegates all original timing/ATK/modifier/due checks to the frozen v1 reader through an internal verified identity view. It never republishes a modified v1 source. `readLifecycleMiraSuffix` validates a strict v2 suffix/current command lock and all shot associations before the unchanged original suffix reader. Old v1 rejects new generation as before. Shot/effect IDs, 120ms flight, six 45% shots, original phase/CD and buffs are unchanged. Full native command chronology, acceptance/Ready, old-shot MISS, unissued cancellation and HP/receipt application remain Unity-owned checks.
+
+## Restore and atomic native application
+
+Pure `BTargetLifecycleFixture.restore(trustedOriginal, snapshot)` replays and recomputes every receipt and verifies exact final cursor/identity/hash. Creator registry restore is staged; checkpoints are trusted creator-only data, not unsigned client authorization. `readPinnedTargetLifecyclePacket(input,trustedOriginal,expectedPacketHash)` verifies the complete canonical envelope against a hash obtained from the actual authenticated supplier or an already trusted capture. Never use the untrusted input's own packetHash as that trust anchor. Valid hash alone is not authorization for a native lifetime event.
+
+SQL bytes and lifecycle checkpoint are separate creator memory copies; restore both into a new isolated supplier. Old auth is denied and fresh intake reads the exact same bound root/journal. Zero SQL bytes after use; never persist or log them. Close stops/drains HTTP and accepted private work before discarding DB, registry and credentials.
+
+Unity must stage full session/lifecycle/command/clock/buff/HP/receipt restore, cross-check actual original lifetime and acceptance event streams plus pinned supplier journal, and publish once only after every check. On missing/tampered/order/capacity errors preserve the entire original native state. Producer success alone does not claim native HP reset or command execution. Actual target lifetime application and journal cursor advance must be one owner operation; no GET/newrun reset workaround. In-flight old generation shots MISS against replacement; new command at original Ready can hit the replacement. Clock debt, CD, buffs, actor stats, original source and historical receipts remain unchanged.
+
+## Errors and evidence
+
+Lifecycle errors use `{accepted:false,errorCode}`. HTTP 400: lifecycle_request_invalid (wrong method/query/body), schema/lock/emission/suffix/restore/packet invalid; 401: original auth/session/expiry failures; 403: lifecycle_origin_forbidden; 404: lifecycle_local_disabled; 409: lifecycle_version_conflict, original_source_conflict, source_conflict, event_conflict, order_conflict, capacity, restore_conflict, lock_conflict, packet_conflict; 503: profile_unavailable/lifecycle_unavailable or original supplier unavailable. Error codes have `combat_b_` prefix. Initial source errors retain original path/version/error contract. There is no cache retry mutation; retry read or exact private event, never synthesize a new event ID after uncertainty. No pagination is exposed.
+
+QA: D:/Project/LASTRAIL/QA/CommanderS1-20260922/combat-b-target-lifecycle-validation-20261003.json (pins and counts), final4 test report, traces JSON and exact producer .mts. Samples label command/Ready/HP as CONTRACT_PROJECTION_ONLY, actual Unity commands/HP changes zero. U14's 308PASS establishes the previous native implementation, not U15 integration. Consumer followup U-B-TARGET-LIFECYCLE-15 is registered only after supplier completion AND verified U14 evidence. No deployment/START/economic writes/View changes.

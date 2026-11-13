@@ -1,0 +1,7 @@
+import {rewardProposalSchema,type RewardProposal} from './rewardPreviewContract';
+export type RewardDraftFormInput={title:string;type:RewardProposal['type'];incidentRef:string;policyVersion:string;targetAsOf:string;targetCondition:string;accountIdsText:string;rewardLines:{itemId:string;quantity:string}[]};
+export function rewardDraftFormInput(proposal:RewardProposal):RewardDraftFormInput{return {title:proposal.title,type:proposal.type,incidentRef:proposal.incidentRef,policyVersion:proposal.policyVersion??'',targetAsOf:proposal.targetAsOf===null?'':String(proposal.targetAsOf),targetCondition:proposal.targetCondition??'',accountIdsText:proposal.accountIds.join('\n'),rewardLines:proposal.rewardLines.map(line=>({itemId:line.itemId,quantity:String(line.quantity)}))};}
+export function parseRewardDraftForm(input:RewardDraftFormInput,scope:{environment:'DEV'|'PRD';batchId:string;revision:number}):RewardProposal {
+ const integer=(text:string)=>/^\d+$/.test(text)?Number(text):NaN;
+ return rewardProposalSchema.parse({...scope,title:input.title,type:input.type,incidentRef:input.incidentRef,policyVersion:input.policyVersion.trim()||null,targetAsOf:input.targetAsOf.trim()===''?null:integer(input.targetAsOf),targetCondition:input.targetCondition.trim()||null,accountIds:input.accountIdsText.split(/[\n,]/).map(s=>s.trim()).filter(Boolean),rewardLines:input.rewardLines.map(line=>({itemId:line.itemId,quantity:integer(line.quantity)}))});
+}

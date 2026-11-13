@@ -1,0 +1,1216 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e586f52dd74393e4aae6b96ff544ce5f, type: 3}
+  m_Name: Roster
+  m_EditorClassIdentifier: LastRail.Runtime::LastRail.Battle.CombatOperatorFrames
+  Entries:
+  - OperatorId: op_kyle
+    FacesRight: 1
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 686, y: 1238}
+    BodySpan: 1224
+    IdleFrames:
+    - {fileID: 2800000, guid: f11a62614ee0593428d19a82661750a7, type: 3}
+    - {fileID: 2800000, guid: cf97013c40d35c847a2eacf305a2c0ca, type: 3}
+    - {fileID: 2800000, guid: 0b97039739e275144bf1100a65e38e4a, type: 3}
+    - {fileID: 2800000, guid: 05596d19c7a12c74a8a01395c4a4ebdf, type: 3}
+    - {fileID: 2800000, guid: 1df50a74f6ba5424c98f0a55d37d6796, type: 3}
+    - {fileID: 2800000, guid: 9cf3f7eb3d65be244bc586f8e9b052d1, type: 3}
+    - {fileID: 2800000, guid: 63d09589d6ec313499d0843abbbaaf7b, type: 3}
+    - {fileID: 2800000, guid: 383560ca5d1d76b419ce5f22ea34c9c1, type: 3}
+    - {fileID: 2800000, guid: d165ef3f169cbbe4fa5ec1ba35c6bdc9, type: 3}
+    - {fileID: 2800000, guid: 0c9ba1909a1550a4fbb9928eda1401b2, type: 3}
+    - {fileID: 2800000, guid: 22f77e9347478224b81b019147e2955c, type: 3}
+    - {fileID: 2800000, guid: 0c8098e69223a2a4f989aeba004cdd8d, type: 3}
+    DurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFrames:
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    - {fileID: 2800000, guid: e90f332d61e8e59499f4924a236cc200, type: 3}
+    - {fileID: 2800000, guid: 9b3b722c06873c241b2acabc252a32d5, type: 3}
+    - {fileID: 2800000, guid: 83716afed43be8a43a5911bec2904862, type: 3}
+    - {fileID: 2800000, guid: f3813db832685794ab53a722ea208468, type: 3}
+    - {fileID: 2800000, guid: d1744a512e1569a41a66250a766c6a82, type: 3}
+    - {fileID: 2800000, guid: 83716afed43be8a43a5911bec2904862, type: 3}
+    - {fileID: 2800000, guid: 5e8b572528fa02946b937aa077abf0b5, type: 3}
+    - {fileID: 2800000, guid: f0fbfb04c1350ff4b97e58a3fd1d49b0, type: 3}
+    - {fileID: 2800000, guid: a60df84f27018ef40ba6789f60c65f4a, type: 3}
+    - {fileID: 2800000, guid: 911d27972e92a804ebb407d3bbbe2446, type: 3}
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    BasicDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFireFrame: 4
+    ActiveFrames:
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    - {fileID: 2800000, guid: cbc1cfa8487172e46b465413813bbbbe, type: 3}
+    - {fileID: 2800000, guid: f42f4b9708f543c4dba5fbebae79ee19, type: 3}
+    - {fileID: 2800000, guid: 0d5f2778dfafaa842bef67df116cb579, type: 3}
+    - {fileID: 2800000, guid: 7a34d62d7b4b0674f94287c85b094087, type: 3}
+    - {fileID: 2800000, guid: e760aec373a576c4191bb28bd2a19166, type: 3}
+    - {fileID: 2800000, guid: 997833a526d8ba248ab09a813d00f9f6, type: 3}
+    - {fileID: 2800000, guid: f6e0d66b0ebe1994abeff8741b5f6805, type: 3}
+    - {fileID: 2800000, guid: f1f74b0cd55ab1949acc994b2f8b09fc, type: 3}
+    - {fileID: 2800000, guid: ab466db6ba5f3f047aebadbdbb3f8823, type: 3}
+    - {fileID: 2800000, guid: 1bff92548861ca84a9e811e73d8460e7, type: 3}
+    - {fileID: 2800000, guid: 972e84162aec5f24b8951a1a5b6b9aa2, type: 3}
+    ActiveDurationsMs: 90010000780000008200000082000000820000005e0100008a0200008200000082000000820000007800000044020000
+    UltimateFrames: []
+    UltimateDurationsMs: 
+    BasicRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 686, y: 1238}
+      BodySpan: 1224
+    ActiveRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    UltimateRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: 131971c01f959414abc8ab8f05a9b3da, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.36
+      y: 0.74
+      width: 0.28
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 660.5
+      y: 325.5
+      width: 61
+      height: 61
+  - OperatorId: op_reina
+    FacesRight: 0
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 619, y: 1081}
+    BodySpan: 891
+    IdleFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 80f6345f55f1b064789b59ac143d1de2, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    DurationsMs: 78000000780000007800000078000000
+    BasicFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 96aed86964f51c3499b59aead16e27eb, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 90b66c88076e65549b495cf449f565f0, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    BasicDurationsMs: 280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000
+    BasicFireFrame: 10
+    ActiveFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 96aed86964f51c3499b59aead16e27eb, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 90b66c88076e65549b495cf449f565f0, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    ActiveDurationsMs: 280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: a3d635ee9cc7e7148abe203a2f3cd761, type: 3}
+    - {fileID: 2800000, guid: 9415d7e64bf3a9147a72853a4e55a086, type: 3}
+    - {fileID: 2800000, guid: 5fb3f7112b968d5439522bc600f29e78, type: 3}
+    - {fileID: 2800000, guid: 56b8e6763e8fec7468fd2d7681a3c246, type: 3}
+    - {fileID: 2800000, guid: f0bc31e9daa341b4bad1a6532e5c651e, type: 3}
+    - {fileID: 2800000, guid: d95064d3914c90345a93fd64c6cccf1d, type: 3}
+    - {fileID: 2800000, guid: 1bcfd471e66a4684eaff257711155a36, type: 3}
+    - {fileID: 2800000, guid: 11cf498bbe0d0754fb56f3db8b5e72dc, type: 3}
+    - {fileID: 2800000, guid: ef01a0cc8a375d14cb67a634ee2fb551, type: 3}
+    - {fileID: 2800000, guid: fe996399e269aa7458a1c30ee7d213bf, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    UltimateDurationsMs: 640000006e000000780000008c000000780000006e000000640000003c0000003c000000460000004600000028000000
+    BasicRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    ActiveRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    UltimateRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.32
+      y: 0.58
+      width: 0.36
+      height: 0.3
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_eve
+    FacesRight: 0
+    CanvasSize: {x: 1263, y: 1245}
+    FootAnchorTopLeft: {x: 642, y: 1245}
+    BodySpan: 1194
+    IdleFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: d37a26b4d53ad7446951103fb7f28982, type: 3}
+    - {fileID: 2800000, guid: bb1fad1d924e0024799339f67a2d1b40, type: 3}
+    - {fileID: 2800000, guid: d8c704582ef29dc47bb2db6ecb67cf30, type: 3}
+    - {fileID: 2800000, guid: 86ba4f10cd8b3bf4bb9b5b51d558cc4a, type: 3}
+    - {fileID: 2800000, guid: f1cb941b8f5cb2e4ea9b8cd7c46ace9f, type: 3}
+    - {fileID: 2800000, guid: f4d43753dc5c602409948eee2a4a5e1e, type: 3}
+    - {fileID: 2800000, guid: 194efcf4988bf8a4fb7c896007ca8d15, type: 3}
+    - {fileID: 2800000, guid: a52694eb126a1ff4dac31fac03089762, type: 3}
+    - {fileID: 2800000, guid: f7609f5160e724e4cb182a23a9197c0e, type: 3}
+    - {fileID: 2800000, guid: 916fc1ce0ae873b4086b05249f966d60, type: 3}
+    - {fileID: 2800000, guid: 72dcaba0aaaaae9439a97ff852691f88, type: 3}
+    DurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 9bc8f9deb31ca40408e51d361fad1aec, type: 3}
+    - {fileID: 2800000, guid: 52f0190107a3d5a48951bf9780ab7e76, type: 3}
+    - {fileID: 2800000, guid: 1760df8fe79593d49ac25f361ea25231, type: 3}
+    - {fileID: 2800000, guid: e2b3caa676fa9cf4fab166390a6c649e, type: 3}
+    - {fileID: 2800000, guid: ef1b694b12f789b409c7e9afecbafb82, type: 3}
+    - {fileID: 2800000, guid: d2e94791c323f774e9ddf73a65b6b0cd, type: 3}
+    - {fileID: 2800000, guid: 0a7a7a61d6ec59c43aa6cb029ec02b2f, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    BasicDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 9bc8f9deb31ca40408e51d361fad1aec, type: 3}
+    - {fileID: 2800000, guid: 7428ecb7ea8731b48a338e76ed79eb43, type: 3}
+    - {fileID: 2800000, guid: aeb97a83366c4f943a94708b1b0a1ad8, type: 3}
+    - {fileID: 2800000, guid: 7a0802e04cdfe17458af95148f4ab93d, type: 3}
+    - {fileID: 2800000, guid: b951697e5255f6a45a7968ca7b5dcbe0, type: 3}
+    - {fileID: 2800000, guid: d2e94791c323f774e9ddf73a65b6b0cd, type: 3}
+    - {fileID: 2800000, guid: 0a7a7a61d6ec59c43aa6cb029ec02b2f, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    ActiveDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 271898a55d338ac43b7f2dd7687bcac3, type: 3}
+    - {fileID: 2800000, guid: 8d1e62d3c33c72943872e68261145f8d, type: 3}
+    - {fileID: 2800000, guid: 8ad019ff89f04494db547749b3bc14d6, type: 3}
+    - {fileID: 2800000, guid: dfed7d8c3f3aa834a905abad19fd2ab4, type: 3}
+    - {fileID: 2800000, guid: cfdfaa436c1ead54ca47aa280703855c, type: 3}
+    - {fileID: 2800000, guid: 5c622e6467b8ba84c9ec8a713ddc9f01, type: 3}
+    - {fileID: 2800000, guid: 3ad6da22e86351f4498e04a577f85a94, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    UltimateDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    ActiveRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    UltimateRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    ActiveEffectFrames:
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: 8b0a18c76e6661041b4b7d20a86e611d, type: 3}
+    - {fileID: 2800000, guid: cdc28d4aa535c7f488ee2f26aef5560e, type: 3}
+    - {fileID: 2800000, guid: c62f1badf8eed6a43a098057b8b6f0ad, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    UltimateEffectFrames:
+    - {fileID: 2800000, guid: 6b43cfc6a623b3e49b433d79ebaff993, type: 3}
+    - {fileID: 2800000, guid: 75bfcc98ad736014ba13ea2a0c40521a, type: 3}
+    - {fileID: 2800000, guid: de1fa5bb6577216478b30bb690e862d3, type: 3}
+    - {fileID: 2800000, guid: 4e455cd234b01864db6f47f2e1a15f42, type: 3}
+    - {fileID: 2800000, guid: 2aefbe3c43e8bec48870354796cea52f, type: 3}
+    - {fileID: 2800000, guid: b3cf5270cf43a7a4ea723d4ff799b862, type: 3}
+    - {fileID: 2800000, guid: 1214c48a1e1522049a221a484ff2e976, type: 3}
+    - {fileID: 2800000, guid: 5b864fdda07e8cb4bb13dad05268945c, type: 3}
+    - {fileID: 2800000, guid: ebfa9bfc52e5f7e4f84cbbdb118ae54a, type: 3}
+    - {fileID: 2800000, guid: 0ee63861769a613419e0025fa0c77dee, type: 3}
+    - {fileID: 2800000, guid: 2844f150cbfdc8a438c76204ffd91773, type: 3}
+    - {fileID: 2800000, guid: 7f7866422e1b55442894b6c197bb9fa4, type: 3}
+    ActiveEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.35
+      y: 0.7
+      width: 0.3
+      height: 0.28
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_sera
+    FacesRight: 0
+    CanvasSize: {x: 1024, y: 1536}
+    FootAnchorTopLeft: {x: 791, y: 1508}
+    BodySpan: 1464
+    IdleFrames:
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    DurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFrames:
+    - {fileID: 2800000, guid: 53699b0879a4c714f83845f16e104fbc, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: 53699b0879a4c714f83845f16e104fbc, type: 3}
+    BasicDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    ActiveDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    - {fileID: 2800000, guid: 7626ed6910e5202469d139e58e68f19b, type: 3}
+    - {fileID: 2800000, guid: e27857065ee8eaa48b616a7325213de8, type: 3}
+    - {fileID: 2800000, guid: 319839e8452d71b41ad40ee0b849e002, type: 3}
+    - {fileID: 2800000, guid: d9a05f0f34ad87b479207b3bd6af140c, type: 3}
+    - {fileID: 2800000, guid: 8e577010637e90246846e089cc1a6ded, type: 3}
+    - {fileID: 2800000, guid: b7bb4c54f4988a7479b331124e296400, type: 3}
+    - {fileID: 2800000, guid: 8e577010637e90246846e089cc1a6ded, type: 3}
+    - {fileID: 2800000, guid: d9a05f0f34ad87b479207b3bd6af140c, type: 3}
+    - {fileID: 2800000, guid: 319839e8452d71b41ad40ee0b849e002, type: 3}
+    - {fileID: 2800000, guid: 7626ed6910e5202469d139e58e68f19b, type: 3}
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    UltimateDurationsMs: b4000000b400000038040000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1678}
+      BodySpan: 1464
+    ActiveRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1652}
+      BodySpan: 1464
+    UltimateRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1652}
+      BodySpan: 1464
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.27
+      y: 0.74
+      width: 0.43
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_mira
+    FacesRight: 0
+    CanvasSize: {x: 0, y: 0}
+    FootAnchorTopLeft: {x: 0, y: 0}
+    BodySpan: 0
+    IdleFrames: []
+    DurationsMs: 
+    BasicFrames: []
+    BasicDurationsMs: 
+    BasicFireFrame: 0
+    ActiveFrames: []
+    ActiveDurationsMs: 
+    UltimateFrames: []
+    UltimateDurationsMs: 
+    BasicRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    UltimateRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: be63704e9bab47b49903c5748d480f37, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  DirectionalEntries:
+  - OperatorId: op_kyle
+    FacesRight: 1
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 686, y: 1238}
+    BodySpan: 1224
+    IdleFrames:
+    - {fileID: 2800000, guid: f11a62614ee0593428d19a82661750a7, type: 3}
+    - {fileID: 2800000, guid: cf97013c40d35c847a2eacf305a2c0ca, type: 3}
+    - {fileID: 2800000, guid: 0b97039739e275144bf1100a65e38e4a, type: 3}
+    - {fileID: 2800000, guid: 05596d19c7a12c74a8a01395c4a4ebdf, type: 3}
+    - {fileID: 2800000, guid: 1df50a74f6ba5424c98f0a55d37d6796, type: 3}
+    - {fileID: 2800000, guid: 9cf3f7eb3d65be244bc586f8e9b052d1, type: 3}
+    - {fileID: 2800000, guid: 63d09589d6ec313499d0843abbbaaf7b, type: 3}
+    - {fileID: 2800000, guid: 383560ca5d1d76b419ce5f22ea34c9c1, type: 3}
+    - {fileID: 2800000, guid: d165ef3f169cbbe4fa5ec1ba35c6bdc9, type: 3}
+    - {fileID: 2800000, guid: 0c9ba1909a1550a4fbb9928eda1401b2, type: 3}
+    - {fileID: 2800000, guid: 22f77e9347478224b81b019147e2955c, type: 3}
+    - {fileID: 2800000, guid: 0c8098e69223a2a4f989aeba004cdd8d, type: 3}
+    DurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFrames:
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    - {fileID: 2800000, guid: e90f332d61e8e59499f4924a236cc200, type: 3}
+    - {fileID: 2800000, guid: 9b3b722c06873c241b2acabc252a32d5, type: 3}
+    - {fileID: 2800000, guid: 83716afed43be8a43a5911bec2904862, type: 3}
+    - {fileID: 2800000, guid: f3813db832685794ab53a722ea208468, type: 3}
+    - {fileID: 2800000, guid: d1744a512e1569a41a66250a766c6a82, type: 3}
+    - {fileID: 2800000, guid: 83716afed43be8a43a5911bec2904862, type: 3}
+    - {fileID: 2800000, guid: 5e8b572528fa02946b937aa077abf0b5, type: 3}
+    - {fileID: 2800000, guid: f0fbfb04c1350ff4b97e58a3fd1d49b0, type: 3}
+    - {fileID: 2800000, guid: a60df84f27018ef40ba6789f60c65f4a, type: 3}
+    - {fileID: 2800000, guid: 911d27972e92a804ebb407d3bbbe2446, type: 3}
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    BasicDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFireFrame: 4
+    ActiveFrames:
+    - {fileID: 2800000, guid: d37dbfa5cf1192743834a892d1e7ccf1, type: 3}
+    - {fileID: 2800000, guid: cbc1cfa8487172e46b465413813bbbbe, type: 3}
+    - {fileID: 2800000, guid: f42f4b9708f543c4dba5fbebae79ee19, type: 3}
+    - {fileID: 2800000, guid: 0d5f2778dfafaa842bef67df116cb579, type: 3}
+    - {fileID: 2800000, guid: 7a34d62d7b4b0674f94287c85b094087, type: 3}
+    - {fileID: 2800000, guid: e760aec373a576c4191bb28bd2a19166, type: 3}
+    - {fileID: 2800000, guid: 997833a526d8ba248ab09a813d00f9f6, type: 3}
+    - {fileID: 2800000, guid: f6e0d66b0ebe1994abeff8741b5f6805, type: 3}
+    - {fileID: 2800000, guid: f1f74b0cd55ab1949acc994b2f8b09fc, type: 3}
+    - {fileID: 2800000, guid: ab466db6ba5f3f047aebadbdbb3f8823, type: 3}
+    - {fileID: 2800000, guid: 1bff92548861ca84a9e811e73d8460e7, type: 3}
+    - {fileID: 2800000, guid: 972e84162aec5f24b8951a1a5b6b9aa2, type: 3}
+    ActiveDurationsMs: 90010000780000008200000082000000820000005e0100008a0200008200000082000000820000007800000044020000
+    UltimateFrames: []
+    UltimateDurationsMs: 
+    BasicRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 686, y: 1238}
+      BodySpan: 1224
+    ActiveRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    UltimateRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: 131971c01f959414abc8ab8f05a9b3da, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.36
+      y: 0.74
+      width: 0.28
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 660.5
+      y: 325.5
+      width: 61
+      height: 61
+  - OperatorId: op_reina
+    FacesRight: 0
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 619, y: 1081}
+    BodySpan: 891
+    IdleFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 80f6345f55f1b064789b59ac143d1de2, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    DurationsMs: 78000000780000007800000078000000
+    BasicFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 96aed86964f51c3499b59aead16e27eb, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 90b66c88076e65549b495cf449f565f0, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    BasicDurationsMs: 280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000
+    BasicFireFrame: 10
+    ActiveFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: 96aed86964f51c3499b59aead16e27eb, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: c1b7afa51fd43d1469a14032a76aa0f2, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: b9141984c3c07eb4296f6044339822ab, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 89a417773d2f4d842a3b1944c1b87bab, type: 3}
+    - {fileID: 2800000, guid: 90b66c88076e65549b495cf449f565f0, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: 160302d056b6cb144a38b64d34603b1b, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: aaa97a08d6086d7458c6ace1e55e793e, type: 3}
+    - {fileID: 2800000, guid: 7d030136eb8f37c4db565a411d3f5a28, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    - {fileID: 2800000, guid: eb8f90aee5dfacf40991b9d569b11cf2, type: 3}
+    ActiveDurationsMs: 280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    - {fileID: 2800000, guid: a3d635ee9cc7e7148abe203a2f3cd761, type: 3}
+    - {fileID: 2800000, guid: 9415d7e64bf3a9147a72853a4e55a086, type: 3}
+    - {fileID: 2800000, guid: 5fb3f7112b968d5439522bc600f29e78, type: 3}
+    - {fileID: 2800000, guid: 56b8e6763e8fec7468fd2d7681a3c246, type: 3}
+    - {fileID: 2800000, guid: f0bc31e9daa341b4bad1a6532e5c651e, type: 3}
+    - {fileID: 2800000, guid: d95064d3914c90345a93fd64c6cccf1d, type: 3}
+    - {fileID: 2800000, guid: 1bcfd471e66a4684eaff257711155a36, type: 3}
+    - {fileID: 2800000, guid: 11cf498bbe0d0754fb56f3db8b5e72dc, type: 3}
+    - {fileID: 2800000, guid: ef01a0cc8a375d14cb67a634ee2fb551, type: 3}
+    - {fileID: 2800000, guid: fe996399e269aa7458a1c30ee7d213bf, type: 3}
+    - {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    UltimateDurationsMs: 640000006e000000780000008c000000780000006e000000640000003c0000003c000000460000004600000028000000
+    BasicRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    ActiveRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    UltimateRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 619, y: 1081}
+      BodySpan: 891
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.32
+      y: 0.58
+      width: 0.36
+      height: 0.3
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_eve
+    FacesRight: 0
+    CanvasSize: {x: 1263, y: 1245}
+    FootAnchorTopLeft: {x: 642, y: 1245}
+    BodySpan: 1194
+    IdleFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: d37a26b4d53ad7446951103fb7f28982, type: 3}
+    - {fileID: 2800000, guid: bb1fad1d924e0024799339f67a2d1b40, type: 3}
+    - {fileID: 2800000, guid: d8c704582ef29dc47bb2db6ecb67cf30, type: 3}
+    - {fileID: 2800000, guid: 86ba4f10cd8b3bf4bb9b5b51d558cc4a, type: 3}
+    - {fileID: 2800000, guid: f1cb941b8f5cb2e4ea9b8cd7c46ace9f, type: 3}
+    - {fileID: 2800000, guid: f4d43753dc5c602409948eee2a4a5e1e, type: 3}
+    - {fileID: 2800000, guid: 194efcf4988bf8a4fb7c896007ca8d15, type: 3}
+    - {fileID: 2800000, guid: a52694eb126a1ff4dac31fac03089762, type: 3}
+    - {fileID: 2800000, guid: f7609f5160e724e4cb182a23a9197c0e, type: 3}
+    - {fileID: 2800000, guid: 916fc1ce0ae873b4086b05249f966d60, type: 3}
+    - {fileID: 2800000, guid: 72dcaba0aaaaae9439a97ff852691f88, type: 3}
+    DurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 9bc8f9deb31ca40408e51d361fad1aec, type: 3}
+    - {fileID: 2800000, guid: 52f0190107a3d5a48951bf9780ab7e76, type: 3}
+    - {fileID: 2800000, guid: 1760df8fe79593d49ac25f361ea25231, type: 3}
+    - {fileID: 2800000, guid: e2b3caa676fa9cf4fab166390a6c649e, type: 3}
+    - {fileID: 2800000, guid: ef1b694b12f789b409c7e9afecbafb82, type: 3}
+    - {fileID: 2800000, guid: d2e94791c323f774e9ddf73a65b6b0cd, type: 3}
+    - {fileID: 2800000, guid: 0a7a7a61d6ec59c43aa6cb029ec02b2f, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    BasicDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 9bc8f9deb31ca40408e51d361fad1aec, type: 3}
+    - {fileID: 2800000, guid: 7428ecb7ea8731b48a338e76ed79eb43, type: 3}
+    - {fileID: 2800000, guid: aeb97a83366c4f943a94708b1b0a1ad8, type: 3}
+    - {fileID: 2800000, guid: 7a0802e04cdfe17458af95148f4ab93d, type: 3}
+    - {fileID: 2800000, guid: b951697e5255f6a45a7968ca7b5dcbe0, type: 3}
+    - {fileID: 2800000, guid: d2e94791c323f774e9ddf73a65b6b0cd, type: 3}
+    - {fileID: 2800000, guid: 0a7a7a61d6ec59c43aa6cb029ec02b2f, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    ActiveDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: 6abdd93f30c8675409c76d4a1c9b5610, type: 3}
+    - {fileID: 2800000, guid: 271898a55d338ac43b7f2dd7687bcac3, type: 3}
+    - {fileID: 2800000, guid: 8d1e62d3c33c72943872e68261145f8d, type: 3}
+    - {fileID: 2800000, guid: 8ad019ff89f04494db547749b3bc14d6, type: 3}
+    - {fileID: 2800000, guid: dfed7d8c3f3aa834a905abad19fd2ab4, type: 3}
+    - {fileID: 2800000, guid: cfdfaa436c1ead54ca47aa280703855c, type: 3}
+    - {fileID: 2800000, guid: 5c622e6467b8ba84c9ec8a713ddc9f01, type: 3}
+    - {fileID: 2800000, guid: 3ad6da22e86351f4498e04a577f85a94, type: 3}
+    - {fileID: 2800000, guid: 7538c06285a05d442992b4bc1c7702ac, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    - {fileID: 2800000, guid: f5eb68e3be01f3840950b809c21a431b, type: 3}
+    UltimateDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    ActiveRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    UltimateRegistration:
+      CanvasSize: {x: 1263, y: 1245}
+      FootAnchorTopLeft: {x: 642, y: 1245}
+      BodySpan: 1194
+    ActiveEffectFrames:
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: b7a814787edbf98458b42b1286507d66, type: 3}
+    - {fileID: 2800000, guid: 8b0a18c76e6661041b4b7d20a86e611d, type: 3}
+    - {fileID: 2800000, guid: cdc28d4aa535c7f488ee2f26aef5560e, type: 3}
+    - {fileID: 2800000, guid: c62f1badf8eed6a43a098057b8b6f0ad, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    - {fileID: 2800000, guid: 3fb424c05c17efe478101c09cf9f7f89, type: 3}
+    UltimateEffectFrames:
+    - {fileID: 2800000, guid: 6b43cfc6a623b3e49b433d79ebaff993, type: 3}
+    - {fileID: 2800000, guid: 75bfcc98ad736014ba13ea2a0c40521a, type: 3}
+    - {fileID: 2800000, guid: de1fa5bb6577216478b30bb690e862d3, type: 3}
+    - {fileID: 2800000, guid: 4e455cd234b01864db6f47f2e1a15f42, type: 3}
+    - {fileID: 2800000, guid: 2aefbe3c43e8bec48870354796cea52f, type: 3}
+    - {fileID: 2800000, guid: b3cf5270cf43a7a4ea723d4ff799b862, type: 3}
+    - {fileID: 2800000, guid: 1214c48a1e1522049a221a484ff2e976, type: 3}
+    - {fileID: 2800000, guid: 5b864fdda07e8cb4bb13dad05268945c, type: 3}
+    - {fileID: 2800000, guid: ebfa9bfc52e5f7e4f84cbbdb118ae54a, type: 3}
+    - {fileID: 2800000, guid: 0ee63861769a613419e0025fa0c77dee, type: 3}
+    - {fileID: 2800000, guid: 2844f150cbfdc8a438c76204ffd91773, type: 3}
+    - {fileID: 2800000, guid: 7f7866422e1b55442894b6c197bb9fa4, type: 3}
+    ActiveEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.35
+      y: 0.7
+      width: 0.3
+      height: 0.28
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_sera
+    FacesRight: 0
+    CanvasSize: {x: 1024, y: 1536}
+    FootAnchorTopLeft: {x: 791, y: 1508}
+    BodySpan: 1464
+    IdleFrames:
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5379120f57c25504e8ec467acf6aed56, type: 3}
+    - {fileID: 2800000, guid: 5d4ba38ea02f84e479131a5e93d6d880, type: 3}
+    - {fileID: 2800000, guid: 302dd5335e218c94da4b65372a2dc84d, type: 3}
+    - {fileID: 2800000, guid: 8cdb34db4804c8b4ea4dfb6f3ba14084, type: 3}
+    - {fileID: 2800000, guid: 18917c34b48c8794891db9bef2d0a20c, type: 3}
+    - {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    DurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFrames:
+    - {fileID: 2800000, guid: 53699b0879a4c714f83845f16e104fbc, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: 53699b0879a4c714f83845f16e104fbc, type: 3}
+    BasicDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: b74ac8eb4b6093e4d87e3e3b2bcceb67, type: 3}
+    - {fileID: 2800000, guid: 478df441cad9ade41af1c279367c49d5, type: 3}
+    - {fileID: 2800000, guid: 3dd7791d4cddb11428cd38406a759dd9, type: 3}
+    - {fileID: 2800000, guid: e0b67d8b77ef4e741b0e0f0e8d421f97, type: 3}
+    - {fileID: 2800000, guid: a9cfbdb81997177448add75e373a64ab, type: 3}
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    ActiveDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    - {fileID: 2800000, guid: 7626ed6910e5202469d139e58e68f19b, type: 3}
+    - {fileID: 2800000, guid: e27857065ee8eaa48b616a7325213de8, type: 3}
+    - {fileID: 2800000, guid: 319839e8452d71b41ad40ee0b849e002, type: 3}
+    - {fileID: 2800000, guid: d9a05f0f34ad87b479207b3bd6af140c, type: 3}
+    - {fileID: 2800000, guid: 8e577010637e90246846e089cc1a6ded, type: 3}
+    - {fileID: 2800000, guid: b7bb4c54f4988a7479b331124e296400, type: 3}
+    - {fileID: 2800000, guid: 8e577010637e90246846e089cc1a6ded, type: 3}
+    - {fileID: 2800000, guid: d9a05f0f34ad87b479207b3bd6af140c, type: 3}
+    - {fileID: 2800000, guid: 319839e8452d71b41ad40ee0b849e002, type: 3}
+    - {fileID: 2800000, guid: 7626ed6910e5202469d139e58e68f19b, type: 3}
+    - {fileID: 2800000, guid: 7d73c38f7cae01947a657df3a8830557, type: 3}
+    UltimateDurationsMs: b4000000b400000038040000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1678}
+      BodySpan: 1464
+    ActiveRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1652}
+      BodySpan: 1464
+    UltimateRegistration:
+      CanvasSize: {x: 1224, y: 1800}
+      FootAnchorTopLeft: {x: 891, y: 1652}
+      BodySpan: 1464
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.27
+      y: 0.74
+      width: 0.43
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_mira
+    FacesRight: 0
+    CanvasSize: {x: 0, y: 0}
+    FootAnchorTopLeft: {x: 0, y: 0}
+    BodySpan: 0
+    IdleFrames: []
+    DurationsMs: 
+    BasicFrames: []
+    BasicDurationsMs: 
+    BasicFireFrame: 0
+    ActiveFrames: []
+    ActiveDurationsMs: 
+    UltimateFrames: []
+    UltimateDurationsMs: 
+    BasicRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    UltimateRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: be63704e9bab47b49903c5748d480f37, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 1
+      height: 1
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_sera
+    FacesRight: 1
+    CanvasSize: {x: 1024, y: 1536}
+    FootAnchorTopLeft: {x: 252, y: 1507}
+    BodySpan: 1472
+    IdleFrames:
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    - {fileID: 2800000, guid: 7359f52d301d6264eb9bd00c6a25fb39, type: 3}
+    - {fileID: 2800000, guid: 88f2e1c4c8f99bf4ca00b1db440ef3d1, type: 3}
+    - {fileID: 2800000, guid: 94c37794bcf584d4cb8d9f9698b891fa, type: 3}
+    - {fileID: 2800000, guid: abb0138acbac9e844bf32f806286cf08, type: 3}
+    - {fileID: 2800000, guid: 9c9d9ba9c70707e42a1c99b6b80401a8, type: 3}
+    - {fileID: 2800000, guid: 9c9d9ba9c70707e42a1c99b6b80401a8, type: 3}
+    - {fileID: 2800000, guid: abb0138acbac9e844bf32f806286cf08, type: 3}
+    - {fileID: 2800000, guid: 94c37794bcf584d4cb8d9f9698b891fa, type: 3}
+    - {fileID: 2800000, guid: 88f2e1c4c8f99bf4ca00b1db440ef3d1, type: 3}
+    - {fileID: 2800000, guid: 7359f52d301d6264eb9bd00c6a25fb39, type: 3}
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    DurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFrames:
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    - {fileID: 2800000, guid: 6230a45dd9060df4f9d59290d7068dc5, type: 3}
+    - {fileID: 2800000, guid: a69bdbce7bdeda74691b02271cae3aec, type: 3}
+    - {fileID: 2800000, guid: f63249dbc8416ab43867408314d4afb3, type: 3}
+    - {fileID: 2800000, guid: 22d05ac1a7a08d342b09e889a0d70a9d, type: 3}
+    - {fileID: 2800000, guid: 22d05ac1a7a08d342b09e889a0d70a9d, type: 3}
+    - {fileID: 2800000, guid: 22d05ac1a7a08d342b09e889a0d70a9d, type: 3}
+    - {fileID: 2800000, guid: f63249dbc8416ab43867408314d4afb3, type: 3}
+    - {fileID: 2800000, guid: a69bdbce7bdeda74691b02271cae3aec, type: 3}
+    - {fileID: 2800000, guid: 6230a45dd9060df4f9d59290d7068dc5, type: 3}
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    BasicDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    - {fileID: 2800000, guid: 7574cbe788c7e6f43bb5a44367d21d1f, type: 3}
+    - {fileID: 2800000, guid: c2bb045a0097c194588ba390426304d2, type: 3}
+    - {fileID: 2800000, guid: b89f91ff75381fd4792722b53fd03efe, type: 3}
+    - {fileID: 2800000, guid: 2183fd02bb7052341941a3087b935848, type: 3}
+    - {fileID: 2800000, guid: 2183fd02bb7052341941a3087b935848, type: 3}
+    - {fileID: 2800000, guid: 2183fd02bb7052341941a3087b935848, type: 3}
+    - {fileID: 2800000, guid: b89f91ff75381fd4792722b53fd03efe, type: 3}
+    - {fileID: 2800000, guid: c2bb045a0097c194588ba390426304d2, type: 3}
+    - {fileID: 2800000, guid: a9a0cb65803899043a3077fdaac62899, type: 3}
+    - {fileID: 2800000, guid: 7cedb315be854e9429c4910e640f469b, type: 3}
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    ActiveDurationsMs: b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    - {fileID: 2800000, guid: 9e73557fe154a5749a16d966bf20940f, type: 3}
+    - {fileID: 2800000, guid: efb9e4712f9c3844c97c55a93deff2cd, type: 3}
+    - {fileID: 2800000, guid: cf31da572f62ff9478c59f0669a01bd6, type: 3}
+    - {fileID: 2800000, guid: d8212ec1b72dad94f841253b8c7830d1, type: 3}
+    - {fileID: 2800000, guid: 70906e618daf05044a8760154331b266, type: 3}
+    - {fileID: 2800000, guid: ce989b37999139a47829398754136191, type: 3}
+    - {fileID: 2800000, guid: 70906e618daf05044a8760154331b266, type: 3}
+    - {fileID: 2800000, guid: d8212ec1b72dad94f841253b8c7830d1, type: 3}
+    - {fileID: 2800000, guid: cf31da572f62ff9478c59f0669a01bd6, type: 3}
+    - {fileID: 2800000, guid: 9e73557fe154a5749a16d966bf20940f, type: 3}
+    - {fileID: 2800000, guid: 3177854dda2513345a7def877c60f656, type: 3}
+    UltimateDurationsMs: b4000000b400000038040000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000b4000000
+    BasicRegistration:
+      CanvasSize: {x: 1024, y: 1536}
+      FootAnchorTopLeft: {x: 252, y: 1507}
+      BodySpan: 1472
+    ActiveRegistration:
+      CanvasSize: {x: 1024, y: 1536}
+      FootAnchorTopLeft: {x: 252, y: 1507}
+      BodySpan: 1472
+    UltimateRegistration:
+      CanvasSize: {x: 1024, y: 1536}
+      FootAnchorTopLeft: {x: 252, y: 1507}
+      BodySpan: 1472
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: 0b7d8dd115faadd418717be48e72693f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.27
+      y: 0.74
+      width: 0.43
+      height: 0.25
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_eve
+    FacesRight: 1
+    CanvasSize: {x: 1199, y: 1312}
+    FootAnchorTopLeft: {x: 344, y: 1285}
+    BodySpan: 1239
+    IdleFrames:
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: fb674a28f2656ca429ef9bf329838b62, type: 3}
+    - {fileID: 2800000, guid: 47e51176cdf0fd7439c3cdb946cb21b9, type: 3}
+    - {fileID: 2800000, guid: dbe70a37825a4bd458b9af6d371b66a0, type: 3}
+    - {fileID: 2800000, guid: 2dbab6563ba66a340a599515cb12a45a, type: 3}
+    - {fileID: 2800000, guid: 4187ae88c49b7f14baae4a16098ea6df, type: 3}
+    - {fileID: 2800000, guid: 8d33491c955bc54468045c875358dadd, type: 3}
+    - {fileID: 2800000, guid: 77156e5e2aec61f469e6a386215be7ff, type: 3}
+    - {fileID: 2800000, guid: e9fd8f1783bdf5a40b12303b674fc91d, type: 3}
+    - {fileID: 2800000, guid: 25cf3939e980faa4da52947d4b07ed44, type: 3}
+    - {fileID: 2800000, guid: 86665b86913b2a34a97577d3b401bf89, type: 3}
+    - {fileID: 2800000, guid: cb4c4db3249ba9c4cbcc0b00a446c447, type: 3}
+    DurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFrames:
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 8fbc8979158fe2e47ad9f780c97300ba, type: 3}
+    - {fileID: 2800000, guid: a402b48ae58bec24990b7e9ad2a44848, type: 3}
+    - {fileID: 2800000, guid: 586bd85bc467a2444b146b589d3de3b8, type: 3}
+    - {fileID: 2800000, guid: 8ceed149ae198f1438a01b6127a7a62a, type: 3}
+    - {fileID: 2800000, guid: cfc73155d2aaf3347867791a1b31c2f4, type: 3}
+    - {fileID: 2800000, guid: 3b9d3d35ebadb3743b88ebbb4a1b7e5a, type: 3}
+    - {fileID: 2800000, guid: 775e7c23747d69c42b5470b7b9983899, type: 3}
+    - {fileID: 2800000, guid: 012b570d1f769994b8602acee54d267b, type: 3}
+    - {fileID: 2800000, guid: 66376f4ebb3ca0a49aa66045ef52b2f9, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    BasicDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicFireFrame: 5
+    ActiveFrames:
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 8fbc8979158fe2e47ad9f780c97300ba, type: 3}
+    - {fileID: 2800000, guid: a402b48ae58bec24990b7e9ad2a44848, type: 3}
+    - {fileID: 2800000, guid: 98bd8be388935e848a58fc0a6dbeabdf, type: 3}
+    - {fileID: 2800000, guid: df03621d0f5b3544cbb6819a89726cf7, type: 3}
+    - {fileID: 2800000, guid: 6874a45877d27f54fa813a39c5d21343, type: 3}
+    - {fileID: 2800000, guid: fb9e00e2c12ee854cbfc6538999115bc, type: 3}
+    - {fileID: 2800000, guid: 775e7c23747d69c42b5470b7b9983899, type: 3}
+    - {fileID: 2800000, guid: 012b570d1f769994b8602acee54d267b, type: 3}
+    - {fileID: 2800000, guid: 66376f4ebb3ca0a49aa66045ef52b2f9, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    ActiveDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateFrames:
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 8fbc8979158fe2e47ad9f780c97300ba, type: 3}
+    - {fileID: 2800000, guid: 39ae13b06683d13429629796feb25c72, type: 3}
+    - {fileID: 2800000, guid: 920328f366897ce4a89791eac796efed, type: 3}
+    - {fileID: 2800000, guid: 16babfb53ab890148bfcf5e90de3f8c7, type: 3}
+    - {fileID: 2800000, guid: 9f49c53e8361f7b4fbd5ef1236c8260e, type: 3}
+    - {fileID: 2800000, guid: 52a915d7d8a9e4145a54c13616cd19a1, type: 3}
+    - {fileID: 2800000, guid: 1b8237aaec333ed499a38da3ca1ca91d, type: 3}
+    - {fileID: 2800000, guid: aed78b48eee8fac48bc51b3bf9c07691, type: 3}
+    - {fileID: 2800000, guid: 66376f4ebb3ca0a49aa66045ef52b2f9, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    - {fileID: 2800000, guid: 81414c051e4d0da42a3b1d5a0f1d40a8, type: 3}
+    UltimateDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicRegistration:
+      CanvasSize: {x: 1199, y: 1312}
+      FootAnchorTopLeft: {x: 344, y: 1285}
+      BodySpan: 1239
+    ActiveRegistration:
+      CanvasSize: {x: 1199, y: 1312}
+      FootAnchorTopLeft: {x: 344, y: 1285}
+      BodySpan: 1239
+    UltimateRegistration:
+      CanvasSize: {x: 1199, y: 1312}
+      FootAnchorTopLeft: {x: 344, y: 1285}
+      BodySpan: 1239
+    ActiveEffectFrames:
+    - {fileID: 2800000, guid: 6eaf086f894e15f439eaf5ac1cf1cfa5, type: 3}
+    - {fileID: 2800000, guid: 6eaf086f894e15f439eaf5ac1cf1cfa5, type: 3}
+    - {fileID: 2800000, guid: 6eaf086f894e15f439eaf5ac1cf1cfa5, type: 3}
+    - {fileID: 2800000, guid: 6eaf086f894e15f439eaf5ac1cf1cfa5, type: 3}
+    - {fileID: 2800000, guid: 6eaf086f894e15f439eaf5ac1cf1cfa5, type: 3}
+    - {fileID: 2800000, guid: fc52751ed2e5b07428e72d27c6ac0093, type: 3}
+    - {fileID: 2800000, guid: 8ce59d46179623d4f8cea9ab837982fa, type: 3}
+    - {fileID: 2800000, guid: 73bb6218b6d1d334ca96280571ebdf1e, type: 3}
+    - {fileID: 2800000, guid: 3cafbab794daf5a4daeab4f3f55c87b5, type: 3}
+    - {fileID: 2800000, guid: eb0dc61dfca951643870db026eedaef0, type: 3}
+    - {fileID: 2800000, guid: 50a342ac5333ea545bf749339d66bdd5, type: 3}
+    - {fileID: 2800000, guid: d1688cae88ceb5f488d4edc1a829aa2e, type: 3}
+    UltimateEffectFrames:
+    - {fileID: 2800000, guid: 1b8467f73f84dc44eb879967c4e6c492, type: 3}
+    - {fileID: 2800000, guid: 2b3c19b3465dc1540b9d4a387f4f825c, type: 3}
+    - {fileID: 2800000, guid: 180b162ccffba5246b2756da20592a45, type: 3}
+    - {fileID: 2800000, guid: a6e9168e8b5eb7946819b856bf5b44ef, type: 3}
+    - {fileID: 2800000, guid: a7c887ea47c8b4d41ac8ab6a8e8daeb6, type: 3}
+    - {fileID: 2800000, guid: ec288ab7439a43a4fb5f78c72fe84877, type: 3}
+    - {fileID: 2800000, guid: dcabc7ced9025ba4db36eab4fa0f200c, type: 3}
+    - {fileID: 2800000, guid: c0e504ec8b9882d45b788d5eb8acd239, type: 3}
+    - {fileID: 2800000, guid: c89217545cb5d9a46a40a13748db152f, type: 3}
+    - {fileID: 2800000, guid: 78dc8320c0fb48049b8ec34a39776299, type: 3}
+    - {fileID: 2800000, guid: 5663361b470e7e54aa903a5439fdb05a, type: 3}
+    - {fileID: 2800000, guid: b0a1b49e36f52b444b42232df30d9c1b, type: 3}
+    ActiveEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    UltimateEffectDurationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: c6eb2c72edd31d64eb36fe6a4e65462f, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.35
+      y: 0.7
+      width: 0.3
+      height: 0.28
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+  - OperatorId: op_reina
+    FacesRight: 1
+    CanvasSize: {x: 1254, y: 1254}
+    FootAnchorTopLeft: {x: 392.5, y: 1034}
+    BodySpan: 745
+    IdleFrames:
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 2cf708fe8a04bb948ad1e2e5ed2087bb, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    DurationsMs: 78000000780000007800000078000000
+    BasicFrames:
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 2cf708fe8a04bb948ad1e2e5ed2087bb, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 596d7f089a619534faee87d05a49c824, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 64b8e4b4f2f7a494c9849eea9d10a409, type: 3}
+    - {fileID: 2800000, guid: 64b8e4b4f2f7a494c9849eea9d10a409, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 6a51f598618ec80488b8f2ce3f269d70, type: 3}
+    - {fileID: 2800000, guid: f541bed6774d696438ad1bad59eb36db, type: 3}
+    - {fileID: 2800000, guid: f541bed6774d696438ad1bad59eb36db, type: 3}
+    - {fileID: 2800000, guid: ff3234b52808e1b44a07a0e143ef2529, type: 3}
+    - {fileID: 2800000, guid: ff3234b52808e1b44a07a0e143ef2529, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    BasicDurationsMs: 78000000780000007800000078000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000
+    BasicFireFrame: 14
+    ActiveFrames:
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 2cf708fe8a04bb948ad1e2e5ed2087bb, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 1a9a7a323872d4d419c3858781a714ea, type: 3}
+    - {fileID: 2800000, guid: 596d7f089a619534faee87d05a49c824, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 60a154faa7ea6bb42b765ecbc9ebfa94, type: 3}
+    - {fileID: 2800000, guid: 64b8e4b4f2f7a494c9849eea9d10a409, type: 3}
+    - {fileID: 2800000, guid: 64b8e4b4f2f7a494c9849eea9d10a409, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 5e10df7b581ce4547b20668a5a63d2e8, type: 3}
+    - {fileID: 2800000, guid: 6a51f598618ec80488b8f2ce3f269d70, type: 3}
+    - {fileID: 2800000, guid: f541bed6774d696438ad1bad59eb36db, type: 3}
+    - {fileID: 2800000, guid: 1f6e58e98c7ce0847b0c4dbf03b24c3d, type: 3}
+    - {fileID: 2800000, guid: a2dd1d619d1c4e947b4ee1f8d032d6a0, type: 3}
+    ActiveDurationsMs: 780000007800000078000000780000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000002800000028000000280000001e000000
+    UltimateFrames: []
+    UltimateDurationsMs: 
+    BasicRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 392.5, y: 1034}
+      BodySpan: 745
+    ActiveRegistration:
+      CanvasSize: {x: 1254, y: 1254}
+      FootAnchorTopLeft: {x: 392.5, y: 1034}
+      BodySpan: 745
+    UltimateRegistration:
+      CanvasSize: {x: 0, y: 0}
+      FootAnchorTopLeft: {x: 0, y: 0}
+      BodySpan: 0
+    ActiveEffectFrames: []
+    UltimateEffectFrames: []
+    ActiveEffectDurationsMs: 
+    UltimateEffectDurationsMs: 
+    BasicProjectile: {fileID: 0}
+    Portrait: {fileID: 2800000, guid: d83abdf72cab89b4a846e24b7c6f4abd, type: 3}
+    Emblem: {fileID: 0}
+    PortraitUv:
+      serializedVersion: 2
+      x: 0.32
+      y: 0.58
+      width: 0.36
+      height: 0.3
+    EmblemRectTopLeft:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0

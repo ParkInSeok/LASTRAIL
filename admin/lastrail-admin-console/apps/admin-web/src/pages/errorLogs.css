@@ -1,0 +1,16 @@
+.log-tabs { display: flex; gap: 0; border-bottom: 1px solid #ccd2da; margin-bottom: 16px; }
+.log-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px; }
+.log-heading span { color: #64748b; font-size: 16px; }
+.log-tabs button { background: transparent; color: #374151; border: 0; border-radius: 0; padding: 12px 24px; }
+.log-tabs button[aria-selected="true"] { color: #111827; border-bottom: 3px solid #15803d; font-weight: 700; }
+.log-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 20px; }
+.log-filters label { display: flex; flex-direction: column; gap: 6px; min-width: 130px; max-width: 100%; }
+.log-filters .log-search { flex: 1 1 320px; }
+.log-filters input, .log-filters select { min-height: 38px; max-width: 100%; }
+.error-log-page td { vertical-align: top; overflow-wrap: anywhere; max-width: 340px; }
+.error-log-page td small { display: block; margin-top: 4px; }
+.log-id { background: transparent; color: #166534; border: 0; padding: 0; text-align: left; overflow-wrap: anywhere; text-decoration: underline; }
+.log-paging { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+.log-detail { border-top: 1px solid #ccd2da; padding-top: 16px; }
+.log-detail dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.log-detail dd { margin: 4px 0 0; overflow-wrap: anywhere; }

@@ -1,0 +1,5 @@
+import {startCommunityLoopback,communityLoopbackVersion} from './community-loopback-http';
+const password=process.env.LASTRAIL_LOCAL_TEST_PASSWORD;if(!password)throw new Error('LASTRAIL_LOCAL_TEST_PASSWORD_required');
+const fixture=await startCommunityLoopback({password,...(process.env.LASTRAIL_LOCAL_TEST_LIFETIME_MS?{lifetimeMs:Number(process.env.LASTRAIL_LOCAL_TEST_LIFETIME_MS)}:{})});
+const stop=()=>{void fixture.close();};process.once('SIGINT',stop);process.once('SIGTERM',stop);
+try{console.log(JSON.stringify({contractVersion:communityLoopbackVersion,baseUrl:fixture.baseUrl,apiOrigin:fixture.apiOrigin,webOrigin:fixture.origin,environment:'ISOLATED_DEV_FIXTURE',versionCode:123,loginIds:['community-local-a','community-local-b'],fixturePostId:fixture.fixturePostId,lifetimeMs:fixture.lifetimeMs,storage:'RAM_ONLY',browserHttpsVerified:false}));await fixture.closed;}finally{process.removeListener('SIGINT',stop);process.removeListener('SIGTERM',stop);await fixture.close();console.log('Fixture listener and RAM DB closed.');}

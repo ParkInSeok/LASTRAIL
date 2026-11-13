@@ -1,0 +1,5 @@
+import {it,expect} from 'vitest';
+import {parseRewardDraftForm,rewardDraftFormInput} from './rewardDraftForm';
+const proposal={environment:'DEV' as const,batchId:'b',revision:1,title:'t',type:'EVENT' as const,incidentRef:'i',policyVersion:null,targetAsOf:null,targetCondition:null,accountIds:['a','a'],rewardLines:[{itemId:'item',quantity:1500}]};
+it('raw controlled form retains unresolved nullable values and duplicate explicit accounts',()=>{const raw=rewardDraftFormInput(proposal);expect(raw.targetAsOf).toBe('');expect(parseRewardDraftForm(raw,{environment:'DEV',batchId:'b',revision:1})).toEqual(proposal);});
+it('does not round unsafe or fractional quantities and rejects empty targets',()=>{const raw=rewardDraftFormInput(proposal);for(const quantity of ['1.5','9007199254740992','-1','0'])expect(()=>parseRewardDraftForm({...raw,rewardLines:[{itemId:'item',quantity}]},{environment:'DEV',batchId:'b',revision:1})).toThrow();expect(()=>parseRewardDraftForm({...raw,accountIdsText:''},{environment:'DEV',batchId:'b',revision:1})).toThrow();});

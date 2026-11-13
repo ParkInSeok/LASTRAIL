@@ -1,0 +1,170 @@
+{
+  "version": "world-boss.rail-action.v3.20261002",
+  "status": "LOCAL_CANDIDATE",
+  "bossId": "world_boss_raider_king",
+  "contentVersion": "LOCAL_GEO",
+  "startedAt": 1000,
+  "mode": "COOP",
+  "trainAccountId": "a",
+  "operatorAccountId": "b",
+  "geometry": {
+    "currentPathStatus": "LOCAL_LOGICAL_ONLY_UNVERIFIED_Y",
+    "branchLengthMm": 10000,
+    "trainLengthMm": 10000,
+    "minTraversalMmPerSecond": 2000,
+    "maxTraversalMmPerSecond": 20000,
+    "latencyMs": 500
+  },
+  "rounds": [
+    {
+      "roundId": "p1r1",
+      "phase": 1,
+      "round": 1,
+      "previewAt": 8000,
+      "lockAt": 12000,
+      "internalOpenAt": 13000,
+      "internalCloseAt": 15000,
+      "resolveAt": 16000,
+      "tailClearAt": 23000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    },
+    {
+      "roundId": "p1r2",
+      "phase": 1,
+      "round": 2,
+      "previewAt": 34000,
+      "lockAt": 38000,
+      "internalOpenAt": 39000,
+      "internalCloseAt": 41000,
+      "resolveAt": 42000,
+      "tailClearAt": 49000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    },
+    {
+      "roundId": "p2r1",
+      "phase": 2,
+      "round": 1,
+      "previewAt": 68000,
+      "lockAt": 72000,
+      "internalOpenAt": 73000,
+      "internalCloseAt": 75000,
+      "resolveAt": 76000,
+      "tailClearAt": 83000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    },
+    {
+      "roundId": "p2r2",
+      "phase": 2,
+      "round": 2,
+      "previewAt": 94000,
+      "lockAt": 98000,
+      "internalOpenAt": 99000,
+      "internalCloseAt": 101000,
+      "resolveAt": 102000,
+      "tailClearAt": 109000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    },
+    {
+      "roundId": "p3r1",
+      "phase": 3,
+      "round": 1,
+      "previewAt": 128000,
+      "lockAt": 132000,
+      "internalOpenAt": 133000,
+      "internalCloseAt": 135000,
+      "resolveAt": 136000,
+      "tailClearAt": 143000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    },
+    {
+      "roundId": "p3r2",
+      "phase": 3,
+      "round": 2,
+      "previewAt": 154000,
+      "lockAt": 158000,
+      "internalOpenAt": 159000,
+      "internalCloseAt": 161000,
+      "resolveAt": 162000,
+      "tailClearAt": 169000,
+      "safeSides": [
+        "RIGHT"
+      ],
+      "entrySafe": false,
+      "internalActions": {
+        "LEFT": "L",
+        "RIGHT": "R",
+        "ENTRY": "L"
+      },
+      "railAttackRef": "LOCAL_RAIL",
+      "internalAttackRef": "LOCAL_INTERNAL",
+      "targetRef": "train",
+      "buffBps": 12500,
+      "buffDurationMs": 12000
+    }
+  ]
+}

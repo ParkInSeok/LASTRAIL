@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "noEmit": true
+  },
+  "include": [
+    "../../apps/game-api/worker-configuration.d.ts",
+    "../../apps/game-api/src/combat-b-refit-persistence-source.ts",
+    "../../apps/game-api/src/combat-b-refit-store.ts",
+    "../../apps/game-api/src/combat-b-refit-http.ts",
+    "../../tests/integration/combat-b-refit-http.test.ts",
+    "../../scripts/local/combat-b-refit-socket.ts"
+  ]
+}

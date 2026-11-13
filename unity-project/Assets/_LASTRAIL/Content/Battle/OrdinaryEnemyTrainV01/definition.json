@@ -1,0 +1,40 @@
+{
+  "version": "ordinary.enemy-train-authoring.v1.20261028",
+  "approval": "ORDINARY-ENEMY-TRAIN-SPATIAL-v1.20261028",
+  "classification": "APPROVED_SPATIAL_TEST_ASSET_NOT_FINAL_ART",
+  "lengthMm": 12000,
+  "widthMm": 3000,
+  "heightMm": 3200,
+  "followingGapMm": 4000,
+  "relativeSpeedMmPerSecond": 0,
+  "movementSource": "PLAYER_ACTUAL_MOTION",
+  "gunnerRearOffsetsMm": [
+    2000,
+    6000
+  ],
+  "originalBodyPrefabSha256": "789916a42cb9411bb1df18fcfa9acd4c4af532a454b55febba43e80894f27f05",
+  "measurement": {
+    "rearArcMm": 62000.0,
+    "frontArcMm": 74000.0,
+    "gapMm": 4000.0,
+    "roofSurfaceYmm": 3212.5,
+    "feet": [
+      {
+        "ordinal": 0,
+        "arcMm": 64000.0,
+        "worldYmm": 3213.0,
+        "muzzle": null,
+        "hitVolume": null
+      },
+      {
+        "ordinal": 1,
+        "arcMm": 68000.0,
+        "worldYmm": 3213.0,
+        "muzzle": null,
+        "hitVolume": null
+      }
+    ]
+  },
+  "physicalInstanceId": null,
+  "gunnerModelsBound": false
+}

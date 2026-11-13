@@ -1,0 +1,11 @@
+using System;
+using LastRail.Presentation.MissionShell;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+namespace LastRail.Tests.EditMode {public sealed class MonthlyDiscoveryValidationTests {
+ static JObject Response(string status){var start=DateTimeOffset.Parse("2026-08-31T19:00:00Z").ToUnixTimeMilliseconds();var canRead=status=="AVAILABLE"||status=="REWARD_BINDING_UNAVAILABLE";var error=status=="AMBIGUOUS_CONFIGURATION"||status=="PINNED_POLICY_UNAVAILABLE"||status=="INVALID_CONFIGURATION";return new JObject{["accepted"]=!error,["version"]="monthly-attendance-discovery-v1",["serverTime"]=start+86400000,["cycleId"]="2026-09",["startAt"]=start,["endAt"]=DateTimeOffset.Parse("2026-09-30T19:00:00Z").ToUnixTimeMilliseconds(),["dayIndex"]=1,["activityId"]=canRead?"monthly-test":null,["policyVersion"]=canRead?"monthly-test":null,["pinned"]=false,["canAttend"]=status=="AVAILABLE",["status"]=status,["errorCode"]=error?"fixture_error":null,["definitionStartAt"]=start,["definitionEndAt"]=DateTimeOffset.Parse("2026-09-30T19:00:00Z").ToUnixTimeMilliseconds()};}
+ [TestCase("AVAILABLE",200,true)][TestCase("REWARD_BINDING_UNAVAILABLE",200,true)][TestCase("NOT_CONFIGURED",200,false)][TestCase("OUTSIDE_WINDOW",200,false)][TestCase("AMBIGUOUS_CONFIGURATION",409,false)][TestCase("PINNED_POLICY_UNAVAILABLE",409,false)][TestCase("INVALID_CONFIGURATION",503,false)]
+ public void DiscoverySeparatesAvailabilityFromGrantAndError(string status,int http,bool canRead){var parsed=new MonthlyAttendanceDiscovery(Response(status).ToString(),http);Assert.That(parsed.Status,Is.EqualTo(status));Assert.That(parsed.CanRead,Is.EqualTo(canRead));}
+ [Test] public void DiscoveryRejectsCalendarMismatchAndFalseAuthorization(){var r=Response("AVAILABLE");r["cycleId"]="2026-10";Assert.Throws<FormatException>(()=>new MonthlyAttendanceDiscovery(r.ToString(),200));r=Response("NOT_CONFIGURED");r["canAttend"]=true;Assert.Throws<FormatException>(()=>new MonthlyAttendanceDiscovery(r.ToString(),200));}
+ [Test] public void AmbiguousPinnedIdentityNeverBecomesUsable(){var r=Response("AMBIGUOUS_CONFIGURATION");r["pinned"]=true;r["activityId"]=r["policyVersion"]="old-monthly";var parsed=new MonthlyAttendanceDiscovery(r.ToString(),409);Assert.That(parsed.ActivityId,Is.EqualTo("old-monthly"));Assert.That(parsed.CanRead,Is.False);}
+} }

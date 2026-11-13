@@ -1,0 +1,2 @@
+# Raw input SHA256 pins include original CRLF/LF bytes.
+*.json -text whitespace=cr-at-eol

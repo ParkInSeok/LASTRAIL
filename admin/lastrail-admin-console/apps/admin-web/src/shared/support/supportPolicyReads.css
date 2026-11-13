@@ -1,0 +1,5 @@
+.support-policy-reads { margin: 20px 0; }
+.support-policy-reads dl { margin: 0; }
+.support-policy-reads dl > div { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(0, 2fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid #d7dce3; }
+.support-policy-reads dt, .support-policy-reads dd { margin: 0; overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 480px) { .support-policy-reads dl > div { grid-template-columns: 1fr; gap: 4px; } }

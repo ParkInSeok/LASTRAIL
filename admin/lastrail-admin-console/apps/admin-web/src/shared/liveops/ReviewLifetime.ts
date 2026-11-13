@@ -1,0 +1,2 @@
+/** React may replay an effect synchronously. Release only after its replacement had a chance to retain the same scoped owners. */
+export class ReviewLifetime{private epoch=0;private closed=false;constructor(private dispose:()=>void){}enter(){if(this.closed)throw new Error('review_lifetime_closed');const epoch=++this.epoch;let released=false;return ()=>{if(released)return;released=true;queueMicrotask(()=>{if(!this.closed&&epoch===this.epoch){this.closed=true;this.dispose();}});};}}

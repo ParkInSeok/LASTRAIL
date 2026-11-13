@@ -1,0 +1,359 @@
+{
+  "version": "combat-effect-audio-binding-v02",
+  "consumerSchemaStatus": "Unity supplied draft; RED validation/integration pending at inspection",
+  "schemaSources": [
+    {
+      "path": "C:\\Users\\dlstj\\.codex\\worktrees\\5f93\\LASTRAIL\\docs\\handoffs\\CombatEffectJournal.cs",
+      "sha256": "66ebdf1ced4805f8590b20197a54afa6cd7198d65ba7a7be2dd8a4b8266b22cc"
+    },
+    {
+      "path": "C:\\Users\\dlstj\\.codex\\worktrees\\5f93\\LASTRAIL\\docs\\handoffs\\CombatEffectFeedback.cs",
+      "sha256": "7010d0a241cb84c503a280d9d6047e66deaeefa3bc61a31acfe8e9d386222a04"
+    }
+  ],
+  "readHudPath": "effectResults[]",
+  "eventIdentity": "row.id unchanged; do not recompute a different event id in audio",
+  "audioGroupTuple": [
+    "runId",
+    "profileSha256",
+    "globalSequence",
+    "commandId",
+    "abilityId",
+    "effectIndex",
+    "pulseIndex"
+  ],
+  "groupingNotes": "Exclude targetId and kind from audio grouping only; event identity remains intact. First record event id as observed; then apply the positive gate; only then reserve/play the group. A zero-result first target must not silence a positive later target. Seed both event/group history from restored rows. STATUS_ADD and STATUS_REFRESH across different targets of the same authored effect share one audio group.",
+  "bindings": [
+    {
+      "abilityId": "op_kyle.active",
+      "effectIndex": 0,
+      "authoredEffectType": "shield",
+      "eventKinds": [
+        "SHIELD_ISSUE"
+      ],
+      "positivePredicate": "actualResult.addedAmount > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_kyle.active.effect.wav",
+      "sha256": "e99a4edda460a85c1eecd8dff79735a4be6c0b9e723b443e4f4f9a389403b6d6",
+      "level": 0.26787,
+      "masterGain": 0.65,
+      "effectiveGain": 0.174116,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_kyle.ultimate",
+      "effectIndex": 0,
+      "authoredEffectType": "shield",
+      "eventKinds": [
+        "SHIELD_ISSUE"
+      ],
+      "positivePredicate": "actualResult.addedAmount > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_kyle.ultimate.effect.wav",
+      "sha256": "13326f5e8bfa9214ab05a911e33b4cecbde1602b8cbafac25ff0ce3f794d2c34",
+      "level": 0.37102,
+      "masterGain": 0.65,
+      "effectiveGain": 0.241163,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_reina.active",
+      "effectIndex": 0,
+      "authoredEffectType": "damage",
+      "eventKinds": [
+        "DAMAGE"
+      ],
+      "positivePredicate": "actualResult.hpLoss > 0 OR actualResult.absorbed > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_reina.active.effect.wav",
+      "sha256": "a1798afed0ecfa1f9587dba160550ddc8eedfe863dcc9bfb7b15545ded236aa6",
+      "level": 0.45784,
+      "masterGain": 0.65,
+      "effectiveGain": 0.297596,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_reina.ultimate",
+      "effectIndex": 0,
+      "authoredEffectType": "damage",
+      "eventKinds": [
+        "DAMAGE"
+      ],
+      "positivePredicate": "actualResult.hpLoss > 0 OR actualResult.absorbed > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_reina.ultimate.effect.wav",
+      "sha256": "bcd0e1a2746c895a97dd04e14c6f54ed596d9dfd3bbca3836469d134721fa603",
+      "level": 0.51315,
+      "masterGain": 0.65,
+      "effectiveGain": 0.333547,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_eve.active",
+      "effectIndex": 0,
+      "authoredEffectType": "heal",
+      "eventKinds": [
+        "HEAL"
+      ],
+      "positivePredicate": "actualResult.actualHpGain > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_eve.active.effect.wav",
+      "sha256": "2c106be47db38d42352efdd67396e8e39fc73e91d83880593d0674b3c23413fd",
+      "level": 0.69472,
+      "masterGain": 0.65,
+      "effectiveGain": 0.451568,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_eve.ultimate",
+      "effectIndex": 0,
+      "authoredEffectType": "heal",
+      "eventKinds": [
+        "HEAL"
+      ],
+      "positivePredicate": "actualResult.actualHpGain > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_eve.ultimate.effect.wav",
+      "sha256": "f8607043534bad881f547d60b60be6fbcd7486336cf10aa964cf9ce7afe5492b",
+      "level": 0.64074,
+      "masterGain": 0.65,
+      "effectiveGain": 0.416481,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 0,
+      "authoredEffectType": "damage",
+      "eventKinds": [
+        "DAMAGE"
+      ],
+      "positivePredicate": "actualResult.hpLoss > 0 OR actualResult.absorbed > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_sera.active.effect.wav",
+      "sha256": "8fc0a5438677999da68a5084f71e479c98fa5de16959f0980bb2516816f0dd80",
+      "level": 0.27522,
+      "masterGain": 0.65,
+      "effectiveGain": 0.178893,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_sera.ultimate",
+      "effectIndex": 0,
+      "authoredEffectType": "damage",
+      "eventKinds": [
+        "DAMAGE"
+      ],
+      "positivePredicate": "actualResult.hpLoss > 0 OR actualResult.absorbed > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_sera.ultimate.effect.wav",
+      "sha256": "3d8212837795603175c047174845a1ccb1a55ddc8c89152fd4f144e9d74070f0",
+      "level": 0.30041,
+      "masterGain": 0.65,
+      "effectiveGain": 0.195267,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_mira.active",
+      "effectIndex": 0,
+      "authoredEffectType": "repair",
+      "eventKinds": [
+        "REPAIR"
+      ],
+      "positivePredicate": "actualResult.actualHpGain > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_mira.active.effect.wav",
+      "sha256": "2b2d3117d75a962f40fa87eebb05852913407d229e40f37809285e3cd5158a5c",
+      "level": 0.58703,
+      "masterGain": 0.65,
+      "effectiveGain": 0.38157,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_mira.ultimate",
+      "effectIndex": 0,
+      "authoredEffectType": "repair",
+      "eventKinds": [
+        "REPAIR"
+      ],
+      "positivePredicate": "actualResult.actualHpGain > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\op_mira.ultimate.effect.wav",
+      "sha256": "e4cc5398396f91ff4a43d1bc74199e74c71a71bcae17feb9149b92bf2a5da792",
+      "level": 0.33154,
+      "masterGain": 0.65,
+      "effectiveGain": 0.215501,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "support_fire",
+      "effectIndex": 0,
+      "authoredEffectType": "damage",
+      "eventKinds": [
+        "DAMAGE"
+      ],
+      "positivePredicate": "actualResult.hpLoss > 0 OR actualResult.absorbed > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\support_fire.effect.wav",
+      "sha256": "00c80f22e6fc54b2eb2e925772c50e6dac3e5059862b8444f62dc629f32e48f8",
+      "level": 0.42772,
+      "masterGain": 0.65,
+      "effectiveGain": 0.278018,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "barrier",
+      "effectIndex": 0,
+      "authoredEffectType": "shield",
+      "eventKinds": [
+        "SHIELD_ISSUE"
+      ],
+      "positivePredicate": "actualResult.addedAmount > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\barrier.effect.wav",
+      "sha256": "c1602394332578ad4961f7471a2142a6cf9211973b7c33cc799c6d55ee94e7a5",
+      "level": 0.3271,
+      "masterGain": 0.65,
+      "effectiveGain": 0.212615,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "emergency_repair",
+      "effectIndex": 0,
+      "authoredEffectType": "repair",
+      "eventKinds": [
+        "REPAIR"
+      ],
+      "positivePredicate": "actualResult.actualHpGain > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-correction-20260912\\audio\\emergency_repair.effect.wav",
+      "sha256": "2c12218cf1315bb8d52a8268fc75ee5c07d74e0f05d3be74c501f8a2ab5c17d1",
+      "level": 0.54273,
+      "masterGain": 0.65,
+      "effectiveGain": 0.352775,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_kyle.active",
+      "effectIndex": 1,
+      "authoredEffectType": "taunt",
+      "eventKinds": [
+        "STATUS_ADD",
+        "STATUS_REFRESH"
+      ],
+      "positivePredicate": "actualResult.accepted == true AND actualResult.category == 'taunt'",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-v02-20260912\\audio\\op_kyle.active.effect1.taunt.wav",
+      "sha256": "d4b37fd82489fd580fd7e94be08b7923f4ae5bcc973f9848fdf95356413eeffc",
+      "level": 1,
+      "masterGain": 0.65,
+      "effectiveGain": 0.65,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 1,
+      "authoredEffectType": "interrupt",
+      "eventKinds": [
+        "INTERRUPT"
+      ],
+      "positivePredicate": "actualResult.cancelledActionIds.Count > 0",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-v02-20260912\\audio\\op_sera.active.effect1.interrupt.wav",
+      "sha256": "efb26772a6c2e1d687624cecfadeb531c9166f3ec0a7d07dba414a08e9ac8fae",
+      "level": 0.41823,
+      "masterGain": 0.65,
+      "effectiveGain": 0.27185,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_sera.active",
+      "effectIndex": 2,
+      "authoredEffectType": "mark",
+      "eventKinds": [
+        "STATUS_ADD",
+        "STATUS_REFRESH"
+      ],
+      "positivePredicate": "actualResult.accepted == true AND actualResult.category == 'mark'",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-v02-20260912\\audio\\op_sera.active.effect2.mark.wav",
+      "sha256": "0eb1d980da1108363f7a94bf5eb3add20dd8eb217d3a3c109f91e27b1090da57",
+      "level": 0.27846,
+      "masterGain": 0.65,
+      "effectiveGain": 0.180999,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_sera.ultimate",
+      "effectIndex": 1,
+      "authoredEffectType": "mark",
+      "eventKinds": [
+        "STATUS_ADD",
+        "STATUS_REFRESH"
+      ],
+      "positivePredicate": "actualResult.accepted == true AND actualResult.category == 'mark'",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-v02-20260912\\audio\\op_sera.ultimate.effect1.mark.wav",
+      "sha256": "9ea93100fb647665f649f74cfbdfc1750dc1c277205b2b1b2a15bf24af319900",
+      "level": 0.36475,
+      "masterGain": 0.65,
+      "effectiveGain": 0.237088,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    },
+    {
+      "abilityId": "op_mira.ultimate",
+      "effectIndex": 1,
+      "authoredEffectType": "train_damage_buff",
+      "eventKinds": [
+        "STATUS_ADD",
+        "STATUS_REFRESH"
+      ],
+      "positivePredicate": "actualResult.accepted == true AND actualResult.category == 'train_damage_buff'",
+      "file": "C:\\Users\\dlstj\\OneDrive\\문서\\ChatGPT\\LASTRAIL\\docs\\ops\\combat-av-v02-20260912\\audio\\op_mira.ultimate.effect1.train_damage_buff.wav",
+      "sha256": "74b0ac42d42110b23c103aedef95cf3c7bed194c1307dbf0ec099e5e83532a4b",
+      "level": 0.43585,
+      "masterGain": 0.65,
+      "effectiveGain": 0.283303,
+      "gainApplication": "Use effectiveGain once, OR level times masterGain; never both",
+      "phase": "effect",
+      "candidateOnly": true,
+      "subjectiveListening": false
+    }
+  ],
+  "shieldRefreshRule": "SHIELD_ISSUE addedAmount==0 is silent even when outcome REFRESH; this is a gain cue, not a refresh cue.",
+  "muteRestorePolicy": "No generic fallback; no cue on initial bind/replayed rows; apply saved SFX mute/volume; do not Stop a shared source carrying warnings.",
+  "runtimeImported": false
+}

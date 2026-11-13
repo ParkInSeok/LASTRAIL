@@ -1,0 +1,277 @@
+{
+  "authoringFormat": "lastrail-map-drop-design-v2",
+  "reviewedAt": "2026-09-29",
+  "publishable": false,
+  "confirmedRules": {
+    "sharedChildNodesAllowed": true,
+    "normalOutgoingChoices": [
+      "LEFT",
+      "CENTER",
+      "RIGHT"
+    ],
+    "guaranteedAugmentCount": null,
+    "augmentGuaranteeEnabled": false,
+    "firstAugmentGuaranteed": false,
+    "equipmentMaxStar": 5,
+    "nodeOwnsEncounterWavePlan": true
+  },
+  "mapLength": null,
+  "wavesPerCombatNode": null,
+  "finalOperationPlan": null,
+  "eventWeightTrials": [
+    {
+      "type": "AUGMENT",
+      "weight": 20,
+      "status": "APPROVED_D6_RELATIVE_TRIAL_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "COMBAT",
+      "weight": 40,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "ELITE",
+      "weight": 12,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "EQUIPMENT",
+      "weight": 14,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "ENCHANT",
+      "weight": 14,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "REPAIR",
+      "weight": 8,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    },
+    {
+      "type": "SHOP",
+      "weight": 8,
+      "status": "TRIAL_RELATIVE_WEIGHT_NOT_PERCENT"
+    }
+  ],
+  "rewardUnitProposal": "ONE_COMPLETE_COMBAT_NODE_NOT_EACH_ENEMY_OR_WAVE",
+  "normalQuantityTrial": {
+    "guaranteed": 2,
+    "extraOneChancePercent": 30
+  },
+  "eliteQuantityTrial": {
+    "guaranteed": 3,
+    "extraOneChancePercent": 50
+  },
+  "initialSupplyTrial": {
+    "count": 6,
+    "star": 1
+  },
+  "starDropTrials": [
+    {
+      "nodeType": "NORMAL",
+      "progressBand": "EARLY",
+      "probabilitiesPercentByStar": [
+        95,
+        5,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "nodeType": "NORMAL",
+      "progressBand": "MIDDLE",
+      "probabilitiesPercentByStar": [
+        40,
+        45,
+        15,
+        0,
+        0
+      ]
+    },
+    {
+      "nodeType": "NORMAL",
+      "progressBand": "LATE",
+      "probabilitiesPercentByStar": [
+        0,
+        10,
+        10,
+        80,
+        0
+      ]
+    },
+    {
+      "nodeType": "ELITE",
+      "progressBand": "EARLY",
+      "probabilitiesPercentByStar": [
+        80,
+        20,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "nodeType": "ELITE",
+      "progressBand": "MIDDLE",
+      "probabilitiesPercentByStar": [
+        10,
+        50,
+        40,
+        0,
+        0
+      ]
+    },
+    {
+      "nodeType": "ELITE",
+      "progressBand": "LATE",
+      "probabilitiesPercentByStar": [
+        0,
+        0,
+        5,
+        95,
+        0
+      ]
+    }
+  ],
+  "requiredDecisions": [],
+  "sources": [
+    "14_MAP_EVENTS_DROPS.md",
+    "00_INDEX.md#open-decisions"
+  ],
+  "rewardUnitStatus": "ACCEPTED_TRIAL_BASELINE_J06",
+  "waveAndMapProposal": {
+    "status": "APPROVED_D6_INITIAL_SOLO_TRIAL_NOT_RUNTIME_VERIFIED",
+    "mapPathNodeCountExcludingStart": 12,
+    "intermediateNodes": 11,
+    "finalNodes": 1,
+    "combatProfiles": {
+      "NORMAL": {
+        "waveCount": 2
+      },
+      "ELITE": {
+        "waveCount": 3
+      },
+      "BOSS": {
+        "waveCount": 1,
+        "phaseCount": 3,
+        "bossInstanceCount": 1
+      },
+      "TUTORIAL": {
+        "waveCount": 1
+      }
+    },
+    "allIn": {
+      "addedEliteWaves": 1,
+      "sameNode": true,
+      "eligiblePrototypeTypes": [
+        "NORMAL",
+        "ELITE"
+      ],
+      "resetNodeOnceEffects": false
+    },
+    "dropBandsByPathDepth": {
+      "EARLY": [
+        1,
+        4
+      ],
+      "MIDDLE": [
+        5,
+        8
+      ],
+      "LATE": [
+        9,
+        11
+      ],
+      "FINAL": [
+        12,
+        12
+      ]
+    },
+    "nodeWidthRange": [
+      3,
+      7
+    ],
+    "ordinaryOutgoingEdges": 3,
+    "finalConvergenceOutgoingEdges": 1,
+    "betweenWaves": {
+      "preserveHpManaCooldown": true,
+      "resetOncePerNodeEffects": false,
+      "equipmentDrop": false,
+      "manualInfiniteRest": false
+    },
+    "betweenNodes": "ONE_ATOMIC_NODE_REWARD_THEN_EQUIPMENT_AND_TACTICAL_PREPARATION",
+    "finalMode": "BOSS_CLEAR_ENDS_DEMO_OPERATION_NO_AUTOMATIC_EXTRA_FINAL_BATTLE"
+  },
+  "trialBalanceStatus": "EXISTING_DROP_COUNTS_AND_STAR_TABLES_ACCEPTED_AS_BASELINE_J06_NOT_SIMULATED",
+  "requiresBindings": [
+    "ACTUAL_ENCOUNTER_BOSS_AND_WAVE_CLEAR_CONDITIONS",
+    "ACTUAL_EFFECT_CATALOG",
+    "NODE_AND_DROP_BALANCE_SIMULATION"
+  ],
+  "d6PolicyApproval": {
+    "date": "2026-09-22",
+    "status": "APPROVED_FOR_INITIAL_SOLO_TRIAL",
+    "source": "14_MAP_EVENTS_DROPS.md#operation-scale-trial-v02",
+    "scope": "D6 complete trial package; historical J04 proposal labels superseded only within this scope",
+    "runtimeVerified": false,
+    "releaseApproved": false,
+    "storyD7Approved": false
+  },
+  "currentPolicyReferences": {
+    "mapAndWaves": "14_MAP_EVENTS_DROPS.md#operation-scale-trial-v02",
+    "storyExceptions": "32_NARRATIVE_REFERENCE.md#story-route-policy-v02",
+    "storyObjectives": "32_NARRATIVE_REFERENCE.md#chapter-one-event-objectives-v01",
+    "storyFinale": "32_NARRATIVE_REFERENCE.md#raider-story-finale-v01",
+    "fullMapDisclosure": "14_MAP_EVENTS_DROPS.md#operation-map-full-reveal-v02",
+    "finalEquipmentReward": "14_MAP_EVENTS_DROPS.md#battle-reward-approval-v01"
+  },
+  "authoringInterpretation": {
+    "scope": "Design reference only; current Markdown sections govern each supported profile",
+    "legacyIncompleteFields": [
+      "mapLength",
+      "wavesPerCombatNode",
+      "finalOperationPlan"
+    ],
+    "legacyNullMeaning": "Historical placeholders, not pending policy approval or runtime zero; D6 values are recorded under waveAndMapProposal and currentPolicyReferences",
+    "d6StoryFlagMeaning": "d6PolicyApproval.storyD7Approved=false limits the original D6 approval only; later separately approved story rules are in currentPolicyReferences",
+    "remainingGate": "Actual catalog/executor binding, profile validation and balance evidence; publishable remains false"
+  },
+  "approvedEquipmentSupplyV15": {
+    "source": "14_MAP_EVENTS_DROPS.md#equipment-drop-final-approved-v15",
+    "status": "USER_APPROVED_NOT_RUNTIME_VERIFIED",
+    "equipmentUses": "NORMAL_BY_DEPTH",
+    "merchantUses": "NORMAL_STARS_1_TO_3_RENORMALIZED",
+    "merchantLatePercent": [
+      0,
+      50,
+      50,
+      0,
+      0
+    ],
+    "promotionCandidatePercent": {
+      "LATE": [
+        29,
+        5,
+        20,
+        46
+      ],
+      "EARLY": [
+        35,
+        0,
+        0,
+        65
+      ],
+      "MIDDLE": [
+        32,
+        3,
+        0,
+        65
+      ]
+    },
+    "enchantEquipmentAlwaysAvailable": false,
+    "simulationIsGuaranteedProbability": false
+  }
+}

@@ -1,0 +1,40 @@
+using System;
+using System.Linq;
+using System.Reflection;
+using LastRail.Battle;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+namespace LastRail.Tests.EditMode
+{
+ // Authority fixtures only: not native B integration evidence.
+ public sealed class CombatHealthPresentationTests
+ {
+  object presenter; JObject view; int renders;
+  Type Type=>typeof(BasicCombatSimulation).Assembly.GetType("LastRail.Presentation.Battle.CombatHealthPresentation");
+  [SetUp] public void Create(){Assert.NotNull(Type,"Approved health presentation consumer is missing.");presenter=Activator.CreateInstance(Type);Call("Bind",new Action<JObject>(s=>{view=s;renders++;}));}
+  object Call(string name,params object[] args)=>Type.GetMethod(name).Invoke(presenter,args);
+  JObject Row(string kind="OPERATOR")=>(JObject)((JArray)view["entities"]).Single(x=>(string)x["kind"]==kind);
+  static JObject Actor(bool down=false,int hp=100,long generation=1,string kind="OPERATOR")=>new JObject{["id"]=kind=="OPERATOR"?"op_a":"car_a",["generation"]=generation,["kind"]=kind,["hp"]=hp,["maxHp"]=100,["individualShield"]=0,["individualShieldMax"]=JValue.CreateNull(),["broken"]=kind=="CARRIAGE"&&hp==0,["down"]=down,["actionEligible"]=!down,["recoverAt"]=JValue.CreateNull()};
+  static JObject Source(long tick,params JObject[] rows)=>new JObject{["version"]="health-authority.v1",["tick"]=tick,["ticksPerSecond"]=20,["clockSynchronized"]=true,["entities"]=new JArray(rows)};
+  void Apply(JObject s,bool restore=false)=>Call("Apply",s,restore);
+  [Test] public void HpShieldAndSharedPoolRemainIndependentAndBorrowedDataCannotMutateView(){var a=Actor();a["hp"]=40;a["individualShield"]=30;a["individualShieldMax"]=75;var s=Source(1,a);s["sharedPool"]=new JObject{["id"]="pool",["remaining"]=90,["maximum"]=140};Apply(s);Assert.AreEqual(40,(int)Row()["hp"]);Assert.AreEqual(30,(int)Row()["individualShield"]);Assert.AreEqual(75,(int)Row()["individualShieldMax"]);Assert.AreEqual(90,(int)view["sharedPool"]["remaining"]);a["hp"]=1;Assert.AreEqual(40,(int)Row()["hp"]);}
+  [TestCase(61,100,2)] [TestCase(99,100,1)] [TestCase(100,100,null)] [TestCase(120,100,null)]
+  public void CountdownUsesPositiveCeilingAndNeverZeroBeforeAuthorityRecovery(long tick,long recoverAt,int? seconds){var a=Actor(true,0);a["recoverAt"]=recoverAt;Apply(Source(tick,a));Assert.AreEqual(seconds,(int?)Row()["remainingSeconds"]);Assert.IsTrue((bool)Row()["down"]);}
+  [Test] public void MissingOrUnsynchronizedTimeDoesNotInventCountdown(){var a=Actor(true,0);Apply(Source(10,a));Assert.IsNull((int?)Row()["remainingSeconds"]);a["recoverAt"]=100;var s=Source(10,a);s["clockSynchronized"]=false;Apply(s);Assert.IsNull((int?)Row()["remainingSeconds"]);Assert.AreEqual("DownHold",(string)Row()["motion"]);}
+  [Test] public void SupportAndHoldUseOnlyAuthoritativeBattleTick(){var a=Actor(true,0);a["recoverAt"]=100;Apply(Source(20,a));Assert.AreEqual(4,(int)Row()["remainingSeconds"]);a["recoverAt"]=60;Apply(Source(20,a));Assert.AreEqual(2,(int)Row()["remainingSeconds"]);Apply(Source(20,a));Assert.AreEqual(2,(int)Row()["remainingSeconds"]);Assert.IsTrue((bool)Row()["down"]);}
+  [Test] public void DepletionRequiresExplicitEventAndExpiryNeverPulses(){var a=Actor();a["individualShield"]=10;Apply(Source(1,a));a["individualShield"]=0;Apply(Source(2,a));Assert.IsFalse((bool)Row()["shieldDepletedPulse"]);a["shieldEvent"]=new JObject{["id"]="expiry",["kind"]="EXPIRED"};Apply(Source(3,a));Assert.IsFalse((bool)Row()["shieldDepletedPulse"]);a["shieldEvent"]=new JObject{["id"]="hit",["kind"]="DEPLETED"};Apply(Source(4,a));Assert.IsTrue((bool)Row()["shieldDepletedPulse"]);Apply(Source(4,a));Assert.IsFalse((bool)Row()["shieldDepletedPulse"]);}
+  [Test] public void RestoreAndReplacementSeedBaselinesWithoutHistoricalPulses(){Apply(Source(1,Actor()));var a=Actor(true,0);a["shieldEvent"]=new JObject{["id"]="old",["kind"]="DEPLETED"};Apply(Source(2,a),true);Assert.AreEqual("DownHold",(string)Row()["motion"]);Assert.IsFalse((bool)Row()["shieldDepletedPulse"]);a["generation"]=2;Apply(Source(3,a));Assert.AreEqual("DownHold",(string)Row()["motion"]);Assert.IsFalse((bool)Row()["shieldDepletedPulse"]);}
+  [Test] public void RecoveryEligibilityIsImmediateAndOldCompletionCannotUndoRedown(){Apply(Source(1,Actor(true,0)));Apply(Source(2,Actor(false,35)));Assert.AreEqual(35,(int)Row()["hp"]);Assert.IsTrue((bool)Row()["actionEligible"]);Assert.AreEqual("Recovery2",(string)Row()["motion"]);long token=(long)Row()["motionToken"];Apply(Source(3,Actor(true,0)));Call("CompleteRecovery","op_a",1L,token);Assert.AreEqual("Down2",(string)Row()["motion"]);Apply(Source(4,Actor(false,40)));long newer=(long)Row()["motionToken"];Call("CompleteRecovery","op_a",1L,newer);Assert.AreEqual("Source",(string)Row()["motion"]);}
+  [Test] public void RebindAndUnbindInvalidateOldCallbacksAndStopRenders(){Apply(Source(1,Actor(true,0)));Apply(Source(2,Actor(false,40)));long old=(long)Row()["motionToken"];Call("Bind",new Action<JObject>(s=>{view=s;renders++;}));Apply(Source(3,Actor(true,0)));Call("CompleteRecovery","op_a",1L,old);Assert.AreEqual("DownHold",(string)Row()["motion"]);Call("Unbind");int count=renders;Apply(Source(4,Actor()));Call("CompleteRecovery","op_a",1L,old);Assert.AreEqual(count,renders);}
+  [TestCase(true,false)] [TestCase(false,true)] [TestCase(true,true)]
+  public void OperatorAndCarriageStateAreIndependent(bool down,bool broken){Apply(Source(1,Actor(down,down?0:100),Actor(false,broken?0:100,1,"CARRIAGE")));Assert.AreEqual(down,(bool)Row()["down"]);Assert.AreEqual(broken,(bool)Row("CARRIAGE")["broken"]);Assert.IsFalse((bool)Row("CARRIAGE")["down"]);}
+  [Test] public void GenerationReplacementAndRestoreInvalidateRecoveryTickets(){Apply(Source(1,Actor(true,0)));Apply(Source(2,Actor(false,40)));long old=(long)Row()["motionToken"];Apply(Source(3,Actor(true,0,2)));Call("CompleteRecovery","op_a",1L,old);Assert.AreEqual(2,(long)Row()["generation"]);Assert.AreEqual("DownHold",(string)Row()["motion"]);Apply(Source(4,Actor(false,40,2)));old=(long)Row()["motionToken"];Apply(Source(4,Actor(true,0,2)),true);Call("CompleteRecovery","op_a",2L,old);Assert.AreEqual("DownHold",(string)Row()["motion"]);}
+  [Test] public void InvalidLaterEntityCannotPartiallyReplaceVisibleState(){Apply(Source(1,Actor()));var bad=Actor(false,50,1,"CARRIAGE");bad["maxHp"]=0;int count=renders;var e=Assert.Throws<TargetInvocationException>(()=>Apply(Source(2,Actor(false,20),bad)));Assert.IsInstanceOf<ArgumentException>(e.InnerException);Assert.AreEqual(count,renders);Assert.AreEqual(100,(int)Row()["hp"]);}
+  [Test] public void StaleTickAndGenerationCannotReplaceCurrentAuthority(){Apply(Source(3,Actor(false,40,2)));int count=renders;Assert.Throws<TargetInvocationException>(()=>Apply(Source(2,Actor(false,90,2))));Assert.Throws<TargetInvocationException>(()=>Apply(Source(4,Actor(false,90,1))));Assert.AreEqual(count,renders);Assert.AreEqual(40,(int)Row()["hp"]);}
+  [Test] public void SameRevisionConflictIsRejectedButNewRevisionMayChangeStateAtSameTick(){var s=Source(1,Actor());s["revision"]=10;Apply(s);var conflict=Source(1,Actor(false,25));conflict["revision"]=10;var e=Assert.Throws<TargetInvocationException>(()=>Apply(conflict));Assert.IsInstanceOf<ArgumentException>(e.InnerException);Assert.AreEqual(100,(int)Row()["hp"]);conflict["revision"]=11;Apply(conflict);Assert.AreEqual(25,(int)Row()["hp"]);}
+  [Test] public void ViewMutationCannotChangeRetainedEligibilityOrMotion(){Apply(Source(1,Actor(true,0)));Apply(Source(2,Actor(false,40)));long token=(long)Row()["motionToken"];Row()["hp"]=1;Row()["actionEligible"]=false;Call("CompleteRecovery","op_a",1L,token);Assert.AreEqual(40,(int)Row()["hp"]);Assert.IsTrue((bool)Row()["actionEligible"]);Assert.AreEqual("Source",(string)Row()["motion"]);}
+  [Test] public void MissingAuthorityGenerationIsRejectedWithoutRendering(){var a=Actor();a.Remove("generation");int count=renders;var e=Assert.Throws<TargetInvocationException>(()=>Apply(Source(1,a)));Assert.IsInstanceOf<ArgumentException>(e.InnerException);Assert.AreEqual(count,renders);}
+ }
+}
+
+
