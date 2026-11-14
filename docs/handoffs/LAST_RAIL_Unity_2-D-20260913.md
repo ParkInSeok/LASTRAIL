@@ -3,6 +3,343 @@
 
 # LAST RAIL_Unity_2 D successor handoff
 
+### 검증 단위 커밋·푸시 / 2026-11-14 사용자 승인
+- 앞으로 검증 완료한 작업 단위마다 관련 소스·설정·필수 meta·작업 MD를 묶어 커밋하고 푸시한다. 완료 보고에는 실제 커밋/원격 확인 및 미게시 범위를 구분한다. 배포는 빌드 단계에서만 진행하며 커밋·푸시를 배포로 취급하지 않는다.
+- 현재 원본 D:/Project/LASTRAIL master는 remote 없는 역사 개발 저장소다. 기존 비공개 게시 저장소 GitHubSnapshot/LASTRAIL(origin ParkInSeok/LASTRAIL)의 게시 정책을 재사용한다. Unity_17은 별도 게시 worktree GitHubSnapshot/UnityVerified-20261114, codex/unity-verified-20261114 브랜치에서 담당 변경만 처리한다. 원본 전체 git add 및 타 담당 staged 변경 포함 금지.
+- 비밀값·계정자료·로컬 QA 원시파일·빌드·캐시·제작 역사원본 제외. 기존 게시본과 대조해 이미 게시된 파일은 중복 커밋하지 않는다. 검증되지 않은 다른 작업을 이번 완료 묶음에 포함하지 않는다.
+- 현 담당 Plan_9/Direction_13/Story_1/Audio_2/Cutscene_3/SERVER_5/Admin_2/Homepage_2 총8채팅에 사용자 요청 전달 성공. 전달 완료는 해당 담당의 커밋·푸시 완료를 뜻하지 않는다. 이전 계승 세션을 중복 실행하지 않는다.
+
+
+### 2026-11-14 대원 비전투 초상화 연결 / 로컬 검증 완료
+- 배포는 빌드 단계에서만 진행한다. 화면 연결마다 DEV/R2 업로드하지 않는다. 로컬 확인은 기존 빌드된 Addressables 경로를 사용한다.
+- 범위: LobbyDestinationPages.LiveOperators 목록/선택 초상화를 로비·편성의 승인 원본 공급으로 통일, 한글 표시명 적용. 기존 OperatorScreenController 입력·성장·계정 소유권 재사용; LobbyPageResources가 화면 자산 수명을 소유. 다른 화면/서버 변경 없음.
+- 변경: LiveOperators가 FormationPlanView.Portrait/PortraitCrop 및 OperatorVisualCatalog.KoreanLabel 재사용. 화면 scope에 승인 5인 정확한 resource key 추가; 보유 미라는 별도 기존 자산 유지. View 입력 → 기존 Controller.Select/GrowAsync → AccountScreenRuntime → 표시 흐름 유지. 신규 서버조회/성장 규칙/상시 Update 없음.
+- 검증: QA/ResourceIntake-20261110/connection/train-fortress-v01/operator-portraits-tests-02.xml **13/13 PASS** (FormationPlanTests, LocalPackedContentTests, LobbyMvcBoundaryTests). 5인 카드/선택 texture identity·한글명, 3회 열기/닫기·늦은 로드 취소·오래된 입력 차단·보유 lease 전량 반환 확인. Play에서 실제 로컬 번들 5인 로드/2회 해제·재취득, 원본 adapter 차단 확인. 기존 Library/LPC/40317917 재사용; 재빌드/배포 없음.
+- 첫 검사01은 37개 중11통과/26실패: 2개는 잘못된 파일명 접두어 selector(정확한5키로 수정 후02통과),24개 FormationLocalHttpTests는 unity-project/QA/ScreenIntegration/local-s03-fixture.json 부재로 실행 실패. 이 서버 의존 묶음은02에서 제외했으며 회귀 통과로 주장하지 않음.
+- 한계/다음: DEV 실계정·경제 명령 검증 및 새 화면 캡처 없음. 대원 화면 전체 승인 가로 레이아웃/상세 반신 원화 연결은 아직 남음. 이번 완료는 목록·선택 초상화 공급/수명 연결 범위.
+
+### 2026-11-14 로컬 검증도 빌드된 Addressables만 사용 / 완료
+- 사용자 요청: 로컬 확인은 로컬 리소스 번들 빌드 → 해당 빌드 다운로드 → 캐시/화면 수명 검증. 기존 EditorProjectContent는 BuildScriptFastMode/AssetDatabase locator를 사용했고 backend는 필요 용량0·다운로드/캐시검사를 생략했다. 해당 제품 Play 경로 제거; EditMode 작화/단위검사 adapter는 별도 보존하되 Play에서 명시 차단한다.
+- **사용:** Unity Windows64 대상/Play 중지 → `LAST RAIL/Resources/Build Local Bundles` → ResourceBootstrap Play. 원본 변경 후 다시 빌드해야 반영된다. 자동 원본 fallback/매 Play 자동 전체빌드 없음. 씬의 `editorRemoteContentVerification: 0` 확인; 명시 remote 검증 옵션과 실제 Player의 원격 승인 정책은 보존.
+- `LocalPackedContentBuild`는 복제 LOCAL_TEST 설정과 기존 runtime 보존 helper를 사용. 기존 DEV 설치 runtime·원본 설정을 로컬 주소로 덮어쓰지 않는다. 성공한 build만 `unity-project/Library/LPC/current.txt`로 선택. 빌드 누락/잘못된 경로/초기화 hook/필수 Main·Lobby 누락은 오류. 설치 catalog의 로컬 전용/no-update 검증 보존.
+- Editor 소유 loopback `127.0.0.1:18284/LOCAL_TEST/Windows/`에서 선택 빌드의 bundle 파일만 공급; Play 종료·assembly reload·Editor 종료 때 닫는다. 기존 backend의 실제 용량 계산/취소/다운로드/캐시 확인 및 PreparedContent scope/handle 해제 재사용. 최초 로그인 공개 장식 캐시 조회도 빌드 catalog 초기화 후 진행한다. 캐시 필요량0이면 반복 전체검사를 하지 않고 즉시 완료.
+- 실제 빌드 `Library/LPC/40317917`: **389 bundles / 1,083,227,809 bytes**, 최장 경로235자. 이전 긴 빌드 경로(최장290자)에서 Mono File.OpenRead 실패가 HTTP200/no-body로 드러났으며 짧은 output으로 재빌드하여 해결. 초기 결과는 역사 증거로 보존.
+- 근거 `QA/ResourceIntake-20261110/connection/train-fortress-v01/manifest.json#localPackedContent`; `local-packed-build-02.log` exit0, 최종 `local-packed-tests-08.xml` **42/42 PASS**. 실제 번들 Main/Lobby 의존성·열차 scope 재진입·취소된 요청·handle 반환·원본 fallback 차단·카탈로그 안전성·공개 장식 cache 검사 포함. 공급기를 Stop한 뒤 cache-only 실제 texture load 및 필요량0 확인.
+- 측정 한계: 별도 write cache는 기존 shared read cache를 격리하지 않는다. 06의 main/lobby 검사는 다운로드 경로를 성공했고, 최종08 `initialMissingBytes=0`은 캐시 재사용 결과다. 완전 cold-cache 전체 다운로드 byte 실측으로 과장하지 않음; 기존 공유 cache를 삭제하지 않았다. 테스트02는 동기 Assert 취소 대기로,07은 캐시 전체 반복 재검사 개선을 위해 해당 실행만 중단; 최종 통과로 대체하되 로그 보존.
+- 이번에는 DEV/R2 배포·실제 DEV 계정 로그인/경제 명령·Android 검증을 수행하지 않았다. 전투 승인 binding을 로컬로 우회하는 기존 금지 조건도 유지. 작업 MD 저장과 다른 세션 적용을 구분한다.
+
+### 2026-11-14 승인 요새 열차 메뉴 반영 / 로컬 검증 완료
+- 사용자 대기 해제. 현행 `CURRENT_APPROVED_VISUALS.md` → `fortress-rear-formation-v06/train-formation-no-operators.png`(SHA40BA4AA8…EE) 기준. 기존 옛 열차 메뉴 아트 소비를 `TrainFortress/`로 교체. 후미 전투 객차 + 설비3/2/1 + 요새 기관차 = 총5모듈. 이전 원본 보존; 전투 카메라/전투용 차량 아트는 이번 변경 대상 아님.
+- 내장 image_gen으로 투명 전체 열차와 빈 정비고 배경을 각각 생성. 합성 시안 UI를 실행 배경으로 쓰지 않음. 프레임/버튼/아이콘은 기존 공통 자원, 텍스트·선택·입력은 독립 제어. 하단 미니어처는 동일 열차 텍스처의 UV 표시이며 개별 생성 원화가 아님.
+- `TrainOverviewView`는 표시/입력 위임만 담당, 기존 `TrainScreenController`/AccountScreenRuntime의 강화 비용·강화 실행·차량 배치/저장/세대 취소 재사용. 계정 train 계약에 없는 HP/ATK/DEF/주기·강화 후 수치는 `—`/확인 필요로 표시하며 임의 값을 생성하지 않음. 상시 Update 추가0.
+- `TrainFortressImport` 적용: 두 자산은 remote_resources 그룹 + launch_required 라벨 등록. 페이지 준비 scope에서만 로드하고 종료/늦은 완료 때 해제. 이번에는 DEV 번들 빌드·R2 배포·실서버 다운로드를 실행하지 않음.
+- 검증 원본 `QA/ResourceIntake-20261110/connection/train-fortress-v01/manifest.json`. tests-01은19중18통과(구 열차 category tabs 가정1실패); 승인된5모듈 화면 전용 검사로 대체 후 tests-02 **19/19**, 추가 열차 로딩 취소/닫기/재진입/lease반환 tests-03 **3/3**. 중복 fullname 제외 최신 **21/21 PASS**. 실제 지연/즉시 로드 두 경로 각2회 진입의 열차 자산 획득4/반환4 검증.
+- `unity-train.png`는 실제 Unity Canvas/Camera EditMode 렌더 캡처, 통제된 계정 fixture 사용(DEV 로그인 캡처 아님). 상단 버튼 가림 수정 및 미니어처 종횡비 확인. 캡처의 성장 조회 실패는 테스트 fixture의 의도적 실패로 강화 버튼 비활성; 실제 DEV 수치·강화 실행은 미검증.
+
+
+### 2026-11-14 전체 UI MVC 경계 전환 / 로컬 회귀 검증 완료
+- 사용자 전체 UI 전환 승인. 실제 런타임 View/입력 어댑터/Controller 조립 루트와 QA 전용 소비자를 구분하며 `ui-reuse-v01/mvc-inventory.json`의 후보를 실경로 근거로 대조한다. 후보 검색은 완료 판정이 아니다.
+- 편집 분담: 현재 통합 담당은 로비 공통/홈·MissionShell 남은 View/호스트 경계 및 통합 검증, 독립 담당은 임무/열차 책임 분리, 보상 호스트/일괄 수령, MissionShell 외 인증·문의·전투 UI를 담당. 공유 메인 파일은 통합 담당만 수정. 열차 아트 대기는 유지하고 기존 열차 UI의 코드 책임만 변경한다.
+- [x] 후보/실제 소비자 범위 대조:221개 경계 기록. 기존 MVC·시각 전용/QA·비UI·도달 불가 구기능 제외 근거 포함.
+- [x] 검토 범위에서 발견한 혼합 경계 분리. 기존 업무 규칙·확정 응답·복구와 입력 계약 보존.
+- [x] 변경 묶음 컴파일 및 로컬 Unity 회귀 검사. 취소/재진입/해제·입력1회·계정 전환·자원 지연완료를 검증; DEV/실기기/전 화면 수동 플레이·성능 측정은 별개 미실행.
+- 진행 구현: 홈/결과/임무/열차/일괄수령/오프라인·전투 룰렛은 화면 표시 state와 명령 Controller를 분리. 인증·문의는 기존 Flow/Model을 유지하고 확인/비동기 수명을 Controller로 이동. 전투 입력은 ApprovedCombatInputController에서 기존 driver로 위임하고 설정 저장은 UnitySettingsBackend에 유지. 기존 편성/대원/모집/상점/Ce03 분리와 자원 소유권은 재사용.
+- 실제 코드 검토에서 same-runtime 계정 전환 시 이전 dialog 잔류, 닫힌 offline dialog의 늦은 재확인, 이전 출격 조회의 후속 요청/Loading 덮어쓰기를 발견해 세션·dialog·request guard 추가. 공통 UI 래퍼4개와 화면 root4개는 비활성 재바인딩/중복 입력 방지와 소유 리스너만 해제하도록 수정.
+- 중간 검사 `ui-reuse-v01/mvc-all-01.xml`: 179개 중175 통과/4실패. 3개는 이전 nav 검사 기대값(모든 아이콘 단색 shader/구 atlas)이 승인 v04/v06 원본색 유지·새 열차/상점 atlas와 불일치하여 검사 수정. 나머지 룰렛 조회 횟수는 원인 점검 중. 이 실행을 전체 완료로 간주하지 않음; 이후 source 변경 및 새 수명 검사 재실행 필요.
+- 검토 원본: mvc-inventory.json + mvc-outside-review.json/mvc-outside-fx-review.json/mvc-missionshell-review.json/mvc-host-review.json. 검색 후보를 실제 메서드로 대조 중. deprecated squadleader private UI는 production 진입 없음; 가차 prototype root의 pull event는 production 구독 없음(실제 모집은 LobbyRecruitment 경로), 새 기능으로 연결하지 않음.
+
+
+- 확장 검사 `mvc-all-02.xml`:218개 중214 통과/4실패. 앞 룰렛 검사는 기존 RefreshAdSkipAsync가 entitlement `/v1/ad-skip`와 `/v1/runtime-policy`를 각1회 읽는 계약임을 확인하여 정확한 두 GET을 검사(제품 조회 축소/추가 없음). nav3 실패는 GetComponentInChildren가 Icon보다 앞의 발광 RawImage를 잡은 검사 오류여서 명시 Icon 자식으로 수정; Codex root1 실패는 필수 entries에 null을 준 fixture를 빈 배열로 수정. 제품 validation 완화 없음.
+- 추가 실제 수명 보강: LobbyPageResources/LobbyResourceOpening의 await 후 runtime 참조만 비교하던 경로에 CaptureScreenSession과 현재 request 검사 추가. 성공뿐 아니라 오래된 실패도 새 화면을 닫거나 오류 팝업을 열지 못하도록 제한. LobbyResourceSessionLifetimeTests는 same-runtime silent auth 전환 후 늦은 로드2종(page/dialog), 열림 차단 및 acquired lease 전량 반환 검증 통과(mvc-all-03.xml).
+- 후보216+직접 연결5=221개 소스 경계 기록, 미검토0(기존 구조/표시 전용/QA·비UI/도달 불가 구기능 제외를 명시); 이는 모든 코드 재작성·DEV 검증·모든 기능 완성 주장이 아님. _LASTRAIL prefab/scene333개 serialized callback 조사에서는 audio showcase PlayCueFromUnityEvent22개만 발견; runtime callback 경로는 별도 소스 검토.
+
+- 최종 보완 `mvc-all-03.xml` **28/28 PASS**. 02/03의 같은 fullname은 최신 결과만 사용하여 **고유226개 전부 PASS**(단순 합산 아님). 새 Controller tests, 공통 래퍼4·root4·전투 lever, 실제 host4, same-runtime 지연 asset2, 기존 편성 활성화/페이지 자원 반환/초상 수명/Back 및 설정·인증·문의·출격·결과 회귀 포함. 최초/중간 실패 XML도 보존.
+- 최종 검증 범위: 로컬 Unity EditMode/일부 테스트 내부 플레이·캡처와 source boundary. DEV 업로드/로그인/실기기/새 미술·전체 화면 시각 일치율/메모리·성능 실측은 하지 않았다. prototype Gacha root 무구독, 폐기 squadleader 미진입 등 기존 비연결 범위는 제외 근거로 남겼으며 새 기능으로 연결하지 않음. 열차 최신 시안 교체는 별도 대기 유지.
+
+### 2026-11-14 확인된 MVC 위반 수정 / 로컬 검증 완료
+- 사용자 승인 범위의 5가지 발견을 수정했다. 전체 UI MVC 전환 완료는 아니다. 현재 세션 통합, 모집/상점/Ce03는 겹치지 않는 파일에서 분리 후 실제 Unity로 함께 검증. 열차 디자인·서버 정책·아트·DEV 배포 변경 없음.
+- 책임 경계: `OperatorScreenController`는 선택/성장/코어 확인 흐름, `FormationScreenController`는 슬롯 선택/이름/저장본 로드/활성화 흐름, `RecruitmentScreenController`는 모드/페이지/조회/확인/재시도를 소유. `LobbyDestinationPages.LiveOperators/LiveFormation`, `LobbyRecruitmentView`, `LobbyShop`는 typed 표시 상태를 렌더하고 Controller 입력에 연결한다. 저장·경제·멱등성은 기존 AccountScreenRuntime/FormationDraft에 유지했다. SettingsScreenController의 입력→기존 상태 소유자→Render 및 소유 구독 해제 방식을 재사용; 새로운 범용 거대 Controller 없음.
+- 상점: `ShopSnapshot.Quote`를 표시와 `CanBuyShopOffer`가 공유. View 내 단가×수량/무료 우선 분담 계산 제거. `ShopScreenController`가 명령과 조회를 조정. 기존 상품/가격/실제 서버 검증 유지.
+- 편성: `FormationDraft.TryReadSelection`이 저장 정의 파싱 단일 원본. Load/SavedMatches/표시 projection이 재사용하며 View의 definitionJson 파싱 제거. 잘못된 저장본은 편집 상태를 덮어쓰기 전에 거부한다.
+- 상위 연결: `LobbyCommandDeck.OpenPage`에서 `BindNavigation`으로 패스/일괄 수령/호스트 활성 조건을 주입. 하위의 `GetComponentInParent<LobbyCommandDeck>` 제거. 공통 Back 독립 사용도 유지.
+- Ce03 로컬 지원 선택: Panel은 typed 상태/입력 이벤트, Controller는 조회/저장/재시도/수명, selection Model은 3슬롯 순서와 응답 검증. 기존 Ce03LocalClient/LOCAL_SELECTION_ONLY 범위 보존.
+- 실제 수명 경로 대조: `Clear`/`ReleasePageResources`/계정 바인딩 교체 → `ReleasePageBinding` → 각 Controller.Dispose → 자기 Changed 구독/표시 콜백 해제. 같은 Runtime의 계정 세대 변경도 `CaptureScreenSession`으로 이전 입력/후속 조회/활성화를 차단한다. 확정 저장 영수증은 기존 소유자에 남긴다. 상세 확인 콜백도 현 세대/권한을 재확인한다.
+- 구조 검수: 위 View의 통신/저장·가격 정책·편성 JSON 해석·상위 검색 제거를 호출 코드로 대조. 순수 표시 포맷/페이지 레이아웃/자산 수명은 View에 유지. 51#reusable-ui-production-20261113에 수정 전후 실제 호출·상태 소유자·해제 지점 확인 절차를 추가했다.
+- 검증: `QA/ResourceIntake-20261110/connection/ui-reuse-v01/mvc-02.xml` **45/45**, `mvc-03.xml` **26/26** PASS(중복 포함한 별도 실행). 편성 저장 중 이탈/결과 불명확/단일 활성화, 폐기 입력 차단/재진입, 계정 세대 변경, 잘못된 편성 데이터 보존, 상점 quote/단일 POST/재바인딩/늦은 응답, 모집 기록 재사용/명시 갱신/지연 초기 조회 차단, Ce03 읽기/저장 중 비활성·재진입·원요청 복구, 공통 메뉴/원격 scope/옵션/초상 수명 회귀를 실행했다.
+- 최초 mvc-01은 선택 인수가 있는 OpenBulkSelection 메서드 그룹 연결 오류로 컴파일 실패 → 명시적 콜백 람다로 수정. mvc-02에서는 새 상점 테스트 meta의 33자리 GUID 때문에 해당 테스트가 수집되지 않음 → 새 32자리 GUID 수정 후 mvc-03에서 ShopScreenControllerTests 4개 실제 수집/통과 확인. 실패/미수집을 통과로 합산하지 않음.
+- 실제 로컬 fixture 편성 캡처 `formation-lobby-runtime-v02/formation-activated.png`를 새 실행에서 생성하고 5인·좌우 배치·우측 목록·활성화 표시 확인. DEV 로그인 캡처/실기 성능·메모리 실측 아님.
+- 잔여: 열차/임무의 다른 기존 업무 혼합, 기존 추가 팝업 등은 이번 5항목 수정으로 전체 준수를 주장하지 않는다. 앞선 UI 재사용 작업의 페이지 본문/팝업 재진입 보관·전수 감사/실기 메모리 측정도 별도 미완료로 유지. 신규 Update 없음.
+
+### 2026-11-14 MVC 책임 경계 점검 — 확인 범위 한정
+- 사용자 요청은 MVC 저촉 여부 확인. 이번에는 실행 코드 변경/추가 Unity 시험 없이 최근 재사용 변경 및 직접 연결된 Controller/Runtime의 호출을 정적으로 확인했다. 재사용 검사 45/45는 MVC 준수 증거가 아니다.
+- 발견1: LobbyDestinationPages.LiveOperators/LiveRecruitment/LiveFormation은 계층 생성·Render와 Grow/조회/재시도/활성화 명령 흐름을 같은 객체가 조정한다. 실행 API·저장 판정은 AccountScreenRuntime/FormationDraft에 남아 있지만 View/Controller 역할은 혼재한다. 화면별 입력 의도를 콜백으로 전달하고 기존 유스케이스를 바인딩하는 Controller 경계가 필요하다. partial 파일 분리는 해결 아님.
+- 발견2: LobbyShop.cs:38에서 단가×수량과 무료 우선 차감/유료 잔액 사용을 View가 산출한다. ShopOfferRuntime.cs:21–22의 구매 가능 판정과 표시 정책이 다른 위치에 있다. 실제 소비를 View가 수행하는 것은 아니지만 규칙 변경 시 미리보기/실제 정책 불일치 위험. 금액/분담/구매 가능 표시 데이터를 기존 규칙 소유자에서 공급해야 한다.
+- 발견3: Ce03SupportSelectionPanel.cs:50,70,79는 로컬 호스트용 Panel이 서버 응답 파싱, 3개 선택 규칙, revision/busy/재시도, Read/Save 호출을 함께 소유한다. View→Controller→기존 Ce03LocalClient 및 선택 Model로 분리 대상. LOCAL_SELECTION_ONLY 범위이며 실제 DEV/전체 제품 경로라고 확대하지 않는다.
+- 발견4: LobbyShop.cs:18 및 LobbyMissions.cs:26은 하위가 GetComponentInParent<LobbyCommandDeck>를 찾아 OpenPass/OpenBulkSelection을 호출한다. 명시적 콜백 주입 기준 위반. 상위 Controller가 기존 동작을 바인딩해야 한다.
+- 발견5: LobbyDestinationPages.cs:472에서 View가 definitionJson을 파싱하고 FormationWrite.Selection으로 저장 편성 계약을 해석한다. FormationDraft.cs:42,50도 같은 구조를 해석한다. 경계에서 형식화한 표시 슬롯을 공급하고 View에는 ID/번호/이름만 전달하는 것이 맞다.
+- 반례/보존: SettingsScreenController는 View의 입력 이벤트를 구독하여 LocalSettingsModel에 전달하고 State를 Render한다. SeasonPassView의 Bind/Render 콜백 구조, 단순 문구·퍼센트 포맷/색상·스크롤·슬롯 재사용·자기 자산 대여 수명은 그 자체로 MVC 위반이 아니다. 확률표 공통 View에 배너별 표시 데이터를 주입하는 방향은 적합하다.
+- 범위 밖: 전체 프로젝트의 모든 Model 의존성·서버 규칙·실기기 실행은 미검사. 후속 수정은 기존 업무/저장/취소 계약을 보존하며 위 직접 경계부터 수행; 이번 확인을 신규 전체 재작성 승인으로 해석하지 않는다.
+### 2026-11-14 UI 재사용 구조 전환 중간 검증
+- 이번 범위는 코드/테스트이며 신규 원화·열차 본문 디자인·DEV 배포는 하지 않았다. 편집 소유는 현재 세션 유지. 전체 구조 전환 완료 아님.
+- 장비 목록/상세, 공통 Header/Nav, 활성 편성/대원/상점/임무, 패스/일괄수령을 상태 갱신형으로 전환. 하위 클릭은 기존 명령에 연결하고 재사용 셀의 현재 ID를 읽는다. Bind 해제/화면 세대/소유자/Busy 조건을 유지한다. 증강 결과 Bind에서도 행을 재사용하고 Unbind는 텍스트와 snapshot을 비운다.
+- 검증 원본: `QA/ResourceIntake-20261110/connection/ui-reuse-v01/`. common.xml 42/42, formation.xml 42/42, rewards.xml 17/17. pages.xml 28/29는 광고 판매 비노출 정책에 따른 QA 활성 객체 조회 실패; 숨겨진 구매 버튼도 검사하도록 테스트 조회 수정 후 followup.xml 12/12. 중복 포함한 별도 실행 결과이며 합산 고유 테스트 수가 아니다. 현재 행/상세 동일성, 편성 저장·활성화/이탈·결과불명확, 재바인딩, popup 입력/돌아가기 등을 검증했다.
+- 추가 수정/검증: 옵션 화질 행, 운행 보급/승리 보상 칸, 이동 목적지, 로컬 지휘스킬 선택 secondary.xml **38/38 PASS**. 모집은 메인/기록/확률 전환 시 이름별 유한 셀과 현재 콜백을 재사용, 반복 왕복 객체 수 불변/Render GET0 검사 포함 recruit.xml **19/19 PASS**. 지휘스킬 Fit의 LateUpdate를 크기 변경 이벤트로 교체.
+- 추가 수정/검증: 장비 다중효과 상세 텍스트/프레임·룰렛 보상 칸 재사용. final-active.xml 34/36에서 폐기 버튼 지연 클릭 예외와 숨김 객체 QA 조회 문제 발견. 공통 Button의 b!=null 검사 및 QA inactive 조회 수정 후 final-active-r2.xml **45/45 PASS**. 긴 수량 표시·숫자 연출·중첩 입력 차단·선택 최신 ID·닫기 1회·취소/재진입 및 원격 해제 회귀 포함. 열차 본문/경제 판정 변경 없음.
+- 실제 로컬 Unity 캡처: ui-reuse-v01/formation-activated.png 및 lobby-active-five.png. DEV가 아닌 기존 계정 응답 fixture 경로이며, 전체 화면 픽셀 일치/성능 수치/실기기 메모리 감소를 측정한 것은 아니다.
+- 미완료: 페이지/탭 왕복 시 본문과 원격 자산 수명 분리, 공통 팝업 재진입 보관, 일부 대원·임무·일괄 수령의 직접 포인터/객체 동일성 검사, 기타 생성 경로의 전수 추적 및 실제 할당/잔류 메모리 측정. `source-candidates.json`의 58개는 문자열 후보이며 전수 준수 판정이 아니다. 미검토를 정상으로 자동 분류하지 않았다.
+### 2026-11-13 UI 재사용 구조 전환 실행 중
+- 사용자 전체 점검·수정 승인. 기준 51#reusable-ui-production-20261113. 현재 세션이 관련 UI 소스/테스트 편집 소유. 열차 디자인 대기는 유지하며 데이터/경제 규칙은 변경하지 않는다. 같은 기존 D 런타임에서 변경을 보존하며 작업한다.
+- [ ] UI 생성/갱신/종료 경로 인벤토리: 반복 갱신 중 재생성과 정상 종료 정리를 구분. Presentation 및 Auth/배틀 UI의 실제 소비자까지 확인하고 미확인 명시.
+- [x] EquipmentInventoryView 활성 목록·상세를 유지하고 아이콘 재바인딩/수명 검증. 같은 데이터 선택/갱신 시 객체 동일성, 행 감소/증가, 이전 클릭 차단 시험.
+- [ ] LobbyDestinationPages 공통 틀 및 화면별 내용 재사용: 우선 로비/편성, 이후 대원·모집·상점·임무·공통 팝업 갱신. 공유 자산/구독/비동기 세대 계약 보존. 불필요한 전체 Rebuild 제거와 동일 ID 행 재사용 시험.
+- [ ] 기타 반복 생성 UI의 상태 갱신 경로 수정 및 기존 독립 View 재사용 확인. 큰 자산/원격 Prefab 종료 재생성 예외는 구체 근거 기록.
+- [ ] 관련 Unity 실행 시험·캡처·변경 전후 생성 횟수 확인 및 기존 MD에 실제 완료 범위 기록. DEV 배포/전체 최적화 완료는 별도 검증 전 주장하지 않음.
+
+### 2026-11-13 UI 구조 재사용 제작 MD 설계 등록
+- 사용자 요청으로 [51#reusable-ui-production-20261113](../superpowers/plans_categories/51_UI_ART_DETAIL_CONTRACTS.md#reusable-ui-production-20261113)에 공통 틀/화면 View/반복 슬롯/중첩 팝업의 재사용 단위, Bind/Render/Hide/Dispose, 원격 Prefab 의존 핸들 예외, 단계 적용 및 수용 조건을 등록했다. 30 공통 규칙에 진입 링크를 추가했다. 이번 편집 담당은 현재 Unity 작업 세션, 수정 범위는 이 인계와 30/51 문서뿐이다.
+- 확인 근거: LobbyCommandDeck은 Pages를 최초 생성해 보관하고, LobbyNavigationRail/LobbyArtwork는 공통 생성/표현 코드를 사용한다. LobbyDestinationPages.RefreshAccountView/Open/탭 → Rebuild → Clear는 PageContent를 파괴·재생성한다. 공통 코드 재사용과 런타임 인스턴스 재사용을 구분한다. 관련 소스 외 전체 UI 전수 확인 아님.
+- 후속 구현 순서: 공통 틀 유지 → 로비/편성 View의 부분 갱신 → 승인된 반복 목록/팝업 확장. 열차 본문 대기 유지. 이번 요청은 제작 설계 문서 반영으로 완료하며 신규 코드 수정·자동 리팩터링 착수·DEV 배포·성능 향상 실측은 수행하지 않았다. 실제 구현 시 소유권/기존 동작과 취소·재진입·해제 수용 조건을 확인한다.
+
+### 2026-11-13 로비 v07 로컬 연결·검증 / 동일 기준 93.75%
+- 실제 `lobby-match-v07/after-final.png`를 참조 원본과 직접 대조. 동일8항목에서 충족7/부분1, **93.75%=(7+0.5)/8**. 픽셀 유사도·객관적 이미지 일치율·사용자 승인율이 아닌 기존 육안 체크리스트 점수다. 원형 배지의 독립 금속 테두리, 재화3종 형상/오른쪽 아이콘 크기, 하단 명조 타이포/구분선/버튼 여백을 이번 충족 항목으로 판정. 전체배치·초상 연결·좌측 메뉴·출발 버튼은 이전 충족 유지. 배경의 소품/지도 구도·작전 썸네일은 부분일치 유지. 금속 마모/정확한 획 모양의 미세 차이까지 동일하다고 주장하지 않는다.
+- 신규 프레임/재화 atlas 실제 alpha 확인, 로비 전용 NanumMyeongjo-Bold OFL 폰트를 원격 TMP 자산으로 등록. 최초 캡처의 운행 보급 줄바꿈 및 편성 버튼 오른쪽 여백 수정 후 재실행. `import.log` 등록/종료0, `tests-final.xml` **25/25 PASS**: 클릭/구 콜백 차단, 활성화 정상·이탈·결과불명확, 왕복/초상 비동기 취소·숨김/파괴 해제, 원격 키/그룹/초기 오프라인 의존성 제외 검사. v07 manifest에 생성 원본·프롬프트·SHA·폰트 라이선스/미사용 Regular 후보를 구분.
+- 사용자 초상화 질문 재확인: `LobbyCommandDeck.AccountChanged`는 계정 상태 소유자의 `Account.ActiveOperators`를 slot별로 읽고 operatorId를 `LobbySquadPortraits.Render`에 전달한다. `FormationPlanView.Portrait`가 원격 비전투 자산 키로 매핑, 빈 ID만 + 표시. Changed 이벤트로 갱신하며 상시 Update 없음. 로컬 캡처는 활성5인 응답 fixture를 통과한 실제 Unity D3D11 렌더다. DEV 로그인/번들/R2 배포는 이번에 수행하지 않았으며 전체 운영 환경 검증으로 확대하지 않는다.
+- 사용자 90% 이상 목표 승인. 동일8항목 기준 유지, 신규 목표 때문에 점수 정의/항목 비중 변경 금지. 범위: 지휘관 독립 원형 금속 테두리, 연료/크레딧/크리스탈 아이콘 형태·크기, 로비 한정 명조 계열 폰트/간격·하단 구분선. 승인 원본/후보 manifest 상태와 배경 차이는 기존 기록 유지. 열차 화면 본문 대기.
+- 정지 자산 도구는 내장 image_gen, 참조 noncombat-portrait-screen-review-v01/03-lobby.png. 원형 프레임은 중앙/외부 alpha, 재화3셀 atlas는 독립 샘플링, 수치/문구/플러스 포함 금지. 역사 자산 보존. 한글 폰트는 공식 google/fonts 원본 및 OFL 동봉, 초기 로컬 UI 폰트는 교체하지 않고 원격 로비 자산으로만 등록.
+- 편집 소유: LobbyCommandDeck/LobbyMatchImport/RemoteContentCatalog, LobbyDeck 신규 v07 리소스 및 해당 테스트. UI 명령·계정 원천/저장 상태는 변경하지 않음.
+
+### 2026-11-13 로비 독립 자산 보정 v06 / 로컬 연결·검증 완료
+- 사용자 아이콘 형상·프레임·버튼 질감 수정 승인. 참조는 v03~05에 식별한 로비 구성/비전투 원본이며 후보 manifest를 새 승인으로 변경하지 않음. 내장 image_gen 정지 자산 제작: 기관차/목제상자 2셀 atlas, 투명 내부의 금속 프레임, 글자·아이콘·금속 프레임 없는 청색 버튼 표면. 실제 alpha·표시 크기 검수 후 원격 LobbyDeck 키로 연결. 동적 입력/문구/번호/초상은 독립 유지. 역사 원본 보존, 열차 화면 본문 수정 제외.
+- 본 세션 소유: LobbyArtwork/LobbyNavigationRail/LobbyCommandDeck, LobbyDeck 신규 v06 원격 PNG와 catalog/Addressables 등록 및 해당 테스트·캡처. 동일8항목 점수 기준 유지.
+- 신규 원본: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/{navigation-shapes-v06,frame-v06,button-surface-v06}.png. 내장 image_gen으로 각 독립 제작, 최종 프롬프트/도구 원본 위치/SHA256/역할은 QA/ResourceIntake-20261110/connection/lobby-match-v06/manifest.json. 기존 v01/v05 및 원본 보존. 프레임 실제 중앙 alpha0 확인, 아이콘 gutter alpha0, 버튼 표면은 배경 없는 반투명 발광. PNG 사후 작화/잘라내기 없음; runtime UV/9-slice로 독립 표시.
+- LobbyMatchImport가 신규3개만 Texture2D/Clamp/Bilinear/비읽기/2048 상한으로 등록, remote_resources/필수 다운로드 label 부여. LobbyDeck/ 기존 준비 범위에 포함. 정식 DEV bundle/catalog 업데이트·R2 배포는 미실행이므로 원격 실제 공급 검증 완료 아님.
+- 실제 첫 렌더에서 기관차/상자 크기 부족 및 세로 메뉴 표면 여백 확인 후 UV 보정, 출발 화살표는 같은 수명의 rail 소유 흰색 material 대여. BlueInset의 임시 직선광/단색 보정층은 삭제하고 독립 표면으로 교체. 새로운 Update/별도 material 소유자 추가 없음. 공통 프레임은 실제 투명9-slice, 문자/아이콘/입력 분리 유지.
+- 검증 tests-final.xml **25/25 PASS**: 새 키3개의 원격 등록·bootstrap 의존 제외, 메뉴 입력/구 콜백 차단, 로비/다중화면 배치, 저장·활성화 정상/취소·불명확, 페이지 취소/재진입 핸들 반환, 실제 PlayMode 초상 로드 취소/반복 숨김/파괴 반환. import.log 등록 성공/종료0. 실제 after-final.png D3D11 로컬 fixture 캡처 직접 확인; DEV 계정 캡처 아님.
+- 동일8항목 최종 육안 체크리스트 점수 **75% = (충족4+부분4×0.5)/8**. v05 62.5%에서 좌측 메뉴(기관차·목제상자 형상/선택광), 출발 버튼(청색 etched 표면/청록 발광/흰색 화살표)을 충족으로 승격. 기존 전체 배치·승인 초상 연결 충족 유지. 배경 세부 구도, 지휘관 배지, 재화/바로가기 아이콘·장식, 하단 프레임/타이포는 부분일치 유지(프레임 개선만으로 타이포까지 완료 처리하지 않음). 픽셀 유사도나 사용자 최종 승인율이 아닌 동일 기준의 주관적 육안 검수 점수. 전체100% 완료 아님.
+
+### 2026-11-13 로비 퍼센트 평가 기준 및 선택광 보정 v05
+- 사용자 요청으로 수치화: 기존8개 육안 검수 항목 동일 가중치, 충족1/부분일치0.5/불일치0. v04는 (충족2+부분6×0.5)/8=**62.5%**. 이것은 체크리스트 점수이며 픽셀 유사도/객관적 이미지 일치율 또는 사용자 최종 승인율이 아님. 기준 변경으로 점수를 높이지 않음.
+- 항목 고정: 전체배치, 승인비전투초상 연결, 배경구도/소품, 좌측메뉴 형상/선택광, 지휘관배지, 재화바/바로가기, 하단프레임/타이포, 출발버튼 표면/발광. 데이터 차이는 제외. 부분 항목은 주요 형상/재질 잔여가 해소되기 전 충족으로 승격하지 않음.
+- v05: BlueInset에 반투명 푸른 밝기층과 독립 청록4변/확산광 추가. 기존 texture 재사용, raycastTarget=false, 추가 Material/Update/다운로드 없음. 로비 출발·편성 버튼 및 공통 메뉴 선택영역에 동일 적용. 검사 및 캡처 경로 QA/ResourceIntake-20261110/connection/lobby-match-v05.
+- 최종 tests-final.xml **13/13 PASS**, after-final.png 직접 육안 확인. 최초 캡처에서 청록선이 금속 프레임 밑으로 가려져 내부 여백을5→12로 바꾸고 보정층 alpha .3→.15로 낮춘 뒤 재검수. 입력을 막지 않는 장식·구 콜백 차단·활성화 정상/취소/불명확 검사 유지. DEV 미배포.
+- 재평가 **62.5% 유지**: 버튼 밝기와 청록선은 개선됐으나 시안의 빛 번짐·표면·절삭 모서리까지 충족하지 못해 여전히 부분일치. 좌측 열차/상점 형상·배지·배경·타이포 잔여도 유지. 작은 개선을 전체 항목 충족으로 바꾸거나 근거 없이 점수를 올리지 않음.
+
+### 2026-11-13 로비 v04 재대조 — 사용자 일치율 확인 요청
+- noncombat-portrait-screen-review-v01/03-lobby.png와 lobby-match-v04/after.png를 다시 직접 열어 비교. 픽셀 유사도 계산은 미실행. 아래는 육안 수용 항목 판정이며 전체 이미지 일치율 %가 아님. 참고본의 후보 manifest 상태는 앞 기록대로 유지.
+- 8항목 중 충족2/부분일치6: (충족) 주요 영역의 가로 배치 구조, 승인 비전투 초상 사용·저장편성 표시 규칙. (부분) 배경 구도/소품, 좌측 메뉴 아이콘·발광, 프로필 배지, 재화바·오른쪽 바로가기의 장식/아이콘 크기, 하단 프레임·타이포, 출발 버튼 표면/청록 외곽광.
+- 우선 차이: 출발 버튼은 시안보다 어둡고 청록 테두리광/입체감이 약함; 좌측 열차는 기관차 실루엣 대신 전동차형, 상점은 나무상자 대신 금속상자; 프로필은 얇은 원형선으로 시안의 두꺼운 금속 배지와 다름; 타이포 크기·두께 및 오른쪽 아이콘 크기 차이; 현재 작전 썸네일은 배경 창의 반복으로 시안의 독립 폐허 장면과 다름. 전체 ‘거의 일치’ 판정 불가.
+- 닉네임/재화/작전 문구와 4인+빈칸 예시 대 활성5인은 데이터 차이로 평가 제외. 이번 턴 코드/자산 수정·새 실행시험 없음.
+
+### 2026-11-13 로비 미술 차이 원인 수정 v04 / 로컬 검증 완료
+- 앞 v03의 ‘아이콘 원본이 평면’ 진단을 정정: icons-landscape-v01 원본을 직접 열어 금속 명암을 확인. 실제 원인은 LobbyNavigationRail이 비선택까지 TabIcon 단색화 셰이더를 적용한 것. 이제 비선택은 원본 RGB·alpha, 선택만 흰색 마스크. 새 아이콘 생성이나 원본 덮어쓰기 없음.
+- 원격으로 이미 준비되는 DestinationPages/tab-states-v01의 파란 내부 표면만 UV로 재사용해 로비 출발/편성 버튼과 공통 메뉴 선택영역에 연결. 이미지 전체 버튼이나 완성 시안을 실행 UI로 붙이지 않음. 프레임·텍스트·입력·아이콘은 독립 유지, 빌린 texture에 대한 중복 해제 없음. 새 Addressables 키/다운로드 의존 추가 없음.
+- 지휘관 원형 금속 테두리는 기존 RouletteSurfaceGraphic을 조합, 로비 프레임 모서리 표시 크기 보정. 변경 소유: LobbyArtwork/LobbyNavigationRail/LobbyCommandDeck 및 관련 검사. 신규 Update·상시 애니메이션 없음. 공통 메뉴 재사용 화면에도 선택 표면/금속 아이콘 개선이 적용되며 열차 화면 본문·리소스는 대기 유지.
+- QA 경로: QA/ResourceIntake-20261110/connection/lobby-match-v04. 기존 승인 레퍼런스/manifest 상태는 v03 기록 유지, 이번 작업을 새 시안 승인으로 등록하지 않음.
+- tests.xml **20/20 PASS**: 로비 입력/Back, 선택 아이콘만 단색화·비선택 원본 유지, 저장/활성화 취소·재진입, 페이지 핸들 반환, 실제 PlayMode 초상 늦은 로드 취소/3회 재진입/파괴 반환. after.png 실제 D3D11 로컬 fixture 캡처 직접 확인: 비선택 금속 명암, 파란 표면, 지휘관 원형 테두리, 확대된 프레임 모서리 표시됨. 새 원화 생성/이미지 파일 수정 없이 기존 독립 자산과 런타임 조합만 변경.
+- 남은 시각 차이: 레퍼런스보다 파란 선택광은 약하고 메뉴 열차/상점 아이콘 형상이 다름, 원형 배지·프레임 마모도 픽셀 동일 아님. 전체 시안 일치 완료로 보고하지 않음. 실제 DEV 배포·원격 신규 번들 갱신·기기 성능 측정 미실행. 테스트/Unity 종료 정상; 이 검사는 로컬 렌더/수명 범위.
+
+### 2026-11-13 로비 시안 대조 및 배치 보정 v03
+- 사용자 요청: 로비부터 최종 시안 일치 여부 점검·수정. 비교 원본은 noncombat-portrait-screen-review-v01/03-lobby.png(최신 비전투 초상 교체 검토본), 승인된 비전투5인 원본 및 좌측 통합 아이콘 메뉴 지시. 해당 화면 manifest는 REVIEW_CANDIDATE_REFERENCE_ONLY라 그대로 보존; 비교에 사용한 것을 새 승인 등록으로 취급하지 않음. 메뉴 열린 상태 승인본은 lobby-menu-landscape-v02이며 이번 기본 로비 캡처와 구분.
+- 비교 방식: 1672×941 참고 화면을 1600×900 기준으로 정규화한 육안 영역 대조. 이미지 전체 유사도/일치율 %를 측정하지 않았으며 임의 백분율을 제시하지 않음. 참고의 4인+빈칸과 시험 계정의 활성5인, 닉네임/재화/다음 작전 값은 상태 차이로 분리. 데이터값을 시안 숫자·문구로 고정하지 않음.
+- 확인한 차이: 하단 패널 높이/위치, 초상 간격/크기, 출발 버튼 크기, 프로필 이름판과 불필요한 XP 노출, 재화바 높이. LobbyCommandDeck의 표시 좌표만 보정: 편성판 (146,564,822,216)→(138,582,866,264), 작전판 (989,564,560,216)→(1017,582,567,264), 출발 (1084,681,370,80)→(1104,714,427,94). 독립 초상 5칸 간격166, 각 슬롯 프레임160×162. 프로필 XP는 로비에서 숨기되 프로필 상세 값 유지.
+- 시각 판정: 통합 메뉴 구조/저장된 비전투 초상·빈자리 규칙 유지, 하단 배치 개선 확인. **미술 일치는 아직 미완료**: 현재 공통 아이콘은 평면·거친 윤곽이고 시안은 입체 금속, 선택광과 파란 버튼 질감 부족, 프레임 모서리 장식 및 지휘관 원형 테두리 차이. 배경도 독립 제작본이라 시안 원본의 창/지도/소품 픽셀 동일성 없음. 현재 LobbyDeck 독립 자산 3종(배경/아이콘/프레임)의 한계이며 합성 시안을 실행 배경으로 덮어서 해결하지 않음.
+- QA: QA/ResourceIntake-20261110/connection/lobby-match-v03/before.png / after.png 실제 D3D11 렌더 육안 비교. tests.xml **17/17 PASS**(로비·메뉴 입력/Back, 배치, 활성화 정상·이탈·불명확). 기존56건 중 변경과 무관한 수명 검증은 재사용. DEV 연결/배포 아님. 다음 로비 작업은 위 미술 차이에 해당하는 독립 아이콘·버튼 표면·프레임 원본 대조/제작과 실제 표시 크기 재검수. 열차 작업 대기 유지.
+
+### 2026-11-13 편성·로비 런타임 연결 / 열차 대기
+- 사용자 정정: 열차는 사용자 측에서 변경 중이므로 열차 화면·기본 열차 디자인 교체는 대기. 이번 독립 지붕은 편성 미리보기 전용이며 새 열차 기본 스킨 승인으로 간주하지 않음.
+- 편성: 좌측 위협 최후미 / 우측 위협 기관차 뒤 객차 각각 같은 논리 5슬롯, 우측은 시각 순서 반전. 오른쪽 저장 편성 목록·새 편성, 분대장/별도 저장 제거, 활성화 하나로 기존 저장→활성화 계약 연결. 화면 이탈 시 후속 활성화 차단, 저장 영수증은 상태 소유자에 보존. 정상 완료 후 추가 GET 없음.
+- 로비: 저장된 활성 편성을 레이나·카일·이브·세라·닉스 비전투 초상화로 표시, 빈 슬롯 +, 개별 프레임. LobbySquadPortraits가 표시 중 핸들을 소유하고 숨김/파괴 시 반환, 재진입 시 재취득. Update 추가 없음. 기존 4인 원본 재사용, Nyx는 noncombat-basic-five-v02/portrait-nyx.png 원본 바이트 복사; 구 원본 보존.
+- 신규 FormationPlan/combat-roof-v02.png는 내장 이미지 생성으로 제작한 독립 투명 지붕, 초상/번호/프레임/선택광/+는 별도 런타임 요소. 원격 catalog와 remote_resources 그룹에 등록. 초기 로컬 UI 정책 변경 없음. 초기 TextureShape Cube 오설정으로 흰 이미지가 나온 것을 Texture2D로 정정하고 typed asset 검사를 추가함.
+- QA: QA/ResourceIntake-20261110/connection/formation-lobby-runtime-v02/tests-03.xml **56/56 통과**. 정상 단일 활성화·중복 클릭·저장 중 닫기/재진입·결과 불명확 보존·기존 Back/입력/레이아웃·리소스 취소 검사. LobbyPortraitLifetimeTests는 실제 Unity PlayMode에서 늦은 로드 취소, 3회 숨김/재진입 및 파괴 후 획득/반환 수 일치를 확인. EditMode 수명 콜백을 실제 실행으로 오인하지 않도록 별도 분리.
+- 실제 D3D11 렌더: 같은 QA의 formation-activated.png, lobby-active-five.png. **로컬 응답 fixture 기반 Unity 캡처**이며 DEV 서버 접속 캡처가 아님. 독립 요소 구조/5인 표시·우측 목록 육안 확인. 승인 합성 이미지와 픽셀 단위 동일성 보장 아님.
+- DevFormationProbe/NumberedFormationPlayerCheck의 구 SaveFormation 입력·5개 미리보기 가정·목록 순서를 새 UI에 맞춤. 실제 DEV probe 실행과 원격 번들 빌드/R2 업로드는 이번 작업에서 미실행. 공유 초상은 로비에서도 사용하므로 DEV 해제 검사 대상은 편성 전용 지붕으로 구분.
+- 잔여: 상단 메뉴의 승인된 우측 팝업 구성과 옵션/이야기 중첩 팝업 시각 통합, 시작/로그인 실제 계정 회귀, DEV 번들 배포·다운로드·실기 메모리 실측. 좌측 공통 메뉴/80% 딤 기존 검사 통과를 이 전체 범위 완료로 확대하지 않음. 아래 착수/이전 검사 기록의 구 편성 미연결 상태는 이 절로 대체.
+
+### 2026-11-13 공통 UI·편성·로비 연결 착수 / 독립 제작 기준
+- 사용자 위 순서 실행 승인. 본 세션 소유: LobbyNavigationRail, FormationPlanView, FormationDraft, LobbyDestinationPages, LobbyCommandDeck 관련 표시/리소스 범위 및 해당 검사. 기존 변경 보존.
+- 기준: landscape-management-v04/manifest.json 승인 구조 + 사용자 비전투5인 확정 지시와 noncombat-basic-five-v02 승인 원본. noncombat-portrait-screen-review-v01은 원본 초상 사용법을 참고하되 manifest 후보 상태를 자동 승인으로 변경하지 않음.
+- 제작 정책 30_PROJECT_RULES 독립 리소스 절 확인. 현재 도구는 내장 image_gen(화면 합성 시안/독립 정지 자산), FrameStudio 애니메이션 작업 아님. 승인 지붕 구도만 독립 전투객차 roof PNG로 제작: 인물/초상/프레임/번호/문구/선택광 제외, 투명 alpha. 기존 독립 프레임/지도 배경/아이콘 재사용, 번호·+·선택·입력은 Unity 제어. 기존4인 원본 재사용, 승인 Nyx 비전투 원본 교체. 역사 원본 보존.
+- 변경 범위: 공통 메뉴·모달 입력/복원, 편성 좌우5슬롯·우측 저장목록·활성화 단일 입력, 로비 원저장편성 초상. 서버 정책/새 상품/전투 로직 변경 제외. 취소 이후 자동 활성화 금지·원저장 응답 보존·실패 재확인은 기존 영수증 사용.
+
+### 2026-11-13 승인 시안 Unity 연결 작업 순서안
+- 사용자 요청: 연결 대상을 리스트업하고 순서 정리. 아래는 우선순위안이며 새 시안 승인이나 전체 연결 완료 기록이 아니다. 선행 미완료 항목을 실행 큐에 일괄 추가하지 않는다. 남은 시안/브랜드 로고 기준은 Plan_9 담당 유지.
+1. 승인본·독립자산 대조 + 공통 UI: 최신 시안 버전/원본/독립 요소/서버 키/기존 소비자 확인, 좌측 통합 메뉴 마감, 팝업 80% 딤·입력차단·중첩 닫기/초점 복원. 메뉴 27검사 근거 재사용, 전체 시각 완성으로 확대하지 않음.
+2. 편성: 비전투5인, 좌우 각각 승인된 전투객차 지붕 위치에 동일 편성5인 미리보기, 빈칸+, 우측 저장편성 목록, 분대장/별도 저장 버튼 제거·활성화 단일 동작. 기존 저장/활성화 API·미저장 변경/실패 복구 계약부터 확인.
+3. 로비 + 시작/로그인 회귀: 저장편성 초상화/+, 기존 지휘실 배경·메뉴. 최초 로그인 최소 UI/후속 캐시 시안, 카메라·입력·계정 정보 표시 재확인.
+4. 대원: 목록·상세 능력치·스킬 훈련·승급·훈련 코어 연결, 편성 버튼 제거, 역할 아이콘/스탯·승인 비전투 초상/반신. 기존 코어 UI는 승인 디자인 범위를 확인해 적용.
+5. 열차: 승인 기본열차·전투객차 지붕/강화 화면 연결. 스킨별 외형 교체 경계 유지, 전투 화면 새 시안은 Plan 완료 후 별도 연결.
+6. 모집: 일반/특별 배너·1/10회 결과·NEW/인장 전환·텍스트 모집기록/회차·현재 배너별 확률 팝업. 원결과 재사용·천장/영수증 보존.
+7. 상점: 보급품/패키지/크리스탈·서버 상품 목록·구매/교환. 미확정 예시를 실제 상품/가격으로 등록하지 않음.
+8. 보상: 임무·월간 출석·월간 패스·운행 보급·룰렛, 전술 데이터/훈련 데이터 아이콘·이름 통일.
+9. 메뉴 하위: 상단 메뉴·옵션 전체 탭·이야기 일지·도감·공지·고객지원/내 문의/답변, 승인된 중첩팝업·30초 새로고침 제한 적용.
+10. 출격: 지휘실·지휘스킬 선택·출격 준비·작전 지도, 전투와 동일 스킬 아이콘·진행 중 전역 메뉴 차단.
+11. 작전 장비: 보관함/상인/상세/교체 비교/합성/인챈트 대상·교체·결과/승급 대상·결과/수령대기·포기. 포탑 탭 제외, 원 거래·기록/소유자/인챈트 상태 유지.
+12. 종료: 승리·패배·작전 일지·과거 장비 상세, 승리 보상 수령 후 로비/패배 로비 단일 버튼, 장비·구매·인챈트·합성내역 및 스크롤 복원.
+13. 전체 통합: DEV 번들/R2·첫 다운로드/캐시 재사용·실계정 전환·메모리/핸들 해제·다중 해상도 회귀. 단위별 DEV 검증은 마지막까지 미루지 않고 완성된 묶음마다 진행.
+- 각 화면 완료 조건: 독립 요소 제작/재사용 → Addressables 키 연결 → 기존 Model/Controller 콜백 → 실제값/취소/재진입/해제 검사 → 실제 Unity 캡처와 승인본 대조 → 기존 MD 기록. 상시 Update 금지 기준 유지.
+- 보류: 인챈트 사건 선택49, 로고제거 후보(popup-brand-removal-v01 manifest는 CANDIDATE_REFERENCE_ONLY), 최신 전투 화면 등 Plan 미확정 시안. 이 목록은 최근 UI 승인 흐름의 연결 순서이며 프로젝트 전체 미연결 자산 전수감사 결과는 아님.
+
+### 2026-11-13 사용자 역할 전환 — 시안 Plan 인계 / Unity 연결 재개
+- 사용자 명시로 남은 최종시안·브랜드로고 기준 정리를 LAST RAIL_Plan_9(01a1b6a2-fbe7-7823-86ba-37d97c4d5b07)에 전달 성공. 인챈트노드49는 로고삭제 수정대기·미승인,48까지 승인. 이 세션은 신규 시안 제작 중단, 승인시안 독립리소스/Unity 연결 담당.
+- 실제 runtime D:/Project/LASTRAIL/unity-project, Git top-level D:/Project/LASTRAIL/common-dir ../.git 확인. 기존 변경·미추적 파일 대량 존재, 초기화/덮어쓰기 금지.
+- 첫 연결 단위: 공통 좌측 통합 아이콘 메뉴 및80% 모달딤. 기존 LobbyArtwork 프레임·아이콘의 PreparedContent 소유권을 재사용, LobbyCommandDeck/LobbyDestinationPages 내 기존 콜백 유지. 해당 파일과 새 메뉴 View/테스트만 본 세션 편집.
+- 장비 최근시안 대부분 reference-only이며 독립원화/실API 계약 확인 없이 합성PNG를 실행UI로 사용하지 않음. 전체화면 연결완료 미주장.
+- 1차 구현: `LobbyNavigationRail` 공통 View를 로비/6개 하위화면에 연결. 외곽 프레임1·구분선4·아이콘5, 선택영역 색/흰 아이콘, 모집은 티켓 아이콘. 텍스트/개별 버튼 프레임 제거. 기존 화면 콜백 사용·비활성/폐기된 입력 차단, 부모 소유 프레임/atlas 해제 안 함, 자체 Material만 해제. 상시 Update 추가0. 일반 ShowInfo 딤 alpha .80 적용(설정/이야기 등 별도 전체화면 전환은 아직 미교체).
+- 공통 메뉴 공간 확보에 따른 카드/라벨/버튼 동시 축소·배치 및 반복 Reflow 누적 없음 검사를 추가. 편성 resource lifecycle fixture에 실제 부모가 이미 준비하는 TabIcon shader 포함. 원격주소/번들/서버 변경0.
+- QA `QA/ResourceIntake-20261110/connection/unified-navigation-runtime-v01/`: 최초 제한환경 Unity 라이선스 실패, 승격 실행으로 컴파일/시험 진행. v01 23/27, 카드 배치/fixture/에디터 수명호출 보완 후 v02 26/27. 남은 EditMode SendMessage assertion은 reflection으로 실제 OnDestroy 경계 호출하도록 수정. **results-v03.xml 27/27 PASS**: 화면 전환/Back·다중 해상도 버튼 hit·반복 배치·취소된 늦은 로드·재진입·보유 핸들 전부반환·구 입력차단·중복 저장/늦은 실패 보존. Material 해제는 EditMode에서 OnDestroy 직접 호출 검사이며 실제 Player 누수실측 아님. 실제 D3D11 편성 캡처 확인, DEV 데이터가 아닌 in-memory 시험 계정.
+- 잔여: 승인된 비전투5인 초상화·좌우 전투객차 지붕 5인 미리보기·오른쪽 저장편성 목록·활성화 단일 동작의 편성 본문 교체. 현재 런타임에는 구 배치도/분대장/저장 버튼이 남음. 최신 독립 원본/서버 저장·활성화 흐름부터 대조해야 하며 이번 공통메뉴 완료와 구분. 다른 승인화면의 독립자산/실제 연결 검수, DEV 번들 배포·로그인·캐시/메모리 실측은 미실행.
+
+### 2026-11-13 수령포기 승인 / 인챈트 사건 선택 후보
+- equipment-forfeit-landscape-v01 사용자 승인 등록.
+- enchant-node-landscape-v01/49-enchant-node.png 및 manifest/PROMPT 저장·육안 확인. 기존 v18 node-entry와 v15 최신 정정 확인 후 가로 재구성. 장비획득/인챈트/승급3카드 동일크기, 추천·사전선택 없음,건너뛰기,전역메뉴/포탑 없음. 신규시안 승인대기.
+- 3카드 종류 조합·1성흉갑은 예시이며 고정 보장 아님. 장비카드별1개 표시. 승급 원카드 부적격 처리 재도입 금지, 대상목록의 실제 장비별 사유 표시. 원offer/원명령/취소소비0/재진입재추첨0 유지.
+- 기존 사건계약 외 신규 랜덤사건을 창작·확정하지 않음. Unity/서버 미변경,실제 선택·건너뛰기·취소·재진입 미검증. 생성합성시안으로 독립자산 아님.
+
+### 2026-11-13 수령대기 승인 / 수령포기 확인 후보
+- equipment-pending-landscape-v01 사용자 승인 등록. 아이콘 통일 잔여는 기존 기록 유지.
+- equipment-forfeit-landscape-v01/48-equipment-forfeit.png 및 manifest/PROMPT 저장·육안 확인. 기존 equipment-forfeit-dialog-v50 REVIEW 공통2버튼 계약 재사용: 대기 급속냉각2성1개·손실 안내·취소/수령포기·X, 원보관함 딤. 신규시안 승인대기.
+- 포기는 확인한 미수령 원item집합+bundle revision으로 DeclineRemaining1회. 원집합 변경 시 재확인,새항목으로 범위 확대 금지. 보유품/기수령/영구보상 불변. 취소/X는 확인만 닫고 선택/스크롤/초점복원. 불명결과 원영수증복구.
+- Unity/서버 미변경. 생성 합성시안이며 독립자산 아님. 실제 포기·목록변경·취소/재진입/해제 미검증.
+
+### 2026-11-13 승급 결과 승인 / 보관함 가득참 후보
+- equipment-promote-result-landscape-v01 사용자 승인 등록.
+- equipment-pending-landscape-v01/47-equipment-pending.png 및 manifest/PROMPT 저장·육안 확인. 기존 v31/v33 정책 참조:54/54 예시, 미소유 수령대기2성냉각 좌측, 보관중 목록 우측 내부스크롤, 수령포기. 신규시안 승인대기. 강화장갑 그림은 구 판형으로 생성되어 최근 흉갑형과 카탈로그 아이콘 통일 잔여.
+- 대기품 점유 제외,정리 후 자동수령 금지·대기품 직접 클릭으로 원보상1회 수령. 실제 itemID/command key/원영수증 유지. 삭제 후 목록 앞으로채움·빈칸끝·스크롤유지.54는 기존 확장용량 시안값으로 기본용량 정책 변경 아님.
+- Unity/서버 미변경, 실제 정리/수령/수령포기/취소·재진입·해제 미검증. 다음 후보는 수령 포기 확인.
+
+### 2026-11-13 승급 대상 승인 / 승급 결과 후보
+- equipment-promote-target-landscape-v01 사용자 승인 등록.
+- equipment-promote-result-landscape-v01/46-promote-result.png 및 manifest/PROMPT 저장·육안 확인. 기존 enchant-promote-result-v20 REVIEW 계약 재사용:2→3성 강화장갑, 결과3성, 보관중,세트태그·기존인챈트 유지,확인1개. 신규 결과시안 승인대기.
+- 실제 동일장비ID·원장착자/슬롯·인챈트 시술값 유지,원성공영수증 후만 결과 표시. 확인은 해결된 원노드 복귀만,재승급/보상/소비 재실행 없음. 실패/미확인은 원키복구.
+- Unity/서버 미변경. 생성 합성시안이며 독립자산 아님. 실제 승급·소유/슬롯 보존·취소/재진입/해제 미검증.
+
+### 2026-11-13 인챈트 교체·완료 승인 / 승급 대상 후보
+- enchant-replace-landscape-v01 및 enchant-result-landscape-v01 사용자 승인 등록. 결과44-enchant-result.png 저장·육안 확인:2성/선제방벽5%6초/확인1개, 기존 v19 예시 재사용. 이전 카일3성 장비와 별도fixture이며 성급 하락이 아님. 원성공영수증 후만 결과 표시, 확인은 해결된 원노드 복귀만.
+- equipment-promote-target-landscape-v01/45-promote-target.png 및 manifest/PROMPT 저장·육안 확인. v17 통합목록 정책과 최신 포탑제외 반영. 단일목록/필터/장착상태,5성 최대성급 비활성,잠금 별도 사유,2성 선택 예시. 실제 적격성은 원offer 성급범위/권한/안전상태 기준.
+- 신규 승급대상 시안 승인대기. 장착품 원소유자/슬롯 유지,선택·취소 소비0. Unity/서버 미변경, 실제 입력·거래·취소·재진입·해제 미검증. 다음 후보: 장비 승급 결과.
+
+### 2026-11-13 인챈트 대상 승인 / 교체 확인 후보
+- enchant-target-landscape-v01 사용자 승인 등록.
+- enchant-replace-landscape-v01/43-enchant-replace.png 및 manifest/PROMPT 저장·육안 확인. 기존 v21 REVIEW 공통2버튼 확인 재사용: 대상목록 위 팝업, 현재 인챈트·손실 안내·취소/인챈트·X, 새효과 사전미공개.
+- 카일 슬롯1·3성 흉갑은 시안 예시. 기존2성 EN01의5%/6초를3성에 복제하지 않고 수치대시 사용. 파란버튼은 스타일 예시이며 실제 필수값 미확인 상태 실행 허용 아님.
+- 취소/X는 확인만 닫고 선택/스크롤 복원·소비0. 확정은 기존 명령1회 및 revision/잠금/적격성 검증, 상태변경 시 재확인. 결과불명 원키복구, 새효과는 성공 후 공개. 신규시안 승인대기, 다음은 인챈트 결과 공개 후보.
+- Unity/서버 미변경, 실제 클릭·거래·취소·재진입·해제 미검증. 생성 합성시안이며 독립자산 아님.
+
+### 2026-11-13 작전일지 합성내역 승인 / 인챈트 대상 후보
+- operation-journal-popup-landscape-v03 사용자 승인 등록.
+- enchant-target-landscape-v01/42-enchant-target.png 및 manifest/PROMPT 저장·육안 확인. 기존 enchant-target-v18 REVIEW의 단일목록/전체·보관함·장착중 필터, 잠금 비활성, 인챈트보유 표시, 5성 적격 가능 유지. 포탑 삭제, 요원 장착 표시만 사용.
+- 첫 생성의 손장갑 오해를 기존 흉갑 형태로 국소 수정하고 최종 출력 확인. 새 목록은 시안용 예시·승인대기, 실제 보유목록이나 독립 아이콘 연결 아님.
+- 선택/필터/취소 소비0, 장착자·슬롯 유지, 기존인챈트는 손실확인 후 원시술 명령1회. 새 효과는 성공 후만 공개. 다음 후보: 인챈트 교체 손실 확인.
+- Unity/서버 미변경, 실제 명령/입력/취소·재진입·해제 미검증.
+
+### 2026-11-13 합성 시안 승인 / 결과 작전일지 합성 내역 추가
+- operation-equipment-synthesis-landscape-v01 사용자 승인 등록. 추가 요청 우선하여 다음 시안은 작전일지 합성내역으로 진행.
+- operation-journal-popup-landscape-v03/20-operation-journal.png 및 manifest/PROMPT 저장·육안 확인. 주재료2성+보조2성→결과3성 아이콘, 주/보조/결과 표시, 인챈트 배지, 아이콘 전용 사건열. 새 일지 시안 승인대기.
+- 승리·패배 결과에서 여는 작전일지 공통 적용 예정. 성공 합성만 원 사건순서로 거래당1건 기록. 미리보기/취소/실패는 성공 내역에 넣지 않음. 주·보조 합성 전 snapshot과 결과 영수증의 확정 snapshot을 사용하고 소모된 장비를 현재 보관함으로 역산하지 않음.
+- 각 아이콘은 읽기전용 과거 장비 상세 연결, 주/보조 당시 인챈트와 결과 계승 인챈트 구분. 상세 닫기 시 일지 스크롤 유지, 긴 내역만 가로스크롤. 누락된 과거 데이터 임의 생성 금지. 실제 서버 기록 필드 존재 여부는 미확인으로 구현 전 원천 확인 필요.
+- Unity/서버 미변경. 실제 기록·클릭·중첩스크롤·취소·재진입·해제 검증 없음. 다음 신규 흐름 후보: 인챈트 대상/효과 교체 확인.
+
+### 2026-11-13 교체 비교 승인 / 장비 합성 후보
+- operation-equipment-replace-landscape-v01 사용자 승인 등록.
+- operation-equipment-synthesis-landscape-v01/41-equipment-synthesis.png 및 manifest/PROMPT 저장·육안 확인. 기존 v54/v56 REVIEW 합성 계약 참조, 포탑 제외. 주재료2성+보조2성→3성 미리보기, 주태그 철벽 유지·보조 화력 소실, 인챈트 유지/소실, 취소/합성 구성. 새 후보 승인대기.
+- 일반합성 무비용·최대5성·동일종류/성급·잠금/정비 적격성 유지. 주재료 위치/태그/기록인챈트 계승, 보조 소모, 결과ID/고유효과는 영수증으로 확정. 성공은 기존창 갱신, 새 성공페이지/자동장착 없음.
+- 구체 인챈트/기본효과 데이터 미제공으로 규칙 요약 시안이며, 실행 시 확정 전 실제 유지/소실 효과와 수치를 보여야 함. 생성 합성 이미지이며 독립자산 아님. Unity/서버 미변경, 실제 합성·취소·재진입·해제 미검증.
+
+### 2026-11-13 장비 상세 v02 승인 / 교체 비교 후보
+- 포탑 없는 operation-equipment-detail-landscape-v02 사용자 승인 등록.
+- 다음 operation-equipment-replace-landscape-v01/40-equipment-replace.png 및 PROMPT/manifest 저장·육안 확인. equipment-replace-v02/REVIEW.md의 기존 비교/취소/단일확정 흐름 재사용, 포탑 대상 제외. 레이나 슬롯1 현재/신규 장비와 효과4행, 세트변화, 취소/교체 장착 구성.
+- 최신 값 미확인 방어력·세트변화는 대시, 미확정 상태 교체 비활성. 공격력25%와 없음 효과는 기존 시안 fixture일 뿐 실제 계정 아님. 새 강화장갑 그림은 후보이며 카탈로그 독립 아이콘 승인 아님.
+- 신규 시안 승인대기. Unity/서버 수정 및 거래·취소·재진입·해제 실기 검증 없음.
+
+### 2026-11-13 장비 상세 포탑 탭 제거 정정
+- 사용자 지적에 따라 포탑 탭 제거. 단일 대상 유형이므로 요원 탭도 없애고 레이나·카일·이브·세라·닉스 5인 카드를 직접 표시. 기존 v44의 포탑 흐름을 현행 상세 시안에 다시 적용하지 않는다.
+- operation-equipment-detail-landscape-v02/39-equipment-detail.png 및 manifest/PROMPT 저장. 출력 육안 확인: 두 탭 제거, 5초상·3슬롯·비활성 버튼 유지. v01은 이력이며 v02 승인대기.
+- Unity/서버 미변경. 런타임 포탑 폐기 전수 확인 또는 실제 입력 검증은 하지 않음.
+
+### 2026-11-13 배너 확률 승인 / 작전 장비 상세 가로 후보
+- recruit-probability-landscape-v03 사용자 승인 등록. 선택 배너의 획득대상·기본확률만 표시하며 내부 배너 선택/천장현황/다음1회 확률 없음.
+- operation-equipment-detail-landscape-v01/39-equipment-detail.png 및 PROMPT.md/manifest.json 저장. 기존 equipment-inventory-detail-v44-illustration/REVIEW.md 승인 상세 흐름을 가로 재구성. 2성 조준 장치/공격력25%/고유·인챈트 없음은 기존 시안 예시.
+- 육안 확인: 효과4행, 기본5인, 대상 미선택과 미확정3슬롯, 비활성 대상선택필요. 생성 합성 시안이며 승인 초상 PNG 그대로 조합하거나 독립 리소스 제작한 것이 아님. 새 상세 시안 승인대기.
+- 실제 대상/3슬롯 선택 후 기존 장착·교체 명령, 목록 문맥 복귀, 정비권한 유지. 작전 일지의 과거 장비 읽기전용 상세와 구분. Unity/서버 수정 및 실제 입력·취소·재진입·해제 검증 없음.
+
+### 2026-11-13 확률 정보 선택 배너 전용 정정
+- 사용자 확정 흐름: 일반모집 버튼에서 열면 해당 일반배너, 픽업에서 열면 선택된 픽업배너의 확률. 팝업은 배너명·획득대상/확률·닫기만. 천장현황/다음1회확률/내부모집종류선택/불필요 안내 제외.
+- recruit-probability-landscape-v03/38-recruit-probability.png 및 prompt/manifest 저장·육안확인, 일반모집 예시 승인대기. v01/v02는 이력보존하며 현행 방향으로 신규 적용하지 않음.
+- 향후 Controller가 호출한 bannerId를 전달, 같은배너 유효 snapshot 재사용. 제목/풀/기본확률을 함께 적용하고 다른배너 캐시나 늦은응답 혼입 차단. 미제공 확률 임의 대체 금지. 표시명 획득확률 변경이 추첨/천장/API 정책 변경을 뜻하지 않음.
+- Unity/서버 변경0, 실제 버튼/픽업전환/스크롤/취소/재진입/해제 검증 없음. 합성 reference-only, 숫자 미조회 —% 유지.
+
+### 2026-11-13 확률 정보 다음1회 열 삭제
+- 사용자 요청으로 recruit-probability-landscape-v02/38-recruit-probability.png 수정·저장, prompt/manifest 포함. 획득 대상/기본확률2열로 재정렬, 상단 정예/희귀이상 천장 유지. 하단 '천장 도달 시 보장 규칙이 적용됩니다.'로 교체. 출력 육안확인, 새 시안 승인대기.
+- nextPullProbability의 화면 표시만 제거하며 서버 필드/실제 추첨·천장 정책을 삭제하거나 바꾸지 않는다. 미확인 수치 —% 유지. v01 원본 보존. Unity 변경·실제 스크롤/입력/취소/재진입/해제 검증 없음.
+
+### 2026-11-13 회차 포함 모집기록 승인·확률정보 후보
+- recruit-history-landscape-v03 사용자 승인 manifest 등록. 다음 recruit-probability-landscape-v01/38-recruit-probability.png 및 prompt/manifest 저장·육안검토, 승인대기.
+- 49 공개 banner snapshot 표 확인: 기본확률/현재보장 반영 다음1회확률 구분, 비율×100 표시, 10회 전체 동일확률 오인 방지. 일반모집 정예/희귀이상 보장, 픽업은 관련 추가보장 표시 계약. 유효 원상태 재사용, 재조회 이유 없는 폴링 금지.
+- 화면5인과 —%/천장 — 는 예시/미조회이며 실제 풀·확률 확정 아님. 실제 서버값·권위상태 연결 전 숫자 추측 금지. Unity/서버 변경0, 실제 입력/스크롤/취소/재진입/해제 검증 없음. 합성 reference-only.
+
+### 2026-11-13 모집 기록 회차·천장 보완
+- 텍스트v02 사용자 승인 직후 누적 모집 회차 표시 정정. v03/37-recruit-history.png 및 prompt/manifest 저장·육안확인: 모집일시/구분/누적회차/획득내역4열, 21~30회째 예시, 이전20회째. 모집 후 천장 정예·희귀이상 별도 —/—, 픽업은 관련 픽업천장 포함 계약. 새 수정본 승인대기, 확률 정보 시안은 이 수정 우선으로 후속.
+- 49 banner snapshot 및 Owned history/batch recovery 계약 확인. 누적회차와 초기화되는 천장카운터 구분. 같은배너 유효 원영수증 postPityState.totalPullCount·pullCount·pullSequence가 모두 있을 때만 회차 계산; 현재카운터/로드된목록길이로 과거 추측 금지. 과거 threshold는 원정책 버전 근거 필요, 없으면 미확인. 실제 과거데이터 필드 충족 여부 아직 미검증.
+- 시안 숫자는 예시이며 계정조회 없음. Unity/서버 변경 및 실제 스크롤/회차계산/취소/재진입/해제 검증 없음. 원본 이력 보존.
+
+### 2026-11-13 모집 기록 텍스트 스크롤 정정
+- 사용자 승인된 수정 방향: 초상/인장 이미지·좌우 상세 분할 제거, 전체 폭 텍스트 목록 세로 스크롤. recruit-history-landscape-v02/37-recruit-history.png 및 prompt/manifest 저장·육안확인, v01 보존.
+- 모집 일시/구분/획득 내역3열, 10회 결과는 원모집 단위로 묶어 원순서 줄바꿈. 신규 NEW·중복 요원 인장 ×수량. 제목/열제목/X/닫기 고정, 본문만 스크롤. 기존 원영수증/계정격리·유효 데이터 재사용·누락 구간 cursor조회 유지, 반복폴링/행별 상세조회 신설 없음.
+- 현재는 예시값/미조회 —. 하단 잘린 다음 행 NEW 반복은 그림 예시이며 실제 같은 요원 신규 판정 반복 근거 아님. 실제 NEW/수량은 원사건만 사용. 후보 승인대기, Unity/서버/실계정 조회 변경0, 실제 스크롤·입력·취소·재진입·해제 미검증.
+
+### 2026-11-13 인장 모집결과 승인·모집 기록 후보
+- recruit-results-landscape-v03 사용자 승인 manifest 등록. 다음 recruit-history-landscape-v01/37-recruit-history.png, prompt/manifest 저장·육안검토. 왼쪽 기록 목록/오른쪽 원결과10개·NEW/인장·사용모집권, 같은 팝업 및 X/닫기 구성.
+- 49 Owned history and batch recovery 절 확인: 본인 원batch/receipt·최신순·원순서·비용/전환내역 재사용. NEW는 현재 소유 재판정이 아닌 원사건 기준. 유효 기존 결과 재사용, 불완전 결과/수량 추측 금지, 카드 선택이나 기록 확인으로 재지급/재추첨 없음.
+- 시안3기록·5인반복·사용권10은 예시, 실제일시/수량 — 미조회. 기본 모집화면 위 팝업이며 메뉴 포함 배경차단. 시안 승인대기, Unity/서버 변경·실계정조회·입력/취소/재진입/해제 검증 없음. 합성 reference-only.
+
+### 2026-11-13 중복 요원 재화 인장 최종 선택
+- 사용자 '인장으로 가자': operator-token-comparison-v01 B 인장 승인, A 인식표 미채택. 화면 표시명은 요원 인장 / 레이나 인장 등. 기존 조각·인식표 후보를 신규 표시 기준으로 사용하지 않음. 역사 원본 보존.
+- recruit-results-landscape-v03/35-recruit-results.png 및 prompt/manifest 저장·육안확인: NEW 초상 유지, 중복9칸 팔각 금속 인장/해당 이름·미조회수량, 신호 배경 유지. 이 새 조합 시안은 확인대기, 선택된 B 방향 승인을 자동 화면 전체 승인으로 확장하지 않음.
+- 향후 연출은 초상 → 신호 스캔/인장으로 압축 → 인장·원영수증 수량 고정. 기존 cur_operator_token + operatorId/보유량/전환수량/권리 유지, 표시명·미술만 변경. 재지급·재추첨 없음. 상시 Update 금지, 유한 코루틴/완료콜백 및 닫기취소/재진입 원결과 복원 기준 유지.
+- Unity/서버 변경0, 정지 시안만 제작. 독립 인장 자산·실제 연출/취소/해제 검증 미수행. 공통 문구/런타임 전수 반영 완료 주장 없음.
+
+### 2026-11-13 중복 재화 인식표·인장 비교
+- 사용자 인식표 선호 후 인장도 함께 비교 요청. operator-token-comparison-v01/36-token-comparison.png 및 prompt/manifest 저장. A 인식표(직사각 금속·군번줄), B 인장(팔각 금속 배지·체인 없음), 동일 레이나/배경의 확대+작은 카드 시안 육안 확인.
+- 선택 전 두 안 비교 후보로 유지. 신규 NEW 및 초상→중복재화 전환 방향 유지, 조각 표시명/외형의 최종 채택은 후속 선택으로 확정. 기존 요원별 ID·권리·수량 변경 없음. reference-only 합성 이미지이며 독립 자산/애니메이션 제작 완료 아님. Unity 변경·실제 크기 입력 검증 없음.
+
+### 2026-11-13 모집 NEW 공통 표기·중복 조각 전환 정정
+- 사용자 지시: 신규 획득 표시 공통 문구는 `NEW`. 중복은 초상화를 먼저 보여준 후 조각으로 변환하는 연출, 종료 후 해당 요원 조각 아이콘·수량을 표시. 기존 중복 초상화 고정/중복 배지 시안은 대체. 카드 배경은 청록 신호 파문·금속 그리드·연무로 보강.
+- recruit-results-landscape-v02/35-recruit-results.png 및 prompt/manifest 저장·육안검토. 레이나 조각 첫 출력 머리색 오류 수정. 정지 종료상태 후보만 제작, 실제 연출 프레임/영상은 미제작. 조각 아이콘 신규 후보 승인대기, 원본 v01 보존.
+- 향후 연출: 원결과 초상 표시 → 짧은 신호 스캔/빛 입자로 초상 마스크 전환 → 조각 아이콘과 원영수증 수량 고정. 초상/배경/프레임/NEW/전환FX/조각/수량은 독립 제어. 동작 길이 미확정. 완료 콜백 또는 필요한 동안만 코루틴, 상시 Update 금지. 취소/닫기 후 늦은 완료 차단, 재진입 시 원결과의 조각 상태 복원, 전환에서 재지급/재추첨 금지.
+- 49 서버계약 해당 중복전환절 확인: 요원별 조각(cur_operator_token + operatorId), 수량 원결과 사용. 시안 ×— 는 미조회 예시이며 실제 수량 추론 금지. 글로벌 NEW 문구 방침 기록만, 전 화면/Unity 치환 완료 아님. Unity/서버 변경 및 실제 전환·취소·재진입·해제 검증 없음.
+
+### 2026-11-13 대원 성장3탭 v02 승인·모집 결과 후보
+- 사용자 승인: operator-detail/skill/promotion-landscape-v02 전체 편성 제거안 manifest 승인 등록. 이전 승급 후보상태는 이번 v02 승인에 한해 대체.
+- 다음 recruit-results-landscape-v01/35-recruit-results.png, prompt/manifest 저장·육안확인. 2행5열10결과, 승인5인 정체성 참조재작화, 신규/중복·원결과 순서·확인/X 구성. 5인 반복은 시안 예시로 실제 풀/확률 확정 아님.
+- 47 모집 연출 스킵 상세안 관련절 확인: 원batch/receipt 권위 유지. 미승인 스킵 세부안을 이번 승인으로 승격하지 않음. 중복 전환 수량/희귀도 임의 기입 없음. 카드상세로 원전환 내역 확인하는 후보. 서버 미제공 NEW/전환값 합성 금지.
+- 합성 reference-only 승인대기, Unity·서버·경제 동작 변경0. 실제 입력/결과복구/닫기/자원해제 및 정확alpha 미검증.
+
+### 2026-11-13 대원 성장 편성 버튼 삭제 정정
+- 최신 사용자 요청: 대원 상세·성장에서 편성 버튼 제거, 남은 스킬 훈련 버튼 확대. 능력치/스킬/승급에 공통 적용한 v02 수정 시안 저장: connection/{operator-detail,operator-skill,operator-promotion}-landscape-v02. 각 PNG/prompt/manifest 포함. v01 원본은 이력 보존, 편성 버튼 포함 정책은 이번 정정으로 대체.
+- 스킬 훈련/승급 하단 단일 버튼을 재화 행 폭에 맞게 확대, 능력치 탭은 편성 제거 후 기존 스킬 훈련/승급 이동 행을 넓은 높이로 재배치. 세 출력 육안 확인. 내장 imagegen 편집이며 원본 픽셀 완전 동일 보존/실제 좌표 정밀 검증 주장 없음.
+- 수정 후보 승인대기. Unity 변경 및 실제 입력/레이아웃 검증 없음. 독립 리소스 제작/연결 완료 아님.
+
+### 2026-11-13 스킬 훈련 승인·승급 탭 후보
+- operator-skill-landscape-v01/33-operator-skill.png 사용자 승인 등록. 다음 operator-promotion-landscape-v01/34-operator-promotion.png 및 prompt/manifest 저장, 육안검토 후 승인대기.
+- 35 경제부록 §7 승급0→I 비용 크레딧640·전술 데이터320·특수 코어1을 예시 표시. 기존 레이나/좌측 통합 메뉴 구성 유지 참조편집. 특수 코어는 이번 신규 아이콘 후보이며 기존 승인 원본 일치 확인 없음. 승급 효과 수치 임의 작성 없음.
+- 보유량 — 는 실제 계정 조회가 아니며 실행 권한이 아니다. 서버 비용/성장 제한 계약 유지. Unity 변경·실제 입력/성장/취소/재진입/해제 검증 없음. 합성 reference-only, 독립 원화/동일 자산 연결 완료 아님.
+
+### 2026-11-13 대원 능력치 승인·스킬 훈련 후보
+- operator-detail-landscape-v01/32-operator-detail.png 사용자 첨부 승인, manifest 등록. 다음 operator-skill-landscape-v01/33-operator-skill.png 후보 및 prompt/manifest 저장·육안검토.
+- 35 경제부록 §7의 스킬1→2 비용 크레딧160/전술 데이터80을 시안용 예시로 사용. 훈련 데이터 EXP 소비 아님. 보유량/요원레벨 미확인 — 표기, 실제 실행 가능 여부는 서버 권위 및 기존 작전중 성장 제한 유지. 파란 버튼은 디자인 표현이며 조회되지 않은 보유량으로 실행 허용하지 않는다.
+- 스킬 효과 임의 창작 없음, 단계별 효과 상세 보기는 후속 정의 확인 필요. 통화 아이콘은 참조 재작화이며 동일 원본 연결 완료 아님. 능력치 승인과 이번 스킬 탭 승인대기를 구분. Unity 변경/실제 성장·취소·재진입·해제 검증 없음.
+
+### 2026-11-13 대원 상세·성장 시안 착수
+- 후보 저장: `QA/ResourceIntake-20261110/connection/operator-detail-landscape-v01/32-operator-detail.png`, prompt/manifest. 첫 출력 전술 데이터 아이콘 혼입을 EXP 칩으로 교정하고 육안 확인. 능력치 탭만 제작, 스킬 훈련/승급 상세 후속. 합성 시안 승인대기, 독립 반신 원화 제작 완료 아님. Unity 및 실제 입력/성장 검증 없음.
+- 범위: Direction reference-only 후보 `operator-detail-landscape-v01`. 승인 대원v03·비전투 레이나 초상·운행보급v02 아이콘을 참조. 별도 승인 반신 자산 미확인, 초상 참조 재작화로 명시. Unity 변경 금지 유지.
+- 35 경제부록 §7 훈련5슬롯 EXP 소유/최소슬롯 동기화, 최신 훈련 데이터·전술 데이터 명칭/아이콘 기준 확인. 개인 EXP 직접 청구 UI를 신설하지 않고 훈련 코어 진입으로 연결하는 시안. 수치/스킬 효과 임의 확정 금지. 완료조건: 후보 저장·육안검토·승인대기 표시.
+
+### 2026-11-13 내 문의·답변 확인 승인 / 새로고침 30초 제한
+- 사용자 승인본: `QA/ResourceIntake-20261110/connection/support-replies-popup-landscape-v01/31-support-replies.png`. manifest 승인 등록. 기존 후보/승인 대기 표기는 이 기록으로 대체한다.
+- 추후 Unity 구현: 수동 새로고침 요청을 수락한 시점부터 30초 쿨다운. 요청 중 또는 쿨다운 중 중복 실행 차단. 팝업을 닫고 다시 열어도 기존 상태 소유자의 만료 시각으로 남은 제한을 유지한다.
+- 자동 30초 재조회가 아니다. 기존 Controller 콜백으로 연결하고 상시 Update 금지. 남은 시간 표시가 필요하면 화면이 열린 쿨다운 동안만 코루틴을 사용하며 닫을 때 표시 작업을 취소한다.
+- 이번 변경은 승인/구현 기준 기록만 수행. Unity 구현 및 실제 쿨다운·취소·재진입 검증은 미수행.
+
 Coordinator: LAST RAIL_Plan_5 / 01a09a6a-666a-7200-bcaa-c5cb3fd96bfa.
 Successor task ID: 01a09a99-a37a-7b73-8445-9ef16ed147f8 (LAST RAIL_Unity_2; Local D task, verified through read_thread). Predecessor: 01a07f9b-0ecd-79d1-906b-582013478a09 (reference only; no new development assignments).
 Explicit working directory: D:/Project/LASTRAIL/unity-project.
@@ -6103,3 +6440,32 @@ PCDev05/v02 빌드 준비 중. 기존 PCDev04/v01 불변. v02/windows-source-man
 - 사용자 ㄱㄱ로 로비→상단메뉴→옵션 모달 구조 시안 수정. options-landscape-v02/25-options-game.png: 중앙 옵션 타이틀/X/4탭/설정/버전·저장표시, 전면 좌측통합메뉴·로비로·뒤로·별도배경 제거. 뒤 상단메뉴/로비 어두움 직접 확인.
 - 단일 검정alpha0.8 차단막을 최상위 옵션 아래·상단메뉴 위로 이동, 옵션 X는 옵션만 닫고 같은 차단막을 상단메뉴 아래로 복귀. 최상위만 입력/포커스 허용, 닫기1회에1단계. 중첩차단막/중복어두움 없음. 원상단메뉴 상태 보존, 즉시로비 이동 없음.
 - 내장imagegen 참조편집/prompt/manifest/PNG 저장, v01은 이전 전체화면후보로 보존. 시각후보 승인대기. 정밀alpha/원픽셀동일/실입력·설정저장·취소·재진입·해제 미검증, Unity 변경0. 사운드/화면/계정 탭은 아직 새팝업시안 미제작.
+
+### 2026-11-13 옵션 승인·3탭 및 이야기 일지 2중팝업 후보
+- options-landscape-v02/25-options-game.png 사용자 승인 등록. 승인범위 게임탭·2중팝업, 신규3탭 미술은 별도 후보.
+- options-tabs-landscape-v01/26-options-sound.png,27-options-display.png,28-options-account.png 제작. 사운드4슬라이더, 화면 화질/프레임, 계정 게스트/미연결·연결버튼·비활성로그아웃 원시안 내용 계승. 화면/계정 세로 원본 직접 확인. 값·버전·저장표시·계정상태는 예시, 실행 정책·권리 변경 없음.
+- story-journal-landscape-v02/23-story-journal.png: 기존 가로목록/미리보기를 메뉴 위 2중팝업으로 변경, 전면좌측탭/재화/전체화면배경 제거, X닫기→상단메뉴. 기록보기 기존열람경로, 목록 선택/스크롤 복귀보존. 열람/잠금 예시 유지.
+- 공통: 단일 검정alpha0.8 차단막은 최상위팝업 아래·메뉴위, 메뉴/로비 입력차단, X1회1단계·차단막 이동복귀. 실제 구현은 옵션탭 공통프레임 재사용; 생성시안간 프레임높이 소폭차이는 독립새프레임 요구가 아님.
+- 내장imagegen4장 생성/육안확인/프로젝트복사·prompt/manifest 저장. 정밀alpha·픽셀동일성 미검증, 원본보존. Unity/서버변경0, 실제 슬라이더/저장/기기지원/계정연결/열람/닫기/취소/재진입/해제 미검증. 새4장 승인대기.
+
+### 2026-11-13 옵션3탭·이야기팝업 승인 / 공지사항 후보
+- 사용자 승인으로 options-tabs-landscape-v01의26/27/28 및 story-journal-landscape-v02/23 승인등록. 런타임연결 승인·검증완료 아님.
+- notices-popup-landscape-v01/29-notices.png 후보. 기존 menu-destinations-v03 공지 목록/상세 원본 직접확인 후 좌목록·우본문을 단일2중팝업에 통합. 목록선택은 같은팝업본문교체, 추가3중팝업없음. X→상단메뉴. 단일검정alpha0.8 최상위아래/뒤입력차단 유지.
+- 기존 샘플제목5종/서비스이용안내문구, 목록·본문 스크롤바/닫기/뒤메뉴 어두움 육안확인. 실제 넘치는 내용만 스크롤. 내장imagegen 참조제작 prompt/manifest/PNG 저장. 공지 발행/새정책/Unity변경0, 실제입력·스크롤·취소·재진입·해제 미검증. 새공지시안 승인대기.
+
+### 2026-11-13 공지사항 승인·고객지원 문의작성 후보
+- notices-popup-landscape-v01/29-notices.png 사용자 승인등록.
+- support-popup-landscape-v01/30-support-compose.png 후보 제작. 기존 menu-destinations-v01/04-support-compose.png 직접확인 및 manifest 문의계약 해당출력 확인(전체출력 일부잘림). 문의작성/내문의2탭, 유형/본문, 빈입력 전송비활성, 민감정보안내/외부링크 유지. 상단메뉴 위2중팝업·X복귀·단일80%차단막 구성 육안확인.
+- 기존초안 소유자/동일프로세스탭왕복 보존·계정격리, 전송검증/원키/확정접수기준 유지. 문구·입력폼시안이며 실제문의전송 없음. 내문의 목록/답변상태는 이번 미제작.
+- 내장imagegen 참조재작화 prompt/manifest/PNG 저장, 원본보존. Unity/서버변경0, 실제 키보드/입력/전송/취소/재진입/해제 미검증. 고객지원 후보 승인대기.
+### 2026-11-13 고객지원 문의 작성 승인·내 문의 후보
+- support-popup-landscape-v01/30-support-compose.png 사용자 승인 등록. support-replies-popup-landscape-v01/31-support-replies.png는 새 승인 대기 후보이며 prompt/manifest와 함께 connection 아래 저장.
+- 기존 05-support-reply.png 예시 내용을 참조해 왼쪽 문의 목록·오른쪽 문의/공개 답변을 같은 팝업에 구성. 선택 탭, 상태 배지, 세로 스크롤 표시, 새로고침, X 및 어두운 메뉴/로비를 육안 확인. 실제 alpha80%·입력 차단은 구현 계약이며 시안만으로 검증하지 않음.
+- 본인 공개 답변만 표시, 명시적 새로고침은 기존 상태 소유자 사용. 실제 문의 전송/조회 없음. Unity 변경 없음. 실제 스크롤·입력·취소·재진입·해제 미검증. 원본 보존, 합성 시안 reference-only.
+
+
+### Unity 게시 준비 결과 — 2026-11-14
+- 기존 11-13 게시본과 비교하여 전용 브랜치 codex/unity-verified-20261114에 3개 구현 커밋 생성: 23a1bc1 승인 로비/편성/열차 독립 자산·등록(36파일, 폰트 OFL 포함), f8d2822 UI MVC·재사용·비전투 초상화/열차 연결·회귀 테스트(146파일), ad27732 로컬 빌드 Addressables 전용 로드(16파일). 원본 master/index 및 타 담당 파일은 수정/커밋하지 않음.
+- 검증은 본문에 기록된 MVC 고유226개, 로컬 번들42개, 초상화13개 실제 Unity 결과를 재사용(서로 중복 있어 합산하지 않음). 게시 복사 전후 SHA 일치 확인, 주요 비밀키 패턴 검사 발견0; 완전한 비밀정보 감사를 주장하지 않음. diff-check에는 Unity 생성 meta 빈값 뒤 공백 및 기존 UI 공백1줄 경고가 남아 있음; 제품 코드 검증 실패로 숨기거나 diff-check 전체통과로 주장하지 않음.
+- 게시 자료 목록/해시는 로컬 QA/GitHubPublish-20261113/unity-update-20261114.json. 원시 QA·로그·캐시·빌드·계정자료 제외. Unity 자산/코드 검증 기록은 이 MD의 관련 절에 보존. 새 clone에서 테스트·DEV 배포·main 병합은 수행하지 않음.
+- 전체 root 변경 일괄 완료 아님: 별도 전투 시각/진단 경로(ApprovedCombatInformationBinding/OperatorCards/CombatLiveHudBinding/CombatRailWorldView/CombatSecondFinalView/NumberedFormationPlayerCheck/DevFormationProbe)는 이번 UI·로컬번들 게시 범위에서 제외하고 기존 원본에 보존. 담당 확인/검증 후 별도 게시 대상. 게시 브랜치와 실제 원격 SHA는 푸시 후 로컬 영수증으로 확인한다.
