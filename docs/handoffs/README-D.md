@@ -1255,3 +1255,8 @@ S36보고는수락한인계종료로한정,S37정차중다음준비 유지.확�
 
 ## Legacy 삭제 완료 — 2026-11-08 사용자 명시 승인
 D:/Project/LASTRAIL-C-Legacy 삭제 완료. 고유 파일767개와 Git 객체11,185개는 QA/LegacyRetirement-20261108에 보존·검증. 최신 소스 덮어쓰기 없음. 옛 C:/Users/dlstj/OneDrive/문서/ChatGPT/LASTRAIL junction은 D:/Project/LASTRAIL로 변경. 앱의 옛 프로젝트 등록/채팅은 유지하므로 Legacy 항목은 더 이상 작업 경로로 사용하지 않는다. 상세 범위·미검증·복구·삭제 증거: [Legacy 정리 기록](../../QA/LegacyRetirement-20261108/README.md). 과거 Legacy 보존 지시의 실폴더 보존 부분은 이번 명시 삭제 요청으로 대체하며 보존본은 위 QA가 소유한다.
+
+### Story_1 커밋·푸시 정책 적용 및 기존 게시 확인 — 2026-11-14
+사용자 전달 요청에 따라 검증 완료 작업 단위별 관련 변경만 커밋·푸시하고 이 문서에 근거를 남긴다. 배포는 이번 범위에 없으며 타 담당 변경/공유 index를 포함하지 않는다.
+현재 root D:/Project/LASTRAIL은 master·remote 없음,32와 본 인계는 untracked. 기존 비공개 게시 저장소 D:/Project/LASTRAIL/GitHubSnapshot/LASTRAIL,origin=https://github.com/ParkInSeok/LASTRAIL.git,main의 ee5e1f8e343431903bd422120bbda0ab11b8f1b0에 Story_1 기존 산출물이 이미 포함됨을 확인했다.32 전체 SHA256 일치 및 본 인계의 머무는시간 전체 편집 결과 포함 확인. 원격 refs/heads/main도 같은 SHA임을 ls-remote로 확인하여 기존 스토리 작업을 중복 커밋하지 않는다.
+이번 확인 기록만 codex/story-publish-audit-20261114 브랜치에 분리해 게시한다. 임시 index/HEAD 원문에 본 기록만 추가하는 방식으로 공유 작업트리·index와 타 담당 변경을 제외한다. 커밋·푸시 결과는 실행 후 로컬 인계 후속 줄로 기록한다. 기존 35/115와22장면 대응 검증은 내용 변경이 없어 재사용하며 새 스토리 본문·게임/음성 검증·배포는 수행하지 않는다.
