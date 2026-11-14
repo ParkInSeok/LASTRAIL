@@ -1,0 +1,55 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+  "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+  "method": "Original pixels reused; approved logo removal cropped patch; native count/stock/disabled button composition. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-soldout-v22-illustration/REVIEW.md",
+  "fixture": "First armor8 purchased: supply40 to32, inventory8 to9 of30; first stock0 only. Other offers unchanged.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "allowedRectangles": [
+      [
+        650,
+        0,
+        390,
+        66
+      ],
+      [
+        1299,
+        15,
+        48,
+        35
+      ],
+      [
+        1555,
+        15,
+        88,
+        35
+      ],
+      [
+        628,
+        397,
+        92,
+        28
+      ],
+      [
+        545,
+        476,
+        251,
+        63
+      ]
+    ],
+    "visual": "Inspected full image: no brand, first soldout, other offers intact. Static candidate only."
+  },
+  "limits": [
+    "Reference composite; not independent runtime assets.",
+    "No real purchase, HP eligibility or Unity verification."
+  ],
+  "outputs": [
+    {
+      "file": "62-merchant-soldout.png",
+      "sha256": "844994564b5489d3cb6d624e5ce4ccc7eaf1967c6e5943b470a0b0adbbdf7707"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

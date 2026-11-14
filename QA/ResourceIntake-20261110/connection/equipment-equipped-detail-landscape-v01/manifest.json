@@ -1,0 +1,39 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\equipment-equipped-detail-v39-illustration\\equipped-detail.png",
+      "sha256": "3e299efefa58737effade9088b7f1b9cd42d956482875e50a3ae31add9efd548"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-slot-equipped-landscape-v01\\73-equipment-slot-equipped.png",
+      "sha256": "a952a4f02cc766e017053ce20f2c6a54c6d9a2454bcc6d34a7e1462bb6a543a7"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+      "sha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203"
+    }
+  ],
+  "method": "Approved v39 detail frame crop resized once; original16 two-star card inserted; native owner/effects; approved73 dimmed. No image generation.",
+  "policies": [
+    "equipment-equipped-detail-v39-illustration/REVIEW.md",
+    "equipment-empty-slot-selected-v43-illustration/REVIEW.md"
+  ],
+  "fixture": "Reina slot2 equipped armor2shield DEF25percent;unique/enchant absent only in this example. Previous v39 armor3 DEF60/EQ14/EN06 not inherited. No recipient picker;unequip/replace only,close returns to original selection.",
+  "checks": {
+    "sourceHashesVerified": true,
+    "outsidePopupScrimRoundingMaxError": 0,
+    "visual": "Full image inspected:2stars,Reina slot2,equipped,shield,DEF25,no unique/enchant,unequip/replace."
+  },
+  "limits": [
+    "Reference-only composition;resized popup not pixel-identical.",
+    "No real item stats,unequip/replacement,input,mobile or Unity verification."
+  ],
+  "outputs": [
+    {
+      "file": "74-equipment-equipped-detail.png",
+      "sha256": "564944a3485bb89b4295d5c533c75317adf0eefaa4cf44b554f0f004699c88e2"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

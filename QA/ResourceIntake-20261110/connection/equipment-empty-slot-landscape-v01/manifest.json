@@ -1,0 +1,37 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\equipment-empty-slot-v42-illustration\\empty-slot-equipped-badge.png",
+      "sha256": "d09e5de9fb1750e9334a5dd3e02bcbd54b3bea10cdd09eb73f807041c2cb6157"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-fidelity-rebuild-v01\\16-restored.png",
+      "sha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4"
+    }
+  ],
+  "method": "Approved v42 badge-corrected selection modal cropped, owner label replaced; single scale886x1436 to532x862 on dimmed approved16. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-empty-slot-v42-illustration/REVIEW.md",
+  "fixture": "Reina slot2 selected empty,slot1 two-star power,slot3 empty;six two-star example candidates unselected;equip disabled. Separate inventory fixture, not IDs/order continuation from host illustration. No selection executes equip.",
+  "checks": {
+    "canvas": [
+      1602,
+      981
+    ],
+    "outsidePopupScrimRoundingMaxError": 0,
+    "source16HashVerified": true,
+    "visual": "Full image inspected:slot2 cyan empty,slot3 gray,slot1badge,six unselected cards,equip disabled,back/cancel/X."
+  },
+  "limits": [
+    "Reference-only cropped composite; not independently authored runtime assets.",
+    "Single resize, no pixel-identical popup claim.",
+    "Actual item identity,effects,selection,scroll,mobile44dp and Unity not verified."
+  ],
+  "outputs": [
+    {
+      "file": "71-equipment-empty-slot.png",
+      "sha256": "6567a1c1a103c58a5a6c009a7c882841e6d9edcc021fa5f2df1127109f85ba28"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

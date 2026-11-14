@@ -1,0 +1,61 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-fidelity-rebuild-v01\\16-restored.png",
+      "sha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+      "sha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203"
+    }
+  ],
+  "method": "Approved16 native composition; original card crops packed front,original item art/2stars/shield badge resized once for slots; native count and selection outline. No image generation.",
+  "policies": [
+    "equipment-empty-slot-selected-v43-illustration/REVIEW.md",
+    "equipment-equip-refresh-v58-illustration/REVIEW.md"
+  ],
+  "fixture": "Reina slot1power2shield,slot2armor2shield,slot3empty;storage8to7 with first armor removed and remaining order packed front. Full list is illustrative, not exact ID reconciliation with six candidates in72. No extra success popup.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "fivePortraitsChangedPixels": 0,
+    "allowedRectangles": [
+      [
+        134,
+        230,
+        640,
+        605
+      ],
+      [
+        1275,
+        89,
+        100,
+        40
+      ],
+      [
+        860,
+        450,
+        199,
+        129
+      ],
+      [
+        1078,
+        454,
+        181,
+        124
+      ]
+    ],
+    "visual": "Inspected seven stored cards/two empty cells,7/30,slot1power2,slot2armor2selected,slot3empty;revised outline to follow chamfered frame."
+  },
+  "limits": [
+    "Reference-only composition,not new independent assets.",
+    "Actual item IDs,receipt,selection/scroll,stats and Unity not verified."
+  ],
+  "outputs": [
+    {
+      "file": "73-equipment-slot-equipped.png",
+      "sha256": "a952a4f02cc766e017053ce20f2c6a54c6d9a2454bcc6d34a7e1462bb6a543a7"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

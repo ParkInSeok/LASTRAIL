@@ -1,0 +1,62 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+  "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+  "method": "Original pixels plus approved local brand-removal patch; native count, full-capacity label and three disabled buttons; no image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-full-v27-illustration/REVIEW.md",
+  "fixture": "Separate example:40 supply,30/30 storage,no discount,five stock1,valid recovery targets. Equipment purchases disabled only for capacity. Repair and potion remain enabled; storage entry available, no automatic purchase on clearing space.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "servicePanelsExact": true,
+    "allowedRectangles": [
+      [
+        650,
+        0,
+        390,
+        66
+      ],
+      [
+        1551,
+        15,
+        91,
+        35
+      ],
+      [
+        723,
+        105,
+        230,
+        35
+      ],
+      [
+        545,
+        476,
+        251,
+        65
+      ],
+      [
+        921,
+        476,
+        251,
+        65
+      ],
+      [
+        1298,
+        476,
+        251,
+        65
+      ]
+    ],
+    "visual": "Full image inspected:30/30,full label,three disabled purchase buttons,two unchanged cyan services; stock1 and prices retained."
+  },
+  "limits": [
+    "Reference composite only; independent runtime resources not produced.",
+    "No actual inventory, recovery eligibility, input, transaction or Unity verification."
+  ],
+  "outputs": [
+    {
+      "file": "66-merchant-full.png",
+      "sha256": "bfddd997fb338cd1f5a6ede2b443343f96b13b2ada38f3898c007937e2989e4c"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

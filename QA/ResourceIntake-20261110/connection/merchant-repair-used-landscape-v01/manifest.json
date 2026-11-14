@@ -1,0 +1,64 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\merchant-soldout-landscape-v01\\62-merchant-soldout.png",
+  "sourceSha256": "844994564b5489d3cb6d624e5ce4ccc7eaf1967c6e5943b470a0b0adbbdf7707",
+  "method": "Native composition on approved62; counts and disabled buttons only; no image generation.",
+  "policies": [
+    "equipment-merchant-repair-v23-illustration/REVIEW.md",
+    "equipment-merchant-service-used-v25-illustration/REVIEW.md"
+  ],
+  "fixture": "Repair success32 to12 supplies; inventory9/30 unchanged; repair stock0 used; armor remains soldout; other stock1 remains, purchases disabled for insufficient funds. No extra success popup.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "allowedRectangles": [
+      [
+        1299,
+        15,
+        48,
+        35
+      ],
+      [
+        741,
+        690,
+        83,
+        28
+      ],
+      [
+        921,
+        476,
+        251,
+        65
+      ],
+      [
+        1298,
+        476,
+        251,
+        65
+      ],
+      [
+        725,
+        766,
+        253,
+        65
+      ],
+      [
+        1287,
+        765,
+        257,
+        65
+      ]
+    ],
+    "visual": "Full image inspected: numbers, used label, retained stocks and disabled purchase buttons."
+  },
+  "limits": [
+    "Reference composite, not independent runtime resources.",
+    "No actual purchase, HP update or Unity integration tested."
+  ],
+  "outputs": [
+    {
+      "file": "63-merchant-repair-used.png",
+      "sha256": "9b9bf7c2ddbeaabd1077de2c431b4239c8a2d38913f35a77e1401f58599072ba"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

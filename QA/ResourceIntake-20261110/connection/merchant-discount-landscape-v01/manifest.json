@@ -1,0 +1,68 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+  "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+  "method": "Original art plus approved local logo-removal patch. Native price strikethroughs and discount label. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-discount-v26-illustration/REVIEW.md",
+  "fixture": "Separate prepurchase example:13percent current discount quote; supply40, inventory8/30, five stock1. Prices7/14/28/18/21. Quote availability across items does not guarantee discount for every later purchase.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "allowedRectangles": [
+      [
+        650,
+        0,
+        390,
+        66
+      ],
+      [
+        723,
+        104,
+        149,
+        36
+      ],
+      [
+        678,
+        435,
+        76,
+        33
+      ],
+      [
+        1052,
+        435,
+        76,
+        33
+      ],
+      [
+        1426,
+        435,
+        76,
+        33
+      ],
+      [
+        851,
+        726,
+        76,
+        33
+      ],
+      [
+        1416,
+        726,
+        76,
+        33
+      ]
+    ],
+    "priceArithmetic": "ceil(original*.87) verified for all5",
+    "visual": "Full image inspected: original crossed out, current cyan prices, no brand, original art retained."
+  },
+  "limits": [
+    "Reference-only composite, not independent runtime assets.",
+    "No actual quote, shared discount counter, HP eligibility, transaction or Unity verification."
+  ],
+  "outputs": [
+    {
+      "file": "65-merchant-discount.png",
+      "sha256": "d78864242338e7ac588840f4332cf647dad9e94f80ca46154bc2a8694bf2e311"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}
