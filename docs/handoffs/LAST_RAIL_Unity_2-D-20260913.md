@@ -6469,3 +6469,11 @@ PCDev05/v02 빌드 준비 중. 기존 PCDev04/v01 불변. v02/windows-source-man
 - 검증은 본문에 기록된 MVC 고유226개, 로컬 번들42개, 초상화13개 실제 Unity 결과를 재사용(서로 중복 있어 합산하지 않음). 게시 복사 전후 SHA 일치 확인, 주요 비밀키 패턴 검사 발견0; 완전한 비밀정보 감사를 주장하지 않음. diff-check에는 Unity 생성 meta 빈값 뒤 공백 및 기존 UI 공백1줄 경고가 남아 있음; 제품 코드 검증 실패로 숨기거나 diff-check 전체통과로 주장하지 않음.
 - 게시 자료 목록/해시는 로컬 QA/GitHubPublish-20261113/unity-update-20261114.json. 원시 QA·로그·캐시·빌드·계정자료 제외. Unity 자산/코드 검증 기록은 이 MD의 관련 절에 보존. 새 clone에서 테스트·DEV 배포·main 병합은 수행하지 않음.
 - 전체 root 변경 일괄 완료 아님: 별도 전투 시각/진단 경로(ApprovedCombatInformationBinding/OperatorCards/CombatLiveHudBinding/CombatRailWorldView/CombatSecondFinalView/NumberedFormationPlayerCheck/DevFormationProbe)는 이번 UI·로컬번들 게시 범위에서 제외하고 기존 원본에 보존. 담당 확인/검증 후 별도 게시 대상. 게시 브랜치와 실제 원격 SHA는 푸시 후 로컬 영수증으로 확인한다.
+### 대원 가로 화면 연결 — 2026-11-14 로컬 검증 완료
+- 승인03-no-brand 기준 좌측2열 목록/중앙 독립 비전투 원본/우측 성장 정보. LiveOperators 표시 배치만 변경하고 Controller/계정 소유권/성장 명령 유지. 기존 번들 리소스 재사용, 신규 반신 제작·배포 없음. 선택·성장 입력·취소·재진입 및 실제 번들 렌더 검증 예정.
+
+- 구현: LiveOperators 본문을1600×900 전용 OperatorsOverview로 구성, 기존 세로→가로 이중변환 제외. 좌측2열6셀/페이지, 중앙 비전투 원본 전체UV·종횡비 유지, 우측 정보/성장·훈련코어/편성. 선택/성장/계정 state는 기존 Controller가 소유하며 View 배치만 변경. 소형 성장 버튼은 공통 프레임 사용.
+- 검증: train-fortress-v01/operator-landscape-04.xml **19/19 PASS**. 실제 로컬 빌드 Library/LPC/40317917 사용/원본 adapter 없음. 1600·1200·2100×900에서 카드/코어/편성 버튼 raycast 가림 없음, 5인 선택·기존 성장 입력 수명·닫기/재진입·지연 로드 취소·lease 반환 검사. 통제된 계정 fixture 사용, 서버 쓰기0. 원래 성장 성공/서버 권한 동작을 새로 실행한 증거는 아님.
+- 캡처: QA/ResourceIntake-20261110/connection/train-fortress-v01/unity-operators-built.png — 실제 Play/번들 UI, DEV 실계정 캡처 아님. 직접 확인: 좌2열·중앙 비율·우정보 표시, 얇은 성장 버튼 프레임. 별도 반신 원화 제작 없음; 기존 비전투 원본을 확대 표시. 승인 시안의 객실 배경/장식과 현재 DestinationPages/operators-background는 다르므로 전체 미술 일치 완료/근거없는 일치율 주장 금지.
+- 최초01(18/19),02(1/2) 실패는 검사 카메라가 기본 GameView 렌더 크기를 사용해 raycast 좌표가 캡처 해상도와 달랐음. 실제 RenderTexture를 각 검사 해상도로 할당·렌더한03(2/2) 및 최종04 통과; 제품 입력 우회/검사 제거 없음. 실패 XML 보존.
+- 새 리소스/번들 빌드·DEV/R2 배포 없음. 다음은 승인 객실 배경 및 독립 상세 반신 원본 확인/연결, 다른 미연결 화면. 현재 source/MD 3파일을 기존 codex/unity-verified-20261114에 검증 단위로 커밋·푸시한다.

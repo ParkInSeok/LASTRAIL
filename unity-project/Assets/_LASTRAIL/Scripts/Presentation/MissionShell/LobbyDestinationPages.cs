@@ -161,29 +161,34 @@ namespace LastRail.Presentation.MissionShell
         }
         void LiveOperators()
         {
+            var body=content;content=Rect("OperatorsOverview",body,0,0,1600,900);
+            Panel("RosterPanel",content,135,106,340,755);Text("RosterHeading",content,"대원 목록",155,119,290,45,31);
+            Panel("OperatorInfoPanel",content,1190,106,390,720);
             OperatorScreenController controller=null;int pageCount=1;var titles=new[]{"레벨업","스킬 훈련","승급"};
-            var portrait=Rect("SelectedPortrait",content,34,218,280,203).gameObject.AddComponent<RawImage>();portrait.raycastTarget=false;
-            var selectedName=Text("SelectedName",content,"",343,228,563,57,42);
-            var growth=Text("OwnedGrowthState",content,"",343,301,563,103,29);
-            Tabs(new[]{"전체","전투","지원"},438);content.Find("Category1").GetComponent<Button>().interactable=false;content.Find("Category2").GetComponent<Button>().interactable=false;
+            var portrait=Rect("SelectedPortrait",content,490,120,690,690).gameObject.AddComponent<RawImage>();portrait.raycastTarget=false;
+            var selectedName=Text("SelectedName",content,"",1215,125,340,55,38);
+            Text("OperatorInfoHeading",content,"대원 정보",1215,200,340,42,28);
+            var growth=Text("OwnedGrowthState",content,"",1215,255,340,100,25);
+            Text("GrowthHeading",content,"성장 운용",1215,390,340,42,28);
             var cards=new Button[6];var faces=new RawImage[6];var names=new TMP_Text[6];var indices=new int[6];
-            for(int i=0;i<6;i++){int cell=i;float x=34+i%3*296,y=525+i/3*237;
-                cards[i]=Button("SelectOwnedOperator"+i,content,x,y,280,220,null,()=>{if(indices[cell]<0)return;controller.Select(indices[cell]);});
-                faces[i]=Rect("Portrait",cards[i].transform,8,8,264,161).gameObject.AddComponent<RawImage>();faces[i].raycastTarget=false;
-                names[i]=Text("OwnedName",cards[i].transform,"",8,177,264,35,28,true);
+            for(int i=0;i<6;i++){int cell=i;float x=150+i%2*160,y=180+i/2*205;
+                cards[i]=Button("SelectOwnedOperator"+i,content,x,y,150,192,null,()=>{if(indices[cell]<0)return;controller.Select(indices[cell]);});
+                faces[i]=Rect("Portrait",cards[i].transform,6,6,138,144).gameObject.AddComponent<RawImage>();faces[i].raycastTarget=false;
+                names[i]=Text("OwnedName",cards[i].transform,"",6,154,138,32,23,true);
             }
-            var next=Button("OwnedPage",content,688,1003,219,60,"",()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
-            Button("OpenFormation",content,34,1003,425,60,"편성",()=>Open(LobbyPage.Formation));
-            var coreButton=Button("ManageTrainingCore",content,475,1003,197,60,"훈련 코어",()=>controller.OpenCore());
-            var notice=Text("GrowthNotice",content,"",34,1085,873,95,25,true);
+            var next=Button("OwnedPage",content,155,805,300,40,"",()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
+            Button("OpenFormation",content,1390,735,165,65,"편성",()=>Open(LobbyPage.Formation));
+            var coreButton=Button("ManageTrainingCore",content,1210,735,170,65,"훈련 코어",()=>controller.OpenCore());
+            var notice=Text("GrowthNotice",content,"",1210,830,350,55,19,true);
             var costs=new TMP_Text[3];var actions=new Button[3];
-            for(int i=0;i<3;i++){int action=i;float x=34+i*296;Panel("GrowthOption"+i,content,x,1200,280,290);
-                costs[i]=Text("GrowthCost"+i,content,"",x+12,1220,256,122,24,true);
-                actions[i]=Button("GrowOperator"+i,content,x+10,1370,260,91,titles[i],async()=>await controller.GrowAsync(action),true);
+            for(int i=0;i<3;i++){int action=i;float y=448+i*86;Panel("GrowthOption"+i,content,1210,y,350,80);
+                costs[i]=Text("GrowthCost"+i,content,"",1222,y+8,205,64,18,true);
+                actions[i]=Button("GrowOperator"+i,content,1430,y+14,118,52,titles[i],async()=>await controller.GrowAsync(action));
+                actions[i].GetComponentInChildren<TMP_Text>().fontSizeMax=22;
             }
             controller=new OperatorScreenController(accountState,value=>{
                 SelectedMember=value.Selected;var selectedId=value.Id;int count=value.Operators.Count;
-                var face=selectedId==null?null:FormationPlanView.Portrait(selectedId);portrait.texture=face;portrait.enabled=face!=null;portrait.uvRect=FormationPlanView.PortraitCrop(selectedId,face);
+                var face=selectedId==null?null:FormationPlanView.Portrait(selectedId);portrait.texture=face;portrait.enabled=face!=null;portrait.uvRect=new Rect(0,0,1,1);if(face!=null){float fit=Mathf.Min(690f/face.width,690f/face.height);portrait.rectTransform.sizeDelta=new Vector2(face.width*fit,face.height*fit);portrait.rectTransform.anchoredPosition=new Vector2(490+(690-face.width*fit)/2,-(120+690-face.height*fit));}
                 selectedName.text=selectedId==null?"":OperatorVisualCatalog.KoreanLabel(selectedId);growth.text=value.Growth;
                 pageCount=Math.Max(1,(count+5)/6);rosterPage%=pageCount;next.GetComponentInChildren<TMP_Text>().text=(rosterPage+1)+" / "+pageCount;
                 for(int i=0;i<6;i++){int index=rosterPage*6+i;bool exists=index<count;indices[i]=exists?index:-1;cards[i].gameObject.SetActive(exists);
@@ -193,7 +198,7 @@ namespace LastRail.Presentation.MissionShell
                 coreButton.interactable=selectedId!=null;notice.text=value.Notice;
                 for(int i=0;i<3;i++){costs[i].text=value.Actions[i].Cost;actions[i].GetComponentInChildren<TMP_Text>().text=value.Actions[i].Title;actions[i].interactable=value.Actions[i].Enabled;}
             },value=>CoreManager(value,controller.ReplaceCore,controller.SyncCore),CoreConfirm);
-            releasePageBinding+=controller.Dispose;renderBody=controller.Render;renderBody();
+            releasePageBinding+=controller.Dispose;renderBody=controller.Render;renderBody();content=body;
         }
         RectTransform CoreShield(string name)
         {
@@ -388,7 +393,7 @@ namespace LastRail.Presentation.MissionShell
             if(chromeContent!=null)chromeLayout.Apply(chromeContent,(name,r)=>{
                 if(name==LobbyNavigationRail.ObjectName)return r;
                 if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel){if(name=="HeaderShade")return new Rect(0,0,1600,78);if(name=="Back")return new Rect(20,10,80,60);if(name=="PageTitle")return new Rect(130,5,340,65);if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var cv))return new Rect(847+cv*250,17,185,40);if(name.StartsWith("Currency")&&int.TryParse(name.Substring(8),out var ci))return new Rect(800+ci*250,15,240,45);if(name=="CurrencyIcon")return new Rect(809+(r.x-40)/304*250,19,34,34);}
-                if(name=="HeaderShade")return new Rect(0,0,1600,CurrentPage==LobbyPage.Train&&Category==0?100:145);
+                if(name=="HeaderShade")return new Rect(0,0,1600,(CurrentPage==LobbyPage.Train&&Category==0||CurrentPage==LobbyPage.Operators&&!fixture)?100:145);
                 if(name=="Back")return new Rect(20,25,91,70);
                 if(name=="PageTitle")return new Rect(137,20,390,75);
                 if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var value))return new Rect(594+value*305,45,205,45);
@@ -407,7 +412,7 @@ namespace LastRail.Presentation.MissionShell
             pageLandscape.Apply(content,(name,r)=>
             {
                 if(name=="TrainingCoreManager"||name=="CoreConfirmation"||name=="Notice"||name=="EquipmentMultishotDetails")return new Rect(0,0,1600,775);
-                if(name=="TrainOverview")return r;
+                if(name=="TrainOverview"||name=="OperatorsOverview")return r;
                 if(TryArrangeDestinationSection(name,r,out var section))return section;
                 var result=r.y<split?LandscapeSectionLayout.Section(r,210,40,165,.7f):LandscapeSectionLayout.Section(r,split,850,165,.7f);
                 if(r.y<split&&r.yMax>split&&r.height>400)result.height=(split-r.y)*.7f;
@@ -417,7 +422,7 @@ namespace LastRail.Presentation.MissionShell
             {
                 foreach(RectTransform section in content)
                 {
-                    if(section.name=="TrainOverview" || section.anchorMin!=section.anchorMax || section.name==LobbyNavigationRail.ObjectName || -section.anchoredPosition.y<145 ||
+                    if(section.name=="TrainOverview" || section.name=="OperatorsOverview" || section.anchorMin!=section.anchorMax || section.name==LobbyNavigationRail.ObjectName || -section.anchoredPosition.y<145 ||
                        section.name=="TrainingCoreManager" || section.name=="CoreConfirmation" || section.name=="Notice" || section.name=="EquipmentMultishotDetails")continue;
                     section.anchoredPosition=new Vector2(140+section.anchoredPosition.x*.9f,-(145+(-section.anchoredPosition.y-145)*.9f));
                     section.localScale*=.9f;
