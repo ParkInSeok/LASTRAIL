@@ -30,8 +30,9 @@ namespace LastRail.Support
         private TMP_Text recoveryStatus, forgetWarning;
         private Button refreshReceipts, independentInquiry, forgetReceipt, confirmForget, cancelForget;
         private PendingReceipt[] displayedRecords = Array.Empty<PendingReceipt>();
-        private PendingReceipt deleteTarget;
-        private bool recoveryActionFailed;
+        private SupportInquiryScreenController screen;
+        private PendingReceipt deleteTarget => screen.DeleteTarget;
+        private bool recoveryActionFailed => screen.RecoveryActionFailed;
         public event Action Closed;
 
         // The authenticated owner retains the controller across close/reopen and supplies its font.
@@ -104,7 +105,8 @@ namespace LastRail.Support
             content.textComponent.alignment = TextAlignmentOptions.TopLeft;
             category.onValueChanged.AddListener(_ => Edit());
             content.onValueChanged.AddListener(_ => Edit());
-            if (isActiveAndEnabled) model.Changed += Render;
+            screen=new SupportInquiryScreenController(model,Render);
+            if (isActiveAndEnabled) screen.Activate();
             Render();
         }
 
@@ -112,12 +114,10 @@ namespace LastRail.Support
         {
             if (model == null) throw new InvalidOperationException("Initialize the panel first.");
             if (recovery == null) throw new ArgumentNullException(nameof(recovery));
-            if (this.recovery != null) this.recovery.Changed -= Render;
+            screen.ConfigureRecovery(recovery);
             this.recovery = recovery;
-            deleteTarget = null; recoveryActionFailed = false;
             if (pendingReceipts != null)
             {
-                if (isActiveAndEnabled) recovery.Changed += Render;
                 Render(); return;
             }
             var recoveryRoot = Rect("RecoveryScroll", safe);
@@ -154,51 +154,19 @@ namespace LastRail.Support
             foreach (var component in new Component[] { label, pendingReceipts, recoveryStatus, refreshReceipts,
                 independentInquiry, forgetReceipt, forgetWarning, confirmForget, cancelForget })
                 component.transform.SetSiblingIndex(position++);
-            if (isActiveAndEnabled) recovery.Changed += Render;
             Render();
         }
 
-        private bool RecoveryBusy => recovery != null && (recovery.Busy || model.State == InquiryState.Sending);
-        private bool CapacityBlocksSend => recovery != null && recovery.Records.Count >= 64 && model.Pending == null;
+        private bool RecoveryBusy => screen.RecoveryBusy;
+        private bool CapacityBlocksSend => screen.CapacityBlocksSend;
         private void SelectReceipt(int index)
-        {
-            if (recovery == null || RecoveryBusy || recovery.StorageFailed) { Render(); return; }
-            deleteTarget = null; recoveryActionFailed = false;
-            if (index == 0) recovery.Select(null);
-            else if (index > 0 && index <= displayedRecords.Length) recovery.Select(displayedRecords[index - 1]);
-            Render();
-        }
-        private async void RefreshReceipts()
-        {
-            if (recovery == null || RecoveryBusy) return;
-            deleteTarget = null; recoveryActionFailed = false; pendingReceipts.Hide();
-            try { await recovery.RefreshAsync(); }
-            catch { recoveryActionFailed = true; }
-            Render();
-        }
-        private void StartIndependentInquiry()
-        {
-            if (recovery == null || RecoveryBusy || recovery.StorageFailed) return;
-            deleteTarget = null; recoveryActionFailed = false;
-            recovery.StartIndependentInquiry(); Render();
-        }
-        private void BeginForget()
-        {
-            if (recovery == null || RecoveryBusy || recovery.StorageFailed || recovery.Selected == null) return;
-            deleteTarget = recovery.Selected; Render();
-        }
-        private void CancelForget() { deleteTarget = null; Render(); }
-        private async void ConfirmForget()
-        {
-            if (recovery == null || RecoveryBusy || recovery.StorageFailed || deleteTarget == null
-                || !SameRecord(deleteTarget, recovery.Selected)) return;
-            deleteTarget = null; recoveryActionFailed = false;
-            try { await recovery.ForgetSelectedAsync(true); }
-            catch { recoveryActionFailed = true; }
-            Render();
-        }
-        private static bool SameRecord(PendingReceipt first, PendingReceipt second) => first != null && second != null
-            && first.Kind == second.Kind && first.AccountId == second.AccountId && first.IdempotencyKey == second.IdempotencyKey;
+        { if(index==0)screen.SelectReceipt(null);else if(index>0&&index<=displayedRecords.Length)screen.SelectReceipt(displayedRecords[index-1]); }
+        private async void RefreshReceipts(){pendingReceipts.Hide();await screen.RefreshReceiptsAsync();}
+        private void StartIndependentInquiry()=>screen.StartIndependentInquiry();
+        private void BeginForget()=>screen.BeginForget();
+        private void CancelForget()=>screen.CancelForget();
+        private async void ConfirmForget()=>await screen.ConfirmForgetAsync();
+        private static bool SameRecord(PendingReceipt first,PendingReceipt second)=>SupportInquiryScreenController.SameRecord(first,second);
         private static string RecordLabel(PendingReceipt record)
         {
             var kind = record.Kind == PendingReceiptKind.Support ? "\uC9C0\uC6D0 \uBB38\uC758" : "\uC624\uB958";
@@ -207,41 +175,13 @@ namespace LastRail.Support
             return record.SubmittedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) + " \u00B7 " + kind + " \u00B7 " + category;
         }
 
-        private void Edit()
-        {
-            if (recovery != null && (RecoveryBusy || recovery.StorageFailed
-                || (recovery.Selected?.Kind == PendingReceiptKind.ClientError && !recovery.ManagingDraft))) return;
-            model.Edit(model.Categories[category.value], content.text);
-        }
-        private async void Submit()
-        {
-            if (recovery != null && (RecoveryBusy || recovery.StorageFailed || CapacityBlocksSend
-                || (recovery.Selected?.Kind == PendingReceiptKind.ClientError && !recovery.ManagingDraft))) return;
-            if (model.State == InquiryState.Received) { model.StartAnother(); return; }
-            try { await model.SubmitAsync(); }
-            catch { Render(); }
-        }
+        private void Edit()=>screen?.Edit(category.value,content.text);
+        private async void Submit(){if(screen!=null)await screen.SubmitAsync();}
         public void Show() { gameObject.SetActive(true); Render(); }
-        private async void Reconcile()
-        {
-            if (recovery != null && (RecoveryBusy || recovery.StorageFailed || recovery.ManagingDraft
-                || recovery.Selected?.Kind == PendingReceiptKind.ClientError)) return;
-            try { await model.ReconcileAsync(); }
-            catch { Render(); }
-        }
-        public void Hide() { deleteTarget = null; gameObject.SetActive(false); Closed?.Invoke(); }
-        private void OnEnable()
-        {
-            if (model != null) { model.Changed -= Render; model.Changed += Render; }
-            if (recovery != null) { recovery.Changed -= Render; recovery.Changed += Render; }
-            Render();
-        }
-        private void OnDisable()
-        {
-            CancelPresentationDelay(); deleteTarget = null;
-            if (model != null) model.Changed -= Render;
-            if (recovery != null) recovery.Changed -= Render;
-        }
+        private async void Reconcile(){if(screen!=null)await screen.ReconcileAsync();}
+        public void Hide() { screen?.CancelForget();gameObject.SetActive(false); Closed?.Invoke(); }
+        private void OnEnable(){screen?.Activate();Render();}
+        private void OnDisable(){CancelPresentationDelay();screen?.Deactivate();}
         private void OnApplicationFocus(bool focused) { if (focused) Render(); }
         private void OnApplicationPause(bool paused) { if (!paused) Render(); }
         private void OnRectTransformDimensionsChange()
@@ -332,7 +272,6 @@ namespace LastRail.Support
         private void RenderRecovery()
         {
             var busy = RecoveryBusy;
-            if (busy || recovery.StorageFailed || !SameRecord(deleteTarget, recovery.Selected)) deleteTarget = null;
             displayedRecords = recovery.Records.ToArray();
             var options = new[] { displayedRecords.Length == 0 ? "\uBCF4\uB958 \uAE30\uB85D \uC5C6\uC74C" : "\uBCF4\uB958 \uAE30\uB85D \uC120\uD0DD" }
                 .Concat(displayedRecords.Select(RecordLabel)).ToList();
@@ -363,8 +302,7 @@ namespace LastRail.Support
         private void OnDestroy()
         {
             CancelPresentationDelay();
-            if (model != null) model.Changed -= Render;
-            if (recovery != null) recovery.Changed -= Render;
+            screen?.Dispose();
         }
         private static RectTransform Rect(string name, Transform parent)
         {

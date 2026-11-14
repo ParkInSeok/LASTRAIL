@@ -38,8 +38,10 @@ namespace LastRail.Tests.EditMode {
     Assert.That(root.GetComponentsInChildren<TMP_Text>().Single(t=>t.name=="CommittedMultiplier").text,Is.EqualTo("×4"));
     var buttons=root.GetComponentsInChildren<Button>();Assert.That(buttons.Length,Is.EqualTo(1));buttons[0].onClick.Invoke();Assert.That(calls,Is.EqualTo(1));view.Unbind();buttons[0].onClick.Invoke();Assert.That(calls,Is.EqualTo(1));
     typeof(AccountScreenIntegrationTests).GetMethod("Capture",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic).Invoke(null,new object[]{root,"shared-roulette-result-4x.png"});
+    var retained=root.GetComponentsInChildren<TMP_Text>(true).First(t=>t.name=="RewardQuantity").transform.parent;
     rows.Add(new JObject{["id"]="cur_tactical_data",["quantity"]=80});
     view.Render(result,null,"","확인",true,false,true,false,false);
+    Assert.AreSame(retained,root.GetComponentsInChildren<TMP_Text>().First(t=>t.name=="RewardQuantity").transform.parent);
     Assert.That(root.GetComponentsInChildren<TMP_Text>().Count(t=>t.name=="RewardQuantity"),Is.EqualTo(4));
     Assert.That(root.GetComponentInChildren<ScrollRect>().horizontal,Is.True);
     view.ConfigureProbability("현재 제공되지 않습니다.",new[]{2});

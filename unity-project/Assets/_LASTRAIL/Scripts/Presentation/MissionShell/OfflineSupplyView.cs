@@ -80,19 +80,19 @@ namespace LastRail.Presentation.MissionShell
             var key=string.Join("|",System.Linq.Enumerable.Select(state.Rewards,r=>r.RewardCode+":"+r.DisplayName+":"+r.Quantity));
             if(key!=rewardKey)
             {
-                rewardKey=key;for(int i=rewardContent.childCount-1;i>=0;i--){var child=rewardContent.GetChild(i).gameObject;child.SetActive(false);if(Application.isPlaying)Destroy(child);else DestroyImmediate(child);}
+                rewardKey=key;for(int i=rewardContent.childCount-1;i>=state.Rewards.Count;i--){var child=rewardContent.GetChild(i).gameObject;child.SetActive(false);child.transform.SetParent(null,false);if(Application.isPlaying)Destroy(child);else DestroyImmediate(child);}
                 float baseWidth=state.Rewards.Count<=3?(700-(state.Rewards.Count-1)*8f)/Mathf.Max(1,state.Rewards.Count):228;
                 float nextX=0;
                 for(int i=0;i<state.Rewards.Count;i++)
                 {
-                    var data=state.Rewards[i];var cell=Plate("SupplyReward"+i,transform,nextX,0,baseWidth,235);
-                    var value=Text("Value",cell,data.Quantity.ToString("N0",System.Globalization.CultureInfo.InvariantCulture),14,177,baseWidth-28,48,35,TextAlignmentOptions.Center);
+                    var data=state.Rewards[i];var cell=rewardContent.Find("SupplyReward"+i) as RectTransform;if(cell==null){cell=Plate("SupplyReward"+i,rewardContent,nextX,0,baseWidth,235);Text("Value",cell,"",14,177,baseWidth-28,48,35,TextAlignmentOptions.Center);Text("Name",cell,"",8,10,baseWidth-16,38,23,TextAlignmentOptions.Center);}
+                    var value=cell.Find("Value").GetComponent<TMP_Text>();value.text=data.Quantity.ToString("N0",System.Globalization.CultureInfo.InvariantCulture);
                     value.enableAutoSizing=false;
                     var preferred=value.GetPreferredValues(value.text,Mathf.Infinity,Mathf.Infinity);
                     float width=Mathf.Max(baseWidth,Mathf.Ceil(preferred.x)+32);
                     cell.SetParent(rewardContent,false);AuthFormVisuals.Place(cell,nextX,0,width,235);
                     AuthFormVisuals.Place(value.rectTransform,14,177,width-28,Mathf.Max(48,Mathf.Ceil(preferred.y)+2));
-                    Text("Name",cell,data.DisplayName,8,10,width-16,38,23,TextAlignmentOptions.Center);
+                    var name=cell.Find("Name").GetComponent<TMP_Text>();name.text=data.DisplayName;AuthFormVisuals.Place(name.rectTransform,8,10,width-16,38);
                     float iconWidth=Mathf.Min(190,width-30);
                     RewardIconPresentation.Create(cell,font,data.RewardCode,new Rect((width-iconWidth)/2,48,iconWidth,128));
                     value.transform.SetAsLastSibling();nextX+=width+8;

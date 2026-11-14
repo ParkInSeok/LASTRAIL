@@ -40,7 +40,13 @@ public class AugmentNodeResultTests
             Assert.IsFalse(Find("AugmentEffectsEntry").gameObject.activeSelf);
             Bind(new AugmentNodeResult("r","n",1,new[]{new AugmentNodeResultEntry("O22",Card,AugmentRecordCoverage.None,null,null)}));Find("AugmentEffectsEntry").onClick.Invoke();
             Find("AugmentResultCard0").onClick.Invoke();Assert.IsFalse(System.Linq.Enumerable.Any(view.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>b.name=="DetailSelect"));
+            var retained=Find("AugmentResultCard0");
+            Bind(new AugmentNodeResult("r","n2",2,new[]{new AugmentNodeResultEntry("O22",new AugmentCardPresentation("교체된 효과","증강","새 설명",null),AugmentRecordCoverage.None,null,null)}));
+            Assert.AreSame(retained,Find("AugmentResultCard0"));
+            Find("AugmentEffectsEntry").onClick.Invoke();retained.onClick.Invoke();
+            Assert.IsTrue(System.Linq.Enumerable.Any(view.GetComponentsInChildren<TMPro.TMP_Text>(),t=>t.text=="교체된 효과"));
             type.GetMethod("Unbind").Invoke(view,null);Assert.IsFalse(Find("AugmentEffectsEntry").gameObject.activeSelf);
+            retained.onClick.Invoke();Assert.IsFalse(retained.gameObject.activeInHierarchy);
             Assert.IsFalse(System.Linq.Enumerable.Any(view.GetComponentsInChildren<TMPro.TMP_Text>(true),t=>t.text=="기록 없음"));
         }finally{UnityEngine.Object.DestroyImmediate(root);}
     }

@@ -95,15 +95,15 @@ namespace LastRail.Presentation.MissionShell
             if(key!=renderedRewards)
             {
                 renderedRewards=key;
-                for(int i=rewards.childCount-1;i>=0;i--){var child=rewards.GetChild(i).gameObject;child.SetActive(false);if(Application.isPlaying)Destroy(child);else DestroyImmediate(child);}
-                if(state.Rewards.Count==0)Text("VictoryRewardsUnavailable",rewards,state.HasRewardRead?"보상 항목이 없습니다.":"보상 내역 확인 필요",25,42,793,105,31).alignment=TextAlignmentOptions.Center;
+                for(int i=rewards.childCount-1;i>=0;i--){var child=rewards.GetChild(i);child.gameObject.SetActive(false);if(child.name.StartsWith("VictoryReward")&&child.name!="VictoryRewardsUnavailable"&&int.TryParse(child.name.Substring("VictoryReward".Length),out int index)&&index>=state.Rewards.Count){child.SetParent(null,false);if(Application.isPlaying)Destroy(child.gameObject);else DestroyImmediate(child.gameObject);}}
+                if(state.Rewards.Count==0){var unavailable=rewards.Find("VictoryRewardsUnavailable")?.GetComponent<TMP_Text>()??Text("VictoryRewardsUnavailable",rewards,"",25,42,793,105,31);unavailable.gameObject.SetActive(true);unavailable.text=state.HasRewardRead?"보상 항목이 없습니다.":"보상 내역 확인 필요";unavailable.alignment=TextAlignmentOptions.Center;}
                 for(int i=0;i<state.Rewards.Count;i++)
                 {
-                    var cell=Plate("VictoryReward"+i,rewards,(i%3)*284,(i/3)*187,273,174);
+                    var cell=rewards.Find("VictoryReward"+i) as RectTransform;if(cell==null){cell=Plate("VictoryReward"+i,rewards,(i%3)*284,(i/3)*187,273,174);Text("RewardName",cell,"",14,5,245,37,27).alignment=TextAlignmentOptions.Center;Text("RewardValue",cell,"",14,127,245,39,29);}cell.gameObject.SetActive(true);
                     var item=state.RewardItems[i];
-                    Text("RewardName",cell,item.Name,14,5,245,37,27).alignment=TextAlignmentOptions.Center;
+                    cell.Find("RewardName").GetComponent<TMP_Text>().text=item.Name;
                     RewardIconPresentation.Create(cell,font,item.IconId,new Rect(91,43,91,80));
-                    var value=Text("RewardValue",cell,item.QuantityText,14,127,245,39,29);
+                    var value=cell.Find("RewardValue").GetComponent<TMP_Text>();value.text=item.QuantityText;
                     value.alignment=TextAlignmentOptions.Center;value.fontSizeMin=16;
                 }
                 rewards.sizeDelta=new Vector2(843,Mathf.Max(196,Mathf.CeilToInt(state.Rewards.Count/3f)*187));

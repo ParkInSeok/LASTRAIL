@@ -35,6 +35,8 @@ namespace LastRail.Tests.EditMode
                 Assert.That(icons.Length,Is.EqualTo(4),"Supply must reuse the existing painted currency artwork");
                 Assert.That(view.GetComponentsInChildren<RewardResourceSymbol>().Length,Is.Zero);
                 Assert.That(view.GetComponentInChildren<ScrollRect>().content.rect.width,Is.GreaterThan(700),"Four readable cards need real horizontal scroll");
+                var cells=icons.Select(x=>x.transform.parent).ToArray();view.Render(view.CurrentState);
+                CollectionAssert.AreEqual(cells,view.GetComponentsInChildren<RawImage>().Where(x=>x.name=="RewardIcon").Select(x=>x.transform.parent).ToArray());
                 var compare=SharedRoulettePopup.Create(root.transform,font,"Compare");
                 var rows=Newtonsoft.Json.Linq.JObject.Parse(File.ReadAllText("D:/Project/LASTRAIL/unity-project/QA/Unity1Artifacts/Reports/Server2-AdSamples-20260914/BasicPreview01/preview.json"))["rewardLines"] as Newtonsoft.Json.Linq.JArray;
                 compare.Render(null,rows,"","",false,false,false,false,false);
@@ -50,7 +52,12 @@ namespace LastRail.Tests.EditMode
                 UnityEngine.Object.DestroyImmediate(compare.gameObject);
                 var unknown=new GameObject("UnknownIcon",typeof(RectTransform));unknown.transform.SetParent(root.transform,false);
                 Assert.That(RewardIconPresentation.Create(unknown.transform,font,"unrecognized_fixture",new Rect(0,0,190,128)),Is.Null);
-                Assert.That(unknown.GetComponentsInChildren<RawImage>().Length,Is.Zero);UnityEngine.Object.DestroyImmediate(unknown);
+                                Assert.That(unknown.GetComponentsInChildren<RawImage>().Length,Is.Zero);
+                var reused=RewardIconPresentation.Create(unknown.transform,font,"cur_operator_exp",new Rect(0,0,190,128));
+                Assert.AreSame(reused,RewardIconPresentation.Create(unknown.transform,font,"cur_credits",new Rect(0,0,190,128)));
+                Assert.IsFalse(reused.transform.Find("ExperienceChipLabel").gameObject.activeSelf);
+                RewardIconPresentation.Create(unknown.transform,font,"unrecognized_fixture",new Rect(0,0,190,128));Assert.IsNull(reused.texture);Assert.IsFalse(reused.gameObject.activeSelf);
+                UnityEngine.Object.DestroyImmediate(unknown);
                 wire.Missing=true;await account.RefreshOfflineAsync();Assert.That(view.CurrentState.Rewards.Count,Is.Zero);Assert.IsFalse(view.CurrentState.CanClaim);
                 wire.Missing=false;int before=wire.Reads;view.GetComponentsInChildren<Button>().Single(x=>x.name=="RefreshOffline").onClick.Invoke();Assert.That(wire.Reads-before,Is.EqualTo(3));
                 var adButton=view.GetComponentsInChildren<Button>(true).Single(x=>x.name=="OpenOfflineRoulette");Assert.That(adButton.gameObject.activeSelf,Is.False);adButton.onClick.Invoke();Assert.IsNotNull(root.GetComponentInChildren<OfflineSupplyView>());Assert.IsNull(root.GetComponentInChildren<SharedRoulettePopup>());Assert.That(wire.Writes,Is.Zero);

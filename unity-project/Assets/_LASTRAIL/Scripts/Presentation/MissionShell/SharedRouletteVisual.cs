@@ -319,14 +319,8 @@ namespace LastRail.Presentation.MissionShell
         void RebuildRewardCards(JArray rows)
         {
             quantityLabels.Clear();rewardGlows.Clear();rewardContent.gameObject.SetActive(true);
-            for (int i = rewardContent.childCount - 1; i >= 0; i--)
-            {
-                var child = rewardContent.GetChild(i).gameObject;
-                child.SetActive(false);
-                if (Application.isPlaying) Destroy(child); else DestroyImmediate(child);
-            }
             int count = rows?.Count ?? 0;
-            float baseWidth = count > 3 ? 238 : count > 0 ? (740 - (count - 1) * 12) / count : 740;
+            for(int i=rewardContent.childCount-1;i>=0;i--){var child=rewardContent.GetChild(i);if(child.name=="EmptyRewards"){child.gameObject.SetActive(false);continue;}if(child.name.StartsWith("RewardCard")&&int.TryParse(child.name.Substring(10),out int index)&&index>=count){child.gameObject.SetActive(false);child.SetParent(null,false);if(Application.isPlaying)Destroy(child.gameObject);else DestroyImmediate(child.gameObject);}}            float baseWidth = count > 3 ? 238 : count > 0 ? (740 - (count - 1) * 12) / count : 740;
             rewardContent.sizeDelta = new Vector2(740, 240);
             rewardContent.anchoredPosition = Vector2.zero;
             rewardScroll.StopMovement(); rewardScroll.horizontalNormalizedPosition = 0;
@@ -334,7 +328,7 @@ namespace LastRail.Presentation.MissionShell
             overflowHint.text = "";
             if (count == 0)
             {
-                Label("EmptyRewards", rewardContent, "보상 내역 확인 중", 0, 90, 740, 50, 26);
+                var empty=rewardContent.Find("EmptyRewards")?.gameObject;if(empty!=null)empty.SetActive(true);else Label("EmptyRewards", rewardContent, "보상 내역 확인 중", 0, 90, 740, 50, 26);
                 return;
             }
             // Keep each server row, including repeated IDs: no client aggregation or multiplication.
@@ -344,10 +338,10 @@ namespace LastRail.Presentation.MissionShell
                 var row = rows[i] as JObject;
                 // TMP must Awake under the active visual before measuring newly received rows.
                 // Attach to the viewport after measuring so disabled parents cannot defer TMP initialization.
-                var card = Rect("RewardCard" + i, transform, nextX, 0, baseWidth, 240);
+                var card=rewardContent.Find("RewardCard"+i) as RectTransform;bool created=card==null;if(created)card=Rect("RewardCard"+i,transform,nextX,0,baseWidth,240);
                 string amount = row?["quantity"]?.Type == JTokenType.Integer
                     ? row["quantity"].Value<long>().ToString("N0", CultureInfo.InvariantCulture) : "—";
-                var quantity = Label("RewardQuantity", card, amount, 14, 184, baseWidth - 28, 44, 38);
+                var quantity=card.Find("RewardQuantity")?.GetComponent<TMP_Text>()??Label("RewardQuantity",card,"",14,184,baseWidth-28,44,38);quantity.text=amount;
                 quantityLabels.Add(quantity);
                 // Preserve exact digits and normal type size; overflow belongs to the scroll viewport.
                 quantity.enableAutoSizing = false;
@@ -361,14 +355,14 @@ namespace LastRail.Presentation.MissionShell
                 AuthFormVisuals.Place(card, nextX, 0, width, 240);
                 AuthFormVisuals.Place(quantity.rectTransform, 14, 206 - quantityHeight / 2, width - 28, quantityHeight);
                 nextX += width + 12;
-                var surface = IndependentMetalSurface.Create(card, false, new Color(.57f, .59f, .6f));
+                if(created){var surface = IndependentMetalSurface.Create(card, false, new Color(.57f, .59f, .6f));
                 surface.Frame.gameObject.SetActive(false);RouletteInsetFrameGraphic.Create(card,false);
                 surface.Backplate.Inset = new Vector2(9, 9); surface.Backplate.Bevel = 8;
                 surface.Lights.gameObject.SetActive(false);
                 var glow=AuthFormVisuals.Rect("RewardSpinGlow",card).gameObject.AddComponent<RouletteButtonGlowGraphic>();
-                glow.color=new Color(.45f,.7f,1,.3f);glow.raycastTarget=false;rewardGlows.Add(glow);
+                glow.color=new Color(.45f,.7f,1,.3f);glow.raycastTarget=false;}rewardGlows.Add(card.Find("RewardSpinGlow").GetComponent<RouletteButtonGlowGraphic>());
                 string id = (string)row?["id"] ?? (string)row?["kind"] ?? "";
-                Label("RewardName", card, RewardName(id, (string)row?["kind"]), 15, 14, width - 30, 39, 25);
+                var name=card.Find("RewardName")?.GetComponent<TMP_Text>()??Label("RewardName",card,"",15,14,width-30,39,25);name.text=RewardName(id,(string)row?["kind"]);AuthFormVisuals.Place(name.rectTransform,15,14,width-30,39);
                 float iconWidth = Mathf.Min(190, width - 32);
                 RewardIconPresentation.Create(card, font, id, new Rect((width - iconWidth) / 2, 43, iconWidth, 154));
                 quantity.transform.SetAsLastSibling();

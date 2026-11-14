@@ -18,6 +18,13 @@ using TMPro;
 
 namespace LastRail.Tests.EditMode {
  public sealed class OrdinaryTravelPanelTests {
+  [Test] public void RepeatedChoicesReuseRowsAndDispatchCurrentEdgeOnly(){
+   var root=new GameObject("ChoiceReuse");try{var view=OrdinaryTravelPanel.Create(root.transform,null);string selected=null;view.Bind(id=>selected=id,null,null,null,null,null,null);
+    view.ShowChoices(new[]{("old","Old")},true,"");var original=view.GetComponentsInChildren<Button>().Single(b=>b.name=="Destination0");
+    view.ShowChoices(new[]{("new","New")},true,"");Assert.AreSame(original,view.GetComponentsInChildren<Button>().Single(b=>b.name=="Destination0"));original.onClick.Invoke();Assert.AreEqual("new",selected);
+    selected=null;view.ShowUnavailable("Waiting");original.onClick.Invoke();Assert.IsNull(selected);view.ShowChoices(new[]{("third","Third")},true,"");Assert.AreSame(original,view.GetComponentsInChildren<Button>().Single(b=>b.name=="Destination0"));view.Unbind();original.onClick.Invoke();Assert.IsNull(selected);
+   }finally{UnityEngine.Object.DestroyImmediate(root);}
+  }
   sealed class TimerWire:IRunApiHttpTransport {
    public readonly List<RunApiHttpRequest> Arrivals=new List<RunApiHttpRequest>();
    public Task<RunApiHttpResponse> SendAsync(RunApiHttpRequest request){

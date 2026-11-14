@@ -12,12 +12,20 @@ namespace LastRail.Presentation.MissionShell {
   public JArray Offers=>(JArray)data["ticketOffers"].DeepClone();
   public JArray Products=>(JArray)data["crystalProducts"].DeepClone();
   public string UnavailableReason=>(string)data["ticketUnavailableReason"];
+  public ShopOfferQuote Quote(string offer,int count){var row=data["ticketOffers"].FirstOrDefault(o=>(string)o["offer"]==offer);return row==null?null:new ShopOfferQuote(row,Wallet,count);}
   public ShopSnapshot(string json){data=GameApiJson.ReadObject(json);RecurringContract.Accept(data);if(GameApiJson.String(data,"version")!="shop-v1")throw new FormatException();MonthlyAttendanceContract.Id(data,"policyVersion");var now=DateTimeOffset.FromUnixTimeMilliseconds(AccountStateSnapshot.Number(data,"serverTime"));var service=now.AddHours(5);var day=new DateTimeOffset(service.Year,service.Month,service.Day,0,0,0,TimeSpan.Zero).AddHours(-5);if(AccountStateSnapshot.Number(data,"dayStart")!=day.ToUnixTimeMilliseconds()||AccountStateSnapshot.Number(data,"nextResetAt")!=day.AddDays(1).ToUnixTimeMilliseconds())throw new FormatException();
    Wallet=CrystalWalletRead.Parse(200,GameApiJson.Object(data,"wallet").ToString());if(Wallet.Status!=CrystalWalletReadStatus.Ready||Wallet.PolicyVersion!=Policy)throw new FormatException();var offers=RecruitmentJson.Array(data,"ticketOffers");RecurringContract.Unique(offers,"offer");var reason=RecruitmentJson.NullableString(data,"ticketUnavailableReason");if(offers.Count!=0&&offers.Count!=2||offers.Count==0&&reason!="shop_launch_price_unconfigured"||offers.Count==2&&reason!=null)throw new FormatException();
    foreach(JObject o in offers){var daily=RecurringContract.One(o,"offer","NORMAL","DAILY")=="DAILY";if(GameApiJson.String(o,"ticketItemId")!="cur_command_ticket"||AccountStateSnapshot.Number(o,"crystalsPerTicket")!=(daily?50:100))throw new FormatException();var max=MonthlyAttendanceContract.Range(o,"maxTicketsPerRequest",1,int.MaxValue);if(daily){if(max!=1||AccountStateSnapshot.Number(o,"dailyLimit")!=1||GameApiJson.String(o,"offerFamily")!="COMMAND_TICKET_DAILY")throw new FormatException();MonthlyAttendanceContract.Range(o,"dailyRemaining",0,1);}else if(o["dailyLimit"]?.Type!=JTokenType.Null)throw new FormatException();}
    var caps=GameApiJson.Object(data,"capabilities");RecurringContract.One(caps,"materialShop","UNCONFIGURED");RecurringContract.One(caps,"cashPriceSource","STORE_REQUIRED");GameApiJson.Boolean(caps,"crystalPurchaseVerifierAvailable");if(GameApiJson.String(caps,"passCatalog")!="/v1/recurring/state")throw new FormatException();RecurringContract.One(caps,"creditRecruitmentExchange","NOT_SUPPORTED");
    foreach(JObject p in RecruitmentJson.Array(data,"crystalProducts")){GameApiJson.String(p,"productId");MonthlyAttendanceContract.Range(p,"quantity",1,int.MaxValue);RecurringContract.One(p,"provider","GOOGLE_PLAY","APP_STORE");GameApiJson.String(p,"appId");GameApiJson.Boolean(p,"purchaseAvailable");if(p["price"]?.Type!=JTokenType.Null||GameApiJson.String(p,"priceSource")!="STORE_REQUIRED")throw new FormatException();}
   }
+ }
+ public sealed class ShopOfferQuote {
+  public string Offer {get;}
+  public int Count {get;} public int Maximum {get;} public int DailyRemaining {get;}
+  public long UnitCost {get;} public long Cost {get;} public long FreeSpend {get;} public long PaidSpend=>Cost-FreeSpend;
+  public bool CanBuy {get;}
+  internal ShopOfferQuote(JToken row,CrystalWalletRead wallet,int count){Offer=(string)row["offer"];Count=count;Maximum=(int)row["maxTicketsPerRequest"];DailyRemaining=Offer=="DAILY"?(int)row["dailyRemaining"]:0;UnitCost=(long)row["crystalsPerTicket"];Cost=count<1?0:checked(UnitCost*count);FreeSpend=Math.Min(Cost,wallet.FreeBalance.Value);CanBuy=count>=1&&count<=Maximum&&(Offer!="DAILY"||DailyRemaining==1&&count==1)&&Cost<=wallet.TotalBalance;}
  }
  public sealed class ShopOfferReceipt {
   public TicketExchangeReceipt Exchange {get;}

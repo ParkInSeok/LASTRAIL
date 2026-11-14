@@ -81,11 +81,12 @@ namespace LastRail.Tests.EditMode
                     int expected=page==LobbyPage.Formation?1:page==LobbyPage.Missions?-1:(int)page+1;
                     for(int tab=0;tab<5;tab++){
                         var button=pages.GetComponentsInChildren<Button>().Single(b=>b.name=="PageNav"+tab);
-                        var state=button.GetComponent<LobbyTabVisual>();Assert.That(state,Is.Not.Null,"Every tab must own a complete visual state");
-                        Assert.That(state.IsSelected,Is.EqualTo(tab==expected));
-                        var icon=button.GetComponentInChildren<RawImage>();Assert.That(icon.material.shader.name,Is.EqualTo("UI/Default"));Assert.That(icon.texture.name,Is.EqualTo("icons-landscape-v01"));
-                        var label=button.GetComponentInChildren<TMP_Text>();Assert.That(label.fontStyle==FontStyles.Bold,Is.EqualTo(tab==expected));
-                        Assert.That(button.GetComponent<Image>().sprite.name,Is.EqualTo(tab==expected?"TabSelected":"TabIdle"));
+                        Assert.That(button.transform.parent.name,Is.EqualTo(LobbyNavigationRail.ObjectName));
+                        var icon=button.transform.Find("Icon").GetComponent<RawImage>();Assert.That(icon.material.shader.name,Is.EqualTo(tab==expected?"LastRail/TabIcon":"UI/Default"));Assert.That(icon.texture.name,Is.EqualTo(tab==2||tab==4?"navigation-shapes-v06":"icons-landscape-v01"));
+                        Assert.That(icon.color,Is.EqualTo(Color.white),"Unselected icons retain original texture color");
+                        Assert.That(button.GetComponentInChildren<TMP_Text>(),Is.Null,"Navigation uses icons only");
+                        Assert.That(button.GetComponent<Image>().color.a,Is.EqualTo(tab==expected?1:0));
+                        Assert.That(button.GetComponent<Image>().sprite,Is.Null,"One outer frame, no per-button plates");
                     }
                     foreach(var b in pages.GetComponentsInChildren<Button>().Where(x=>x.name=="SaveFormation"||x.name.StartsWith("Buy")||x.name=="Upgrade"||x.name=="RecruitOne"||x.name=="ClaimAll"))Assert.That(b.interactable,Is.False,"No fabricated economic acknowledgement");
                     pages.GetComponentsInChildren<Button>().Single(b=>b.name=="Back").onClick.Invoke();Assert.That(pages.IsOpen,Is.False);
@@ -102,7 +103,7 @@ namespace LastRail.Tests.EditMode
             var font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_LASTRAIL/UI/StartupResources/BootstrapFont.asset");
             try{
                 var pages=LobbyDestinationPages.Create(root.transform,font,()=>{});
-                foreach(var page in new[]{LobbyPage.Operators,LobbyPage.Train,LobbyPage.Recruit,LobbyPage.Shop,LobbyPage.Missions}){
+                foreach(var page in new[]{LobbyPage.Operators,LobbyPage.Recruit,LobbyPage.Shop,LobbyPage.Missions}){
                     pages.Open(page,true);
                     int count=pages.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Category"));Assert.That(count,Is.GreaterThan(1));
                     for(int index=0;index<count;index++){

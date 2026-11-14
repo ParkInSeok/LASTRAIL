@@ -189,21 +189,23 @@ namespace LastRail.Presentation.Settings
             qualityOptions = Plate("QualityOptions", root, 420, 658, 414, 300);
             qualityOptions.gameObject.SetActive(false);
         }
+        readonly List<Button> qualityRows=new List<Button>();
         void ToggleQuality()
         {
             if (CurrentState?.Supports(LocalSetting.Quality) != true) return;
             if (qualityOptions.gameObject.activeSelf) { qualityOptions.gameObject.SetActive(false); return; }
-            for (int i = qualityOptions.childCount - 1; i >= 0; i--) { var child = qualityOptions.GetChild(i).gameObject; child.SetActive(false); if (Application.isPlaying) Destroy(child); else DestroyImmediate(child); }
             var names = CurrentState.Display.QualityNames;
-            float row = Mathf.Min(64, 510f / names.Count); qualityOptions.sizeDelta = new Vector2(414, row * names.Count);
-            // Rebuild only when opening; retired controls cannot deliver input while inactive.
+            float row = Mathf.Min(64, 510f / Math.Max(1,names.Count)); qualityOptions.sizeDelta = new Vector2(414, row * names.Count);
+            while(qualityRows.Count>names.Count){var retired=qualityRows[qualityRows.Count-1];qualityRows.RemoveAt(qualityRows.Count-1);retired.gameObject.SetActive(false);if(Application.isPlaying)Destroy(retired.gameObject);else DestroyImmediate(retired.gameObject);}
             for (int i = 0; i < names.Count; i++)
             {
-                int index = i;
-                Control("QualityOption" + i, qualityOptions, names[i], 0, row * i, 414, row, () =>
-                { qualityOptions.gameObject.SetActive(false); ValueRequested?.Invoke(LocalSetting.Quality, index); });
-            }
-            qualityOptions.gameObject.SetActive(true);
+                if(i==qualityRows.Count){int index=i;qualityRows.Add(Control("QualityOption"+i,qualityOptions,"",0,0,414,row,()=>{
+                    if(CurrentState?.Supports(LocalSetting.Quality)!=true||index>=CurrentState.Display.QualityNames.Count)return;
+                    qualityOptions.gameObject.SetActive(false);ValueRequested?.Invoke(LocalSetting.Quality,index);
+                }));}
+                AuthFormVisuals.Place((RectTransform)qualityRows[i].transform,0,row*i,414,row);
+                qualityRows[i].GetComponentInChildren<TMP_Text>().text=names[i];
+            }            qualityOptions.gameObject.SetActive(true);
         }
         void BuildAccount()
         {

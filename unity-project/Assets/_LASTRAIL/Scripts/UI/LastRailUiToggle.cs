@@ -20,7 +20,7 @@ namespace LastRail.UI
 
         public void BindInteractionCallbacks()
         {
-            if (toggle == null || callbacksBound)
+            if (!isActiveAndEnabled || toggle == null || callbacksBound)
             {
                 return;
             }
@@ -60,6 +60,7 @@ namespace LastRail.UI
 
         private void HandleValueChanged(bool value)
         {
+            if (!isActiveAndEnabled) return;
             ValueChanged?.Invoke(value);
         }
     }

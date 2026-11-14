@@ -10,7 +10,7 @@ namespace LastRail.Tests.EditMode
     {
         [TestCase(LobbyPage.Operators)]
         [TestCase(LobbyPage.Shop)]
-        public void SyntheticCardArtNamesAndActionsStayTogetherAboveNavigation(LobbyPage page)
+        public void SyntheticCardArtNamesAndActionsStayTogetherBesideNavigation(LobbyPage page)
         {
             var root=new GameObject("SyntheticLandscapeRows",typeof(RectTransform));
             ((RectTransform)root.transform).sizeDelta=new Vector2(1600,900);
@@ -19,6 +19,12 @@ namespace LastRail.Tests.EditMode
                 var view=LobbyDestinationPages.Create(root.transform,TMP_Settings.defaultFontAsset,()=>{});
                 view.Open(page,true);
                 var all=view.GetComponentsInChildren<RectTransform>();
+                var positions=all.Select(x=>x.anchoredPosition).ToArray();
+                var scales=all.Select(x=>x.localScale).ToArray();
+                for(int repeat=0;repeat<3;repeat++)
+                    typeof(LobbyDestinationPages).GetMethod("Fit",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(view,null);
+                CollectionAssert.AreEqual(positions,all.Select(x=>x.anchoredPosition).ToArray());
+                CollectionAssert.AreEqual(scales,all.Select(x=>x.localScale).ToArray());
                 Rect Bounds(RectTransform rect)
                 {
                     var corners=new Vector3[4];rect.GetWorldCorners(corners);
@@ -33,7 +39,7 @@ namespace LastRail.Tests.EditMode
                     var card=Bounds(all.Single(x=>x.name==(page==LobbyPage.Operators?"MemberCard":"Product")+i));
                     var name=Bounds(names[i]);
                     var action=Bounds(all.Single(x=>x.name==(page==LobbyPage.Operators?"SelectMember":"Buy")+i));
-                    Assert.That(card.yMin,Is.GreaterThan(navigation.yMax),"Card "+i+" must stay above navigation.");
+                    Assert.That(card.xMin,Is.GreaterThan(navigation.xMax),"Card "+i+" must stay beside navigation.");
                     Assert.That(name.xMin,Is.GreaterThanOrEqualTo(card.xMin-.1f));
                     Assert.That(name.xMax,Is.LessThanOrEqualTo(card.xMax+.1f));
                     Assert.That(name.yMin,Is.GreaterThanOrEqualTo(card.yMin-.1f),"Name must stay on its own card.");

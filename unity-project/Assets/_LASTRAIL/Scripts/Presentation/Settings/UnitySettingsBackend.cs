@@ -28,6 +28,7 @@ namespace LastRail.Presentation.Settings
             {int level=Array.IndexOf(QualitySettings.names,PlayerPrefs.GetString(QualityNameKey));if(level>=0)QualitySettings.SetQualityLevel(level,true);}
         }
         public bool Supports(LocalSetting key)=>key==LocalSetting.PresentationMode||key==LocalSetting.MasterVolume||key==LocalSetting.MusicVolume||key==LocalSetting.EffectsVolume||key==LocalSetting.ReducedPresentation||key==LocalSetting.Quality&&QualitySettings.names.Length>0;
+        public static CombatPresentationMode ReadCombatPresentationMode()=>(CombatPresentationMode)Mathf.Clamp(PlayerPrefs.GetInt(ModeKey,0),0,2);
         public static float SavedMusic=>Mathf.Clamp01(PlayerPrefs.GetFloat(MusicKey,1));
         public static float SavedEffects=>Mathf.Clamp01(PlayerPrefs.GetFloat(EffectsKey,1));
         public float Read(LocalSetting key)
@@ -68,7 +69,7 @@ namespace LastRail.Presentation.Settings
             if(key==LocalSetting.PresentationMode)
             {
                 var active=applicationRoot==null?null:applicationRoot.GetComponentInChildren<ApprovedCombatView>();
-                if(active!=null){active.SetPresentationMode((int)value);return;}
+                if(active!=null)active.SetPresentationMode((int)value);
                 PlayerPrefs.SetInt(ModeKey,(int)value);PlayerPrefs.Save();return;
             }
             if(key==LocalSetting.MasterVolume){PlayerPrefs.SetFloat(MasterKey,value);PlayerPrefs.Save();AudioListener.volume=value;return;}

@@ -133,6 +133,7 @@ namespace LastRail.Gacha
 
         public void BindInteractionCallbacks()
         {
+            if (!isActiveAndEnabled) { UnbindInteractionCallbacks(); return; }
             BindButton(onePullButton, OnOnePullClicked);
             BindButton(tenPullButton, OnTenPullClicked);
         }
@@ -166,7 +167,7 @@ namespace LastRail.Gacha
 
         private void OnOnePullClicked()
         {
-            if (onePullButton == null || !onePullButton.interactable)
+            if (!isActiveAndEnabled || onePullButton == null || !onePullButton.interactable)
             {
                 return;
             }
@@ -178,7 +179,7 @@ namespace LastRail.Gacha
 
         private void OnTenPullClicked()
         {
-            if (tenPullButton == null || !tenPullButton.interactable)
+            if (!isActiveAndEnabled || tenPullButton == null || !tenPullButton.interactable)
             {
                 return;
             }

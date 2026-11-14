@@ -32,8 +32,10 @@ namespace LastRail.Tests.EditMode
                 var font=UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_LASTRAIL/UI/StartupResources/BootstrapFont.asset");var deck=LobbyCommandDeck.Attach(root,font,"QA",0,new MissionShellMissionRowState[0],null,null);deck.BindAccount(state);deck.OpenPass();var view=root.GetComponentInChildren<SeasonPassView>();Assert.IsNotNull(view);Assert.IsTrue(state.RecurringReady,state.RecurringError);
                 Assert.That(view.CurrentState.Rewards.Count,Is.EqualTo(100));Assert.That(view.CurrentState.Rewards.Count(x=>x.CanClaim),Is.EqualTo(1));Assert.That(view.CurrentState.Rewards.Single(x=>x.Level==2&&x.Track=="FREE").Status,Is.EqualTo("EARNED"));Assert.That(view.CurrentState.Rewards.Single(x=>x.Level==2&&x.Track=="PREMIUM").Status,Is.EqualTo("PREMIUM_REQUIRED"));Assert.That(wire.Syncs,Is.EqualTo(1));Assert.That(wire.Claims,Is.Zero);
                 var scroll=view.GetComponentInChildren<ScrollRect>();scroll.verticalNormalizedPosition=0;Canvas.ForceUpdateCanvases();Assert.That(scroll.content.rect.height,Is.GreaterThan(scroll.viewport.rect.height));
+                var rewardRow=scroll.content.Find("ClaimPass2PREMIUM");
                 view.GetComponentsInChildren<Button>().Single(x=>x.name=="PassProgressTab").onClick.Invoke();Assert.IsTrue(view.CurrentState.ShowObjectives);Assert.That(wire.Syncs,Is.EqualTo(1));view.GetComponentsInChildren<Button>().Single(x=>x.name=="PassRewardsTab").onClick.Invoke();
                 wire.Premium=true;await state.RefreshRecurringAsync();Assert.That(view.CurrentState.Rewards.Count(x=>x.CanClaim),Is.EqualTo(2));
+                Assert.AreSame(rewardRow,scroll.content.Find("ClaimPass2PREMIUM"),"Tab changes and entitlement updates reuse reward rows");
                 wire.Missing=true;await state.RefreshRecurringAsync();Assert.That(view.CurrentState.Rewards.Count,Is.Zero);Assert.IsFalse(view.CurrentState.CanBulk);
                 view.GetComponentsInChildren<Button>().Single(x=>x.name=="CloseSeasonPass").onClick.Invoke();Assert.IsFalse(deck.IsDialogOpen);Assert.That(wire.Claims,Is.Zero);
             }

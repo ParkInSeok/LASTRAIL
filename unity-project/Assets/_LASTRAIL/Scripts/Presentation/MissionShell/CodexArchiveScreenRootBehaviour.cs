@@ -93,6 +93,7 @@ namespace LastRail.Presentation.MissionShell
 
         public void BindInteractionCallbacks()
         {
+            if (!isActiveAndEnabled) return;
             BindButton(missionSelectButton, OnMissionSelectClicked);
             BindButton(resultButton, OnResultClicked);
             BindButton(rewardReviewButton, OnRewardReviewClicked);
@@ -123,7 +124,7 @@ namespace LastRail.Presentation.MissionShell
 
         private void OnMissionSelectClicked()
         {
-            if (missionSelectButton == null || !missionSelectButton.interactable)
+            if (!isActiveAndEnabled || missionSelectButton == null || !missionSelectButton.interactable)
             {
                 return;
             }
@@ -134,7 +135,7 @@ namespace LastRail.Presentation.MissionShell
 
         private void OnResultClicked()
         {
-            if (resultButton == null || !resultButton.interactable)
+            if (!isActiveAndEnabled || resultButton == null || !resultButton.interactable)
             {
                 return;
             }
@@ -145,7 +146,7 @@ namespace LastRail.Presentation.MissionShell
 
         private void OnRewardReviewClicked()
         {
-            if (rewardReviewButton == null || !rewardReviewButton.interactable)
+            if (!isActiveAndEnabled || rewardReviewButton == null || !rewardReviewButton.interactable)
             {
                 return;
             }

@@ -11,7 +11,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
  readonly List<Sprite> ownedPresentationSprites=new List<Sprite>();
  Sprite OwnPresentationSprite(Sprite sprite){ownedPresentationSprites.Add(sprite);return sprite;}
  void ReleasePresentationSprites(){foreach(var sprite in ownedPresentationSprites)if(sprite!=null){if(Application.isPlaying)Destroy(sprite);else DestroyImmediate(sprite);}ownedPresentationSprites.Clear();}
- Func<bool> commandAvailability;
+ Func<bool> commandAvailability;ApprovedCombatInputController inputController;
  public void SetCommandAvailability(Func<bool> available){commandAvailability=available;}
  bool CommandsAvailable=>this!=null&&isActiveAndEnabled&&(commandAvailability?.Invoke()??true);
  public void CancelPendingInput(){foreach(var button in GetComponentsInChildren<CombatInputButton>(true))button.CancelGesture();foreach(var slider in GetComponentsInChildren<CombatPointerSlider>(true))slider.CancelGesture();}
@@ -49,7 +49,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
  }
  public void SetPresentationMode(int value){
   if(value<0||value>2)throw new ArgumentOutOfRangeException(nameof(value));
-  presentation.Mode=(CombatPresentationMode)value;PlayerPrefs.SetInt("LastRail.Presentation.Mode",value);PlayerPrefs.Save();
+  presentation.Mode=(CombatPresentationMode)value;
  }
  public void SkipCurrentPresentation(){reinaBarrageView?.Skip();presentation?.Skip();if(cutin!=null)cutin.SetActive(false);if(cutSkip!=null)cutSkip.gameObject.SetActive(false);}
  void CastCue(string kind,string token,string ability){
@@ -98,7 +98,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
  public void UseLandscapeLayout(){if(root==null)throw new InvalidOperationException("Bind the original combat owner first.");if(landscapeLayout!=null)return;landscapeLayout=new CombatLandscapeDLayout(root,GetComponent<Canvas>());BuildApprovedDHeader((string)driver.ReadDisplayState()["displayOperationId"]);ApplyApprovedDConsole();BuildThreatDisplay();Refresh();}
  public void BindOrRefresh(CombatSceneDriver candidate,CombatPresentationAssets art){if(root==null){Bind(candidate,art);return;}if(driver!=candidate)throw new InvalidOperationException("A different combat driver requires a fresh HUD.");Refresh();}
  public void Bind(CombatSceneDriver d,CombatPresentationAssets a){
-  if(root!=null)throw new InvalidOperationException("Bind once per view.");a.OperatorFrames?.Validate();driver=d;assets=a;if(d.HudState==null)throw new InvalidOperationException("Open first.");
+  if(root!=null)throw new InvalidOperationException("Bind once per view.");a.OperatorFrames?.Validate();driver=d;inputController=new ApprovedCombatInputController(d,()=>CommandsAvailable);assets=a;if(d.HudState==null)throw new InvalidOperationException("Open first.");
   var canvas=GetComponent<Canvas>();if(canvas==null)canvas=gameObject.AddComponent<Canvas>();canvas.renderMode=RenderMode.ScreenSpaceOverlay;
   var scaler=GetComponent<CanvasScaler>();if(scaler==null)scaler=gameObject.AddComponent<CanvasScaler>();scaler.uiScaleMode=CanvasScaler.ScaleMode.ScaleWithScreenSize;scaler.referenceResolution=new Vector2(720,1280);scaler.matchWidthOrHeight=1;
   if(GetComponent<GraphicRaycaster>()==null)gameObject.AddComponent<GraphicRaycaster>();
@@ -119,7 +119,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
   actorLayer=Rect("BattleActors",root,0,0,720,1280);exteriorActors=Rect("ExteriorActors",exteriorViewport,0,-66,720,1280);AddCanyonLayers(true);travelForeground=Rect("MovingNearRocks",exteriorViewport,0,0,720,273).gameObject.AddComponent<CombatTravelGround>();travelForeground.Foreground=true;travelForeground.TerrainTexture=a.DistantTerrain??a.ExteriorMap;travelForeground.raycastTarget=false;distantDust=Rect("TrainGroundDust",exteriorViewport,0,0,720,273).gameObject.AddComponent<CombatDistantDust>();distantDust.raycastTarget=false;distantDust.gameObject.SetActive(false);AddContactDust();
   foreach(var glass in windows)AddSun(glass,new Rect(glass.rectTransform.anchoredPosition.x/720f,.38f,glass.rectTransform.sizeDelta.x/720f,.42f));
   Box("Header",root,0,0,720,66,new Color(.035f,.055f,.065f,.96f));Text("Title",root,"LAST RAIL",15,10,225,40,32);
-  wave=Text("Wave",root,"",245,10,220,36,22);speed=Button("Speed","1×",510,12,87,40,()=>driver.SetSpeed((int)driver.ReadDisplayState()["speedHalfUnits"]==2?3:(int)driver.ReadDisplayState()["speedHalfUnits"]==3?4:2));
+  wave=Text("Wave",root,"",245,10,220,36,22);speed=Button("Speed","1×",510,12,87,40,inputController.CycleSpeed);
   var pauseMenu=gameObject.AddComponent<CombatPauseController>();pauseMenu.Initialize(driver,root,font);
   pause=Button("Pause","Ⅱ",610,12,90,40,pauseMenu.Open);
   Box("TrainPanel",root,0,339,720,53,new Color(.05f,.07f,.075f));Box("TrainEdge",root,0,339,720,2,new Color(.3f,.4f,.42f));Box("TrainEdgeBottom",root,0,390,720,2,new Color(.3f,.4f,.42f));Text("TrainLabel",root,"열차 내구도",16,353,150,34,20);trainHp=Meter("TrainHp",root,173,362,340,12,new Color(.38f,.91f,.97f));trainText=Text("TrainHpText",root,"",524,355,178,32,20);
@@ -152,7 +152,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
   if(presentation==null){
    // Unscoped/restored callers fail toward simplified. The host supplies owner/run marker ports.
    bool used=false;presentation=new CombatPresentationPolicy(()=>used,()=>{used=true;return true;},(long)state["tick"]>0);
-   presentation.Mode=(CombatPresentationMode)Mathf.Clamp(PlayerPrefs.GetInt("LastRail.Presentation.Mode",0),0,2);
+   presentation.Mode=LastRail.Presentation.Settings.UnitySettingsBackend.ReadCombatPresentationMode();
   }
   seenHits=((JArray)state["hits"]).Count;foreach(var c in (JArray)state["casts"])casts.Add((string)c["id"]);effectFeedback.Seed((JArray)state["effectResults"]);artilleryOutcome.Seed(state);dangerFeedback.Seed(state);
   if(abilityAudio==null)ConfigurePresentationAudio(CombatAbilityAudioSet.LoadResources(),.65f);
@@ -178,7 +178,7 @@ public sealed partial class ApprovedCombatView:MonoBehaviour {
   controls.Add(control);
  }
  JToken Row(JObject s,string group,int i)=>group=="ultimate"?s[group]:s[group][i];
- void Use(string group,int i){var r=Row(driver.ReadDisplayState(),group,i);if(!(bool)r["enabled"]||driver.RecoveryRequired)return;driver.RequestSkill(Guid.NewGuid().ToString("N"),(string)r["actor"],(string)r["ability"]);}
+ void Use(string group,int i)=>inputController.Use(group,i);
  void Effect(Unit u,Texture tex,Color color,float duration=.28f){
   if(tex==null)return;
   var bounds=u.Art.rectTransform.rect;

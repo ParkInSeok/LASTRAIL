@@ -10,14 +10,14 @@ namespace LastRail.Presentation.MissionShell
     // Borrows textures from the page scope. Logical slot IDs never depend on visual ordering.
     public sealed class FormationPlanView : MonoBehaviour
     {
-        readonly Button[] slots = new Button[5];
-        readonly RawImage[] portraits = new RawImage[5];
-        readonly GameObject[] empty = new GameObject[5], highlights = new GameObject[5];
+        readonly Button[] slots = new Button[10];
+        readonly RawImage[] portraits = new RawImage[10];
+        readonly GameObject[] empty = new GameObject[10], highlights = new GameObject[10];
         Action<int> selected;
         // Approved source art is reused; these are display crops, not newly drawn portraits.
         public static Rect PortraitCrop(string id,Texture2D texture)
         {
-            if(id=="op_nyx")return new Rect(.32f,.67f,.35f,.29f);
+            if(id=="op_nyx")return new Rect(.12f,.18f,.76f,.76f);
             if(id=="op_reina"||id=="op_kyle"||id=="op_eve"||id=="op_sera"||id=="op_mira")return new Rect(.20f,.38f,.63f,.60f);
             return OperatorVisualCatalog.Crop(texture,151,151);
         }
@@ -40,7 +40,7 @@ namespace LastRail.Presentation.MissionShell
         }
         public static FormationPlanView Create(Transform parent, TMP_FontAsset font)
         {
-            var rect = Rect(parent, "FormationPlan", 0, 0, 1080, 450);
+            var rect = Rect(parent, "FormationPlan", 0, 0, 750, 620);
             var view = rect.gameObject.AddComponent<FormationPlanView>();
             view.Build(font);
             return view;
@@ -64,26 +64,38 @@ namespace LastRail.Presentation.MissionShell
         }
         void Build(TMP_FontAsset font)
         {
-            Art(transform, "TrainPlanBackground", PreparedContent.Load<Texture2D>("FormationPlan/background"), 0, 0, 1080, 450);
             var frame = PreparedContent.Load<Texture2D>("FormationPlan/slot-frame");
-            Vector2[] positions = { new Vector2(250, 55), new Vector2(460, 55), new Vector2(670, 55), new Vector2(355, 250), new Vector2(565, 250) };
-            for (int i = 0; i < 5; i++)
+            var roof = PreparedContent.Load<Texture2D>("FormationPlan/combat-roof-v02");
+            for(int row=0;row<2;row++)
             {
-                int slot = i; var p = positions[i];
-                var r = Rect(transform, "FormationSlot" + i, p.x, p.y, 175, 175);
+                float top=row*310;
+                var panel=Rect(transform,"Encounter"+row,0,top,750,302).gameObject.AddComponent<Image>();
+                panel.color=new Color(.025f,.04f,.045f,.93f);panel.raycastTarget=false;
+                Label(transform,font,"EncounterTitle"+row,row==0?"← 적    좌측 교전 · 최후미 객차":"우측 교전 · 기관차 뒤 객차    적 →",8,top+3,734,34,24);
+                Art(transform,"CombatRoof"+row,roof,5,top+40,740,247);
+                for(int car=0;car<6;car++){
+                    var marker=Rect(transform,"CarMarker"+row+"-"+car,175+car*65,top+284,58,9).gameObject.AddComponent<Image>();
+                    marker.color=car==(row==0?0:4)?new Color(.1f,.85f,1):new Color(.55f,.43f,.23f);marker.raycastTarget=false;
+                }
+                Label(transform,font,"EngineDirection"+row,"▶",565,top+277,35,23,20);
+                for (int slot = 0; slot < 5; slot++)
+                {
+                int logicalSlot=slot;int i=row*5+slot;float x=72+(row==0?slot:4-slot)*124;float y=top+(slot%2==0?145:70);
+                var r = Rect(transform, (row==0?"FormationSlot":"RightFormationSlot") + slot, x, y, 100, 100);
                 var plate = r.gameObject.AddComponent<Image>(); plate.color = new Color(.035f, .045f, .05f);
                 var button = r.gameObject.AddComponent<Button>(); button.targetGraphic = plate; slots[i] = button;
-                button.onClick.AddListener(() => { if (this != null && isActiveAndEnabled && button.interactable) selected?.Invoke(slot); });
-                portraits[i] = Art(r, "Portrait", null, 12, 12, 151, 151);
-                empty[i] = Label(r, font, "EmptyPlus", "+", 12, 12, 151, 151, 72).gameObject;
-                Art(r, "Frame", frame, -7, -7, 189, 189);
-                var highlight=Art(r,"Selected",frame,-7,-7,189,189);highlight.color=new Color(.08f,1,1);
+                button.onClick.AddListener(() => { if (this != null && isActiveAndEnabled && button.interactable) selected?.Invoke(logicalSlot); });
+                portraits[i] = Art(r, "Portrait", null, 6, 6, 88, 88);
+                empty[i] = Label(r, font, "EmptyPlus", "+", 6, 6, 88, 88, 48).gameObject;
+                Art(r, "Frame", frame, -4, -4, 108, 108);
+                var highlight=Art(r,"Selected",frame,-4,-4,108,108);highlight.color=new Color(.08f,1,1);
                 var glow=highlight.gameObject.AddComponent<Outline>();glow.effectColor=new Color(0,.8f,1,1);glow.effectDistance=new Vector2(4,4);glow.useGraphicAlpha=false;
                 highlights[i] = highlight.gameObject;
-                SelectionBorder(highlight.transform,189,189);
-                var badge=Rect(r,"NumberPlate",66,-23,43,43).gameObject.AddComponent<RouletteSurfaceGraphic>();badge.Radius=.5f;badge.EdgeBrightness=1;badge.color=new Color(.035f,.045f,.05f);badge.raycastTarget=false;
-                var rim=Rect(r,"NumberRim",66,-23,43,43).gameObject.AddComponent<RouletteSurfaceGraphic>();rim.Radius=.5f;rim.InnerRadius=.46f;rim.EdgeBrightness=1;rim.color=new Color(.8f,.7f,.5f);rim.raycastTarget=false;
-                Label(r, font, "Number", (i + 1).ToString(), 66, -23, 43, 43, 29);
+                SelectionBorder(highlight.transform,108,108);
+                var badge=Rect(r,"NumberPlate",32,-21,36,36).gameObject.AddComponent<RouletteSurfaceGraphic>();badge.Radius=.5f;badge.EdgeBrightness=1;badge.color=new Color(.035f,.045f,.05f);badge.raycastTarget=false;
+                var rim=Rect(r,"NumberRim",32,-21,36,36).gameObject.AddComponent<RouletteSurfaceGraphic>();rim.Radius=.5f;rim.InnerRadius=.46f;rim.EdgeBrightness=1;rim.color=new Color(.8f,.7f,.5f);rim.raycastTarget=false;
+                Label(r, font, "Number", (slot + 1).ToString(), 32, -21, 36, 36, 25);
+                }
             }
         }
         public void Bind(Action<int> action) => selected = action;
@@ -93,11 +105,12 @@ namespace LastRail.Presentation.MissionShell
         public void Render(IReadOnlyList<string> ids, int activeSlot = -1, bool editable = false)
         {
             if (ids == null || ids.Count != 5) throw new ArgumentException("Five logical positions required", nameof(ids));
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
-                var texture = Portrait(ids[i]); portraits[i].texture = texture; portraits[i].enabled = texture != null;
-                portraits[i].uvRect = PortraitCrop(ids[i],texture);
-                empty[i].SetActive(string.IsNullOrEmpty(ids[i])); highlights[i].SetActive(i == activeSlot);
+                int slot=i%5;
+                var texture = Portrait(ids[slot]); portraits[i].texture = texture; portraits[i].enabled = texture != null;
+                portraits[i].uvRect = PortraitCrop(ids[slot],texture);
+                empty[i].SetActive(string.IsNullOrEmpty(ids[slot])); highlights[i].SetActive(slot == activeSlot);
                 slots[i].interactable = editable && selected != null;
             }
         }

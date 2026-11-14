@@ -11,7 +11,22 @@ namespace LastRail.Tests.EditMode
 {
     public sealed class RecruitmentReadTests
     {
-        static JObject Pity()=>new JObject{["totalPullCount"]=0,["elitePityCount"]=0,["pickupElitePityCount"]=0,["rareOrHigherPityCount"]=0,["revision"]=0};
+        [Test] public void RecruitModesAndRefreshRetainExistingControls()
+        {
+            var wire=new Wire{Reply=r=>Task.FromResult(RunApiHttpResponse.NetworkError("offline fixture"))};var session=SupportInquiryTests.Session();using var state=new AccountScreenRuntime(wire,null,()=>session,()=>1);
+            var root=new UnityEngine.GameObject("RecruitReuse",typeof(UnityEngine.RectTransform));
+            try{
+                var pages=LobbyDestinationPages.Create(root.transform,null,()=>{});pages.BindAccount(state);pages.Open(LobbyPage.Recruit);
+                Action changed=()=>pages.RefreshAccountView(state);state.Changed+=changed;
+                try{
+                    UnityEngine.UI.Button Find(string name)=>root.GetComponentsInChildren<UnityEngine.UI.Button>().Single(b=>b.name==name);
+                    var main=Find("RecruitMain");var pull=Find("RecruitOne");int count=0;
+                    for(int i=0;i<4;i++){Find("RecruitRates").onClick.Invoke();Find("RecruitHistory").onClick.Invoke();main.onClick.Invoke();pages.RefreshAccountView(state);Assert.AreSame(main,Find("RecruitMain"));Assert.AreSame(pull,Find("RecruitOne"));int current=root.GetComponentsInChildren<UnityEngine.Transform>(true).Length;if(i==0)count=current;else Assert.AreEqual(count,current,"Repeated mode visits cannot grow the hierarchy");}
+                    int reads=wire.Requests.Count;pages.RefreshAccountView(state);Assert.AreEqual(reads,wire.Requests.Count,"Rendering cannot query the server");
+                    pages.Close();main.onClick.Invoke();Assert.IsFalse(pages.IsOpen);
+                }finally{state.Changed-=changed;}
+            }finally{UnityEngine.Object.DestroyImmediate(root);}
+        }        static JObject Pity()=>new JObject{["totalPullCount"]=0,["elitePityCount"]=0,["pickupElitePityCount"]=0,["rareOrHigherPityCount"]=0,["revision"]=0};
         static JObject Banner(string id)=>new JObject{["bannerId"]=id,["bannerType"]="STANDARD",["balanceVersion"]="1",["pickupOperatorId"]=null,["startsAt"]="2026-09-10T00:00:00.000Z",["endsAt"]=null,["availability"]="ACTIVE",["pityConfig"]=new JObject{["rare"]=10,["elite"]=30,["pickup"]=60},["pityState"]=Pity(),["nextGuarantee"]="NONE",["prices"]=new JArray(new JObject{["pullCount"]=1,["quantity"]=1,["itemId"]="cur_command_ticket"},new JObject{["pullCount"]=10,["quantity"]=10,["itemId"]="cur_command_ticket"}),["probabilities"]=new JArray(new JObject{["resultId"]="op_vex",["resultType"]="ELITE_OPERATOR",["resultRarity"]="ELITE",["quantity"]=1,["isPickup"]=false,["baseProbability"]=.005,["nextPullProbability"]=1})};
         static JObject Batch()=>new JObject{["batchId"]="batch_old",["bannerId"]="ended",["pullCount"]=1,["balanceVersion"]=null,["cost"]=new JObject{["itemId"]="cur_command_ticket",["quantity"]=1},["createdAt"]="2026-09-10T00:00:00.000Z",["postPityState"]=null,["recoveryStatus"]="INCOMPLETE",["missingSequences"]=new JArray(),["unknownQuantitySequences"]=new JArray(1),["results"]=new JArray(new JObject{["pullSequence"]=1,["resultId"]="op_vex",["resultType"]="ELITE_OPERATOR",["resultRarity"]="ELITE",["isPickup"]=false,["wasDuplicate"]=true,["duplicateConversion"]=null,["reward"]=new JObject{["kind"]="UNKNOWN",["id"]=null,["quantity"]=null}})};
         [Test] public void UnknownDuplicateQuantityNeverBecomesOperatorCountOrCurrentPolicy()

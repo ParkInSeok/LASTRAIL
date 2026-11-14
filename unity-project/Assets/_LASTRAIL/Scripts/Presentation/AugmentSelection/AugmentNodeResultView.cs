@@ -17,12 +17,12 @@ namespace LastRail.Presentation.AugmentSelection
         RectTransform modal,content;
         AugmentSelectionDetailView detail;
         TMP_FontAsset font;
-        readonly List<(Button Button,UnityAction Handler)> rowHandlers=new List<(Button,UnityAction)>();
+        readonly List<Button> rows=new List<Button>();
         static void Stretch(RectTransform r){r.anchorMin=Vector2.zero;r.anchorMax=Vector2.one;r.offsetMin=Vector2.zero;r.offsetMax=Vector2.zero;}
-        Button Button(string name,Transform parent,string text,Action action,bool transient=false)
+        Button Button(string name,Transform parent,string text,Action action)
         {
             var r=AuthFormVisuals.Rect(name,parent);var image=r.gameObject.AddComponent<Image>();image.color=new Color(.08f,.16f,.20f,1);
-            var button=r.gameObject.AddComponent<Button>();button.targetGraphic=image;UnityAction handler=()=>{if(isActiveAndEnabled&&button.IsInteractable())action();};button.onClick.AddListener(handler);if(transient)rowHandlers.Add((button,handler));
+            var button=r.gameObject.AddComponent<Button>();button.targetGraphic=image;UnityAction handler=()=>{if(isActiveAndEnabled&&button.gameObject.activeInHierarchy&&button.IsInteractable())action();};button.onClick.AddListener(handler);
             var label=AuthFormVisuals.Text(r,"Label",text,font,26,false,TextAlignmentOptions.Center);Stretch(label.rectTransform);return button;
         }
         public static AugmentNodeResultView Create(Transform parent,TMP_FontAsset font)
@@ -42,16 +42,21 @@ namespace LastRail.Presentation.AugmentSelection
         {
             Unbind();snapshot=result;entry.gameObject.SetActive(snapshot?.Entries.Count>0);
             if(snapshot==null)return;
+            while(rows.Count>snapshot.Entries.Count){var last=rows[rows.Count-1];rows.RemoveAt(rows.Count-1);if(Application.isPlaying)Destroy(last.gameObject);else DestroyImmediate(last.gameObject);}
             for(int i=0;i<snapshot.Entries.Count;i++){
-                var row=snapshot.Entries[i];var button=Button("AugmentResultCard"+i,content,"",()=>{if(snapshot!=null)detail.Show(row.Card.Name,row.Details,row.Card.Examples);},true);
-                button.GetComponentInChildren<TMP_Text>().text="";var le=button.gameObject.AddComponent<LayoutElement>();le.preferredHeight=180;
-                var name=AuthFormVisuals.Text(button.transform,"CardName",row.Card.Name,font,28);AuthFormVisuals.Place(name.rectTransform,16,12,620,46);
-                var summary=AuthFormVisuals.Text(button.transform,"Summary",row.Summary,font,25);summary.rectTransform.anchorMin=Vector2.zero;summary.rectTransform.anchorMax=Vector2.one;summary.rectTransform.offsetMin=new Vector2(16,12);summary.rectTransform.offsetMax=new Vector2(-16,-64);
+                if(i==rows.Count){
+                    int index=i;var created=Button("AugmentResultCard"+i,content,"",()=>{if(snapshot!=null&&index<snapshot.Entries.Count){var current=snapshot.Entries[index];detail.Show(current.Card.Name,current.Details,current.Card.Examples);}});
+                    created.gameObject.AddComponent<LayoutElement>().preferredHeight=180;
+                    var name=AuthFormVisuals.Text(created.transform,"CardName","",font,28);AuthFormVisuals.Place(name.rectTransform,16,12,620,46);
+                    var summary=AuthFormVisuals.Text(created.transform,"Summary","",font,25);summary.rectTransform.anchorMin=Vector2.zero;summary.rectTransform.anchorMax=Vector2.one;summary.rectTransform.offsetMin=new Vector2(16,12);summary.rectTransform.offsetMax=new Vector2(-16,-64);
+                    rows.Add(created);
+                }
+                var row=snapshot.Entries[i];var button=rows[i];button.gameObject.SetActive(true);
+                button.transform.Find("CardName").GetComponent<TMP_Text>().text=row.Card.Name;
+                button.transform.Find("Summary").GetComponent<TMP_Text>().text=row.Summary;
             }
-        }
-        void Open(){if(snapshot?.Entries.Count>0){modal.gameObject.SetActive(true);inputScope?.Dispose();inputScope=new AugmentModalInputScope(modal,transform.parent,closeButton.gameObject);}}
+        }        void Open(){if(snapshot?.Entries.Count>0){modal.gameObject.SetActive(true);inputScope?.Dispose();inputScope=new AugmentModalInputScope(modal,transform.parent,closeButton.gameObject);}}
         void Close(){detail.Close();inputScope?.Dispose();inputScope=null;modal.gameObject.SetActive(false);}
-        public void Unbind(){snapshot=null;foreach(var owned in rowHandlers)if(owned.Button!=null)owned.Button.onClick.RemoveListener(owned.Handler);rowHandlers.Clear();if(entry!=null)entry.gameObject.SetActive(false);if(detail!=null)detail.Close();inputScope?.Dispose();inputScope=null;if(modal!=null)modal.gameObject.SetActive(false);if(content!=null)for(int i=content.childCount-1;i>=0;i--){var child=content.GetChild(i);child.gameObject.SetActive(false);if(Application.isPlaying)Destroy(child.gameObject);else DestroyImmediate(child.gameObject);}}
-        void OnDisable()=>Unbind();
+        public void Unbind(){snapshot=null;if(entry!=null)entry.gameObject.SetActive(false);if(detail!=null)detail.Close();inputScope?.Dispose();inputScope=null;if(modal!=null)modal.gameObject.SetActive(false);foreach(var row in rows){row.gameObject.SetActive(false);foreach(var label in row.GetComponentsInChildren<TMP_Text>(true))label.text="";}}        void OnDisable()=>Unbind();
     }
 }
