@@ -1,0 +1,109 @@
+{
+  "project": "82afdef1879842b4bde2b5d90289b0ac",
+  "revision": 15,
+  "status": "AB-spacing-improved-ink-regression-pending",
+  "approved_color": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\portfolio-camera-pitch-v03\\first-frame.png",
+  "approved_color_sha": "c835884905168284451d0961ed73cb8d07f8b6fecc5ecb474db51740d1d025db",
+  "motion_reference": "../final-motion-v01/manifest.json",
+  "timing_intent": "36x120ms breath4.32s, wind12x120ms repeated3, pending new key validation",
+  "protection": "Approved first-pose originals read-only, same camera/body/grip/feet. New native lines not assumed pixel-exact.",
+  "line_keys": {
+    "0": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-a1beb97d-231d-4334-875e-fbebcc7222db.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-00.png",
+      "asset": "a90302ea2ae74261a681fbbaf1485396.png"
+    },
+    "4": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-ac3bae5c-1b92-4d45-b8e7-40889cd9a618.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-04.png",
+      "asset": "533ba0c29e2f4b6d9fe043bbfa87442b.png"
+    },
+    "6": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-021689de-aca1-41d7-a94e-0497e1f46788.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-06.png",
+      "asset": "86f2d589deb04046bba9f5a777117dc7.png"
+    },
+    "10": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-05e87f3d-6993-4701-8b35-6f50c3837fc7.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-10.png",
+      "asset": "449013d0d58742528538885b6cf123fc.png"
+    },
+    "5": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-0a2d8f9e-072d-4871-b228-7fad4cb77c4d.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-05.png",
+      "asset": "0d8f71fac9c7499b97d890391cedc0b5.png"
+    },
+    "7": {
+      "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-5f5d2e2b-7d2e-45b0-9384-e037a190105d.png",
+      "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-07.png",
+      "asset": "7e30ec88d1994b6f8db3e17eff4175f0.png"
+    }
+  },
+  "review": "Native line baseline and reduced-wind key imported and asset bytes verified. Opaque white construction studies only, not runtime alpha. Alpha line generations rejected for white debris. Large wind key rejected for excessive displacement. Reduced key still needs strand correspondence/line detail drift assessment; breath not validated. Color palette mapping, complete timing, all transitions and playback NOT done. Approved first color and existing idle unchanged.",
+  "key_review": {
+    "status": "user-accepted-key-poses",
+    "keys": {
+      "A": 4,
+      "B": 6,
+      "C": 10
+    },
+    "method": "native full drawing edits; opaque construction line studies. No pixel-exact protection claimed.",
+    "request": "wind120 + connected ribcage/sleeve/waist/belt, stable camera/torso/grip/feet",
+    "comparison": "key-poses-ABC-v02.jpg",
+    "pending": [
+      "strand overlap identity at lower hair",
+      "local ink weight and buckle shape drift",
+      "camera/torso visual comparison to approved color",
+      "continuous playback and complete timing",
+      "palette/surface color and alpha production"
+    ],
+    "observed": "At three static full/crop poses: root attached, curls/coattails bend and recover; no obvious broken sleeve-waist-belt contour. B excess sleeve/side folds reduced by native edit. Hand/gun/sole location visually stable, not pixel exact. B side contour and lower curl line identities still need inbetween regression; wind120 is qualitative target, not measured speed.",
+    "approved_color_sha_verified": true,
+    "approval": {
+      "evidence": "좋아 다음 ㄱㄱ",
+      "scope": "Presented ABC key poses; not inbetween clip/color approval"
+    }
+  },
+  "inbetween_trial": {
+    "selected_project_revision": 14,
+    "source_keys": [
+      4,
+      6,
+      10
+    ],
+    "new_index": 5,
+    "comparison": "AB-four-poses-v02.jpg",
+    "rejected": "AB-rejected-near-B.png (too near B)",
+    "observed": "Two newly drawn intermediates now show progressive leftward hair/coattail bending A -> early -> middle -> B. New middle has darker/thicker ink and different lower lock interior lines; not passed. Studio slot indices are work slots, not finished timing. Failed initial near-B retained but excluded.",
+    "left_contour_median_dx_A_to_trial": -16.0,
+    "left_contour_median_dx_trial_to_B": -64.0,
+    "metric_scope": "lower hair left silhouette x over y450..609 only; not strand matching or visual-quality score",
+    "next": "Normalize middle line weight and verify curl identity before more inbetweens; then B->C and C->A, 12 full transitions. No completed-loop claim.",
+    "ordered_indices": [
+      4,
+      5,
+      7,
+      6
+    ]
+  },
+  "loop12": {
+    "project": "67297bb31b2648598e2cc1e08d7d4ae6",
+    "revision": 13,
+    "qa": "loop12-v01/qa.json",
+    "status": "12-frame-review-complete-with-open-art-findings",
+    "preview": "loop12-v01/normal.gif",
+    "approved_color_unchanged": true
+  },
+  "loop12_correction_v02": {
+    "project": "67297bb31b2648598e2cc1e08d7d4ae6",
+    "revision": 36,
+    "qa": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\loop12-v01\\qa.json",
+    "status": "targeted-line-corrections-applied-partial-visual-review-not-approved"
+  },
+  "color_keys_v01": {
+    "project": "28338c5acb394e329d7c3bfb49dd2ee1",
+    "revision": 39,
+    "qa": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\qa.json",
+    "status": "12-colored-candidates-static-review-complete-flicker-not-fully-passed"
+  }
+}

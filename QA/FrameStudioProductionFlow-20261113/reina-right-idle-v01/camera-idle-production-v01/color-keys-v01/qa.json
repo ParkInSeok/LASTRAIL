@@ -1,0 +1,596 @@
+{
+  "project": "28338c5acb394e329d7c3bfb49dd2ee1",
+  "revision": 39,
+  "source_project": "67297bb31b2648598e2cc1e08d7d4ae6",
+  "source_revision": 36,
+  "approved_line_frames": {
+    "0": {
+      "source": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-04.png",
+      "asset": "c82a726d990548ad82cc81758b262f2a.png",
+      "sha256": "fdade8549832223cbeae1a56d0e58c2ad995eae87fdd163d28b6eaacfd556c30"
+    },
+    "1": {
+      "source": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-05.png",
+      "asset": "1cf3052089b44893a1021405225e3cfe.png",
+      "sha256": "f6327407bb3afb301ed382a46d61c02c9085514cb4c1a512810231e81dc3fe3c"
+    },
+    "2": {
+      "source": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\loop12-v01\\correction-v02\\donor-03.png",
+      "asset": "2a2cfc065dd1422f8b5bf7721c4f9a8d.png",
+      "sha256": "303fa2fd607eaab60601b9e9d515d9929308d9891d58411b64adffe2c1e3256f",
+      "masked": true
+    },
+    "4": {
+      "source": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-06.png",
+      "asset": "61a71b1ab969480ead06087e036fe911.png",
+      "sha256": "918ce857b212e5af49d32071295d031f6b35169f495ce58e78855beac33955a4"
+    },
+    "8": {
+      "source": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\line-key-10.png",
+      "asset": "6042e769fe604feeb64dadcea7f14d05.png",
+      "sha256": "2377caa6884abca1589670f507ef3c1eca72c3045a8caa53f9cd2903bd6c50db"
+    },
+    "3": {
+      "source": "D:/CodexData/Home/generated_images/01a1baf6-02cb-7e61-a4dd-6505d41fc3f9/exec-9a02be09-745d-4bd6-a998-ad1d982761e3.png",
+      "asset": "432087a2349b42e388cf89fa1fc6b2cb.png",
+      "sha256": "d34b1323057b6ab2c693cabc1cc0d28c5401ab6076999bfc8ac8de4a84c06ef7"
+    },
+    "5": {
+      "source": "D:/CodexData/Home/generated_images/01a1baf6-02cb-7e61-a4dd-6505d41fc3f9/exec-52cca7f0-e8c2-448f-84f4-9538147f36d4.png",
+      "asset": "3eec17e0f3ce43c798288cae0b2325df.png",
+      "sha256": "93bd2c64ba76e8170cab0c84cada87b75905151f52604c5ff3825b7b12bf59b8"
+    },
+    "6": {
+      "source": "D:/CodexData/Home/generated_images/01a1baf6-02cb-7e61-a4dd-6505d41fc3f9/exec-fbb7ecc1-f3de-43bb-a5ec-4bd7a1e3c21a.png",
+      "asset": "8979ed074be74a1982cb4631e2cf4507.png",
+      "sha256": "497090e33d2e549f1fd8af7134601bb79cc3de4a14fffa8dacf87ed83376759a"
+    },
+    "7": {
+      "source": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\loop12-v01\\correction-v02\\donor-08.png",
+      "asset": "ba69a6d5a822491dbfa988bd3cca23e2.png",
+      "sha256": "db225e13c06c8e018598aa7f74cd31b2b3873c71a905a37101eff1c22a133f76",
+      "masked": true
+    },
+    "9": {
+      "source": "D:/CodexData/Home/generated_images/01a1baf6-02cb-7e61-a4dd-6505d41fc3f9/exec-86573c26-b716-4d1c-99b5-08c7adc3acc7.png",
+      "asset": "252998e36e3148b6be0a8e3d99b1b376.png",
+      "sha256": "9ad7f3adffc692ecfed713787a59ec031094a79721ded8047bf38d6d633c7e21"
+    },
+    "10": {
+      "source": "D:/CodexData/Home/generated_images/01a1baf6-02cb-7e61-a4dd-6505d41fc3f9/exec-866ab3ef-14b3-4f51-961a-34fd6bcc6a72.png",
+      "asset": "f2d47f86d83145599f1d467802e13d5c.png",
+      "sha256": "c4a824dbbfd96c075d8b07ebea0f9f3012a00c1fa243e11b7327db28d1331446"
+    },
+    "11": {
+      "source": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\loop12-v01\\correction-v02\\donor-12-final.png",
+      "asset": "2aafd7bd887143159191be3b3bc96f5f.png",
+      "sha256": "452b004da758547d27846a69c0185dc5c464d918ebd16000c51b34c2b6ebd696",
+      "masked": true
+    }
+  },
+  "color_reference": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\portfolio-camera-pitch-v03\\first-frame.png",
+  "palette_reference": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\fixed-ramp-palettes-v02.json",
+  "scope": "Native key shading candidates; exact per-region RGB and stage masks pending; no automatic final replacement",
+  "keys": {
+    "1": {
+      "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-01.png",
+      "asset": "4b1833262cc44b7aae60cc8f86f0a366.png",
+      "sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+      "stage": "appearance-source repaint candidate; fixedRGB unverified"
+    },
+    "5": {
+      "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-05-refined.png",
+      "asset": "667521b99dab4fd1a1c215133ab47a86.png",
+      "sha256": "488eb8bdee424b3a3820dc6d8e59d3901fef2c6344b69d6a6359d800ac38dc84",
+      "stage": "appearance candidate; excessive texture reduced"
+    },
+    "9": {
+      "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-09.png",
+      "asset": "c719f98d30df44d0a49757eb27018ffe.png",
+      "sha256": "d3f4443fc093a888161c1488eb9ae585be60087eef89a2a4d610e55736b8b624",
+      "stage": "appearance-source repaint candidate; fixedRGB unverified"
+    }
+  },
+  "status": "12-colored-candidates-static-review-complete-flicker-not-fully-passed",
+  "checks": {
+    "1": {
+      "rgba": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "selected_asset_bytes_match": true,
+      "transparent_pixels": 1068771,
+      "opaque_pixels": 1474
+    },
+    "5": {
+      "rgba": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "selected_asset_bytes_match": true,
+      "transparent_pixels": 1033177,
+      "opaque_pixels": 1584
+    },
+    "9": {
+      "rgba": true,
+      "size": [
+        1254,
+        1254
+      ],
+      "selected_asset_bytes_match": true,
+      "transparent_pixels": 1053164,
+      "opaque_pixels": 1513
+    }
+  },
+  "method": "Built-in imagegen edits of approved individual line frames with approved color reference; frame5/9 additionally used color1. No image warp or exact fixed-palette enforcement applied.",
+  "pending": [
+    "Residual highlight/fold temporal consistency review; fixed-RGB semantic matching unpassed; user review of colored animation."
+  ],
+  "visual_review": {
+    "observed": "Full3-key sheet and hair/sleeve enlarged sheet inspected. Broad camera/body/grip/foot placement visually tracks approved lines; no exact geometry preservation claim. Native redraw minor strand/cloth shading changes remain. Frame5 broader hair highlights than1/9. Red wristbands/boot stripes and gold accents present.",
+    "not_passed": "Exact fixed RGB mapping is NOT implemented in native output; stage masks for new geometry incomplete. Do not label full staged color production complete.",
+    "approved_sources_hash_unchanged": true,
+    "next": "Correct per-part light/mid/shadow masks and use frozen ramps on these keys; validate before remaining9 frames."
+  },
+  "prompt_contract": {
+    "inputs": "Individual approved line01/05/09 as edit targets, approved portfolio-camera-pitch-v03 color as material/light reference; additionalcolor01 input for05/09.",
+    "instructions": "Color only,1254square, transparent background; preserve silhouette/curves/camera/grip/feet; fixed anchor colors from palette-reference; controlled gradients in shade planes; no added small wrinkles/FX."
+  },
+  "current_work": {
+    "scope": "Correct frame5 hair light-plane coverage first; author part/shade correspondence for color keys, official fixed-ramp rendering; preserve approved line/color and other selected candidate pixels outside correction.",
+    "source_revision": 11,
+    "status": "in-progress"
+  },
+  "mapping_v02": {
+    "shade_guide": "rejected: whole geometry differs; not used for masks",
+    "hair05_outside_mask_exact": true,
+    "hair05_alpha_exact": true,
+    "status": "fixed-rgb-proof-rejected-for-tone-banding-not-expanded",
+    "flow_revision": 220,
+    "counts": {
+      "hair_crown": {
+        "base": 45522,
+        "shadow": 19324,
+        "light": 12277
+      },
+      "hair_tail": {
+        "base": 54261,
+        "shadow": 21115,
+        "light": 18465
+      },
+      "hair_tips": {
+        "base": 49633,
+        "shadow": 16072,
+        "light": 17645
+      },
+      "jacket_torso": {
+        "base": 15516,
+        "shadow": 3287,
+        "light": 6227
+      },
+      "sleeve_near": {
+        "base": 8829,
+        "shadow": 2994,
+        "light": 2408
+      },
+      "sleeve_far": {
+        "base": 2491,
+        "shadow": 1048,
+        "light": 424
+      },
+      "tie": {
+        "base": 3783,
+        "shadow": 758,
+        "light": 1437
+      },
+      "coat_black": {
+        "base": 24843,
+        "shadow": 8567,
+        "light": 9731
+      },
+      "skirt": {
+        "base": 33573,
+        "shadow": 8295,
+        "light": 12741
+      },
+      "hair_tie": {
+        "base": 8693,
+        "shadow": 1333,
+        "light": 2926
+      },
+      "cuff_near": {
+        "base": 10018,
+        "shadow": 4329,
+        "light": 2908
+      },
+      "cuff_far": {
+        "base": 2554,
+        "shadow": 548,
+        "light": 1086
+      },
+      "coat_red": {
+        "base": 35799,
+        "shadow": 5776,
+        "light": 20983
+      },
+      "ribbons": {
+        "base": 20549,
+        "shadow": 3933,
+        "light": 5526
+      },
+      "shirt": {
+        "base": 10485,
+        "shadow": 4156,
+        "light": 3468
+      },
+      "collar": {
+        "base": 3690,
+        "shadow": 987,
+        "light": 1596
+      },
+      "face": {
+        "base": 2493,
+        "shadow": 439,
+        "light": 1608
+      },
+      "neck": {
+        "base": 1175,
+        "shadow": 355,
+        "light": 207
+      },
+      "forearm_near": {
+        "base": 4963,
+        "shadow": 1431,
+        "light": 2650
+      },
+      "forearm_far": {
+        "base": 3025,
+        "shadow": 334,
+        "light": 2491
+      },
+      "fingers": {
+        "base": 2293,
+        "shadow": 351,
+        "light": 1460
+      },
+      "thigh_near": {
+        "base": 22271,
+        "shadow": 5688,
+        "light": 5612
+      },
+      "thigh_far": {
+        "base": 21743,
+        "shadow": 15936,
+        "light": 2178
+      },
+      "glove_near": {
+        "base": 2359,
+        "shadow": 1037,
+        "light": 539
+      },
+      "glove_far": {
+        "base": 1997,
+        "shadow": 414,
+        "light": 915
+      },
+      "straps": {
+        "base": 8245,
+        "shadow": 1673,
+        "light": 2236
+      },
+      "boot_near": {
+        "base": 21864,
+        "shadow": 4199,
+        "light": 12985
+      },
+      "boot_far": {
+        "base": 22102,
+        "shadow": 6305,
+        "light": 6507
+      },
+      "gold": {
+        "base": 21633,
+        "shadow": 4925,
+        "light": 11303
+      },
+      "gun": {
+        "base": 20509,
+        "shadow": 8144,
+        "light": 7307
+      },
+      "eyes": {
+        "base": 1412,
+        "shadow": 849,
+        "light": 275
+      },
+      "boot_red_near": {
+        "base": 10562,
+        "shadow": 714,
+        "light": 8502
+      },
+      "boot_red_far": {
+        "base": 1453,
+        "shadow": 734,
+        "light": 322
+      },
+      "wristband_far": {
+        "base": 1371,
+        "shadow": 678,
+        "light": 426
+      },
+      "wristband_near": {
+        "base": 2036,
+        "shadow": 1682,
+        "light": 246
+      }
+    },
+    "opaque_exact_fixed_RGB": true,
+    "alpha_exact": true,
+    "method": "Native material ID guide, provisional spatial subdivision and nearest frozen-ramp shade roles, Studio paint. Rejected regenerated shade guide NOT used.",
+    "output": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\mapping-v02\\palette01-composite.png",
+    "visual_review": "Fixed RGB and source alpha verified on first-frame diagnostic. Visible skin/hair banding and local color speckles; do not adopt or extend to12. Full-strength5 hair correction too dark; selected half-strength official patch v03 for comparison.",
+    "current5": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\color-05-v03.png",
+    "approved_line12_hashes_preserved": true,
+    "native_alpha_line": "Native transparent diagnostic derivative used only for pipeline sizing/basis; line_overlay=false, not composited or promoted to approved line."
+  },
+  "style_audit": {
+    "trigger": "User reports color/art-style mismatch; inspection only, no further image modification.",
+    "baseline": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\portfolio-camera-pitch-v03\\first-frame.png",
+    "selected_project_revision": 20,
+    "comparison": "mapping-v02/approved-style-details.jpg",
+    "method": "Same1254 canvas, identical crop and gray background; current selected assets matched QA.",
+    "observations": [
+      "Native color candidates have broader smoother violet hair highlights than approved reference.",
+      "Dark uniform appears warmer red-brown and smoother; sleeve/skin shade separation looks more explicit.",
+      "Small line/detail and rendering differences mean this is not color-only pixel-preserving fill."
+    ],
+    "provenance": [
+      "Current selected1/5/9 are native color candidates (5 official masked correction); rejected fixed-ramp output is NOT selected.",
+      "Frozen palette file originated in earlier reference-color-v01 workflow, not automatically resampled or revalidated against latest portfolio-camera-pitch-v03 reference.",
+      "Prompts supplied anchor colors and shading instructions but did not enforce source RGB or preserve original painted texture."
+    ],
+    "assessment": "Style match not passed; do not extend current appearance to remaining9.",
+    "proposed_next": "Restore latest approved color reference as sole appearance baseline; validate one pose for matte/gloss, shade boundaries, dark-cloth hue and outline/detail before spreading. Retain approved line motion, original colors and current candidates as history.",
+    "limits": "Static visual comparison only; no colorimeter calibration, temporal style/flicker evaluation or fix performed this turn."
+  },
+  "recolor_v03": {
+    "status": "repainted-three-key-candidates-style-review",
+    "source_revision": 20,
+    "appearance_source": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\portfolio-camera-pitch-v03\\first-frame.png",
+    "source_sha256": "c835884905168284451d0961ed73cb8d07f8b6fecc5ecb474db51740d1d025db",
+    "geometry_source": "../loop12-v01",
+    "previous_keys": {
+      "1": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\color-01.png",
+        "asset": "2321baa4fd5b44b9befcc73b8abb97b6.png",
+        "sha256": "bdf0e1397ed651d670283b8620d5a4ff29079f2bc821ac00f9c0d47d97cd1609",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "size": [
+          1254,
+          1254
+        ],
+        "stage": "native shading candidate; exact RGB unverified"
+      },
+      "5": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\color-05-v03.png",
+        "asset": "cf078ca11a7641c48ea424aef578d3f6.png",
+        "sha256": "e662994ac74c7e72cec0443f63001163cf76229c4adf540873fa3e35886ddf9c",
+        "stage": "native shading candidate; exact RGB unverified",
+        "previous": {
+          "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\color-05.png",
+          "asset": "9f39365a54aa4925beeb8a2bb55906b8.png",
+          "sha256": "078969e043b716c07e49d95a407375cac53bdfc8e1b10e8e1cce0ab745113561",
+          "stage": "native shading candidate; exact RGB unverified"
+        }
+      },
+      "9": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\color-09.png",
+        "asset": "fc806aba360f400fb5a013dcdd5ac8a5.png",
+        "sha256": "6832b8603bf2666ab2b81d092935354d427a6892bcbce02ff9a9082333726748",
+        "stage": "native shading candidate; exact RGB unverified"
+      }
+    },
+    "scope": "Color keys1/5/9 reauthor from approved appearance, not failed color candidates. Source-specific palette mapping remains separate pending gate.",
+    "checks": [
+      "same background/scale",
+      "hair highlight width and edge texture",
+      "charcoal hue/matte cloth",
+      "skin shadow softness",
+      "thin line/detail density",
+      "grip/feet silhouette against approved lines"
+    ],
+    "keys": {
+      "1": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-01.png",
+        "asset": "4b1833262cc44b7aae60cc8f86f0a366.png",
+        "sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+        "stage": "appearance-source repaint candidate; fixedRGB unverified"
+      },
+      "5": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-05-refined.png",
+        "asset": "667521b99dab4fd1a1c215133ab47a86.png",
+        "sha256": "488eb8bdee424b3a3820dc6d8e59d3901fef2c6344b69d6a6359d800ac38dc84",
+        "stage": "appearance candidate; excessive texture reduced"
+      },
+      "9": {
+        "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\color-09.png",
+        "asset": "c719f98d30df44d0a49757eb27018ffe.png",
+        "sha256": "d3f4443fc093a888161c1488eb9ae585be60087eef89a2a4d610e55736b8b624",
+        "stage": "appearance-source repaint candidate; fixedRGB unverified"
+      }
+    },
+    "rejected5": {
+      "file": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\recolor-v03\\rejected-05-excess-wind.png",
+      "reason": "Hair and coattail left reach exceeded approved line; rejected and will not extend this pose",
+      "asset": "e9fb70cbf96c4cf4a5c03e447b5b9bfa.png"
+    },
+    "checks_completed": {
+      "actual_alpha": true,
+      "same_canvas": true,
+      "selected_assets_match": true,
+      "approved_line12_hashes_unchanged": true,
+      "approved_color_hash_unchanged": true
+    },
+    "review": {
+      "observed": "Original-reference repaint reduces uniform warm red-brown and restores more subtle surface shading compared with previous candidates. Frame5 excessive wind rejected; retry silhouette closer to line; extra scratchy texture reduced in refined candidate. Fullbody/crop comparison prepared.",
+      "limits": "Native repaint not exact pixel-locked geometry or exact fixed RGB. New palette/masks and full12 transitions/playback remain pending. No final art approval or runtime replacement.",
+      "process_change": "PRODUCTION.md#appearance-source-color-gate-20261114 operating checks added, not automatic engine enforcement."
+    }
+  },
+  "colored_loop_v01": {
+    "status": "12-colored-candidates-static-review-complete-flicker-not-fully-passed",
+    "frames": {
+      "1": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-01.png",
+        "asset": "4b1833262cc44b7aae60cc8f86f0a366.png",
+        "sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+        "stage": "appearance-source repaint candidate; fixedRGB unverified"
+      },
+      "5": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-05.png",
+        "asset": "667521b99dab4fd1a1c215133ab47a86.png",
+        "sha256": "488eb8bdee424b3a3820dc6d8e59d3901fef2c6344b69d6a6359d800ac38dc84",
+        "stage": "appearance candidate; excessive texture reduced"
+      },
+      "9": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-09.png",
+        "asset": "c719f98d30df44d0a49757eb27018ffe.png",
+        "sha256": "d3f4443fc093a888161c1488eb9ae585be60087eef89a2a4d610e55736b8b624",
+        "stage": "appearance-source repaint candidate; fixedRGB unverified"
+      },
+      "2": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-02.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-abdacbb7-75ee-4740-91fd-18ace4d4fdfe.png",
+        "asset": "acb681b4ff6b4431a7b6645f3b8e12c6.png",
+        "sha256": "8231e4c253ea3f6656c28fa4bf87904cb36159fe6eebf5fd9fb84703ecbacdf0"
+      },
+      "3": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-03.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-f8c563c2-f7b6-4598-b639-b61b84177071.png",
+        "asset": "44b578a0b91e4775a4d32f62f17d6801.png",
+        "sha256": "b80b52d440a6dd08713bb2fbbfa85bead31f5d0839f39f1fd1790e3cd116350b"
+      },
+      "4": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-04.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-40cdeada-d540-4785-a021-16f8ae6ed9ec.png",
+        "asset": "2df8b8529969414d9aa6fa7ac120282f.png",
+        "sha256": "d068e0486c46800f41bc895de61577cf3ff40b7723c5a8f659b27485ad0f3a3c"
+      },
+      "6": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-06.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-d94505f5-d545-47f1-9e5f-7095a4cf7f73.png",
+        "asset": "372a7433a8b247e9bb243f12d55270d4.png",
+        "sha256": "8a7f92429e05203ccd71d77be1600014cd2ddb756d2a041c4d83269e737a00fc"
+      },
+      "7": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-07.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-ccbff445-3670-4327-8e03-fa5a22bdd9af.png",
+        "asset": "32253ea6c542457bb29381ecfbe8365b.png",
+        "sha256": "087e252b19792571f61a88bcd8e5a281c256c72c0478bf6e2d509b565e5fa678"
+      },
+      "8": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-08.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-1607bbaf-fdb7-44c0-bd1e-b8815ae1515e.png",
+        "asset": "b0fd87f526494fb0b141db70bca5e959.png",
+        "sha256": "9ccc3e38c16d9c5937e7b35672270ba75bacfca087c681bcddff023040fe09cc",
+        "patch": {
+          "source_index": 7,
+          "source_version": 0,
+          "source_asset": "de241e3a9a9d4dc5a178d7d8a7b47099.png",
+          "source_revision": 38,
+          "reference_asset": "897d7fcf69e8450f9a0881aba9d2d303.png",
+          "reference_sha256": "c835884905168284451d0961ed73cb8d07f8b6fecc5ecb474db51740d1d025db",
+          "donor_sha256": "d58d1ed7a7f45b838c62daa26d1d889f124f3fa9666850af5cf89dd80431ff98",
+          "mask_sha256": "effcb393f71303c57db4e316fe8646bd3656dbb275abc482e1c01673820300a4",
+          "generation_note": "Native imagegen edited current colored frame8 using colored key9 for red lining correspondence. Only underarm lining connected region applied; outside-mask original pixels and alpha retained.",
+          "provenance_scope": "editor-supplied generation record; not automatic proof of reference use",
+          "outside_mask_exact": true,
+          "alpha_exact": true,
+          "alpha_mode": "preserve",
+          "protected_regions": [],
+          "protected_regions_exact": true,
+          "mask_bbox": [
+            574,
+            435,
+            671,
+            537
+          ],
+          "donor_asset": "4379686e14594ae1826e1bb9590240a8.png",
+          "mask_asset": "19c60b59d7cc49d7814af742cd8950e7.png"
+        },
+        "before": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-08-before-lining.png"
+      },
+      "10": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-10.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-7a6120b6-f922-4b25-b3b4-b7b1f3695185.png",
+        "asset": "c2cd53ff622f492f8feed618ead44785.png",
+        "sha256": "a228f4400d9224d9ddef27aee6c9f24bde24af33ce8d9846f04fc0b19c832e85"
+      },
+      "11": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-11.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-592ece94-5741-4551-966f-a0ad92aa4c9c.png",
+        "asset": "f4e5967f0b5746e0a1b34cad76c5fab9.png",
+        "sha256": "45dbbc95c0203c02ee690291a6cc57d526a16cd04376f633d8bc9de008bd0d97"
+      },
+      "12": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-12.png",
+        "source": "D:\\CodexData\\Home\\generated_images\\01a1baf6-02cb-7e61-a4dd-6505d41fc3f9\\exec-0f58718e-4556-453e-a68a-775884f432bd.png",
+        "asset": "e091eff838164ff79b84ce06259ee694.png",
+        "sha256": "4c0c91e3c4b238a2e8d9f3c6535bdb11a5d9f0ba1628af79b70ce13512245065"
+      }
+    },
+    "timing_ms": 120,
+    "appearance_reference": "QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\portfolio-camera-pitch-v03\\first-frame.png",
+    "geometry_reference": "../loop12-v01",
+    "user_request": "Complete remaining9 using approved appearance, preserve motion/wind120/camera/grip/feet; inspect all12/12→1; show animation.",
+    "playback_default": "Finish color clip and provide looping preview; do not stop at static key sheet.",
+    "prompts": {},
+    "unique_sha_count": 12,
+    "preview": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\normal.gif",
+    "lossless_preview": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\normal.apng",
+    "review": {
+      "adjacent_pairs": [
+        "1->2",
+        "2->3",
+        "3->4",
+        "4->5",
+        "5->6",
+        "6->7",
+        "7->8",
+        "8->9",
+        "9->10",
+        "10->11",
+        "11->12",
+        "12->1"
+      ],
+      "method": "Full12 sheet, all12 hair/sleeve crops, explicit11/12/1/2/3 boundary sheet. Native generation images viewed. Static inspection, not continuous perceptual pass.",
+      "findings": [
+        "Frame8 black underarm lining corrected to red with official masked donor patch; original alpha and outside-mask pixels exact.",
+        "Whole-body stance, camera, grip and feet visually track line motion; native redraw is not pixel-exact geometry preservation.",
+        "Residual hair-highlight texture/intensity differences, notably11->12->1 and fine white-blouse folds; not a complete flicker pass.",
+        "No new obvious wrist separation at full-sheet scale. Existing line sleeve geometry caveat remains."
+      ],
+      "playback": "Visible Studio at original1x: play toggled to Stop, selectedframe advanced1 to7 in screenshot. User-facing tab left playing. This verifies playback operation, not uninterrupted visual temporal quality.",
+      "source_protection": "Approved color SHA and recorded approved line asset SHAs verified unchanged. Old approval/library not replaced.",
+      "not_verified": [
+        "Exact per-region fixed RGB/semantic mask correspondence",
+        "Uninterrupted perceptual playback QA",
+        "Runtime or combat-scene integration"
+      ],
+      "outputs": [
+        "normal.gif",
+        "slow.gif",
+        "normal.apng",
+        "all12.jpg",
+        "hair-sleeve-01.jpg",
+        "hair-sleeve-07.jpg",
+        "loop-11-12-1-2-3.jpg"
+      ]
+    }
+  }
+}
