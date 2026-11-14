@@ -592,5 +592,621 @@
         "loop-11-12-1-2-3.jpg"
       ]
     }
+  },
+  "surface_trial_v01": {
+    "status": "trial-complete-not-passed-do-not-expand",
+    "source_project": "28338c5acb394e329d7c3bfb49dd2ee1",
+    "source_revision": 39,
+    "project": "7ef7a68769344e56898eaadfe6398488",
+    "revision": 12,
+    "first_frame_reference": "colored-loop-v01/frame-01.png",
+    "scope": "hair front vertical lock left of red ribbon; sleeve outer plane between strap and red cuff",
+    "frames": {
+      "1": {
+        "before": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-01.png",
+        "before_sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+        "asset_before": "25f6e800af8f441bbe4f0608b6621169.png"
+      },
+      "2": {
+        "before": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-02.png",
+        "before_sha256": "8231e4c253ea3f6656c28fa4bf87904cb36159fe6eebf5fd9fb84703ecbacdf0",
+        "asset_before": "6ef7a6cff6c94fc88c2904cebe3c1a9a.png",
+        "after": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\surface-trial-v01\\after-02.png",
+        "asset_after": "94182f40b57e460e829eed8261138912.png",
+        "after_sha256": "dc7a934c21cd58e2236b0e30d5dc7acfbdbfee98f9393bc72156e4ed04bbb861",
+        "checks": {
+          "source_index": 1,
+          "source_version": 1,
+          "source_asset": "c313fbfdcffb49e298fdf0dd8f364920.png",
+          "source_revision": 11,
+          "reference_asset": "d5771f0660ad480a84cf1c12138c6f4a.png",
+          "reference_sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+          "donor_sha256": "871f133ad418f28b4cdaf37089b41d59b645738ea4b8a055137fb02eed862d65",
+          "mask_sha256": "a1d0e2255dfbcd32354bf60aeffc94e5256dd9d7d40665e122790bd5fbb8c52b",
+          "generation_note": "Native imagegen target current frame and fixed frame1 reference; manual surface polygons and shade-boundary coordinate guides. Two interior surfaces only. No automatic tracking or exact RGB claim.",
+          "provenance_scope": "editor-supplied generation record; not automatic proof of reference use",
+          "outside_mask_exact": true,
+          "alpha_exact": true,
+          "alpha_mode": "preserve",
+          "protected_regions": [],
+          "protected_regions_exact": true,
+          "mask_bbox": [
+            350,
+            299,
+            726,
+            450
+          ],
+          "donor_asset": "3972a70ae929474a91961f628bf56476.png",
+          "mask_asset": "77c4d6b6fcbe444bbd59e3074c5a65d0.png"
+        }
+      },
+      "3": {
+        "before": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-03.png",
+        "before_sha256": "b80b52d440a6dd08713bb2fbbfa85bead31f5d0839f39f1fd1790e3cd116350b",
+        "asset_before": "56cf674cda394641983b1ade509a8a9d.png",
+        "after": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\surface-trial-v01\\after-03.png",
+        "asset_after": "ec2c20820b5d4270a9368f33e3243e47.png",
+        "after_sha256": "ae4a67a7eb3922859403482ee024275080f1b6a04e584bdccca2ea0030090dfd",
+        "checks": {
+          "source_index": 2,
+          "source_version": 0,
+          "source_asset": "56cf674cda394641983b1ade509a8a9d.png",
+          "source_revision": 10,
+          "reference_asset": "d5771f0660ad480a84cf1c12138c6f4a.png",
+          "reference_sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+          "donor_sha256": "22d8f0de1b717d25f83a3ad18e9c6168329a5fb1499dfea8df7b5be986c6c4e8",
+          "mask_sha256": "28d945ffe97c17848458aa495dadf8d9a54c2227a7bc3d577e373f88c36e51ec",
+          "generation_note": "Native imagegen target current frame and fixed frame1 reference; manual surface polygons and shade-boundary coordinate guides. Two interior surfaces only. No automatic tracking or exact RGB claim.",
+          "provenance_scope": "editor-supplied generation record; not automatic proof of reference use",
+          "outside_mask_exact": true,
+          "alpha_exact": true,
+          "alpha_mode": "preserve",
+          "protected_regions": [],
+          "protected_regions_exact": true,
+          "mask_bbox": [
+            351,
+            298,
+            727,
+            450
+          ],
+          "donor_asset": "da4861be9a7c49afbf0393263e7e6e72.png",
+          "mask_asset": "4e3570b20df64605b20222b5518123ff.png"
+        }
+      }
+    },
+    "shade_roles": {
+      "hair": "narrow textured lighter ridge on left-center, darker right flank; no new gloss streaks",
+      "sleeve": "muted upper plane, soft dark lower/contact fold, keep wrinkle lines"
+    },
+    "boundaries": {
+      "1": {
+        "hair_highlight_axis": [
+          [
+            417,
+            324
+          ],
+          [
+            405,
+            353
+          ],
+          [
+            400,
+            390
+          ],
+          [
+            380,
+            427
+          ]
+        ],
+        "sleeve_shadow_edge": [
+          [
+            657,
+            416
+          ],
+          [
+            678,
+            420
+          ],
+          [
+            698,
+            419
+          ],
+          [
+            718,
+            424
+          ]
+        ]
+      },
+      "2": {
+        "hair_highlight_axis": [
+          [
+            418,
+            324
+          ],
+          [
+            405,
+            353
+          ],
+          [
+            398,
+            390
+          ],
+          [
+            378,
+            428
+          ]
+        ],
+        "sleeve_shadow_edge": [
+          [
+            657,
+            416
+          ],
+          [
+            679,
+            420
+          ],
+          [
+            699,
+            419
+          ],
+          [
+            719,
+            424
+          ]
+        ]
+      },
+      "3": {
+        "hair_highlight_axis": [
+          [
+            420,
+            323
+          ],
+          [
+            407,
+            352
+          ],
+          [
+            400,
+            390
+          ],
+          [
+            380,
+            428
+          ]
+        ],
+        "sleeve_shadow_edge": [
+          [
+            659,
+            416
+          ],
+          [
+            680,
+            420
+          ],
+          [
+            700,
+            419
+          ],
+          [
+            720,
+            424
+          ]
+        ]
+      }
+    },
+    "method": "Manual sparse semantic guides, native donor, official masked patch. Guides are not measured3D normals or automatic proof.",
+    "mask_polygons": {
+      "1": {
+        "hair": [
+          [
+            438,
+            299
+          ],
+          [
+            427,
+            327
+          ],
+          [
+            421,
+            349
+          ],
+          [
+            423,
+            380
+          ],
+          [
+            418,
+            405
+          ],
+          [
+            402,
+            427
+          ],
+          [
+            378,
+            440
+          ],
+          [
+            352,
+            448
+          ],
+          [
+            379,
+            429
+          ],
+          [
+            390,
+            406
+          ],
+          [
+            392,
+            376
+          ],
+          [
+            402,
+            345
+          ],
+          [
+            420,
+            315
+          ]
+        ],
+        "sleeve": [
+          [
+            655,
+            380
+          ],
+          [
+            683,
+            377
+          ],
+          [
+            710,
+            376
+          ],
+          [
+            724,
+            377
+          ],
+          [
+            716,
+            398
+          ],
+          [
+            716,
+            419
+          ],
+          [
+            724,
+            430
+          ],
+          [
+            704,
+            432
+          ],
+          [
+            679,
+            429
+          ],
+          [
+            650,
+            433
+          ]
+        ]
+      },
+      "2": {
+        "hair": [
+          [
+            439,
+            299
+          ],
+          [
+            428,
+            327
+          ],
+          [
+            422,
+            350
+          ],
+          [
+            424,
+            380
+          ],
+          [
+            417,
+            405
+          ],
+          [
+            401,
+            427
+          ],
+          [
+            376,
+            442
+          ],
+          [
+            350,
+            449
+          ],
+          [
+            376,
+            428
+          ],
+          [
+            388,
+            406
+          ],
+          [
+            391,
+            377
+          ],
+          [
+            402,
+            345
+          ],
+          [
+            421,
+            315
+          ]
+        ],
+        "sleeve": [
+          [
+            655,
+            380
+          ],
+          [
+            682,
+            377
+          ],
+          [
+            709,
+            376
+          ],
+          [
+            725,
+            377
+          ],
+          [
+            717,
+            398
+          ],
+          [
+            717,
+            419
+          ],
+          [
+            725,
+            430
+          ],
+          [
+            705,
+            432
+          ],
+          [
+            680,
+            429
+          ],
+          [
+            650,
+            433
+          ]
+        ]
+      },
+      "3": {
+        "hair": [
+          [
+            441,
+            298
+          ],
+          [
+            430,
+            325
+          ],
+          [
+            424,
+            350
+          ],
+          [
+            425,
+            379
+          ],
+          [
+            418,
+            405
+          ],
+          [
+            402,
+            427
+          ],
+          [
+            377,
+            442
+          ],
+          [
+            351,
+            449
+          ],
+          [
+            377,
+            429
+          ],
+          [
+            390,
+            407
+          ],
+          [
+            392,
+            376
+          ],
+          [
+            403,
+            344
+          ],
+          [
+            422,
+            314
+          ]
+        ],
+        "sleeve": [
+          [
+            656,
+            380
+          ],
+          [
+            683,
+            377
+          ],
+          [
+            710,
+            376
+          ],
+          [
+            725,
+            377
+          ],
+          [
+            718,
+            398
+          ],
+          [
+            718,
+            419
+          ],
+          [
+            726,
+            430
+          ],
+          [
+            706,
+            432
+          ],
+          [
+            681,
+            429
+          ],
+          [
+            652,
+            433
+          ]
+        ]
+      }
+    },
+    "reference_samples": {
+      "hair_light": {
+        "xy": [
+          405,
+          365
+        ],
+        "rgb": [
+          87,
+          80,
+          144
+        ]
+      },
+      "hair_mid": {
+        "xy": [
+          414,
+          383
+        ],
+        "rgb": [
+          71,
+          63,
+          117
+        ]
+      },
+      "hair_shadow": {
+        "xy": [
+          419,
+          402
+        ],
+        "rgb": [
+          50,
+          45,
+          77
+        ]
+      },
+      "sleeve_light": {
+        "xy": [
+          680,
+          386
+        ],
+        "rgb": [
+          108,
+          85,
+          85
+        ]
+      },
+      "sleeve_mid": {
+        "xy": [
+          681,
+          405
+        ],
+        "rgb": [
+          63,
+          53,
+          53
+        ]
+      },
+      "sleeve_shadow": {
+        "xy": [
+          685,
+          426
+        ],
+        "rgb": [
+          66,
+          54,
+          56
+        ]
+      }
+    },
+    "rejected_frame2": {
+      "before": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\colored-loop-v01\\frame-02.png",
+      "before_sha256": "8231e4c253ea3f6656c28fa4bf87904cb36159fe6eebf5fd9fb84703ecbacdf0",
+      "asset_before": "6ef7a6cff6c94fc88c2904cebe3c1a9a.png",
+      "after": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\surface-trial-v01\\after-02.png",
+      "asset_after": "c313fbfdcffb49e298fdf0dd8f364920.png",
+      "after_sha256": "5929a5fedd4ceaa7be717a41bac1c1eed36819a674f855d8c81a0a25f0e16180",
+      "checks": {
+        "source_index": 1,
+        "source_version": 0,
+        "source_asset": "6ef7a6cff6c94fc88c2904cebe3c1a9a.png",
+        "source_revision": 9,
+        "reference_asset": "d5771f0660ad480a84cf1c12138c6f4a.png",
+        "reference_sha256": "d4743568fadb15d944abf03c848d1ddb43ce6a3d07b62a118aaf487092c06776",
+        "donor_sha256": "8bc39d5724d47f52f79bef2455615268cd0c44d28dd209b5d562d6365d36bf81",
+        "mask_sha256": "a1d0e2255dfbcd32354bf60aeffc94e5256dd9d7d40665e122790bd5fbb8c52b",
+        "generation_note": "Native imagegen target current frame and fixed frame1 reference; manual surface polygons and shade-boundary coordinate guides. Two interior surfaces only. No automatic tracking or exact RGB claim.",
+        "provenance_scope": "editor-supplied generation record; not automatic proof of reference use",
+        "outside_mask_exact": true,
+        "alpha_exact": true,
+        "alpha_mode": "preserve",
+        "protected_regions": [],
+        "protected_regions_exact": true,
+        "mask_bbox": [
+          350,
+          299,
+          726,
+          450
+        ],
+        "donor_asset": "f274eb13588c4b69925a46091333627c.png",
+        "mask_asset": "6c325d9dfd954b9a8e02eb3aa3e02866.png"
+      },
+      "reason": "Lost fine light texture; overly darkened lock. Not expanded."
+    },
+    "review": {
+      "observed": "Static before/after all3 detailed sheet. Firstframe unchanged. Narrow masks retain body/grip/feet/alpha exactly.",
+      "residual": "Hair highlight texture/ridge not matched to frame1; native donor guided by sparse coordinates does not enforce shading boundary. Sleeve improvement not established. Trial not adopted into fullclip.",
+      "rejected": "First frame2 donor darkened/flattened hair; archived and replaced using originaltarget, not used as appearance reference.",
+      "limits": [
+        "No dense surface correspondence or per-role deterministicRGB rendering implemented",
+        "Manual polygon and boundary guides remain drafts, not fully validated surface maps",
+        "No uninterrupted perceptual playback pass; simultaneous GIF/APNG supplied",
+        "Only1→2→3 trial;3→1 is restart, not12→1 QA"
+      ],
+      "protection": "Exact outside-mask, fullalpha, explicit face/grip/gun/feet checks passed; original12frameproject remains rev39",
+      "next": "Do not repeat native recolor until shade-boundary representation can be enforced; validate dense manual surface/role map and rendering on this same short segment."
+    },
+    "preview": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\surface-trial-v01\\compare-normal.gif",
+    "detail_preview": "D:\\Project\\LASTRAIL\\QA\\FrameStudioProductionFlow-20261113\\reina-right-idle-v01\\camera-idle-production-v01\\color-keys-v01\\surface-trial-v01\\detail-slow.gif"
   }
 }
