@@ -142,7 +142,7 @@ namespace LastRail.Resources
 
         private static Uri LoopbackUri(string value)
         {
-            var match = Regex.Match(value ?? "", @"\Ahttp://127\.0\.0\.1:([1-9][0-9]{0,4})(/[A-Za-z0-9._/-]*)\z");
+            var match = Regex.Match(value ?? "", @"\Ahttp://127\.0\.0\.1:([1-9][0-9]{0,4})(/[A-Za-z0-9._&/-]*)\z");
             if (!match.Success || !int.TryParse(match.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var port) ||
                 port > 65535 || !Uri.TryCreate(value, UriKind.Absolute, out var uri))
                 throw new InvalidOperationException("Fixture URLs require canonical explicit-port IPv4 loopback HTTP.");

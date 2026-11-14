@@ -46,6 +46,7 @@ namespace LastRail.Tests.EditMode
             Assert.That(factory, Is.Not.Null);
             using (var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(60)))
             {
+                using var backend=await EquipmentAddressableTests.LocalBackend();
                 var locator = await factory().InitializeAsync(timeout.Token);
                 Assert.That(PlayerPrefs.HasKey(Addressables.kAddressablesRuntimeDataPath), Is.EqualTo(hadKey));
                 Assert.That(PlayerPrefs.GetString(Addressables.kAddressablesRuntimeDataPath), Is.EqualTo(oldValue));

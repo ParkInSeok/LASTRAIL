@@ -68,7 +68,7 @@ namespace LastRail.Resources {
    if(entry.Local)return UnityEngine.Resources.Load<T>(key);
    if(current!=null)return current.Get(key) as T;
 #if UNITY_EDITOR
-   if(EditorAsset!=null)return EditorAsset(entry.Path,typeof(T)) as T;
+   if(!Application.isPlaying&&EditorAsset!=null)return EditorAsset(entry.Path,typeof(T)) as T;
 #endif
    throw new InvalidOperationException("The approved content owner is not ready: "+key);
   }
@@ -77,7 +77,7 @@ namespace LastRail.Resources {
    var keys=RemoteContentCatalog.Select(selectors).Where(entry=>!entry.Local).Select(entry=>entry.Key);
    if(current!=null)return current.PrepareAsync(keys,token);
 #if UNITY_EDITOR
-   if(EditorAsset!=null)return Task.FromResult(new Scope(new List<Action>()));
+   if(!Application.isPlaying&&EditorAsset!=null)return Task.FromResult(new Scope(new List<Action>()));
 #endif
    throw new InvalidOperationException("The approved content owner is not ready.");
   }

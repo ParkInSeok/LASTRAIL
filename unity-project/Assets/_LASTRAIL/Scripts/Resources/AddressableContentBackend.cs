@@ -43,6 +43,7 @@ namespace LastRail.Resources
         public ContentResourceSource Source { get; }
 #if UNITY_EDITOR
         private IEditorProjectContent localContent;
+        private EditorLoopbackContentFixture localBuiltFixture;
         private readonly EditorLoopbackContentFixture fixture;
         private object fixtureRuntimeInstance;
         private string fixtureRuntimeSettings;
@@ -129,7 +130,7 @@ namespace LastRail.Resources
         {
             cancel.ThrowIfCancellationRequested();
 #if UNITY_EDITOR
-            if(Source==ContentResourceSource.EditorLocal)return;
+            if(Source==ContentResourceSource.EditorLocal){await InitializeInstalledRuntimeCoreAsync(cancel);return;}
 #endif
             if(disposed)throw new ObjectDisposedException(nameof(AddressableContentBackend));
             // Installation initialization is shared; cancellation belongs to each waiting screen.
@@ -151,6 +152,7 @@ namespace LastRail.Resources
                 cancel.ThrowIfCancellationRequested();
                 if (disposed) throw new OperationCanceledException();
                 approvedLocator = locator;
+                localBuiltFixture=EditorProjectContentBridge.Fixture(localContent.SettingsPath);
                 return;
             }
 #endif
@@ -210,7 +212,7 @@ namespace LastRail.Resources
             {
                 cancel.ThrowIfCancellationRequested();
                 if (approvedLocator == null) throw new InvalidOperationException("Local project resources are not initialized.");
-                ContentRevision = "editor-local-project";
+                ContentRevision = localContent.SettingsPath;
                 return;
             }
 #endif
@@ -269,9 +271,6 @@ namespace LastRail.Resources
             if (approvedLocator == null || !approvedLocator.Locate(RequiredLabel, null, out var locations) || locations == null)
                 throw new InvalidOperationException("Approved required content locations are missing.");
             bundles.Clear();
-#if UNITY_EDITOR
-            if (Source == ContentResourceSource.EditorLocal) return Task.FromResult(0L);
-#endif
             bundles.AddRange(BuildRemoteBundlePlan(locations.ToArray()));
             return Task.FromResult(Remaining());
         }
@@ -287,14 +286,6 @@ namespace LastRail.Resources
         public async Task DownloadAsync(Action<long, long> progress, CancellationToken cancel)
         {
             RequireApproved();
-#if UNITY_EDITOR
-            if (Source == ContentResourceSource.EditorLocal)
-            {
-                await RequiredBytesAsync(cancel);
-                progress?.Invoke(0, 0);
-                return;
-            }
-#endif
             RequireFixtureRuntime();
             await DownloadLease.WaitAsync(cancel);
             try { await PrefetchAsync(progress, cancel); }
@@ -305,6 +296,8 @@ namespace LastRail.Resources
         {
             if (bundles.Count == 0) throw new InvalidOperationException("Resolve the content plan before downloading.");
             var total = Remaining();
+            cancel.ThrowIfCancellationRequested();
+            if(total==0){access.SetRemaining(0);progress?.Invoke(0,0);return;}
             foreach (var location in bundles)
             {
                 while (!Cached(location))
@@ -346,7 +339,7 @@ namespace LastRail.Resources
                                 continue;
                             }
                             if (request.result != UnityWebRequest.Result.Success)
-                                throw new InvalidOperationException("Required bundle download failed.");
+                                throw new InvalidOperationException($"Required bundle download failed ({request.responseCode}, {request.error}, bundle {options.BundleName}).");
                             if (!Cached(location)) throw new InvalidOperationException("Downloaded bundle was not committed to cache.");
                         }
                         finally { access.Changed -= policyChanged; }
@@ -374,9 +367,6 @@ namespace LastRail.Resources
                 !approvedLocator.Locate(key, resourceType, out var locations) ||
                 locations == null || locations.Count != 1 || locations[0] == null)
                 throw new InvalidOperationException("Approved screen location is missing or ambiguous.");
-#if UNITY_EDITOR
-            if (Source == ContentResourceSource.EditorLocal) return locations[0];
-#endif
             foreach (var bundle in BuildRemoteBundlePlan(new[] { locations[0] }))
                 if (!Cached(bundle)) throw new InvalidOperationException("Approved remote dependencies must be cached before loading.");
             return locations[0];
@@ -503,6 +493,7 @@ namespace LastRail.Resources
         private IResourceLocation[] BuildRemoteBundlePlan(IResourceLocation[] roots)
         {
 #if UNITY_EDITOR
+            if (Source == ContentResourceSource.EditorLocal) return localBuiltFixture.BuildRemoteBundlePlan(roots, Addressables.ResourceManager.TransformInternalId);
             if (fixture != null) return fixture.BuildRemoteBundlePlan(roots, Addressables.ResourceManager.TransformInternalId);
 #endif
             return ApprovedCatalogSafety.BuildRemoteBundlePlan(roots, trustedCatalogRoot, Addressables.ResourceManager.TransformInternalId);
@@ -511,6 +502,7 @@ namespace LastRail.Resources
         private void ValidateContentUrl(string url)
         {
 #if UNITY_EDITOR
+            if (Source == ContentResourceSource.EditorLocal) { localBuiltFixture.ValidateContentUrl(url); return; }
             if (fixture != null) { fixture.ValidateContentUrl(url); return; }
 #endif
             ClientAdmissionContract.ValidateCatalogUrl(url, trustedCatalogRoot);

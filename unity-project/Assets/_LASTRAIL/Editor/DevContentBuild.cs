@@ -170,7 +170,7 @@ namespace LastRail.Editor
                 throw new InvalidDataException("Shipping dependency closure contains excluded input.");
         }
 
-        private static AddressableAssetSettings CloneSettings(AddressableAssetSettings source, List<UnityEngine.Object> owned)
+        internal static AddressableAssetSettings CloneSettings(AddressableAssetSettings source, List<UnityEngine.Object> owned)
         {
             var clone = AddressableAssetSettings.Create("", "DevContentBuildScope", false, false); owned.Add(clone);
             EditorJsonUtility.FromJsonOverwrite(EditorJsonUtility.ToJson(source), clone);
