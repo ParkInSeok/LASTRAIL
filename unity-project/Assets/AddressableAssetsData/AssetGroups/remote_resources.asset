@@ -351,6 +351,13 @@ MonoBehaviour:
     - launch_required
     - remote_resources
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2159e92be92540a09fa6261ba4c0bc50
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/portrait-nyx-v02.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 21778c08a23e7564dbda6d07e36ffd75
     m_Address: Assets/_LASTRAIL/Resources/NoncombatPreparation/Art52/carriage-combat-v01-alpha.png
     m_ReadOnly: 0
@@ -694,6 +701,13 @@ MonoBehaviour:
     - launch_required
     - remote_resources
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4463e315da5bed14f8e9a196737ff99b
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/navigation-shapes-v06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4871948cd42f041469507563ce0a7b34
     m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/Audio/op_sera.active.wav
     m_ReadOnly: 0
@@ -794,6 +808,13 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 507e5abb34372504e90eb599aac96e16
     m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/ReinaFinal/Decorative62/falling_shell-01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5093b9d256609da48bd6d350b4a46b8a
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/frame-v06.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - launch_required
@@ -1577,8 +1598,22 @@ MonoBehaviour:
     - launch_required
     - remote_resources
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d08d786137462d47942e655d48f8b6f
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/TrainFortress/depot-background.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d833d0f5b62043488dbb8247b03a440
     m_Address: Assets/_LASTRAIL/Resources/CombatSecondFinal/ultimate_eve-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9da8ddf5fde74458ae3ed67ee44efa43
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/FormationPlan/combat-roof-v02.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - launch_required
@@ -1633,8 +1668,22 @@ MonoBehaviour:
     - launch_required
     - remote_resources
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1b51ba8476e7d54fa12cdd141d656c7
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/Typography/LobbySerif-v07.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a27dac8e2f2dafe4cb47c51d0aba1226
     m_Address: Assets/_LASTRAIL/Resources/ApprovedUi/Connections20261110.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a33d7cce87e5c614dbf2ef156503514b
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/TrainFortress/train-overview.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - launch_required
@@ -2214,6 +2263,20 @@ MonoBehaviour:
     - launch_required
     - remote_resources
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d849e3dff2b717b41970d87ea6cd946f
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/currency-icons-v07.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d96bddb063859c74582500b7f24ed1e1
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/button-surface-v06.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dc6c4bd132d32a54caf0bc3320e02724
     m_Address: Assets/_LASTRAIL/Resources/CombatPresentation/EffectAudio/op_mira.ultimate-0.wav
     m_ReadOnly: 0
@@ -2371,6 +2434,13 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ec918eda23af773488541012a0df11f9
     m_Address: Assets/_LASTRAIL/Resources/NoncombatSettings/room-v01.png
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - launch_required
+    - remote_resources
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecacd5b5387a42c4c8316c5d2cea15c3
+    m_Address: Assets/_LASTRAIL/Content/RemoteResources/LobbyDeck/commander-rim-v07.png
     m_ReadOnly: 0
     m_SerializedLabels:
     - launch_required
