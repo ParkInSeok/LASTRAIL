@@ -54,6 +54,6 @@ namespace LastRail.Battle {
   void OnDisable(){UnbindDisplayChanges();UnityEngine.InputSystem.InputSystem.onDeviceChange-=InputDeviceChanged;CancelPendingInput();SetThreatDetails(false);information?.Unbind();informationView?.Unbind();}
   void OnEnable(){UnityEngine.InputSystem.InputSystem.onDeviceChange+=InputDeviceChanged;if(information!=null)BindInformation();if(displayBound){if(driver!=null&&!driver.IsRetired)dangerFeedback.Seed(driver.HudState);BindDisplayChanges();OwnerDisplayChanged();}}
   public void ReleaseOwnedPresentationResources(){UnbindDisplayChanges();displayBound=false;try{information?.Dispose();information=null;}finally{try{ReleaseOrdinaryRoof();}finally{ReleasePresentationSprites();if(presentationAudio!=null){presentationAudio.Stop();presentationAudio.clip=null;}abilityAudio=null;effectAudio=null;assets=null;font=null;}}}
-  void OnDestroy()=>ReleaseOwnedPresentationResources();
+  void OnDestroy(){inputController?.Dispose();ReleaseOwnedPresentationResources();}
  }
 }

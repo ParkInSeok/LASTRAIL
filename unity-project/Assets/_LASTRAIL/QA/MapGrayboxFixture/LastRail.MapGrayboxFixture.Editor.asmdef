@@ -1,0 +1,8 @@
+{
+ "name":"LastRail.MapGrayboxFixture.Qa",
+ "rootNamespace":"LastRail.Qa",
+ "references":["Unity.TextMeshPro","Unity.InputSystem"],
+ "includePlatforms":[],
+ "defineConstraints":["UNITY_EDITOR"],
+ "autoReferenced":false
+}

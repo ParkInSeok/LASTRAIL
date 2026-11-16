@@ -21,11 +21,14 @@ namespace LastRail.Presentation.MissionShell
             }
             TMP_Text Label(string name,Transform owner,string text,Rect box,float size)
             {
-                var label=AuthFormVisuals.Text(owner,name,text,font,size,false,TextAlignmentOptions.Center);
+                var label=owner.Find(name)?.GetComponent<TMP_Text>()??AuthFormVisuals.Text(owner,name,text,font,size,false,TextAlignmentOptions.Center);label.text=text;label.gameObject.SetActive(true);
                 AuthFormVisuals.Place(label.rectTransform,box.x,box.y,box.width,box.height);
                 label.enableAutoSizing=true;label.fontSizeMin=Mathf.Min(16,size);label.fontSizeMax=size;
                 label.color=new Color(.94f,.96f,.97f);return label;
             }
+            var existing=parent.Find("RewardIcon")?.GetComponent<RawImage>();
+            var placeholder=parent.Find("MissingRewardArt");if(placeholder!=null)placeholder.gameObject.SetActive(false);
+            if(existing!=null){existing.texture=null;existing.gameObject.SetActive(false);var oldCaption=existing.transform.Find("ExperienceChipLabel");if(oldCaption!=null)oldCaption.gameObject.SetActive(false);}
             if(texture==null)
             {
                 var missing=Label("MissingRewardArt",parent,"이미지 준비 중",area,17);
@@ -34,9 +37,9 @@ namespace LastRail.Presentation.MissionShell
             float sourceWidth=texture.width*uv.width,sourceHeight=texture.height*uv.height;
             float scale=Mathf.Min(area.width/sourceWidth,area.height/sourceHeight);
             float width=sourceWidth*scale,height=sourceHeight*scale;
-            var rect=AuthFormVisuals.Rect("RewardIcon",parent);
+            var rect=existing!=null?existing.rectTransform:AuthFormVisuals.Rect("RewardIcon",parent);rect.gameObject.SetActive(true);
             AuthFormVisuals.Place(rect,area.x+(area.width-width)/2,area.y+(area.height-height)/2,width,height);
-            var image=rect.gameObject.AddComponent<RawImage>();image.texture=texture;image.uvRect=uv;image.raycastTarget=false;
+            var image=existing??rect.gameObject.AddComponent<RawImage>();image.texture=texture;image.uvRect=uv;image.raycastTarget=false;
             if(exp)
             {
                 var caption=Label("ExperienceChipLabel",rect,"EXP",new Rect(width*.36f,height*.305f,width*.35f,height*.18f),Mathf.Min(22,height*.14f));

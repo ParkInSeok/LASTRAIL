@@ -21,7 +21,7 @@ namespace LastRail.UI
 
         public void BindInteractionCallbacks()
         {
-            if (inputField == null || callbacksBound)
+            if (!isActiveAndEnabled || inputField == null || callbacksBound)
             {
                 return;
             }
@@ -72,11 +72,13 @@ namespace LastRail.UI
 
         private void HandleValueChanged(string value)
         {
+            if (!isActiveAndEnabled) return;
             ValueChanged?.Invoke(value ?? string.Empty);
         }
 
         private void HandleSubmitted(string value)
         {
+            if (!isActiveAndEnabled) return;
             Submitted?.Invoke(value ?? string.Empty);
         }
     }

@@ -12,9 +12,9 @@ namespace LastRail.Editor {
    if(group==null)throw new System.InvalidOperationException("Remote resource group required");
    foreach(var entry in RemoteContentCatalog.Select(new[]{"FormationPlan/"})) {
     var importer=(TextureImporter)AssetImporter.GetAtPath(entry.Path);
-    importer.textureType=TextureImporterType.Default;importer.npotScale=TextureImporterNPOTScale.None;
+    importer.textureType=TextureImporterType.Default;importer.textureShape=TextureImporterShape.Texture2D;importer.npotScale=TextureImporterNPOTScale.None;
     importer.alphaIsTransparency=true;importer.mipmapEnabled=false;importer.wrapMode=TextureWrapMode.Clamp;
-    importer.maxTextureSize=entry.Key.EndsWith("background")||entry.Key.EndsWith("portrait-nyx")?2048:512;
+    importer.maxTextureSize=entry.Key.EndsWith("background")||entry.Key.EndsWith("combat-roof-v02")||entry.Key.EndsWith("portrait-nyx")?2048:512;
     importer.textureCompression=TextureImporterCompression.CompressedHQ;importer.isReadable=false;importer.SaveAndReimport();
     var item=settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(entry.Path),group);
     item.address=entry.Address;item.SetLabel("remote_resources",true,true);item.SetLabel(AddressableContentBackend.RequiredLabel,true,true);

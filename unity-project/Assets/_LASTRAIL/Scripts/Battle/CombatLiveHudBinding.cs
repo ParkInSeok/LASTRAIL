@@ -13,12 +13,12 @@ namespace LastRail.Battle
     {
         sealed class Binding {internal Button Button;internal TMP_Text Label;internal UnityAction Click;internal int Slot;internal string Group="skills",Caption="",Actor,Ability;}
         readonly List<Binding> bindings=new List<Binding>();
-        CombatSceneDriver driver; TMP_Text wave,notice;Button autoButton;Graphic autoThumb;UnityAction autoClick;
+        CombatSceneDriver driver;ApprovedCombatInputController input; TMP_Text wave,notice;Button autoButton;Graphic autoThumb;UnityAction autoClick;
         public string LastCommandStatus { get; private set; }
         Transform Named(string name)=>GetComponentsInChildren<Transform>(true).SingleOrDefault(t=>t.name==name);
         public void Bind(CombatSceneDriver value)
         {
-            Unbind();driver=value??throw new ArgumentNullException(nameof(value));
+            Unbind();driver=value??throw new ArgumentNullException(nameof(value));input=new ApprovedCombatInputController(driver,()=>this!=null&&isActiveAndEnabled);
             var state=driver.ReadDisplayState()??throw new InvalidOperationException("Open combat before binding HUD.");
             bool individual=state["ultimates"] is JArray;bool generalAuto=(bool?)state["generalAuto"]??false;
             foreach(var old in GetComponentsInChildren<Transform>(true))if(old.name.StartsWith("LiveUltimate_")||old.name=="LiveCommanderSkill")old.gameObject.SetActive(false);
@@ -52,13 +52,12 @@ namespace LastRail.Battle
         }
         void BindAuto(){
             var target=Named("LiveUltimateAuto");if(target==null){var go=new GameObject("LiveUltimateAuto",typeof(RectTransform),typeof(Image),typeof(Button));go.transform.SetParent(Named("SafeArea")??transform,false);target=go.transform;var rect=(RectTransform)target;rect.anchorMin=rect.anchorMax=rect.pivot=new Vector2(1,1);rect.anchoredPosition=new Vector2(-20,-20);rect.sizeDelta=new Vector2(132,44);go.GetComponent<Image>().color=new Color(.035f,.08f,.1f);var label=new GameObject("AutoLabel",typeof(RectTransform)).AddComponent<TextMeshProUGUI>();label.transform.SetParent(target,false);label.font=wave!=null?wave.font:TMP_Settings.defaultFontAsset;label.text="AUTO";label.fontSize=18;label.alignment=TextAlignmentOptions.Center;label.raycastTarget=false;label.rectTransform.anchorMin=Vector2.zero;label.rectTransform.anchorMax=Vector2.one;label.rectTransform.offsetMin=new Vector2(10,0);label.rectTransform.offsetMax=new Vector2(-38,0);var thumb=new GameObject("AutoThumb",typeof(RectTransform)).AddComponent<CombatAutoThumb>();thumb.transform.SetParent(target,false);thumb.raycastTarget=false;thumb.rectTransform.anchorMin=thumb.rectTransform.anchorMax=thumb.rectTransform.pivot=new Vector2(0,.5f);thumb.rectTransform.sizeDelta=new Vector2(18,18);}
-            target.gameObject.SetActive(true);autoButton=target.GetComponent<Button>();autoButton.targetGraphic=target.GetComponent<Image>();autoThumb=target.Find("AutoThumb").GetComponent<Graphic>();autoClick=()=>{if(driver==null||!autoButton.interactable)return;driver.SetUltimateAuto(!(bool)driver.ReadDisplayState()["ultimateAuto"]);};autoButton.onClick.AddListener(autoClick);
+            target.gameObject.SetActive(true);autoButton=target.GetComponent<Button>();autoButton.targetGraphic=target.GetComponent<Image>();autoThumb=target.Find("AutoThumb").GetComponent<Graphic>();autoClick=()=>{if(driver==null||!autoButton.interactable)return;input.ToggleUltimateAuto();};autoButton.onClick.AddListener(autoClick);
         }
         void Click(Binding binding)
         {
             if(driver==null||!binding.Button.interactable)return;
-            var row=(JObject)Row(driver.ReadDisplayState(),binding);
-            try{LastCommandStatus=driver.RequestSkill(Guid.NewGuid().ToString("N"),(string)row["actor"],(string)row["ability"]);}
+            try{LastCommandStatus=input.UseBound(binding.Group,binding.Actor,binding.Ability);}
             catch(Exception){LastCommandStatus="RECOVERY_REQUIRED";}
         }
         public void Refresh()
@@ -72,7 +71,7 @@ namespace LastRail.Battle
         void OwnerChanged(){if(driver.IsRetired)Unbind();else Refresh();}
         void OnEnable(){if(driver!=null){driver.StateChanged-=OwnerChanged;driver.StateChanged+=OwnerChanged;OwnerChanged();}}
         void OnDisable(){if(driver!=null)driver.StateChanged-=OwnerChanged;}
-        public void Unbind(){if(driver!=null)driver.StateChanged-=OwnerChanged;if(autoButton!=null){autoButton.onClick.RemoveListener(autoClick);autoButton.interactable=false;autoButton.gameObject.SetActive(false);}autoButton=null;autoThumb=null;autoClick=null;foreach(var b in bindings){if(b.Button!=null){b.Button.onClick.RemoveListener(b.Click);b.Button.interactable=false;}}bindings.Clear();driver=null;}
+        public void Unbind(){input?.Dispose();input=null;if(driver!=null)driver.StateChanged-=OwnerChanged;if(autoButton!=null){autoButton.onClick.RemoveListener(autoClick);autoButton.interactable=false;autoButton.gameObject.SetActive(false);}autoButton=null;autoThumb=null;autoClick=null;foreach(var b in bindings){if(b.Button!=null){b.Button.onClick.RemoveListener(b.Click);b.Button.interactable=false;}}bindings.Clear();driver=null;}
         void OnDestroy()=>Unbind();
     }
 }

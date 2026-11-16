@@ -38,6 +38,7 @@ namespace LastRail.Presentation.MissionShell
 
         public void BindInteractionCallbacks()
         {
+            if (!isActiveAndEnabled) return;
             BindButton(primaryButton, OnPrimaryActionClicked);
             BindButton(secondaryButton, OnSecondaryActionClicked);
         }
@@ -64,7 +65,7 @@ namespace LastRail.Presentation.MissionShell
 
         private void OnPrimaryActionClicked()
         {
-            if (primaryButton == null || !primaryButton.interactable)
+            if (!isActiveAndEnabled || primaryButton == null || !primaryButton.interactable)
             {
                 return;
             }
@@ -75,7 +76,7 @@ namespace LastRail.Presentation.MissionShell
 
         private void OnSecondaryActionClicked()
         {
-            if (secondaryButton == null || !secondaryButton.interactable)
+            if (!isActiveAndEnabled || secondaryButton == null || !secondaryButton.interactable)
             {
                 return;
             }

@@ -399,3 +399,6 @@ Plan_7 결과답장 성공 isError=false/threadId=01a12ed2-9dbc-7582-a128-2b0ac2
 ## Admin 별도 콘솔 점검 — 2026-10-27 부분 확인
 QA/AdminConsole-20261027/RESULT.md·probe.py/probe-result.json/shared-candidates.json. Admin자체customspawn원인없음(검사범위한정),기존.cmd/npm중간층을거치지않는직접Node+CREATE_NO_WINDOW 실행검증. 실제Vite/tsc0·stdout/stderr/exit7·취소exit1,소유자손20ms창샘플visible0;conhost존재와창노출구분. 과거사용자CMD원인확정/전역해결주장0. 공용app-server30408→cmd19932→node27244(app-tools),→cmd34424→node34892(security),Chrome25796→cmd75464(nativeMessaging)후보확인;정확호출/소유조정총괄전달,공용파일편집/미확인창일괄종료0. 사업무재개/배포/GUI숨김0. 기존QA에측정한계/실패/잔여보존.
 Plan_7 결과답장 isError=false/threadId일치 전송성공. 빈잔류목록 PowerShell pipeline은파일미생성하여 InputObject 배열로수정후 [] 저장확인; 실패를정상저장으로기록하지않음.
+
+## Admin 기존 변경 게시 대조 — 2026-11-14
+원본 D:/Project/LASTRAIL master는 remote 없음. 게시 저장소 D:/Project/LASTRAIL/GitHubSnapshot/LASTRAIL의 origin/main을 읽기 전용으로 확인: ee5e1f8e343431903bd422120bbda0ab11b8f1b0. 원본 Admin 추적/비무시 미추적 파일과 게시 HEAD 목록의 합집합 및 이 인계 파일을 줄바꿈만 정규화해 대조한 결과 차이 0. 원본 Git에서 미커밋으로 표시되는 기존 Admin 제품 변경은 이미 해당 GitHub 스냅샷에 포함되어 중복 커밋·푸시하지 않음. QA 폴더는 게시 트리에 없으므로 로컬 근거로 유지; 로그·계정정보·빌드 출력 게시 안 함. 소스 재검사나 배포 없음. 이후 검증 작업은 소유 파일만 분리해 게시하고 이 인계에 커밋/푸시 결과를 기록.

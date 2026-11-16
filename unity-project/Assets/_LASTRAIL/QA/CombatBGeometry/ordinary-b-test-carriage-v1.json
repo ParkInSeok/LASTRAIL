@@ -1,0 +1,22 @@
+{
+  "version": "unity.combat-b.geometry-test-model.v1.20261004",
+  "assetId": "ordinary-b-test-carriage-v1",
+  "provenance": "TEST_JUDGEMENT_MODEL_NOT_ART_DIMENSIONS",
+  "dimensionSource": "44 v09 approved explicit test model; no approved ordinary B art dimensions supplied. 48000mm length deliberately covers 6/12/24m firing probes.",
+  "operatorProbeSpeedMmPerSecond": 1800,
+  "operatorMovementSource": "EXPLICIT_TEST_PROBE_NOT_OPERATING_OPERATOR_PROFILE",
+  "bodyMinMm": [-24000, 0, -1500],
+  "bodyMaxMm": [24000, 2400, 1500],
+  "roofMinMm": [-24000, 2400, -1400],
+  "roofMaxMm": [24000, 2400, 1400],
+  "actorMm": [0, 2400, 0],
+  "fireMm": [0, 2400, 0],
+  "hitMm": [0, 2400, 0],
+  "backMm": [-24000, 2400, 0],
+  "frontMm": [24000, 2400, 0],
+  "left": {"socketId":"left", "approachMm":[[0,0,-2300],[0,0,-1500]], "climbMm":[[0,0,-1500],[0,2400,-1500],[0,2400,0]]},
+  "right": {"socketId":"right", "approachMm":[[0,0,2300],[0,0,1500]], "climbMm":[[0,0,1500],[0,2400,1500],[0,2400,0]]},
+  "gunnerAnchorsMm": [[6000,2400,0]],
+  "scoutAnchorMm": [900,2400,0],
+  "obstacles": []
+}

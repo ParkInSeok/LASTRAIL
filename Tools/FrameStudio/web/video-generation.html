@@ -1,0 +1,15 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FrameStudio · 로컬 AI 영상</title><link rel="stylesheet" href="/cutscene.css">
+<header><a id="back" href="/cutscene">← 컷씬 편집</a><h1>로컬 AI 영상 생성</h1><p id="name"></p></header>
+<iframe title="닉스 파츠 추출 진행률" src="/parts-progress" style="display:block;width:calc(100% - 32px);height:280px;border:0;margin:16px" loading="eager"></iframe>
+<main><section class="edit"><h2>참고 이미지와 동작 설명</h2>
+<p>이 PC에서 참고 이미지와 설명을 바탕으로 연속 동작을 생성합니다. 원본과 기존 컷씬 시간표는 보존됩니다.</p>
+<label>참고 이미지<select id="image"></select></label><img id="reference" alt="선택한 참고 이미지" style="max-height:280px;max-width:100%">
+<label>이미지 추가<input id="upload" type="file" accept="image/png,image/jpeg"></label>
+<label>동작 설명 (영어 권장)<textarea id="prompt" rows="8" maxlength="4000" style="width:100%">The woman shifts her weight, rotates her torso and extends her arm toward the camera in one continuous deliberate motion. Her shoulder leads the elbow, then her wrist and open palm move forward. Her feet stay planted. Her long hair and dark teal coat follow the movement softly. Preserve her face, gold details and handheld catalyst. The camera slowly moves closer. No cuts.</textarea></label>
+<label>시드<input id="seed" type="number" min="0" max="4294967295" value="42"></label>
+<p>시험 생성: 세로 288×512 · 49프레임 · 약 3초 · 무음. 1080×1920 출력과 BGM 배치는 컷씬 편집에서 진행합니다.</p>
+<div class="buttons"><button id="generate" class="primary">이 PC에서 영상 생성</button><button id="cancel" disabled>결과 수신 중단</button></div>
+<p id="status" role="status">프로젝트 확인 중…</p><p>중단하면 대기 요청을 취소합니다. 이미 시작된 GPU 계산은 끝날 수 있습니다.</p></section>
+<section class="monitor"><h2>생성 결과</h2><video id="result" controls playsinline preload="metadata" aria-label="로컬 생성 영상"></video><p id="details">생성 후 이곳에서 확인할 수 있습니다.</p><a id="download" hidden download>MP4 다운로드</a><p><a id="edit" href="/cutscene">컷씬 편집에서 배치하기 →</a></p></section></main>
+<script type="module" src="/video-generation.js"></script></html>

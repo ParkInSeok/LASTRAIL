@@ -5792,3 +5792,11 @@ Server tests5 PASS (authenticated/foreign/unknown/scope/storage regression), gam
 2026-11-12 최초5인 사용자 정정(root): 지정 DEV QA 계정의 보유 op_mira를 op_nyx로 교체, 저장 commander_presets3개와 활성 account_formation의 동일 인물 참조를 함께 교정. 현상 원인은 앞선 QA 기본5인 수동 설정에 미라를 포함한 잘못된 대상 선정. 실제 DB에서 기존 모두훈련1/승급0/수정1, 훈련core0·run0 확인. sequence55/행·편성원본·revision fence 하에 신규 DEV_QA_INITIAL_FIVE_CORRECTION mutation56 + 요원1행/기존편성3개/활성편성1개를 D1 batch 원자 반영. 과거 영수증/다른계정/PRD/재화 보존. local SQLite 실제schema 기반 정상·실패전체rollback·중복거부 PASS. 근거 formation-plan-v02/dev/{roster-before.json,correct-roster.mts,roster-correction-tests.json,roster-correction-receipt.json}. 실제 수정후 보유5인 eve/kyle/nyx/reina/sera 조회 확인; 새Unity/R2 실계정 검증은 진행중.
 
 2026-11-12 최초5인 닉스교정 Unity실계정연결확인: formation-plan-v02/dev/real-login-02 및03에서정확5인·SAVE/ACTIVATE200각1·재진입확인. 최종활성preset_8fb6238de7be488cbe7892d0b6cf2538. DEV version45/newrelease등록,기존minimum/버전보존. 신규서버코드배포/PRD변경없음. 로비구형그림은클라이언트OperatorIdentity원화매핑문제로계정ID교정과구분.
+
+<a id="server-publish-audit-20261114"></a>
+### 검증 작업 단위 커밋·푸시 정책 및 기존 게시 대조 — 2026-11-14
+사용자 요청에 따라 앞으로 담당 검증완료 단위의 관련변경만 커밋·푸시하고 이인계에근거를남긴다. 타담당/공유staged/전체add/후속소유범위중복처리금지, 배포는이번범위아니다.
+실제활성 Server checkout D:/Project/LASTRAIL/Worktrees/11ec/LASTRAIL/attendance-pass-20260907, commonGit D:/Project/LASTRAIL/.git, remote 없음. 기존게시저장소 D:/Project/LASTRAIL/GitHubSnapshot/LASTRAIL, origin=https://github.com/ParkInSeok/LASTRAIL.git, main. 게시commit ee5e1f8e343431903bd422120bbda0ab11b8f1b0(2026-11-13 Initial current development snapshot)의 server 추적파일1296개를활성경로와SHA256대조: 차이0/누락0, 게시server workingtree와HEAD차이0. 이번세션의geometry/bootstrap/정책차단/편성시험/Nyx 등담당17파일과 기존Server인계/큐/49도별도동일확인. 구활성checkout의미커밋표시를GitHub미게시로오인해같은소스를중복커밋하지않는다.
+원격읽기 첫시도는 github.com:443 연결실패, 승인된네트워크접근으로 재확인하여원격HEAD/main 모두위ee5e1f8과일치. 이미게시된동일source의기존검증(5객차전환7PASS,편성13PASS,당시타입/lint)을재사용했으며이번에제품시험을재실행하지않았다. 이대조는전체서버기능/운영배포완료주장이아니다.
+이번변경은이인계의게시감사절만. 별도GIT_INDEX_FILE과commit-tree로공유index/workingtree를수정하지않고 codex/server-publish-audit-20261114 브랜치에문서커밋후푸시한다. source/계정DB/QA원응답/캐시/빌드출력/비밀값추가0. 후속원격확인결과는아래별도기록하며, 현행11월14일최종5구획외형/원격리소스정책을과거6차체시험의승인으로대체하지않는다.
+게시결과: 로컬문서commit ff959f7c1c4b3b66e922f5429c986ed624a49184 생성(이인계7줄추가만). GitHub origin의 codex/server-publish-audit-20261114 push는자동승인검토에서실행전거절: 내부서버인계문서의외부공개이며구체문서/목적지승인부족이라는사유. 원격성공주장0/우회전송0. 사용자의해당문서·목적지명시승인전재시도보류. source는원격main ee5e1f8에이미동일게시됨.

@@ -18,7 +18,7 @@ namespace LastRail.Presentation.MissionShell
         public void ApplyWalletResponse(int statusCode, string json)
         {
             if (model == null) Bind(new CrystalPolicyPresentation());
-            model.ApplyWalletRead(CrystalWalletRead.Parse(statusCode, json));
+            model.ApplyWalletResponse(statusCode, json);
         }
 
         public void Bind(CrystalPolicyPresentation value)

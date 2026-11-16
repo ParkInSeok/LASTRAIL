@@ -62,7 +62,7 @@ namespace LastRail.Tests.EditMode
                         wire.State=state;Click("AdSkipRefresh");yield return null;Canvas.ForceUpdateCanvases();deck.EvaluateLayout();camera.Render();
                         var view=root.GetComponentInChildren<AdSkipShopView>();Assert.That(view,Is.Not.Null);
                         foreach(var text in view.GetComponentsInChildren<TMP_Text>()){text.ForceMeshUpdate();Assert.That(text.isTextOverflowing,Is.False,text.name+":"+text.text);}
-                        Assert.That(view.GetComponentsInChildren<Button>().Single(b=>b.name=="AdSkipPurchase").interactable,Is.False);Assert.That(view.GetComponentsInChildren<Button>().Single(b=>b.name=="AdSkipRestore").interactable,Is.False);
+                        Assert.That(view.GetComponentsInChildren<Button>(true).Single(b=>b.name=="AdSkipPurchase").interactable,Is.False);Assert.That(view.GetComponentsInChildren<Button>(true).Single(b=>b.name=="AdSkipRestore").interactable,Is.False);
                         RenderTexture.active=target;pixels.ReadPixels(new Rect(0,0,720,height),0,0);pixels.Apply();string name=height+"-"+state+".png";File.WriteAllBytes(Path.Combine(output,name),pixels.EncodeToPNG());
                         checks.Add(new JObject{["file"]=name,["purchaseEnabled"]=false,["restoreEnabled"]=false,["overflow"]=false,["state"]=state});
                     }

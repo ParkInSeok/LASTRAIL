@@ -9,7 +9,7 @@ namespace LastRail.Presentation.MissionShell
 {
     public enum LobbyPage { Operators, Train, Recruit, Shop, Formation, Missions }
 
-    // View-only navigation. No economy mutations or fabricated backend acknowledgements.
+    // Composes page views; migrated pages bind disposable screen controllers.
     public sealed partial class LobbyDestinationPages : MonoBehaviour
     {
         public LobbyPage CurrentPage { get; private set; }
@@ -21,7 +21,10 @@ namespace LastRail.Presentation.MissionShell
         TMP_FontAsset font;
         Action closed;
         readonly ScreenBackKey backKey=new ScreenBackKey();
-        LobbyCommandDeck backOwner;
+        Action openPass;Action<string> openBulkSelection;Func<bool> hostActive;bool hostHandlesBack;
+        Action releasePageBinding;
+        void ReleasePageBinding(){var release=releasePageBinding;releasePageBinding=null;release?.Invoke();}
+        public void BindNavigation(Action pass,Action<string> bulk,Func<bool> active){openPass=pass;openBulkSelection=bulk;hostActive=active;hostHandlesBack=active!=null;}
         Action detailBack;
         RectTransform noticePanel;
         AugmentSelection.AugmentModalInputScope detailInput;
@@ -35,15 +38,20 @@ namespace LastRail.Presentation.MissionShell
             Close();
         }
         bool fixture;
-        long viewGeneration;
-        AccountScreenRuntime accountState;
-        string selectedFormationOperator;
-        int rosterPage,presetPage,recruitView,recruitListPage;
+        long viewGeneration,entryGeneration;
+        AccountScreenRuntime accountState;Func<bool> boundAccountSession;
+        int rosterPage,presetPage;
         public void RefreshAccountView(AccountScreenRuntime state){BindAccount(state);if(IsOpen&&!fixture&&(CurrentPage==LobbyPage.Formation||CurrentPage==LobbyPage.Operators||CurrentPage==LobbyPage.Recruit||CurrentPage==LobbyPage.Train||CurrentPage==LobbyPage.Shop||CurrentPage==LobbyPage.Missions))Rebuild();}
-        public void BindAccount(AccountScreenRuntime state){if(accountState!=state)selectedFormationOperator=null;accountState=state;if(content!=null&&!fixture){for(int i=0;i<3;i++){var label=content.Find("CurrencyValue"+i)?.GetComponent<TMP_Text>();if(label!=null)label.text=state?.BalanceText(i)??"—";}
-            var notice=content.Find("AccountStateNotice")?.GetComponent<TMP_Text>();if(notice!=null)notice.text=state?.AccountNotice??"";}}
+        public void BindAccount(AccountScreenRuntime state){if(accountState!=state||boundAccountSession!=null&&!boundAccountSession()){ReleasePageBinding();renderBody=null;}accountState=state;boundAccountSession=state?.CaptureScreenSession();if(chromeContent!=null&&!fixture){for(int i=0;i<3;i++){var label=chromeContent.Find("CurrencyValue"+i)?.GetComponent<TMP_Text>();if(label!=null)label.text=state?.BalanceText(i)??"—";}
+            var notice=chromeContent.Find("AccountStateNotice")?.GetComponent<TMP_Text>();if(notice!=null)notice.text=state?.AccountNotice??"";}}
 
         RectTransform content;
+        Action renderBody;
+        LobbyPage renderedPage;int renderedCategory;bool renderedUltimate;
+        RectTransform chromeContent;
+        LobbyNavigationRail navigation;
+        Sprite sharedFrame;
+        readonly LandscapeSectionLayout chromeLayout=new LandscapeSectionLayout();
         RawImage backdrop;
         Texture2D art, chrome;
         readonly List<Sprite> skins=new List<Sprite>();
@@ -57,7 +65,7 @@ namespace LastRail.Presentation.MissionShell
         {
             var root=new GameObject("LobbyDestinationPages",typeof(RectTransform),typeof(Image));root.transform.SetParent(parent,false);
             Stretch((RectTransform)root.transform);root.GetComponent<Image>().color=new Color(.018f,.023f,.029f);
-            var page=root.AddComponent<LobbyDestinationPages>();page.font=font;page.closed=closed;page.backOwner=parent.GetComponentInParent<LobbyCommandDeck>();
+            var page=root.AddComponent<LobbyDestinationPages>();page.font=font;page.closed=closed;
             page.backdrop=page.Rect("Environment",root.transform,0,0,941,1672).gameObject.AddComponent<RawImage>();page.backdrop.raycastTarget=false;
             page.Controls=page.Rect("PageControls",root.transform,0,0,1600,900);page.Controls.anchorMin=page.Controls.anchorMax=page.Controls.pivot=new Vector2(.5f,.5f);page.Controls.anchoredPosition=Vector2.zero;
             page.chrome=LastRail.Resources.PreparedContent.Load<Texture2D>("LobbyDeck/icons-landscape-v01");root.SetActive(false);return page;
@@ -65,30 +73,29 @@ namespace LastRail.Presentation.MissionShell
         public void Open(LobbyPage page,bool editorFixture=false){_ = OpenPreparedPageAsync(page,editorFixture);}
         void OpenPreparedPage(LobbyPage page,bool editorFixture)
         {
-            fixture=false;
+            entryGeneration++;fixture=false;
 #if UNITY_EDITOR || LASTRAIL_EXPLICIT_LOCAL_QA_PLAYER
             fixture=editorFixture;
 #endif
-            viewGeneration++;ultimatePanel=false;selectedFormationOperator=null;CurrentPage=page;Category=0;SelectedMember=0;SelectedSlot=0;IsOpen=true;
+            viewGeneration++;ultimatePanel=false;CurrentPage=page;Category=0;SelectedMember=0;SelectedSlot=0;IsOpen=true;
             gameObject.SetActive(true);transform.SetAsLastSibling();Rebuild();
-            if(page==LobbyPage.Recruit&&!fixture){recruitView=0;recruitListPage=0;LoadRecruitment();}
             if(page==LobbyPage.Train&&!fixture&&accountState!=null)LoadTrain();
-            if(page==LobbyPage.Formation&&!fixture&&accountState!=null)LoadUltimatePage();
+            
             if(page==LobbyPage.Shop&&!fixture&&accountState!=null)RefreshShop();if(page==LobbyPage.Missions&&!fixture&&accountState!=null)RefreshMissions();
         }
-        async void RefreshTrain(){await System.Threading.Tasks.Task.WhenAll(accountState.RefreshSharedAsync(),accountState.RefreshTrainLoadoutAsync());}
-        async void LoadTrain(){var state=accountState;if(state!=null)await System.Threading.Tasks.Task.WhenAll(state.EnsureSharedAsync(),state.EnsureTrainLoadoutAsync());}
-        async void LoadRecruitment(bool refresh=false){var state=accountState;if(state==null)return;await System.Threading.Tasks.Task.WhenAll(refresh?state.RefreshSharedAsync():state.EnsureSharedAsync(),state.RefreshBannersAsync());if(this!=null&&IsOpen&&CurrentPage==LobbyPage.Recruit&&state.BannersReady&&state.Banners.Count>0)await state.SelectBannerAsync(state.Banners.Any(b=>b.Id==state.SelectedBanner?.Id)?state.SelectedBanner.Id:state.Banners[0].Id);}
-        public void Close(){bool opening=pageResourceRequest!=null;ReleasePageResources();if(!IsOpen&&!opening)return;IsOpen=false;gameObject.SetActive(false);closed?.Invoke();}
-        void OnGUI(){if(IsOpen&&backOwner==null)backKey.Handle(Event.current,RequestBack,ScreenBackKey.Editing);}
+
+
+        public void Close(){entryGeneration++;bool opening=pageResourceRequest!=null;ReleasePageResources();if(!IsOpen&&!opening)return;IsOpen=false;gameObject.SetActive(false);closed?.Invoke();}
+        void OnGUI(){if(IsOpen&&!hostHandlesBack)backKey.Handle(Event.current,RequestBack,ScreenBackKey.Editing);}
         void OnEnable(){backKey.Synchronize();}
         void OnApplicationFocus(bool focused){if(focused)backKey.Synchronize();}
         void OnRectTransformDimensionsChange(){Fit();}
-        void OnDisable(){ReleasePageResources();viewGeneration++;ReleaseDetailInput();ReleaseEquipmentMultishot();IsOpen=false;}
-        void OnDestroy(){ReleasePageResources();viewGeneration++;IsOpen=false;ReleaseEquipmentMultishot();ReleaseSkins();accountState=null;closed=null;content=null;Controls=null;backdrop=null;font=null;art=null;chrome=null;}
+        void OnDisable(){entryGeneration++;ReleasePageResources();viewGeneration++;ReleaseDetailInput();ReleaseEquipmentMultishot();IsOpen=false;}
+        void OnDestroy(){ReleasePageResources();viewGeneration++;IsOpen=false;ReleaseEquipmentMultishot();ReleaseSkins();if(sharedFrame!=null){if(Application.isPlaying)Destroy(sharedFrame);else DestroyImmediate(sharedFrame);}ReleasePageBinding();boundAccountSession=null;accountState=null;closed=null;openPass=null;openBulkSelection=null;hostActive=null;content=null;Controls=null;backdrop=null;font=null;art=null;chrome=null;}
         void ReleaseSkins(){foreach(var skin in skins)if(skin!=null){if(Application.isPlaying)Destroy(skin);else DestroyImmediate(skin);}skins.Clear();}
         void Clear()
         {
+            ReleasePageBinding();renderBody=null;
             ReleaseDetailInput();
             viewGeneration++;
             if(content!=null){content.gameObject.SetActive(false);if(Application.isPlaying)Destroy(content.gameObject);else DestroyImmediate(content.gameObject);}
@@ -96,16 +103,20 @@ namespace LastRail.Presentation.MissionShell
         }
         void Rebuild()
         {
+            if(!fixture&&renderBody!=null&&renderedPage==CurrentPage&&renderedCategory==Category&&renderedUltimate==ultimatePanel){renderBody();BindAccount(accountState);return;}
             ReleaseEquipmentMultishot();Clear();bool plan=CurrentPage==LobbyPage.Formation&&!fixture;
-            art=plan?null:LastRail.Resources.PreparedContent.Load<Texture2D>("DestinationPages/"+Keys[(int)CurrentPage]+"-atlas");
-            backdrop.texture=plan?LastRail.Resources.PreparedContent.Load<Texture2D>("NoncombatCodex/codex-dark-steel-surface-v01"):LastRail.Resources.PreparedContent.Load<Texture2D>("DestinationPages/"+Keys[(int)CurrentPage]+"-background");
-            backdrop.enabled=true;backdrop.color=plan?new Color(.18f,.20f,.22f,1):Color.white;
+            art=plan||CurrentPage==LobbyPage.Train?null:LastRail.Resources.PreparedContent.Load<Texture2D>("DestinationPages/"+Keys[(int)CurrentPage]+"-atlas");
+            backdrop.texture=CurrentPage==LobbyPage.Train?LastRail.Resources.PreparedContent.Load<Texture2D>("TrainFortress/depot-background"):plan?LastRail.Resources.PreparedContent.Load<Texture2D>("LobbyDeck/cabin-landscape-v01"):LastRail.Resources.PreparedContent.Load<Texture2D>("DestinationPages/"+Keys[(int)CurrentPage]+"-background");
+            backdrop.enabled=true;backdrop.color=plan?new Color(.48f,.43f,.36f,1):Color.white;
             Header();
             switch(CurrentPage){case LobbyPage.Operators:Operators();break;case LobbyPage.Train:Train();break;case LobbyPage.Recruit:Recruit();break;case LobbyPage.Shop:Shop();break;case LobbyPage.Formation:Formation();break;case LobbyPage.Missions:Missions();break;}
-            Navigation();Fit();BindAccount(accountState);
+            renderedPage=CurrentPage;renderedCategory=Category;renderedUltimate=ultimatePanel;Navigation();Fit();BindAccount(accountState);
         }
         void Header()
         {
+            if(chromeContent!=null){chromeContent.Find("PageTitle").GetComponent<TMP_Text>().text=Titles[(int)CurrentPage];return;}
+            chromeContent=Rect("PageChrome",Controls,0,0,1600,900);
+            var body=content;content=chromeContent;
             Panel("HeaderShade",content,0,0,941,180,new Color(.02f,.025f,.03f,.94f));
             Button("Back",content,20,20,91,70,"‹",RequestBack);
             Text("PageTitle",content,Titles[(int)CurrentPage],137,15,500,75,49);
@@ -116,18 +127,13 @@ namespace LastRail.Presentation.MissionShell
                 Text("CurrencyValue"+i,content,fixture?new[]{"80 / 100","24,800","1,250"}[i]:"—",x+59,114,205,45,26,true);
             }
             Text("AccountStateNotice",content,"",34,169,873,42,21);
+            content=body;
         }
         void Navigation()
         {
-            string[] labels={"로비","대원","열차","모집","상점"};int active=CurrentPage==LobbyPage.Formation?1:CurrentPage==LobbyPage.Missions?-1:(int)CurrentPage+1;
-            if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel)
-            {
-                for(int i=0;i<5;i++){int n=i;var button=Button("PageNav"+i,content,10+i*318,835,308,60,labels[i],()=>{if(n==0)Close();else Open((LobbyPage)(n-1),fixture);},i==active);LobbyTabVisual.ApplyText(button,button.GetComponentInChildren<TMP_Text>(),i==active);}
-                return;
-            }
-            int[] sx={63,253,442,630,815};
-            for(int i=0;i<5;i++){int n=i;var button=Button("PageNav"+i,content,10+i*186,1534,181,122,null,()=>{if(n==0)Close();else Open((LobbyPage)(n-1),fixture);},i==active);
-                var icon=Crop("Icon",button.transform,chrome,58,13,65,53,sx[i],1547,65,53);icon.uvRect=LobbyArtwork.IconUv(new[]{10,9,11,12,13}[i]);var label=Text("Label",button.transform,labels[i],0,75,181,36,28,true);LobbyTabVisual.Apply(button,icon,label,i==active,true);}
+            int active=CurrentPage==LobbyPage.Formation?1:CurrentPage==LobbyPage.Missions?-1:(int)CurrentPage+1;
+            if(navigation==null){if(sharedFrame==null)sharedFrame=LobbyArtwork.CreateFrame();navigation=LobbyNavigationRail.Create(chromeContent,sharedFrame,chrome,active,"PageNav",n=>{if(!IsOpen)return;if(n==0)Close();else Open((LobbyPage)(n-1),fixture);}).GetComponent<LobbyNavigationRail>();}
+            navigation.SetSelection(active);chromeContent.SetAsLastSibling();
         }
         void Tabs(string[] titles,float y)
         {
@@ -155,61 +161,66 @@ namespace LastRail.Presentation.MissionShell
         }
         void LiveOperators()
         {
-            var state=accountState;var snapshot=state?.Account;
-            if(snapshot==null||snapshot.Operators.Count==0){Unavailable(575,snapshot==null?state?.AccountNotice??"대원 정보를 불러오지 못했습니다.":"보유한 대원이 없습니다.");return;}
-            SelectedMember=Math.Max(0,Math.Min(SelectedMember,snapshot.Operators.Count-1));var selected=snapshot.Operators[SelectedMember];var id=selected.Text("operatorId");
-            var portrait=OperatorVisualCatalog.Portrait(id);if(portrait!=null){var image=Rect("SelectedPortrait",content,34,218,280,203).gameObject.AddComponent<RawImage>();image.texture=portrait;image.uvRect=OperatorVisualCatalog.Crop(portrait,280,203);image.raycastTarget=false;}
-            Text("SelectedName",content,OperatorVisualCatalog.Label(id),343,228,563,57,42);
-            var core=snapshot.TrainingCoreSlots.FirstOrDefault(s=>s.Text("operatorId")==id);
-            Text("OwnedGrowthState",content,(core==null?"훈련 코어 미배치":"훈련 Lv."+core.Number("trainedLevel"))+"\n스킬 훈련 "+selected.Number("skillTraining")+" · 승급 "+selected.Number("promotion"),343,301,563,103,29);
-            Tabs(new[]{"전체","전투","지원"},438);
-            // Role catalog is not in S01; do not invent membership from art metadata.
-            content.Find("Category1").GetComponent<Button>().interactable=false;content.Find("Category2").GetComponent<Button>().interactable=false;
-            var pageCount=Math.Max(1,(snapshot.Operators.Count+5)/6);rosterPage%=pageCount;
-            for(int i=0;i<6;i++){int index=rosterPage*6+i;if(index>=snapshot.Operators.Count)break;var operatorId=snapshot.Operators[index].Text("operatorId");float x=34+i%3*296,y=525+i/3*237;
-                var button=Button("SelectOwnedOperator"+index,content,x,y,280,220,null,()=>{SelectedMember=index;Rebuild();},index==SelectedMember);
-                var face=OperatorVisualCatalog.Portrait(operatorId);if(face!=null){var img=Rect("Portrait",button.transform,8,8,264,161).gameObject.AddComponent<RawImage>();img.texture=face;img.uvRect=OperatorVisualCatalog.Crop(face,264,161);img.raycastTarget=false;}
-                Text("OwnedName",button.transform,OperatorVisualCatalog.Label(operatorId),8,177,264,35,28,true);
+            var body=content;content=Rect("OperatorsOverview",body,0,0,1600,900);
+            Panel("RosterPanel",content,135,106,340,755);Text("RosterHeading",content,"대원 목록",155,119,290,45,31);
+            Panel("OperatorInfoPanel",content,1190,106,390,720);
+            OperatorScreenController controller=null;int pageCount=1;var titles=new[]{"레벨업","스킬 훈련","승급"};
+            var portrait=Rect("SelectedPortrait",content,490,120,690,690).gameObject.AddComponent<RawImage>();portrait.raycastTarget=false;
+            var selectedName=Text("SelectedName",content,"",1215,125,340,55,38);
+            Text("OperatorInfoHeading",content,"대원 정보",1215,200,340,42,28);
+            var growth=Text("OwnedGrowthState",content,"",1215,255,340,100,25);
+            Text("GrowthHeading",content,"성장 운용",1215,390,340,42,28);
+            var cards=new Button[6];var faces=new RawImage[6];var names=new TMP_Text[6];var indices=new int[6];
+            for(int i=0;i<6;i++){int cell=i;float x=150+i%2*160,y=180+i/2*205;
+                cards[i]=Button("SelectOwnedOperator"+i,content,x,y,150,192,null,()=>{if(indices[cell]<0)return;controller.Select(indices[cell]);});
+                faces[i]=Rect("Portrait",cards[i].transform,6,6,138,144).gameObject.AddComponent<RawImage>();faces[i].raycastTarget=false;
+                names[i]=Text("OwnedName",cards[i].transform,"",6,154,138,32,23,true);
             }
-            Button("OwnedPage",content,688,1003,219,60,(rosterPage+1)+" / "+pageCount,()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
-            Button("OpenFormation",content,34,1003,425,60,"편성",()=>Open(LobbyPage.Formation));
-            Button("ManageTrainingCore",content,475,1003,197,60,"훈련 코어",()=>CoreManager(id));
-            Text("GrowthNotice",content,string.IsNullOrEmpty(state.ActionNotice)?state.GrowthNotice:state.ActionNotice,34,1085,873,95,25,true);
-            var kinds=new[]{"growth-core","growth-skill","growth-promotion"};var titles=new[]{"레벨업","스킬 훈련","승급"};
-            for(int i=0;i<3;i++){string kind=kinds[i],target=i==0?core?.Number("slot").ToString():id;float x=34+i*296;
-                Panel("GrowthOption"+i,content,x,1200,280,290);var cost=state.GrowthReady?state.Growth?.Cost(kind,target,snapshot):null;
-                Text("GrowthCost"+i,content,i==0&&core==null?"훈련 코어 미배치":OperatorGrowthConfig.CostLabel(cost),x+12,1220,256,122,24,true);
-                var button=Button("GrowOperator"+i,content,x+10,1370,260,91,titles[i],async()=>{await state.GrowAsync(kind,target);if(this!=null&&IsOpen)Rebuild();},true);button.interactable=state.CanGrow(kind,target);
-                if(i==0&&state.Pending?.Kind.StartsWith("growth-")==true){button.GetComponentInChildren<TMP_Text>().text="결과 재확인";button.onClick.RemoveAllListeners();button.onClick.AddListener(async()=>{await state.RetryPendingAsync();if(this!=null&&IsOpen)Rebuild();});button.interactable=!state.Busy;}
+            var next=Button("OwnedPage",content,155,805,300,40,"",()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
+            Button("OpenFormation",content,1390,735,165,65,"편성",()=>Open(LobbyPage.Formation));
+            var coreButton=Button("ManageTrainingCore",content,1210,735,170,65,"훈련 코어",()=>controller.OpenCore());
+            var notice=Text("GrowthNotice",content,"",1210,830,350,55,19,true);
+            var costs=new TMP_Text[3];var actions=new Button[3];
+            for(int i=0;i<3;i++){int action=i;float y=448+i*86;Panel("GrowthOption"+i,content,1210,y,350,80);
+                costs[i]=Text("GrowthCost"+i,content,"",1222,y+8,205,64,18,true);
+                actions[i]=Button("GrowOperator"+i,content,1430,y+14,118,52,titles[i],async()=>await controller.GrowAsync(action));
+                actions[i].GetComponentInChildren<TMP_Text>().fontSizeMax=22;
             }
+            controller=new OperatorScreenController(accountState,value=>{
+                SelectedMember=value.Selected;var selectedId=value.Id;int count=value.Operators.Count;
+                var face=selectedId==null?null:FormationPlanView.Portrait(selectedId);portrait.texture=face;portrait.enabled=face!=null;portrait.uvRect=new Rect(0,0,1,1);if(face!=null){float fit=Mathf.Min(690f/face.width,690f/face.height);portrait.rectTransform.sizeDelta=new Vector2(face.width*fit,face.height*fit);portrait.rectTransform.anchoredPosition=new Vector2(490+(690-face.width*fit)/2,-(120+690-face.height*fit));}
+                selectedName.text=selectedId==null?"":OperatorVisualCatalog.KoreanLabel(selectedId);growth.text=value.Growth;
+                pageCount=Math.Max(1,(count+5)/6);rosterPage%=pageCount;next.GetComponentInChildren<TMP_Text>().text=(rosterPage+1)+" / "+pageCount;
+                for(int i=0;i<6;i++){int index=rosterPage*6+i;bool exists=index<count;indices[i]=exists?index:-1;cards[i].gameObject.SetActive(exists);
+                    var id=exists?value.Operators[index]:null;var image=id==null?null:FormationPlanView.Portrait(id);faces[i].texture=image;faces[i].uvRect=FormationPlanView.PortraitCrop(id,image);
+                    names[i].text=id==null?"":OperatorVisualCatalog.KoreanLabel(id);cards[i].GetComponent<Image>().color=index==SelectedMember?new Color(.02f,.22f,.37f,.98f):new Color(.025f,.033f,.04f,.97f);
+                }
+                coreButton.interactable=selectedId!=null;notice.text=value.Notice;
+                for(int i=0;i<3;i++){costs[i].text=value.Actions[i].Cost;actions[i].GetComponentInChildren<TMP_Text>().text=value.Actions[i].Title;actions[i].interactable=value.Actions[i].Enabled;}
+            },value=>CoreManager(value,controller.ReplaceCore,controller.SyncCore),CoreConfirm);
+            releasePageBinding+=controller.Dispose;renderBody=controller.Render;renderBody();content=body;
         }
         RectTransform CoreShield(string name)
         {
             ReleaseDetailInput();
-            foreach(Transform child in content)if(!child.name.StartsWith("PageNav"))child.gameObject.SetActive(false);
+
             var shield=Rect(name,content,0,0,941,1515);var shade=shield.gameObject.AddComponent<Image>();shade.color=new Color(.008f,.014f,.021f,.97f);
             detailBack=()=>CloseCoreShield(shield);detailInput=new AugmentSelection.AugmentModalInputScope(shield,transform,null);return shield;
         }
-        void CloseCoreShield(RectTransform shield){if(shield==null||!shield.gameObject.activeInHierarchy)return;shield.gameObject.SetActive(false);Rebuild();}
-        void CoreManager(string operatorId)
+        void CloseCoreShield(RectTransform shield){if(shield==null||!shield.gameObject.activeInHierarchy)return;shield.gameObject.SetActive(false);ReleaseDetailInput();if(Application.isPlaying)Destroy(shield.gameObject);else DestroyImmediate(shield.gameObject);Rebuild();}
+        void CoreManager(TrainingCoreDisplay data,Action<int> replace,Action syncAction)
         {
-            var state=accountState;if(state?.Account==null)return;var shield=CoreShield("TrainingCoreManager");
+            var shield=CoreShield("TrainingCoreManager");
             Text("CoreTitle",shield,"훈련 코어",40,185,861,65,42,true);
-            Text("CoreCandidate",shield,"선택 대원: "+OperatorVisualCatalog.Label(operatorId)+"\n빈 슬롯에 배치하거나 기존 대원을 교체합니다.",45,268,851,110,29,true);
-            for(int i=0;i<5;i++){
-                int slot=i;var core=state.Account.TrainingCoreSlots.FirstOrDefault(s=>s.Number("slot")==slot);float y=415+i*139;
+            Text("CoreCandidate",shield,"선택 대원: "+OperatorVisualCatalog.Label(data.Candidate)+"\n빈 슬롯에 배치하거나 기존 대원을 교체합니다.",45,268,851,110,29,true);
+            for(int i=0;i<data.Slots.Count;i++){
+                int slot=i;var core=data.Slots[i];float y=415+i*139;
                 Panel("CoreSlot"+i,shield,40,y,861,123);
-                Text("CoreState"+i,shield,(i+1)+"  "+(core==null?"빈 슬롯":OperatorVisualCatalog.Label(core.Text("operatorId"))+" · Lv."+core.Number("trainedLevel"))+"\n기록된 투자 EXP "+(core?.Number("investedOperatorExp")??0).ToString("N0"),64,y+12,538,100,27);
-                var button=Button("ReplaceCore"+i,shield,638,y+19,238,85,core==null?"배치":"교체",()=>{
-                    var refund=core?.Number("investedOperatorExp")??0;
-                    CloseCoreShield(shield);CoreConfirm("코어 "+(slot+1)+(core==null?" 배치":" 교체"),OperatorVisualCatalog.Label(operatorId)+"을(를) Lv.1로 배치합니다.\n기록된 투자 EXP "+refund.ToString("N0")+" 전액 환급\n자동 재투자는 하지 않습니다.",()=>state.CanReplaceCore(slot,operatorId),()=>state.ReplaceCoreAsync(slot,operatorId));
-                },true);button.interactable=state.CanReplaceCore(slot,operatorId);
+                Text("CoreState"+i,shield,(i+1)+"  "+(core.Id==null?"빈 슬롯":OperatorVisualCatalog.Label(core.Id)+" · Lv."+core.Level)+"\n기록된 투자 EXP "+core.Invested.ToString("N0"),64,y+12,538,100,27);
+                var button=Button("ReplaceCore"+i,shield,638,y+19,238,85,core.Id==null?"배치":"교체",()=>{CloseCoreShield(shield);replace(slot);},true);button.interactable=core.CanReplace;
             }
             Text("CoreSyncExplanation",shield,"동기 성장: 낮은 레벨부터 보유 EXP로 성장\n5개 슬롯 필요 · 배치된 대원은 중복 배치 불가",48,1124,845,98,27,true);
-            var sync=Button("SyncTrainingCore",shield,48,1247,845,90,"동기 성장",()=>{
-                var balance=state.Account.Currencies.TryGetValue("OPERATOR_EXP",out var exp)?exp:0;
-                CloseCoreShield(shield);CoreConfirm("동기 성장","보유 EXP "+balance.ToString("N0")+" 범위에서\n낮은 레벨부터 반복 성장합니다.\nEXP가 부족하거나 모두 최고 레벨이면 멈춥니다.",()=>state.CanGrow("growth-sync","all"),()=>state.GrowAsync("growth-sync","all"));
-            },true);sync.interactable=state.CanGrow("growth-sync","all");
+            var sync=Button("SyncTrainingCore",shield,48,1247,845,90,"동기 성장",()=>{CloseCoreShield(shield);syncAction();},true);sync.interactable=data.CanSync;
             Button("CloseTrainingCore",shield,48,1370,845,90,"닫기",()=>CloseCoreShield(shield));
         }
         void CoreConfirm(string title,string message,Func<bool> allowed,Func<System.Threading.Tasks.Task> submit)
@@ -219,18 +230,7 @@ namespace LastRail.Presentation.MissionShell
             var confirm=Button("ConfirmCoreAction",shield,65,925,811,100,"실행",async()=>{if(shield==null||!shield.gameObject.activeInHierarchy)return;CloseCoreShield(shield);var owner=accountState;long generation=viewGeneration;if(allowed())await submit();if(this!=null&&IsOpen&&ReferenceEquals(owner,accountState)&&generation==viewGeneration)Rebuild();},true);confirm.interactable=allowed();
             Button("CancelCoreAction",shield,65,1056,811,90,"취소",()=>CloseCoreShield(shield));
         }
-        void Train()
-        {
-            if(!fixture){LiveTrain();return;}
-            Tabs(new[]{"기관차","전투칸","지원칸","화물칸"},866);
-            string title=new[]{"기관차","전투칸","지원칸","화물칸"}[Category];
-            Text("SelectedCar",content,title,325,325,350,55,38,true);
-            Panel("CarDetails",content,29,996,883,486);Text("CarTitle",content,title+" 강화",60,1012,800,65,36);
-            Crop("CarArt",content,art,49,1090,322,350,49,1090,322,350);
-            Text("CarStats",content,fixture?"내구도  5,200  →  5,800\n\n출력     120  →  140":"열차 정보를 불러오지 못했습니다.",405,1092,465,190,29);
-            Text("Materials",content,fixture?"필요 재료\n강철 · 기어 · 전선":"",407,1290,460,95,27);
-            Guarded("Upgrade",content,400,1387,470,72,"강화");
-        }
+        void Train(){if(!fixture)LiveTrain();else BuildTrainOverview();}
         void Recruit()
         {
             if(!fixture){LiveRecruitment();return;}
@@ -265,139 +265,76 @@ namespace LastRail.Presentation.MissionShell
             var auto=Button("AutoFormation",content,34,1370,373,110,"자동 편성",()=>{for(int i=0;i<5;i++)draft[i]=i;Rebuild();});auto.interactable=fixture;
             Guarded("SaveFormation",content,442,1370,465,110,"편성 저장");
         }
-        void LiveTrain()
-        {
-            Tabs(new[]{"기관차","차량 배치","보유 차량","보유 포탑"},202);var state=accountState;var snapshot=state?.Account;
-            if(Category==1){LiveTrainLoadout();return;}
-            if(snapshot==null){Unavailable(650,"열차 정보를 불러오지 못했습니다.");Button("RefreshTrain",content,60,1350,821,90,"다시 확인",()=>RefreshTrain());return;}
-            if(Category!=0){
-                var rows=Category==2?snapshot.Carriages:snapshot.Turrets;var key=Category==2?"carriageId":"turretId";
-                Panel("TrainHoldings",content,34,445,873,769);Text("HoldingsTitle",content,Category==2?"보유 차량":"보유 포탑",64,462,813,60,36,true);
-                var pages=Math.Max(1,(rows.Count+5)/6);rosterPage%=pages;
-                if(rows.Count==0)Text("NoTrainHoldings",content,"보유 정보가 없습니다.",65,650,811,95,31,true);
-                for(int i=0;i<6;i++){int index=rosterPage*6+i;if(index>=rows.Count)break;var row=rows[index];Text("TrainHolding"+index,content,row.Text(key)+" · Lv."+row.Number("level"),65,565+i*84,811,77,30);}
-                Button("TrainHoldingsPage",content,64,1109,813,76,(rosterPage+1)+" / "+pages,()=>{rosterPage=(rosterPage+1)%pages;Rebuild();});
-                Text("TrainEquipmentStatus",content,Category==2?"차량 배치 탭에서 장착을 확인하세요.":"포탑 장착은 준비 중입니다.",65,1245,811,85,28,true);Button("RefreshTrain",content,65,1360,811,90,"새로고침",()=>RefreshTrain());return;
-            }
-            var train=snapshot.Train;
-            Text("OwnedTrainName",content,train==null?"보유 기관차가 없습니다.":train.Text("trainId"),65,840,811,80,41,true);
-            Panel("TrainGrowthPanel",content,34,947,873,539);Text("TrainLevel",content,train==null?"—":"Lv."+train.Number("level"),64,970,813,66,38,true);
-            var id=train?.Text("trainId");var cost=state.GrowthReady?state.Growth?.Cost("growth-train",id,snapshot):null;
-            Text("TrainGrowthCost",content,OperatorGrowthConfig.CostLabel(cost),65,1052,811,133,30,true);
-            Text("TrainGrowthNotice",content,string.IsNullOrEmpty(state.ActionNotice)?state.GrowthNotice:state.ActionNotice,65,1200,811,92,25,true);
-            var upgrade=Button("UpgradeTrain",content,65,1320,811,100,"기관차 강화",()=>CoreConfirm("기관차 강화",OperatorGrowthConfig.CostLabel(cost)+"\n위 재료를 사용해 1레벨 강화합니다.",()=>state.CanGrow("growth-train",id),()=>state.GrowAsync("growth-train",id)),true);upgrade.interactable=state.CanGrow("growth-train",id);
-            if(state.Pending?.Kind=="growth-train"){upgrade.GetComponentInChildren<TMP_Text>().text="강화 결과 재확인";upgrade.onClick.RemoveAllListeners();upgrade.onClick.AddListener(async()=>await state.RetryPendingAsync());upgrade.interactable=!state.Busy;}
-            Button("RefreshTrain",content,65,1432,811,45,"새로고침",()=>RefreshTrain());
-        }
-        void LiveTrainLoadout()
-        {
-            var state=accountState;var snapshot=state?.TrainLoadout;if(snapshot==null){Unavailable(650,state?.TrainLoadoutNotice??"장착 정보를 불러오지 못했습니다.");Button("RefreshTrainLoadout",content,65,1320,811,90,"다시 확인",()=>RefreshTrain());return;}
-            Panel("LoadoutPanel",content,34,313,873,1190,new Color(.008f,.016f,.024f,.95f));
-            Text("LoadoutState",content,(state.TrainDraftDirty?"편집 중":"저장된 배치")+" · 슬롯 "+(snapshot.SlotCount?.ToString()??"확인 필요")+(state.TrainLoadoutReady?"":" · 이전 정보"),55,330,831,62,31,true);
-            var selected=state.TrainDraft;SelectedSlot=Math.Max(0,Math.Min(SelectedSlot,3));
-            for(int i=0;i<4;i++){int slot=i;bool unlocked=snapshot.SlotCount.HasValue&&i<snapshot.SlotCount.Value;var label=(i+1)+" · "+(selected[i]??(unlocked?"차량 선택":"잠김"));
-                var b=Button("TrainLoadoutSlot"+i,content,55+i%2*426,410+i/2*101,405,86,label,()=>{SelectedSlot=slot;Rebuild();},i==SelectedSlot);b.interactable=unlocked&&state.CanEditTrain;
-            }
-            var rows=snapshot.Carriages;var pages=Math.Max(1,(rows.Count+5)/6);rosterPage%=pages;
-            for(int i=0;i<6;i++){int index=rosterPage*6+i;if(index>=rows.Count)break;var c=rows[index];string id=(string)c["carriageId"],reason=(string)c["reason"];bool eligible=(bool)c["installable"];
-                var b=Button("InstallOwnedCarriage"+index,content,55,640+i*72,831,64,id+" · Lv."+c["level"]+(eligible?"":" · "+AccountScreenRuntime.TrainLoadoutProblem(reason)),()=>state.SelectTrainCarriage(SelectedSlot,id),selected.Contains(id));b.interactable=eligible&&state.CanEditTrain&&snapshot.SlotCount.HasValue&&SelectedSlot<snapshot.SlotCount.Value;
-            }
-            if(rows.Count==0)Text("NoLoadoutCarriages",content,"보유 차량이 없습니다.",65,690,811,110,30,true);
-            Button("LoadoutRosterPage",content,55,1095,831,61,(rosterPage+1)+" / "+pages,()=>{rosterPage=(rosterPage+1)%pages;Rebuild();});
-            Text("LoadoutNotice",content,"전투칸 1개 필수 · 열린 슬롯 모두 배치 · 중복 금지\n"+state.TrainLoadoutNotice+"\n"+state.ActionNotice,55,1168,831,122,24,true);
-            var save=Button("SaveTrainLoadout",content,55,1310,831,87,"차량 배치 저장",async()=>await state.SaveTrainLoadoutAsync(),true);save.interactable=state.CanSaveTrainLoadout;
-            if(state.Pending?.Kind=="train-loadout"){save.GetComponentInChildren<TMP_Text>().text="원래 장착 요청 재확인";save.onClick.RemoveAllListeners();save.onClick.AddListener(async()=>await state.RetryPendingAsync());save.interactable=!state.Busy;}
-            var clear=Button("ClearTrainLoadout",content,55,1420,405,60,"선택 비우기",()=>state.ClearTrainDraft());clear.interactable=state.CanEditTrain;
-            Button("RefreshTrainLoadout",content,481,1420,405,60,"새로고침",()=>RefreshTrain());
-        }
-        void LiveRecruitment()
-        {
-            var state=accountState;if(state==null){Unavailable(600,"모집 정보를 불러오지 못했습니다.");return;}
-            Button("RecruitMain",content,34,210,273,73,"모집",()=>{recruitView=0;recruitListPage=0;Rebuild();},recruitView==0);
-            Button("RecruitHistory",content,334,210,273,73,"모집 기록",async()=>{recruitView=1;recruitListPage=0;await state.RefreshHistoryAsync();},recruitView==1);
-            Button("RecruitRates",content,634,210,273,73,"확률 정보",()=>{recruitView=2;recruitListPage=0;Rebuild();},recruitView==2);
-            Panel("RecruitReadPanel",content,34,325,873,835,new Color(.008f,.016f,.024f,.94f));
-            Text("RecruitReadNotice",content,state.RecruitmentNotice,55,1168,831,80,24,true);
-            if(recruitView==1){
-                Text("RecruitHistoryTitle",content,state.HistoryReady?(state.History.Count==0?"모집 기록이 없습니다.":"내 모집 기록"):"기록 확인 중 · 이전 정보",60,350,821,70,33,true);
-                var rows=state.History;var pages=Math.Max(1,(rows.Count+5)/6);recruitListPage%=pages;
-                for(int i=0;i<6;i++){int index=recruitListPage*6+i;if(index>=rows.Count)break;var batch=rows[index];Button("ViewBatch"+index,content,65,443+i*99,811,86,batch.CreatedAt.Substring(0,16).Replace('T',' ')+" · "+batch.Count+"회 · "+(batch.Complete?"확인 완료":"확인 필요"),async()=>{recruitView=3;await state.RefreshBatchAsync(batch.Id);});}
-                RecruitListControls(pages,()=>state.RefreshHistoryAsync(true),state.HistoryCursor!=null&&state.HistoryReady&&!state.HistoryLoading);
-                Button("RefreshRecruitHistory",content,65,1267,811,88,"기록 새로고침",async()=>await state.RefreshHistoryAsync());return;
-            }
-            if(recruitView==3){
-                var batch=state.SelectedBatch;Text("BatchTitle",content,batch==null?"모집 결과 확인 중":batch.Count+"회 모집 · "+(batch.Complete?"확인 완료":"일부 확인 필요"),60,343,821,66,34,true);
-                if(batch!=null){Text("BatchPolicy",content,"정책 버전: "+(batch.Version??"미상 (과거 기록)")+(state.BatchReady?"":" · 이전 정보"),65,412,811,62,23,true);for(int i=1;i<=batch.Count;i++)Text("BatchResult"+i,content,batch.ResultLine(i),65,492+(i-1)*61,811,57,26);}
-                Button("RefreshRecruitBatch",content,65,1267,811,88,"같은 결과 재조회",async()=>{if(state.ViewedBatchId!=null)await state.RefreshBatchAsync(state.ViewedBatchId);});
-                if(state.Pending?.Kind=="gacha")Button("RetryRecruit",content,65,1370,811,83,"원래 모집 요청 재확인",async()=>await state.RetryPendingAsync());return;
-            }
-            var banner=state.SelectedBanner;
-            if(recruitView==2){
-                Text("RatesTitle",content,"기본 확률 / 다음 1회 확률",60,347,821,63,34,true);
-                Text("RatesCaution",content,"다음 1회 확률은 10회 모집 전체에 고정 적용되지 않습니다.",60,420,821,90,25,true);
-                if(banner!=null&&state.BannerReady){var rows=banner.Probabilities;var pages=Math.Max(1,(rows.Count+5)/6);recruitListPage%=pages;
-                    for(int i=0;i<6;i++){int index=recruitListPage*6+i;if(index>=rows.Count)break;var r=rows[index];var id=(string)r["resultId"];var label=OperatorVisualCatalog.Label(id);Text("Probability"+index,content,label+" · "+(string)r["resultRarity"]+"\n"+((double)r["baseProbability"]*100).ToString("0.####",System.Globalization.CultureInfo.InvariantCulture)+"% / "+((double)r["nextPullProbability"]*100).ToString("0.####",System.Globalization.CultureInfo.InvariantCulture)+"%",70,535+i*78,801,73,24);}
-                    RecruitListControls(pages,null,false);
-                }else Text("RatesUnavailable",content,"배너를 선택하고 상세 정보를 확인해 주세요.",70,640,801,100,29,true);
-                return;
-            }
-            Text("RecruitBannerTitle",content,banner?.Id??(state.BannersReady&&state.Banners.Count==0?"현재 진행 중인 모집이 없습니다.":"배너를 확인해 주세요."),65,363,811,90,34,true);
-            var list=state.Banners;var listPages=Math.Max(1,(list.Count+4)/5);recruitListPage%=listPages;
-            for(int i=0;i<5;i++){int index=recruitListPage*5+i;if(index>=list.Count)break;var b=list[index];Button("SelectRecruitBanner"+index,content,65,468+i*77,811,65,b.Id+" · "+(b.Type=="PICKUP"?"특별 모집":"일반 모집"),async()=>await state.SelectBannerAsync(b.Id),b.Id==banner?.Id);}
-            if(banner!=null){var p=banner.Pity;var c=banner.Thresholds;Text("RecruitPity",content,"누적 "+p["totalPullCount"]+"회 · 다음 보장 "+GuaranteeLabel(banner.Guarantee)+"\n희귀 "+p["rareOrHigherPityCount"]+" / "+c["rare"]+" · 정예 "+p["elitePityCount"]+" / "+c["elite"]+" · 픽업 "+p["pickupElitePityCount"]+" / "+c["pickup"]+"\n"+(banner.Availability=="ACTIVE"?"진행 중":banner.Availability=="ENDED"?"종료된 모집":"진행 예정")+" · 정책 "+banner.Version,65,881,811,146,25,true);}
-            RecruitListControls(listPages,()=>state.RefreshBannersAsync(true),state.BannerCursor!=null&&state.BannersReady&&!state.BannersLoading);
-            Text("RecruitTicketBalance",content,"모집권 "+(state.AccountStatus==AccountStateReadStatus.Ready?state.RecruitmentTickets.ToString("N0"):"—")+"개",65,1233,811,56,29,true);
-            foreach(int count in new[]{1,10}){float x=count==1?36:482;var price=banner?.Price(count);var button=Button(count==1?"RecruitOne":"RecruitTen",content,x,1300,423,105,count+"회 모집\n모집권 "+(price?.ToString()??"—")+"개",()=>CoreConfirm(count+"회 모집","모집권 "+price+"개를 사용합니다.",()=>state.CanRecruit(count),async()=>{await state.RecruitAsync(count);if(state.SelectedBatch!=null)recruitView=3;}),true);button.interactable=state.CanRecruit(count);}
-            var refresh=Button("RefreshRecruitment",content,36,1423,871,71,state.Pending?.Kind=="gacha"?"원래 모집 요청 재확인":"배너 새로고침",async()=>{if(state.Pending?.Kind=="gacha"){await state.RetryPendingAsync();if(state.SelectedBatch!=null)recruitView=3;if(this!=null&&IsOpen)Rebuild();}else LoadRecruitment(true);});refresh.interactable=!state.Busy;
-        }
-        static string GuaranteeLabel(string value)=>value=="ELITE_30"?"정예":value=="PICKUP_ELITE_60"?"픽업 정예":value=="RARE_OR_HIGHER_10"?"희귀 이상":"없음";
-        void RecruitListControls(int pages,Func<System.Threading.Tasks.Task> loadMore,bool canMore)
-        {
-            Button("RecruitPrevious",content,65,1070,208,64,"이전",()=>{recruitListPage=(recruitListPage+pages-1)%pages;Rebuild();});
-            Text("RecruitPage",content,(recruitListPage+1)+" / "+pages,280,1080,162,45,25,true);
-            Button("RecruitNext",content,447,1070,208,64,"다음",()=>{recruitListPage=(recruitListPage+1)%pages;Rebuild();});
-            if(loadMore!=null){var more=Button("RecruitLoadMore",content,666,1070,210,64,"더 불러오기",async()=>{await loadMore();});more.interactable=canMore;}
-        }
+
+
         void LiveFormation()
         {
-            if(ultimatePanel){LiveUltimate();return;}
-            var state=accountState;var snapshot=state?.Account;
-            if(snapshot==null){Unavailable(575,state?.AccountNotice??"편성 정보를 불러오지 못했습니다.");return;}
-            var edit=state.Formation;var selection=edit.Selection;long generation=viewGeneration;
-            Text("FormationHelp",content,"요원을 선택한 뒤 전투 위치를 눌러 배치하세요",36,212,870,50,30);
-            var inputRect=Panel("PresetName",content,34,272,510,65);var name=Text("NameValue",inputRect,edit.Name,14,5,482,55,29);
-            var input=inputRect.gameObject.AddComponent<TMP_InputField>();input.textViewport=inputRect;input.textComponent=(TextMeshProUGUI)name;input.text=edit.Name;input.characterLimit=80;input.interactable=!state.Busy&&state.Pending==null;
-            input.onEndEdit.AddListener(value=>{if(this==null||!IsOpen||generation!=viewGeneration||accountState!=state)return;edit.Rename(value);var saveControl=content.Find("SaveFormation")?.GetComponent<Button>();if(saveControl!=null)saveControl.interactable=edit.CanSave;var activateControl=content.Find("ActivateFormation")?.GetComponent<Button>();if(activateControl!=null)activateControl.interactable=edit.CanActivate;});
-            var load=Button("LoadPreset",content,558,272,165,65,"불러오기",()=>{
-                if(snapshot.Presets.Count>0){presetPage%=snapshot.Presets.Count;edit.Load(snapshot.Presets[presetPage++]);Rebuild();}
-            });load.interactable=snapshot.Presets.Count>0&&!state.Busy&&state.Pending==null;
-            var fresh=Button("NewPreset",content,737,272,170,65,"새 편성",()=>{edit.Reset();Rebuild();});fresh.interactable=!state.Busy&&state.Pending==null;
-            var numbered=FormationPlanView.Create(content,font);
-            numbered.Bind(slot=>{if(this!=null&&IsOpen&&generation==viewGeneration&&accountState==state)SelectFormationPosition(slot);});
-            numbered.Render(selection,SelectedSlot,!state.Busy&&state.Pending==null);
-            Panel("SlotDetails",content,29,877,883,94);Text("SelectedSlotInfo",content,"선택 위치 "+(SelectedSlot+1)+" · "+OperatorVisualCatalog.KoreanLabel(selection[SelectedSlot]),60,897,811,52,30);
-            Text("ActiveFormation",content,"현재 활성 편성: "+(snapshot.ActivePresetId==null?"없음":snapshot.Presets.FirstOrDefault(p=>p.Text("id")==snapshot.ActivePresetId)?.Text("name")??"저장된 편성"),34,989,625,55,28,true);
-            Button("OpenUltimateSelection",content,673,989,234,55,"분대장 선택",()=>{ultimatePanel=true;Rebuild();RefreshUltimatePage();});
-            Panel("Roster",content,29,1060,883,265);Text("RosterTitle",content,"대원 목록",56,1070,620,40,28);
-            var pageCount=Math.Max(1,(snapshot.Operators.Count+5)/6);rosterPage%=pageCount;
-            Button("RosterNext",content,730,1070,150,45,(rosterPage+1)+" / "+pageCount,()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
-            var rows=snapshot.Operators.Skip(rosterPage*6).Take(6).ToArray();
-            for(int i=0;i<rows.Length;i++){var id=rows[i].Text("operatorId");float x=42+i*145;var button=Button("AssignOwned"+i,content,x,1132,174,190,null,()=>{if(state.Busy||state.Pending!=null)return;selectedFormationOperator=id;Rebuild();},selectedFormationOperator==id);button.interactable=!state.Busy&&state.Pending==null;
-                var portrait=FormationPlanView.Portrait(id);if(portrait!=null){var holder=Rect("OwnedPortrait",button.transform,7,7,160,151);var image=LastRail.Auth.AuthFormVisuals.Rect("OwnedPortraitImage",holder).gameObject.AddComponent<RawImage>();image.texture=portrait;image.raycastTarget=false;image.uvRect=FormationPlanView.PortraitCrop(id,portrait);}
-                Text("OwnedName",button.transform,OperatorVisualCatalog.KoreanLabel(id),4,158,166,29,22,true);if(selection.Contains(id)){FormationPlanView.SelectionBorder(button.transform,174,190);var check=Rect("AssignedBadge",button.transform,141,8,25,25).gameObject.AddComponent<RouletteSurfaceGraphic>();check.Radius=.5f;check.color=new Color(.02f,.45f,.7f);check.raycastTarget=false;Text("AssignedCheck",check.transform,"✓",0,0,25,25,22,true);}}
-            Text("FormationNotice",content,state.ActionNotice,34,1324,873,68,23,true);
-            bool Current()=>this!=null&&IsOpen&&CurrentPage==LobbyPage.Formation&&generation==viewGeneration&&accountState==state;
-            var save=Button("SaveFormation",content,34,1402,425,85,"편성 저장",async()=>{await edit.SaveAsync();if(Current())Rebuild();},true);save.interactable=edit.CanSave;
-            var activate=Button("ActivateFormation",content,482,1402,425,85,"활성화",async()=>{await edit.ActivateAsync();if(Current())Rebuild();},true);activate.interactable=edit.CanActivate;
-            if(state.Pending?.Kind.StartsWith("formation-")==true){save.GetComponentInChildren<TMP_Text>().text="결과 재확인";save.onClick.RemoveAllListeners();save.onClick.AddListener(async()=>{await edit.RetryAsync();if(Current())Rebuild();});save.interactable=!state.Busy;}
-        }
-        void SelectFormationPosition(int slot)
-        {
-            var state=accountState;if(state==null||state.Busy||state.Pending!=null||CurrentPage!=LobbyPage.Formation)return;
-            SelectedSlot=slot;
-            if(selectedFormationOperator==null)selectedFormationOperator=state.Formation.Selection[slot];
-            else if(state.Formation.Select(slot,selectedFormationOperator))selectedFormationOperator=null;
-            Rebuild();
+            var state=accountState;
+            if(state?.Account==null){Unavailable(575,state?.AccountNotice??"편성 정보를 불러오지 못했습니다.");return;}
+            FormationScreenState display=null;FormationScreenController controller=null;
+            Panel("Roster",content,145,120,300,748);Text("RosterTitle",content,"대원 목록",160,132,175,42,28);
+            int pageCount=1;var next=Button("RosterNext",content,340,134,90,40,"",()=>{rosterPage=(rosterPage+1)%pageCount;Rebuild();});
+            var rosterIds=new string[6];var rosterButtons=new Button[6];var rosterImages=new RawImage[6];var rosterNames=new TMP_Text[6];var rosterChecks=new GameObject[6];
+            for(int i=0;i<6;i++){
+                int index=i;var button=Button("AssignOwned"+i,content,157+i%2*140,195+i/2*200,132,180,null,()=>{
+                    controller.SelectOperator(rosterIds[index]);
+                });rosterButtons[i]=button;
+                var image=Rect("OwnedPortrait",button.transform,6,6,120,144).gameObject.AddComponent<RawImage>();image.raycastTarget=false;rosterImages[i]=image;
+                rosterNames[i]=Text("OwnedName",button.transform,"",3,150,126,28,22,true);
+                var check=Rect("Assigned",button.transform,0,0,132,180);FormationPlanView.SelectionBorder(check,132,180);Text("AssignedCheck",check,"✓",102,7,26,26,24,true);rosterChecks[i]=check.gameObject;
+            }
+            var numbered=FormationPlanView.Create(content,font);((RectTransform)numbered.transform).anchoredPosition=new Vector2(460,-120);
+            numbered.Bind(slot=>controller.SelectPosition(slot));
+            Panel("SlotDetails",content,460,745,750,122);
+            var slotInfo=Text("SelectedSlotInfo",content,"",478,750,710,34,25);
+            var inputRect=Panel("PresetName",content,478,798,430,48);var name=Text("NameValue",inputRect,"",12,5,406,38,25);
+            var input=inputRect.gameObject.AddComponent<TMP_InputField>();input.textViewport=inputRect;input.textComponent=(TextMeshProUGUI)name;input.characterLimit=80;
+            var activate=Button("ActivateFormation",content,925,795,265,56,"활성화",async()=>await controller.ActivateAsync(),true);
+            input.onEndEdit.AddListener(value=>controller.Rename(value));
+            var notice=Text("FormationNotice",content,"",460,870,750,28,19,true);
+            Panel("SavedPresets",content,1225,120,350,748);Text("SavedTitle",content,"저장된 편성",1243,132,310,44,28);
+            var viewport=Rect("SavedViewport",content,1237,190,326,590);viewport.gameObject.AddComponent<RectMask2D>();var scroll=viewport.gameObject.AddComponent<ScrollRect>();
+            var items=Rect("SavedContent",viewport,0,0,326,590);scroll.viewport=viewport;scroll.content=items;scroll.horizontal=false;scroll.vertical=true;scroll.movementType=ScrollRect.MovementType.Clamped;
+            var hit=viewport.gameObject.AddComponent<Image>();hit.color=new Color(0,0,0,.01f);
+            var savedButtons=new List<Button>();var savedLabels=new List<TMP_Text>();var savedImages=new List<RawImage[]>();
+            var noSaved=Text("NoSavedPresets",items,"저장된 편성이 없습니다",5,15,316,50,22,true);
+            var fresh=Button("NewPreset",content,1243,803,314,49,"+ 새 편성",()=>controller.NewPreset());
+            controller=new FormationScreenController(state,value=>{
+                display=value;SelectedSlot=value.Slot;bool editable=value.Editable;
+                var selection=value.Selection;pageCount=Math.Max(1,(value.Roster.Count+5)/6);rosterPage%=pageCount;
+                next.GetComponentInChildren<TMP_Text>().text=(rosterPage+1)+" / "+pageCount;
+                var rows=value.Roster.Skip(rosterPage*6).Take(6).ToArray();
+                for(int i=0;i<6;i++){
+                    var id=i<rows.Length?rows[i]:null;rosterIds[i]=id;rosterButtons[i].gameObject.SetActive(id!=null);
+                    rosterImages[i].texture=FormationPlanView.Portrait(id);rosterImages[i].uvRect=FormationPlanView.PortraitCrop(id,rosterImages[i].texture as Texture2D);
+                    rosterNames[i].text=id==null?"":OperatorVisualCatalog.KoreanLabel(id);rosterChecks[i].SetActive(id!=null&&selection.Contains(id));
+                    rosterButtons[i].interactable=editable;rosterButtons[i].GetComponent<Image>().color=value.SelectedOperator==id&&id!=null?new Color(.02f,.22f,.37f,.98f):new Color(.025f,.033f,.04f,.97f);
+                }
+                numbered.Render(selection.ToArray(),SelectedSlot,editable);slotInfo.text="선택 위치 "+(SelectedSlot+1)+" · "+OperatorVisualCatalog.KoreanLabel(selection[SelectedSlot]);
+                if(!input.isFocused)input.SetTextWithoutNotify(value.Name);input.interactable=editable;
+                bool retry=value.Retry;
+                activate.GetComponentInChildren<TMP_Text>().text=retry?"결과 재확인":"활성화";activate.interactable=value.CanActivate;
+                notice.text=value.Notice;fresh.interactable=editable;
+                int count=value.Presets.Count;
+                while(savedButtons.Count>count){int last=savedButtons.Count-1;var retired=savedButtons[last];savedButtons.RemoveAt(last);savedLabels.RemoveAt(last);savedImages.RemoveAt(last);retired.gameObject.SetActive(false);if(Application.isPlaying)Destroy(retired.gameObject);else DestroyImmediate(retired.gameObject);}
+                for(int i=0;i<count;i++){
+                    if(i==savedButtons.Count){
+                        int index=i;var button=Button("SavedPreset"+i,items,3,i*142+3,318,132,null,()=>{
+                            if(display!=null&&index<display.Presets.Count)controller.LoadPreset(display.Presets[index].Id);
+                        });
+                        savedButtons.Add(button);savedLabels.Add(Text("PresetTitle",button.transform,"",10,8,298,34,23,true));var portraits=new RawImage[5];
+                        for(int slot=0;slot<5;slot++){portraits[slot]=Rect("SavedPortrait"+slot,button.transform,9+slot*60,52,58,65).gameObject.AddComponent<RawImage>();portraits[slot].raycastTarget=false;}
+                        savedImages.Add(portraits);
+                    }
+                    var row=value.Presets[i];bool active=row.Active;var control=savedButtons[i];control.interactable=editable;
+                    control.GetComponent<Image>().color=active?new Color(.02f,.22f,.37f,.98f):new Color(.025f,.033f,.04f,.97f);
+                    savedLabels[i].text=row.Valid?row.Name+(active?"  · 활성":""):"편성 정보 확인 필요";
+                    var ids=row.Operators;control.interactable=editable&&row.Valid;
+                    for(int slot=0;slot<5;slot++){var image=savedImages[i][slot];var texture=FormationPlanView.Portrait(ids[slot]);image.texture=texture;image.uvRect=FormationPlanView.PortraitCrop(ids[slot],texture);}
+                }
+                items.sizeDelta=new Vector2(326,Math.Max(590,count*142));noSaved.gameObject.SetActive(count==0);
+            });
+            releasePageBinding+=controller.Dispose;renderBody=controller.Render;renderBody();
         }
         void Missions()
         {
@@ -447,12 +384,25 @@ namespace LastRail.Presentation.MissionShell
         void Fit()
         {
             if(Controls==null)return;var area=((RectTransform)transform).rect;float fit=Mathf.Min(area.width/1600f,area.height/900f);Controls.localScale=Vector3.one*fit;ReflowPage();
-            var br=backdrop.rectTransform;br.anchorMin=br.anchorMax=br.pivot=new Vector2(.5f,.5f);br.anchoredPosition=Vector2.zero;br.sizeDelta=new Vector2(941,1672)*Mathf.Max(area.width/941f,area.height/1672f);
+            var br=backdrop.rectTransform;br.anchorMin=br.anchorMax=br.pivot=new Vector2(.5f,.5f);br.anchoredPosition=Vector2.zero;var native=backdrop.texture==null?new Vector2(941,1672):new Vector2(backdrop.texture.width,backdrop.texture.height);br.sizeDelta=native*Mathf.Max(area.width/native.x,area.height/native.y);
         }
         LandscapeSectionLayout pageLandscape=new LandscapeSectionLayout();
         readonly Dictionary<RectTransform,LandscapeSectionLayout> overlayLayouts=new Dictionary<RectTransform,LandscapeSectionLayout>();
         void ReflowPage()
         {
+            if(chromeContent!=null)chromeLayout.Apply(chromeContent,(name,r)=>{
+                if(name==LobbyNavigationRail.ObjectName)return r;
+                if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel){if(name=="HeaderShade")return new Rect(0,0,1600,78);if(name=="Back")return new Rect(20,10,80,60);if(name=="PageTitle")return new Rect(130,5,340,65);if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var cv))return new Rect(847+cv*250,17,185,40);if(name.StartsWith("Currency")&&int.TryParse(name.Substring(8),out var ci))return new Rect(800+ci*250,15,240,45);if(name=="CurrencyIcon")return new Rect(809+(r.x-40)/304*250,19,34,34);}
+                if(name=="HeaderShade")return new Rect(0,0,1600,(CurrentPage==LobbyPage.Train&&Category==0||CurrentPage==LobbyPage.Operators&&!fixture)?100:145);
+                if(name=="Back")return new Rect(20,25,91,70);
+                if(name=="PageTitle")return new Rect(137,20,390,75);
+                if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var value))return new Rect(594+value*305,45,205,45);
+                if(name.StartsWith("Currency")&&int.TryParse(name.Substring(8),out var currency))return new Rect(535+currency*305,43,285,51);
+                if(name=="CurrencyIcon")return new Rect(543+(r.x-40)/304*305,47,40,42);
+                if(name=="AccountStateNotice")return new Rect(535,100,900,42);
+                if(name.StartsWith("PageNav")&&int.TryParse(name.Substring(7),out var nav))return CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel?new Rect(10,130+nav*130,140,105):new Rect(180+nav*250,778,181,122);
+                return r;
+            }, !(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel));
             if(content==null)return;
             float split=1060;
             if(CurrentPage==LobbyPage.Formation)split=ultimatePanel?985:877;
@@ -461,38 +411,21 @@ namespace LastRail.Presentation.MissionShell
             if(CurrentPage==LobbyPage.Shop)split=Category==2?920:529;
             pageLandscape.Apply(content,(name,r)=>
             {
-                if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel){if(name=="HeaderShade")return new Rect(0,0,1600,78);if(name=="Back")return new Rect(20,10,80,60);if(name=="PageTitle")return new Rect(130,5,340,65);if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var cv))return new Rect(847+cv*250,17,185,40);if(name.StartsWith("Currency")&&int.TryParse(name.Substring(8),out var ci))return new Rect(800+ci*250,15,240,45);if(name=="CurrencyIcon")return new Rect(809+(r.x-40)/304*250,19,34,34);}
-                if(name=="HeaderShade")return new Rect(0,0,1600,145);
-                if(name=="Back")return new Rect(20,25,91,70);
-                if(name=="PageTitle")return new Rect(137,20,390,75);
-                if(name.StartsWith("CurrencyValue")&&int.TryParse(name.Substring(13),out var value))return new Rect(594+value*305,45,205,45);
-                if(name.StartsWith("Currency")&&int.TryParse(name.Substring(8),out var currency))return new Rect(535+currency*305,43,285,51);
-                if(name=="CurrencyIcon")return new Rect(543+(r.x-40)/304*305,47,40,42);
-                if(name=="AccountStateNotice")return new Rect(535,100,900,42);
-                if(name.StartsWith("PageNav")&&int.TryParse(name.Substring(7),out var nav))return CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel?new Rect(10,130+nav*130,140,105):new Rect(180+nav*250,778,181,122);
                 if(name=="TrainingCoreManager"||name=="CoreConfirmation"||name=="Notice"||name=="EquipmentMultishotDetails")return new Rect(0,0,1600,775);
+                if(name=="TrainOverview"||name=="OperatorsOverview")return r;
                 if(TryArrangeDestinationSection(name,r,out var section))return section;
-                // Remaining sections use their existing group boundaries.
                 var result=r.y<split?LandscapeSectionLayout.Section(r,210,40,165,.7f):LandscapeSectionLayout.Section(r,split,850,165,.7f);
-                // Tall backing plates are decorative; do not draw them over the adjacent section.
                 if(r.y<split&&r.yMax>split&&r.height>400)result.height=(split-r.y)*.7f;
                 return result;
             }, !(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel));
-            if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel)
+            if(!(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel))
             {
                 foreach(RectTransform section in content)
                 {
-                    // Reserve the left rail without distorting portraits or their child hit areas.
-                    if(TryArrangeDestinationSection(section.name,default,out var formationRect))
-                    {
-                        section.anchoredPosition=new Vector2(160+formationRect.x*.9f,-(130+(formationRect.y-90)*.9f));
-                        section.localScale=Vector3.one*.9f;
-                    }
-                    foreach(var childName in new[]{"Frame","Label","NameValue"})
-                    {
-                        var child=section.Find(childName) as RectTransform;if(child==null)continue;
-                        Stretch(child);if(childName!="Frame"){child.offsetMin=new Vector2(8,3);child.offsetMax=new Vector2(-8,-3);}
-                    }
+                    if(section.name=="TrainOverview" || section.name=="OperatorsOverview" || section.anchorMin!=section.anchorMax || section.name==LobbyNavigationRail.ObjectName || -section.anchoredPosition.y<145 ||
+                       section.name=="TrainingCoreManager" || section.name=="CoreConfirmation" || section.name=="Notice" || section.name=="EquipmentMultishotDetails")continue;
+                    section.anchoredPosition=new Vector2(140+section.anchoredPosition.x*.9f,-(145+(-section.anchoredPosition.y-145)*.9f));
+                    section.localScale*=.9f;
                 }
             }
             foreach(RectTransform overlay in content)
@@ -529,27 +462,7 @@ namespace LastRail.Presentation.MissionShell
         bool TryArrangeDestinationSection(string name,Rect r,out Rect target)
         {
             target=r;
-            if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel)
-            {
-                if(name=="FormationPlan")target=new Rect(440,102,1120,467);
-                else if(name=="FormationHelp")target=new Rect(445,576,1090,25);
-                else if(name=="Roster")target=new Rect(15,90,405,685);
-                else if(name=="RosterTitle")target=new Rect(30,105,225,40);
-                else if(name=="RosterNext")target=new Rect(270,108,125,35);
-                else if(name.StartsWith("AssignOwned")&&int.TryParse(name.Substring(11),out var index))target=new Rect(33+index%2*188,165+index/2*198,174,190);
-                else if(name=="PresetName")target=new Rect(450,665,500,38);
-                else if(name=="LoadPreset")target=new Rect(970,665,165,38);
-                else if(name=="NewPreset")target=new Rect(1150,665,170,38);
-                else if(name=="SlotDetails")target=new Rect(440,606,1120,56);
-                else if(name=="SelectedSlotInfo")target=new Rect(460,609,760,48);
-                else if(name=="ActiveFormation")target=new Rect(450,706,1000,30);
-                else if(name=="OpenUltimateSelection")target=new Rect(1300,612,234,44);
-                else if(name=="FormationNotice")target=new Rect(450,800,1090,30);
-                else if(name=="SaveFormation")target=new Rect(990,739,550,61);
-                else if(name=="ActivateFormation")target=new Rect(540,739,425,61);
-                else return false;
-                return true;
-            }
+            if(CurrentPage==LobbyPage.Formation&&!fixture&&!ultimatePanel)return true;
             if(CurrentPage==LobbyPage.Operators)
             {
                 bool card=fixture?(name.StartsWith("MemberCard")||name.StartsWith("Portrait")||name=="MemberName"||name.StartsWith("SelectMember")||name=="SelectedUnderline")
@@ -606,7 +519,7 @@ namespace LastRail.Presentation.MissionShell
         {
             var r=Rect(name,parent,x,y,w,h);var img=r.gameObject.AddComponent<Image>();img.color=tint??new Color(.025f,.033f,.04f,.97f);img.raycastTarget=false;
             if(tint==null){var frame=Rect("Frame",r,0,0,w,h).gameObject.AddComponent<Image>();
-                var skin=LobbyArtwork.CreateFrame();skins.Add(skin);frame.sprite=skin;frame.type=Image.Type.Sliced;frame.fillCenter=false;frame.raycastTarget=false;}
+                if(sharedFrame==null)sharedFrame=LobbyArtwork.CreateFrame();frame.sprite=sharedFrame;frame.type=Image.Type.Sliced;frame.fillCenter=false;frame.raycastTarget=false;}
             return r;
         }
         Button Button(string name,Transform parent,float x,float y,float w,float h,string label,Action action,bool selected=false,bool transparent=false)
@@ -619,7 +532,8 @@ namespace LastRail.Presentation.MissionShell
             }
             if(selected && name.StartsWith("Category"))Panel("ActiveUnderline",r,12,h-5,w-24,3,new Color(.15f,.8f,1));
             long boundGeneration=viewGeneration;
-            var b=r.gameObject.AddComponent<Button>();b.targetGraphic=image;var colors=b.colors;colors.disabledColor=new Color(.65f,.65f,.65f,1);b.colors=colors;b.onClick.AddListener(()=>{if(this!=null&&IsOpen&&boundGeneration==viewGeneration)action?.Invoke();});if(label!=null)Text("Label",r,label,8,3,w-16,h-6,30,true);return b;
+            bool chromeInput=parent==chromeContent;
+            var b=r.gameObject.AddComponent<Button>();b.targetGraphic=image;var colors=b.colors;colors.disabledColor=new Color(.65f,.65f,.65f,1);b.colors=colors;b.onClick.AddListener(()=>{if(this!=null&&b!=null&&IsOpen&&isActiveAndEnabled&&b.IsInteractable()&&b.gameObject.activeInHierarchy&&(chromeInput||boundGeneration==viewGeneration))action?.Invoke();});if(label!=null)Text("Label",r,label,8,3,w-16,h-6,30,true);return b;
         }
         void Guarded(string name,Transform parent,float x,float y,float w,float h,string label){var b=Button(name,parent,x,y,w,h,label,null,true);b.interactable=false;}
         TMP_Text Text(string name,Transform parent,string value,float x,float y,float w,float h,float size,bool center=false){var t=Rect(name,parent,x,y,w,h).gameObject.AddComponent<TextMeshProUGUI>();t.font=font;t.text=value;t.richText=false;t.raycastTarget=false;t.fontSize=size;t.enableAutoSizing=true;t.fontSizeMin=size*.70f;t.fontSizeMax=size;t.color=new Color(.93f,.91f,.84f);t.alignment=center?TextAlignmentOptions.Center:TextAlignmentOptions.MidlineLeft;return t;}

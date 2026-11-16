@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using LastRail.Auth;
 using LastRail.Run;
@@ -18,7 +17,7 @@ namespace LastRail.Presentation.MissionShell {public sealed partial class Accoun
   if(reply.IsNetworkError||reply.StatusCode!=200){ShopError=reply.IsNetworkError?"network_error":GameApiJson.String(GameApiJson.ReadObject(reply.BodyJson),"errorCode");ShopNotice="상점 정보를 불러오지 못했습니다.";return;}
   Shop=new ShopSnapshot(reply.BodyJson);ShopReady=true;ShopNotice=Shop.UnavailableReason==null?"":"교환 상품을 준비하고 있습니다.";
  }catch{if(Current(original,stamp)&&request==shopRequest){ShopError="invalid_response";ShopNotice="상점 정보 형식을 확인하지 못했습니다.";}}finally{if(Current(original,stamp)&&request==shopRequest){ShopLoading=false;Changed?.Invoke();}}}
- public bool CanBuyShopOffer(string offer,int count){if(Busy||Pending!=null||!ShopReady||ShopLoading||Shop==null||count<1)return false;var row=Shop.Offers.FirstOrDefault(o=>(string)o["offer"]==offer);return row!=null&&count<=(int)row["maxTicketsPerRequest"]&&(offer!="DAILY"||(int)row["dailyRemaining"]==1&&count==1)&&checked((long)row["crystalsPerTicket"]*count)<=Shop.Wallet.TotalBalance;}
+ public bool CanBuyShopOffer(string offer,int count)=>!Busy&&Pending==null&&ShopReady&&!ShopLoading&&Shop?.Quote(offer,count)?.CanBuy==true;
  public Task BuyShopOfferAsync(string offer,int count){SynchronizeSession();if(!CanBuyShopOffer(offer,count))return Task.CompletedTask;return SubmitShopOfferAsync(new JObject{["policyVersion"]=Shop.Policy,["offer"]=offer,["ticketCount"]=count,["expectedDayStart"]=Shop.DayStart}.ToString());}
  async Task SubmitShopOfferAsync(string payload){SynchronizeSession();var original=owner;var stamp=ownerGeneration;if(Busy||!Current(original,stamp))return;writing=true;ActionErrorCode=null;ActionNotice="교환 결과를 확인하고 있습니다.";Changed?.Invoke();var refresh=false;try{
   ShopOfferReceipt.Request(payload);if(journal==null)throw new InvalidOperationException();var action=journal.Read(original.AccountId);if(action!=null&&(action.Kind!="shop-offer"||action.Payload!=payload)){Pending=action;ActionNotice="이전 요청 결과를 먼저 확인해 주세요.";return;}if(action==null){action=new PendingAccountAction(original.AccountId,"shop-offer","cur_command_ticket",0,Guid.NewGuid().ToString("N"),payload);if(!journal.Save(action))throw new InvalidOperationException();}Pending=action;shopRequest++;ShopReady=false;ShopLoading=false;walletRequest++;WalletLoading=false;

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LastRail.Auth;
 using TMPro;
 using UnityEngine;
@@ -82,35 +83,45 @@ namespace LastRail.Presentation.MissionShell
             progressFill.rectTransform.anchorMin=Vector2.zero;progressFill.rectTransform.anchorMax=new Vector2(Mathf.Clamp01(state.Progress),1);progressFill.rectTransform.offsetMin=progressFill.rectTransform.offsetMax=Vector2.zero;
             refreshButton.interactable=state.CanRefresh;refreshButton.GetComponentInChildren<TMP_Text>().text=state.RefreshText;bulkButton.interactable=state.CanBulk;bulkButton.GetComponentInChildren<TMP_Text>().text=state.BulkText;columnHeaders.SetActive(!state.ShowObjectives);
             empty.gameObject.SetActive(state.Rewards.Count==0);empty.text=string.IsNullOrWhiteSpace(state.Notice)?"패스 정보 확인 필요":state.Notice.Trim();
-            string key=state.PolicyId+"|"+state.ShowObjectives+"|"+string.Join("|",System.Linq.Enumerable.Select(state.Rewards,r=>r.Payload+r.Status+r.CanClaim+r.Caption))+string.Join("|",state.Objectives);
+            string key=state.PolicyId+"|"+state.ShowObjectives+"|"+string.Join("|",System.Linq.Enumerable.Select(state.Rewards,r=>r.Level+":"+r.Track))+"|"+state.Objectives.Count;
             if(key!=rendered)
             {
                 bool reset=rendered==null||CurrentRenderedPolicy!=state.PolicyId||CurrentRenderedTab!=state.ShowObjectives;float prior=scroll.verticalNormalizedPosition;rendered=key;CurrentRenderedPolicy=state.PolicyId;CurrentRenderedTab=state.ShowObjectives;
-                for(int i=content.childCount-1;i>=0;i--){var child=content.GetChild(i).gameObject;child.SetActive(false);if(Application.isPlaying)Destroy(child);else DestroyImmediate(child);}
+                foreach(Transform child in content)child.gameObject.SetActive(false);
                 if(state.ShowObjectives)
                 {
-                    for(int i=0;i<state.Objectives.Count;i++){var row=Plate("PassObjective"+i,content,0,i*122,790,115);Text("Objective",row,state.Objectives[i],15,9,760,97,23,TextAlignmentOptions.Center);}
+                    for(int i=0;i<state.Objectives.Count;i++){var existing=content.Find("PassObjective"+i);if(existing!=null){existing.gameObject.SetActive(true);continue;}var row=Plate("PassObjective"+i,content,0,i*122,790,115);Text("Objective",row,state.Objectives[i],15,9,760,97,23,TextAlignmentOptions.Center);}
                     content.sizeDelta=new Vector2(790,Mathf.Max(545,state.Objectives.Count*122));
                 }
                 else
                 {
                     foreach(var reward in state.Rewards)
                     {
-                        float y=(reward.Level-1)*109;if(reward.Track=="FREE")Text("PassLevel"+reward.Level,content,"Lv."+reward.Level,0,y+17,140,72,28,TextAlignmentOptions.Center);
-                        var choice=reward;var button=Control("ClaimPass"+reward.Level+reward.Track,content,"",reward.Track=="FREE"?148:465,y,310,103,()=>claim?.Invoke(choice),23);button.interactable=reward.CanClaim;
+                        float y=(reward.Level-1)*109;if(reward.Track=="FREE"){var level=content.Find("PassLevel"+reward.Level);if(level!=null)level.gameObject.SetActive(true);else Text("PassLevel"+reward.Level,content,"Lv."+reward.Level,0,y+17,140,72,28,TextAlignmentOptions.Center);}
+                        var existing=content.Find("ClaimPass"+reward.Level+reward.Track);if(existing!=null){existing.gameObject.SetActive(true);continue;}
+                        var choice=reward;var button=Control("ClaimPass"+reward.Level+reward.Track,content,"",reward.Track=="FREE"?148:465,y,310,103,()=>{var current=CurrentState?.Rewards.FirstOrDefault(r=>r.Level==choice.Level&&r.Track==choice.Track);if(current?.CanClaim==true)claim?.Invoke(current);},23);button.interactable=reward.CanClaim;
                         // Track identity is distinct from ownership/claim status, which remains textual and authoritative.
                         if(reward.Track=="PREMIUM"){var surface=button.GetComponentInChildren<IndependentMetalSurface>();surface.Backplate.color=new Color(.28f,.24f,.17f);surface.Frame.color=new Color(.59f,.48f,.30f);}
                         var symbol=Rect("RewardSymbol",button.transform,14,13,45,48).gameObject.AddComponent<RewardResourceSymbol>();symbol.Kind=reward.Symbol;symbol.raycastTarget=false;
                         Text("Reward",button.transform,reward.Caption,72,9,227,48,20,TextAlignmentOptions.Center);
-                        if(reward.CanClaim){var accent=Rect("ClaimAvailablePlate",button.transform,82,61,198,32).gameObject.AddComponent<Image>();accent.color=new Color(.025f,.24f,.35f);accent.raycastTarget=false;}
+                        {var accent=Rect("ClaimAvailablePlate",button.transform,82,61,198,32).gameObject.AddComponent<Image>();accent.color=new Color(.025f,.24f,.35f);accent.raycastTarget=false;}
                         var caption=reward.Status=="CLAIMED"?"수령 완료":reward.Status=="PREMIUM_REQUIRED"?"프리미엄 필요":reward.Status=="LOCKED"?"잠김":"받기";Text("Status",button.transform,caption,71,60,227,32,22,TextAlignmentOptions.Center);
-                        if(reward.Status=="CLAIMED"){var check=Rect("ReceivedCheck",button.transform,277,66,19,19).gameObject.AddComponent<RewardResourceSymbol>();check.Kind="CHECK";check.raycastTarget=false;}
+                        {var check=Rect("ReceivedCheck",button.transform,277,66,19,19).gameObject.AddComponent<RewardResourceSymbol>();check.Kind="CHECK";check.raycastTarget=false;}
                     }
                     content.sizeDelta=new Vector2(790,Mathf.Max(545,state.Rewards.Count/2*109));
                 }
                 Canvas.ForceUpdateCanvases();scroll.verticalNormalizedPosition=reset?1:prior;
                 // Keep the native thumb proportional even before the first gameplay LateUpdate.
                 UpdateScrollThumb();
+            }
+            if(state.ShowObjectives){for(int i=0;i<state.Objectives.Count;i++)content.Find("PassObjective"+i).GetComponentInChildren<TMP_Text>().text=state.Objectives[i];}
+            else foreach(var reward in state.Rewards){
+                var row=content.Find("ClaimPass"+reward.Level+reward.Track);row.GetComponent<Button>().interactable=reward.CanClaim;
+                row.Find("Reward").GetComponent<TMP_Text>().text=reward.Caption;
+                row.Find("RewardSymbol").GetComponent<RewardResourceSymbol>().Kind=reward.Symbol;
+                row.Find("ClaimAvailablePlate").gameObject.SetActive(reward.CanClaim);
+                row.Find("ReceivedCheck").gameObject.SetActive(reward.Status=="CLAIMED");
+                row.Find("Status").GetComponent<TMP_Text>().text=reward.Status=="CLAIMED"?"수령 완료":reward.Status=="PREMIUM_REQUIRED"?"프리미엄 필요":reward.Status=="LOCKED"?"잠김":"받기";
             }
             foreach(var button in GetComponentsInChildren<Button>())foreach(var label in button.GetComponentsInChildren<TMP_Text>())label.color=label.name=="Reward"||button.interactable?new Color(.93f,.93f,.88f):new Color(.48f,.53f,.55f);
         }

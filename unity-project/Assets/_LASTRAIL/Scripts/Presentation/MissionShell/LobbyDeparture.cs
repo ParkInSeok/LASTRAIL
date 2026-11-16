@@ -55,11 +55,12 @@ namespace LastRail.Presentation.MissionShell
         {
             if(!isActiveAndEnabled||ordinaryPreparationBusy||ordinaryDisplay==PreparationDisplay.Unavailable||prepareOrdinaryCombat==null||!departureRecoveryDialog||dialog==null)return;
             var target=departureRecoveryId;var surface=dialog;var state=accountState;var prepare=prepareOrdinaryCombat;long binding=ordinaryPreparationBinding;
+            var session=state?.CaptureScreenSession()??(()=>true);
             ordinaryPreparationBusy=true;ordinaryDisplay=PreparationDisplay.Preparing;ordinaryDisplayMessage=null;UpdateDepartureRecoveryDialog();
-            bool CurrentEntry()=>this!=null&&isActiveAndEnabled&&surface==dialog&&departureRecoveryDialog&&state==accountState&&binding==ordinaryPreparationBinding;
+            bool CurrentEntry()=>this!=null&&isActiveAndEnabled&&surface==dialog&&departureRecoveryDialog&&state==accountState&&binding==ordinaryPreparationBinding&&session();
             try{
                 await prepare(target,CurrentEntry);
-                if(this!=null&&isActiveAndEnabled&&surface==dialog&&departureRecoveryDialog&&state==accountState&&binding==ordinaryPreparationBinding)
+                if(CurrentEntry())
                     {ordinaryDisplay=PreparationDisplay.Ready;ordinaryDisplayMessage="전투 준비를 마쳤습니다.";}
             }catch(Exception error){
                 UnityEngine.Debug.LogWarning("ordinary_preparation_failed: "+error.GetType().Name);
@@ -220,11 +221,11 @@ namespace LastRail.Presentation.MissionShell
         void RefreshDeparture()=>ReadDepartureForDisplay(false);
         async void ReadDepartureForDisplay(bool reuseShared)
         {
-            var owner=accountState;var view=preparationView;if(owner==null)return;int request=++departureReadGeneration;
+            var owner=accountState;var view=preparationView;if(owner==null)return;var session=owner.CaptureScreenSession();int request=++departureReadGeneration;
             await System.Threading.Tasks.Task.WhenAll(reuseShared?owner.EnsureSharedAsync():owner.RefreshSharedAsync(),reuseShared?owner.EnsureTrainLoadoutAsync():owner.RefreshTrainLoadoutAsync(),reuseShared?owner.EnsureUltimateAsync():owner.RefreshUltimateAsync());
-            if(this==null||!isActiveAndEnabled||preparationView!=view||view==null||owner!=accountState||localCommandClient==null)return;
+            if(this==null||!isActiveAndEnabled||request!=departureReadGeneration||!session()||preparationView!=view||view==null||owner!=accountState||localCommandClient==null)return;
             var snapshot=owner.Account;var client=localCommandClient;
-            bool Current()=>this!=null&&isActiveAndEnabled&&request==departureReadGeneration&&preparationView==view&&view!=null&&owner==accountState&&client==localCommandClient&&ReferenceEquals(owner.Account,snapshot)&&owner.AccountStatus==AccountStateReadStatus.Ready;
+            bool Current()=>this!=null&&isActiveAndEnabled&&session()&&request==departureReadGeneration&&preparationView==view&&view!=null&&owner==accountState&&client==localCommandClient&&ReferenceEquals(owner.Account,snapshot)&&owner.AccountStatus==AccountStateReadStatus.Ready;
             departureSupportNotice="불러오는 중";RenderPreparationSelections();
             try{var data=await client.ReadSupportAsync();if(!Current())return;departureSupportIds=((JArray)data["selection"]["slots"]).Select(x=>(string)x["skillId"]).ToArray();departureSupportOwner=snapshot;departureSupportNotice="미선택";}
             catch(Exception){if(!Current())return;departureSupportIds=Array.Empty<string>();departureSupportOwner=null;departureSupportNotice="불러오지 못함";}

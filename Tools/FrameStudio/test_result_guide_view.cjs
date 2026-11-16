@@ -1,0 +1,20 @@
+// Small DOM stand-in checks command binding and stale-review prevention, not browser rendering.
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const elements={};
+const element=()=>({disabled:false,checked:false,value:'',textContent:'',replaceChildren(...children){this.children=children}});
+const root={hidden:false,querySelector(s){return elements[s]??=(element())}};
+const calls=[];
+const context={document:{createElement:element}};
+vm.createContext(context);vm.runInContext(fs.readFileSync(__dirname+'/web/result-guide-view.js','utf8')+'\nglobalThis.View=ResultGuideView;',context);
+const view=new context.View(root,(name,data)=>calls.push({name,data}));
+view.render(null,0);assert.equal(root.hidden,true);
+const p={result_guides:{3:{version:'fixture',garment_source:'fixture review'}},frames:[{},{},{},{versions:[{}],result_guide_gate:{status:'failed',current:true,can_adopt:false,reasons:['feet failed']},result_guide_report:{token:'candidate-a',feet_status:'failed',feet:[]}}]};
+view.render(p,3);assert.equal(root.hidden,false);assert.equal(view.get('review').disabled,true);assert.match(view.get('status').textContent,/채택 차단/);
+view.render(p,3);view.get('inspect').onclick();assert.equal(calls.length,1);assert.equal(calls[0].name,'result_guide_inspect');assert.equal(calls[0].data.index,3);
+p.frames[3].result_guide_gate.status='unverified';p.frames[3].result_guide_report.feet_status='passed';
+view.render(p,3);assert.equal(view.get('review').disabled,true);
+view.get('confirm').checked=true;view.get('confirm').onchange();assert.equal(view.get('review').disabled,false);
+view.get('note').value='Fixture visual note';view.get('review').onclick();assert.equal(calls[1].data.token,'candidate-a');assert.equal(calls[1].data.confirmed,true);
+p.frames[3].result_guide_gate.current=false;view.render(p,3);assert.equal(view.get('review').disabled,true);assert.equal(view.get('confirm').checked,false);
+view.dispose();assert.equal(view.get('review').onclick,null);assert.equal(view.get('inspect').onclick,null);assert.equal(view.get('confirm').onchange,null);
+console.log('ResultGuideView: no-guide, failure, one click/one command, explicit confirmation, stale reset, dispose passed (DOM stand-in).');

@@ -1,0 +1,3809 @@
+{
+  "version": "unity.combat-b.live-qa-fixture.v1.20261004",
+  "provenance": "EXPLICIT_LOCAL_TEST_NOT_ADMITTED_RUN",
+  "timingSource": {
+    "version": "combat.b-scout-gunner-source.v3.20261004",
+    "originalSource": {
+      "canStart": false,
+      "definition": {
+        "approval": "44#combat-b-boarding-and-event-approved-20261004",
+        "boarding": {
+          "afterAttachedTargetLoss": "FINISH_VALID_ROOFTOP_THEN_ORIGINAL_V05_REACHABLE_TARGET",
+          "attackEligibility": "MAX_ACTUAL_ROOFTOP_AND_ACTUAL_ACTION_ELIGIBLE",
+          "autoFallOrKnockback": false,
+          "beforeAttachedTargetLoss": "REEVALUATE_AT_REAL_SAFE_CONNECTION_NO_TELEPORT",
+          "brokenCarTraversal": "EXISTING_OWNER_POLICY",
+          "climbBonus": "EXISTING_ABILITY_IMPACT_PHASE_ATTACHED_OR_CLIMBING_ONLY",
+          "controlEffect": "EXISTING_SUPPORTED_ABILITY_ONLY",
+          "firstAction": "ATTACK_ELIGIBLE_PLUS_FULL_ORIGINAL_PERIOD",
+          "freeRooftopAttack": false,
+          "geometryRequired": true,
+          "hitRestartsClimb": false,
+          "initialDestination": "LIVING_OPERATOR_CAR_EXCLUDES_CARGO_AND_EMPTY",
+          "intervals": "START_INCLUSIVE_END_EXCLUSIVE",
+          "noLivingOperators": "EXISTING_RETURN_TERMINAL_OWNER",
+          "nominalEarliestGunnerLaunchMs": 5400,
+          "nominalEarliestScoutImpactMs": 5000,
+          "nominalRooftopAfterMs": 3400,
+          "nominalTimelineIsNotActualPathCompletion": true,
+          "ownership": {
+            "attack": "ORIGINAL_RESERVATION_ATTACK_SLOT",
+            "boarding": "PHASE_PATH_SOCKET",
+            "session": "HP_ORIGINAL_CLOCK",
+            "wave": "PLANNED_COUNT_CURSOR_CADENCE_CAP"
+          },
+          "perAbilitySnapshotConflict": "REPORT_DO_NOT_OVERRIDE",
+          "phases": [
+            {
+              "durationMs": 600,
+              "phase": "GRACE"
+            },
+            {
+              "durationMs": 800,
+              "phase": "APPROACH"
+            },
+            {
+              "durationMs": 200,
+              "phase": "ATTACHED"
+            },
+            {
+              "durationMs": 1800,
+              "phase": "CLIMBING"
+            },
+            {
+              "durationMs": null,
+              "phase": "ROOFTOP"
+            }
+          ],
+          "profileScope": "NEW_B_SCOUT_GUNNER_ORDINARY_ONLY",
+          "riskSpeedChangesPhaseTime": false,
+          "rooftopGuaranteed": false,
+          "sockets": {
+            "allocation": "LEAST_ASSIGNED_LIVING_OPERATOR_CAR_THEN_FIXED_CAR_ORDER",
+            "full": "WAIT_AT_ACTUAL_APPROACH_SIDE_POSITION",
+            "left": 1,
+            "maximumAttachedAndClimbingPerCar": 2,
+            "release": "DEATH_OR_ROOFTOP_ONCE",
+            "right": 1,
+            "waitingOrder": "APPROACH_COMPLETED_AT_THEN_SPAWN_ORDINAL"
+          },
+          "targetableAfterMs": 600,
+          "timeBasis": "ORIGINAL_COMBAT_CLOCK",
+          "transitionResetsDebuffs": false,
+          "transitionResetsGeneration": false,
+          "transitionResetsHp": false,
+          "transitionResetsRewardCount": false,
+          "version": "combat.b-boarding-policy.v1.20261004",
+          "waitingCountsTowardsWaveCap": true,
+          "waitingReservesAttackSlot": false,
+          "waitingTargetable": true,
+          "waveCompletion": "NO_PLANNED_WAITING_ACTIVE_ENEMY_AND_NO_REMAINING_PROJECTILE_HAZARD"
+        },
+        "canStart": false,
+        "definitionAvailable": true,
+        "definitionHash": "6f543ed7ed36c086eee423c7dd6f196ec54799e5cc7db526e6a1e996826ac9f1",
+        "events": {
+          "actionPriority": [
+            "MANUAL_SKILL",
+            "EMERGENCY_INTERCEPTION",
+            "AUTO_SKILL",
+            "BASIC_ATTACK"
+          ],
+          "alreadyAcceptedAction": "KEEP_UNTIL_ORIGINAL_END_OR_ORIGINAL_CANCEL",
+          "atomicPublish": true,
+          "autoOffDisablesOnlyAutomaticSkill": true,
+          "basicInterceptionProjectileCount": 1,
+          "capture": [
+            "ORIGINAL_SEQUENCE",
+            "COMPLETION_DUE",
+            "PROJECTILE_TERMINAL",
+            "RESERVATION_OWNER",
+            "TARGET_GENERATION",
+            "PHASE_TRANSITIONS"
+          ],
+          "committedLifecycleRespected": true,
+          "completionRelation": "COMPLETION_TICK_LE_CONTACT_TICK",
+          "duplicateReceipt": "ORIGINAL_RESULT_NO_DUPLICATE_EFFECT_OR_REWARD",
+          "failedActionTimeRefund": false,
+          "hiddenSkillQueue": false,
+          "interceptedHpDamage": 0,
+          "interceptorOrder": [
+            "EARLIEST_COMPLETION",
+            "FIXED_CAR_ORDER",
+            "ENTITY_ID"
+          ],
+          "legacyMiraBossCoopChanged": false,
+          "manualTie": "ORIGINAL_COMMAND_SEQUENCE",
+          "networkOrRenderOrderAuthoritative": false,
+          "newInterceptionButton": false,
+          "newReservationAtContactAllowed": false,
+          "oneReservationPerProjectile": true,
+          "originalEventKey": "TICK_PHASE_SEQUENCE",
+          "partialProgressTransfer": false,
+          "profileScope": "NEW_B_SCOUT_GUNNER_ORDINARY_ONLY",
+          "projectileOrder": [
+            "EARLIEST_CONTACT",
+            "FIXED_LAUNCH_SEQUENCE"
+          ],
+          "publishOwner": "EXISTING_NATIVE_BATTLE_STAGE",
+          "reassign": "FULL_ORIGINAL_DURATION_ONLY_IF_COMPLETES_BY_CONTACT",
+          "restore": "NO_REDRAW_NO_NEW_ACCEPT_NO_HP_OR_ENTITY_RESET",
+          "sameActorConcurrentActions": false,
+          "sameTickPhaseOrder": [
+            "EXISTING_COMMITTED_LIFECYCLE",
+            "VALID_RESERVED_INTERCEPTION_COMPLETE",
+            "PROJECTILE_TERMINAL",
+            "REMAINING_IMPACT"
+          ],
+          "sourceDeathDeletesLaunchedProjectile": false,
+          "targetGenerationChange": "MISS",
+          "terminalImmutable": true,
+          "terminalStates": [
+            "INTERCEPTED",
+            "HIT",
+            "MISS"
+          ],
+          "unrelatedDamageSequencePreserved": true,
+          "validateBeforePublish": [
+            "LIFECYCLE_PHASE",
+            "RESERVATION",
+            "PROJECTILE_TERMINAL",
+            "ORIGINAL_HP_CHANGE"
+          ],
+          "version": "combat.b-simultaneous-event-policy.v1.20261004"
+        },
+        "interceptionTiming": {
+          "preparationUs": null,
+          "recoveryUs": null,
+          "required": "ORIGINAL_NAMED_ABILITY_PREPARATION_RECOVERY_HASTE_AND_ELIGIBILITY",
+          "source": null,
+          "supported": false
+        },
+        "missingRuntimeSources": [
+          "ACTUAL_ROOF_PATH_AND_SOCKETS",
+          "NATIVE_MOVEMENT_AND_BOARDING",
+          "NAMED_INTERCEPTION_ABILITY_DURATION",
+          "NATIVE_INTERCEPTION_EVENT_EXECUTOR",
+          "APPROVED_OPERATION_PROFILE_MAPPING"
+        ],
+        "originalDefinition": {
+          "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+          "boarding": null,
+          "canStart": false,
+          "composition": {
+            "avoidRepeat": "PREVIOUS_N_K_IF_OTHER_LEGAL_K_EXISTS",
+            "countDistribution": "UNIFORM_IN_APPROVED_STAGE_RANGE",
+            "gunnerWeight": 40,
+            "kindDistribution": "CONDITIONAL_BINOMIAL_EXACT_INTEGER_WEIGHTS",
+            "maximumGunner": "FLOOR_N_OVER_2",
+            "minimumEach": 1,
+            "order": "DETERMINISTIC_FISHER_YATES",
+            "scoutWeight": 60
+          },
+          "definitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+          "geometry": null,
+          "hpPolicy": {
+            "defense": 53,
+            "hp": "FLOOR_INTEGER_EHP_TIMES_1000_OVER_1053",
+            "integerRemainder": "FIXED_ORDINAL_FIRST",
+            "relativeWeights": "SCOUT_1_GUNNER_4_OVER_5",
+            "riskDefinitionHash": "sha256:7889e8553ee2a64b383294e8f30edf87f78691096935cc74abf0b34b6652a5ce",
+            "riskDefinitionVersion": "combat.b-operation-risk.v1.20261003",
+            "riskEhpOnce": true,
+            "zeroHp": "DEFINITION_ERROR"
+          },
+          "movement": null,
+          "pressurePolicy": {
+            "basicTrial": {
+              "periodMs": 1600,
+              "preparationMs": 500,
+              "rawDamage": 24,
+              "recoveryMs": 300
+            },
+            "battlefield": "ROOF_EXTERIOR",
+            "entranceGraceMs": 600,
+            "executionRules": {
+              "aliveIncludesEntranceAndClimbing": true,
+              "combatClockOnly": true,
+              "completionRequiresPlannedAndLivingAndResidualZero": true,
+              "entryGraceIsNotClimbingTime": true,
+              "noCatchupEntries": true,
+              "rewardCountIndependent": true,
+              "skipFullEntryOpportunity": true,
+              "slotCancellationDoesNotAdvanceReuse": true,
+              "targetGenerationLocked": true
+            },
+            "namedEnemyMappingApproved": false,
+            "perTargetAttackSlots": 2,
+            "stages": [
+              {
+                "aliveCap": 4,
+                "attackSlots": 3,
+                "entryIntervalMs": 1800,
+                "firstGroup": 4,
+                "fromDepth": 1,
+                "maximumCount": 8,
+                "minimumCount": 6,
+                "nextGroupMaximum": 2,
+                "toDepth": 4
+              },
+              {
+                "aliveCap": 6,
+                "attackSlots": 4,
+                "entryIntervalMs": 1500,
+                "firstGroup": 4,
+                "fromDepth": 5,
+                "maximumCount": 12,
+                "minimumCount": 9,
+                "nextGroupMaximum": 2,
+                "toDepth": 8
+              },
+              {
+                "aliveCap": 8,
+                "attackSlots": 5,
+                "entryIntervalMs": 1200,
+                "firstGroup": 6,
+                "fromDepth": 9,
+                "maximumCount": 16,
+                "minimumCount": 13,
+                "nextGroupMaximum": 2,
+                "toDepth": 11
+              }
+            ],
+            "targetPreparationIntervalMs": 600,
+            "version": "combat.b-wave-pressure.v3.20261003"
+          },
+          "projectile": null,
+          "runtimeSupported": false,
+          "sameTickGunnerInterceptionPolicy": null,
+          "spawnCadence": {
+            "approval": "44#combat-b-risk-spawn-cadence-approved-20261003",
+            "attackMovementProjectileUnchanged": true,
+            "baseIntervalMs": [
+              1800,
+              1500,
+              1200
+            ],
+            "catchUp": false,
+            "clockRounding": "CONSUMER_CEIL_INTERVAL_ONCE_AT_ORIGINAL_STEP",
+            "entryOffsetClockPolicy": "ENTRY_GROUP_TIMES_SINGLE_ROUNDED_INTERVAL",
+            "riskSpeeds": [
+              {
+                "risk": "I",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "10"
+                }
+              },
+              {
+                "risk": "II",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "11"
+                }
+              },
+              {
+                "risk": "III",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "12"
+                }
+              },
+              {
+                "risk": "IV",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "13"
+                }
+              },
+              {
+                "risk": "V",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "14"
+                }
+              }
+            ],
+            "version": "combat.b-risk-spawn-cadence.v1.20261003"
+          },
+          "types": [
+            {
+              "basicPeriodMs": 1600,
+              "damageCoefficient": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "defense": 53,
+              "definitionId": "enemy_raider_scout",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_raider_scout].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 24,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_raider_scout_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "24"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": true,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 1800,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1800,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": null,
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "LIVING_OPERATOR_ON_ASSIGNED_CAR",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            },
+            {
+              "basicPeriodMs": 2000,
+              "damageCoefficient": {
+                "denominator": "7",
+                "numerator": "5"
+              },
+              "defense": 53,
+              "definitionId": "enemy_spike_cart_gunner",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_spike_cart_gunner].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 28,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_spike_cart_gunner_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "20"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "5",
+                "numerator": "4"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": false,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 24000,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1500,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": {
+                  "distanceExitAfterLaunch": "KEEP_PROJECTILE",
+                  "firstLaunch": "TARGETABLE_PLUS_FULL_PERIOD",
+                  "fixedSourceAndTargetGeneration": true,
+                  "flight": "EXACT_DISTANCE_OVER_SPEED_CEIL_ONCE_AT_ORIGINAL_STEP_MINIMUM_ONE",
+                  "interceptableByBasic": true,
+                  "interceptionIndependentOfAuto": true,
+                  "periodBasis": "LAUNCH_TO_LAUNCH",
+                  "reflectionAndAreaEffect": "EXISTING_ABILITY_ONLY",
+                  "speedMmPerSecond": 24000,
+                  "survivesSourceDeath": true,
+                  "targetGenerationLoss": "MISS"
+                },
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "FARTHEST_LIVING_OPERATOR_IN_RANGE_AND_LOS_CAR_ORDER_THEN_ENTITY_ID",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            }
+          ],
+          "version": "combat.b-scout-gunner-definition.v1.20261003",
+          "waveBudgets": [
+            {
+              "ehp": 1600,
+              "fromDepth": 1,
+              "max": 8,
+              "min": 6,
+              "toDepth": 4
+            },
+            {
+              "ehp": 3600,
+              "fromDepth": 5,
+              "max": 12,
+              "min": 9,
+              "toDepth": 8
+            },
+            {
+              "ehp": 8000,
+              "fromDepth": 9,
+              "max": 16,
+              "min": 13,
+              "toDepth": 11
+            }
+          ]
+        },
+        "originalDefinitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+        "runtimeSupported": false,
+        "version": "combat.b-scout-gunner-definition.v2.20261004"
+      },
+      "definitionAvailable": true,
+      "definitionHash": "6f543ed7ed36c086eee423c7dd6f196ec54799e5cc7db526e6a1e996826ac9f1",
+      "originalSource": {
+        "canStart": false,
+        "definition": {
+          "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+          "boarding": null,
+          "canStart": false,
+          "composition": {
+            "avoidRepeat": "PREVIOUS_N_K_IF_OTHER_LEGAL_K_EXISTS",
+            "countDistribution": "UNIFORM_IN_APPROVED_STAGE_RANGE",
+            "gunnerWeight": 40,
+            "kindDistribution": "CONDITIONAL_BINOMIAL_EXACT_INTEGER_WEIGHTS",
+            "maximumGunner": "FLOOR_N_OVER_2",
+            "minimumEach": 1,
+            "order": "DETERMINISTIC_FISHER_YATES",
+            "scoutWeight": 60
+          },
+          "definitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+          "geometry": null,
+          "hpPolicy": {
+            "defense": 53,
+            "hp": "FLOOR_INTEGER_EHP_TIMES_1000_OVER_1053",
+            "integerRemainder": "FIXED_ORDINAL_FIRST",
+            "relativeWeights": "SCOUT_1_GUNNER_4_OVER_5",
+            "riskDefinitionHash": "sha256:7889e8553ee2a64b383294e8f30edf87f78691096935cc74abf0b34b6652a5ce",
+            "riskDefinitionVersion": "combat.b-operation-risk.v1.20261003",
+            "riskEhpOnce": true,
+            "zeroHp": "DEFINITION_ERROR"
+          },
+          "movement": null,
+          "pressurePolicy": {
+            "basicTrial": {
+              "periodMs": 1600,
+              "preparationMs": 500,
+              "rawDamage": 24,
+              "recoveryMs": 300
+            },
+            "battlefield": "ROOF_EXTERIOR",
+            "entranceGraceMs": 600,
+            "executionRules": {
+              "aliveIncludesEntranceAndClimbing": true,
+              "combatClockOnly": true,
+              "completionRequiresPlannedAndLivingAndResidualZero": true,
+              "entryGraceIsNotClimbingTime": true,
+              "noCatchupEntries": true,
+              "rewardCountIndependent": true,
+              "skipFullEntryOpportunity": true,
+              "slotCancellationDoesNotAdvanceReuse": true,
+              "targetGenerationLocked": true
+            },
+            "namedEnemyMappingApproved": false,
+            "perTargetAttackSlots": 2,
+            "stages": [
+              {
+                "aliveCap": 4,
+                "attackSlots": 3,
+                "entryIntervalMs": 1800,
+                "firstGroup": 4,
+                "fromDepth": 1,
+                "maximumCount": 8,
+                "minimumCount": 6,
+                "nextGroupMaximum": 2,
+                "toDepth": 4
+              },
+              {
+                "aliveCap": 6,
+                "attackSlots": 4,
+                "entryIntervalMs": 1500,
+                "firstGroup": 4,
+                "fromDepth": 5,
+                "maximumCount": 12,
+                "minimumCount": 9,
+                "nextGroupMaximum": 2,
+                "toDepth": 8
+              },
+              {
+                "aliveCap": 8,
+                "attackSlots": 5,
+                "entryIntervalMs": 1200,
+                "firstGroup": 6,
+                "fromDepth": 9,
+                "maximumCount": 16,
+                "minimumCount": 13,
+                "nextGroupMaximum": 2,
+                "toDepth": 11
+              }
+            ],
+            "targetPreparationIntervalMs": 600,
+            "version": "combat.b-wave-pressure.v3.20261003"
+          },
+          "projectile": null,
+          "runtimeSupported": false,
+          "sameTickGunnerInterceptionPolicy": null,
+          "spawnCadence": {
+            "approval": "44#combat-b-risk-spawn-cadence-approved-20261003",
+            "attackMovementProjectileUnchanged": true,
+            "baseIntervalMs": [
+              1800,
+              1500,
+              1200
+            ],
+            "catchUp": false,
+            "clockRounding": "CONSUMER_CEIL_INTERVAL_ONCE_AT_ORIGINAL_STEP",
+            "entryOffsetClockPolicy": "ENTRY_GROUP_TIMES_SINGLE_ROUNDED_INTERVAL",
+            "riskSpeeds": [
+              {
+                "risk": "I",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "10"
+                }
+              },
+              {
+                "risk": "II",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "11"
+                }
+              },
+              {
+                "risk": "III",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "12"
+                }
+              },
+              {
+                "risk": "IV",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "13"
+                }
+              },
+              {
+                "risk": "V",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "14"
+                }
+              }
+            ],
+            "version": "combat.b-risk-spawn-cadence.v1.20261003"
+          },
+          "types": [
+            {
+              "basicPeriodMs": 1600,
+              "damageCoefficient": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "defense": 53,
+              "definitionId": "enemy_raider_scout",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_raider_scout].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 24,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_raider_scout_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "24"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": true,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 1800,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1800,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": null,
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "LIVING_OPERATOR_ON_ASSIGNED_CAR",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            },
+            {
+              "basicPeriodMs": 2000,
+              "damageCoefficient": {
+                "denominator": "7",
+                "numerator": "5"
+              },
+              "defense": 53,
+              "definitionId": "enemy_spike_cart_gunner",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_spike_cart_gunner].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 28,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_spike_cart_gunner_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "20"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "5",
+                "numerator": "4"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": false,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 24000,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1500,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": {
+                  "distanceExitAfterLaunch": "KEEP_PROJECTILE",
+                  "firstLaunch": "TARGETABLE_PLUS_FULL_PERIOD",
+                  "fixedSourceAndTargetGeneration": true,
+                  "flight": "EXACT_DISTANCE_OVER_SPEED_CEIL_ONCE_AT_ORIGINAL_STEP_MINIMUM_ONE",
+                  "interceptableByBasic": true,
+                  "interceptionIndependentOfAuto": true,
+                  "periodBasis": "LAUNCH_TO_LAUNCH",
+                  "reflectionAndAreaEffect": "EXISTING_ABILITY_ONLY",
+                  "speedMmPerSecond": 24000,
+                  "survivesSourceDeath": true,
+                  "targetGenerationLoss": "MISS"
+                },
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "FARTHEST_LIVING_OPERATOR_IN_RANGE_AND_LOS_CAR_ORDER_THEN_ENTITY_ID",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            }
+          ],
+          "version": "combat.b-scout-gunner-definition.v1.20261003",
+          "waveBudgets": [
+            {
+              "ehp": 1600,
+              "fromDepth": 1,
+              "max": 8,
+              "min": 6,
+              "toDepth": 4
+            },
+            {
+              "ehp": 3600,
+              "fromDepth": 5,
+              "max": 12,
+              "min": 9,
+              "toDepth": 8
+            },
+            {
+              "ehp": 8000,
+              "fromDepth": 9,
+              "max": 16,
+              "min": 13,
+              "toDepth": 11
+            }
+          ]
+        },
+        "definitionAvailable": true,
+        "definitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+        "nativeContextId": "LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19",
+        "nodeId": "n1-0",
+        "origin": {
+          "accountId": "a",
+          "baseSnapshotHash": "1111111111111111111111111111111111111111111111111111111111111111",
+          "definitionVersion": "test-def",
+          "departureVersion": "departure-v4",
+          "operationId": "opn_01_last_departure",
+          "operationPreviewId": "LOCAL_NEW_PREVIEW_19",
+          "planHash": "762c340b181c5a4024bdbd893d7639c8f3a5ea84566eb0abed1970b531e4e752",
+          "publicationHash": "07976eb0d4af44a8845cb9d42e184f8fe46d3431b04dd89315a87b430dbf3ece",
+          "runId": "LOCAL_NEW_B_PIN_19",
+          "selectedRisk": "V"
+        },
+        "priorSourceHash": null,
+        "runtimeSupported": false,
+        "seedHash": "ffe054fe7ae0cb6dc65c3af9b61d5209f439851db43d0ba5997337df154668eb",
+        "sourceHash": "b16436d17818e5f52c57f62b5b589315a91279db02bd71d9770d956ca87bcf94",
+        "version": "combat.b-scout-gunner-source.v1.20261003",
+        "visitDepth": 1,
+        "waves": [
+          {
+            "baseWaveEhp": 1600,
+            "count": 8,
+            "generationHash": "70ab65649817c57173e53a60ce2bc4d1df697def86779ef1665641fcd8360010",
+            "gunnerCount": 3,
+            "instances": [
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "498",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "18400"
+                },
+                "hp": "472",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:0",
+                "ordinal": 0,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "498",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "18400"
+                },
+                "hp": "472",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:1",
+                "ordinal": 1,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_spike_cart_gunner",
+                  "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "398",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "14720"
+                },
+                "hp": "377",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:2",
+                "ordinal": 2,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "498",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "18400"
+                },
+                "hp": "472",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:3",
+                "ordinal": 3,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "497",
+                "entryGroup": 1,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "9000000"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "18400"
+                },
+                "hp": "471",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:4",
+                "ordinal": 4,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_spike_cart_gunner",
+                  "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "397",
+                "entryGroup": 1,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "9000000"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "14720"
+                },
+                "hp": "377",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:5",
+                "ordinal": 5,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_spike_cart_gunner",
+                  "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "397",
+                "entryGroup": 2,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "18000000"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "14720"
+                },
+                "hp": "377",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:6",
+                "ordinal": 6,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "497",
+                "entryGroup": 2,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "18000000"
+                },
+                "exactEhp": {
+                  "denominator": "37",
+                  "numerator": "18400"
+                },
+                "hp": "471",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:7",
+                "ordinal": 7,
+                "remainderUnitApplied": false
+              }
+            ],
+            "nodeId": "n1-0",
+            "previousComposition": null,
+            "riskAdjustedWaveEhp": "3680",
+            "rng": {
+              "compositionTicket": "212068",
+              "countOffset": 2,
+              "domain": "B_SCOUT_GUNNER_V04_WAVE",
+              "shuffleChoices": [
+                1,
+                5,
+                1,
+                2,
+                0,
+                1,
+                1
+              ],
+              "version": "combat.b-wave-rng.sha256-counter64.v1"
+            },
+            "version": "combat.b-scout-gunner-generation.v1.20261003",
+            "visitDepth": 1,
+            "waveOrdinal": 1
+          },
+          {
+            "baseWaveEhp": 1600,
+            "count": 7,
+            "generationHash": "6de6528c82f3ceaa496a3d224478de78b562fd76186c4451187658ed7dd8b698",
+            "gunnerCount": 1,
+            "instances": [
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "542",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "514",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:0",
+                "ordinal": 0,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_spike_cart_gunner",
+                  "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "433",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "7360"
+                },
+                "hp": "411",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:1",
+                "ordinal": 1,
+                "remainderUnitApplied": true
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "541",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "513",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:2",
+                "ordinal": 2,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "541",
+                "entryGroup": 0,
+                "entryNotBeforeUs": {
+                  "denominator": "1",
+                  "numerator": "0"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "513",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:3",
+                "ordinal": 3,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "541",
+                "entryGroup": 1,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "9000000"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "513",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:4",
+                "ordinal": 4,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "541",
+                "entryGroup": 1,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "9000000"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "513",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:5",
+                "ordinal": 5,
+                "remainderUnitApplied": false
+              },
+              {
+                "defense": 53,
+                "definitionRef": {
+                  "definitionId": "enemy_raider_scout",
+                  "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+                  "version": "combat.b-scout-gunner-definition.v1.20261003"
+                },
+                "ehp": "541",
+                "entryGroup": 2,
+                "entryNotBeforeUs": {
+                  "denominator": "7",
+                  "numerator": "18000000"
+                },
+                "exactEhp": {
+                  "denominator": "17",
+                  "numerator": "9200"
+                },
+                "hp": "513",
+                "hpRiskAppliedVersion": "combat.b-operation-risk.v1.20261003",
+                "instanceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:6",
+                "ordinal": 6,
+                "remainderUnitApplied": false
+              }
+            ],
+            "nodeId": "n1-0",
+            "previousComposition": {
+              "count": 8,
+              "generationHash": "70ab65649817c57173e53a60ce2bc4d1df697def86779ef1665641fcd8360010",
+              "gunnerCount": 3,
+              "sourceHash": "0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            "riskAdjustedWaveEhp": "3680",
+            "rng": {
+              "compositionTicket": "6117",
+              "countOffset": 1,
+              "domain": "B_SCOUT_GUNNER_V04_WAVE",
+              "shuffleChoices": [
+                5,
+                1,
+                2,
+                3,
+                2,
+                1
+              ],
+              "version": "combat.b-wave-rng.sha256-counter64.v1"
+            },
+            "version": "combat.b-scout-gunner-generation.v1.20261003",
+            "visitDepth": 1,
+            "waveOrdinal": 2
+          }
+        ]
+      },
+      "originalSourceHash": "b16436d17818e5f52c57f62b5b589315a91279db02bd71d9770d956ca87bcf94",
+      "runtimeSupported": false,
+      "sourceHash": "3d941207c90faf04e4e589b92abc248d052e0b73ad64f0b74414ad5e7e7eda76",
+      "version": "combat.b-scout-gunner-source.v2.20261004"
+    },
+    "originalSourceHash": "3d941207c90faf04e4e589b92abc248d052e0b73ad64f0b74414ad5e7e7eda76",
+    "definition": {
+      "version": "combat.b-scout-gunner-definition.v3.20261004",
+      "approval": "44#combat-b-intercept-duration-approved-v08-20261004",
+      "originalDefinition": {
+        "approval": "44#combat-b-boarding-and-event-approved-20261004",
+        "boarding": {
+          "afterAttachedTargetLoss": "FINISH_VALID_ROOFTOP_THEN_ORIGINAL_V05_REACHABLE_TARGET",
+          "attackEligibility": "MAX_ACTUAL_ROOFTOP_AND_ACTUAL_ACTION_ELIGIBLE",
+          "autoFallOrKnockback": false,
+          "beforeAttachedTargetLoss": "REEVALUATE_AT_REAL_SAFE_CONNECTION_NO_TELEPORT",
+          "brokenCarTraversal": "EXISTING_OWNER_POLICY",
+          "climbBonus": "EXISTING_ABILITY_IMPACT_PHASE_ATTACHED_OR_CLIMBING_ONLY",
+          "controlEffect": "EXISTING_SUPPORTED_ABILITY_ONLY",
+          "firstAction": "ATTACK_ELIGIBLE_PLUS_FULL_ORIGINAL_PERIOD",
+          "freeRooftopAttack": false,
+          "geometryRequired": true,
+          "hitRestartsClimb": false,
+          "initialDestination": "LIVING_OPERATOR_CAR_EXCLUDES_CARGO_AND_EMPTY",
+          "intervals": "START_INCLUSIVE_END_EXCLUSIVE",
+          "noLivingOperators": "EXISTING_RETURN_TERMINAL_OWNER",
+          "nominalEarliestGunnerLaunchMs": 5400,
+          "nominalEarliestScoutImpactMs": 5000,
+          "nominalRooftopAfterMs": 3400,
+          "nominalTimelineIsNotActualPathCompletion": true,
+          "ownership": {
+            "attack": "ORIGINAL_RESERVATION_ATTACK_SLOT",
+            "boarding": "PHASE_PATH_SOCKET",
+            "session": "HP_ORIGINAL_CLOCK",
+            "wave": "PLANNED_COUNT_CURSOR_CADENCE_CAP"
+          },
+          "perAbilitySnapshotConflict": "REPORT_DO_NOT_OVERRIDE",
+          "phases": [
+            {
+              "durationMs": 600,
+              "phase": "GRACE"
+            },
+            {
+              "durationMs": 800,
+              "phase": "APPROACH"
+            },
+            {
+              "durationMs": 200,
+              "phase": "ATTACHED"
+            },
+            {
+              "durationMs": 1800,
+              "phase": "CLIMBING"
+            },
+            {
+              "durationMs": null,
+              "phase": "ROOFTOP"
+            }
+          ],
+          "profileScope": "NEW_B_SCOUT_GUNNER_ORDINARY_ONLY",
+          "riskSpeedChangesPhaseTime": false,
+          "rooftopGuaranteed": false,
+          "sockets": {
+            "allocation": "LEAST_ASSIGNED_LIVING_OPERATOR_CAR_THEN_FIXED_CAR_ORDER",
+            "full": "WAIT_AT_ACTUAL_APPROACH_SIDE_POSITION",
+            "left": 1,
+            "maximumAttachedAndClimbingPerCar": 2,
+            "release": "DEATH_OR_ROOFTOP_ONCE",
+            "right": 1,
+            "waitingOrder": "APPROACH_COMPLETED_AT_THEN_SPAWN_ORDINAL"
+          },
+          "targetableAfterMs": 600,
+          "timeBasis": "ORIGINAL_COMBAT_CLOCK",
+          "transitionResetsDebuffs": false,
+          "transitionResetsGeneration": false,
+          "transitionResetsHp": false,
+          "transitionResetsRewardCount": false,
+          "version": "combat.b-boarding-policy.v1.20261004",
+          "waitingCountsTowardsWaveCap": true,
+          "waitingReservesAttackSlot": false,
+          "waitingTargetable": true,
+          "waveCompletion": "NO_PLANNED_WAITING_ACTIVE_ENEMY_AND_NO_REMAINING_PROJECTILE_HAZARD"
+        },
+        "canStart": false,
+        "definitionAvailable": true,
+        "definitionHash": "6f543ed7ed36c086eee423c7dd6f196ec54799e5cc7db526e6a1e996826ac9f1",
+        "events": {
+          "actionPriority": [
+            "MANUAL_SKILL",
+            "EMERGENCY_INTERCEPTION",
+            "AUTO_SKILL",
+            "BASIC_ATTACK"
+          ],
+          "alreadyAcceptedAction": "KEEP_UNTIL_ORIGINAL_END_OR_ORIGINAL_CANCEL",
+          "atomicPublish": true,
+          "autoOffDisablesOnlyAutomaticSkill": true,
+          "basicInterceptionProjectileCount": 1,
+          "capture": [
+            "ORIGINAL_SEQUENCE",
+            "COMPLETION_DUE",
+            "PROJECTILE_TERMINAL",
+            "RESERVATION_OWNER",
+            "TARGET_GENERATION",
+            "PHASE_TRANSITIONS"
+          ],
+          "committedLifecycleRespected": true,
+          "completionRelation": "COMPLETION_TICK_LE_CONTACT_TICK",
+          "duplicateReceipt": "ORIGINAL_RESULT_NO_DUPLICATE_EFFECT_OR_REWARD",
+          "failedActionTimeRefund": false,
+          "hiddenSkillQueue": false,
+          "interceptedHpDamage": 0,
+          "interceptorOrder": [
+            "EARLIEST_COMPLETION",
+            "FIXED_CAR_ORDER",
+            "ENTITY_ID"
+          ],
+          "legacyMiraBossCoopChanged": false,
+          "manualTie": "ORIGINAL_COMMAND_SEQUENCE",
+          "networkOrRenderOrderAuthoritative": false,
+          "newInterceptionButton": false,
+          "newReservationAtContactAllowed": false,
+          "oneReservationPerProjectile": true,
+          "originalEventKey": "TICK_PHASE_SEQUENCE",
+          "partialProgressTransfer": false,
+          "profileScope": "NEW_B_SCOUT_GUNNER_ORDINARY_ONLY",
+          "projectileOrder": [
+            "EARLIEST_CONTACT",
+            "FIXED_LAUNCH_SEQUENCE"
+          ],
+          "publishOwner": "EXISTING_NATIVE_BATTLE_STAGE",
+          "reassign": "FULL_ORIGINAL_DURATION_ONLY_IF_COMPLETES_BY_CONTACT",
+          "restore": "NO_REDRAW_NO_NEW_ACCEPT_NO_HP_OR_ENTITY_RESET",
+          "sameActorConcurrentActions": false,
+          "sameTickPhaseOrder": [
+            "EXISTING_COMMITTED_LIFECYCLE",
+            "VALID_RESERVED_INTERCEPTION_COMPLETE",
+            "PROJECTILE_TERMINAL",
+            "REMAINING_IMPACT"
+          ],
+          "sourceDeathDeletesLaunchedProjectile": false,
+          "targetGenerationChange": "MISS",
+          "terminalImmutable": true,
+          "terminalStates": [
+            "INTERCEPTED",
+            "HIT",
+            "MISS"
+          ],
+          "unrelatedDamageSequencePreserved": true,
+          "validateBeforePublish": [
+            "LIFECYCLE_PHASE",
+            "RESERVATION",
+            "PROJECTILE_TERMINAL",
+            "ORIGINAL_HP_CHANGE"
+          ],
+          "version": "combat.b-simultaneous-event-policy.v1.20261004"
+        },
+        "interceptionTiming": {
+          "preparationUs": null,
+          "recoveryUs": null,
+          "required": "ORIGINAL_NAMED_ABILITY_PREPARATION_RECOVERY_HASTE_AND_ELIGIBILITY",
+          "source": null,
+          "supported": false
+        },
+        "missingRuntimeSources": [
+          "ACTUAL_ROOF_PATH_AND_SOCKETS",
+          "NATIVE_MOVEMENT_AND_BOARDING",
+          "NAMED_INTERCEPTION_ABILITY_DURATION",
+          "NATIVE_INTERCEPTION_EVENT_EXECUTOR",
+          "APPROVED_OPERATION_PROFILE_MAPPING"
+        ],
+        "originalDefinition": {
+          "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+          "boarding": null,
+          "canStart": false,
+          "composition": {
+            "avoidRepeat": "PREVIOUS_N_K_IF_OTHER_LEGAL_K_EXISTS",
+            "countDistribution": "UNIFORM_IN_APPROVED_STAGE_RANGE",
+            "gunnerWeight": 40,
+            "kindDistribution": "CONDITIONAL_BINOMIAL_EXACT_INTEGER_WEIGHTS",
+            "maximumGunner": "FLOOR_N_OVER_2",
+            "minimumEach": 1,
+            "order": "DETERMINISTIC_FISHER_YATES",
+            "scoutWeight": 60
+          },
+          "definitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+          "geometry": null,
+          "hpPolicy": {
+            "defense": 53,
+            "hp": "FLOOR_INTEGER_EHP_TIMES_1000_OVER_1053",
+            "integerRemainder": "FIXED_ORDINAL_FIRST",
+            "relativeWeights": "SCOUT_1_GUNNER_4_OVER_5",
+            "riskDefinitionHash": "sha256:7889e8553ee2a64b383294e8f30edf87f78691096935cc74abf0b34b6652a5ce",
+            "riskDefinitionVersion": "combat.b-operation-risk.v1.20261003",
+            "riskEhpOnce": true,
+            "zeroHp": "DEFINITION_ERROR"
+          },
+          "movement": null,
+          "pressurePolicy": {
+            "basicTrial": {
+              "periodMs": 1600,
+              "preparationMs": 500,
+              "rawDamage": 24,
+              "recoveryMs": 300
+            },
+            "battlefield": "ROOF_EXTERIOR",
+            "entranceGraceMs": 600,
+            "executionRules": {
+              "aliveIncludesEntranceAndClimbing": true,
+              "combatClockOnly": true,
+              "completionRequiresPlannedAndLivingAndResidualZero": true,
+              "entryGraceIsNotClimbingTime": true,
+              "noCatchupEntries": true,
+              "rewardCountIndependent": true,
+              "skipFullEntryOpportunity": true,
+              "slotCancellationDoesNotAdvanceReuse": true,
+              "targetGenerationLocked": true
+            },
+            "namedEnemyMappingApproved": false,
+            "perTargetAttackSlots": 2,
+            "stages": [
+              {
+                "aliveCap": 4,
+                "attackSlots": 3,
+                "entryIntervalMs": 1800,
+                "firstGroup": 4,
+                "fromDepth": 1,
+                "maximumCount": 8,
+                "minimumCount": 6,
+                "nextGroupMaximum": 2,
+                "toDepth": 4
+              },
+              {
+                "aliveCap": 6,
+                "attackSlots": 4,
+                "entryIntervalMs": 1500,
+                "firstGroup": 4,
+                "fromDepth": 5,
+                "maximumCount": 12,
+                "minimumCount": 9,
+                "nextGroupMaximum": 2,
+                "toDepth": 8
+              },
+              {
+                "aliveCap": 8,
+                "attackSlots": 5,
+                "entryIntervalMs": 1200,
+                "firstGroup": 6,
+                "fromDepth": 9,
+                "maximumCount": 16,
+                "minimumCount": 13,
+                "nextGroupMaximum": 2,
+                "toDepth": 11
+              }
+            ],
+            "targetPreparationIntervalMs": 600,
+            "version": "combat.b-wave-pressure.v3.20261003"
+          },
+          "projectile": null,
+          "runtimeSupported": false,
+          "sameTickGunnerInterceptionPolicy": null,
+          "spawnCadence": {
+            "approval": "44#combat-b-risk-spawn-cadence-approved-20261003",
+            "attackMovementProjectileUnchanged": true,
+            "baseIntervalMs": [
+              1800,
+              1500,
+              1200
+            ],
+            "catchUp": false,
+            "clockRounding": "CONSUMER_CEIL_INTERVAL_ONCE_AT_ORIGINAL_STEP",
+            "entryOffsetClockPolicy": "ENTRY_GROUP_TIMES_SINGLE_ROUNDED_INTERVAL",
+            "riskSpeeds": [
+              {
+                "risk": "I",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "10"
+                }
+              },
+              {
+                "risk": "II",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "11"
+                }
+              },
+              {
+                "risk": "III",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "12"
+                }
+              },
+              {
+                "risk": "IV",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "13"
+                }
+              },
+              {
+                "risk": "V",
+                "speed": {
+                  "denominator": "10",
+                  "numerator": "14"
+                }
+              }
+            ],
+            "version": "combat.b-risk-spawn-cadence.v1.20261003"
+          },
+          "types": [
+            {
+              "basicPeriodMs": 1600,
+              "damageCoefficient": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "defense": 53,
+              "definitionId": "enemy_raider_scout",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_raider_scout].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 24,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_raider_scout_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "24"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "1",
+                "numerator": "1"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": true,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 1800,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1800,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": null,
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "LIVING_OPERATOR_ON_ASSIGNED_CAR",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6f3ab3b97fe7aa35f69751110730f5c96046eed47649d1a47de9d58bf8d5dccb",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            },
+            {
+              "basicPeriodMs": 2000,
+              "damageCoefficient": {
+                "denominator": "7",
+                "numerator": "5"
+              },
+              "defense": 53,
+              "definitionId": "enemy_spike_cart_gunner",
+              "fixedActorHp": false,
+              "geometry": null,
+              "lineage": {
+                "approval": "44#combat-b-scout-gunner-approved-v04-20261003",
+                "catalogField": "enemies[enemy_spike_cart_gunner].atk",
+                "catalogSha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f",
+                "catalogVersion": "combat.design.2026-09-09.001"
+              },
+              "movement": null,
+              "originalAtk": 28,
+              "preparationMs": 500,
+              "projectile": null,
+              "rawAction": {
+                "kind": "RAW_ACTION_DAMAGE",
+                "progressAppliedVersion": null,
+                "riskAppliedVersion": null,
+                "sourceId": "B_V04_enemy_spike_cart_gunner_OPERATOR_BASIC_RAW",
+                "value": {
+                  "denominator": "1",
+                  "numerator": "20"
+                }
+              },
+              "recoveryMs": 300,
+              "relativeEhpWeight": {
+                "denominator": "5",
+                "numerator": "4"
+              },
+              "runtimeSupported": false,
+              "spatial": {
+                "approval": "44#combat-b-range-projectile-movement-approved-v05-20261003",
+                "automaticRetreat": false,
+                "connectedPathRequired": true,
+                "geometryUnits": "REAL_MM",
+                "impactRangeRecheck": false,
+                "lineOfSightRequired": true,
+                "maximumDistanceMm": 24000,
+                "movementReservesAttackSlot": false,
+                "movementSpeedMmPerSecond": 1500,
+                "noReachableTarget": "ORIGINAL_SAFE_STOP_OWNER",
+                "noTarget": "MOVE_TO_REACHABLE_ATTACK_POSITION",
+                "preparationTargetLoss": "CANCEL_LAUNCH",
+                "projectile": {
+                  "distanceExitAfterLaunch": "KEEP_PROJECTILE",
+                  "firstLaunch": "TARGETABLE_PLUS_FULL_PERIOD",
+                  "fixedSourceAndTargetGeneration": true,
+                  "flight": "EXACT_DISTANCE_OVER_SPEED_CEIL_ONCE_AT_ORIGINAL_STEP_MINIMUM_ONE",
+                  "interceptableByBasic": true,
+                  "interceptionIndependentOfAuto": true,
+                  "periodBasis": "LAUNCH_TO_LAUNCH",
+                  "reflectionAndAreaEffect": "EXISTING_ABILITY_ONLY",
+                  "speedMmPerSecond": 24000,
+                  "survivesSourceDeath": true,
+                  "targetGenerationLoss": "MISS"
+                },
+                "stopDuringPreparationAndRecovery": true,
+                "targetPolicy": "FARTHEST_LIVING_OPERATOR_IN_RANGE_AND_LOS_CAR_ORDER_THEN_ENTITY_ID",
+                "version": "combat.b-scout-gunner-spatial.v1.20261003"
+              },
+              "targetSelection": null,
+              "typeHash": "6c9999715137f1424ddaba988cbb1efa6c8376567b655957d65f6068c62e9967",
+              "version": "combat.b-scout-gunner-definition.v1.20261003"
+            }
+          ],
+          "version": "combat.b-scout-gunner-definition.v1.20261003",
+          "waveBudgets": [
+            {
+              "ehp": 1600,
+              "fromDepth": 1,
+              "max": 8,
+              "min": 6,
+              "toDepth": 4
+            },
+            {
+              "ehp": 3600,
+              "fromDepth": 5,
+              "max": 12,
+              "min": 9,
+              "toDepth": 8
+            },
+            {
+              "ehp": 8000,
+              "fromDepth": 9,
+              "max": 16,
+              "min": 13,
+              "toDepth": 11
+            }
+          ]
+        },
+        "originalDefinitionHash": "f6afc8b589f4856def4016f213b34061f7767820929238f33bb68645b28193b5",
+        "runtimeSupported": false,
+        "version": "combat.b-scout-gunner-definition.v2.20261004"
+      },
+      "originalDefinitionHash": "6f543ed7ed36c086eee423c7dd6f196ec54799e5cc7db526e6a1e996826ac9f1",
+      "abilities": [
+        {
+          "abilityHash": "2ab120432bbe5a078516fc5da9cd9cda3b4c221dfc03823ce391270124132d55",
+          "abilityId": "op_kyle.intercept",
+          "adjacentCarRange": 0,
+          "approval": "44#combat-b-intercept-duration-approved-v08-20261004",
+          "autoIndependent": true,
+          "eligibility": "ORIGINAL_OWNED_OPERATOR_READY_PROTECTION_AND_PROJECTILE_OWNER",
+          "kind": "INTERCEPT",
+          "operatorId": "op_kyle",
+          "ordinarySkillIdReused": false,
+          "preparationMs": 250,
+          "projectilesPerAction": 1,
+          "protection": "ACTUAL_SELF_CAR_PLUS_CONNECTED_ADJACENT_CAR_RANGE",
+          "recoveryMs": 450,
+          "version": "combat.b-basic-interception-ability.v1.20261004"
+        },
+        {
+          "abilityHash": "042504a8d7eb34b8f6311f6900b794f1d30c43c932d9c89733382d62ce58942a",
+          "abilityId": "op_sable.intercept",
+          "adjacentCarRange": 1,
+          "approval": "44#combat-b-intercept-duration-approved-v08-20261004",
+          "autoIndependent": true,
+          "eligibility": "ORIGINAL_OWNED_OPERATOR_READY_PROTECTION_AND_PROJECTILE_OWNER",
+          "kind": "INTERCEPT",
+          "operatorId": "op_sable",
+          "ordinarySkillIdReused": false,
+          "preparationMs": 200,
+          "projectilesPerAction": 1,
+          "protection": "ACTUAL_SELF_CAR_PLUS_CONNECTED_ADJACENT_CAR_RANGE",
+          "recoveryMs": 650,
+          "version": "combat.b-basic-interception-ability.v1.20261004"
+        }
+      ],
+      "registrySource": {
+        "collisionCheck": "ORIGINAL_PUBLISHED_ABILITY_IDS_PLUS_DISTINCT_NEW_INTERCEPT_IDS",
+        "definitionIntakeHash": "sha256:49a0f88a5f2c2a28f626d32dff383a68de1c54f6acf2284557a6f7368713ad34",
+        "operatorIndex": "launchEliteOperatorIds"
+      },
+      "timingPolicy": {
+        "acceptanceSnapshot": true,
+        "contactCheck": "ROUNDED_PREPARATION_COMPLETE_LE_CONTACT_RECOVERY_NOT_REQUIRED",
+        "formula": "ORIGINAL_PHASE_TIME_DIVIDED_BY_ONE_PLUS_ACCEPTED_I",
+        "generalAttackOrSkillHasteIncluded": false,
+        "group": "INTERCEPTION_HASTE",
+        "laterBuffChangeRecalculatesAcceptedTime": false,
+        "minimumStep": 1,
+        "newHasteCap": false,
+        "phaseClockCeilCount": 1,
+        "riskSpawnSpeedIncluded": false,
+        "source": "PRIVATE_ORIGINAL_INTERCEPT_HASTE_PLUS_ORIGINAL_BCB03_ACTION_RECEIPT",
+        "totalOccupancyRounding": false
+      },
+      "actionPolicy": {
+        "acceptedActionPreempted": false,
+        "basicAlreadyDue": "PRESERVE_ZERO_REMAINDER_THEN_ONE_NORMAL_OPPORTUNITY",
+        "basicNextOwner": "EXISTING_SESSION_NEXT_OWNER",
+        "basicWait": "FREEZE_REMAINING_UNTIL_RECOVERY_END",
+        "cancelDuringPreparation": "SNAPSHOT_RECOVERY_FROM_ACTUAL_CANCEL_TICK",
+        "cancellationCost": "ACTUAL_USED_PREPARATION_PLUS_SNAPSHOT_RECOVERY",
+        "catchUpAttacks": false,
+        "downExitOrTerminal": "ORIGINAL_LIFECYCLE_END_AND_RESERVATION_RELEASE_NO_REACCEPT",
+        "duplicateCancel": "KEEP_ORIGINAL_RECOVERY_DUE",
+        "hiddenQueue": false,
+        "nextSpeedChange": "ORIGINAL_NEXT_OWNER_CONTRACT_NO_DOUBLE_ELAPSED_TIME",
+        "otherActorOrEnemyClockStopped": false,
+        "reassignment": "FULL_NEW_ACTOR_PREPARATION_NO_PROGRESS_TRANSFER",
+        "rejectBeforeAcceptanceCost": 0,
+        "skillCooldownAndBuffClockContinue": true
+      },
+      "definitionAvailable": true,
+      "timingDefinitionAvailable": true,
+      "runtimeSupported": false,
+      "canStart": false,
+      "definitionHash": "40224481e914e78ef103be378300600942588d50e121a89cf71cedf9edd94970"
+    },
+    "definitionHash": "40224481e914e78ef103be378300600942588d50e121a89cf71cedf9edd94970",
+    "timing": {
+      "accountId": "a",
+      "runId": "LOCAL_NEW_B_PIN_19",
+      "nativeContextId": "LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19",
+      "operatorId": "op_kyle",
+      "abilityId": "op_kyle.intercept",
+      "abilityHash": "2ab120432bbe5a078516fc5da9cd9cda3b4c221dfc03823ce391270124132d55",
+      "eventId": "intercept-op_kyle-5",
+      "stepUs": 2000,
+      "buffSnapshot": {
+        "actions": [
+          {
+            "input": {
+              "ability": "INTERCEPT",
+              "direct": false,
+              "eventId": "intercept-op_kyle-5",
+              "expectedRevision": 0,
+              "kind": "INTERCEPT",
+              "originalEligible": true,
+              "slot": 0,
+              "target": "NONE",
+              "timing": "INTERCEPTION_PHASE"
+            },
+            "source": {
+              "ability": "INTERCEPT",
+              "damageBps": 0,
+              "instanceId": "private-car-5",
+              "interceptionHasteBps": 3000,
+              "kind": "INTERCEPT",
+              "operatingRevision": 0,
+              "rank": 5,
+              "skillHasteBps": 0,
+              "slot": 0,
+              "sourceId": "[\"combat.b-carriage-buffs.v1.20261002\",\"LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19\",\"a\",\"private-car-5\",\"intercept-op_kyle-5\"]",
+              "supportBps": 0,
+              "target": "NONE",
+              "timing": "INTERCEPTION_PHASE",
+              "type": "BCB03",
+              "version": "combat.b-carriage-buffs.v1.20261002"
+            }
+          }
+        ],
+        "departure": {
+          "accountId": "a",
+          "cars": [
+            {
+              "carriageId": "private-type",
+              "instanceId": "private-car-5",
+              "occupant": {
+                "kind": "OPERATOR",
+                "operatorId": "op_kyle"
+              },
+              "rank": 5,
+              "slot": 0,
+              "type": "BCB03"
+            }
+          ],
+          "rankRevision": 1,
+          "selectionRevision": 1,
+          "sourceStatus": "ISOLATED_LOCAL_FIXTURE",
+          "version": "combat.b-carriage-buffs.v1.20261002"
+        },
+        "initial": {
+          "cars": [
+            {
+              "actor": "UP",
+              "body": "NORMAL",
+              "slot": 0
+            }
+          ],
+          "contextId": "LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19",
+          "mode": "EXTERIOR"
+        },
+        "journal": [
+          {
+            "input": {
+              "ability": "INTERCEPT",
+              "direct": false,
+              "eventId": "intercept-op_kyle-5",
+              "expectedRevision": 0,
+              "kind": "INTERCEPT",
+              "originalEligible": true,
+              "slot": 0,
+              "target": "NONE",
+              "timing": "INTERCEPTION_PHASE"
+            },
+            "tag": "ACTION"
+          }
+        ],
+        "version": "combat.b-carriage-buffs.v1.20261002"
+      },
+      "originalHasteSources": [],
+      "totalHasteBps": 3000,
+      "phases": {
+        "preparation": {
+          "exactUs": {
+            "numerator": "2500000",
+            "denominator": "13"
+          },
+          "ticks": "97",
+          "durationUs": "194000"
+        },
+        "recovery": {
+          "exactUs": {
+            "numerator": "4500000",
+            "denominator": "13"
+          },
+          "ticks": "174",
+          "durationUs": "348000"
+        },
+        "occupancyUs": "542000",
+        "occupancyTicks": "271"
+      },
+      "timingHash": "a2bf9c1bba0e33d6f06413825563f9ce23946c9e950edd64c224389211c1d1bf"
+    },
+    "definitionAvailable": true,
+    "timingDefinitionAvailable": true,
+    "runtimeSupported": false,
+    "canStart": false,
+    "sourceHash": "a6377930dded8057e6727dfd3f9b850e75a8a939d3c33f861dd2ae20e6862aa1"
+  },
+  "trust": {
+    "origin": {
+      "accountId": "a",
+      "baseSnapshotHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "definitionVersion": "test-def",
+      "departureVersion": "departure-v4",
+      "operationId": "opn_01_last_departure",
+      "operationPreviewId": "LOCAL_NEW_PREVIEW_19",
+      "planHash": "762c340b181c5a4024bdbd893d7639c8f3a5ea84566eb0abed1970b531e4e752",
+      "publicationHash": "07976eb0d4af44a8845cb9d42e184f8fe46d3431b04dd89315a87b430dbf3ece",
+      "runId": "LOCAL_NEW_B_PIN_19",
+      "selectedRisk": "V"
+    },
+    "nativeContextId": "LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19",
+    "seedHash": "ffe054fe7ae0cb6dc65c3af9b61d5209f439851db43d0ba5997337df154668eb",
+    "sourceHash": "b16436d17818e5f52c57f62b5b589315a91279db02bd71d9770d956ca87bcf94",
+    "nodeId": "n1-0",
+    "visitDepth": 1,
+    "priorSourceHash": null
+  },
+  "buffDefinitionsJson": "{\n  \"version\": \"combat.b-carriage-buffs.v1.20261002\",\n  \"definitions\": [\n    {\n      \"type\": \"BCB01\",\n      \"values\": [\n        1000,\n        1500,\n        2000,\n        2500,\n        3000\n      ],\n      \"secondary\": [],\n      \"group\": \"B_DIRECT_DAMAGE_C\"\n    },\n    {\n      \"type\": \"BCB02\",\n      \"values\": [\n        800,\n        1100,\n        1400,\n        1700,\n        2000\n      ],\n      \"secondary\": [],\n      \"group\": \"SKILL_HASTE\"\n    },\n    {\n      \"type\": \"BCB03\",\n      \"values\": [\n        1000,\n        1500,\n        2000,\n        2500,\n        3000\n      ],\n      \"secondary\": [],\n      \"group\": \"INTERCEPTION_HASTE\"\n    },\n    {\n      \"type\": \"BCB04\",\n      \"values\": [\n        1500,\n        2000,\n        2500,\n        3000,\n        3500\n      ],\n      \"secondary\": [\n        1000,\n        1500,\n        2000,\n        2500,\n        3000\n      ],\n      \"group\": \"B_DIRECT_DAMAGE_C\"\n    },\n    {\n      \"type\": \"BCB05\",\n      \"values\": [\n        800,\n        1100,\n        1400,\n        1700,\n        2000\n      ],\n      \"secondary\": [],\n      \"group\": \"B_SUPPORT_AMPLIFICATION\"\n    },\n    {\n      \"type\": \"BCB06\",\n      \"values\": [\n        40,\n        55,\n        70,\n        85,\n        100\n      ],\n      \"secondary\": [\n        20,\n        30,\n        40,\n        50,\n        60\n      ],\n      \"group\": \"EXISTING_FLAT_DEF\"\n    },\n    {\n      \"type\": \"BCB07\",\n      \"values\": [\n        1500,\n        2000,\n        2500,\n        3000,\n        3500\n      ],\n      \"secondary\": [],\n      \"group\": \"B_DIRECT_DAMAGE_C\"\n    }\n  ]\n}",
+  "profile": {
+    "schemaVersion": "combat.owned-profile-intake.v1",
+    "accountId": "a",
+    "definitionVersion": "combat.owned-base.2026-10-01.1",
+    "definitionHash": "sha256:9d25a88d64239127cbecb7816a4504244947fe55957cd9eb50ec9e4e75bce515",
+    "policyVersion": "combat.policy-catalog.2026-09-29.1",
+    "policyHash": "sha256:a4ce53b746fa5d42eaaf0481f3c9a1ccc931a0ae50a176bd1bc192f9a60d875b",
+    "sourceHash": "sha256:8c2756de0cabf1005aabd53cd94a960968c77ff14f7a20c9b42c6f91ee17ded5",
+    "formationRevision": 1,
+    "loadoutRevision": 1,
+    "binding": "READ_ONLY_CANDIDATE_NOT_ATOMIC_START",
+    "canExecute": false,
+    "missing": [
+      "predeparture_equipment_binding_unavailable",
+      "account_research_ledger_unavailable",
+      "commander_and_run_modifier_binding_unavailable",
+      "entity_placement_and_capabilities_unbound",
+      "start_checkpoint_binding_unbound",
+      "train_carriage_base_stat_binding_unavailable",
+      "turret_installation_binding_unavailable"
+    ],
+    "operators": [
+      {
+        "slot": 0,
+        "operatorId": "op_kyle",
+        "level": 10,
+        "promotion": 2,
+        "skillTraining": 3,
+        "permanentStats": {
+          "maxHp": 1000000,
+          "attack": {
+            "numerator": "50000",
+            "denominator": "1"
+          },
+          "defense": 250,
+          "basicIntervalMs": 10
+        },
+        "effectiveStats": null,
+        "skillMagnitude": {
+          "numerator": "11000",
+          "denominator": "10000"
+        },
+        "sources": {
+          "operator": {
+            "sourceId": "account_operators:a:op_kyle",
+            "revision": 2
+          },
+          "training": [
+            {
+              "sourceId": "operator_training_core_slots:a:0",
+              "revision": 1,
+              "operatorId": "op_kyle",
+              "level": 10
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:1",
+              "revision": 1,
+              "operatorId": "op_reina",
+              "level": 11
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:2",
+              "revision": 1,
+              "operatorId": "op_eve",
+              "level": 12
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:3",
+              "revision": 1,
+              "operatorId": "op_sera",
+              "level": 13
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:4",
+              "revision": 1,
+              "operatorId": "op_mira",
+              "level": 14
+            }
+          ]
+        },
+        "statInputs": {
+          "sourceId": "account_operators:a:op_kyle",
+          "sourceOwner": "a",
+          "targetDefinitionId": "op_kyle",
+          "group": "PERMANENT_STAT_GROWTH",
+          "promotionHpBps": 500,
+          "promotionAttackBps": 500
+        },
+        "effectModifiers": null
+      },
+      {
+        "slot": 1,
+        "operatorId": "op_reina",
+        "level": 11,
+        "promotion": 0,
+        "skillTraining": 1,
+        "permanentStats": {
+          "maxHp": 1260,
+          "attack": {
+            "numerator": "6750000000",
+            "denominator": "100000000"
+          },
+          "defense": 53,
+          "basicIntervalMs": 1400
+        },
+        "effectiveStats": null,
+        "skillMagnitude": {
+          "numerator": "10000",
+          "denominator": "10000"
+        },
+        "sources": {
+          "operator": {
+            "sourceId": "account_operators:a:op_reina",
+            "revision": 1
+          },
+          "training": [
+            {
+              "sourceId": "operator_training_core_slots:a:0",
+              "revision": 1,
+              "operatorId": "op_kyle",
+              "level": 10
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:1",
+              "revision": 1,
+              "operatorId": "op_reina",
+              "level": 11
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:2",
+              "revision": 1,
+              "operatorId": "op_eve",
+              "level": 12
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:3",
+              "revision": 1,
+              "operatorId": "op_sera",
+              "level": 13
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:4",
+              "revision": 1,
+              "operatorId": "op_mira",
+              "level": 14
+            }
+          ]
+        },
+        "statInputs": {
+          "sourceId": "account_operators:a:op_reina",
+          "sourceOwner": "a",
+          "targetDefinitionId": "op_reina",
+          "group": "PERMANENT_STAT_GROWTH",
+          "promotionHpBps": 0,
+          "promotionAttackBps": 0
+        },
+        "effectModifiers": null
+      },
+      {
+        "slot": 2,
+        "operatorId": "op_eve",
+        "level": 12,
+        "promotion": 0,
+        "skillTraining": 1,
+        "permanentStats": {
+          "maxHp": 1368,
+          "attack": {
+            "numerator": "3878000000",
+            "denominator": "100000000"
+          },
+          "defense": 53,
+          "basicIntervalMs": 2000
+        },
+        "effectiveStats": null,
+        "skillMagnitude": {
+          "numerator": "10000",
+          "denominator": "10000"
+        },
+        "sources": {
+          "operator": {
+            "sourceId": "account_operators:a:op_eve",
+            "revision": 1
+          },
+          "training": [
+            {
+              "sourceId": "operator_training_core_slots:a:0",
+              "revision": 1,
+              "operatorId": "op_kyle",
+              "level": 10
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:1",
+              "revision": 1,
+              "operatorId": "op_reina",
+              "level": 11
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:2",
+              "revision": 1,
+              "operatorId": "op_eve",
+              "level": 12
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:3",
+              "revision": 1,
+              "operatorId": "op_sera",
+              "level": 13
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:4",
+              "revision": 1,
+              "operatorId": "op_mira",
+              "level": 14
+            }
+          ]
+        },
+        "statInputs": {
+          "sourceId": "account_operators:a:op_eve",
+          "sourceOwner": "a",
+          "targetDefinitionId": "op_eve",
+          "group": "PERMANENT_STAT_GROWTH",
+          "promotionHpBps": 0,
+          "promotionAttackBps": 0
+        },
+        "effectModifiers": null
+      },
+      {
+        "slot": 3,
+        "operatorId": "op_sera",
+        "level": 13,
+        "promotion": 0,
+        "skillTraining": 1,
+        "permanentStats": {
+          "maxHp": 1361,
+          "attack": {
+            "numerator": "5680000000",
+            "denominator": "100000000"
+          },
+          "defense": 87,
+          "basicIntervalMs": 1200
+        },
+        "effectiveStats": null,
+        "skillMagnitude": {
+          "numerator": "10000",
+          "denominator": "10000"
+        },
+        "sources": {
+          "operator": {
+            "sourceId": "account_operators:a:op_sera",
+            "revision": 1
+          },
+          "training": [
+            {
+              "sourceId": "operator_training_core_slots:a:0",
+              "revision": 1,
+              "operatorId": "op_kyle",
+              "level": 10
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:1",
+              "revision": 1,
+              "operatorId": "op_reina",
+              "level": 11
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:2",
+              "revision": 1,
+              "operatorId": "op_eve",
+              "level": 12
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:3",
+              "revision": 1,
+              "operatorId": "op_sera",
+              "level": 13
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:4",
+              "revision": 1,
+              "operatorId": "op_mira",
+              "level": 14
+            }
+          ]
+        },
+        "statInputs": {
+          "sourceId": "account_operators:a:op_sera",
+          "sourceOwner": "a",
+          "targetDefinitionId": "op_sera",
+          "group": "PERMANENT_STAT_GROWTH",
+          "promotionHpBps": 0,
+          "promotionAttackBps": 0
+        },
+        "effectModifiers": null
+      },
+      {
+        "slot": 4,
+        "operatorId": "op_mira",
+        "level": 14,
+        "promotion": 0,
+        "skillTraining": 1,
+        "permanentStats": {
+          "maxHp": 1520,
+          "attack": {
+            "numerator": "4365000000",
+            "denominator": "100000000"
+          },
+          "defense": 111,
+          "basicIntervalMs": 1800
+        },
+        "effectiveStats": null,
+        "skillMagnitude": {
+          "numerator": "10000",
+          "denominator": "10000"
+        },
+        "sources": {
+          "operator": {
+            "sourceId": "account_operators:a:op_mira",
+            "revision": 1
+          },
+          "training": [
+            {
+              "sourceId": "operator_training_core_slots:a:0",
+              "revision": 1,
+              "operatorId": "op_kyle",
+              "level": 10
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:1",
+              "revision": 1,
+              "operatorId": "op_reina",
+              "level": 11
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:2",
+              "revision": 1,
+              "operatorId": "op_eve",
+              "level": 12
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:3",
+              "revision": 1,
+              "operatorId": "op_sera",
+              "level": 13
+            },
+            {
+              "sourceId": "operator_training_core_slots:a:4",
+              "revision": 1,
+              "operatorId": "op_mira",
+              "level": 14
+            }
+          ]
+        },
+        "statInputs": {
+          "sourceId": "account_operators:a:op_mira",
+          "sourceOwner": "a",
+          "targetDefinitionId": "op_mira",
+          "group": "PERMANENT_STAT_GROWTH",
+          "promotionHpBps": 0,
+          "promotionAttackBps": 0
+        },
+        "effectModifiers": null
+      }
+    ],
+    "selectedTrain": {
+      "trainId": "train_a",
+      "level": 1,
+      "revision": 1,
+      "sourceId": "account_train:a",
+      "effectiveStats": null
+    },
+    "selectedCarriages": [
+      {
+        "slot": 0,
+        "carriageId": "car_combat",
+        "level": 1,
+        "revision": 1,
+        "sourceId": "account_carriages:a:car_combat",
+        "effectiveStats": null
+      },
+      {
+        "slot": 1,
+        "carriageId": "car_gun",
+        "level": 1,
+        "revision": 1,
+        "sourceId": "account_carriages:a:car_gun",
+        "effectiveStats": null
+      }
+    ],
+    "ownedTurrets": [],
+    "selectedTurrets": null,
+    "equipment": null,
+    "research": null,
+    "startSnapshot": null,
+    "checkpoint": null,
+    "contentHash": "sha256:fd81231864facc212c9a49a8a08e51d7ec8d0200eed9fc16a59c0935d37d938c"
+  },
+  "definitionIntake": {
+    "schemaVersion": "combat.definition-intake.v1",
+    "definitionVersion": "combat.policy-catalog.2026-09-29.1",
+    "contentHash": "sha256:49a0f88a5f2c2a28f626d32dff383a68de1c54f6acf2284557a6f7368713ad34",
+    "purpose": "DEFINITION_INTAKE_ONLY",
+    "canExecute": false,
+    "support": {
+      "definitions": "AVAILABLE",
+      "runtimeBinding": "MISSING",
+      "executionEvidence": "NOT_RUN"
+    },
+    "blockingReasons": [
+      "effective_stat_profiles_missing",
+      "effect_runtime_binding_missing",
+      "operation_definitions_missing",
+      "start_checkpoint_replay_binding_missing",
+      "combat_effect_handler_missing:CYCLING_TARGET_BURST",
+      "combat_effect_handler_missing:DIRECT_DAMAGE",
+      "combat_effect_handler_missing:FIXED_TARGET_BURST",
+      "combat_effect_handler_missing:HEAL_AND_RECOVERY",
+      "combat_effect_handler_missing:HEAL_ONE",
+      "combat_effect_handler_missing:SENTRY_CREATE",
+      "combat_effect_handler_missing:SENTRY_ENHANCE_OR_CREATE",
+      "combat_effect_handler_missing:SHIELD_AND_TAUNT",
+      "combat_effect_handler_missing:SHIELD_LIVING_ALL"
+    ],
+    "definition": {
+      "policy": {
+        "version": "combat.policy-catalog.2026-09-29.1",
+        "status": "REQUIRED_NOT_EXECUTABLE",
+        "references": [
+          "ordinary-story-design-baseline-complete-v01",
+          "six-skills-detail-v02",
+          "damage-shield-hazard-detail-v03",
+          "combat-effect-group-map-v04",
+          "combat-closeout-f1-f3-v01",
+          "world-boss-effects-coop-v03",
+          "numeric-defense-runtime-binding-audit-v13",
+          "def-shield-effect-mapping-v12",
+          "skill-haste-curve-approved-v08",
+          "attack-speed-curve-cap-approved-v09"
+        ],
+        "scope": {
+          "roster": [
+            "op_kyle",
+            "op_reina",
+            "op_eve",
+            "op_sera",
+            "op_mira"
+          ],
+          "ordinaryRisk": "I",
+          "expansion": "EXPLICIT_POLICY_REQUIRED"
+        },
+        "ultimate": {
+          "version": "combat.ultimate.2026-09-22.1",
+          "cost": 100,
+          "baseCapacity": 100,
+          "expandedCapacity": 200,
+          "expansionSource": "O11",
+          "initialCharge": 0,
+          "perBasicAction": 4,
+          "consumeAt": "CAST_ACCEPTANCE",
+          "postAcceptanceRefund": false,
+          "ready": "CHARGE_AT_LEAST_COST_AND_ACTOR_PREFLIGHT"
+        },
+        "actionRules": {
+          "firstActiveReadyMs": 0,
+          "activeAutomation": "ALWAYS",
+          "ultimateAutoInitiallyEnabled": false,
+          "sharedActorQueue": true,
+          "autoPriority": "ULTIMATE_BEFORE_ACTIVE",
+          "consumeAt": "CAST_ACCEPTANCE",
+          "casterAttackSnapshotAt": "FIRST_EFFECT",
+          "basicChargeFromSkills": false,
+          "fixedIntervalsUseAttackSpeed": false,
+          "preserveCooldownAcrossNodes": true,
+          "preserveCommittedProjectiles": true
+        },
+        "skills": [
+          {
+            "id": "op_eve.active",
+            "effect": "SENTRY_CREATE",
+            "cooldownMs": 18000,
+            "windupMs": 500,
+            "recoveryMs": 300,
+            "hpFromCasterMaxHpBps": 5000,
+            "minimumHp": 1,
+            "damageBps": 4000,
+            "intervalMs": 800,
+            "lifeMs": 12000,
+            "firstShot": "AT_SPAWN",
+            "maximumInstances": 1,
+            "target": "OWN_LIVE_CAR_DEFENSE_ZONE",
+            "shield": 0,
+            "inheritCasterDefense": false,
+            "downBehavior": "PAUSE_FIRE_KEEP_EXPIRY_NO_CATCH_UP",
+            "endAt": "HP_ZERO_CAR_DESTROYED_NODE_OR_RUN_END",
+            "defense": 0
+          },
+          {
+            "id": "op_eve.ultimate",
+            "effect": "SENTRY_ENHANCE_OR_CREATE",
+            "cost": 100,
+            "windupMs": 500,
+            "recoveryMs": 300,
+            "damageBps": 6000,
+            "intervalMs": 400,
+            "enhancementMs": 8000,
+            "fallbackLifeMs": 12000,
+            "maximumInstances": 1,
+            "alreadyEnhanced": "REJECT_WITHOUT_SPEND",
+            "existingHpAndLife": "PRESERVE",
+            "nextScheduledShot": "PRESERVE",
+            "enhancementExpiry": "MIN_ENHANCEMENT_AND_DEVICE_EXPIRY"
+          },
+          {
+            "id": "op_sera.active",
+            "effect": "HEAL_ONE",
+            "cooldownMs": 12000,
+            "windupMs": 400,
+            "recoveryMs": 300,
+            "healBps": 16000,
+            "target": "LIVING_INJURED_LOWEST_HP_RATIO_SLOT_ID_INCLUDING_SELF",
+            "lockTargetAt": "ACCEPTANCE",
+            "retarget": false,
+            "overheal": "DISCARD"
+          },
+          {
+            "id": "op_sera.ultimate",
+            "effect": "HEAL_AND_RECOVERY",
+            "cost": 100,
+            "windupMs": 600,
+            "recoveryMs": 400,
+            "healBps": 20000,
+            "target": "SNAPSHOT_LIVING_INJURED_AND_ONE_ELIGIBLE_DOWN",
+            "recoveryReductionMs": 4000,
+            "minimumRemainingMs": 1000,
+            "recoveryLimit": "ONCE_PER_DOWN_EVENT_ACROSS_CASTERS",
+            "recoveryTarget": "LONGEST_REMAINING_SLOT_ID",
+            "markReduction": "ONLY_WHEN_ACTUALLY_REDUCED",
+            "retarget": false
+          },
+          {
+            "id": "op_mira.active",
+            "effect": "FIXED_TARGET_BURST",
+            "cooldownMs": 10000,
+            "windupMs": 300,
+            "recoveryMs": 300,
+            "damageBps": 4500,
+            "shots": 6,
+            "intervalMs": 200,
+            "firstShot": "WINDUP_END",
+            "invalidTarget": "CANCEL_REMAINING_NO_RETARGET",
+            "source": "DIRECT_SKILL",
+            "perShotCastTrigger": false
+          },
+          {
+            "id": "op_mira.ultimate",
+            "effect": "CYCLING_TARGET_BURST",
+            "cost": 100,
+            "windupMs": 500,
+            "recoveryMs": 400,
+            "damageBps": 4000,
+            "shots": 16,
+            "intervalMs": 250,
+            "firstShot": "WINDUP_END",
+            "target": "FOCUS_FIRST_THEN_STABLE_ORDER_PER_CYCLE",
+            "noTargets": "CANCEL_REMAINING",
+            "focusChange": "NEXT_CYCLE",
+            "newEnemy": "NEXT_SHOT",
+            "source": "DIRECT_SKILL",
+            "perShotCastTrigger": false
+          }
+        ],
+        "passives": [
+          {
+            "operatorId": "op_kyle",
+            "source": "SELF_HP_STRICTLY_BELOW_HALF",
+            "group": "CONDITIONAL_FLAT_DEF_AFTER_STAT_MULTIPLIERS",
+            "valueFlat": 83
+          },
+          {
+            "operatorId": "op_reina",
+            "source": "DAMAGE_TO_VALID_MARKED_TARGET",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_eve",
+            "source": "OWN_SENTRY",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_sera",
+            "source": "OWN_HEAL",
+            "group": "HEAL_MAGNITUDE",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_mira",
+            "source": "OWN_BASIC",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          }
+        ],
+        "effectRules": {
+          "equipmentDirectDamage": "ADDITIVE_WITHIN_GROUP_SEPARATE_MULTIPLIER",
+          "nonEquipmentOutgoingCapBps": 3000,
+          "strongestMarkCapBps": 2000,
+          "automaticMagnitudeApplications": 1,
+          "unknownSourceOrGroup": "PUBLICATION_BLOCKED",
+          "ordinaryFloor": "ONCE_AFTER_DEFENSE_BEFORE_SHIELD",
+          "worldScoreFloor": "ONCE_AFTER_EXACT_VALID_HIT_SUM",
+          "worldNumericEncoding": "CONTRACT_PENDING",
+          "roleOwnership": "EXPLICIT_SOURCE_OWNER_REQUIRED_NO_PARTNER_DUPLICATION"
+        },
+        "numericDefense": {
+          "budgetVersion": "combat.numeric-defense-budget.v1",
+          "scope": "ORDINARY_AND_STORY_ONLY",
+          "k": 1000,
+          "operatorBase": {
+            "op_kyle": 250,
+            "op_reina": 53,
+            "op_eve": 53,
+            "op_sera": 87,
+            "op_mira": 111
+          },
+          "operatorLevelGrowth": "FIXED",
+          "weakening": "STRONGEST",
+          "weakeningCapBps": 3000,
+          "penetration": "ADDITIVE",
+          "penetrationCapBps": 6000,
+          "equipmentReductionCapBps": 5000,
+          "guardStance": "STRONGEST",
+          "independentReduction": "MULTIPLICATIVE_ONCE_PER_GROUP",
+          "unknownDefinition": "PUBLICATION_BLOCKED_NO_DEFAULT_DEF",
+          "legacyArmorConversion": "FORBIDDEN"
+        },
+        "equipmentTiming": {
+          "skillHasteByStarBps": [
+            500,
+            1200,
+            3000,
+            7000,
+            15000
+          ],
+          "attackSpeedByStarBps": [
+            500,
+            1200,
+            3000,
+            7000,
+            15000
+          ],
+          "sameWearerGroup": "ADDITIVE",
+          "skillHasteCapBps": null,
+          "equipmentAttackSpeedCapBps": null,
+          "cooldown": "BASE_DIVIDED_BY_ONE_PLUS_HASTE_THEN_ELIGIBLE_REDUCTION_GROUPS",
+          "rounding": "CEIL_FINAL_TO_LOGICAL_TICK",
+          "preserveOtherGroupCaps": true,
+          "affectsUltimateCharge": false,
+          "affectsCommanderCooldown": false,
+          "affectsFixedIntervals": false,
+          "affectsWindupOrRecovery": false
+        },
+        "shieldRules": {
+          "directRecipientMaxHpCapBps": null,
+          "sameSourceIdentity": "CASTER_ABILITY_EFFECT",
+          "sameSource": "REPLACE_IF_NEW_AMOUNT_AT_LEAST_REMAINING_OTHERWISE_NO_CHANGE",
+          "preserveExplicitExceptions": true,
+          "generateBeforeRecipientModifiers": true,
+          "offensiveDamageCritPenetrationModifiers": false
+        }
+      },
+      "operators": [
+        {
+          "operatorId": "op_kyle",
+          "role": "OPERATOR",
+          "passive": {
+            "operatorId": "op_kyle",
+            "source": "SELF_HP_STRICTLY_BELOW_HALF",
+            "group": "CONDITIONAL_FLAT_DEF_AFTER_STAT_MULTIPLIERS",
+            "valueFlat": 83
+          },
+          "abilities": [
+            {
+              "id": "op_kyle.active",
+              "effect": "SHIELD_AND_TAUNT",
+              "cooldownMs": 18000,
+              "windupMs": 350,
+              "recoveryMs": 300,
+              "shieldCasterHpBps": 1800,
+              "shieldDurationMs": 6000,
+              "tauntDurationMs": 4000,
+              "maximumFrontTargets": 2
+            },
+            {
+              "id": "op_kyle.ultimate",
+              "effect": "SHIELD_LIVING_ALL",
+              "cost": 100,
+              "windupMs": 600,
+              "recoveryMs": 300,
+              "shieldCasterHpBps": 2200,
+              "shieldDurationMs": 8000
+            }
+          ]
+        },
+        {
+          "operatorId": "op_reina",
+          "role": "OPERATOR",
+          "passive": {
+            "operatorId": "op_reina",
+            "source": "DAMAGE_TO_VALID_MARKED_TARGET",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          "abilities": [
+            {
+              "id": "op_reina.active",
+              "effect": "DIRECT_DAMAGE",
+              "cooldownMs": 14000,
+              "windupMs": 450,
+              "recoveryMs": 300,
+              "damageBps": 40000
+            },
+            {
+              "id": "op_reina.ultimate",
+              "effect": "DIRECT_DAMAGE",
+              "cost": 100,
+              "windupMs": 800,
+              "recoveryMs": 300,
+              "damageBps": 100000
+            }
+          ]
+        },
+        {
+          "operatorId": "op_eve",
+          "role": "OPERATOR",
+          "passive": {
+            "operatorId": "op_eve",
+            "source": "OWN_SENTRY",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          "abilities": [
+            {
+              "id": "op_eve.active",
+              "effect": "SENTRY_CREATE",
+              "cooldownMs": 18000,
+              "windupMs": 500,
+              "recoveryMs": 300,
+              "hpFromCasterMaxHpBps": 5000,
+              "minimumHp": 1,
+              "damageBps": 4000,
+              "intervalMs": 800,
+              "lifeMs": 12000,
+              "firstShot": "AT_SPAWN",
+              "maximumInstances": 1,
+              "target": "OWN_LIVE_CAR_DEFENSE_ZONE",
+              "shield": 0,
+              "inheritCasterDefense": false,
+              "downBehavior": "PAUSE_FIRE_KEEP_EXPIRY_NO_CATCH_UP",
+              "endAt": "HP_ZERO_CAR_DESTROYED_NODE_OR_RUN_END",
+              "defense": 0
+            },
+            {
+              "id": "op_eve.ultimate",
+              "effect": "SENTRY_ENHANCE_OR_CREATE",
+              "cost": 100,
+              "windupMs": 500,
+              "recoveryMs": 300,
+              "damageBps": 6000,
+              "intervalMs": 400,
+              "enhancementMs": 8000,
+              "fallbackLifeMs": 12000,
+              "maximumInstances": 1,
+              "alreadyEnhanced": "REJECT_WITHOUT_SPEND",
+              "existingHpAndLife": "PRESERVE",
+              "nextScheduledShot": "PRESERVE",
+              "enhancementExpiry": "MIN_ENHANCEMENT_AND_DEVICE_EXPIRY"
+            }
+          ]
+        },
+        {
+          "operatorId": "op_sera",
+          "role": "OPERATOR",
+          "passive": {
+            "operatorId": "op_sera",
+            "source": "OWN_HEAL",
+            "group": "HEAL_MAGNITUDE",
+            "valueBps": 1000
+          },
+          "abilities": [
+            {
+              "id": "op_sera.active",
+              "effect": "HEAL_ONE",
+              "cooldownMs": 12000,
+              "windupMs": 400,
+              "recoveryMs": 300,
+              "healBps": 16000,
+              "target": "LIVING_INJURED_LOWEST_HP_RATIO_SLOT_ID_INCLUDING_SELF",
+              "lockTargetAt": "ACCEPTANCE",
+              "retarget": false,
+              "overheal": "DISCARD"
+            },
+            {
+              "id": "op_sera.ultimate",
+              "effect": "HEAL_AND_RECOVERY",
+              "cost": 100,
+              "windupMs": 600,
+              "recoveryMs": 400,
+              "healBps": 20000,
+              "target": "SNAPSHOT_LIVING_INJURED_AND_ONE_ELIGIBLE_DOWN",
+              "recoveryReductionMs": 4000,
+              "minimumRemainingMs": 1000,
+              "recoveryLimit": "ONCE_PER_DOWN_EVENT_ACROSS_CASTERS",
+              "recoveryTarget": "LONGEST_REMAINING_SLOT_ID",
+              "markReduction": "ONLY_WHEN_ACTUALLY_REDUCED",
+              "retarget": false
+            }
+          ]
+        },
+        {
+          "operatorId": "op_mira",
+          "role": "OPERATOR",
+          "passive": {
+            "operatorId": "op_mira",
+            "source": "OWN_BASIC",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          "abilities": [
+            {
+              "id": "op_mira.active",
+              "effect": "FIXED_TARGET_BURST",
+              "cooldownMs": 10000,
+              "windupMs": 300,
+              "recoveryMs": 300,
+              "damageBps": 4500,
+              "shots": 6,
+              "intervalMs": 200,
+              "firstShot": "WINDUP_END",
+              "invalidTarget": "CANCEL_REMAINING_NO_RETARGET",
+              "source": "DIRECT_SKILL",
+              "perShotCastTrigger": false
+            },
+            {
+              "id": "op_mira.ultimate",
+              "effect": "CYCLING_TARGET_BURST",
+              "cost": 100,
+              "windupMs": 500,
+              "recoveryMs": 400,
+              "damageBps": 4000,
+              "shots": 16,
+              "intervalMs": 250,
+              "firstShot": "WINDUP_END",
+              "target": "FOCUS_FIRST_THEN_STABLE_ORDER_PER_CYCLE",
+              "noTargets": "CANCEL_REMAINING",
+              "focusChange": "NEXT_CYCLE",
+              "newEnemy": "NEXT_SHOT",
+              "source": "DIRECT_SKILL",
+              "perShotCastTrigger": false
+            }
+          ]
+        }
+      ],
+      "requiredEffectKinds": [
+        "CYCLING_TARGET_BURST",
+        "DIRECT_DAMAGE",
+        "FIXED_TARGET_BURST",
+        "HEAL_AND_RECOVERY",
+        "HEAL_ONE",
+        "SENTRY_CREATE",
+        "SENTRY_ENHANCE_OR_CREATE",
+        "SHIELD_AND_TAUNT",
+        "SHIELD_LIVING_ALL"
+      ],
+      "effectiveStatProfiles": null,
+      "startSnapshot": null,
+      "effectRuntime": null,
+      "missingRuntimeInputs": [
+        "ENTITY_ID_OWNER_FACTION_PLACEMENT_AND_CAPABILITIES",
+        "HP_ATTACK_GROWTH_EQUIPMENT_RESEARCH_AND_MODIFIER_PROVENANCE",
+        "ELIGIBLE_SOURCE_OWNER_TARGET_IDS_AND_EFFECT_GROUPS",
+        "ACCEPTANCE_TARGET_LOCK_ACTION_QUEUE_AND_EFFECT_EVENT_IDENTITY",
+        "VITALS_SHIELD_DOWN_RECOVERY_COOLDOWN_AND_ULTIMATE_STATE",
+        "ENEMY_WAVE_TARGET_RANGE_AND_OPERATION_DEFINITIONS",
+        "PINNED_START_CHECKPOINT_AND_RESULT_REPLAY_BINDING"
+      ]
+    }
+  },
+  "attack": {
+    "version": "unity.combat-b.gunner-intercept-local-input.v1.20261004",
+    "provenance": "LOCAL_APPROVED_INTERCEPT_NOT_ADMITTED_ABILITY",
+    "formation": {
+      "version": "unity.combat-b.formation-local.v1",
+      "trainId": "train",
+      "mode": "Solo",
+      "battlefield": "ExternalVertical",
+      "internalNodeId": null,
+      "slots": [
+        {
+          "carriageId": "private-car-5",
+          "operatorId": "op_kyle"
+        }
+      ]
+    },
+    "ownedProfileHash": "sha256:0befbcee7b097e2fb0d4c32b12fd929c64c27ff2db4a892ce224bb28524c71d8",
+    "definitionHash": "sha256:49a0f88a5f2c2a28f626d32dff383a68de1c54f6acf2284557a6f7368713ad34",
+    "stepTimeSpanTicks": 20000,
+    "entities": [
+      {
+        "id": "train",
+        "definitionId": "LOCAL_ORIGINAL_train",
+        "kind": "TRAIN",
+        "slot": 0,
+        "maxHp": 5000,
+        "attack": null,
+        "defense": {
+          "numerator": "111",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 0,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": []
+      },
+      {
+        "id": "private-car-5",
+        "definitionId": "LOCAL_ORIGINAL_car0",
+        "kind": "CARRIAGE",
+        "slot": 0,
+        "maxHp": 1000,
+        "attack": null,
+        "defense": {
+          "numerator": "87",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 0,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": []
+      },
+      {
+        "id": "op_kyle",
+        "definitionId": "op_kyle",
+        "kind": "OPERATOR",
+        "slot": 0,
+        "maxHp": 1000000,
+        "attack": {
+          "numerator": "50000",
+          "denominator": "1"
+        },
+        "defense": {
+          "numerator": "250",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 10000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "LOCAL_ENEMY"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:0",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 472,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:1",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 472,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:2",
+        "definitionId": "enemy_spike_cart_gunner",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 377,
+        "attack": {
+          "denominator": "1",
+          "numerator": "20"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 2000000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:3",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 472,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:4",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 471,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:5",
+        "definitionId": "enemy_spike_cart_gunner",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 377,
+        "attack": {
+          "denominator": "1",
+          "numerator": "20"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 2000000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:6",
+        "definitionId": "enemy_spike_cart_gunner",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 377,
+        "attack": {
+          "denominator": "1",
+          "numerator": "20"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 2000000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:7",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 471,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:0",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 514,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:1",
+        "definitionId": "enemy_spike_cart_gunner",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 411,
+        "attack": {
+          "denominator": "1",
+          "numerator": "20"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 2000000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:2",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 513,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:3",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 513,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:4",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 513,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:5",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 513,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      },
+      {
+        "id": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:6",
+        "definitionId": "enemy_raider_scout",
+        "kind": "LOCAL_ENEMY",
+        "slot": 0,
+        "maxHp": 513,
+        "attack": {
+          "denominator": "1",
+          "numerator": "24"
+        },
+        "defense": {
+          "numerator": "53",
+          "denominator": "1"
+        },
+        "basicIntervalMicroseconds": 1600000,
+        "attackSources": [],
+        "defenseSources": [],
+        "effects": [],
+        "weakening": [],
+        "penetration": [],
+        "reductions": {
+          "equipment": [],
+          "guardStance": [],
+          "independent": []
+        },
+        "allowedTargets": [
+          "OPERATOR"
+        ]
+      }
+    ],
+    "geometry": [
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:0",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:1",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:2",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 24000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:3",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:4",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:5",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 24000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:6",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 24000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:7",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:0",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:1",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 24000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:2",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:3",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:4",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:5",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:6",
+        "targetId": "op_kyle",
+        "sourceSlot": 0,
+        "targetSlot": 0,
+        "distanceMm": 6000,
+        "maximumDistanceMm": 1000,
+        "observedTick": 0,
+        "validUntilTick": 1000000,
+        "eligible": true
+      }
+    ],
+    "initialShields": [],
+    "sourceEvidence": [
+      {
+        "sourceId": "REFERENCE_ONLY:ce03.enemy_scrapshield_brute.HP_ATK_PERIOD_NOT_ARMOR_AI",
+        "sha256": "66451f6948acc0d112864aaad0d95a3f0673993612ce691825727d1c305e263f"
+      },
+      {
+        "sourceId": "LOCAL_DISTANCE_500_RANGE_1000_DEF500_NOT_OPERATIONAL",
+        "sha256": "9ddb8084a4619d30eff00fa7ac72cf31324d7569f70c6c315ad5c2cc85e430d2"
+      },
+      {
+        "sourceId": "U27_EXPLICIT_GEOMETRY_STRESS_PROFILE_NOT_OPERATING_STATS",
+        "sha256": "0befbcee7b097e2fb0d4c32b12fd929c64c27ff2db4a892ce224bb28524c71d8"
+      }
+    ],
+    "waveSourceHash": "b16436d17818e5f52c57f62b5b589315a91279db02bd71d9770d956ca87bcf94"
+  },
+  "composition": {
+    "version": "unity.combat-b.wave-buff-binding-local.v1.20261004",
+    "provenance": "BOUNDED_LOCAL_NOT_FULL_RUN",
+    "attackInputHash": "sha256:ff53b0ea7e0cd6cef306a3f57a89af090b51250e7ee320c5f712f495d6e8d846",
+    "definitionHash": "8e7e24e196b0605257014210dab9c71a9136c380e5b793f9215066ed99c75160",
+    "departure": {
+      "accountId": "a",
+      "cars": [
+        {
+          "carriageId": "private-type",
+          "instanceId": "private-car-5",
+          "occupant": {
+            "kind": "OPERATOR",
+            "operatorId": "op_kyle"
+          },
+          "rank": 5,
+          "slot": 0,
+          "type": "BCB03"
+        }
+      ],
+      "rankRevision": 1,
+      "selectionRevision": 1,
+      "sourceStatus": "ISOLATED_LOCAL_FIXTURE",
+      "version": "combat.b-carriage-buffs.v1.20261002"
+    },
+    "initial": {
+      "cars": [
+        {
+          "actor": "UP",
+          "body": "NORMAL",
+          "slot": 0
+        }
+      ],
+      "contextId": "LOCAL_SOURCE_OWNER_CONTEXT_NOT_RUN_ID_19",
+      "mode": "EXTERIOR"
+    },
+    "targetCategories": [
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:0",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:1",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:2",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:3",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:4",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:5",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:6",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:7",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:0",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:1",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:2",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:3",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:4",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:5",
+        "category": "ENEMY"
+      },
+      {
+        "targetId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:6",
+        "category": "ENEMY"
+      }
+    ]
+  },
+  "routes": {
+    "version": "unity.combat-b.wave-loop-binding-local.v1.20261004",
+    "provenance": "BOUNDED_LOCAL_NOT_FULL_RUN",
+    "compositionHash": "sha256:0081a4e3aab0a8e3910ef2c2d1ae21f59470f232eaf69eeea9e38a6bf067de6b",
+    "targets": [
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:0",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:1",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:2",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:3",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:4",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:5",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:6",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:94f769b62b92970f307a2553fe6f6ee1046e8e89df585a7c4f29381691d51032:7",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:0",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:1",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:2",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:3",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:4",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:5",
+        "targetId": "op_kyle"
+      },
+      {
+        "sourceId": "B4:4bd9630e7a7acad20030bf3f4880cd7444192bd66c70ef86a0c01952263f2f18:6",
+        "targetId": "op_kyle"
+      }
+    ]
+  },
+  "geometryDefinition": {
+    "version": "unity.combat-b.geometry-test-model.v1.20261004",
+    "assetId": "ordinary-b-test-carriage-v1",
+    "provenance": "TEST_JUDGEMENT_MODEL_NOT_ART_DIMENSIONS",
+    "dimensionSource": "44 v09 approved explicit test model; no approved ordinary B art dimensions supplied. 48000mm length deliberately covers 6/12/24m firing probes.",
+    "operatorProbeSpeedMmPerSecond": 1800,
+    "operatorMovementSource": "EXPLICIT_TEST_PROBE_NOT_OPERATING_OPERATOR_PROFILE",
+    "bodyMinMm": [
+      -24000,
+      0,
+      -1500
+    ],
+    "bodyMaxMm": [
+      24000,
+      2400,
+      1500
+    ],
+    "roofMinMm": [
+      -24000,
+      2400,
+      -1400
+    ],
+    "roofMaxMm": [
+      24000,
+      2400,
+      1400
+    ],
+    "actorMm": [
+      0,
+      2400,
+      0
+    ],
+    "fireMm": [
+      0,
+      2400,
+      0
+    ],
+    "hitMm": [
+      0,
+      2400,
+      0
+    ],
+    "backMm": [
+      -24000,
+      2400,
+      0
+    ],
+    "frontMm": [
+      24000,
+      2400,
+      0
+    ],
+    "left": {
+      "socketId": "left",
+      "approachMm": [
+        [
+          0,
+          0,
+          -2300
+        ],
+        [
+          0,
+          0,
+          -1500
+        ]
+      ],
+      "climbMm": [
+        [
+          0,
+          0,
+          -1500
+        ],
+        [
+          0,
+          2400,
+          -1500
+        ],
+        [
+          0,
+          2400,
+          0
+        ]
+      ]
+    },
+    "right": {
+      "socketId": "right",
+      "approachMm": [
+        [
+          0,
+          0,
+          2300
+        ],
+        [
+          0,
+          0,
+          1500
+        ]
+      ],
+      "climbMm": [
+        [
+          0,
+          0,
+          1500
+        ],
+        [
+          0,
+          2400,
+          1500
+        ],
+        [
+          0,
+          2400,
+          0
+        ]
+      ]
+    },
+    "gunnerAnchorsMm": [
+      [
+        6000,
+        2400,
+        0
+      ]
+    ],
+    "scoutAnchorMm": [
+      900,
+      2400,
+      0
+    ],
+    "obstacles": []
+  },
+  "geometryInstances": {
+    "version": "unity.combat-b.geometry-instances-test.v1.20261004",
+    "geometryHash": "sha256:72f53d23b9ed950c8ddcb047ab1b5dd20bc463ee87f6843d5bc1303626b9449f",
+    "inputHash": "sha256:ff53b0ea7e0cd6cef306a3f57a89af090b51250e7ee320c5f712f495d6e8d846",
+    "sourceRevision": 1,
+    "instances": [
+      {
+        "slot": 0,
+        "carriageId": "private-car-5",
+        "sourceDefinitionId": "private-type",
+        "generation": 1,
+        "positionMm": [
+          0,
+          0,
+          0
+        ],
+        "yawQuarterTurns": 0
+      }
+    ],
+    "connections": []
+  }
+}

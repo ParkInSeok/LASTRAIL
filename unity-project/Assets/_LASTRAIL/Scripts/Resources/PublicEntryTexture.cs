@@ -41,7 +41,7 @@ namespace LastRail.Resources
             try
             {
 #if UNITY_EDITOR
-                if(EditorLoad==null&&PreparedContent.EditorAsset!=null){render(PreparedContent.EditorAsset(Path(key),typeof(Texture2D)) as Texture2D);return;}
+                if(!Application.isPlaying&&EditorLoad==null&&PreparedContent.EditorAsset!=null){render(PreparedContent.EditorAsset(Path(key),typeof(Texture2D)) as Texture2D);return;}
                 if(EditorLoad==null&&!await IsCachedAsync(CancellationToken.None)){if(stamp==generation)render(null);return;}
 #else
                 if(!await IsCachedAsync(CancellationToken.None)){if(stamp==generation)render(null);return;}
@@ -66,7 +66,7 @@ namespace LastRail.Resources
         public static async Task<bool> IsCachedAsync(CancellationToken cancel)
         {
 #if UNITY_EDITOR
-            if(PreparedContent.EditorAsset!=null)return true;
+            if(!Application.isPlaying&&PreparedContent.EditorAsset!=null)return true;
 #endif
             await PreparedContent.InitializePublicEntryAsync(cancel);
             var handle=Addressables.GetDownloadSizeAsync(Label);

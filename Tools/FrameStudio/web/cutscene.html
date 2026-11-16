@@ -1,0 +1,37 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FrameStudio · 컷씬 편집</title><link rel="stylesheet" href="/cutscene.css">
+<header><a id="back" href="/">← 프레임 제작</a><h1>컷씬 편집</h1><a id="motion" href="/animation">동작 제작 →</a><p id="projectName"></p></header>
+<iframe title="닉스 파츠 추출 진행률" src="/parts-progress" style="display:block;width:calc(100% - 32px);height:280px;border:0;margin:16px" loading="eager"></iframe>
+<main>
+<section class="monitor"><video id="player" controls playsinline loop preload="metadata" aria-label="컷씬 미리보기"></video>
+<p id="previewState">미리보기를 만들면 영상과 소리를 함께 확인할 수 있습니다.</p>
+<div class="buttons"><button id="restart">처음부터 재생</button><button id="skip">현재 편 종료</button><label><input id="loop" type="checkbox" checked>반복</label></div>
+<p class="hint">저장한 시간표를 실제 영상으로 합성해 재생합니다. 미리보기는 축소 해상도, 완성 파일은 장면의 가로·세로 규격 · 30fps로 출력합니다. 원본 영상의 소리는 자동으로 섞지 않습니다. 필요한 음원은 별도 트랙에 넣으세요.</p>
+<p id="status" role="status">프로젝트 여는 중…</p><progress id="progress" max="1" value="0"></progress>
+<div class="buttons"><button id="save">편집 저장</button><button id="preview">미리보기 만들기</button><button id="export" class="primary">완성 MP4 출력</button><button id="cancel">출력 중단</button></div>
+<a id="download" hidden download>출력 MP4 다운로드</a>
+<details><summary>정확한 출력 버전</summary><pre id="version"></pre></details>
+</section>
+<section class="edit">
+<h2>미디어와 시간표</h2><p><a id="aiVideo" href="/video-generation">로컬 AI로 동작 영상 생성 →</a></p><label class="import">영상·이미지·음원 추가<input id="files" type="file" multiple accept=".png,.jpg,.jpeg,.mp4,.mov,.webm,.wav,.mp3,.ogg,.m4a"></label>
+<p class="hint">파일당 최대512MB, 영상·음원10분 이하. 원본을 보존한 복사본을 프로젝트에 등록합니다.</p>
+<div class="settings"><label>전체 길이(초)<input id="duration" type="number" min=".034" max="60" step=".033333"></label>
+<label>작업 구분<select id="label"><option>콘티 검토본</option><option>동작 영상 후보</option><option>사용자 승인본</option></select></label>
+<label>BGM 음량<input id="bgm" type="range" min="0" max="1" step=".01"></label><label>효과음 음량<input id="sfx" type="range" min="0" max="1" step=".01"></label></div>
+<p class="hint">작업 구분은 편집자가 적는 표시이며 게임 적용·미술 승인 판정을 대신하지 않습니다. 음량 변경은 다음 미리보기/출력에 반영됩니다.</p>
+<div class="buttons"><select id="media" aria-label="등록 미디어"></select><select id="track" aria-label="추가 트랙"><option value="visual">화면</option><option value="BGM">BGM</option><option value="SFX">효과음</option></select><button id="viewMedia" type="button">선택 원본 보기</button><button id="viewOutput" type="button">편집 출력 보기</button><button id="add">트랙에 배치</button></div>
+<div id="ruler" aria-label="트랙 배치도"></div><div class="table-wrap"><table><thead><tr><th>선택</th><th>트랙 / 미디어</th><th>시작</th><th>길이</th></tr></thead><tbody id="clips"></tbody></table></div>
+<form id="clipForm" hidden><h2>선택 클립</h2><p id="clipName"></p>
+<div class="settings">
+<label>배치 시작(초)<input name="start" type="number" min="0" step=".033333"></label><label>길이(초)<input name="length" type="number" min=".033333" step=".033333"></label>
+<label>원본에서 시작(초)<input name="source" type="number" min="0" step=".033333"></label><label>클립 음량<input name="gain" type="number" min="0" max="2" step=".05"></label>
+<label>페이드 인(초)<input name="fade_in" type="number" min="0" step=".033333"></label><label>페이드 아웃(초)<input name="fade_out" type="number" min="0" step=".033333"></label>
+<label>시작 가로 위치<input name="x" type="number" min="-1" max="2" step=".01"></label><label>끝 가로 위치<input name="end_x" type="number" min="-1" max="2" step=".01"></label>
+<label>시작 세로 위치<input name="y" type="number" min="-1" max="2" step=".01"></label><label>끝 세로 위치<input name="end_y" type="number" min="-1" max="2" step=".01"></label>
+<label>시작 확대<input name="scale" type="number" min=".1" max="3" step=".01"></label><label>끝 확대<input name="end_scale" type="number" min=".1" max="3" step=".01"></label>
+<label>불투명도<input name="opacity" type="number" min="0" max="1" step=".05"></label>
+</div><p class="hint">위치0.5는 화면 중앙, 확대1은 원본 비율을 유지해 화면 안에 맞춥니다. 시작→끝 값은 클립 시간 동안 선형으로 변합니다. 화면 트랙은 목록 아래 클립이 위에 겹칩니다.</p>
+<div class="buttons"><button type="button" id="up">위로</button><button type="button" id="down">아래로</button><button type="button" id="remove">클립 삭제</button></div></form>
+</section></main><script defer src="/cutscene-editor.js"></script></html>
+
+

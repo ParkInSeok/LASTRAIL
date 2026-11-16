@@ -1,0 +1,19 @@
+{
+  "scope": "EXPLICIT_LOCAL_AU01_TRIAL_NOT_FINAL_MIX",
+  "bgmOriginal": "D:/Project/LASTRAIL/QA/AudioProduction-20261020/battle-music-v03/approved-original.mp3",
+  "bgmHash": "0d2f3aaa22670abdf1adea57c2d550aaf479624f3cfe3fff7beb719650d1d451",
+  "bgmApproval": "battle-music.approved.v03.20261020",
+  "loopSeamVerified": false,
+  "bgmTrialShorterThanFirstLoop": true,
+  "hit": "Assets/_LASTRAIL/QA/BMeasuredAcquisition/20261020-153907-53de39096dab4b28beb5a27e1bcc0f64/trial-contact-C.wav",
+  "hitHash": "b434e431f78efa98e06c2d1998d1c3e2e30022cf1c4615dbb5248b5440f3bd43",
+  "heal": "Assets/_LASTRAIL/Audio/Sfx/Combat/combat_heal.wav",
+  "healHash": "1f1763ec082835d4c825ab5baac5077296026c370190f763aaedd3cbc216b099",
+  "contactOriginal": "D:/Project/LASTRAIL/QA/AudioProduction-20261020/hit-local-v03/C.wav",
+  "contactApproval": "hit-local-v03/verification.json: C가 낫네 이걸로 승인; timbre only",
+  "effectsStatus": "APPROVED_C_CONTACT_TIMBRE_LOCAL_MAPPING_TRIAL_AND_PLACEHOLDER_HEAL",
+  "sourceGain": 0.5,
+  "gainStatus": "TEMPORARY_TRIAL_NOT_APPROVED_TUNING",
+  "spatialPolicy": "NEUTRAL_LOCAL_ONLY_NO_ORIGINAL_EVENT_POINT",
+  "operatingAdmission": false
+}

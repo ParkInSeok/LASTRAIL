@@ -29,7 +29,7 @@ namespace LastRail.Tests.EditMode
     var pages=LobbyDestinationPages.Create(root.transform,UnityEditor.AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_LASTRAIL/UI/StartupResources/BootstrapFont.asset"),()=>{});pages.BindAccount(state);pages.Open(LobbyPage.Formation);
     Assert.AreEqual(5,root.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("FormationSlot")));
     pages.RefreshAccountView(state);pages.RefreshAccountView(state);int reads=wire.Reads;
-    Find(root,"AssignOwned0").onClick.Invoke();Find(root,"FormationSlot4").onClick.Invoke();
+    Find(root,"AssignOwned1").onClick.Invoke();Find(root,"FormationSlot4").onClick.Invoke();
     Assert.AreEqual("op_kyle",state.Formation.Selection[4]);Assert.AreEqual("op_nyx",state.Formation.Selection[0]);Assert.AreEqual(5,state.Formation.Selection.Distinct().Count());
     Assert.AreSame(FormationPlanView.Portrait("op_kyle"),Find(root,"FormationSlot4").transform.Find("Portrait").GetComponent<RawImage>().texture);Assert.AreEqual(reads,wire.Reads);
     var stale=Find(root,"FormationSlot0").onClick;var before=state.Formation.Selection;pages.Close();stale.Invoke();Assert.AreEqual(before,state.Formation.Selection);

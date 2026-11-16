@@ -18,3 +18,10 @@ obj/
 *.pfx
 *.pem
 *.key
+
+# Local verification output, not source
+/server/audit-results/
+/homepage/qa/
+**/__pycache__/
+*.pyc
+*.log

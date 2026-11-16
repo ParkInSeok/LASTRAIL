@@ -20,10 +20,12 @@ public sealed class EquipmentAddressableTests {
  [Test] public async Task DisposedLeaseDropsItsTextureReference(){var texture=new Texture2D(1,1);try{var pool=new EquipmentIconResources(()=>Task.FromResult(texture),_=>{});var lease=await pool.AcquireAsync();lease.Dispose();Assert.IsNull(lease.Texture);}finally{Object.DestroyImmediate(texture);}}
 
  public static async Task<AddressableContentBackend> LocalBackend(){
-  var backend=new AddressableContentBackend(null,true,source:ContentResourceSource.EditorLocal);
+  using var timeout=new System.Threading.CancellationTokenSource(System.TimeSpan.FromMinutes(5));
+  var policy=new DownloadAccessPolicy();policy.SetNetwork(ContentNetwork.Wifi);
+  var backend=new AddressableContentBackend(null,true,policy,source:ContentResourceSource.EditorLocal);
   var gate=typeof(ClientContentGate).GetMethod("Approved",System.Reflection.BindingFlags.Static|System.Reflection.BindingFlags.NonPublic).Invoke(null,new object[]{"test-release","test-version","https://unused.invalid/catalog.bin","sha256:"+new string('0',64),false});
   typeof(AddressableContentBackend).GetField("approvedGate",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).SetValue(backend,gate);
-  try{await backend.InitializeAsync(System.Threading.CancellationToken.None);await backend.UpdateCatalogAsync(System.Threading.CancellationToken.None);return backend;}catch{backend.Dispose();throw;}
+  try{await backend.InitializeAsync(timeout.Token);await backend.UpdateCatalogAsync(timeout.Token);await backend.RequiredBytesAsync(timeout.Token);await backend.DownloadAsync((a,b)=>{},timeout.Token);return backend;}catch{backend.Dispose();throw;}
  }
  [Test] public void UnapprovedBackendCannotLoadIcons(){using(var backend=new AddressableContentBackend(null,true)){var pool=new EquipmentIconResources(backend);Assert.ThrowsAsync<System.InvalidOperationException>(async()=>await pool.AcquireAsync());}}
  [Test] public async Task FailedLoadReleasesOwnershipAndNextAttemptSucceeds(){int attempts=0,releases=0;var texture=new Texture2D(1,1);try{var pool=new EquipmentIconResources(()=>++attempts==1?Task.FromException<Texture2D>(new System.InvalidOperationException("fixture")):Task.FromResult(texture),_=>releases++);Assert.ThrowsAsync<System.InvalidOperationException>(async()=>await pool.AcquireAsync());var lease=await pool.AcquireAsync();Assert.AreSame(texture,lease.Texture);lease.Dispose();Assert.AreEqual(2,attempts);Assert.AreEqual(1,releases);}finally{Object.DestroyImmediate(texture);}}

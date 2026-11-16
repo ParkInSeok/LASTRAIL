@@ -13,6 +13,8 @@ namespace LastRail.UI
         [SerializeField] private string actionKey;
 
         private bool callbacksBound;
+        private Button[] boundButtons;
+        private UnityEngine.Events.UnityAction[] handlers;
 
         public event Action<int> SegmentSelected;
 
@@ -20,22 +22,38 @@ namespace LastRail.UI
 
         public void BindInteractionCallbacks()
         {
-            if (callbacksBound)
+            if (!isActiveAndEnabled || callbacksBound)
             {
                 return;
             }
 
-            for (var i = 0; i < segmentButtons.Length; i++)
+            boundButtons = (Button[])segmentButtons.Clone();
+            handlers = new UnityEngine.Events.UnityAction[boundButtons.Length];
+            for (var i = 0; i < boundButtons.Length; i++)
             {
                 var index = i;
-                if (segmentButtons[i] != null)
+                if (boundButtons[i] != null)
                 {
-                    segmentButtons[i].onClick.AddListener(() => HandleSegmentSelected(index));
+                    handlers[i] = () => HandleSegmentSelected(index);
+                    boundButtons[i].onClick.AddListener(handlers[i]);
                 }
             }
 
             callbacksBound = true;
         }
+
+        public void UnbindInteractionCallbacks()
+        {
+            if (!callbacksBound) return;
+            for (var i = 0; i < boundButtons.Length; i++)
+                if (boundButtons[i] != null && handlers[i] != null)
+                    boundButtons[i].onClick.RemoveListener(handlers[i]);
+            boundButtons = null;
+            handlers = null;
+            callbacksBound = false;
+        }
+
+        private void OnDisable() => UnbindInteractionCallbacks();
 
         public void SetLabels(params string[] labels)
         {
@@ -55,6 +73,7 @@ namespace LastRail.UI
 
         private void HandleSegmentSelected(int index)
         {
+            if (!isActiveAndEnabled) return;
             SegmentSelected?.Invoke(index);
         }
     }

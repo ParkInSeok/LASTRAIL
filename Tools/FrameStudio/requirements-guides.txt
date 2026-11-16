@@ -1,0 +1,2 @@
+# Optional approved-keypose interpolation, installed in runtime/venv only.
+opencv-python-headless==5.0.0.93

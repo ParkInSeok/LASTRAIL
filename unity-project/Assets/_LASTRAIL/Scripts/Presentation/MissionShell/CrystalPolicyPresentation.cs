@@ -11,6 +11,7 @@ namespace LastRail.Presentation.MissionShell
     // server adapter must supply authoritative display values and eligibility.
     public sealed class CrystalPolicyPresentation
     {
+        public void ApplyWalletResponse(int statusCode,string json)=>ApplyWalletRead(CrystalWalletRead.Parse(statusCode,json));
         private long generation;
         private string selection;
         private bool eligible;

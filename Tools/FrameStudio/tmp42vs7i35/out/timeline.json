@@ -1,0 +1,9 @@
+{
+  "durations_ms": [
+    100,
+    150,
+    200
+  ],
+  "source_frames": 3,
+  "gif_note": "GIF may merge identical consecutive exposures while preserving time. PNG frames are authoritative."
+}

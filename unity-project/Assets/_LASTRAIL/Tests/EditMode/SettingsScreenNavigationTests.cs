@@ -36,7 +36,7 @@ namespace LastRail.Tests.EditMode
                 Click("SettingsTab1");Assert.That(backend.Writes,Is.Zero,"Changing tabs must not save values");var slider=view.GetComponentsInChildren<Slider>().Single(x=>x.name=="MasterVolumeSlider");slider.value=.35f;Assert.That(backend.Writes,Is.EqualTo(1));
                 Click("MasterVolumePlus");Assert.That(backend.Writes,Is.EqualTo(2));view.Render(view.CurrentState);view.Render(view.CurrentState);Assert.That(backend.Writes,Is.EqualTo(2));
                 view.GetComponentsInChildren<Slider>().Single(x=>x.name=="VoiceVolumeSlider").value=.4f;Assert.That(backend.Writes,Is.EqualTo(2));
-                Click("SettingsTab2");Click("QualityChoice");Click("QualityOption1");Assert.That(settings.Value(LocalSetting.Quality),Is.EqualTo(1));Assert.That(backend.Writes,Is.EqualTo(3));
+                Click("SettingsTab2");Click("QualityChoice");var option=view.GetComponentsInChildren<Button>().Single(b=>b.name=="QualityOption1");Click("QualityChoice");Click("QualityChoice");Assert.AreSame(option,view.GetComponentsInChildren<Button>().Single(b=>b.name=="QualityOption1"));Click("QualityOption1");Assert.That(settings.Value(LocalSetting.Quality),Is.EqualTo(1));Assert.That(backend.Writes,Is.EqualTo(3));
                 Click("SettingsTab3");Assert.IsFalse(view.CurrentState.AccountReady);Assert.IsFalse(view.GetComponentsInChildren<Button>().Single(x=>x.name=="SettingsAccountLink").interactable);
                 var retainedPlus=view.GetComponentsInChildren<Button>(true).Single(x=>x.name=="MasterVolumePlus");
                 view.Unbind();retainedPlus.onClick.Invoke();Assert.That(backend.Writes,Is.EqualTo(3),"Unbound view cannot send a command.");

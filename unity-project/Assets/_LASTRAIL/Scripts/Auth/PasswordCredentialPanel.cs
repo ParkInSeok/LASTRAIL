@@ -18,15 +18,16 @@ namespace LastRail.Auth
         private RectTransform identityRow, emailRow, codeRow, passwordRow, confirmationRow, consents;
         private Toggle terms, privacy;
         private ScrollRect scroll;
-        private string validationMessage, renderedPage;
+        private string renderedPage;
+        private string validationMessage => screen.ValidationMessage;
+        private bool actionFailed => screen.ActionFailed;
+        private PasswordCredentialScreenController screen;
         private Button send, confirm, complete, reconcile, cancel;
         private RectTransform safe, viewport, form;
         private int shownWaitSeconds = -1;
         private CancellationTokenSource presentationDelay;
         private bool applyingLayout;
-        private bool shownExpired, actionFailed, closing;
-        // Volatile UI draft only. Never persisted or passed to email-start/confirm requests.
-        private char[] registrationPassword;
+        private bool shownExpired;
         public event Action Closed;
 
         public void Initialize(PasswordCredentialFlow flow, TMP_FontAsset font)
@@ -90,77 +91,20 @@ namespace LastRail.Auth
             gameObject.AddComponent<AuthKeyboardAvoidance>().Initialize(scroll);
             loginId.SetTextWithoutNotify(model.LoginId ?? "");
             recoveryEmail.SetTextWithoutNotify(model.RecoveryEmail ?? "");
-            if (isActiveAndEnabled) model.Changed += Render;
+            screen=new PasswordCredentialScreenController(model,Render,ClearSecretFields,()=>{Hide();Closed?.Invoke();});
+            if (isActiveAndEnabled) screen.Activate();
             Render();
         }
 
         public void Show() { gameObject.SetActive(true); Render(); }
         public void Hide() { ClearSecrets(); gameObject.SetActive(false); }
 
-        private async void SendCode()
-        {
-            if (model == null || model.Busy || !model.CanStart) return;
-            if(model.Mode=="Register"&&model.Stage==PasswordCredentialStage.Editing){
-                if(password.text.Length<8||password.text.Length>128||password.text!=confirmPassword.text){validationMessage="비밀번호 8~128자와 비밀번호 확인을 확인해 주세요.";Render();return;}
-                if(!terms.isOn||!privacy.isOn){validationMessage="이용약관과 개인정보 처리방침을 확인해 주세요.";Render();return;}
-                ClearRegistrationDraft();registrationPassword=password.text.ToCharArray();
-            }
-            var id = loginId.text; var email = recoveryEmail.text;
-            ClearSecretFields(); actionFailed = false; validationMessage = null;
-            try { await model.StartAsync(id, email); }
-            catch { actionFailed = true; }
-            if(actionFailed||!string.IsNullOrEmpty(model.ErrorCode))ClearRegistrationDraft();
-            Render();
-        }
-        private async void ConfirmCode()
-        {
-            if (model == null || model.Busy || !model.CanConfirm) return;
-            var code = verificationCode.text;
-            ClearSecretFields(); actionFailed = false; validationMessage = null;
-            try { await model.ConfirmAsync(code); }
-            catch { actionFailed = true; }
-            finally { code = null; }
-            if(actionFailed||model.Stage!=PasswordCredentialStage.Verified)ClearRegistrationDraft();
-            Render();
-        }
-        private async void CompleteCredential()
-        {
-            if (model == null || model.Busy || !model.CanComplete) return;
-            if (password.text != confirmPassword.text)
-            { validationMessage = "비밀번호와 비밀번호 확인이 일치하지 않습니다."; Render(); return; }
-            if (model.Mode != "Reset" && (!terms.isOn || !privacy.isOn))
-            { validationMessage = "이용약관과 개인정보 처리방침을 확인해 주세요."; Render(); return; }
-            validationMessage = null;
-            var secret = password.text.Length==0&&registrationPassword!=null?new string(registrationPassword):password.text; var code = verificationCode.text;
-            ClearSecrets(); actionFailed = false; validationMessage = null;
-            try { await model.CompleteAsync(secret, model.Mode == "Reset" ? code : null); }
-            catch { actionFailed = true; }
-            finally { secret = null; code = null; }
-            Render();
-        }
-        private async void ReconcileCredential()
-        {
-            if (model == null || model.Busy || !model.CanReconcile) return;
-            var secret = password.text;
-            ClearSecrets(); actionFailed = false; validationMessage = null;
-            try { await model.ReconcileAsync(secret); }
-            catch { actionFailed = true; }
-            finally { secret = null; }
-            Render();
-        }
-        private void CancelCredential()
-        {
-            if (closing) return;
-            closing = true; ClearSecrets();
-            try { model?.Cancel(); }
-            catch { actionFailed = true; }
-            finally { Hide(); }
-            try { Closed?.Invoke(); }
-            finally { closing = false; }
-        }
-        private void ClearSecrets()
-        { ClearSecretFields();ClearRegistrationDraft(); }
-        private void ClearRegistrationDraft(){if(registrationPassword!=null)Array.Clear(registrationPassword,0,registrationPassword.Length);registrationPassword=null;}
+        private async void SendCode()=>await screen.SendCodeAsync(loginId.text,recoveryEmail.text,password.text,confirmPassword.text,terms.isOn,privacy.isOn);
+        private async void ConfirmCode()=>await screen.ConfirmCodeAsync(verificationCode.text);
+        private async void CompleteCredential()=>await screen.CompleteAsync(password.text,confirmPassword.text,verificationCode.text,terms.isOn,privacy.isOn);
+        private async void ReconcileCredential()=>await screen.ReconcileAsync(password.text);
+        private void CancelCredential()=>screen?.Cancel();
+        private void ClearSecrets(){ClearSecretFields();screen?.ClearSecretDraft();}
         private void ClearSecretFields()
         {
             if (verificationCode != null) verificationCode.SetTextWithoutNotify("");
@@ -169,17 +113,17 @@ namespace LastRail.Auth
         }
         private void OnEnable()
         {
-            if (model != null) { model.Changed -= Render; model.Changed += Render; }
+            screen?.Activate();
             Render();
         }
         private void OnDisable()
         {
             CancelPresentationDelay(); ClearSecrets();
-            if (model != null) model.Changed -= Render;
+            screen?.Deactivate();
         }
-        private void OnDestroy() { CancelPresentationDelay(); ClearSecrets(); if (model != null) model.Changed -= Render; }
-        private void OnApplicationFocus(bool focused) { if (focused) Render(); }
-        private void OnApplicationPause(bool paused) { if (!paused) Render(); }
+        private void OnDestroy() { CancelPresentationDelay(); ClearSecrets(); screen?.Dispose(); }
+        private void OnApplicationFocus(bool focused) { if (focused) screen?.Refresh(); }
+        private void OnApplicationPause(bool paused) { if (!paused) screen?.Refresh(); }
         private void OnRectTransformDimensionsChange()
         {
             if (isActiveAndEnabled && cancel != null) ApplySafeArea();
@@ -201,7 +145,7 @@ namespace LastRail.Auth
                 if (this != null && isActiveAndEnabled && ReferenceEquals(presentationDelay, scheduled))
                 {
                     presentationDelay = null;
-                    Render();
+                    screen?.Refresh();
                 }
             }
             catch (OperationCanceledException) { }
@@ -220,7 +164,7 @@ namespace LastRail.Auth
             var busy = model.Busy;
             var reset = model.Mode == "Reset";
             var registrationEntry=model.Mode=="Register"&&stage=="Editing";
-            shownWaitSeconds = model.RetryWaitSeconds; shownExpired = model.ProofExpired;if(shownExpired)ClearRegistrationDraft();
+            shownWaitSeconds = model.RetryWaitSeconds; shownExpired = model.ProofExpired;
             // Rendering only changes presentation, never the user's in-progress field values.
             loginId.interactable = recoveryEmail.interactable = !busy && model.CanEdit;
             verificationCode.interactable = !busy && (model.CanConfirm || (reset && model.CanComplete));
@@ -233,7 +177,7 @@ namespace LastRail.Auth
             reconcile.interactable = !busy && model.CanReconcile;
             cancel.interactable = true;
             var passwordStep = stage == "Verified" || stage == "VerificationUncertain" || stage == "Completing" || stage == "Uncertain";
-            var useDraft=stage=="Verified"&&registrationPassword!=null;
+            var useDraft=stage=="Verified"&&screen.HasRegistrationDraft;
             ((TMP_Text)password.placeholder).text=useDraft?"입력한 비밀번호 사용 (변경 가능)":"비밀번호 입력 (8~128자)";
             ((TMP_Text)confirmPassword.placeholder).text=useDraft?"변경할 때 비밀번호 다시 입력":"비밀번호 다시 입력";
             var codeStep = stage == "AwaitingCode" || stage == "Confirming";
@@ -272,7 +216,7 @@ namespace LastRail.Auth
             if (stage == "VerificationUncertain") return "\uC778\uC99D \uC5EC\uBD80\uAC00 \uBD88\uD655\uC2E4\uD569\uB2C8\uB2E4. \uBE44\uBC00\uBC88\uD638\uB97C \uC785\uB825\uD574 \uC644\uB8CC\uB97C \uC694\uCCAD\uD558\uBA74 \uC11C\uBC84\uC5D0\uC11C \uC778\uC99D \uC5EC\uBD80\uB97C \uD655\uC778\uD569\uB2C8\uB2E4.";
             if (shownExpired) return "\uC778\uC99D \uC720\uD6A8 \uC2DC\uAC04\uC774 \uC9C0\uB0AC\uC2B5\uB2C8\uB2E4. \uC778\uC99D\uCF54\uB4DC\uB97C \uB2E4\uC2DC \uC694\uCCAD\uD574 \uC8FC\uC138\uC694.";
             if (!string.IsNullOrEmpty(model.ErrorCode)) return ErrorCopy(model.ErrorCode);
-            if (stage == "Verified" && registrationPassword!=null) return "이메일 인증이 완료되었습니다. 입력한 비밀번호로 계정을 만듭니다.";
+            if (stage == "Verified" && screen.HasRegistrationDraft) return "이메일 인증이 완료되었습니다. 입력한 비밀번호로 계정을 만듭니다.";
             if (stage == "Verified") return "\uC774\uBA54\uC77C \uC778\uC99D\uC774 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4. \uC0C8 \uBE44\uBC00\uBC88\uD638\uB97C \uC785\uB825\uD574 \uC8FC\uC138\uC694.";
             if (stage == "AwaitingCode") return model.Mode == "Reset"
                 ? "\uC694\uCCAD\uC744 \uC811\uC218\uD588\uC2B5\uB2C8\uB2E4. \uC785\uB825\uD55C \uC815\uBCF4\uAC00 \uC77C\uCE58\uD558\uBA74 \uC774\uBA54\uC77C\uB85C \uC548\uB0B4\uB429\uB2C8\uB2E4."
@@ -369,8 +313,8 @@ namespace LastRail.Auth
             var tick=Rect("Check",fill); tick.offsetMin=new Vector2(4,4); tick.offsetMax=new Vector2(-4,-4); var check=tick.gameObject.AddComponent<Image>(); check.color=new Color(.35f,.9f,1);
             toggle.targetGraphic=image; toggle.graphic=check; toggle.isOn=false;
             var text=Text(root,"Label",label,font,28); text.rectTransform.offsetMin=new Vector2(52,0);
-            var view=Link(consents,name+"View","보기",font,()=>{validationMessage="문서 연결을 준비 중입니다."; Render();},26); Place((RectTransform)view.transform,780,y,132,64);
-            toggle.onValueChanged.AddListener(_=>{validationMessage=null; Render();}); return toggle;
+            var view=Link(consents,name+"View","보기",font,()=>{screen.ShowNotice("문서 연결을 준비 중입니다.");},26); Place((RectTransform)view.transform,780,y,132,64);
+            toggle.onValueChanged.AddListener(_=>{screen.ShowNotice(null);}); return toggle;
         }
         private Button MakeButton(string name,string label,TMP_FontAsset font,Action click,bool primary=true)
         { var button=MetalButton(form,name,label,font,primary,click); Size(button.gameObject,134); return button; }

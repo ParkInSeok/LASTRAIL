@@ -20,7 +20,7 @@ namespace LastRail.Presentation.MissionShell {
   Action<string> choose;
   Action<int> throttle;
   Action pauseAction,resumeAction,retryAction,backAction,background;
-  readonly List<GameObject> rows=new List<GameObject>();
+  readonly List<GameObject> rows=new List<GameObject>();readonly List<string> rowEdges=new List<string>();
   int confirmed;
   ApprovedUiConnections art;RawImage mapBackground;TMP_Text currentLocation;
   Action<bool> visibility;
@@ -63,11 +63,17 @@ namespace LastRail.Presentation.MissionShell {
   public void ShowChoices(IEnumerable<(string edge,string label,string kind)> values,bool enabled,string message,string currentNodeName=null){
    heading.text="다음 목적지";status.text=message;SetTravelVisible(false);ClearChoices();if(mapBackground!=null)mapBackground.gameObject.SetActive(true);int i=0;
    currentLocation.text=string.IsNullOrEmpty(currentNodeName)?string.Empty:"현재 위치: "+currentNodeName;currentLocation.gameObject.SetActive(!string.IsNullOrEmpty(currentNodeName));status.rectTransform.sizeDelta=new Vector2(1152,currentLocation.gameObject.activeSelf?80:120);
-   foreach(var value in values){string edge=value.edge;var b=Button("Destination"+i,choices,i*380,0,360,120,value.label,()=>choose?.Invoke(edge));b.interactable=enabled;
-    var texture=art?.MapIcon(value.kind);if(texture!=null){var icon=Rect("NodeKind",b.transform,18,24,72,72).gameObject.AddComponent<RawImage>();icon.texture=texture;icon.raycastTarget=false;var label=b.GetComponentInChildren<TMP_Text>();label.rectTransform.anchoredPosition=new Vector2(102,-12);label.rectTransform.sizeDelta=new Vector2(246,96);}
-    if(art?.PanelFrame!=null)ApprovedUiConnections.Frame(b.transform,"ApprovedPanelFrame",art.PanelFrame,150f/17);
-    rows.Add(b.gameObject);i++;}
-   retry.gameObject.SetActive(!enabled);
+   foreach(var value in values){
+    if(i==rows.Count){int cell=i;var created=Button("Destination"+i,choices,i*380,0,360,120,"",()=>{if(rowEdges[cell]!=null)choose?.Invoke(rowEdges[cell]);});
+     var image=Rect("NodeKind",created.transform,18,24,72,72).gameObject.AddComponent<RawImage>();image.raycastTarget=false;
+     if(art?.PanelFrame!=null)ApprovedUiConnections.Frame(created.transform,"ApprovedPanelFrame",art.PanelFrame,150f/17);
+     rows.Add(created.gameObject);rowEdges.Add(null);
+    }
+    var b=rows[i].GetComponent<Button>();rowEdges[i]=value.edge;b.gameObject.SetActive(true);b.interactable=enabled;
+    var icon=b.transform.Find("NodeKind").GetComponent<RawImage>();icon.texture=art?.MapIcon(value.kind);icon.gameObject.SetActive(icon.texture!=null);
+    var label=b.GetComponentInChildren<TMP_Text>();label.text=value.label;label.rectTransform.anchoredPosition=new Vector2(icon.texture!=null?102:12,-12);label.rectTransform.sizeDelta=new Vector2(icon.texture!=null?246:336,96);i++;
+   }
+   while(rows.Count>i){int last=rows.Count-1;var retired=rows[last];rows.RemoveAt(last);rowEdges.RemoveAt(last);if(Application.isPlaying)Destroy(retired);else DestroyImmediate(retired);}   retry.gameObject.SetActive(!enabled);
   }
   public void ShowTravel(string name,string message,int confirmedBps,int minimum,int maximum,bool paused,bool busy){
    ClearChoices();SetTravelVisible(true);heading.text=name;status.text=message;confirmed=confirmedBps;
@@ -79,7 +85,7 @@ namespace LastRail.Presentation.MissionShell {
   public void ShowUnavailable(string message){ClearChoices();SetTravelVisible(false);heading.text="이동 준비";status.text=message;retry.gameObject.SetActive(true);retry.interactable=true;}
   public void ShowArrivalPaused(string message){ShowUnavailable(message);resume.gameObject.SetActive(true);resume.interactable=true;}
   void SetTravelVisible(bool visible){currentLocation.gameObject.SetActive(false);status.rectTransform.sizeDelta=new Vector2(1152,120);if(mapBackground!=null)mapBackground.gameObject.SetActive(false);nozzle.gameObject.SetActive(visible);nozzleLabel.gameObject.SetActive(visible);pause.gameObject.SetActive(visible);resume.gameObject.SetActive(visible);retry.gameObject.SetActive(visible);}
-  void ClearChoices(){foreach(var row in rows){row.SetActive(false);if(Application.isPlaying)Destroy(row);else DestroyImmediate(row);}rows.Clear();}
+  void ClearChoices(){for(int i=0;i<rows.Count;i++){rows[i].SetActive(false);rowEdges[i]=null;rows[i].GetComponentInChildren<TMP_Text>(true).text="";var icon=rows[i].transform.Find("NodeKind").GetComponent<RawImage>();icon.texture=null;}}
   void Awake(){focused=Application.isFocused;}
   void OnApplicationFocus(bool focus){focused=focus;if(!focus)background?.Invoke();visibility?.Invoke(Visible);}
   void OnEnable(){visibility?.Invoke(Visible);}

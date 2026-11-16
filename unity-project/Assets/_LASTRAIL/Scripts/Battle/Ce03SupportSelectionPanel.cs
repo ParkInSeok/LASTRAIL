@@ -1,18 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 namespace LastRail.Battle {
 // Explicitly injected local-host screen. Does not select defaults or start combat.
-public sealed class Ce03SupportSelectionPanel:MonoBehaviour {
- readonly List<string> selected=new List<string>();readonly List<Button> choices=new List<Button>();
- Ce03LocalClient client;CombatPresentationAssets art;RectTransform root;TMP_Text notice,slots,details;Button save;long revision;bool busy;JArray entries;int request;string focused;
+public sealed class Ce03SupportSelectionPanel:MonoBehaviour,ICe03SupportSelectionView {
+ readonly List<Button> choices=new List<Button>();
+ public event Action<string> ToggleRequested;
+ public event Action<int> RemoveRequested,MoveLeftRequested;
+ public event Action SaveRequested,BackRequested;
+ Ce03SupportSelectionController controller;Ce03SupportSelectionState state;
+ CombatPresentationAssets art;RectTransform root;TMP_Text notice,slots,details;Button save;
  readonly List<Button> removeButtons=new List<Button>(),moveButtons=new List<Button>();readonly List<TMP_Text> slotLabels=new List<TMP_Text>();
- Task<JObject> saveOperation;
  readonly List<RawImage> slotIcons=new List<RawImage>();readonly List<CombatReadyFrame> slotFrames=new List<CombatReadyFrame>();readonly List<TMP_Text> choiceBadges=new List<TMP_Text>();RawImage detailIcon;
  readonly List<GameObject> choiceChecks=new List<GameObject>();
  RawImage SkillIcon(string name,Transform parent,float x,float y,float size,string id){var r=Rect(name,x,y,size,size);r.SetParent(parent,false);var image=r.gameObject.AddComponent<RawImage>();image.raycastTarget=false;var child=Rect(name+"Glyph",0,0,size,size);child.SetParent(r,false);child.gameObject.AddComponent<SupportRoleGlyph>().raycastTarget=false;SetSkillIcon(image,id);return image;}
@@ -26,7 +27,7 @@ public sealed class Ce03SupportSelectionPanel:MonoBehaviour {
  void Decoration(string name,string resource,float x,float y,float w,float h,bool crop){var image=Rect(name,x,y,w,h).gameObject.AddComponent<RawImage>();var texture=LastRail.Resources.PreparedContent.Load<Texture2D>(resource);image.texture=texture;image.raycastTarget=false;if(crop)image.uvRect=LastRail.Presentation.MissionShell.OperatorVisualCatalog.Crop(texture,w,h);}
  void Plate(string name,float x,float y,float w,float h){var image=Rect(name,x,y,w,h).gameObject.AddComponent<Image>();image.sprite=art.Secondary;image.type=Image.Type.Sliced;image.color=new Color(.18f,.25f,.29f);image.raycastTarget=false;}
  void Build(Ce03LocalClient value,Action back){
-  client=value??throw new ArgumentNullException(nameof(value));art=LastRail.Resources.PreparedContent.Load<CombatPresentationAssets>("CombatPresentation/approved");if(art?.Font==null||art.Secondary==null)throw new InvalidOperationException("Presentation assets unavailable.");
+  if(value==null)throw new ArgumentNullException(nameof(value));art=LastRail.Resources.PreparedContent.Load<CombatPresentationAssets>("CombatPresentation/approved");if(art?.Font==null||art.Secondary==null)throw new InvalidOperationException("Presentation assets unavailable.");
   root=new GameObject("SupportContent",typeof(RectTransform)).GetComponent<RectTransform>();root.SetParent(transform,false);root.anchorMin=root.anchorMax=new Vector2(.5f,.5f);root.pivot=new Vector2(.5f,.5f);root.anchoredPosition=Vector2.zero;root.sizeDelta=new Vector2(720,1510);
   var background=gameObject.AddComponent<Image>();background.color=new Color(.025f,.04f,.045f,1);
   Decoration("SupportRoom","NoncombatSupport/support-room",0,0,720,330,true);
@@ -34,49 +35,47 @@ public sealed class Ce03SupportSelectionPanel:MonoBehaviour {
   Plate("TitlePlate",24,24,400,80);Text("Title","지휘관 스킬 선택",40,37,370,53,32);
   Plate("GuidePlate",30,125,365,150);Text("Guide","스킬 3개를 선택하세요.\n저장한 순서대로 배치됩니다.",50,142,325,114,25);
   slots=Text("Selected","",35,333,650,38,23);
-  for(int i=0;i<3;i++){int index=i;float x=35+i*222;Plate("SelectedSlot"+i,x,380,207,115);slotIcons.Add(SkillIcon("SlotIcon"+i,root,x+22,399,40,null));slotLabels.Add(Text("SlotName"+i,"",x+74,389,120,52,20));removeButtons.Add(Button("RemoveSlot"+i,"×",x+151,445,42,38,()=>Remove(index)));moveButtons.Add(Button("MoveLeft"+i,"←",x+94,445,46,38,()=>MoveLeft(index)));
+  for(int i=0;i<3;i++){int index=i;float x=35+i*222;Plate("SelectedSlot"+i,x,380,207,115);slotIcons.Add(SkillIcon("SlotIcon"+i,root,x+22,399,40,null));slotLabels.Add(Text("SlotName"+i,"",x+74,389,120,52,20));removeButtons.Add(Button("RemoveSlot"+i,"×",x+151,445,42,38,()=>RemoveRequested?.Invoke(index)));moveButtons.Add(Button("MoveLeft"+i,"←",x+94,445,46,38,()=>MoveLeftRequested?.Invoke(index)));
    foreach(var control in new[]{removeButtons[i],moveButtons[i]}){control.image.sprite=null;control.image.color=new Color(.08f,.23f,.30f);control.GetComponentInChildren<TMP_Text>().fontSize=26;control.GetComponentInChildren<TMP_Text>().fontSizeMax=26;}
    var frameRect=Rect("SlotOutline"+i,x+4,384,199,107);var outline=frameRect.gameObject.AddComponent<CombatReadyFrame>();outline.raycastTarget=false;slotFrames.Add(outline);
   }
   Plate("DetailsPlate",35,1060,650,195);detailIcon=SkillIcon("DetailIcon",root,58,1100,90,null);details=Text("Details","스킬을 선택해 상태를 확인하세요.",165,1080,490,150,25);
   notice=Text("Notice","불러오는 중",35,1275,650,80,22);
-  save=Button("Save","저장",365,1390,320,78,()=>Save());Button("Back","돌아가기",35,1390,300,78,()=>{if(!busy){back?.Invoke();gameObject.SetActive(false);if(Application.isPlaying)Destroy(gameObject);else DestroyImmediate(gameObject);}});
+  save=Button("Save","저장",365,1390,320,78,()=>SaveRequested?.Invoke());Button("Back","돌아가기",35,1390,300,78,()=>BackRequested?.Invoke());
   Fit();
-  Refresh();Read();
+  controller=new Ce03SupportSelectionController(value,this,()=>{back?.Invoke();if(this==null)return;gameObject.SetActive(false);if(Application.isPlaying)Destroy(gameObject);else DestroyImmediate(gameObject);});
+  Activate();
  }
+ async void Activate(){if(controller!=null)await controller.ActivateAsync();}
  static string Name(string id)=>id=="support_fire"?"지원 사격":id=="barrier"?"방어막":id=="emergency_repair"?"긴급 수리":id=="ce03.role.suppressive_barrage"?"제압 포격":id=="ce03.role.medical_support"?"의료 지원":id=="ce03.role.smoke"?"연막 전개":id=="ce03.role.weakness_scan"?"약점 스캔":id=="ce03.role.firepower_boost"?"화력 증폭":id=="ce03.role.electronic_disruption"?"전자기 교란":id=="ce03.role.emergency_protection"?"긴급 방호":throw new FormatException("Unknown catalog role.");
- async void Read(){int stamp=++request;busy=true;Refresh();try{
-  if(saveOperation!=null){try{await saveOperation;}catch{}if(this==null||!isActiveAndEnabled||stamp!=request)return;}
-  var data=await client.ReadSupportAsync();if(this==null||!isActiveAndEnabled||stamp!=request)return;var catalog=data["catalog"] as JObject;Ce03CommandContract.Equal(catalog,"scope","LOCAL_SELECTION_ONLY");entries=catalog["entries"] as JArray;
-  if(entries==null||entries.Count!=10||entries.Select(e=>(string)e["skillId"]).Distinct().Count()!=10)throw new FormatException();
-  var selection=data["selection"];revision=(long)selection["revision"];selected.Clear();foreach(var item in (JArray)selection["slots"])selected.Add((string)item["skillId"]);
-  foreach(var old in choices){old.gameObject.SetActive(false);if(Application.isPlaying)Destroy(old.gameObject);else DestroyImmediate(old.gameObject);}choices.Clear();choiceBadges.Clear();choiceChecks.Clear();
+ public void Render(Ce03SupportSelectionState value){state=value;var entries=state.Entries;
   for(int i=0;i<entries.Count;i++)
   {
-   var e=entries[i];string id=(string)e["skillId"];bool available=(bool)e["executionAvailable"];
-   var b=Button("Choice"+i,Name(id),35+i%2*335,520+i/2*105,315,88,()=>Toggle(id));choices.Add(b);
+   var e=entries[i];string id=e.Id;bool available=e.Available;
+   if(i==choices.Count){int cell=i;var created=Button("Choice"+i,"",35+i%2*335,520+i/2*105,315,88,()=>{if(state!=null&&cell<state.Entries.Count)ToggleRequested?.Invoke(state.Entries[cell].Id);});choices.Add(created);
+   SkillIcon("ChoiceIcon"+i,created.transform,38,24,40,id);
+   var checkRect=Rect("ChoiceCheck"+i,277,24,20,20);checkRect.SetParent(created.transform,false);var check=checkRect.gameObject.AddComponent<LastRail.Presentation.MissionShell.RewardResourceSymbol>();check.Kind="CHECK";check.raycastTarget=false;choiceChecks.Add(check.gameObject);
+   var badge=Text("ChoiceBadge"+i,"",276,50,22,22,18);badge.transform.SetParent(created.transform,false);choiceBadges.Add(badge);
+   var createdStatus=Text("ChoiceState"+i,"",102,54,162,24,19);createdStatus.transform.SetParent(created.transform,false);createdStatus.color=new Color(.72f,.78f,.79f);
+   }
+   var b=choices[i];b.GetComponentInChildren<TMP_Text>().text=Name(id);
    // Reserve a72-wide icon lane and an independent right-hand selection-order lane.
    var caption=b.GetComponentInChildren<TMP_Text>().rectTransform;caption.anchoredPosition=new Vector2(102,available?-32:-22);caption.sizeDelta=new Vector2(162,24);
-   var status=Text("ChoiceState"+i,available?"":"준비 중",102,54,162,24,19);status.transform.SetParent(b.transform,false);status.color=new Color(.72f,.78f,.79f);
-   SkillIcon("ChoiceIcon"+i,b.transform,38,24,40,id);
-   var checkRect=Rect("ChoiceCheck"+i,277,24,20,20);checkRect.SetParent(b.transform,false);var check=checkRect.gameObject.AddComponent<LastRail.Presentation.MissionShell.RewardResourceSymbol>();check.Kind="CHECK";check.raycastTarget=false;choiceChecks.Add(check.gameObject);
-   var badge=Text("ChoiceBadge"+i,"",276,50,22,22,18);badge.transform.SetParent(b.transform,false);choiceBadges.Add(badge);
-  }
-  notice.text=entries.Where(e=>selected.Contains((string)e["skillId"])).Any(e=>!(bool)e["executionAvailable"])?"준비 중인 스킬은 저장할 수 있지만 아직 출격에 사용할 수 없습니다.":"선택한 순서대로 전투 화면에 배치됩니다.";
- }catch{if(this!=null&&stamp==request)notice.text="스킬 정보를 불러오지 못했습니다.";}finally{if(this!=null&&stamp==request){busy=false;Refresh();}}}
- void Toggle(string id){if(busy||client.HasPending)return;focused=id;if(selected.Contains(id))selected.Remove(id);else if(selected.Count<3)selected.Add(id);Refresh();}
- void Remove(int index){if(busy||client.HasPending||index>=selected.Count)return;selected.RemoveAt(index);Refresh();}
- void MoveLeft(int index){if(busy||client.HasPending||index<=0||index>=selected.Count)return;var id=selected[index];selected[index]=selected[index-1];selected[index-1]=id;Refresh();}
- void Refresh(){if(slots==null)return;slots.text="선택한 지원 · "+selected.Count+" / 3";save.interactable=!busy&&(!client.HasPending||client.PendingKind=="support")&&(client.HasPending||selected.Count==3);save.GetComponentInChildren<TMP_Text>().text=client.HasPending?"저장 결과 재확인":"저장";
+   b.transform.Find("ChoiceState"+i).GetComponent<TMP_Text>().text=available?"":"준비 중";
+   SetSkillIcon(b.transform.Find("ChoiceIcon"+i).GetComponent<RawImage>(),id);  }
+  notice.text=state.Notice;
+  var selected=state.Selected;var focused=state.Focused;
+  slots.text="선택한 지원 · "+selected.Count+" / 3";save.interactable=state.CanSave;save.GetComponentInChildren<TMP_Text>().text=state.Pending?"저장 결과 재확인":"저장";
   save.image.color=save.interactable?new Color(.12f,.62f,1):new Color(.38f,.43f,.47f);save.GetComponentInChildren<TMP_Text>().color=save.interactable?Color.white:new Color(.7f,.73f,.75f);
-  for(int i=0;i<3;i++){slotLabels[i].text=(i+1)+" · "+(i<selected.Count?Name(selected[i]):"미선택");SetSkillIcon(slotIcons[i],i<selected.Count?selected[i]:null);slotFrames[i].SetLight(i<selected.Count?1:0,1);removeButtons[i].interactable=!busy&&!client.HasPending&&i<selected.Count;moveButtons[i].interactable=!busy&&!client.HasPending&&i>0&&i<selected.Count;}
-  for(int i=0;i<choices.Count;i++){var b=choices[i];b.interactable=!busy&&!client.HasPending;int order=selected.IndexOf((string)entries[i]["skillId"]);b.image.color=order>=0?new Color(.3f,.8f,1):Color.white;choiceBadges[i].text=order>=0?(order+1).ToString():"";choiceChecks[i].SetActive(order>=0);}
-  if(focused!=null&&entries!=null){SetSkillIcon(detailIcon,focused);var entry=entries.Single(e=>(string)e["skillId"]==focused);details.text=Name(focused)+"\n\n"+((bool)entry["executionAvailable"]?"현재 출격에 사용할 수 있습니다.":"준비 중인 지원입니다. 저장은 가능하지만 현재 출격에는 사용할 수 없습니다.");}
+  for(int i=0;i<3;i++){slotLabels[i].text=(i+1)+" · "+(i<selected.Count?Name(selected[i]):"미선택");SetSkillIcon(slotIcons[i],i<selected.Count?selected[i]:null);slotFrames[i].SetLight(i<selected.Count?1:0,1);removeButtons[i].interactable=state.CanEdit&&i<selected.Count;moveButtons[i].interactable=state.CanEdit&&i>0&&i<selected.Count;}
+  for(int i=0;i<choices.Count;i++){var b=choices[i];b.interactable=state.CanEdit;int order=IndexOf(selected,entries[i].Id);b.image.color=order>=0?new Color(.3f,.8f,1):Color.white;choiceBadges[i].text=order>=0?(order+1).ToString():"";choiceChecks[i].SetActive(order>=0);}
+  if(focused!=null&&entries!=null){SetSkillIcon(detailIcon,focused);var entry=entries.Single(e=>e.Id==focused);details.text=Name(focused)+"\n\n"+(entry.Available?"현재 출격에 사용할 수 있습니다.":"준비 중인 지원입니다. 저장은 가능하지만 현재 출격에는 사용할 수 없습니다.");}
  }
- async void Save(){if(busy||!save.interactable)return;int stamp=request;busy=true;Refresh();try{saveOperation=client.HasPending?client.RetryAsync():client.SaveSupportAsync(revision,selected.ToArray());var result=await saveOperation;if(this==null||!isActiveAndEnabled||stamp!=request)return;revision=(long)result["revision"];selected.Clear();foreach(var item in (JArray)result["slots"])selected.Add((string)item["skillId"]);notice.text="저장했습니다.";}catch{if(this!=null&&stamp==request)notice.text="저장 결과를 확인하지 못했습니다. 같은 요청으로 다시 확인해 주세요.";}finally{if(this!=null&&stamp==request){busy=false;Refresh();}}}
+ static int IndexOf(IReadOnlyList<string> values,string id){for(int i=0;i<values.Count;i++)if(values[i]==id)return i;return -1;}
  void Fit(){if(root==null||!(root.parent is RectTransform parent))return;var area=parent.rect;if(area.width>0&&area.height>0)root.localScale=Vector3.one*Mathf.Min(area.width/720f,area.height/1510f);}
- void LateUpdate(){Fit();}
- void OnDisable(){request++;busy=false;}
- void OnEnable(){if(client!=null)Read();}
+ void OnRectTransformDimensionsChange(){Fit();}
+ void OnDisable(){controller?.Deactivate();}
+ void OnEnable(){Activate();}
+ void OnDestroy(){controller?.Dispose();controller=null;}
 }
 }

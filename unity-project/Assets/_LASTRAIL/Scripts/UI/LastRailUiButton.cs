@@ -22,7 +22,7 @@ namespace LastRail.UI
 
         public void BindInteractionCallbacks()
         {
-            if (button == null || callbacksBound)
+            if (!isActiveAndEnabled || button == null || callbacksBound)
             {
                 return;
             }
@@ -79,6 +79,7 @@ namespace LastRail.UI
 
         private void HandleClicked()
         {
+            if (!isActiveAndEnabled) return;
             Clicked?.Invoke();
         }
     }

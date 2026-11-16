@@ -6,19 +6,21 @@ namespace LastRail.Presentation.MissionShell {
  public sealed partial class LobbyDestinationPages {
   RectTransform equipmentMultishotPanel;
   Action equipmentMultishotClosed;
-  readonly List<(GameObject child,bool active)> equipmentHiddenChildren=new List<(GameObject,bool)>();
+
   public void BindEquipmentMultishotClose(Action closed)=>equipmentMultishotClosed=closed;
   // Existing common popup/art composition. Only independent display fields and
   // the original close callback; no new placement confirmation or write flow.
   public void PresentEquipmentMultishot(JObject frame){
    if(!IsOpen||!isActiveAndEnabled||content==null)return;
    if(frame==null||((string)frame["version"]!="equipment.multishot-display-frame.v1.20261016"&&(string)frame["version"]!=EquipmentMultishotController.FrameVersion))throw new ArgumentException("Equipment display frame required");
-   if(equipmentMultishotPanel==null){foreach(Transform child in content)equipmentHiddenChildren.Add((child.gameObject,child.gameObject.activeSelf));equipmentMultishotPanel=CoreShield("EquipmentMultishotDetails");}
-   else{for(int i=equipmentMultishotPanel.childCount-1;i>=0;i--){var child=equipmentMultishotPanel.GetChild(i).gameObject;child.SetActive(false);if(Application.isPlaying)Destroy(child);else DestroyImmediate(child);}}
+   if(equipmentMultishotPanel==null)equipmentMultishotPanel=CoreShield("EquipmentMultishotDetails");
+   else foreach(Transform child in equipmentMultishotPanel)child.gameObject.SetActive(false);
+   TMPro.TMP_Text Text(string name,Transform parent,string value,float x,float y,float w,float h,float size,bool center=false){var label=parent.Find(name)?.GetComponent<TMPro.TMP_Text>()??this.Text(name,parent,"",x,y,w,h,size,center);label.gameObject.SetActive(true);label.text=value;return label;}
    var preview=frame["preview"] as JObject;
    var approved=LastRail.Resources.PreparedContent.Load<ApprovedUiConnections>("ApprovedUi/Connections20261110");
    void ItemFrame(string name,float top,float height){
     if(approved==null||approved.ItemFrame==null)return;
+    var existing=equipmentMultishotPanel.Find(name);if(existing!=null){existing.gameObject.SetActive(true);return;}
     var row=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();row.SetParent(equipmentMultishotPanel,false);
     row.anchorMin=row.anchorMax=row.pivot=new Vector2(0,1);row.anchoredPosition=new Vector2(40,-top);row.sizeDelta=new Vector2(861,height);
     ApprovedUiConnections.Frame(row,"Border",approved.ItemFrame,70f/3);
@@ -56,9 +58,9 @@ namespace LastRail.Presentation.MissionShell {
     Text("StoredCardNotice",equipmentMultishotPanel,(string)frame["storedNotice"],48,1360,845,29,22);
    }
    detailBack=ReleaseEquipmentMultishot;
-   Button("CloseEquipmentMultishot",equipmentMultishotPanel,48,1390,845,90,"닫기",ReleaseEquipmentMultishot);
+   var close=equipmentMultishotPanel.Find("CloseEquipmentMultishot");if(close!=null)close.gameObject.SetActive(true);else Button("CloseEquipmentMultishot",equipmentMultishotPanel,48,1390,845,90,"닫기",ReleaseEquipmentMultishot);Fit();
   }
-  public void ClearEquipmentMultishot(){equipmentMultishotClosed=null;if(equipmentMultishotPanel!=null){ReleaseDetailInput();var owned=equipmentMultishotPanel.gameObject;equipmentMultishotPanel=null;owned.SetActive(false);if(Application.isPlaying)Destroy(owned);else DestroyImmediate(owned);}foreach(var saved in equipmentHiddenChildren)if(saved.child!=null)saved.child.SetActive(saved.active);equipmentHiddenChildren.Clear();}
+  public void ClearEquipmentMultishot(){equipmentMultishotClosed=null;if(equipmentMultishotPanel!=null){ReleaseDetailInput();var owned=equipmentMultishotPanel.gameObject;equipmentMultishotPanel=null;owned.SetActive(false);if(Application.isPlaying)Destroy(owned);else DestroyImmediate(owned);}}
   void ReleaseEquipmentMultishot(){var callback=equipmentMultishotClosed;equipmentMultishotClosed=null;ClearEquipmentMultishot();callback?.Invoke();}
  }
 }

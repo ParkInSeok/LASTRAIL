@@ -1,0 +1,1109 @@
+{
+  "scope": "SYNTHETIC_START_NATIVE_SERA_COMPONENT_ONLY",
+  "account": "a",
+  "run": "future-run",
+  "start": {
+    "accepted": true,
+    "startStatus": "STARTED",
+    "runId": "future-run",
+    "ordinaryStatSource": {
+      "origin": {
+        "version": "combat.ordinary-five-core-stats.v1.20261023",
+        "accountId": "a",
+        "runId": "future-run",
+        "policy": {
+          "version": "combat.policy-catalog.2026-09-29.1",
+          "status": "REQUIRED_NOT_EXECUTABLE",
+          "references": [
+            "ordinary-story-design-baseline-complete-v01",
+            "six-skills-detail-v02",
+            "damage-shield-hazard-detail-v03",
+            "combat-effect-group-map-v04",
+            "combat-closeout-f1-f3-v01",
+            "world-boss-effects-coop-v03",
+            "numeric-defense-runtime-binding-audit-v13",
+            "def-shield-effect-mapping-v12",
+            "skill-haste-curve-approved-v08",
+            "attack-speed-curve-cap-approved-v09"
+          ],
+          "scope": {
+            "roster": [
+              "op_kyle",
+              "op_reina",
+              "op_eve",
+              "op_sera",
+              "op_mira"
+            ],
+            "ordinaryRisk": "I",
+            "expansion": "EXPLICIT_POLICY_REQUIRED"
+          },
+          "ultimate": {
+            "version": "combat.ultimate.2026-09-22.1",
+            "cost": 100,
+            "baseCapacity": 100,
+            "expandedCapacity": 200,
+            "expansionSource": "O11",
+            "initialCharge": 0,
+            "perBasicAction": 4,
+            "consumeAt": "CAST_ACCEPTANCE",
+            "postAcceptanceRefund": false,
+            "ready": "CHARGE_AT_LEAST_COST_AND_ACTOR_PREFLIGHT"
+          },
+          "actionRules": {
+            "firstActiveReadyMs": 0,
+            "activeAutomation": "ALWAYS",
+            "ultimateAutoInitiallyEnabled": false,
+            "sharedActorQueue": true,
+            "autoPriority": "ULTIMATE_BEFORE_ACTIVE",
+            "consumeAt": "CAST_ACCEPTANCE",
+            "casterAttackSnapshotAt": "FIRST_EFFECT",
+            "basicChargeFromSkills": false,
+            "fixedIntervalsUseAttackSpeed": false,
+            "preserveCooldownAcrossNodes": true,
+            "preserveCommittedProjectiles": true
+          },
+          "skills": [
+            {
+              "id": "op_eve.active",
+              "effect": "SENTRY_CREATE",
+              "cooldownMs": 18000,
+              "windupMs": 500,
+              "recoveryMs": 300,
+              "hpFromCasterMaxHpBps": 5000,
+              "minimumHp": 1,
+              "damageBps": 4000,
+              "intervalMs": 800,
+              "lifeMs": 12000,
+              "firstShot": "AT_SPAWN",
+              "maximumInstances": 1,
+              "target": "OWN_LIVE_CAR_DEFENSE_ZONE",
+              "shield": 0,
+              "inheritCasterDefense": false,
+              "downBehavior": "PAUSE_FIRE_KEEP_EXPIRY_NO_CATCH_UP",
+              "endAt": "HP_ZERO_CAR_DESTROYED_NODE_OR_RUN_END",
+              "defense": 0
+            },
+            {
+              "id": "op_eve.ultimate",
+              "effect": "SENTRY_ENHANCE_OR_CREATE",
+              "cost": 100,
+              "windupMs": 500,
+              "recoveryMs": 300,
+              "damageBps": 6000,
+              "intervalMs": 400,
+              "enhancementMs": 8000,
+              "fallbackLifeMs": 12000,
+              "maximumInstances": 1,
+              "alreadyEnhanced": "REJECT_WITHOUT_SPEND",
+              "existingHpAndLife": "PRESERVE",
+              "nextScheduledShot": "PRESERVE",
+              "enhancementExpiry": "MIN_ENHANCEMENT_AND_DEVICE_EXPIRY"
+            },
+            {
+              "id": "op_sera.active",
+              "effect": "HEAL_ONE",
+              "cooldownMs": 12000,
+              "windupMs": 400,
+              "recoveryMs": 300,
+              "healBps": 16000,
+              "target": "LIVING_INJURED_LOWEST_HP_RATIO_SLOT_ID_INCLUDING_SELF",
+              "lockTargetAt": "ACCEPTANCE",
+              "retarget": false,
+              "overheal": "DISCARD"
+            },
+            {
+              "id": "op_sera.ultimate",
+              "effect": "HEAL_AND_RECOVERY",
+              "cost": 100,
+              "windupMs": 600,
+              "recoveryMs": 400,
+              "healBps": 20000,
+              "target": "SNAPSHOT_LIVING_INJURED_AND_ONE_ELIGIBLE_DOWN",
+              "recoveryReductionMs": 4000,
+              "minimumRemainingMs": 1000,
+              "recoveryLimit": "ONCE_PER_DOWN_EVENT_ACROSS_CASTERS",
+              "recoveryTarget": "LONGEST_REMAINING_SLOT_ID",
+              "markReduction": "ONLY_WHEN_ACTUALLY_REDUCED",
+              "retarget": false
+            },
+            {
+              "id": "op_mira.active",
+              "effect": "FIXED_TARGET_BURST",
+              "cooldownMs": 10000,
+              "windupMs": 300,
+              "recoveryMs": 300,
+              "damageBps": 4500,
+              "shots": 6,
+              "intervalMs": 200,
+              "firstShot": "WINDUP_END",
+              "invalidTarget": "CANCEL_REMAINING_NO_RETARGET",
+              "source": "DIRECT_SKILL",
+              "perShotCastTrigger": false
+            },
+            {
+              "id": "op_mira.ultimate",
+              "effect": "CYCLING_TARGET_BURST",
+              "cost": 100,
+              "windupMs": 500,
+              "recoveryMs": 400,
+              "damageBps": 4000,
+              "shots": 16,
+              "intervalMs": 250,
+              "firstShot": "WINDUP_END",
+              "target": "FOCUS_FIRST_THEN_STABLE_ORDER_PER_CYCLE",
+              "noTargets": "CANCEL_REMAINING",
+              "focusChange": "NEXT_CYCLE",
+              "newEnemy": "NEXT_SHOT",
+              "source": "DIRECT_SKILL",
+              "perShotCastTrigger": false
+            }
+          ],
+          "passives": [
+            {
+              "operatorId": "op_kyle",
+              "source": "SELF_HP_STRICTLY_BELOW_HALF",
+              "group": "CONDITIONAL_FLAT_DEF_AFTER_STAT_MULTIPLIERS",
+              "valueFlat": 83
+            },
+            {
+              "operatorId": "op_reina",
+              "source": "DAMAGE_TO_VALID_MARKED_TARGET",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            },
+            {
+              "operatorId": "op_eve",
+              "source": "OWN_SENTRY",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            },
+            {
+              "operatorId": "op_sera",
+              "source": "OWN_HEAL",
+              "group": "HEAL_MAGNITUDE",
+              "valueBps": 1000
+            },
+            {
+              "operatorId": "op_mira",
+              "source": "OWN_BASIC",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            }
+          ],
+          "effectRules": {
+            "equipmentDirectDamage": "ADDITIVE_WITHIN_GROUP_SEPARATE_MULTIPLIER",
+            "nonEquipmentOutgoingCapBps": 3000,
+            "strongestMarkCapBps": 2000,
+            "automaticMagnitudeApplications": 1,
+            "unknownSourceOrGroup": "PUBLICATION_BLOCKED",
+            "ordinaryFloor": "ONCE_AFTER_DEFENSE_BEFORE_SHIELD",
+            "worldScoreFloor": "ONCE_AFTER_EXACT_VALID_HIT_SUM",
+            "worldNumericEncoding": "CONTRACT_PENDING",
+            "roleOwnership": "EXPLICIT_SOURCE_OWNER_REQUIRED_NO_PARTNER_DUPLICATION"
+          },
+          "numericDefense": {
+            "budgetVersion": "combat.numeric-defense-budget.v1",
+            "scope": "ORDINARY_AND_STORY_ONLY",
+            "k": 1000,
+            "operatorBase": {
+              "op_kyle": 250,
+              "op_reina": 53,
+              "op_eve": 53,
+              "op_sera": 87,
+              "op_mira": 111
+            },
+            "operatorLevelGrowth": "FIXED",
+            "weakening": "STRONGEST",
+            "weakeningCapBps": 3000,
+            "penetration": "ADDITIVE",
+            "penetrationCapBps": 6000,
+            "equipmentReductionCapBps": 5000,
+            "guardStance": "STRONGEST",
+            "independentReduction": "MULTIPLICATIVE_ONCE_PER_GROUP",
+            "unknownDefinition": "PUBLICATION_BLOCKED_NO_DEFAULT_DEF",
+            "legacyArmorConversion": "FORBIDDEN"
+          },
+          "equipmentTiming": {
+            "skillHasteByStarBps": [
+              500,
+              1200,
+              3000,
+              7000,
+              15000
+            ],
+            "attackSpeedByStarBps": [
+              500,
+              1200,
+              3000,
+              7000,
+              15000
+            ],
+            "sameWearerGroup": "ADDITIVE",
+            "skillHasteCapBps": null,
+            "equipmentAttackSpeedCapBps": null,
+            "cooldown": "BASE_DIVIDED_BY_ONE_PLUS_HASTE_THEN_ELIGIBLE_REDUCTION_GROUPS",
+            "rounding": "CEIL_FINAL_TO_LOGICAL_TICK",
+            "preserveOtherGroupCaps": true,
+            "affectsUltimateCharge": false,
+            "affectsCommanderCooldown": false,
+            "affectsFixedIntervals": false,
+            "affectsWindupOrRecovery": false
+          },
+          "shieldRules": {
+            "directRecipientMaxHpCapBps": null,
+            "sameSourceIdentity": "CASTER_ABILITY_EFFECT",
+            "sameSource": "REPLACE_IF_NEW_AMOUNT_AT_LEAST_REMAINING_OTHERWISE_NO_CHANGE",
+            "preserveExplicitExceptions": true,
+            "generateBeforeRecipientModifiers": true,
+            "offensiveDamageCritPenetrationModifiers": false
+          }
+        },
+        "ownedSourceHash": "sha256:656734fad722779824110a8a411f32562efcc5031cbb61847e3e4b96ef7ad5c6",
+        "definitionVersion": "combat.owned-base.2026-10-01.1",
+        "definitionHash": "sha256:9d25a88d64239127cbecb7816a4504244947fe55957cd9eb50ec9e4e75bce515",
+        "formationRevision": 1,
+        "loadoutRevision": 1,
+        "applicability": {
+          "equipment": {
+            "predepartureRequired": false,
+            "lifecycle": "RUN_OWNED",
+            "status": "NOT_APPLICABLE_BEFORE_RUN",
+            "source": "13_EQUIPMENT_ENCHANTMENTS.md#1 / equipment-reward-resolution-v02"
+          },
+          "research": {
+            "predepartureRequired": false,
+            "status": "NO_APPROVED_ACTIVE_NODE_CATALOG",
+            "source": "35_CURRENT_ECONOMY_ANNEX.md#7"
+          }
+        },
+        "actors": [
+          {
+            "operatorId": "op_kyle",
+            "slot": 0,
+            "permanentStats": {
+              "maxHp": 1400,
+              "attack": {
+                "numerator": "3600000000",
+                "denominator": "100000000"
+              },
+              "defense": 250,
+              "basicIntervalMs": 1800
+            },
+            "skillMagnitude": {
+              "numerator": "10000",
+              "denominator": "10000"
+            }
+          },
+          {
+            "operatorId": "op_reina",
+            "slot": 1,
+            "permanentStats": {
+              "maxHp": 900,
+              "attack": {
+                "numerator": "5000000000",
+                "denominator": "100000000"
+              },
+              "defense": 53,
+              "basicIntervalMs": 1400
+            },
+            "skillMagnitude": {
+              "numerator": "10000",
+              "denominator": "10000"
+            }
+          },
+          {
+            "operatorId": "op_eve",
+            "slot": 2,
+            "permanentStats": {
+              "maxHp": 950,
+              "attack": {
+                "numerator": "2800000000",
+                "denominator": "100000000"
+              },
+              "defense": 53,
+              "basicIntervalMs": 2000
+            },
+            "skillMagnitude": {
+              "numerator": "10000",
+              "denominator": "10000"
+            }
+          },
+          {
+            "operatorId": "op_sera",
+            "slot": 3,
+            "permanentStats": {
+              "maxHp": 920,
+              "attack": {
+                "numerator": "4000000000",
+                "denominator": "100000000"
+              },
+              "defense": 87,
+              "basicIntervalMs": 1200
+            },
+            "skillMagnitude": {
+              "numerator": "10000",
+              "denominator": "10000"
+            }
+          },
+          {
+            "operatorId": "op_mira",
+            "slot": 4,
+            "permanentStats": {
+              "maxHp": 1000,
+              "attack": {
+                "numerator": "3000000000",
+                "denominator": "100000000"
+              },
+              "defense": 111,
+              "basicIntervalMs": 1800
+            },
+            "skillMagnitude": {
+              "numerator": "10000",
+              "denominator": "10000"
+            }
+          }
+        ]
+      },
+      "originHash": "05248f05b3c99545800913968a25e54a7f70ca86398f7ed127116603cfd3bb77"
+    },
+    "ordinaryKitSource": {
+      "packet": {
+        "version": "combat.ordinary-five-kit.v1.20261023",
+        "accountId": "a",
+        "runId": "future-run",
+        "originHash": "05248f05b3c99545800913968a25e54a7f70ca86398f7ed127116603cfd3bb77",
+        "policyVersion": "combat.policy-catalog.2026-09-29.1",
+        "policyHash": "a4ce53b746fa5d42eaaf0481f3c9a1ccc931a0ae50a176bd1bc192f9a60d875b",
+        "authority": {
+          "version": "combat.authority-split.v1",
+          "mode": "ORDINARY_SOLO",
+          "combatOwner": "UNITY_LOCAL",
+          "combatClock": "LOCAL_LOGICAL",
+          "transactionOwner": "SERVER",
+          "resultVerificationOwner": "SERVER",
+          "clientReportProvesCombat": false
+        },
+        "execution": "REQUIRES_MATCHING_UNITY_HANDLERS",
+        "operators": [
+          {
+            "operatorId": "op_mira",
+            "role": "OPERATOR",
+            "passive": {
+              "operatorId": "op_mira",
+              "source": "OWN_BASIC",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            },
+            "abilities": [
+              {
+                "id": "op_mira.active",
+                "effect": "FIXED_TARGET_BURST",
+                "cooldownMs": 10000,
+                "windupMs": 300,
+                "recoveryMs": 300,
+                "damageBps": 4500,
+                "shots": 6,
+                "intervalMs": 200,
+                "firstShot": "WINDUP_END",
+                "invalidTarget": "CANCEL_REMAINING_NO_RETARGET",
+                "source": "DIRECT_SKILL",
+                "perShotCastTrigger": false
+              },
+              {
+                "id": "op_mira.ultimate",
+                "effect": "CYCLING_TARGET_BURST",
+                "cost": 100,
+                "windupMs": 500,
+                "recoveryMs": 400,
+                "damageBps": 4000,
+                "shots": 16,
+                "intervalMs": 250,
+                "firstShot": "WINDUP_END",
+                "target": "FOCUS_FIRST_THEN_STABLE_ORDER_PER_CYCLE",
+                "noTargets": "CANCEL_REMAINING",
+                "focusChange": "NEXT_CYCLE",
+                "newEnemy": "NEXT_SHOT",
+                "source": "DIRECT_SKILL",
+                "perShotCastTrigger": false
+              }
+            ],
+            "slot": 4
+          },
+          {
+            "operatorId": "op_sera",
+            "role": "OPERATOR",
+            "passive": {
+              "operatorId": "op_sera",
+              "source": "OWN_HEAL",
+              "group": "HEAL_MAGNITUDE",
+              "valueBps": 1000
+            },
+            "abilities": [
+              {
+                "id": "op_sera.active",
+                "effect": "HEAL_ONE",
+                "cooldownMs": 12000,
+                "windupMs": 400,
+                "recoveryMs": 300,
+                "healBps": 16000,
+                "target": "LIVING_INJURED_LOWEST_HP_RATIO_SLOT_ID_INCLUDING_SELF",
+                "lockTargetAt": "ACCEPTANCE",
+                "retarget": false,
+                "overheal": "DISCARD"
+              },
+              {
+                "id": "op_sera.ultimate",
+                "effect": "HEAL_AND_RECOVERY",
+                "cost": 100,
+                "windupMs": 600,
+                "recoveryMs": 400,
+                "healBps": 20000,
+                "target": "SNAPSHOT_LIVING_INJURED_AND_ONE_ELIGIBLE_DOWN",
+                "recoveryReductionMs": 4000,
+                "minimumRemainingMs": 1000,
+                "recoveryLimit": "ONCE_PER_DOWN_EVENT_ACROSS_CASTERS",
+                "recoveryTarget": "LONGEST_REMAINING_SLOT_ID",
+                "markReduction": "ONLY_WHEN_ACTUALLY_REDUCED",
+                "retarget": false
+              }
+            ],
+            "slot": 3
+          },
+          {
+            "operatorId": "op_eve",
+            "role": "OPERATOR",
+            "passive": {
+              "operatorId": "op_eve",
+              "source": "OWN_SENTRY",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            },
+            "abilities": [
+              {
+                "id": "op_eve.active",
+                "effect": "SENTRY_CREATE",
+                "cooldownMs": 18000,
+                "windupMs": 500,
+                "recoveryMs": 300,
+                "hpFromCasterMaxHpBps": 5000,
+                "minimumHp": 1,
+                "damageBps": 4000,
+                "intervalMs": 800,
+                "lifeMs": 12000,
+                "firstShot": "AT_SPAWN",
+                "maximumInstances": 1,
+                "target": "OWN_LIVE_CAR_DEFENSE_ZONE",
+                "shield": 0,
+                "inheritCasterDefense": false,
+                "downBehavior": "PAUSE_FIRE_KEEP_EXPIRY_NO_CATCH_UP",
+                "endAt": "HP_ZERO_CAR_DESTROYED_NODE_OR_RUN_END",
+                "defense": 0
+              },
+              {
+                "id": "op_eve.ultimate",
+                "effect": "SENTRY_ENHANCE_OR_CREATE",
+                "cost": 100,
+                "windupMs": 500,
+                "recoveryMs": 300,
+                "damageBps": 6000,
+                "intervalMs": 400,
+                "enhancementMs": 8000,
+                "fallbackLifeMs": 12000,
+                "maximumInstances": 1,
+                "alreadyEnhanced": "REJECT_WITHOUT_SPEND",
+                "existingHpAndLife": "PRESERVE",
+                "nextScheduledShot": "PRESERVE",
+                "enhancementExpiry": "MIN_ENHANCEMENT_AND_DEVICE_EXPIRY"
+              }
+            ],
+            "slot": 2
+          },
+          {
+            "operatorId": "op_reina",
+            "role": "OPERATOR",
+            "passive": {
+              "operatorId": "op_reina",
+              "source": "DAMAGE_TO_VALID_MARKED_TARGET",
+              "group": "NON_EQUIPMENT_OUTGOING",
+              "valueBps": 1000
+            },
+            "abilities": [
+              {
+                "id": "op_reina.active",
+                "effect": "DIRECT_DAMAGE",
+                "cooldownMs": 14000,
+                "windupMs": 450,
+                "recoveryMs": 300,
+                "damageBps": 40000
+              },
+              {
+                "id": "op_reina.ultimate",
+                "effect": "DIRECT_DAMAGE",
+                "cost": 100,
+                "windupMs": 800,
+                "recoveryMs": 300,
+                "damageBps": 100000
+              }
+            ],
+            "slot": 1
+          },
+          {
+            "operatorId": "op_kyle",
+            "role": "OPERATOR",
+            "passive": {
+              "operatorId": "op_kyle",
+              "source": "SELF_HP_STRICTLY_BELOW_HALF",
+              "group": "CONDITIONAL_FLAT_DEF_AFTER_STAT_MULTIPLIERS",
+              "valueFlat": 83
+            },
+            "abilities": [
+              {
+                "id": "op_kyle.active",
+                "effect": "SHIELD_AND_TAUNT",
+                "cooldownMs": 18000,
+                "windupMs": 350,
+                "recoveryMs": 300,
+                "shieldCasterHpBps": 1800,
+                "shieldDurationMs": 6000,
+                "tauntDurationMs": 4000,
+                "maximumFrontTargets": 2
+              },
+              {
+                "id": "op_kyle.ultimate",
+                "effect": "SHIELD_LIVING_ALL",
+                "cost": 100,
+                "windupMs": 600,
+                "recoveryMs": 300,
+                "shieldCasterHpBps": 2200,
+                "shieldDurationMs": 8000
+              }
+            ],
+            "slot": 0
+          }
+        ],
+        "requiredEffectKinds": [
+          "CYCLING_TARGET_BURST",
+          "DIRECT_DAMAGE",
+          "FIXED_TARGET_BURST",
+          "HEAL_AND_RECOVERY",
+          "HEAL_ONE",
+          "SENTRY_CREATE",
+          "SENTRY_ENHANCE_OR_CREATE",
+          "SHIELD_AND_TAUNT",
+          "SHIELD_LIVING_ALL"
+        ]
+      },
+      "kitHash": "a57b0cdd822c301504d4253cf93efd5dba2238ff3ad0951f6fdd5cfebf1b14ed"
+    },
+    "admission": {
+      "version": "departure-v4",
+      "formationRevision": 1,
+      "loadoutRevision": 1,
+      "combatPolicyRequirements": {
+        "version": "combat.policy-catalog.2026-09-29.1",
+        "status": "REQUIRED_NOT_EXECUTABLE",
+        "references": [
+          "ordinary-story-design-baseline-complete-v01",
+          "six-skills-detail-v02",
+          "damage-shield-hazard-detail-v03",
+          "combat-effect-group-map-v04",
+          "combat-closeout-f1-f3-v01",
+          "world-boss-effects-coop-v03",
+          "numeric-defense-runtime-binding-audit-v13",
+          "def-shield-effect-mapping-v12",
+          "skill-haste-curve-approved-v08",
+          "attack-speed-curve-cap-approved-v09"
+        ],
+        "scope": {
+          "roster": [
+            "op_kyle",
+            "op_reina",
+            "op_eve",
+            "op_sera",
+            "op_mira"
+          ],
+          "ordinaryRisk": "I",
+          "expansion": "EXPLICIT_POLICY_REQUIRED"
+        },
+        "ultimate": {
+          "version": "combat.ultimate.2026-09-22.1",
+          "cost": 100,
+          "baseCapacity": 100,
+          "expandedCapacity": 200,
+          "expansionSource": "O11",
+          "initialCharge": 0,
+          "perBasicAction": 4,
+          "consumeAt": "CAST_ACCEPTANCE",
+          "postAcceptanceRefund": false,
+          "ready": "CHARGE_AT_LEAST_COST_AND_ACTOR_PREFLIGHT"
+        },
+        "actionRules": {
+          "firstActiveReadyMs": 0,
+          "activeAutomation": "ALWAYS",
+          "ultimateAutoInitiallyEnabled": false,
+          "sharedActorQueue": true,
+          "autoPriority": "ULTIMATE_BEFORE_ACTIVE",
+          "consumeAt": "CAST_ACCEPTANCE",
+          "casterAttackSnapshotAt": "FIRST_EFFECT",
+          "basicChargeFromSkills": false,
+          "fixedIntervalsUseAttackSpeed": false,
+          "preserveCooldownAcrossNodes": true,
+          "preserveCommittedProjectiles": true
+        },
+        "skills": [
+          {
+            "id": "op_eve.active",
+            "effect": "SENTRY_CREATE",
+            "cooldownMs": 18000,
+            "windupMs": 500,
+            "recoveryMs": 300,
+            "hpFromCasterMaxHpBps": 5000,
+            "minimumHp": 1,
+            "damageBps": 4000,
+            "intervalMs": 800,
+            "lifeMs": 12000,
+            "firstShot": "AT_SPAWN",
+            "maximumInstances": 1,
+            "target": "OWN_LIVE_CAR_DEFENSE_ZONE",
+            "shield": 0,
+            "inheritCasterDefense": false,
+            "downBehavior": "PAUSE_FIRE_KEEP_EXPIRY_NO_CATCH_UP",
+            "endAt": "HP_ZERO_CAR_DESTROYED_NODE_OR_RUN_END",
+            "defense": 0
+          },
+          {
+            "id": "op_eve.ultimate",
+            "effect": "SENTRY_ENHANCE_OR_CREATE",
+            "cost": 100,
+            "windupMs": 500,
+            "recoveryMs": 300,
+            "damageBps": 6000,
+            "intervalMs": 400,
+            "enhancementMs": 8000,
+            "fallbackLifeMs": 12000,
+            "maximumInstances": 1,
+            "alreadyEnhanced": "REJECT_WITHOUT_SPEND",
+            "existingHpAndLife": "PRESERVE",
+            "nextScheduledShot": "PRESERVE",
+            "enhancementExpiry": "MIN_ENHANCEMENT_AND_DEVICE_EXPIRY"
+          },
+          {
+            "id": "op_sera.active",
+            "effect": "HEAL_ONE",
+            "cooldownMs": 12000,
+            "windupMs": 400,
+            "recoveryMs": 300,
+            "healBps": 16000,
+            "target": "LIVING_INJURED_LOWEST_HP_RATIO_SLOT_ID_INCLUDING_SELF",
+            "lockTargetAt": "ACCEPTANCE",
+            "retarget": false,
+            "overheal": "DISCARD"
+          },
+          {
+            "id": "op_sera.ultimate",
+            "effect": "HEAL_AND_RECOVERY",
+            "cost": 100,
+            "windupMs": 600,
+            "recoveryMs": 400,
+            "healBps": 20000,
+            "target": "SNAPSHOT_LIVING_INJURED_AND_ONE_ELIGIBLE_DOWN",
+            "recoveryReductionMs": 4000,
+            "minimumRemainingMs": 1000,
+            "recoveryLimit": "ONCE_PER_DOWN_EVENT_ACROSS_CASTERS",
+            "recoveryTarget": "LONGEST_REMAINING_SLOT_ID",
+            "markReduction": "ONLY_WHEN_ACTUALLY_REDUCED",
+            "retarget": false
+          },
+          {
+            "id": "op_mira.active",
+            "effect": "FIXED_TARGET_BURST",
+            "cooldownMs": 10000,
+            "windupMs": 300,
+            "recoveryMs": 300,
+            "damageBps": 4500,
+            "shots": 6,
+            "intervalMs": 200,
+            "firstShot": "WINDUP_END",
+            "invalidTarget": "CANCEL_REMAINING_NO_RETARGET",
+            "source": "DIRECT_SKILL",
+            "perShotCastTrigger": false
+          },
+          {
+            "id": "op_mira.ultimate",
+            "effect": "CYCLING_TARGET_BURST",
+            "cost": 100,
+            "windupMs": 500,
+            "recoveryMs": 400,
+            "damageBps": 4000,
+            "shots": 16,
+            "intervalMs": 250,
+            "firstShot": "WINDUP_END",
+            "target": "FOCUS_FIRST_THEN_STABLE_ORDER_PER_CYCLE",
+            "noTargets": "CANCEL_REMAINING",
+            "focusChange": "NEXT_CYCLE",
+            "newEnemy": "NEXT_SHOT",
+            "source": "DIRECT_SKILL",
+            "perShotCastTrigger": false
+          }
+        ],
+        "passives": [
+          {
+            "operatorId": "op_kyle",
+            "source": "SELF_HP_STRICTLY_BELOW_HALF",
+            "group": "CONDITIONAL_FLAT_DEF_AFTER_STAT_MULTIPLIERS",
+            "valueFlat": 83
+          },
+          {
+            "operatorId": "op_reina",
+            "source": "DAMAGE_TO_VALID_MARKED_TARGET",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_eve",
+            "source": "OWN_SENTRY",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_sera",
+            "source": "OWN_HEAL",
+            "group": "HEAL_MAGNITUDE",
+            "valueBps": 1000
+          },
+          {
+            "operatorId": "op_mira",
+            "source": "OWN_BASIC",
+            "group": "NON_EQUIPMENT_OUTGOING",
+            "valueBps": 1000
+          }
+        ],
+        "effectRules": {
+          "equipmentDirectDamage": "ADDITIVE_WITHIN_GROUP_SEPARATE_MULTIPLIER",
+          "nonEquipmentOutgoingCapBps": 3000,
+          "strongestMarkCapBps": 2000,
+          "automaticMagnitudeApplications": 1,
+          "unknownSourceOrGroup": "PUBLICATION_BLOCKED",
+          "ordinaryFloor": "ONCE_AFTER_DEFENSE_BEFORE_SHIELD",
+          "worldScoreFloor": "ONCE_AFTER_EXACT_VALID_HIT_SUM",
+          "worldNumericEncoding": "CONTRACT_PENDING",
+          "roleOwnership": "EXPLICIT_SOURCE_OWNER_REQUIRED_NO_PARTNER_DUPLICATION"
+        },
+        "numericDefense": {
+          "budgetVersion": "combat.numeric-defense-budget.v1",
+          "scope": "ORDINARY_AND_STORY_ONLY",
+          "k": 1000,
+          "operatorBase": {
+            "op_kyle": 250,
+            "op_reina": 53,
+            "op_eve": 53,
+            "op_sera": 87,
+            "op_mira": 111
+          },
+          "operatorLevelGrowth": "FIXED",
+          "weakening": "STRONGEST",
+          "weakeningCapBps": 3000,
+          "penetration": "ADDITIVE",
+          "penetrationCapBps": 6000,
+          "equipmentReductionCapBps": 5000,
+          "guardStance": "STRONGEST",
+          "independentReduction": "MULTIPLICATIVE_ONCE_PER_GROUP",
+          "unknownDefinition": "PUBLICATION_BLOCKED_NO_DEFAULT_DEF",
+          "legacyArmorConversion": "FORBIDDEN"
+        },
+        "equipmentTiming": {
+          "skillHasteByStarBps": [
+            500,
+            1200,
+            3000,
+            7000,
+            15000
+          ],
+          "attackSpeedByStarBps": [
+            500,
+            1200,
+            3000,
+            7000,
+            15000
+          ],
+          "sameWearerGroup": "ADDITIVE",
+          "skillHasteCapBps": null,
+          "equipmentAttackSpeedCapBps": null,
+          "cooldown": "BASE_DIVIDED_BY_ONE_PLUS_HASTE_THEN_ELIGIBLE_REDUCTION_GROUPS",
+          "rounding": "CEIL_FINAL_TO_LOGICAL_TICK",
+          "preserveOtherGroupCaps": true,
+          "affectsUltimateCharge": false,
+          "affectsCommanderCooldown": false,
+          "affectsFixedIntervals": false,
+          "affectsWindupOrRecovery": false
+        },
+        "shieldRules": {
+          "directRecipientMaxHpCapBps": null,
+          "sameSourceIdentity": "CASTER_ABILITY_EFFECT",
+          "sameSource": "REPLACE_IF_NEW_AMOUNT_AT_LEAST_REMAINING_OTHERWISE_NO_CHANGE",
+          "preserveExplicitExceptions": true,
+          "generateBeforeRecipientModifiers": true,
+          "offensiveDamageCritPenetrationModifiers": false
+        }
+      },
+      "combatAuthority": {
+        "version": "combat.authority-split.v1",
+        "mode": "ORDINARY_SOLO",
+        "combatOwner": "UNITY_LOCAL",
+        "combatClock": "LOCAL_LOGICAL",
+        "transactionOwner": "SERVER",
+        "resultVerificationOwner": "SERVER",
+        "clientReportProvesCombat": false
+      },
+      "formation": {
+        "operators": [
+          {
+            "operatorId": "op_kyle",
+            "slot": 0
+          },
+          {
+            "operatorId": "op_reina",
+            "slot": 1
+          },
+          {
+            "operatorId": "op_eve",
+            "slot": 2
+          },
+          {
+            "operatorId": "op_sera",
+            "slot": 3
+          },
+          {
+            "operatorId": "op_mira",
+            "slot": 4
+          }
+        ]
+      }
+    },
+    "operationPreviewId": "preview"
+  },
+  "stats": {
+    "state": {
+      "accountId": "a",
+      "runId": "future-run",
+      "revision": 1,
+      "inventoryRevision": 1,
+      "modifiers": {
+        "research": {
+          "sourceId": "UNITY_CONTRACT_TEST_DOUBLE",
+          "version": "test-proof-v1",
+          "revision": 1,
+          "status": "NO_ACTIVE_STAT_MODIFIERS"
+        },
+        "commander": {
+          "sourceId": "UNITY_CONTRACT_TEST_DOUBLE",
+          "version": "test-proof-v1",
+          "revision": 1,
+          "status": "NO_ACTIVE_STAT_MODIFIERS"
+        },
+        "augments": {
+          "sourceId": "UNITY_CONTRACT_TEST_DOUBLE",
+          "version": "test-proof-v1",
+          "revision": 1,
+          "status": "NO_ACTIVE_STAT_MODIFIERS"
+        },
+        "temporary": {
+          "sourceId": "UNITY_CONTRACT_TEST_DOUBLE",
+          "version": "test-proof-v1",
+          "revision": 1,
+          "status": "NO_ACTIVE_STAT_MODIFIERS"
+        }
+      },
+      "actors": [
+        {
+          "operatorId": "op_kyle",
+          "currentHp": 699,
+          "slots": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "operatorId": "op_reina",
+          "currentHp": 900,
+          "slots": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "operatorId": "op_eve",
+          "currentHp": 950,
+          "slots": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "operatorId": "op_sera",
+          "currentHp": 920,
+          "slots": [
+            null,
+            null,
+            null
+          ]
+        },
+        {
+          "operatorId": "op_mira",
+          "currentHp": 1000,
+          "slots": [
+            null,
+            null,
+            null
+          ]
+        }
+      ]
+    },
+    "packet": {
+      "version": "combat.ordinary-five-core-stats.v1.20261023",
+      "accountId": "a",
+      "runId": "future-run",
+      "revision": 1,
+      "inventoryRevision": 1,
+      "originHash": "05248f05b3c99545800913968a25e54a7f70ca86398f7ed127116603cfd3bb77",
+      "sourceHash": "3b77ef000c8985b40ad37212eaf8acb6a52dd248f114f59cbe244d9d0961993e",
+      "scope": "MAX_HP_ATK_DEF_ONLY",
+      "actors": [
+        {
+          "operatorId": "op_kyle",
+          "slot": 0,
+          "currentHp": 699,
+          "equipment": [
+            null,
+            null,
+            null
+          ],
+          "effectiveStats": {
+            "maxHp": 1400,
+            "attack": {
+              "numerator": "36",
+              "denominator": "1"
+            },
+            "defense": {
+              "numerator": "333",
+              "denominator": "1"
+            }
+          },
+          "conditionalDefenseFlat": 83,
+          "skillMagnitude": {
+            "numerator": "10000",
+            "denominator": "10000"
+          }
+        },
+        {
+          "operatorId": "op_reina",
+          "slot": 1,
+          "currentHp": 900,
+          "equipment": [
+            null,
+            null,
+            null
+          ],
+          "effectiveStats": {
+            "maxHp": 900,
+            "attack": {
+              "numerator": "50",
+              "denominator": "1"
+            },
+            "defense": {
+              "numerator": "53",
+              "denominator": "1"
+            }
+          },
+          "conditionalDefenseFlat": 0,
+          "skillMagnitude": {
+            "numerator": "10000",
+            "denominator": "10000"
+          }
+        },
+        {
+          "operatorId": "op_eve",
+          "slot": 2,
+          "currentHp": 950,
+          "equipment": [
+            null,
+            null,
+            null
+          ],
+          "effectiveStats": {
+            "maxHp": 950,
+            "attack": {
+              "numerator": "28",
+              "denominator": "1"
+            },
+            "defense": {
+              "numerator": "53",
+              "denominator": "1"
+            }
+          },
+          "conditionalDefenseFlat": 0,
+          "skillMagnitude": {
+            "numerator": "10000",
+            "denominator": "10000"
+          }
+        },
+        {
+          "operatorId": "op_sera",
+          "slot": 3,
+          "currentHp": 920,
+          "equipment": [
+            null,
+            null,
+            null
+          ],
+          "effectiveStats": {
+            "maxHp": 920,
+            "attack": {
+              "numerator": "40",
+              "denominator": "1"
+            },
+            "defense": {
+              "numerator": "87",
+              "denominator": "1"
+            }
+          },
+          "conditionalDefenseFlat": 0,
+          "skillMagnitude": {
+            "numerator": "10000",
+            "denominator": "10000"
+          }
+        },
+        {
+          "operatorId": "op_mira",
+          "slot": 4,
+          "currentHp": 1000,
+          "equipment": [
+            null,
+            null,
+            null
+          ],
+          "effectiveStats": {
+            "maxHp": 1000,
+            "attack": {
+              "numerator": "30",
+              "denominator": "1"
+            },
+            "defense": {
+              "numerator": "111",
+              "denominator": "1"
+            }
+          },
+          "conditionalDefenseFlat": 0,
+          "skillMagnitude": {
+            "numerator": "10000",
+            "denominator": "10000"
+          }
+        }
+      ],
+      "packetHash": "b7a139da7ded42dfbcfa99db3fa02b44847deeda1fb9e739ec977d3ea116988e"
+    }
+  }
+}
