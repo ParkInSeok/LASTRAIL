@@ -1,0 +1,27 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-fidelity-rebuild-v01\\16-restored.png",
+  "sourceSha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4",
+  "method": "Native original-part composition, no image generation. Count changed and original scope card copied unscaled into empty viewport cell.",
+  "policy": "QA/DirectionImpact-20260921/equipment-inventory-claimed-v34-review/REVIEW.md",
+  "state": "Last pending reward claimed; inventory54/54; no pending panel, forfeit button or extra success popup.",
+  "limitations": [
+    "Illustrative normal-inventory fixture, not exact item IDs/order continuation from60. Runtime must append actual claimed instance to original order and preserve scroll.",
+    "Unity, transactions and independent runtime resources not changed or tested."
+  ],
+  "checks": {
+    "size": [
+      1602,
+      981
+    ],
+    "outsideAllowedChangedPixels": 0,
+    "fivePortraitsChangedPixels": 0
+  },
+  "outputs": [
+    {
+      "file": "61-equipment-claimed.png",
+      "sha256": "84bd150daef89f4fb8067a8ab334b318184344363fe589c3c75a70558d1165d3"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

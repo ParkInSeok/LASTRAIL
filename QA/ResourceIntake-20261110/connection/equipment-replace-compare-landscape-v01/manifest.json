@@ -1,0 +1,79 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\popup-brand-removal-v01\\40-no-brand.png",
+      "sha256": "2487254173a21b5fc53753b50113ce7cc66b6df4058792cff7c3babaeb358322"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+      "sha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\equipment-replace-picker-v51-illustration\\replace-picker.png",
+      "sha256": "cb663f05c90cdc6cd2cc213143b5fe565cdde3477a9f2ea88176678ab77f6330"
+    }
+  ],
+  "method": "Approved landscape40 frame,original16armor and approvedv51fire-scope cropped/resized into comparison boxes. Native labels,effect summary,enabled button;no image generation.",
+  "policies": [
+    "equipment-replace-picker-v51-illustration/REVIEW.md",
+    "equipment-replace-v40-illustration/REVIEW.md",
+    "equipment-set-change-v41-illustration/REVIEW.md"
+  ],
+  "fixture": "Reina slot2shieldarmor2 DEF25 to firescope2 ATK25;slot1shieldpower2,slot3empty. Equipment contributionDEF-25pp/ATK+25pp;shield2to1 removesDEF10 and retainsHP6;fire0to1 activatesATK4,no fire2 bonus. No unique/enchant only for this fixture. Storage occupancy unchanged on swap.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "allowedRectangles": [
+      [
+        705,
+        160,
+        276,
+        41
+      ],
+      [
+        204,
+        286,
+        216,
+        184
+      ],
+      [
+        904,
+        286,
+        211,
+        184
+      ],
+      [
+        389,
+        540,
+        340,
+        36
+      ],
+      [
+        420,
+        736,
+        1050,
+        64
+      ],
+      [
+        836,
+        837,
+        350,
+        55
+      ]
+    ],
+    "threeSlotTagCountsVerified": true,
+    "visual": "Full image inspected:owner slot2,2star cards,DEF25/ATK25,separate equipment/set deltas,cancel/replace."
+  },
+  "limits": [
+    "Illustration,not real item/stat/catalog or transaction binding;contributions are not final DPS/damage.",
+    "Cards resized into fixed boxes,not identical-pixel art claim;protected frame exact only.",
+    "Mobile text/input,cancel/reentry,quote/receipt and Unity not tested."
+  ],
+  "outputs": [
+    {
+      "file": "77-equipment-replace-compare.png",
+      "sha256": "cf233c898a91dda65d58fba557b721579d95dfa6a37fba7d5f29a4a282020958"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

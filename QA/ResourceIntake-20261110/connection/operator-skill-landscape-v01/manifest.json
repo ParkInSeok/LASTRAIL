@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval_date": "2026-11-13",
+  "output": "33-operator-skill.png",
+  "method": "Built-in imagegen reference edit, not pixel-exact asset reuse",
+  "reference": "../operator-detail-landscape-v01/32-operator-detail.png",
+  "policy": "35_CURRENT_ECONOMY_ANNEX.md section7 skill1to2: credit160 tacticalData80. Example not live account. Server owns costs and permission; active-run growth restrictions remain.",
+  "review": "Viewed output: skill tab selected, Lv1to2, credit160/tactical80, unknown balances, example badge, training/formation buttons. Noncombat Reina and unified icon rail retained visually. Currency art redrawn, not exact shared icon reuse.",
+  "limits": "New candidate; no skill effect values invented. Stage detail remains unspecified. Unknown balances must not authorize execution; blue button illustrates visual style only. Unity unchanged, interactions/transactions untested."
+}

@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval_date": "2026-11-13",
+  "output": "37-recruit-history.png",
+  "reference": "../recruit-history-landscape-v02/37-recruit-history.png",
+  "method": "Built-in imagegen edit",
+  "review": "Viewed: cumulative21to30 illustrative ordinal column, previous20, separate post-batch pity unknown fields, text-only scroll, fixed close/header.",
+  "contract": "Cumulative banner ordinal differs from resettable pity counters. Use historical postPityState.totalPullCount minus pullCount plus original pullSequence only when valid same-scope receipt exists. Never count loaded rows/current pity backwards. Historical thresholds require pinned policy; unknown stays unavailable. Pickup adds relevant pickup counter.",
+  "limits": "No server/runtime verification of historical total count coverage. Examples not actual account data. Probability popup deferred for this requested correction. Unity unchanged; interactions untested."
+}

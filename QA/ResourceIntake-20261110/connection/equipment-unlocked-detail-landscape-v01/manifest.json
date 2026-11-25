@@ -1,0 +1,13 @@
+{
+  "output": "55-equipment-unlocked-detail.png",
+  "policy": "equipment-locked-detail-v48-illustration/REVIEW.md",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "limits": "Reference-only composite,no Unity/live unlock/discard/input tests; generated pixels not exact.",
+  "sourceUnchanged": true,
+  "source": "QA/ResourceIntake-20261110/connection/equipment-locked-detail-landscape-v01/54-equipment-locked-detail.png",
+  "review": "Full image visually inspected:보관 중/open padlock/잠금/active burgundy 버리기;two stars,four effect rows,five portraits,target-unselected state retained",
+  "method": "Built-in image_gen referenced edit",
+  "contract": "Explicit unlock confirmed; original item remains owned unequipped. Eligible discard now enabled but not executed automatically. Recipient still unselected so equip remains disabled. Closing does not revert confirmed unlock.",
+  "sha256": "6A54403048A440F38780CD4C903B43752CA0EC8A987456FAE547267B107F2282",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

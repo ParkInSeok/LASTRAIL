@@ -1,0 +1,25 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+  "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+  "previousState": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\merchant-full-landscape-v01\\66-merchant-full.png",
+  "previousStateSha256": "bfddd997fb338cd1f5a6ede2b443343f96b13b2ada38f3898c007937e2989e4c",
+  "method": "Original art plus approved logo-removal crop; native capacity count only. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-full-v27-illustration/REVIEW.md",
+  "fixture": "Return after inventory cleanup from66:30/30 to29/30; supply40, prices and five stock1 unchanged. Three equipment purchases enabled; no automatic purchase. Service eligibility assumed valid in this illustration.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "visual": "Full image inspected:29/30,full notice absent,three cyan purchase buttons,stocks and wallet unchanged."
+  },
+  "limits": [
+    "Reference composite, no actual inventory deletion or transaction.",
+    "Unity,input,scroll preservation and real service eligibility not tested."
+  ],
+  "outputs": [
+    {
+      "file": "70-merchant-cleared.png",
+      "sha256": "886e45d285e07b81892080c672c89839ce09d4f52be943529027a7d0d6703bd8"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

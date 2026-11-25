@@ -1,0 +1,200 @@
+[
+  {
+    "index": 0,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\codex-landscape-v02\\22-codex.png",
+    "group": "codex-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 1,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\commander-room-landscape-v01\\14-commander-room.png",
+    "group": "commander-room-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 2,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\departure-landscape-v03\\11-departure.png",
+    "group": "departure-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 3,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-node-landscape-v01\\49-enchant-node.png",
+    "group": "enchant-node-landscape",
+    "status": "CANDIDATE_REFERENCE_ONLY"
+  },
+  {
+    "index": 4,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-replace-landscape-v01\\43-enchant-replace.png",
+    "group": "enchant-replace-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 5,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-result-landscape-v01\\44-enchant-result.png",
+    "group": "enchant-result-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 6,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-target-landscape-v01\\42-enchant-target.png",
+    "group": "enchant-target-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 7,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-forfeit-landscape-v01\\48-equipment-forfeit.png",
+    "group": "equipment-forfeit-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 8,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-pending-landscape-v01\\47-equipment-pending.png",
+    "group": "equipment-pending-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 9,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-promote-result-landscape-v01\\46-promote-result.png",
+    "group": "equipment-promote-result-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 10,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-promote-target-landscape-v01\\45-promote-target.png",
+    "group": "equipment-promote-target-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 11,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\lobby-menu-landscape-v02\\24-lobby-menu.png",
+    "group": "lobby-menu-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 12,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\notices-popup-landscape-v01\\29-notices.png",
+    "group": "notices-popup-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 13,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-detail-landscape-v02\\39-equipment-detail.png",
+    "group": "operation-equipment-detail-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 14,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+    "group": "operation-equipment-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 15,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-replace-landscape-v01\\40-equipment-replace.png",
+    "group": "operation-equipment-replace-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 16,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-synthesis-landscape-v01\\41-equipment-synthesis.png",
+    "group": "operation-equipment-synthesis-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 17,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-journal-popup-landscape-v03\\20-operation-journal.png",
+    "group": "operation-journal-popup-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 18,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-map-landscape-v02\\15-operation-map.png",
+    "group": "operation-map-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 19,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+    "group": "operation-merchant-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 20,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-detail-landscape-v02\\32-operator-detail.png",
+    "group": "operator-detail-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 21,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-promotion-landscape-v02\\34-operator-promotion.png",
+    "group": "operator-promotion-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 22,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-skill-landscape-v02\\33-operator-skill.png",
+    "group": "operator-skill-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 23,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-token-comparison-v01\\36-token-comparison.png",
+    "group": "operator-token-comparison",
+    "status": "OPTION_B_SEAL_USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 24,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\options-landscape-v02\\25-options-game.png",
+    "group": "options-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 25,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-history-landscape-v03\\37-recruit-history.png",
+    "group": "recruit-history-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 26,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-probability-landscape-v03\\38-recruit-probability.png",
+    "group": "recruit-probability-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 27,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-results-landscape-v03\\35-recruit-results.png",
+    "group": "recruit-results-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 28,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\story-journal-landscape-v01\\23-story-journal.png",
+    "group": "story-journal-landscape",
+    "status": "CANDIDATE_REFERENCE_ONLY"
+  },
+  {
+    "index": 29,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\support-battle-neon-v02\\13-battle-support.png",
+    "group": "support-battle-neon",
+    "status": "USER_APPROVED_ICON_DESIGN_20261112_REFERENCE_ONLY"
+  },
+  {
+    "index": 30,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\support-popup-landscape-v01\\30-support-compose.png",
+    "group": "support-popup-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 31,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\support-replies-popup-landscape-v01\\31-support-replies.png",
+    "group": "support-replies-popup-landscape",
+    "status": "USER_APPROVED_REFERENCE_ONLY"
+  },
+  {
+    "index": 32,
+    "path": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\support-selection-landscape-v03\\12-support-selection.png",
+    "group": "support-selection-landscape",
+    "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+  }
+]

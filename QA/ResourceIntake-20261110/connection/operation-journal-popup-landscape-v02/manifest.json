@@ -1,0 +1,14 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-12 user approved journal and item detail mockups; runtime remains unimplemented in this design task",
+  "outputs": [
+    "20-operation-journal.png",
+    "21-journal-item-detail.png"
+  ],
+  "method": "Built-in imagegen reference edits; generated illustrations, not independent runtime assets",
+  "layout": "Three columns: sequence / event icon only / actual result. Vertical journal viewport; horizontal equipment acquisition and purchase strips. Enchanted item icon opens read-only detail emphasizing enchant.",
+  "data": "Illustrative items, stars, quantities and enchant names only. Runtime must use original run/node transaction item snapshot and applied enchant at that event, not current inventory. Missing original data is not fabricated.",
+  "interaction": "Tap an item to show detail; close only top modal and preserve journal vertical and per-row horizontal offsets. Top modal blocks underlying input. Drag scrolling must not fire item click. Only overflow rows scroll; shop service outcomes use actual result text, not fabricated item rewards.",
+  "review": "Both generated images visually inspected: icon-only second column; acquisition strip clipped with horizontal bar; enchant badge; purchase thumbnails; separate detail with highlighted enchant. Example potion star treatment is illustrative, not a consumable rarity policy.",
+  "limits": "Unity/server untouched. API record availability, real clicking, nested scroll gestures, cancellation/reentry/release not verified. Approval pending."
+}

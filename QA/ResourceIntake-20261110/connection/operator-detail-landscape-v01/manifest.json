@@ -1,0 +1,15 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval_date": "2026-11-13",
+  "output": "32-operator-detail.png",
+  "method": "Built-in imagegen reference redraw and icon correction, not exact asset compositing",
+  "references": [
+    "../operators-landscape-v03/01-operators.png",
+    "../noncombat-basic-five-v02/portrait-reina.png",
+    "../offline-supply-landscape-v02/08-offline-supply.png"
+  ],
+  "source": "exec-fdaffe7e-6c67-409e-87fb-479e2fbc9daf.png",
+  "policy": "35 economy annex section7: five training slots own EXP, minimum slot sync; no individual duplicate EXP charge.",
+  "review": "Viewed output. Initial tactical data icon corrected to black cyan EXP chip. Reina, unified rail, stats, core entry and formation present.",
+  "limits": "Overview tab only. Skill/promotion detail pending. No separate approved half-body verified. Reference composite; Unity unchanged, interactions untested."
+}

@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "11-departure.png",
+  "layoutSource": "../departure-landscape-v02/11-departure.png",
+  "approvedIconDesign": "../support-battle-neon-v02/13-battle-support.png",
+  "method": "Built-in imagegen reference-based edit, not identical shared PNG composition",
+  "review": "Three cyan neon skills in support fire/barrier/emergency repair order. Five named portraits, train, fuel10/balance30 and preset1 retained in layout. Generated details not pixel-identical.",
+  "runtimeChanged": false
+}

@@ -1,0 +1,47 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "method": "Native composition of original UI crops; after state reuses approved51 bytes, no generative editing",
+  "policy": [
+    "equipment-synthesis-refresh-v55-illustration/REVIEW.md",
+    "16_ART_STYLE_GUIDE.md#ui-reference-fidelity-rejection-20261113"
+  ],
+  "fixture": "Separate equipped synthesis example:Reina slot2 armor2star shield + unlocked storedarmor2 -> same slotarmor3,stored7to6. Slot1 sight2 and slot3empty unchanged. No new effect/ID/enchant invented.",
+  "checks": {
+    "protectedChangedPixels": 0,
+    "fivePortraitChangedPixels": 0,
+    "afterByteIdenticalApproved51": true,
+    "allowedBeforeRectangles": [
+      [
+        134,
+        230,
+        640,
+        605
+      ],
+      [
+        1275,
+        89,
+        91,
+        35
+      ],
+      [
+        1133,
+        545,
+        74,
+        25
+      ],
+      [
+        1016,
+        689,
+        96,
+        28
+      ]
+    ]
+  },
+  "visualReview": "Before full image inspected:7stored/equipped2star;after is already approved51 exact6stored/equipped3star. No added success popup.",
+  "limits": "Static reference only,no actual receipt/transaction/Unity tests. After image is reuse,not newly drawn.",
+  "files": {
+    "59-before.png": "25613640c0b9421fe648545f618a0b5ce4d614bf83788d952b4cab6df71d8357",
+    "59-after.png": "8e5572491bf3da4ca8863e89365e7182c361b4b9df388fd5212fa93760284e15"
+  },
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

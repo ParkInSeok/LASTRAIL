@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "14-commander-room.png",
+  "policy": "docs/superpowers/plans_categories/09_COMMANDER_PROGRESSION.md sections 4 and production handoff v1.1 sections 2-4",
+  "reference": "../support-selection-landscape-v03/12-support-selection.png; QA/DirectionImpact-20260921/commander-node-metal-v01/commander-720.png and REVIEW.md",
+  "method": "Built-in imagegen landscape concept",
+  "review": "Unified neutral five-icon left navigation, three presets, selected preset1, level10 unused5/total10, nine visible tree nodes, scroll/zoom, lower detail +3 to +6 percent, invest1P/refund/reset/save visually inspected.",
+  "limits": "Tree connections are illustrative generated curves and do not certify exact parent graph; runtime must use authoritative43-node/76-edge definition. Only part of tree shown; nonactive preset activation state not shown. Numbers are fixture, not live account. No Unity modifications or interaction validation.",
+  "independentCompositionRequired": "Background, frame, node ring, node symbol, labels, ranks, connections, selection light, lock, scroll/input controls and details must remain separately controllable in implementation."
+}

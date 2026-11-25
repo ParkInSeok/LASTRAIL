@@ -1,0 +1,11 @@
+{
+  "file": "03-recruit.png",
+  "runtimeChanged": false,
+  "sha256": "E5CB04DE1D1F125B3A584F875FDFD7618CCC3AE765ACA9E9185354DA35295609",
+  "reference": "User attachment codex-clipboard-209e2857-f35a-4a97-845c-6cdbe191d170.png",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "tool": "built-in image_gen",
+  "design": "Retain original calligraphic fixed general title and radio tower motif; remove general subtitle and its flanking rules. v04 angular typography not selected. Special pickup-specific title/art contract remains.",
+  "verification": "Visually confirmed subtitle/rules absent, title and recruitment controls retained. Generated edit, not pixel-exact preservation.",
+  "approval": "User confirmed this recruitment screen as final: fixed general title 황무지의 신호, original calligraphic style, no subtitle; special pickup replacement contract retained."
+}

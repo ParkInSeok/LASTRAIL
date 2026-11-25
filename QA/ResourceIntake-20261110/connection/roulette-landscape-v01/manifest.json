@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "verification": "Visual:8sector wheel,4x highlight,480/32/16/3600 example reward lines,four correct icon families,one confirm action,dim left menu. Wheel sectors are decorative not probabilities. No live claim or ad performed.",
+  "sha256": "09D81B7C830394208D53E17DDA691258F1258B447B117068B594AF04B284E3E7",
+  "runtimeChanged": false,
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "file": "10-roulette.png",
+  "source": "Concept05 + approved offline supply v02"
+}

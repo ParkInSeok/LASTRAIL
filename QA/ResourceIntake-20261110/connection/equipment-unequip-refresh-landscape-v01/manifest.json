@@ -1,0 +1,13 @@
+{
+  "sourceUnchanged": true,
+  "output": "52-equipment-unequip-refresh.png",
+  "policy": "equipment-unequip-refresh-v59-illustration/REVIEW.md; current operator-only approval",
+  "method": "Built-in image_gen referenced edit",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sha256": "2E71FB3064B11482A5F5F0F4F8E6E4B4FB6030638108D9D477F71146F61D810A",
+  "fixture": "Reina slot2 armor3star ironwall returns as seventh stored item,6to7/30; first6 stored order unchanged; slot1 sight2star stays; slot2and3 empty. Appended return position is illustrative, actual inventory sort owner must govern.",
+  "source": "QA/ResourceIntake-20261110/connection/equipment-equip-refresh-landscape-v01/51-equipment-equip-refresh.png",
+  "limits": "Reference-only composite, not independent UI assets. Generated fine-detail drift possible. No Unity, actual transaction, capacity-error or input testing.",
+  "review": "Full generated output visually inspected:7/30,seven stored items,two trailing empty cells,returned armor3stars,locked armor retained,slot1 unchanged,slots2and3 empty,five portraits,no turret/no brand/no result popup",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

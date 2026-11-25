@@ -1,0 +1,388 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "request": "2026-11-13 user: 시작이랑 로그인만 타이틀 남기고 나머지는 삭제하자. 화면명은 유지하고 승인 원본 보존해서 수정 시안 보여줘 ㄱㄱ",
+  "method": "Built-in image_gen referenced edits; separate generated PNGs. Original 22 source hashes unchanged.",
+  "protectedStartLogin": [
+    {
+      "number": 1,
+      "title": "시작",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\landscape-entry-v01\\01-startup.png",
+      "relativeSource": "../landscape-entry-v01/01-startup.png",
+      "sha256": "b0cf845672b09c082629b45a428f6041ad0a6008ed32b438098469114d65e558",
+      "sourceStatus": "USER_APPROVED",
+      "decision": "KEEP_BRAND_USER_APPROVED",
+      "logoObserved": true
+    },
+    {
+      "number": 2,
+      "title": "로그인",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\landscape-entry-v01\\02-login.png",
+      "relativeSource": "../landscape-entry-v01/02-login.png",
+      "sha256": "6991aaacdc11df23bf4c2304ef2245d8b134dc3c5472a2eabd1bafb228d0cb38",
+      "sourceStatus": "USER_APPROVED",
+      "decision": "KEEP_BRAND_USER_APPROVED",
+      "logoObserved": true
+    }
+  ],
+  "items": [
+    {
+      "number": 3,
+      "title": "대원",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operators-landscape-v03\\01-operators.png",
+      "sourceSha256": "2ea1839b4f74601ba4b1f394b3b16766da992a7d2427e2a95cd678e6e93548cb",
+      "output": "03-no-brand.png",
+      "sha256": "68169c3acff2ed0856a480e899bec0534fe59da6c697b62756ce3511d76d5666",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1671,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 4,
+      "title": "열차",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\train-landscape-v04\\02-train.png",
+      "sourceSha256": "6dfcc81f2d9c540d0ef2bc27c6d22e7be13c0846f08a7b06c6e433d81cbf5e02",
+      "output": "04-no-brand.png",
+      "sha256": "70a59818a7b63277d0b8ac8f08641c8de18e60e5df7223e920855e1e537db2dd",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 5,
+      "title": "모집",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-landscape-v05\\03-recruit.png",
+      "sourceSha256": "e5cb04de1d1f125b3a584f875fdfd7618ccc3ae765aca9e9185354da35295609",
+      "output": "05-no-brand.png",
+      "sha256": "efd9b2cae5fe4a5dca06174b60a34ac47dc30f69db3a64c7fc599c223658ad5a",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 6,
+      "title": "상점",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\shop-landscape-v10\\04-shop.png",
+      "sourceSha256": "6eab1175ad2d99ea6e09d7cc26b34d8f3cb4cb1b6667d03615c59a8b336aa8d9",
+      "output": "06-no-brand.png",
+      "sha256": "2e309841a46e311daec7df7380e6042bf2a0a373fc05eafde956bad29f7bce91",
+      "sourceDimensions": [
+        1670,
+        942
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 7,
+      "title": "임무",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\missions-landscape-v05\\06-missions.png",
+      "sourceSha256": "f6b393776cad6340cbfc58ee85d0dad03156f8deac2cd33fc1f2afb648c901cd",
+      "output": "07-no-brand.png",
+      "sha256": "04f4cebd46cbb7b6a62123be6b0875c087dc50e9b4c4545e23cfb8fdc0d1544f",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 8,
+      "title": "출석",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\attendance-landscape-v03\\07-attendance.png",
+      "sourceSha256": "d2656efa2ebc6bae2824bf3c368d0345487c6fa16abea59223fa2b8c543ef5fe",
+      "output": "08-no-brand.png",
+      "sha256": "6c8d256d5c93834993f1fad65e96df3a80f4a08ee0db1b6dd622753bc752e6ee",
+      "sourceDimensions": [
+        1670,
+        941
+      ],
+      "dimensions": [
+        1670,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 9,
+      "title": "운행 보급",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\offline-supply-landscape-v02\\08-offline-supply.png",
+      "sourceSha256": "52228f9ff641ec7f6f7b3662e8b970cdfea7cddbad861cd957ef1ce986844e29",
+      "output": "09-no-brand.png",
+      "sha256": "fcb989923c1a915f225cd589202f24a86895c4363dd47912245344afd011ca3a",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 10,
+      "title": "패스",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\pass-landscape-v01\\09-pass.png",
+      "sourceSha256": "0b18eca558cbacf543963d3ad31223ef37c71332764a4b105464b2b46cb5f0cb",
+      "output": "10-no-brand.png",
+      "sha256": "2474e018b7f0b571722c0ba434019c37b80a917d6c59438406cf10cdcf885987",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 11,
+      "title": "룰렛",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\roulette-landscape-v01\\10-roulette.png",
+      "sourceSha256": "09d81b7c830394208d53e17dda691258f1258b447b117068b594af04b284e3e7",
+      "output": "11-no-brand.png",
+      "sha256": "bf654c353f981e693260bab2836b4195bd9cdc35960598f0a12faf43035d47e3",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 12,
+      "title": "출격 준비",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\departure-landscape-v03\\11-departure.png",
+      "sourceSha256": "9041387647052895166e00879e5934cab06fa149582ac456a041ce798182abbf",
+      "output": "../screen-final-crisp-v01/12-departure.png",
+      "sha256": "b128f87d00006d119e587a2e3edcf457acc770ec2862210188931e80b80d5bd7",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "approval": "2026-11-13 user approved replacing both final screens and video with v18 redraws",
+      "previousOutput": "12-no-brand.png"
+    },
+    {
+      "number": 13,
+      "title": "지휘 스킬 선택",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\support-selection-landscape-v03\\12-support-selection.png",
+      "sourceSha256": "12e58bad9428ad02068d382bc52f8a018619ce8250865b2c7284f490fac435d8",
+      "output": "13-no-brand.png",
+      "sha256": "c826d3939507521a6bae07d57e25061765e0d87f7e68628745c9c6e7c31e6c61",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 14,
+      "title": "지휘실",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\commander-room-landscape-v01\\14-commander-room.png",
+      "sourceSha256": "16aa698c857e20e8c3ef1cc344ae2ca1021709a4335d722e8e75dd4f65e64ab7",
+      "output": "14-no-brand.png",
+      "sha256": "841b4e4c663673622479adcd4721b7d85f00358206588baa0a69706db05bb8bc",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 15,
+      "title": "작전 지도",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-map-landscape-v02\\15-operation-map.png",
+      "sourceSha256": "b9a6fae3451e47cffdadabcf092ee3491ff68a65b5248de92fc20947f7c7b15a",
+      "output": "15-no-brand.png",
+      "sha256": "c284464b7e84332a0ba7afe6d3f36ce62d5a40539062ee46ab618bd1856e4a40",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 16,
+      "title": "정비 상인",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+      "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+      "output": "16-no-brand.png",
+      "sha256": "b59934ae87aa03f23819738719198cea3381025a9ac4566f6c46083a61808450",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1671,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 17,
+      "title": "승리 결과",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-results-landscape-v03\\18-victory.png",
+      "sourceSha256": "e22216081348f0c743b800e12e0a763d57e0e4fb5d658df17c3518e77cfd2cb1",
+      "output": "../screen-final-crisp-v01/17-result.png",
+      "sha256": "2a95e15e98104302694c970684941c2b05fde48cd77e25b28abff3fc570271c3",
+      "sourceDimensions": [
+        1671,
+        941
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "approval": "2026-11-13 user approved replacing both final screens and video with v18 redraws",
+      "previousOutput": "17-no-brand.png",
+      "requestedRevision": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\screen-final-crisp-v01\\17-result-no-pending.png",
+        "sha256": "a82c2c78c1e9a82ea8631b9721b897445f3f93b949d69bb94d5deb9ca681a9d4",
+        "change": "Remove only pending badge at user request2026-11-13",
+        "status": "USER_REQUESTED_EDIT_OF_APPROVED_BASE",
+        "method": "Built-in imagegen localized edit; no pixel identity claim",
+        "video": "portfolio-teaser-v20"
+      }
+    },
+    {
+      "number": 18,
+      "title": "패배 결과",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-results-landscape-v04\\19-defeat.png",
+      "sourceSha256": "28f30ed606fdd2c822f2bb2e649b79cb76da2c57b06f643bb009886778a7a676",
+      "output": "18-no-brand.png",
+      "sha256": "61b67c23dac1ab882c79c18dfc07b3f7777367b0dae254d7543dc6de5d983bca",
+      "sourceDimensions": [
+        1671,
+        941
+      ],
+      "dimensions": [
+        1671,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 19,
+      "title": "대원 도감",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\codex-landscape-v02\\22-codex.png",
+      "sourceSha256": "3a86d791efd4d4244ef16d0d64e09f350e5b6d42af47740a7d6824d2d337b73a",
+      "output": "19-no-brand.png",
+      "sha256": "e66917561de33908a16dd1523c7ff39c8b35c3f7900751471e345144bd24232e",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 20,
+      "title": "대원 상세",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-detail-landscape-v02\\32-operator-detail.png",
+      "sourceSha256": "55c0d9ab79f1d5134ad920a5c09e7d06be11ca7f1fad8a8d7c1046e402236d7f",
+      "output": "20-no-brand.png",
+      "sha256": "71deb500869061d83299339871b3169bc6681852f891f11f8b5681e21e04d623",
+      "sourceDimensions": [
+        1670,
+        942
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 21,
+      "title": "스킬 훈련",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-skill-landscape-v02\\33-operator-skill.png",
+      "sourceSha256": "dd8567b3f20ae2aa3ab5963464a400fafaeeee34934a97655f3a03782b60d731",
+      "output": "21-no-brand.png",
+      "sha256": "52d55c037b2802d25b626594fe9ce20bde6a4eaffe3c19b03a9c415a0445de88",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    },
+    {
+      "number": 22,
+      "title": "대원 승급",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-promotion-landscape-v02\\34-operator-promotion.png",
+      "sourceSha256": "c25119154e9888f607b5f27a48339acf9982da73869a347346d6ec0c5bd7e9f5",
+      "output": "22-no-brand.png",
+      "sha256": "c290971ba203a8ea7f53a8796132c7131dc37fe3d9be7847a583417894b53181",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY"
+    }
+  ],
+  "review": "All20 generated outputs visually inspected: header brand removed, functional Korean screen headings retained. Repeated LAST RAIL lettering on visible props also targeted. No claim of pixel-identical protected regions.",
+  "limits": [
+    "Generated edit can change fine pixels and dimensions",
+    "Unity unchanged; no runtime connection or approval promotion",
+    "Previous17 popup removals remain approved separately"
+  ],
+  "approval": "2026-11-13 user: 좋아 승인 다음 최종시안 만들거 ㄱㄱ"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_ICON_DESIGN_20261112_REFERENCE_ONLY",
+  "output": "13-battle-support.png",
+  "source": "../support-battle-neon-v01/13-battle-support.png",
+  "method": "Built-in imagegen edit; reference-based redraw, not pixel-identical composition",
+  "scope": "Three bottom-right commander skill icons: reduce metallic faces and brass, strengthen cyan outline and interior emission, simplify silhouette",
+  "visualReview": "Shield, tripod gun with three cartridges, wrench visible in original order. Cyan brightness increased, labels unobscured. Surrounding scene approximately retained with generated detail variation.",
+  "limits": "User approved the three icon designs, not unrelated generated battle details. No Unity changes, independent asset extraction or runtime readability verification. Underlying train redesign remains separate."
+}

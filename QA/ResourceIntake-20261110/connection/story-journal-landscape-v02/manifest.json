@@ -1,0 +1,15 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 user approved presented mockups; no runtime verification implied",
+  "method": "Built-in imagegen reference edits",
+  "flow": "One black alpha0.8 scrim below top modal, above menu+lobby. X closes top only, returns menu. Background input blocked; no opacity stacking.",
+  "limits": "Static generated approximations, no pixel-perfect frame/alpha assertion. Values/account/unlocks are fixtures. Unity untouched, actual settings/login/read/scroll/input/cancellation/reentry/release untested.",
+  "outputs": [
+    "23-story-journal.png"
+  ],
+  "references": [
+    "../options-landscape-v02/25-options-game.png",
+    "../story-journal-landscape-v01/23-story-journal.png"
+  ],
+  "review": "Story list/preview converted from full page into second modal above menu. X, available/locked rows, scroll and record-view retained. No foreground navigation/currencies/lobby button. Reader remains existing route, preserve list selection/scroll on return."
+}

@@ -1,0 +1,45 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\equipment-merchant-potion-v24-illustration\\potion-preview.png",
+      "sha256": "2fa991eaf3de9fb366a50921929ccd9d8e239e1b38207e17f2ac96a2e0b8789e"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\merchant-soldout-landscape-v01\\62-merchant-soldout.png",
+      "sha256": "844994564b5489d3cb6d624e5ce4ccc7eaf1967c6e5943b470a0b0adbbdf7707"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-fidelity-rebuild-v01\\16-restored.png",
+      "sha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4"
+    }
+  ],
+  "method": "Approved popup/frame and numbers cropped; approved current five portraits and labels substituted, chest replaces old cube; panel scaled once650x916 to572x806, latest62 merchant dimmed. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-potion-v24-illustration/REVIEW.md",
+  "fixture": "Reina500/1000 to750;Kyle750/800 to800;Eve600/600 unchanged;Sera0/500 unchanged(downed);Nyx400/900 to625. Illustration-only names/HP mapping, not real account IDs. Cost24; balance32 before,8 on success; inventory9/30 unaffected.",
+  "checks": {
+    "perActorRecovery": [
+      250,
+      50,
+      0,
+      0,
+      225
+    ],
+    "sum": 525,
+    "source62And16HashesVerified": true,
+    "outsidePopupScrimRoundingMaxError": 0,
+    "visual": "Full composite inspected: five current portraits, HP pairs, downed exclusion, price24 and cancel/purchase present."
+  },
+  "limits": [
+    "Single downscale means popup pixels are not identical to source. No whole-screen match score.",
+    "Reference composite only, not new independent art.",
+    "Actual IDs/HP,inputs,mobile,transaction and Unity not verified."
+  ],
+  "outputs": [
+    {
+      "file": "69-merchant-potion-preview.png",
+      "sha256": "f586996bf870781a751e3a37f01a6a3730871d0cb3e0cbea5f5e81435cc178d6"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

@@ -1,0 +1,458 @@
+{
+  "source": "QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+  "sourceSha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203",
+  "scope": "Exact protected-region comparison to original16, not whole-screen or Unity similarity score",
+  "results": [
+    {
+      "id": "16",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ]
+      ],
+      "protectedPixels": 1508498,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4",
+      "state": {
+        "slot": 0,
+        "count": 8,
+        "cards": null,
+        "id": "16"
+      }
+    },
+    {
+      "id": "50",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ]
+      ],
+      "protectedPixels": 1104175,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "1f71a634e80ac3c01cc6cad8066f598bc087eb02416025ecb54a5b0a6a5131f0",
+      "state": {
+        "slot": 0,
+        "count": 7,
+        "cards": [
+          "a3",
+          "locked",
+          "fire1",
+          "fire5",
+          "scope",
+          "power",
+          "cooler",
+          "empty",
+          "empty"
+        ],
+        "id": "50"
+      }
+    },
+    {
+      "id": "51",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ],
+        [
+          1074,
+          450,
+          193,
+          132
+        ]
+      ],
+      "protectedPixels": 1078699,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "8e5572491bf3da4ca8863e89365e7182c361b4b9df388fd5212fa93760284e15",
+      "state": {
+        "slot": 2,
+        "count": 6,
+        "cards": [
+          "locked",
+          "fire1",
+          "fire5",
+          "scope",
+          "power",
+          "cooler",
+          "empty",
+          "empty",
+          "empty"
+        ],
+        "id": "51"
+      }
+    },
+    {
+      "id": "52",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ]
+      ],
+      "protectedPixels": 1104175,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "b937639b64cd8ee400c9547a63a51ef6da2c91785733c61ea17db82e4482135d",
+      "state": {
+        "slot": 0,
+        "count": 7,
+        "cards": [
+          "locked",
+          "fire1",
+          "fire5",
+          "scope",
+          "power",
+          "cooler",
+          "a3",
+          "empty",
+          "empty"
+        ],
+        "id": "52"
+      }
+    },
+    {
+      "id": "56",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ]
+      ],
+      "protectedPixels": 1104175,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "d6c367da02b6d6098060c825f750ee1b106c6d7c500d21280685df79ec34fd9f",
+      "state": {
+        "slot": 0,
+        "count": 6,
+        "cards": [
+          "locked",
+          "fire1",
+          "fire5",
+          "power",
+          "cooler",
+          "a3",
+          "empty",
+          "empty",
+          "empty"
+        ],
+        "id": "56"
+      }
+    },
+    {
+      "id": "57",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ],
+        [
+          856,
+          449,
+          206,
+          132
+        ]
+      ],
+      "protectedPixels": 1076983,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "87a9468c2fa6711c29f77de910080deca95e1d127085b7cc48a0158dbb95cc82",
+      "state": {
+        "slot": 1,
+        "count": 6,
+        "cards": [
+          "locked",
+          "fire1",
+          "fire5",
+          "power",
+          "cooler",
+          "scope",
+          "empty",
+          "empty",
+          "empty"
+        ],
+        "id": "57"
+      }
+    },
+    {
+      "id": "58",
+      "dimensions": [
+        1602,
+        981
+      ],
+      "allowedRectangles": [
+        [
+          661,
+          0,
+          280,
+          50
+        ],
+        [
+          833,
+          160,
+          652,
+          74
+        ],
+        [
+          54,
+          700,
+          34,
+          24
+        ],
+        [
+          130,
+          226,
+          650,
+          613
+        ],
+        [
+          1275,
+          89,
+          91,
+          35
+        ],
+        [
+          1016,
+          689,
+          96,
+          28
+        ],
+        [
+          856,
+          449,
+          206,
+          132
+        ],
+        [
+          854,
+          601,
+          610,
+          119
+        ]
+      ],
+      "protectedPixels": 1007081,
+      "protectedChangedPixels": 0,
+      "fivePortraitChangedPixels": 0,
+      "sha256": "4b1adc0da4e205d9f2b148b034709b3debd223a00b079e11de7b642a2488dfaa",
+      "state": {
+        "slot": 1,
+        "count": 0,
+        "cards": [
+          "empty",
+          "empty",
+          "empty",
+          "empty",
+          "empty",
+          "empty",
+          "empty",
+          "empty",
+          "empty"
+        ],
+        "id": "58"
+      }
+    }
+  ]
+}

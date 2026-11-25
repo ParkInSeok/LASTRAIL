@@ -1,0 +1,13 @@
+{
+  "iconAuthority": "User clipboard-be26d96c / offline-supply-landscape-v01",
+  "labels": {
+    "cur_tactical_data": "전술 데이터",
+    "cur_operator_exp": "훈련 데이터"
+  },
+  "tool": "built-in image_gen",
+  "file": "08-offline-supply.png",
+  "verification": "Visually reviewed correct two icon families; attendance claimed1..8 gray with checks; amounts preserved. Generated redraw, not pixel-identical source reuse; independent assets not produced.",
+  "sha256": "52228F9FF641EC7F6F7B3662E8B970CDFEA7CDDBAD861CD957EF1CE986844E29",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "runtimeChanged": false
+}

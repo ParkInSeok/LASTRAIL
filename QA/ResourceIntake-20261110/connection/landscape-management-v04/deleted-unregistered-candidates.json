@@ -1,0 +1,37 @@
+{
+  "scope": "Only these five generated formation candidates. No Unity/runtime assets or historical approved originals deleted.",
+  "files": [
+    {
+      "reason": "User requested deletion of unregistered resources after approving formation v04; superseded current-session candidate only",
+      "sha256": "FA9BEBFD67F18CEFF8A472C288A04F377A1DE4F6DD275041CC1F8AF1F683C4AE",
+      "bytes": 2069731,
+      "path": "D:\\CodexData\\Home\\generated_images\\01a163f4-9265-7f63-96a6-9e77ab4861be\\exec-b7088280-3506-41ab-a28b-ea6c62ac9031.png"
+    },
+    {
+      "reason": "User requested deletion of unregistered resources after approving formation v04; superseded current-session candidate only",
+      "sha256": "3AF00582DF09594B8A8F93C287BA035546522F64063746FC1B50C0172FCE416E",
+      "bytes": 2292386,
+      "path": "D:\\CodexData\\Home\\generated_images\\01a163f4-9265-7f63-96a6-9e77ab4861be\\exec-3bd02d69-3b00-4cc4-a756-73ed007e9708.png"
+    },
+    {
+      "reason": "User requested deletion of unregistered resources after approving formation v04; superseded current-session candidate only",
+      "sha256": "C0EA9B4999CF57E9DFDB428CC79701F85C1123C5C2B3A1212421712D428048DC",
+      "bytes": 2276874,
+      "path": "D:\\CodexData\\Home\\generated_images\\01a163f4-9265-7f63-96a6-9e77ab4861be\\exec-4960eafc-0083-4941-bba9-ed6c9bb47c6d.png"
+    },
+    {
+      "reason": "User requested deletion of unregistered resources after approving formation v04; superseded current-session candidate only",
+      "sha256": "849C2630A2A8891EB9AA66581333836588C89BA35EDC787ED70FF3874C8BF6A1",
+      "bytes": 2320784,
+      "path": "D:\\CodexData\\Home\\generated_images\\01a163f4-9265-7f63-96a6-9e77ab4861be\\exec-e1f427b6-9a40-4335-a3ac-dfa7de08b5ab.png"
+    },
+    {
+      "reason": "User requested deletion of unregistered resources after approving formation v04; superseded current-session candidate only",
+      "sha256": "2EB6E3B23AD7941997BDDEF8C797045B315FCE232E80F7DF58E673AFE7ADB8C6",
+      "bytes": 2446880,
+      "path": "D:\\CodexData\\Home\\generated_images\\01a163f4-9265-7f63-96a6-9e77ab4861be\\exec-b500a92e-0c7f-48d5-be0c-00f4cf40cce3.png"
+    }
+  ],
+  "status": "DELETED",
+  "count": 5
+}

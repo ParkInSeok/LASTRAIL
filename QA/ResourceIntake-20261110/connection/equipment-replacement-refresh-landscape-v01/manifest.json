@@ -1,0 +1,14 @@
+{
+  "limits": "Composite reference only. Fine-detail drift/softness from generation; no exact pixel preservation,live swap or Unity tests.",
+  "review": "Full final image inspected:6stored items,returned sight label/chevron repaired,equippedarmor3,lockedarmor preserved,slots2and3empty,no result popup",
+  "sha256": "B90C27FBEEAB26F9B43CFD7A0C3A8FD5A7C95BA43C7EA8B18B15D534F8CE0F1D",
+  "method": "Built-in image_gen referenced edit then local label/badge repair",
+  "fixture": "Reina slot1 armor3star shield,returned sight2star in sixth stored cell,6/30 unchanged,slots2and3empty",
+  "contract": "Confirmed atomic exchange,inventory delta0,no temporary extra slot,no rank/tag/enchant change,no success popup. Preserve owner/scroll,original receipt recovery. Return position illustrative; actual sort owner governs.",
+  "output": "57-equipment-replacement-refresh.png",
+  "policy": "equipment-replacement-refresh-v57-illustration/REVIEW.md",
+  "sourceUnchanged": true,
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "QA/ResourceIntake-20261110/connection/equipment-discard-refresh-landscape-v01/56-equipment-discard-refresh.png",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

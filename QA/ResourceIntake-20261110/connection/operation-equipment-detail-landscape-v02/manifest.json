@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "39-equipment-detail.png",
+  "method": "Built-in imagegen edit of v01 composite",
+  "correction": "User correction: remove turret equipment target tab. Remove redundant operator tab; five operator cards directly under target heading. Older v44 turret flow must not be newly applied to this screen.",
+  "review": "Viewed output: both tabs removed, five named operator cards retained and enlarged, three unknown slots and disabled action retained.",
+  "limits": "Generated reference composite, not independent assets. Unity/server untouched; runtime turret removal scope not audited."
+}

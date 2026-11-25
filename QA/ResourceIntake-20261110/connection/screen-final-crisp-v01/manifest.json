@@ -1,0 +1,53 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 current user: replace both final concepts and video",
+  "method": "v18 built-in imagegen redraw approved; reference composites, not independent runtime UI",
+  "items": [
+    {
+      "number": 12,
+      "title": "출격 준비",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\departure-landscape-v03\\11-departure.png",
+      "sourceSha256": "9041387647052895166e00879e5934cab06fa149582ac456a041ce798182abbf",
+      "output": "../screen-final-crisp-v01/12-departure.png",
+      "sha256": "b128f87d00006d119e587a2e3edcf457acc770ec2862210188931e80b80d5bd7",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "approval": "2026-11-13 user approved replacing both final screens and video with v18 redraws",
+      "previousOutput": "12-no-brand.png"
+    },
+    {
+      "number": 17,
+      "title": "승리 결과",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-results-landscape-v03\\18-victory.png",
+      "sourceSha256": "e22216081348f0c743b800e12e0a763d57e0e4fb5d658df17c3518e77cfd2cb1",
+      "output": "../screen-final-crisp-v01/17-result.png",
+      "sha256": "2a95e15e98104302694c970684941c2b05fde48cd77e25b28abff3fc570271c3",
+      "sourceDimensions": [
+        1671,
+        941
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "approval": "2026-11-13 user approved replacing both final screens and video with v18 redraws",
+      "previousOutput": "17-no-brand.png",
+      "requestedRevision": {
+        "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\screen-final-crisp-v01\\17-result-no-pending.png",
+        "sha256": "a82c2c78c1e9a82ea8631b9721b897445f3f93b949d69bb94d5deb9ca681a9d4",
+        "change": "Remove only pending badge at user request2026-11-13",
+        "status": "USER_REQUESTED_EDIT_OF_APPROVED_BASE",
+        "method": "Built-in imagegen localized edit; no pixel identity claim",
+        "video": "portfolio-teaser-v20"
+      }
+    }
+  ]
+}

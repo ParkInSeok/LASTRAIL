@@ -1,0 +1,17 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "references": [
+    "user attachment codex-clipboard-a7038e66-108f-4433-b698-93acbed567ae.png",
+    "QA/SideViewReuse-20261023/battle-d-field-848-v01/party-roof-actual-assets-v01/rear.png",
+    "QA/SideViewReuse-20261023/battle-d-field-848-v01/party-roof-movement-v02/roof-layout-v02.png"
+  ],
+  "tool": "built-in image_gen",
+  "runtimeChanged": false,
+  "verification": "Visual: two open flat roof decks, original perspective/locomotive/UI, five carriages. Generated edit, not exact pixel-preserving composite.",
+  "sha256": "6DFCC81F2D9C540D0EF2BC27C6D22E7BE13C0846F08A7B06C6E433D81CBF5E02",
+  "file": "02-train.png",
+  "scope": "User attached v02 composition and original train retained. Only two combat carriage roofs and corresponding thumbnails edited to flat unobstructed fighting decks.",
+  "approval": "User approved train v04 screen and this depicted train as default design. Apply to combat final mockup when that mockup is produced; runtime and selected-skin implementation deferred.",
+  "currentUseStatus": "SUPERSEDED_FOR_NEW_TRAIN_VISUAL_USE_20261114",
+  "supersededBy": "D:/Project/LASTRAIL/QA/PortfolioVideo-20261110/fortress-rear-formation-v06/train-formation-no-operators.png"
+}

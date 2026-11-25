@@ -1,0 +1,14 @@
+{
+  "sha256": "72EE5F13BA6B402C2FAC108B60B8BD49C2E7F08D3D449D77C1FC3E861E070F5D",
+  "output": "54-equipment-locked-detail.png",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "contract": "Lock prevents discard/consumption/effect change but not ordinary equip/move. Explicit unlock changes lock only; no auto-discard. Right action disabled due to no recipient selected,not lock. Original item owner,revision,receipt and callback lifetime apply.",
+  "source": "QA/ResourceIntake-20261110/connection/popup-brand-removal-v01/39-no-brand.png",
+  "fixture": "Owned unequipped sight2star fire/attack25percent,locked,no target selected",
+  "method": "Built-in image_gen referenced edit",
+  "review": "Full output visually inspected:locked badge/closed lock,active unlock,disabled discard,four effect rows unchanged,five portraits and three unknown slots,no turret/no brand",
+  "sourceUnchanged": true,
+  "limits": "Reference composite only,no Unity/live commands/input tests or exact pixel preservation.",
+  "policy": "equipment-locked-detail-v48-illustration/REVIEW.md",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

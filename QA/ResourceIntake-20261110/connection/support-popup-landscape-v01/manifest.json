@@ -1,0 +1,13 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "output": "30-support-compose.png",
+  "method": "Built-in imagegen referenced generation",
+  "references": [
+    "../notices-popup-landscape-v01/29-notices.png",
+    "D:/Project/LASTRAIL/QA/DirectionImpact-20260921/menu-destinations-v01/04-support-compose.png"
+  ],
+  "review": "Two tabs, category dropdown, empty writing area, disabled send, original sensitive-data note and external links. Second modal/X, dimmed menu+lobby retained.",
+  "flow": "Top modal only input, X returns menu, single black alpha0.8 scrim. Existing owner preserves same-process draft on tab/back; no new disk persistence. Actual send requires validation and confirmed receipt; unknown outcome uses original request recovery.",
+  "limits": "Reference-only, no real inquiry sent. Existing support manifest read partly. My-inquiries tab not produced this turn. Unity unchanged; input, draft lifecycle, keyboard and send not tested.",
+  "approval_date": "2026-11-13"
+}

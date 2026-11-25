@@ -1,0 +1,56 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-merchant-landscape-v01\\17-operation-merchant.png",
+  "sourceSha256": "78a05dfca11cdfc79f94aad8d7039f09334fbde76b34006e560cc7b087826aa9",
+  "method": "Original pixels plus approved local brand-removal patch; native disabled service buttons and full-HP reason labels; no image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-merchant-no-healing-v28-illustration/REVIEW.md",
+  "fixture": "Separate example:40 supply,8/30 storage,no discount,five stock1,train and all living operators at full HP. Equipment purchases enabled. Repair and potion disabled for zero recovery, not soldout or consumed.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "equipmentCardsExact": true,
+    "allowedRectangles": [
+      [
+        650,
+        0,
+        390,
+        66
+      ],
+      [
+        725,
+        766,
+        253,
+        65
+      ],
+      [
+        1287,
+        765,
+        257,
+        65
+      ],
+      [
+        832,
+        691,
+        179,
+        26
+      ],
+      [
+        1395,
+        691,
+        215,
+        26
+      ]
+    ],
+    "visual": "Full image inspected: both disabled services with separate full-HP reasons, all stock1, three cyan equipment purchase buttons."
+  },
+  "limits": [
+    "Reference composite only; independent runtime resources not produced.",
+    "No actual HP eligibility, input, transaction, mobile or Unity verification."
+  ],
+  "outputs": [
+    {
+      "file": "67-merchant-no-healing.png",
+      "sha256": "7f9345c3efcedd9fe44cde3ec29be856323274441eafd9c19dbf37c89dbcf3b7"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

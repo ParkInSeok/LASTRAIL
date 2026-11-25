@@ -1,0 +1,11 @@
+{
+  "runtimeChanged": false,
+  "verification": "Visual: both human portraits absent, two readable metal icons, original task labels and controls retained. Composite-only icons; independent assets not produced.",
+  "tool": "built-in image_gen",
+  "file": "06-missions.png",
+  "design": "Replace first two operator thumbnails with crossed-swords combat emblem and upward-chevron training badge; retain remaining layout.",
+  "reference": "missions-landscape-v04/06-missions.png",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "sha256": "F6B393776CAD6340CBFC58EE85D0DAD03156F8DEAC2CD33FC1F2AFB648C901CD",
+  "approval": "User approved icon-based mission v05 final design."
+}

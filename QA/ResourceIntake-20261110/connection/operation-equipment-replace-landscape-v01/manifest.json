@@ -1,0 +1,11 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "40-equipment-replace.png",
+  "method": "Built-in imagegen, reference composite",
+  "policy": "QA/DirectionImpact-20260921/equipment-replace-v02/REVIEW.md; current user correction excludes turret targets",
+  "review": "Viewed: Reina slot1, two same-size comparison panels, two stars each, four effect rows, set-change row, cancel and disabled replace. No turret or storage-transfer instruction.",
+  "data": "Illustrative items. Attack25% reuses v44 fixture; defense and set change unknown, shown dash with execution disabled. None effects refer to fixture only, not missing server data.",
+  "contract": "Comparison within existing equipment modal. Cancel/X returns prior selection without mutation. Eligible replacement confirms once through original command; no extra confirmation. Existing item moves to storage by original rule without extra UI. Actual recipient three slots determine set effects, not star count. Preserve revision, command receipt recovery and late-response isolation.",
+  "limits": "Not independent assets. New armor illustration is candidate, not registered catalog icon. No Unity/server changes or actual replacement/cancel/reentry/release tests."
+}

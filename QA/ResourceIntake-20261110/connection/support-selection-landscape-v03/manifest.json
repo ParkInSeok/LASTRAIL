@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "12-support-selection.png",
+  "layoutSource": "../support-selection-landscape-v02/12-support-selection.png",
+  "approvedIconDesign": "../support-battle-neon-v02/13-battle-support.png",
+  "method": "Built-in imagegen reference-based edit, not identical shared PNG composition",
+  "review": "Seven active skill icon instances show cyan neon design; three selected and seven preparing entries retained. Labels and slot order visually checked.",
+  "runtimeChanged": false
+}

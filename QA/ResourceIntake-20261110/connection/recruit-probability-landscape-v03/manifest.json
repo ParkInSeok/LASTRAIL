@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "38-recruit-probability.png",
+  "reference": "../recruit-probability-landscape-v02/38-recruit-probability.png",
+  "method": "Built-in imagegen edit",
+  "review": "Viewed: banner name plus target/probability two-column list only; pity counters, redundant heading and footer explanation removed; scrollbar/X/close retained.",
+  "contract": "Opening button supplies selected bannerId. General opens its general pool; selected pickup opens that specific pickup pool/title/base probabilities. Same view, no internal banner selector or personal pity/next-pull column. Valid matching snapshot reused, never substitute another banner on missing data. Actual published probabilities only.",
+  "limits": "General example only; five names not final pool. Unknown rates shown as dashes. No Unity/server changes or actual input/banner-switch/lifecycle validation."
+}

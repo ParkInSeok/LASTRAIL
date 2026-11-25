@@ -1,0 +1,104 @@
+[
+  {
+    "slot": 0,
+    "count": 8,
+    "cards": null,
+    "id": "16"
+  },
+  {
+    "slot": 0,
+    "count": 7,
+    "cards": [
+      "a3",
+      "locked",
+      "fire1",
+      "fire5",
+      "scope",
+      "power",
+      "cooler",
+      "empty",
+      "empty"
+    ],
+    "id": "50"
+  },
+  {
+    "slot": 2,
+    "count": 6,
+    "cards": [
+      "locked",
+      "fire1",
+      "fire5",
+      "scope",
+      "power",
+      "cooler",
+      "empty",
+      "empty",
+      "empty"
+    ],
+    "id": "51"
+  },
+  {
+    "slot": 0,
+    "count": 7,
+    "cards": [
+      "locked",
+      "fire1",
+      "fire5",
+      "scope",
+      "power",
+      "cooler",
+      "a3",
+      "empty",
+      "empty"
+    ],
+    "id": "52"
+  },
+  {
+    "slot": 0,
+    "count": 6,
+    "cards": [
+      "locked",
+      "fire1",
+      "fire5",
+      "power",
+      "cooler",
+      "a3",
+      "empty",
+      "empty",
+      "empty"
+    ],
+    "id": "56"
+  },
+  {
+    "slot": 1,
+    "count": 6,
+    "cards": [
+      "locked",
+      "fire1",
+      "fire5",
+      "power",
+      "cooler",
+      "scope",
+      "empty",
+      "empty",
+      "empty"
+    ],
+    "id": "57"
+  },
+  {
+    "slot": 1,
+    "count": 0,
+    "cards": [
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty"
+    ],
+    "id": "58"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "limits": "Reference-only composite;generated fine detail may drift,no Unity/live discard/input/receipt verification.",
+  "sourceUnchanged": true,
+  "sha256": "20643434AC39356F2ACFBFED177D0ECF2D6361ECD2BCE3BAF29A381954AB5B1D",
+  "output": "56-equipment-discard-refresh.png",
+  "method": "Built-in image_gen referenced edit",
+  "policy": "equipment-inventory-packed-v33-illustration/REVIEW.md;equipment-locked-detail-v48-illustration/REVIEW.md",
+  "contract": "Explicit eligible owned unequipped unlocked item discard only;receipt before removing,unknown result recovery,no extra confirmation. Original order packed,empty cells at end,scroll preserved except valid clamp. Equipped sight and locked armor not discarded.",
+  "source": "QA/ResourceIntake-20261110/connection/equipment-unequip-refresh-landscape-v01/52-equipment-unequip-refresh.png",
+  "review": "Full image visually inspected:6items/6of30/3trailing empty cells,stored sight absent,equipped sight2stars present,locked armor preserved,other ranks/order maintained",
+  "fixture": "Stored sight removed,7to6/30;current3star armor selection preserved as illustrative main-window state,not live itemID mapping",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

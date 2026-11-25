@@ -1,0 +1,13 @@
+{
+  "method": "Built-in image_gen local referenced edit",
+  "output": "16-operation-equipment.png",
+  "policy": "44_COMBAT_DETAIL_CONTRACTS.md#combat-b-mainline-approved-20261002",
+  "sourceSha256": "CB0F0086DA2E8F05DDE593C2D2603E0DFF696232941C4C2A1160054E7CC306D8",
+  "change": "Removed obsolete turret tab; one full-width operator header",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "limits": "Generated edit is not pixel-identical. No Unity or live interaction changes/tests.",
+  "source": "QA/ResourceIntake-20261110/connection/popup-brand-removal-v01/16-no-brand.png",
+  "review": "Observed complete generated image: no turret tab or LAST RAIL wordmark; five portraits, three equipment slots,8/30 inventory, functional screen title and actions retained",
+  "sha256": "260AD69B6185D5E8F70B1F9BD1DA6ADB7510B11B93E009340CD278D822C36223",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

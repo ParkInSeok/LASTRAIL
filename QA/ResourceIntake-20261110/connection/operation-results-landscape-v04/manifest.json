@@ -1,0 +1,14 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "User explicitly approved operation defeat, 2026-11-12",
+  "outputs": [
+    "19-defeat.png"
+  ],
+  "method": "Built-in imagegen reference edit",
+  "references": [
+    "../operation-results-landscape-v03/19-defeat.png",
+    "../operation-results-landscape-v03/18-victory.png"
+  ],
+  "review": "Right outer panel restored to full right-side height matching victory composition. Enlarged departure portraits, journal modal entry, single full-width lobby button. No reason, settlement, expiry, subtitle or retry.",
+  "limits": "Visual mockup only; not pixel-identical geometry or independent asset reuse. Unity unchanged; input and scrolling untested."
+}

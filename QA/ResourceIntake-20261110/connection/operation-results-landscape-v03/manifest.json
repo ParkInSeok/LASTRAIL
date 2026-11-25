@@ -1,0 +1,12 @@
+{
+  "status": "PARTIAL_USER_APPROVAL_REFERENCE_ONLY",
+  "approval": {"18-victory.png": "USER_APPROVED_2026-11-12", "19-defeat.png": "SUPERSEDED_GEOMETRY_CORRECTION_V04"},
+  "latestInteraction": "User approved separate journal modal with internally scrolling body. Victory artwork preserved; downward arrow is not an accordion contract.",
+  "outputs": ["18-victory.png", "19-defeat.png"],
+  "source": "../operation-results-landscape-v02",
+  "method": "Built-in imagegen reference edits",
+  "userChanges": "Defeat removes settlement section and termination reason; both screens remove equipment-expiry note. Defeat panel compacted and vertically centered.",
+  "review": "Victory retains four pending reward cards and single wide claim action; no expiry note. Defeat only stats, five portraits, journal and wide lobby action; no reason, settlement, no-reward copy, expiry note or retry button.",
+  "flow": "Victory confirmed claim then lobby. Defeat single lobby action. This edit changes displayed information; server reward eligibility and economic rules were not changed.",
+  "limits": "Candidate artwork, not exact independent asset reuse. Unity/server unchanged, runtime/input/claim verification not performed."
+}

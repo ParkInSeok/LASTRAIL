@@ -1,0 +1,12 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval_date": "2026-11-13",
+  "refresh_cooldown_seconds": 30,
+  "future_unity_contract": "Manual refresh starts a 30-second cooldown when accepted. Disable refresh while pending or cooling down; reopening the popup does not reset the deadline. No automatic polling or permanent Update. Use existing controller callback and a bounded visible countdown only while needed. Implementation deferred.",
+  "output": "31-support-replies.png",
+  "method": "Built-in imagegen referenced generation",
+  "references": ["../support-popup-landscape-v01/30-support-compose.png", "D:/Project/LASTRAIL/QA/DirectionImpact-20260921/menu-destinations-v01/05-support-reply.png"],
+  "review": "Viewed generated output: selected My inquiries tab, single illustrative ticket left, inquiry and published reply right with scrollbar, refresh, X. Darkened lobby and menu retained.",
+  "flow": "Same popup list/detail, not third popup. X returns menu. One black alpha0.8 scrim below top popup; exact alpha is runtime contract. Only own published replies. Explicit refresh uses existing state owner.",
+  "limits": "Illustrative text, no actual inquiry sent or retrieved. Reference composite only. Unity unchanged; input, scrolling, refresh, cancel, reentry and release not tested."
+}

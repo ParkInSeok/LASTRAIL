@@ -1,0 +1,24 @@
+{
+  "approval": "User: 좋아 이거 최종시안 등록",
+  "runtimeIntegrated": false,
+  "tool": "built-in image_gen",
+  "limitations": [
+    "Composite review reference, not independent runtime assets",
+    "Saved presets are illustrative",
+    "Unity unchanged; save+activate execution not implemented"
+  ],
+  "supersedes": "landscape-management-v03/05-formation.png (design reference only; runtime assets preserved)",
+  "sha256": "BB55B895ACDD19D97779A37A2F0863DB2B85824C2FD714E5A0710D607EB7C804",
+  "source": "D:/CodexData/Home/generated_images/01a163f4-9265-7f63-96a6-9e77ab4861be/exec-53d959b5-7e8e-4bf0-b699-981968f2d34b.png",
+  "design": [
+    "Single left navigation frame, icon-only cells and white selected icon",
+    "Same five formation positions in both encounter previews; left threat rearmost carriage, right threat carriage immediately behind engine",
+    "Number1 closest to threat; near row1/3/5 far row2/4; shared mapping; empty +",
+    "Saved formations list on far right",
+    "Squad leader removed; activation is sole primary commit action",
+    "Industrial command-room background; both schematic engines face right"
+  ],
+  "version": "landscape-management-v04",
+  "file": "05-formation.png",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY"
+}

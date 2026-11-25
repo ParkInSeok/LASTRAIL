@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "48-equipment-forfeit.png",
+  "method": "Built-in imagegen; reference composite",
+  "policy": "QA/DirectionImpact-20260921/equipment-forfeit-dialog-v50-illustration/REVIEW.md",
+  "review": "Viewed: one pending2star cooler, no lock/owned badge, loss question and notice, cancel/amber forfeit/X above dimmed original54/54 inventory.",
+  "contract": "Reuse common two-button dialog. Cancel/X closes only confirmation, restores original selection/scroll/focus, no consumption. Confirm original pending item set + bundle revision through DeclineRemaining once. Changed pending set invalidates confirmation and requires updated review, never silently expands scope. Owned items, already claimed items and permanent rewards unchanged. Unknown outcome recovers original receipt; closing does not imply success, no reroll/new-key decline. Topmost input only.",
+  "limits": "Illustrative remaining1item, dynamic remaining set must come from original reward. Composite not independent assets. No Unity/server changes or transaction/input/reentry/release tests; exact scrim alpha unverified."
+}

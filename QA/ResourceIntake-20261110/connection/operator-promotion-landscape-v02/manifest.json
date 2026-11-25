@@ -1,0 +1,11 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "output": "34-operator-promotion.png",
+  "reference": "../operator-promotion-landscape-v01/34-operator-promotion.png",
+  "source": "exec-7f6bf73b-fb80-4516-94ef-34b677a29bda.png",
+  "method": "Built-in imagegen edit",
+  "change": "Remove formation action; expand remaining bottom controls to panel width",
+  "review": "Output visually inspected: formation absent and enlarged remaining actions visible. No pixel-exact preservation claim.",
+  "limits": "Prior originals preserved. No new approval inferred for revised output. Unity unchanged; actual layout/input not tested.",
+  "approval_date": "2026-11-13"
+}

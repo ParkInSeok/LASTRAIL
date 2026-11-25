@@ -1,0 +1,36 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\DirectionImpact-20260921\\equipment-empty-slot-selected-v43-illustration\\selected.png",
+      "sha256": "507778d6f39d4e8a9aac596425827b7e3bb3497b3dc4bb6ec846ce59534df45c"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-fidelity-rebuild-v01\\16-restored.png",
+      "sha256": "2b2d33baf016961b2222e8b91d5ce5618758e2b4483ef7ff81a9dc1fe2be7ce4"
+    }
+  ],
+  "method": "Approved v43 source crop, owner label replaced; single scale886x1480 to532x889 over dimmed approved16. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-empty-slot-selected-v43-illustration/REVIEW.md",
+  "fixture": "Reina slot2 remains empty;armor2 selected only,check/cyan border,equip enabled. Power2 in slot1,slot3empty. DEF25percent,Ironwall1to2,DEF10percent newly active and maxHP6percent retained are inherited preview examples,not actual ID/stat binding.",
+  "checks": {
+    "canvas": [
+      1602,
+      981
+    ],
+    "source16HashVerified": true,
+    "outsidePopupScrimRoundingMaxError": 0,
+    "visual": "Full image inspected:empty slot2,selected armor check,six candidates,effect preview,cancel and active equip."
+  },
+  "limits": [
+    "Cropped composite,not independent new art;popup once resized,no identical-pixel claim.",
+    "Real equipment IDs/effects,inputs,scroll,mobile legibility/44dp and Unity not verified."
+  ],
+  "outputs": [
+    {
+      "file": "72-equipment-slot-selected.png",
+      "sha256": "2420444f08a77e7d481819077174f5ef168aca169a111abc5f0fd7e3f69136f3"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

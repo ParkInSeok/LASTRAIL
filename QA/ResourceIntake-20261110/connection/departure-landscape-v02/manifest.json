@@ -1,0 +1,10 @@
+{
+  "sha256": "DD27ABE2183E7425D86A1FAB4CB8FEA2B261156F521E32525563967980F789F8",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "verification": "Visual:cyan tripod turret plus3cartridges/uprightshield/singlewrench matches combat icon design. Image-generated reference-based redraw, not pixel-identical original icon compositing. Runtime sources unchanged; no Player verification.",
+  "runtimeChanged": false,
+  "tool": "built-in image_gen",
+  "source": "CombatSecondFinalArt.ApplySecondFinalArt -> CommanderSupportIconCatalog.TryGet",
+  "file": "11-departure.png",
+  "approvedIconContract": "Use identical CommanderSupportIconCatalog source PNGs for support_fire/barrier/emergency_repair in combat and departure. No redraw or separate variant at implementation. Approved mockup is reference-only; runtime not changed."
+}

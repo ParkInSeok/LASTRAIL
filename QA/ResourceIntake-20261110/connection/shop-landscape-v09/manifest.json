@@ -1,0 +1,14 @@
+{
+  "runtimeChanged": false,
+  "tool": "built-in image_gen",
+  "file": "04-shop.png",
+  "crystalContract": "Retain existing crystal-top-up concept, Store price and verified crystal policy product mapping. Do not assume unspecified quantity/cash price or confirmed live purchase support.",
+  "packageContract": "Retain v08 direct product-card appearance and example packages. At implementation build cards from server-registered catalog identity,contents,quantities,price currency,availability,limits and approved art keys; validate purchase through existing authoritative server path. Cash prices must come from platform Store where applicable. No extra details page.",
+  "sha256": "3256B47DD2DB26D35C2A11D5AD080CB521550B48F7845362A6734FD5D151C75C",
+  "reference": "shop-landscape-v08/04-shop.png",
+  "verification": "Visual: three tabs in requested order, four cards, credit symbols on material examples, crystal50 on ticket, example/unknown fields, no details button.",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "design": "Restore fixed tabs Supplies/Packages/Crystals in that order, Supplies initially selected; tab contents scroll vertically. Ticket single card plus credit-priced parts/data/operator EXP examples.",
+  "policy": "Credit material purchases are requested direction; actual SKU,quantity,price,limits and backend support remain unset. Ticket keeps crystal DAILY50/NORMAL100 contract. No credit-to-ticket/crystal exchange.",
+  "approval": "User confirmed shop v09 layout. Supplies first, package server catalog later, crystal concept retained; illustrative material quantities/prices remain unset."
+}

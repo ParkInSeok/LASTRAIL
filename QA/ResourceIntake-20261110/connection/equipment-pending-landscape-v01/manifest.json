@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "47-equipment-pending.png",
+  "method": "Built-in imagegen; reference composite",
+  "policy": "equipment-inventory-pending-v31-illustration/REVIEW.md and equipment-inventory-packed-v33-illustration/REVIEW.md under QA/DirectionImpact-20260921",
+  "review": "Viewed:54/54 example, pending2star cooler separate left with no lock, packed owned scroll grid right and one locked scope, fixed forfeit button. Armor icon follows older plate reference rather than recent torso design; catalog icon consistency remains unresolved.",
+  "contract": "Pending unowned reward excluded from used capacity. Full-state click cannot claim. Free capacity through original eligible owned-item discard/detail or synthesis, then explicitly click pending reward to claim once; no auto-claim. Preserve reward/item IDs and original command key. Owned list compacts and empty slots only at end; preserve scroll except valid clamp. X must not imply reward forfeiture; retain pending state through original flow. Forfeit uses existing confirmation contract.",
+  "limits": "54 capacity is existing illustrative expanded-capacity fixture, not new default policy. No actual inventory, independent assets, Unity/server changes or claim/discard/lifecycle tests."
+}

@@ -1,0 +1,13 @@
+{
+  "request": "Remove storage-full unequip warning sentence",
+  "limits": "No Unity/input test; generated edit not pixel-identical.",
+  "method": "Built-in image_gen referenced local edit",
+  "review": "Full generated image visually inspected:warning sentence and triangle removed;30/30 badge,disabled unequip,active inventory/exchange preserved",
+  "source": "QA/ResourceIntake-20261110/connection/equipment-unequip-full-landscape-v01/53-equipment-unequip-full.png",
+  "contract": "User correction supersedes v47 visible warning requirement for this mockup; capacity rule and disabled unequip unchanged",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sourceUnchanged": true,
+  "sha256": "D48511314B4CD88F83AC1D9DB69B7E68C58B5E11251976E274CF6300AEEEBD29",
+  "output": "53-equipment-unequip-full.png",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

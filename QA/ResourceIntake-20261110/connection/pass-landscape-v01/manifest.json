@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "sha256": "0B18ECA558CBACF543963D3AD31223EF37C71332764A4B105464B2B46CB5F0CB",
+  "verification": "Viewed landscape output: Lv5/50,540/5000XP,free rows3..7=75/350/35/750/75;premium=375/1750/175/3750/375;claimed3/4 checks,available5,future6/7 locks,premium unowned. Claimed chip retains some blue and is not fully grayscale; candidate visual review remains. Purchase not enabled; no live account used.",
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "policy": "35_CURRENT_ECONOMY_ANNEX section4",
+  "file": "09-pass.png",
+  "runtimeChanged": false
+}

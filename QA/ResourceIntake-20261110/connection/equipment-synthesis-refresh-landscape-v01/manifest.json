@@ -1,0 +1,13 @@
+{
+  "sha256": "12606B70045A86E8E192E45D3B1CA03BA87345D7E7A909E07F094ACC4055E6F5",
+  "source": "QA/ResourceIntake-20261110/connection/operation-equipment-landscape-v02/16-operation-equipment.png",
+  "limits": "Illustrative data only. No runtime, transaction, input or exact pixel preservation verification.",
+  "review": "Full generated output visually inspected:7/30,seven items/two trailing empty cells,3star result/detail,5portraits,3equip slots,no success dialog/no turret/no brand",
+  "method": "Built-in image_gen referenced edit",
+  "policy": "equipment-inventory-synthesis-refresh-v56-illustration/REVIEW.md; operation-equipment-synthesis-landscape-v01/manifest.json",
+  "sourceUnchanged": true,
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "fixture": "Eight inventory items to seven; unlocked first two2star ironwall armor merged to3star; others packed preserving order; locked armor retained; equipped2star sight and two empty slots unchanged",
+  "output": "50-equipment-synthesis-refresh.png",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

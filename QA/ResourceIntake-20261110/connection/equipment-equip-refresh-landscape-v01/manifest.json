@@ -1,0 +1,13 @@
+{
+  "review": "Complete output visually inspected:6/30,six stored items,locked armor preserved,selected slot2 armor3stars,slot1 sight2stars,slot3 plus,five portraits,no turret/no brand/no new success popup",
+  "sourceUnchanged": true,
+  "output": "51-equipment-equip-refresh.png",
+  "limits": "Static illustrative reference only, not independent assets. No Unity/live equip/interaction verification; no exact pixel preservation claim.",
+  "source": "QA/ResourceIntake-20261110/connection/equipment-synthesis-refresh-landscape-v01/50-equipment-synthesis-refresh.png",
+  "policy": "equipment-equip-refresh-v58-illustration/REVIEW.md; latest approved operator-only v02",
+  "method": "Built-in image_gen referenced edit",
+  "sha256": "A5B9F53B7569012F2871485BE126EE123D99B3AE8F34EE4B964864F5095FB3A7",
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "fixture": "Reina explicitly equips3star ironwall armor in slot2; stored7to6; slot1 sight2star unchanged; slot3 empty; stored order retained,three trailing empty cells",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

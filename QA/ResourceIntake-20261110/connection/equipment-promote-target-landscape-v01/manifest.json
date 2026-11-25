@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "45-promote-target.png",
+  "method": "Built-in imagegen edit of approved enchant target; reference composite",
+  "policy": "QA/DirectionImpact-20260921/enchant-promote-unified-v17-illustration/REVIEW.md; current turret exclusion",
+  "review": "Viewed single grid with all/storage/equipped filters, selected2star armor, equipped2star eligible example,5star max-disabled items and separate locked2star item. No turret.",
+  "contract": "Actual offer rank range, ownership, lock and safe-state determine eligibility, not illustrative rank list. Equipped may be selected and keeps owner/slot on success. Filter/select/cancel consumes nothing; original item ID and controller use case, no duplicate inventory. Receipt owns promotion result; pending/uncertain outcomes not reported as success.",
+  "limits": "Illustrative items, not account data. No Unity/server changes, independent assets or runtime input/lifecycle tests."
+}

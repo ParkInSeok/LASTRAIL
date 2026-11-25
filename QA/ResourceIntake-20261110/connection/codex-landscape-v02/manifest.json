@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-12 user approved position icon and basic stats design",
+  "output": "22-codex.png",
+  "source": "../codex-landscape-v01/22-codex.png",
+  "method": "Built-in imagegen reference edit",
+  "changes": "Role text replaced by position shield icon. Affiliation removed. HP/ATK/DEF basic stat rows added with dash placeholders.",
+  "review": "Visual inspection confirms three stat rows, icon position, no affiliation or decorative envelope. Layout retained.",
+  "limits": "Stats chosen from documented combat HP/ATK/DEF; actual codex value source/level basis not verified. No numeric values invented. Not independently extracted icon resources. Unity untouched; candidate pending approval."
+}

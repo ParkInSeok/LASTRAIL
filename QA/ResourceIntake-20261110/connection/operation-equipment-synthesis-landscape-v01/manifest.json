@@ -1,0 +1,13 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "41-equipment-synthesis.png",
+  "method": "Built-in imagegen; generated reference composite",
+  "policy": [
+    "QA/DirectionImpact-20260921/equipment-drag-synthesis-v54-illustration/REVIEW.md",
+    "QA/DirectionImpact-20260921/equipment-inventory-synthesis-refresh-v56-illustration/REVIEW.md"
+  ],
+  "review": "Viewed 2star+2star to3star, main ironwall retained, auxiliary fire removed, enchant keep/loss distinction, cancel/synthesize, no turret/cost. Result card is preview not committed outcome.",
+  "contract": "Same eligible category/star, maximum5, lock/safe state/revision checked by original owner. Main tag, recorded enchant, equipped location retained; auxiliary consumed and its enchant lost. Result ID/unique effect comes from original receipt; no pre-roll/re-roll. Cancel changes nothing; success refreshes original inventory, no new success page or automatic equip. Reuse controller and reject stale responses.",
+  "limits": "Specific enchant names/values and base-stat preview not supplied; current design shows rule summary only, implementation must show actual retained/lost effects before confirmation. No Unity/server edits or actual synthesis/lifecycle tests. Exact scrim alpha unverified."
+}

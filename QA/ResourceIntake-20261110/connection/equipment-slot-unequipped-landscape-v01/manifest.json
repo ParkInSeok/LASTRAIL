@@ -1,0 +1,52 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "sources": [
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-slot-equipped-landscape-v01\\73-equipment-slot-equipped.png",
+      "sha256": "a952a4f02cc766e017053ce20f2c6a54c6d9a2454bcc6d34a7e1462bb6a543a7"
+    },
+    {
+      "file": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+      "sha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203"
+    }
+  ],
+  "method": "Approved73 native composition:original empty slot restored;original2star armor card appended and selected;count8. No image generation.",
+  "policy": "QA/DirectionImpact-20260921/equipment-unequip-refresh-v59-illustration/REVIEW.md",
+  "fixture": "Reina slot2 armor2shield returned as eighth stored item;7to8/30;slot1power2shield unchanged,slot3empty. Same remaining order;no success popup,no automatic equip/discard. List ordering is illustration,not real instance reconciliation.",
+  "checks": {
+    "outsideAllowedChangedPixels": 0,
+    "slot1AndFivePortraitsExact": true,
+    "allowedRectangles": [
+      [
+        1078,
+        454,
+        181,
+        124
+      ],
+      [
+        360,
+        638,
+        203,
+        189
+      ],
+      [
+        1275,
+        89,
+        100,
+        40
+      ]
+    ],
+    "visual": "Full image inspected:eight stored cards,one trailingempty,returnedarmor2selected,slot2empty,slot1power unchanged."
+  },
+  "limits": [
+    "Reference composite,not independent new art.",
+    "Actual unequip/identity/order/scroll/mobile/Unity not verified."
+  ],
+  "outputs": [
+    {
+      "file": "75-equipment-slot-unequipped.png",
+      "sha256": "44f023b646d85fc206ffdfd2d59d2beebbca112619fa5a97aa33df958540fe86"
+    }
+  ],
+  "approval": "2026-11-14 user: 승인 다음 ㄱㄱ"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "20-operation-journal.png",
+  "method": "Built-in imagegen edit of approved journal v02",
+  "review": "Viewed five visible event rows: battle, acquisition, enchant, synthesis, shop. Synthesis icon-only event column, main2star + auxiliary2star -> result3star; main/result enchant badge cyan, auxiliary amber. Fixed close and vertical scroll retained.",
+  "contract": "Victory and defeat result journal includes successful synthesis events in original event order. Each transaction appears once; no entry for preview/cancel/rejected command. Show pre-synthesis main and auxiliary snapshots and confirmed post-synthesis result from authoritative receipt/event, never reconstruct consumed items from current inventory. Icons open historical read-only detail: main/aux show their original enchant; result highlights retained enchant. Closing detail restores journal scroll. No equip/synthesis/reward action in history. Missing historic data is unavailable, not fabricated. Overflow groups may scroll horizontally; swipe must not open item.",
+  "limits": "Illustrative items/effects only. API receipt/event field availability not checked; persistence and UI implementation pending. No Unity/server edits or interaction/lifecycle tests. Composite reference not independent assets."
+}

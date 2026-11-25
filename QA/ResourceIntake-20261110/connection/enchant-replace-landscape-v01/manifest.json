@@ -1,0 +1,11 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "43-enchant-replace.png",
+  "method": "Built-in imagegen; reference composite",
+  "policy": "QA/DirectionImpact-20260921/enchant-replace-confirm-v21-illustration/REVIEW.md",
+  "review": "Viewed: second-layer confirmation above dimmed equipment list; selected Kyle armor3star; current effect and loss notice; no new effect preview; cancel/enchant and X. No turret.",
+  "data": "Illustrative Kyle slot1 armor. Current effect EN01 label from existing approved example; three-star numeric values unverified and shown dashes, not copied from two-star5%/6s. Blue button is visual design only; runtime must block execution when required current effect data is missing.",
+  "contract": "Reuse common two-button dialog. Cancel/X closes only confirmation and restores selected item/filter/scroll without consumption or effect loss. Confirm invokes same original use case once with item/revision/lock/eligibility validation. Changed state requires refreshed confirmation. Success commits replacement/consumption/receipt atomically; unknown outcome recovers original key, no reroll. New effect revealed only after success. Topmost input only; one80% scrim intent, exact alpha unverified.",
+  "limits": "No independent asset production, Unity/server changes or actual input/transaction/lifecycle tests. Candidate awaiting approval."
+}

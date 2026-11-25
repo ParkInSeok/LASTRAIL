@@ -1,0 +1,8 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "17-operation-merchant.png",
+  "method": "Built-in imagegen reference-based landscape concept",
+  "policy": "13_EQUIPMENT_ENCHANTMENTS.md v16/v17 equipment prices and v18 capacity; equipment-merchant-independent-v61-review/REVIEW.md; equipment-merchant-no-healing-v28-illustration/REVIEW.md",
+  "review": "Three equipment cards1/2/3 stars and prices8/16/32; repair20 with20percent recovery; potion24 with25percent living-operator recovery. Five stock1 entries. Supply40 and inventory8/30 are fixture. No global navigation. Storage entry visible.",
+  "limits": "No live stock/HP/account queries, Unity changes or transaction verification. Generated art not identical independent asset reuse. Back/leave and healing target confirmation must retain existing operation flow. FullHP recovery must be disabled by real eligibility, not inferred from this art."
+}

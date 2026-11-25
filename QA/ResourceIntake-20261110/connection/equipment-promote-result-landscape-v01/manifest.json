@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "46-promote-result.png",
+  "method": "Built-in imagegen edit; reference composite",
+  "policy": "QA/DirectionImpact-20260921/enchant-promote-result-v20-illustration/REVIEW.md",
+  "review": "Viewed result armor3star, explicit2-to3 star progression, tag/enchant preservation note, stored badge, single confirm. No cancel/reroll/cost/material or turret.",
+  "contract": "Original successful event promotion receipt determines same item ID/new rank. Preserve owner/slot/tag/recorded enchant values; no new enchant. Normal1to2/2to3, advanced3to4, rare4to5 per existing contract, example2to3 only. Confirm closes to resolved original node; no re-promotion/reward/offer consumption, no reentry to consumed alternatives. Unknown outcome recovers original key and never displays success prematurely.",
+  "limits": "Illustrative static mockup, not actual transaction or independent assets. Unity/server untouched. Actual input, rank update, identity/slot preservation and lifecycle untested."
+}

@@ -1,0 +1,13 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 user approved notices mockup",
+  "output": "29-notices.png",
+  "method": "Built-in imagegen referenced generation",
+  "references": [
+    "../story-journal-landscape-v02/23-story-journal.png",
+    "D:/Project/LASTRAIL/QA/DirectionImpact-20260921/menu-destinations-v03/05-notices-list.png"
+  ],
+  "review": "Left notice list/right body in same second modal. Existing sample titles/text retained; no extra detail popup or lobby action. Both scroll areas and X visible.",
+  "flow": "Menu -> notices; row selection updates body in same popup, X returns menu. Single black alpha0.8 scrim below foreground, background inputs blocked. Scroll only when content overflows.",
+  "limits": "Reference-only generated art, not exact alpha/pixel reuse. Notice content sample only, no publication. Unity/server unchanged, selection/scroll/input/lifecycle untested."
+}

@@ -1,0 +1,55 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "method": "Native composition from original47;only approved logo-removal patch reused;no image generation",
+  "source": "QA\\ResourceIntake-20261110\\connection\\equipment-pending-landscape-v01\\47-equipment-pending.png",
+  "sourceSha256": "11f74a9bf2491a8e15546c45182b0f98c4be041c528d7290cbeb689ea3b73e8e",
+  "policy": [
+    "equipment-inventory-packed-v33-illustration/REVIEW.md",
+    "equipment-partial-pending-v49-illustration/REVIEW.md"
+  ],
+  "fixture": "54/54 to53/54 after one eligible offscreen item removed;visible inventory unchanged;empty slot at list end offscreen;pending2star cooler unowned and not counted",
+  "contract": "Pending reward directly tapped to claim explicitly once;no auto-claim after clearing space. Preserve original rewardID/claimkey and receipt recovery;no reroll. Forfeit remains separate explicit confirmation. Scroll retained.",
+  "checks": {
+    "60-before.png": {
+      "sha256": "8464f8051d67b67eebcfbec48ea6225d3f46f3e5e0e3ce218ba1cbff29d283d4",
+      "protectedChangedPixels": 0,
+      "pendingArtInteriorExact": true,
+      "allowedRectangles": [
+        [
+          660,
+          0,
+          280,
+          51
+        ]
+      ]
+    },
+    "60-ready.png": {
+      "sha256": "5fe5306c6e8eb9dbe4d44a43c37cfc51f10389ac0d1f77147d8bfbde89412d1e",
+      "protectedChangedPixels": 0,
+      "pendingArtInteriorExact": true,
+      "allowedRectangles": [
+        [
+          660,
+          0,
+          280,
+          51
+        ],
+        [
+          1275,
+          94,
+          108,
+          40
+        ],
+        [
+          170,
+          273,
+          297,
+          317
+        ]
+      ]
+    }
+  },
+  "visualReview": "Full ready image viewed:53/54,cyan pending perimeter,2stars/no lock,pending and owned separate,original gear/frame sharp.",
+  "limits": "Static example,not actual transaction/input/scroll/Unity test. Protected-area equality is not whole-screen similarity score.",
+  "approval": "2026-11-13 user: 승인 다음 ㄱㄱ"
+}

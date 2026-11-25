@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval_date": "2026-11-13",
+  "output": "35-recruit-results.png",
+  "method": "Built-in imagegen edit using v02 screen and approved comparison optionB",
+  "review": "Viewed: nine intact octagonal operator seals replace shards, labels 인장, NEW portrait retained, cyan signal backgrounds retained. Reina purple hair visible. Reference redraw, not exact independent asset reuse.",
+  "contract": "Display 요원 인장 and <name> 인장; existing cur_operator_token/operatorId and original receipt amounts unchanged. Portrait-to-seal presentation only, never new grant.",
+  "limits": "Static final-state mockup. No animation/Unity/server work or runtime testing. No automatic approval of newly generated screen."
+}

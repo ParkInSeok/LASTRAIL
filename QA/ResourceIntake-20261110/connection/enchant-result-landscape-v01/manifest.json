@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "44-enchant-result.png",
+  "method": "Built-in imagegen; reference composite",
+  "policy": "QA/DirectionImpact-20260921/enchant-result-v19-illustration/REVIEW.md",
+  "review": "Viewed: two-star armor, stored status, EN01 shield5%/6s, single confirm, no reroll or cancel. Independent two-star fixture, not prior Kyle three-star item transformed.",
+  "contract": "Only confirmed original command success opens result. Actual effect and values bound to receipt/version; selected item rank and owner/slot preserved. Confirm only closes to resolved original node; no repeat grant, reroll or consumed-offer reentry. Unknown outcome recovers original key, not success UI.",
+  "limits": "Example values from approved v19, not actual account. No Unity/server or independent assets; input/lifecycle/transactions untested."
+}

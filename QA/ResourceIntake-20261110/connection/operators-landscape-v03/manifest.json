@@ -1,0 +1,19 @@
+{
+  "method": "Generated composite using approved portraits as references, not pixel-exact asset compositing. Enlarged portrait is not a separately approved half-body resource.",
+  "scope": "Integrated operator list and detail concept; left unified icon rail; approved five portrait identities; enlarged Reina bust; existing training level/skill/promotion/core/formation controls",
+  "source": "D:/CodexData/Home/generated_images/01a163f4-9265-7f63-96a6-9e77ab4861be/exec-2c53cce8-f5dd-4302-9f4f-c9332552b650.png",
+  "runtimeChanged": false,
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "review": "Five named roster identities and selected Reina, no Mira, no squad leader, no fabricated values. Independent artwork, interactions and viewport behavior not verified.",
+  "file": "01-operators.png",
+  "sha256": "2EA1839B4F74601BA4B1F394B3B16766DA992A7D2427E2A95CD678E6E93548CB",
+  "tool": "built-in image_gen",
+  "references": [
+    "noncombat-basic-five-v02/portrait-reina.png",
+    "noncombat-basic-five-v02/portrait-kyle.png",
+    "noncombat-basic-five-v02/portrait-eve.png",
+    "noncombat-basic-five-v02/portrait-sera.png",
+    "noncombat-basic-five-v02/portrait-nyx.png"
+  ],
+  "approval": "User: 대원 화면은 이 시안으로 확정하고 등록해"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "tool": "built-in image_gen",
+  "reference": "attendance-landscape-v01/07-attendance.png",
+  "sha256": "5966428A7134618D3A03C5CE2AB0D26ED2D3764D1DE0B98A6CF93070F24E2CCA",
+  "approval": "User approved claimed-state dimming and next screen.",
+  "verification": "Visual:1..8 desaturated/dimmed with checks,no cell8 glow,9..28 retain color. Account state illustrative.",
+  "file": "07-attendance.png",
+  "runtimeChanged": false
+}

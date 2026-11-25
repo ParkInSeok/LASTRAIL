@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "15-operation-map.png",
+  "source": "../operation-map-landscape-v01/15-operation-map.png",
+  "method": "Two built-in imagegen edits: remove node nameplates, then remove global sidebar and extend map",
+  "userCorrections": ["Map nodes display icons only; selected event name remains in detail", "In-combat operation map must not expose lobby tabs"],
+  "review": "Ten circular map markers visible without label plates. Left global navigation removed, map extended left; right detail/confirm and operation equipment button retained. No added global navigation.",
+  "implementationContract": "Combat state must block lobby/operator/train/recruit/shop navigation through all input paths, not only hide buttons. Back closes map to originating operation; equipment remains operation inventory under existing safety conditions.",
+  "limits": "Reference redraw, not identical pixel composition. No Unity changes or navigation/input verification. Partial illustrative graph, authoritative saved graph required."
+}

@@ -1,0 +1,8 @@
+{
+  "status": "USER_APPROVED_20261112_REFERENCE_ONLY",
+  "output": "16-operation-equipment.png",
+  "method": "Built-in imagegen landscape recomposition using approved map, equipment art and five-person portrait references",
+  "policy": "13_EQUIPMENT_ENCHANTMENTS.md capacity v18; equipment-drag-v01/REVIEW.md with superseded six-star rule excluded; equipment-drag-targets-v38-illustration/REVIEW.md",
+  "review": "Dimmed parent map and close X, no global navigation, eight stored items plus empty cell,8/30 illustrative capacity, five named portraits, selected Reina, exactly three equipped slots with two empty plus signs. One locked stored item, maximum5-star sample. Detail/lock controls and safe-maintenance guidance visible.",
+  "limits": "Preview only, not live account. Generated portraits/item art are reference redraws, not exact independent asset reuse. No Unity changes or actual drag/scroll/close/safety/transaction tests. Click detail must retain accessible equip/merge alternatives in implementation."
+}

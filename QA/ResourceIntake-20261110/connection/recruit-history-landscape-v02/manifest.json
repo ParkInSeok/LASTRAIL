@@ -1,0 +1,9 @@
+{
+  "status": "USER_APPROVED_BASE_SUPERSEDED_BY_ORDINAL_REVISION",
+  "output": "37-recruit-history.png",
+  "reference": "../recruit-history-landscape-v01/37-recruit-history.png",
+  "method": "Built-in imagegen edit",
+  "review": "Viewed output: full-width text-only ledger, date/type/results columns, first10 entries and second1 entry, scroll indicator and clipped next group, fixed title/X/close. No portraits/seal icons or split detail panel.",
+  "contract": "Group by original batch, preserve result order. Latest first, original NEW/duplicate and seal quantities from receipt. Reuse valid state, cursor fetch only missing older records; no auto polling or per-row detail requests.",
+  "limits": "Illustrative placeholder rows, not a coherent real account history; clipped third row repeats NEW fixture. Production must use original event flags. Static mockup, no Unity or actual scroll/input/lifecycle tests."
+}

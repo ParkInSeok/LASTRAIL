@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approvedAt": "2026-11-13",
+  "output": "42-enchant-target.png",
+  "method": "Built-in imagegen followed by focused armor correction; reference composite",
+  "policy": "QA/DirectionImpact-20260921/enchant-target-v18-illustration/REVIEW.md; turret exclusion per latest user",
+  "review": "Viewed corrected output: single six-item grid, all/storage/equipped filters; selected2star torso armor; locked5star scope dimmed; equipped and existing-enchant badges; unlocked5star eligible example; no turret. Armor corrected from accidental gauntlets to prior breastplate design.",
+  "contract": "Original host modal. Selection/filter/cancel consumes nothing. Equipped is not inherently ineligible; preserve owner/slot. Locked blocked until explicit unlock. Max5star may enchant if eligible. Existing enchant triggers current-effect loss confirmation; new effect only revealed after committed original command, no preview roll. Receipt recovery for uncertain outcome, no retry with new key. Original controller handles legality and revision; late responses isolated.",
+  "limits": "Illustrative inventory, not actual account. No independent assets, Unity/server edits, actual input/transactions/cancel/reentry/release verification."
+}

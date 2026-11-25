@@ -1,0 +1,350 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "method": "Built-in image_gen exact-source edit, one call per image. Not pixel-identical outside edit guarantee.",
+  "request": "Remove LAST RAIL brand wordmarks from popup mockups; preserve functional Korean titles.",
+  "items": [
+    {
+      "id": "16",
+      "title": "작전 장비",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-landscape-v01\\16-operation-equipment.png",
+      "sourceSha256": "717958889fa447dfb8c0a81212fae4d2ea9ffe2ec324b824f5379bd3f5a44203",
+      "output": "16-no-brand.png",
+      "sha256": "cb0f0086da2e8f05dde593c2d2603e0dff696232941c4c2a1160054e7cc306d8",
+      "sourceDimensions": [
+        1602,
+        981
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "20",
+      "title": "작전 일지",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-journal-popup-landscape-v03\\20-operation-journal.png",
+      "sourceSha256": "eaf2a105f9122850bb3280440b1417d27d083d92243237011833dd0aa5e7cb78",
+      "output": "20-no-brand.png",
+      "sha256": "a042617f87b235bf43796d6c274900b50786979045d938e96389c453d7bcfb3c",
+      "sourceDimensions": [
+        1697,
+        927
+      ],
+      "dimensions": [
+        1697,
+        927
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "35",
+      "title": "모집 결과",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-results-landscape-v03\\35-recruit-results.png",
+      "sourceSha256": "294c88618d523c17a3fb212ebbd1f63f9db0e27ba3cef20ba0e710fb07dc0ada",
+      "output": "35-no-brand.png",
+      "sha256": "b310557d1f9301dc92f03529697f9ca6f85166cd4e611f0c663bc1ba7a11cf64",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "36",
+      "title": "인장 비교 시안",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operator-token-comparison-v01\\36-token-comparison.png",
+      "sourceSha256": "52433c9260657fdd35235eda8f494261ca45f9ccc242e0ccb0a36fa3eb04cfa4",
+      "output": "36-no-brand.png",
+      "sha256": "e5422c12ab4d91ef9ecd298014fcde35f12d9a37ac7d27a08c3e57d0263ffd13",
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "37",
+      "title": "모집 기록",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-history-landscape-v03\\37-recruit-history.png",
+      "sourceSha256": "37fe3d9b20f461ade2c9e1ee49d5490b338db1c883fc6255efd2b0f157b56062",
+      "output": "37-no-brand.png",
+      "sha256": "11c4526d8e3c44515be9ee21124f7a46f83aba8fa7d149c9a19e27e5930dc4ef",
+      "sourceDimensions": [
+        1670,
+        942
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "38",
+      "title": "확률 정보",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\recruit-probability-landscape-v03\\38-recruit-probability.png",
+      "sourceSha256": "7d7bd0c4911333e98ee9edaee80b3b97f9f3756925ec425f72366dba53e50ad7",
+      "output": "38-no-brand.png",
+      "sha256": "f21f46596af25f1202157fcbddb8ff5327ad1dcb926c1dde02344c784bf06183",
+      "sourceDimensions": [
+        1670,
+        942
+      ],
+      "dimensions": [
+        1670,
+        942
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "39",
+      "title": "장비 상세",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-detail-landscape-v02\\39-equipment-detail.png",
+      "sourceSha256": "89de20b3b4b9a904f4b1f68239c09539d4547e2e99ec5c2d56255757ef5b57a0",
+      "output": "39-no-brand.png",
+      "sha256": "b0201133289b9c97331a4a8d4d0d2c2cba0481ba5c8d13617f02b2938cee5dcb",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "40",
+      "title": "장비 교체",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-replace-landscape-v01\\40-equipment-replace.png",
+      "sourceSha256": "d8270adda36196aabca722f91029ec5b4e5cda3811435364d4b996793bfb8248",
+      "output": "40-no-brand.png",
+      "sha256": "2487254173a21b5fc53753b50113ce7cc66b6df4058792cff7c3babaeb358322",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "41",
+      "title": "장비 합성",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\operation-equipment-synthesis-landscape-v01\\41-equipment-synthesis.png",
+      "sourceSha256": "305db4c2ab7b3e3af7538de9ba756b1610d556afb3af0c496ba05abc4ccffa80",
+      "output": "41-no-brand.png",
+      "sha256": "36cfa51d0cee2f73d061281284ddb6714344603b6fe5ac25a0d59a7ea385687c",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "42",
+      "title": "인챈트 대상",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-target-landscape-v01\\42-enchant-target.png",
+      "sourceSha256": "1a0d5b5354b367238fda8c21b8aac14653cac444dcf23fadeef4e1d4bca3ca95",
+      "output": "42-no-brand.png",
+      "sha256": "520ff99420ddb429311766b7a63fa874c78030a74443e35b3271b6a59d56e6b5",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "43",
+      "title": "인챈트 교체",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-replace-landscape-v01\\43-enchant-replace.png",
+      "sourceSha256": "96524f5f37e18e34602dddc836fafe0530e121924fe83ab92648352a86fad408",
+      "output": "43-no-brand.png",
+      "sha256": "e872af8ac8643f2e976161f6dbc05647ae2c43bac9b0c40cdd708381b5457744",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "44",
+      "title": "인챈트 완료",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-result-landscape-v01\\44-enchant-result.png",
+      "sourceSha256": "4ab254c58a523eece365e5c695a6757a2cf9c32552356035602d0035e6b80836",
+      "output": "44-no-brand.png",
+      "sha256": "989f5bfcc6b559d2cf949ab8743c017022fff2ae8f76317ea65b9edce557c357",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "45",
+      "title": "승급 대상",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-promote-target-landscape-v01\\45-promote-target.png",
+      "sourceSha256": "dbeb43155496bf08b392a38b2796e61d39230073d2598bb06eabe37b0cc2889b",
+      "output": "45-no-brand.png",
+      "sha256": "f3c0f6893100debf1abb6856775589fac053cd5fa8950c10b2a595293fc195e1",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "46",
+      "title": "승급 완료",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-promote-result-landscape-v01\\46-promote-result.png",
+      "sourceSha256": "8766327f1ac52dc51c78d60a76842bcc1885b39b0696fbcedee22f6b4545ea5c",
+      "output": "46-no-brand.png",
+      "sha256": "dd53a68dce17228dd18941ed31fa2d5505dacc10dbad29c68299a84dad865a36",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "47",
+      "title": "수령 대기",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-pending-landscape-v01\\47-equipment-pending.png",
+      "sourceSha256": "11f74a9bf2491a8e15546c45182b0f98c4be041c528d7290cbeb689ea3b73e8e",
+      "output": "47-no-brand.png",
+      "sha256": "da2add9c7e902844ae16a3feb8481c60a028185778ad6fbc46484d2b3f233126",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "48",
+      "title": "수령 포기",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\equipment-forfeit-landscape-v01\\48-equipment-forfeit.png",
+      "sourceSha256": "4cc2e207959cb3bbb1850ab37a0bd33cf4ae4f2349529911f3cc947fcb560426",
+      "output": "48-no-brand.png",
+      "sha256": "487390fbb45d6116f3b01532317970a102a05303b125efa8ca91b3b5fd0d2821",
+      "sourceDimensions": [
+        1602,
+        982
+      ],
+      "dimensions": [
+        1602,
+        982
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    },
+    {
+      "id": "49",
+      "title": "인챈트 노드",
+      "source": "D:\\Project\\LASTRAIL\\QA\\ResourceIntake-20261110\\connection\\enchant-node-landscape-v01\\49-enchant-node.png",
+      "sourceSha256": "c557cd61897123ae9ab78eae37e306a502ceb9d4495414e14a552e86a7a57f6c",
+      "output": "49-no-brand.png",
+      "sha256": "aa4f8101e9e8095b94e7af1f9dbfac42de78a44266430fb39c0b87cdb67d450a",
+      "sourceDimensions": [
+        1672,
+        941
+      ],
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "USER_APPROVED_REFERENCE_ONLY",
+      "scope": "logo removal only; source approval unchanged",
+      "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게"
+    }
+  ],
+  "unchangedNoLogo": [
+    "24-lobby-menu",
+    "25-options-game",
+    "29-notices",
+    "30-support-compose",
+    "31-support-replies"
+  ],
+  "extras": [
+    "36 is historical choice board; B seal choice remains unchanged",
+    "49 is previously requested enchant-node cleanup"
+  ],
+  "limits": [
+    "No Unity changes or independent asset extraction",
+    "Source16 still shows pre-existing deprecated turret tab; this title-only task does not reapprove it",
+    "Full-screen navigation brand logos outside popup scope unchanged",
+    "Older historical revisions preserved, not batch overwritten",
+    "Generated files can differ slightly in dimensions and unrelated fine pixels"
+  ],
+  "approval": "2026-11-13 user: 좋아 전부 승인하고 나머지 타이틀있는거 최종시안 보여줘봐 잇어도되는지 판단하고 말해줄게",
+  "runtimeIntegrated": false
+}

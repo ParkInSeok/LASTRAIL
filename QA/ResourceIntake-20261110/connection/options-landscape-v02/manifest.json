@@ -1,0 +1,13 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 user approved game tab and two-modal composition",
+  "output": "25-options-game.png",
+  "method": "Built-in imagegen reference edit",
+  "references": [
+    "../options-landscape-v01/25-options-game.png",
+    "../lobby-menu-landscape-v01/24-lobby-menu.png"
+  ],
+  "flow": "Lobby -> menu -> options modal. One black alpha0.8 scrim above lobby and menu, below options. Options X closes only options, moves same scrim below menu, restores menu input. Menu X returns lobby. No stacked opacity or new lobby navigation.",
+  "review": "Foreground title/X/four tabs/settings/footer; no foreground left rail/back/banner/lobby button. Background menu and lobby visibly dimmed. Existing game tab content retained.",
+  "limits": "Generated static approximation, exact alpha and original artwork pixels not verified. Runtime focus/input blocking/close order/settings persistence/cancel/reentry/release not tested. Unity untouched. Other tabs not rendered."
+}

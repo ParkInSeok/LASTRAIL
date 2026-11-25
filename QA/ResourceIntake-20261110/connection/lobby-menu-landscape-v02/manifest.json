@@ -1,0 +1,10 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 explicit user approval; full background black alpha0.8 contract retained",
+  "output": "24-lobby-menu.png",
+  "source": "../lobby-menu-landscape-v01/24-lobby-menu.png",
+  "method": "Built-in imagegen reference edit",
+  "target": "Full-screen black scrim RGBA(0,0,0,0.8) above entire lobby including left menu and below foreground popup. Popup retains normal brightness.",
+  "review": "Visually confirmed left rail, top currencies, map, portraits and + all darkened; foreground five menu entries and X remain bright.",
+  "limits": "Generated visual approximation, not mathematically verified alpha compositing or pixel-identical foreground. Exact alpha0.8 remains implementation contract. Unity untouched; input blockade and lifecycle not tested."
+}

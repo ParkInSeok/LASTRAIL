@@ -1,0 +1,18 @@
+{
+  "status": "USER_APPROVED_REFERENCE_ONLY",
+  "approval": "2026-11-13 user approved presented mockups; no runtime verification implied",
+  "method": "Built-in imagegen reference edits",
+  "flow": "One black alpha0.8 scrim below top modal, above menu+lobby. X closes top only, returns menu. Background input blocked; no opacity stacking.",
+  "limits": "Static generated approximations, no pixel-perfect frame/alpha assertion. Values/account/unlocks are fixtures. Unity untouched, actual settings/login/read/scroll/input/cancellation/reentry/release untested.",
+  "outputs": [
+    "26-options-sound.png",
+    "27-options-display.png",
+    "28-options-account.png"
+  ],
+  "references": [
+    "../options-landscape-v02/25-options-game.png",
+    "D:/Project/LASTRAIL/QA/DirectionImpact-20260921/menu-destinations-v03/09-options-display.png",
+    "D:/Project/LASTRAIL/QA/DirectionImpact-20260921/menu-destinations-v03/010-options-account.png"
+  ],
+  "review": "Four volume sliders; quality/frame dropdowns; guest/unlinked account and disabled logout retained from original fixture. No foreground global navigation or lobby action; account omits saved-settings status. Frames vary slightly across generated states; implementation shares single frame."
+}
