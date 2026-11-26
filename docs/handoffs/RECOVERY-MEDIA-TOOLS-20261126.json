@@ -258,11 +258,24 @@
       "digest": "41da973b9bf95bb312cbeff4d1982feb13259b43c821686b9bafea4dfe5477cf",
       "revision": "4.5.9",
       "url": "https://download.blender.org/release/Blender4.5/blender-4.5.9-windows-x64.zip"
+    },
+    {
+      "bytes": 722598642,
+      "url": "https://huggingface.co/lllyasviel/control_v11p_sd15_lineart/resolve/8a158f547e031c5b8fbca19ead09a74767ff4db0/diffusion_pytorch_model.fp16.safetensors",
+      "revision": "8a158f547e031c5b8fbca19ead09a74767ff4db0",
+      "digest": "de4f699573813c5ad07091fe1ad4097ddc957c22e313187caa885c82e3b6a85b",
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/controlnet/control_v11p_sd15_lineart.fp16.safetensors"
+    },
+    {
+      "bytes": 1445235707,
+      "url": "https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/69fc48b9cbd98661f6d0288dc59b59a5ccb32a6b/control_v11p_sd15_openpose.pth",
+      "revision": "69fc48b9cbd98661f6d0288dc59b59a5ccb32a6b",
+      "digest": "db97becd92cd19aff71352a60e93c2508decba3dee64f01f686727b9b406a9dd",
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/controlnet/control_v11p_sd15_openpose.pth"
     }
   ],
   "unresolved": [
     "Tools\\ACE-Step-1.5\\checkpoints\\acestep-v15-turbo\\configuration_acestep_v15.py",
-    "Tools\\ACE-Step-1.5\\checkpoints\\acestep-v15-turbo\\modeling_acestep_v15_turbo.py",
-    "Tools/FrameStudio/runtime/ComfyUI/models/controlnet/control_v11p_sd15_lineart.fp16.safetensors"
+    "Tools\\ACE-Step-1.5\\checkpoints\\acestep-v15-turbo\\modeling_acestep_v15_turbo.py"
   ]
 }
