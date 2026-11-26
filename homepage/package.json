@@ -1,0 +1,1 @@
+{"name":"lastrail-homepage","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs","preview":"node preview.mjs"},"engines":{"node":">=22"}}

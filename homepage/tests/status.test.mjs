@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { statusPresentation, validateStatus } from '../src/status.mjs';
+const now = Date.parse('2026-09-21T10:00:00Z');
+const snapshot = (extra={}) => ({revision:'qa-1',game:'NORMAL',web:'NORMAL',updatedAt:'2026-09-21T09:59:00Z',validUntil:'2026-09-21T10:05:00Z',summary:'검증 상태',...extra});
+test('missing status is unknown, never normal',()=>assert.equal(statusPresentation(null,now).game,'상태 미확인'));
+test('game maintenance preserves web reads',()=>{const s=statusPresentation(snapshot({game:'MAINTENANCE'}),now); assert.equal(s.blockPage,false);assert.equal(s.game,'점검 중');});
+test('read only preserves reads and blocks writes',()=>{const s=statusPresentation(snapshot({web:'READ_ONLY'}),now);assert.equal(s.blockPage,false);assert.equal(s.canWrite,false);});
+test('full web maintenance blocks pages',()=>assert.equal(statusPresentation(snapshot({web:'MAINTENANCE'}),now).blockPage,true));
+test('expired normal is stale, not current healthy',()=>{const s=statusPresentation(snapshot({validUntil:'2026-09-21T09:59:30Z'}),now);assert.equal(s.stale,true);assert.equal(s.game,'갱신 지연 · 현재 미확인');assert.equal(s.canWrite,false);});
+test('invalid enum, time and private data rejected',()=>{for(const s of [snapshot({web:'SECRET'}),snapshot({updatedAt:'oops'}),snapshot({internalMemo:'private'}),snapshot({updatedAt:'2026-09-22T00:00:00Z'})]) assert.equal(validateStatus(s,now),null);});
