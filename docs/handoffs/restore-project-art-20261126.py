@@ -9,6 +9,8 @@ import zipfile
 
 REPO = "ParkInSeok/LASTRAIL"
 CATALOGS = {
+    "unity-visuals": ("unity-visual-evidence-20261126", "art-recovery-index.json", "packets"),
+    "audio": ("authored-audio-20261126", "art-recovery-index.json", "packets"),
     "framestudio": ("framestudio-source-20261126", "frame-recovery-index.json", "packetSHA256"),
     "qa": ("project-art-and-evidence-20261126", "art-recovery-index.json", "packets"),
 }
@@ -81,4 +83,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
