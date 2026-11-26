@@ -1,0 +1,8 @@
+const fs=require('fs'),crypto=require('crypto');const root='D:/Project/LASTRAIL/QA/DirectionImpact-20260921';const old=root+'/combat-b-carriage-types-v02-art';const out=root+'/combat-b-carriage-types-v03-art';const input=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));fs.mkdirSync(out+'/assets',{recursive:true});
+for(const file of fs.readdirSync(old+'/assets'))fs.copyFileSync(old+'/assets/'+file,out+'/assets/'+file);
+fs.copyFileSync(input.path,out+'/assets/BCB01.png');
+for(const file of ['style.css','states.html','states.js','SCREEN_SPEC.md'])fs.copyFileSync(old+'/'+file,out+'/'+file);
+let html=fs.readFileSync(old+'/index.html','utf8').replaceAll('combat-b-carriage-types-v01-art','combat-b-carriage-types-v02-art').replace('객차 7종 · 바닥 식별 보강','객차 7종 · 화력 엠블렘 수정').replace('기존 측면 설비를 유지하고, 평평한 바닥에 넓은 타입 문양과 패널을 추가한 수정 후보입니다. 새 능력·효과 범위를 뜻하지 않습니다.','화력형 중앙 바닥의 총알 엠블렘만 불꽃 문양으로 변경했습니다. 불꽃은 고정 문양이며 화염 공격 효과를 뜻하지 않습니다. 나머지 6종은 이전안과 동일합니다.').replaceAll('바닥 보강','수정안');fs.writeFileSync(out+'/index.html',html);
+const m=JSON.parse(fs.readFileSync(old+'/manifest.json'));m.version='direction.combat-b-carriage-types-v03.20261002';m.revision='only BCB01 central floor bullets replaced by flame';const a=m.assets.find(x=>x.id==='BCB01');a.source=input.path;a.sha256=crypto.createHash('sha256').update(fs.readFileSync(input.path)).digest('hex');m.prompts=[input];fs.writeFileSync(out+'/manifest.json',JSON.stringify(m,null,2));fs.writeFileSync(out+'/PROMPTS.md',input.prompt);
+fs.writeFileSync(out+'/verify-review.cjs',fs.readFileSync(old+'/verify-review.cjs','utf8').replaceAll('combat-b-carriage-types-v02-art','combat-b-carriage-types-v03-art'));
+console.log(out);

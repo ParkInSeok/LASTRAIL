@@ -1,0 +1,99 @@
+{
+  "version": "direction.equipment-independent-composition-v60.20261002",
+  "taskId": "D-EQ-01@equipment-supply-v18",
+  "status": "independent-composition-review-candidate",
+  "runtimeIntegrated": false,
+  "productCodeChanged": false,
+  "role": "composable-review-prototype-not-runtime",
+  "screens": [
+    "equipment.html",
+    "inventory.html",
+    "expanded.html",
+    "merchant.html"
+  ],
+  "sourceArt": [
+    "equipment-main-v52-illustration",
+    "equipment-inventory-packed-v33-illustration",
+    "equipment-merchant-storage-v12-illustration",
+    "equipment-merchant-potion-v24-illustration"
+  ],
+  "sourceContracts": [
+    "13 current equipment capacity/owner/tag/discard",
+    "45#merchant-recovery-approved-v17-20260930"
+  ],
+  "assets": [
+    {
+      "id": "gear-six",
+      "path": "../d01-independent-v01/assets/items-atlas.png",
+      "status": "existing-approved-art-region-reuse; composed below mutable badge/name/rank"
+    },
+    {
+      "id": "panel-frame",
+      "path": "../panel-frame-composition-v01/assets/panel-frame.png",
+      "status": "existing-approved-art; 9-slice 150; center off"
+    },
+    {
+      "id": "item-frame",
+      "path": "../d01-independent-v01/assets/frame.png",
+      "status": "existing-approved-art; border-only"
+    },
+    {
+      "id": "dialog",
+      "path": "../common-dialog-independent-v02/assets/dialog-frame.png",
+      "status": "existing-approved-art"
+    },
+    {
+      "id": "plate",
+      "path": "../d01-independent-v01/assets/panel-texture.png",
+      "status": "existing-approved-art"
+    },
+    {
+      "id": "repair",
+      "path": "../d01-independent-v01/assets/skill-repair.png",
+      "status": "approved-source; new merchant use review candidate; v12 train illustration mismatch"
+    },
+    {
+      "id": "potion",
+      "path": "assets/healing-potion.png",
+      "status": "new-independent-alpha-candidate; user-art-review-pending"
+    },
+    {
+      "id": "merchant-background",
+      "path": "../equipment-supply-v08-art/assets/equipment-bay-v01.png",
+      "status": "existing-composition-source; not confirmed as separated final-v12-background"
+    },
+    {
+      "id": "portraits",
+      "status": "not-connected; five neutral placeholders; actual START IDs unbound"
+    },
+    {
+      "id": "set-badges",
+      "status": "existing approved SVG glyph meanings; centered; independent css; new composition review"
+    }
+  ],
+  "independentElements": [
+    "background",
+    "scrim",
+    "frame",
+    "plate",
+    "gear-atlas-regions",
+    "badges",
+    "stars",
+    "texts",
+    "counter",
+    "locks",
+    "selection",
+    "buttons",
+    "input",
+    "viewport"
+  ],
+  "remaining": [
+    "composition user review",
+    "potion art review",
+    "merchant background/repair illustration match",
+    "actual START owner/portrait mapping",
+    "real touch drag/synthesis and receipt/transaction",
+    "Unity import/runtime integration"
+  ],
+  "allRuntimeFixtureValuesExampleOnly": true
+}

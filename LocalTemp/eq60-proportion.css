@@ -1,0 +1,8 @@
+
+/* Atlas regions preserve square prop proportions rather than stretching 3x2 cells. */
+.gear-art{height:auto;aspect-ratio:1;width:100%;max-width:120px;background-size:300% 300%}
+.gear-0{background-position:0 18.75%}.gear-1{background-position:50% 18.75%}.gear-2{background-position:100% 18.75%}
+.gear-3{background-position:0 83.2%}.gear-4{background-position:50% 83.2%}.gear-5{background-position:100% 83.2%}
+.stock-icon .gear-art{width:100%;height:100%;max-width:none}.detail-icon .gear-art{width:140px;height:140px;max-width:none}
+@media(max-width:430px){.gear-art{height:auto}.gear-card{min-height:134px}.stock-icon{height:75px}.stock-icon .gear-art{width:75px;height:75px}.detail-icon .gear-art{height:140px}}
+

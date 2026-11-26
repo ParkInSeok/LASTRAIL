@@ -1,0 +1,86 @@
+[
+  {
+    "id": "kyle",
+    "name": "카일",
+    "desc": "Adult male sturdy broad shoulder protector, short darkbrowncrop, brown eyes angularjaw, gunmetal mediumchestarmor olivefabric. Starting recruitment/ultimate pose: upright grounded calm confident gaze towardviewer, both armored forearms at waist ready to brace, hands visible naturally. No gun/shield/melee weapon because finalweapon unconfirmed. Do not add hugegauntlet or newequipment.",
+    "action": "brace",
+    "color": [
+      142,
+      168,
+      111
+    ],
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ef73cbc3-dd99-4027-b8da-f460a00b01bf.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-99b6394b-975a-4b3d-8515-0caeb5632b8a.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-30f7af44-019f-42be-bc04-df259135c5fd.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult male sturdy broad shoulder protector, short darkbrowncrop, brown eyes angularjaw, gunmetal mediumchestarmor olivefabric. Starting recruitment/ultimate pose: upright grounded calm confident gaze towardviewer, both armored forearms at waist ready to brace, hands visible naturally. No gun/shield/melee weapon because finalweapon unconfirmed. Do not add hugegauntlet or newequipment.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Lift bent forearms to chest into guarded preparing pose, hands separated natural, grounded shoulders. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Final braced protective pose forearms crossed firmly in front chest, determined gaze, no weapon/shield/new equipment. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "eve",
+    "name": "이브",
+    "desc": "Adult female engineer smoky brownchinbob lowbrassgoggles resting on head, mutedgrayolive eyes, bluegray shortmaintenancejacket paleinner. Startingpose: steady halfsmile lookingviewer, LEFT hand supports small rectangular closedmechanical control case belowchest at waist, RIGHT hand holds small thickshort calibrationtool next tocase readyforoperation. Facesameportrait, no mediccross orgun/giantsentry/hologram.",
+    "action": "mechanical",
+    "color": [
+      105,
+      162,
+      189
+    ],
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-f805c24a-5d53-4af6-9523-c942ab714fed.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-a7f4cf59-14da-44dd-8fbf-238ffe93cdfb.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-d1993698-e128-40e9-ae52-407fca15a5bd.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female engineer smoky brownchinbob lowbrassgoggles resting on head, mutedgrayolive eyes, bluegray shortmaintenancejacket paleinner. Startingpose: steady halfsmile lookingviewer, LEFT hand supports small rectangular closedmechanical control case belowchest at waist, RIGHT hand holds small thickshort calibrationtool next tocase readyforoperation. Facesameportrait, no mediccross orgun/giantsentry/hologram.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Move right short calibration tool down to contact top lock of same small control case, left supports it. Focus glance briefly downward. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Finish firm tiny adjustment, right hand turns short tool at case lock, eyes back to viewer determined. SAME closed case and small tool. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "sera",
+    "name": "세라",
+    "desc": "Adult female medic ashblond lowflatbun bluegrayeyes offwhite closedoverlapmedicalfieldcoat sageminor accents darkinner. Startingpose: warmsteady gaze, RIGHT hand holding small capsule shapedmedicalcatalyst belowchest at waist, LEFT hand relaxed open nearby nottoaudience. Tool shortpalmlength no syringe/rifle, non-rigid sagegloves. No largecircle/levitation/medicalcross. Facesameportrait.",
+    "action": "healing",
+    "color": [
+      190,
+      191,
+      132
+    ],
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-e7bec3b1-dfab-4d22-8b04-8ea9cc3f2a79.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-14ad38eb-a2dc-4226-a0a1-c0b34b34811d.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-29fc9d2c-c102-4fde-98a7-1c4b2f7de2b5.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female medic ashblond lowflatbun bluegrayeyes offwhite closedoverlapmedicalfieldcoat sageminor accents darkinner. Startingpose: warmsteady gaze, RIGHT hand holding small capsule shapedmedicalcatalyst belowchest at waist, LEFT hand relaxed open nearby nottoaudience. Tool shortpalmlength no syringe/rifle, non-rigid sagegloves. No largecircle/levitation/medicalcross. Facesameportrait.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Right hand tilts small capsule catalyst toward open left palm, focusing calmly on hands, both below chest. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Right hand holds same capsule upright near waist, left palm extends slightly outward below chest, calm focused battle gaze. No giant magic circle. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "mira",
+    "name": "미라",
+    "desc": "Adult female rustbrown shortthickbraid at nape visibleoverleftshoulder, amberbrown eyes, compacttwoearheadset, slateblue shortvest sandlongsleeveuniform. Startingpose: calmconfident steadyviewer gaze, compactHEAVY portable singlebarrel machinegun held lowered diagonally acrosswaist withRIGHT hand rearpistolgrip andLEFT supportsforeend. Clearlymetalbody andattachedsmallboxfeed, no beltloops/riflethinbody/rotarybarrels. Weaponbelowface, nofiring. No newoverheat/reloadrules.",
+    "action": "fire",
+    "color": [
+      189,
+      139,
+      91
+    ],
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-e4b04c89-2fd0-49ca-bc38-b52cd0d47d8f.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7d42dbee-0d62-4387-b36f-680d62c124d7.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7db1706a-5c64-45a5-b00c-3a48558ace6a.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female rustbrown shortthickbraid at nape visibleoverleftshoulder, amberbrown eyes, compacttwoearheadset, slateblue shortvest sandlongsleeveuniform. Startingpose: calmconfident steadyviewer gaze, compactHEAVY portable singlebarrel machinegun held lowered diagonally acrosswaist withRIGHT hand rearpistolgrip andLEFT supportsforeend. Clearlymetalbody andattachedsmallboxfeed, no beltloops/riflethinbody/rotarybarrels. Weaponbelowface, nofiring. No newoverheat/reloadrules.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Raise same single-barrel compact heavy machinegun toward upper-center in three-quarter aiming transition, both hands proper grip, face visible. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Fully braced three-quarter forward aimed machinegun muzzle near center below face, determined gaze, both hands stable, NO baked flash. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  }
+]

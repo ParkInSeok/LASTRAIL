@@ -1,0 +1,310 @@
+[
+  {
+    "id": "kyle",
+    "name": "카일",
+    "desc": "Adult male sturdy broad shoulder protector, short darkbrowncrop, brown eyes angularjaw, gunmetal mediumchestarmor olivefabric. Starting recruitment/ultimate pose: upright grounded calm confident gaze towardviewer, both armored forearms at waist ready to brace, hands visible naturally. No gun/shield/melee weapon because finalweapon unconfirmed. Do not add hugegauntlet or newequipment.",
+    "action": "brace",
+    "color": [
+      142,
+      168,
+      111
+    ],
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ef73cbc3-dd99-4027-b8da-f460a00b01bf.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-99b6394b-975a-4b3d-8515-0caeb5632b8a.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-30f7af44-019f-42be-bc04-df259135c5fd.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult male sturdy broad shoulder protector, short darkbrowncrop, brown eyes angularjaw, gunmetal mediumchestarmor olivefabric. Starting recruitment/ultimate pose: upright grounded calm confident gaze towardviewer, both armored forearms at waist ready to brace, hands visible naturally. No gun/shield/melee weapon because finalweapon unconfirmed. Do not add hugegauntlet or newequipment.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Lift bent forearms to chest into guarded preparing pose, hands separated natural, grounded shoulders. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Final braced protective pose forearms crossed firmly in front chest, determined gaze, no weapon/shield/new equipment. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "eve",
+    "name": "이브",
+    "desc": "Adult female engineer smoky brownchinbob lowbrassgoggles resting on head, mutedgrayolive eyes, bluegray shortmaintenancejacket paleinner. Startingpose: steady halfsmile lookingviewer, LEFT hand supports small rectangular closedmechanical control case belowchest at waist, RIGHT hand holds small thickshort calibrationtool next tocase readyforoperation. Facesameportrait, no mediccross orgun/giantsentry/hologram.",
+    "action": "mechanical",
+    "color": [
+      105,
+      162,
+      189
+    ],
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-f805c24a-5d53-4af6-9523-c942ab714fed.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-a7f4cf59-14da-44dd-8fbf-238ffe93cdfb.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-d1993698-e128-40e9-ae52-407fca15a5bd.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female engineer smoky brownchinbob lowbrassgoggles resting on head, mutedgrayolive eyes, bluegray shortmaintenancejacket paleinner. Startingpose: steady halfsmile lookingviewer, LEFT hand supports small rectangular closedmechanical control case belowchest at waist, RIGHT hand holds small thickshort calibrationtool next tocase readyforoperation. Facesameportrait, no mediccross orgun/giantsentry/hologram.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Move right short calibration tool down to contact top lock of same small control case, left supports it. Focus glance briefly downward. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Finish firm tiny adjustment, right hand turns short tool at case lock, eyes back to viewer determined. SAME closed case and small tool. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "sera",
+    "name": "세라",
+    "desc": "Adult female medic ashblond lowflatbun bluegrayeyes offwhite closedoverlapmedicalfieldcoat sageminor accents darkinner. Startingpose: warmsteady gaze, RIGHT hand holding small capsule shapedmedicalcatalyst belowchest at waist, LEFT hand relaxed open nearby nottoaudience. Tool shortpalmlength no syringe/rifle, non-rigid sagegloves. No largecircle/levitation/medicalcross. Facesameportrait.",
+    "action": "healing",
+    "color": [
+      190,
+      191,
+      132
+    ],
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-e7bec3b1-dfab-4d22-8b04-8ea9cc3f2a79.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-14ad38eb-a2dc-4226-a0a1-c0b34b34811d.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-29fc9d2c-c102-4fde-98a7-1c4b2f7de2b5.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female medic ashblond lowflatbun bluegrayeyes offwhite closedoverlapmedicalfieldcoat sageminor accents darkinner. Startingpose: warmsteady gaze, RIGHT hand holding small capsule shapedmedicalcatalyst belowchest at waist, LEFT hand relaxed open nearby nottoaudience. Tool shortpalmlength no syringe/rifle, non-rigid sagegloves. No largecircle/levitation/medicalcross. Facesameportrait.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Right hand tilts small capsule catalyst toward open left palm, focusing calmly on hands, both below chest. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Right hand holds same capsule upright near waist, left palm extends slightly outward below chest, calm focused battle gaze. No giant magic circle. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "mira",
+    "name": "미라",
+    "desc": "Adult female rustbrown shortthickbraid at nape visibleoverleftshoulder, amberbrown eyes, compacttwoearheadset, slateblue shortvest sandlongsleeveuniform. Startingpose: calmconfident steadyviewer gaze, compactHEAVY portable singlebarrel machinegun held lowered diagonally acrosswaist withRIGHT hand rearpistolgrip andLEFT supportsforeend. Clearlymetalbody andattachedsmallboxfeed, no beltloops/riflethinbody/rotarybarrels. Weaponbelowface, nofiring. No newoverheat/reloadrules.",
+    "action": "fire",
+    "color": [
+      189,
+      139,
+      91
+    ],
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-e4b04c89-2fd0-49ca-bc38-b52cd0d47d8f.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7d42dbee-0d62-4387-b36f-680d62c124d7.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7db1706a-5c64-45a5-b00c-3a48558ace6a.png"
+    ],
+    "prompts": [
+      "Make a new independent waist-up character key-pose for LAST RAIL recruitment and ultimate motion study. Reference1 is approved named portrait: preserve its face, hairstyle, eye color, clothing identity exactly. Reference2 Reina is QUALITY/painted subculture shading reference ONLY, do not copy her face/costume/pistol. Premium anime painted detail, coherent brass/steel/cloth, natural hands, true transparent alpha, portrait1024x1536, head at upper-third, full hair contour inside canvas, waist-up no cropping hands, no text/UI/backdrop/flash. One flat pose, not Live2D rig.\nCharacter and pose: Adult female rustbrown shortthickbraid at nape visibleoverleftshoulder, amberbrown eyes, compacttwoearheadset, slateblue shortvest sandlongsleeveuniform. Startingpose: calmconfident steadyviewer gaze, compactHEAVY portable singlebarrel machinegun held lowered diagonally acrosswaist withRIGHT hand rearpistolgrip andLEFT supportsforeend. Clearlymetalbody andattachedsmallboxfeed, no beltloops/riflethinbody/rotarybarrels. Weaponbelowface, nofiring. No newoverheat/reloadrules.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Raise same single-barrel compact heavy machinegun toward upper-center in three-quarter aiming transition, both hands proper grip, face visible. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference.",
+      "EDIT reference1 into the next key pose of the SAME character. Preserve exact face, hair, costume, equipment, framing and painted detail. Fully braced three-quarter forward aimed machinegun muzzle near center below face, determined gaze, both hands stable, NO baked flash. Waist-up portrait 1024x1536, head same position, hands fully visible. TRANSPARENT BACKGROUND actual alpha, absolutely no brown/black vignette or backdrop. No text/UI/effect baked. Reference2 approved portrait identity. This is a single flat key pose animation reference."
+    ]
+  },
+  {
+    "id": "vex",
+    "name": "벡스",
+    "action": "fire",
+    "color": [
+      158,
+      137,
+      172
+    ],
+    "desc": "Latest bible: adult male narrow long oval face silver ash sidepart shortlayer hair grayviolet eyes charcoal plum short jacket LEFT shortstonegray shoulder dustpanel. Long singlebarrel precision rifle lowoptic. Old portrait is superseded do not copy black red hair or fur.",
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-1b5b4279-ea95-4f5a-a706-369dc1b5888c.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-48712d05-bda5-4d61-9e73-e1f010a26fd3.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-6691758f-7d06-4f61-8d8d-7678392f7ea8.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult male narrow long oval face silver ash sidepart shortlayer hair grayviolet eyes charcoal plum short jacket LEFT shortstonegray shoulder dustpanel. Long singlebarrel precision rifle lowoptic. Old portrait is superseded do not copy black red hair or fur. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult male narrow long oval face silver ash sidepart shortlayer hair grayviolet eyes charcoal plum short jacket LEFT shortstonegray shoulder dustpanel. Long singlebarrel precision rifle lowoptic. Old portrait is superseded do not copy black red hair or fur. EDIT reference exact same person and equipment, framing head position unchanged. Raise equipment into forward preparation with visible face.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult male narrow long oval face silver ash sidepart shortlayer hair grayviolet eyes charcoal plum short jacket LEFT shortstonegray shoulder dustpanel. Long singlebarrel precision rifle lowoptic. Old portrait is superseded do not copy black red hair or fur. EDIT reference exact same person and equipment, framing head position unchanged. Firmly aim or trigger same device forward below face, serious focused gaze, no baked shot effects."
+    ]
+  },
+  {
+    "id": "nyx",
+    "name": "닉스",
+    "action": "arcane",
+    "color": [
+      114,
+      165,
+      169
+    ],
+    "desc": "Latest bible: adult female broadsoftovalface loose ash mauve mediumlong hair pale muted yellowbrown eyes deepteal curved coat bright shortcollar. LEFT hand open small oval arcane catalyst. NO mask katana ponytail from old portrait.",
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-0e3fed38-f0d4-46c6-b787-ff2fc2fb6568.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-423559cc-c479-4d0e-86d8-89f0cf8656b4.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-0869c4a3-aee9-47b7-b6d9-fa7d0996a608.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female broadsoftovalface loose ash mauve mediumlong hair pale muted yellowbrown eyes deepteal curved coat bright shortcollar. LEFT hand open small oval arcane catalyst. NO mask katana ponytail from old portrait. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female broadsoftovalface loose ash mauve mediumlong hair pale muted yellowbrown eyes deepteal curved coat bright shortcollar. LEFT hand open small oval arcane catalyst. NO mask katana ponytail from old portrait. EDIT reference exact same person and equipment, framing head position unchanged. Turn small catalyst or lamp toward forward direction, other hand opens.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female broadsoftovalface loose ash mauve mediumlong hair pale muted yellowbrown eyes deepteal curved coat bright shortcollar. LEFT hand open small oval arcane catalyst. NO mask katana ponytail from old portrait. EDIT reference exact same person and equipment, framing head position unchanged. Extend low open palm with same catalyst/lamp in otherhand, focused gaze, no giant sigil."
+    ]
+  },
+  {
+    "id": "iris",
+    "name": "아이리스",
+    "action": "brace",
+    "color": [
+      147,
+      170,
+      196
+    ],
+    "desc": "Latest bible: adult female shortovalface pink beige rounded pixie hair darkbluegrayeyes inkblue shortangularjacket RIGHT forearm offwhite folding protection frame. No blackbob/glasses/drone from supersededportrait.",
+    "provisional": false,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ba73687c-79dc-4dae-ab91-88bbfa9caefc.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7cae6c59-55af-4ad0-8d51-72973ff448b6.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7955f206-eded-4d22-a7c2-40f42af25a8c.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female shortovalface pink beige rounded pixie hair darkbluegrayeyes inkblue shortangularjacket RIGHT forearm offwhite folding protection frame. No blackbob/glasses/drone from supersededportrait. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female shortovalface pink beige rounded pixie hair darkbluegrayeyes inkblue shortangularjacket RIGHT forearm offwhite folding protection frame. No blackbob/glasses/drone from supersededportrait. EDIT reference exact same person and equipment, framing head position unchanged. Raise protective equipment/forearms toward chest, hands natural.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Latest bible: adult female shortovalface pink beige rounded pixie hair darkbluegrayeyes inkblue shortangularjacket RIGHT forearm offwhite folding protection frame. No blackbob/glasses/drone from supersededportrait. EDIT reference exact same person and equipment, framing head position unchanged. Firm final guarding pose, same equipment and face, no new barrier effect."
+    ]
+  },
+  {
+    "id": "sable",
+    "name": "세이블",
+    "action": "brace",
+    "color": [
+      141,
+      154,
+      124
+    ],
+    "desc": "Keep oldportrait adult female silverlonghair coolgrayeyes FACE ONLY. Candidate equipment per17: longvertical silhouette darkolivegray clothes palegray broadshield in front but facevisible smallrustredmark. No rifle/hood essential.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-f4b196c4-d936-4ee1-bbeb-d87946863586.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ba3dfc53-8d0c-41d8-9587-ec03d67c9d5b.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-827f36c9-d06a-400b-a6ad-25b5741c832a.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adult female silverlonghair coolgrayeyes FACE ONLY. Candidate equipment per17: longvertical silhouette darkolivegray clothes palegray broadshield in front but facevisible smallrustredmark. No rifle/hood essential. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adult female silverlonghair coolgrayeyes FACE ONLY. Candidate equipment per17: longvertical silhouette darkolivegray clothes palegray broadshield in front but facevisible smallrustredmark. No rifle/hood essential. EDIT reference exact same person and equipment, framing head position unchanged. Raise protective equipment/forearms toward chest, hands natural.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adult female silverlonghair coolgrayeyes FACE ONLY. Candidate equipment per17: longvertical silhouette darkolivegray clothes palegray broadshield in front but facevisible smallrustredmark. No rifle/hood essential. EDIT reference exact same person and equipment, framing head position unchanged. Firm final guarding pose, same equipment and face, no new barrier effect."
+    ]
+  },
+  {
+    "id": "marrow",
+    "name": "매로우",
+    "action": "healing",
+    "color": [
+      177,
+      123,
+      134
+    ],
+    "desc": "Keep oldportrait mature male ruggedbearded brownface darkshort hair FACE ONLY remove skullheadpiece. Candidate17 shortmedicalworkcoat darkplumbrown warmgray medicalpanel lowthin treatment pouch. Hands work small medicaltool no gun/bone magic.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ff38e9c8-fe07-4bef-a013-dda0a801687f.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-d67e27d2-ad9e-4c36-bc08-d75df2f27283.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-1b1d6481-685e-4500-b108-de008c4efc95.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male ruggedbearded brownface darkshort hair FACE ONLY remove skullheadpiece. Candidate17 shortmedicalworkcoat darkplumbrown warmgray medicalpanel lowthin treatment pouch. Hands work small medicaltool no gun/bone magic. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male ruggedbearded brownface darkshort hair FACE ONLY remove skullheadpiece. Candidate17 shortmedicalworkcoat darkplumbrown warmgray medicalpanel lowthin treatment pouch. Hands work small medicaltool no gun/bone magic. EDIT reference exact same person and equipment, framing head position unchanged. Bring small medical tool toward other open hand, focused gaze.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male ruggedbearded brownface darkshort hair FACE ONLY remove skullheadpiece. Candidate17 shortmedicalworkcoat darkplumbrown warmgray medicalpanel lowthin treatment pouch. Hands work small medicaltool no gun/bone magic. EDIT reference exact same person and equipment, framing head position unchanged. Complete small controlled treatment gesture with hands below chest, no pills pouring or new effects."
+    ]
+  },
+  {
+    "id": "rail",
+    "name": "레일",
+    "action": "mechanical",
+    "color": [
+      131,
+      167,
+      197
+    ],
+    "desc": "Keep oldportrait adultfemale blacklongponytail amberredeyes faceonly. Candidate17 cobaltgray shortindustrialjacket whitestructure small yellowsafetylabels. Wide prepared arm action, no assigned sword/actualdash/weapon.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-d976885e-99d9-4f3d-98d4-b8f743bd937e.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-c2c6f3f2-5f01-4a9c-8ccc-b50c3eeab785.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-7887199f-9cae-4cd4-b03b-9be063ece0fe.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale blacklongponytail amberredeyes faceonly. Candidate17 cobaltgray shortindustrialjacket whitestructure small yellowsafetylabels. Wide prepared arm action, no assigned sword/actualdash/weapon. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale blacklongponytail amberredeyes faceonly. Candidate17 cobaltgray shortindustrialjacket whitestructure small yellowsafetylabels. Wide prepared arm action, no assigned sword/actualdash/weapon. EDIT reference exact same person and equipment, framing head position unchanged. Move hands to same mechanical control or prepared forearm action.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale blacklongponytail amberredeyes faceonly. Candidate17 cobaltgray shortindustrialjacket whitestructure small yellowsafetylabels. Wide prepared arm action, no assigned sword/actualdash/weapon. EDIT reference exact same person and equipment, framing head position unchanged. Finish a firm locking/ready gesture, same equipment, eyes viewer, no new attack/weapon."
+    ]
+  },
+  {
+    "id": "anchor",
+    "name": "앵커",
+    "action": "mechanical",
+    "color": [
+      99,
+      156,
+      154
+    ],
+    "desc": "Keep oldportrait mature male darkbrownhair fullbrown beard squareface. Candidate17 ink tealfabric darksand panels smallcopper lockingcentralmechanical equipment two hands lockcontrol lowsteady stance. No newshield/trainstabilization.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-974566ba-de82-4922-94f1-6f9fdc9a233e.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-f5135080-ae1a-4c08-8a18-bd203512c99a.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-ded2cf2b-364f-4555-adcf-1dbfe51432d5.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male darkbrownhair fullbrown beard squareface. Candidate17 ink tealfabric darksand panels smallcopper lockingcentralmechanical equipment two hands lockcontrol lowsteady stance. No newshield/trainstabilization. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male darkbrownhair fullbrown beard squareface. Candidate17 ink tealfabric darksand panels smallcopper lockingcentralmechanical equipment two hands lockcontrol lowsteady stance. No newshield/trainstabilization. EDIT reference exact same person and equipment, framing head position unchanged. Move hands to same mechanical control or prepared forearm action.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait mature male darkbrownhair fullbrown beard squareface. Candidate17 ink tealfabric darksand panels smallcopper lockingcentralmechanical equipment two hands lockcontrol lowsteady stance. No newshield/trainstabilization. EDIT reference exact same person and equipment, framing head position unchanged. Finish a firm locking/ready gesture, same equipment, eyes viewer, no new attack/weapon."
+    ]
+  },
+  {
+    "id": "lumen",
+    "name": "루멘",
+    "action": "arcane",
+    "color": [
+      217,
+      188,
+      124
+    ],
+    "desc": "Keep oldportrait adultfemale goldenblondmediumhair amber eyes FACE ONLY. Candidate17 darknavybrown short open outerwear creaminner smallbrass. Lowhandheld shielded lamp faces away from ownface. No giantstaff/holyhalo.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-bed51560-a870-4478-91b1-e18cd9091c4f.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-574ca96d-7cb6-4434-8d53-b536578a2419.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-d71718d2-b770-4cb2-a0a5-3593e80d37a8.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale goldenblondmediumhair amber eyes FACE ONLY. Candidate17 darknavybrown short open outerwear creaminner smallbrass. Lowhandheld shielded lamp faces away from ownface. No giantstaff/holyhalo. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale goldenblondmediumhair amber eyes FACE ONLY. Candidate17 darknavybrown short open outerwear creaminner smallbrass. Lowhandheld shielded lamp faces away from ownface. No giantstaff/holyhalo. EDIT reference exact same person and equipment, framing head position unchanged. Turn small catalyst or lamp toward forward direction, other hand opens.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultfemale goldenblondmediumhair amber eyes FACE ONLY. Candidate17 darknavybrown short open outerwear creaminner smallbrass. Lowhandheld shielded lamp faces away from ownface. No giantstaff/holyhalo. EDIT reference exact same person and equipment, framing head position unchanged. Extend low open palm with same catalyst/lamp in otherhand, focused gaze, no giant sigil."
+    ]
+  },
+  {
+    "id": "cinder",
+    "name": "신더",
+    "action": "fire",
+    "color": [
+      203,
+      127,
+      83
+    ],
+    "desc": "Keep oldportrait adultmale rustred shortspiky hair amber eyes face goggles onhead remove lowerfacemask. Candidate17 charcoal shortprotectiveworkcoat matteochre plates smalldarkred. Compact handheld demolition ignitiondevice, no flamethrowerfixed, no giantbacktanks.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-2495698b-d512-460a-9078-1e3d49917869.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-9d8ba43b-610d-478e-872d-17ae89dc8f30.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-e97b4251-2a99-4ac9-829d-6e87211b9e7c.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultmale rustred shortspiky hair amber eyes face goggles onhead remove lowerfacemask. Candidate17 charcoal shortprotectiveworkcoat matteochre plates smalldarkred. Compact handheld demolition ignitiondevice, no flamethrowerfixed, no giantbacktanks. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultmale rustred shortspiky hair amber eyes face goggles onhead remove lowerfacemask. Candidate17 charcoal shortprotectiveworkcoat matteochre plates smalldarkred. Compact handheld demolition ignitiondevice, no flamethrowerfixed, no giantbacktanks. EDIT reference exact same person and equipment, framing head position unchanged. Raise equipment into forward preparation with visible face.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait adultmale rustred shortspiky hair amber eyes face goggles onhead remove lowerfacemask. Candidate17 charcoal shortprotectiveworkcoat matteochre plates smalldarkred. Compact handheld demolition ignitiondevice, no flamethrowerfixed, no giantbacktanks. EDIT reference exact same person and equipment, framing head position unchanged. Firmly aim or trigger same device forward below face, serious focused gaze, no baked shot effects."
+    ]
+  },
+  {
+    "id": "warden",
+    "name": "워든",
+    "action": "brace",
+    "color": [
+      158,
+      170,
+      181
+    ],
+    "desc": "Keep oldportrait maturemale silvergray sweptbackhair croppedgraybeard angularface. Candidate17 tidyshort gray guardjacket mutedbluegray smallpalesand areas ONE smallforearm protective device. No hugefur/armorbadge/handcuffs/gun.",
+    "provisional": true,
+    "sources": [
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-9ac2272c-84d5-4d38-9e5e-c07dd4a9bf2f.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-597fcbb8-9fbb-4209-88e6-cf1dcf0fe052.png",
+      "D:/CodexData/Home/generated_images/01a0c3e9-35b6-7010-ae1c-6463f4047997/exec-4b26d5dd-265b-410a-8e9f-4e469eba9227.png"
+    ],
+    "prompts": [
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait maturemale silvergray sweptbackhair croppedgraybeard angularface. Candidate17 tidyshort gray guardjacket mutedbluegray smallpalesand areas ONE smallforearm protective device. No hugefur/armorbadge/handcuffs/gun. Recruitment starting pose: calm gaze toward viewer, hold equipment low, both hands visible. Reference supplies style/face only as described; no backdrop.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait maturemale silvergray sweptbackhair croppedgraybeard angularface. Candidate17 tidyshort gray guardjacket mutedbluegray smallpalesand areas ONE smallforearm protective device. No hugefur/armorbadge/handcuffs/gun. EDIT reference exact same person and equipment, framing head position unchanged. Raise protective equipment/forearms toward chest, hands natural.",
+      "Premium LAST RAIL painted anime subculture character waist-up portrait, 1024x1536, detailed natural hands face cloth metal matching Reina quality. One independent pose, TRUE transparent alpha no background no vignette no text. Keep oldportrait maturemale silvergray sweptbackhair croppedgraybeard angularface. Candidate17 tidyshort gray guardjacket mutedbluegray smallpalesand areas ONE smallforearm protective device. No hugefur/armorbadge/handcuffs/gun. EDIT reference exact same person and equipment, framing head position unchanged. Firm final guarding pose, same equipment and face, no new barrier effect."
+    ]
+  }
+]

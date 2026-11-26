@@ -1,0 +1,64 @@
+{
+  "version": "direction.equipment-drag-independent-v62.20261002",
+  "taskId": "D-EQ-01@equipment-supply-v18",
+  "status": "independent-composition-review-candidate",
+  "approval": "pending-user-art-review",
+  "role": "composable-review-prototype-not-runtime",
+  "runtimeIntegrated": false,
+  "productCodeChanged": false,
+  "newRasterAssets": 0,
+  "sourceArt": [
+    "equipment-drag-targets-v38-illustration",
+    "equipment-composition-v60-review",
+    "equipment-synthesis-v35-illustration"
+  ],
+  "sourceContracts": [
+    "13 J02/D2 same rank/category, lock, target main/source auxiliary",
+    "13 current max5/capacity30..54"
+  ],
+  "screens": [
+    "ready.html",
+    "valid.html",
+    "invalid.html"
+  ],
+  "compositionParts": [
+    "gear atlas regions",
+    "frame",
+    "set badge",
+    "stars",
+    "name",
+    "ghost",
+    "source opacity",
+    "target effect",
+    "reason",
+    "lock",
+    "preview text",
+    "buttons"
+  ],
+  "assets": [
+    {
+      "path": "../d01-independent-v01/assets/items-atlas.png",
+      "status": "approved atlas reuse"
+    },
+    {
+      "path": "../d01-independent-v01/assets/frame.png",
+      "status": "approved reuse"
+    },
+    {
+      "path": "../common-dialog-independent-v02/assets/dialog-frame.png",
+      "status": "approved reuse"
+    },
+    {
+      "path": "../equipment-composition-v60-review/style.css",
+      "status": "approved composition styles reused"
+    }
+  ],
+  "allFixtureValuesExampleOnly": true,
+  "remaining": [
+    "new composition art review",
+    "physical touch/scroll/drag",
+    "full synthesis detail composition",
+    "equipped target/owner binding",
+    "real transaction and runtime verification"
+  ]
+}
