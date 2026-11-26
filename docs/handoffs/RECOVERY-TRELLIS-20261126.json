@@ -650,26 +650,131 @@
       "restore": "original",
       "url": "https://raw.githubusercontent.com/microsoft/TRELLIS/193e0502b5cb3eb5997ec457d5340e95d09b158e/trellis/utils/__init__.py",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/DCO.txt",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/DCO.txt",
+      "sha256": "438a67ef0825e4c2a1493220a7c7c7f63bbfd5fe92f600247c55bb232d8bf372"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/flexicubes.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/flexicubes.py",
+      "sha256": "119d1300d00df4f6c4890ba496bd7ed5f25618b3483b74bc341cff15d5fa317e"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/LICENSE.txt",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/LICENSE.txt",
+      "sha256": "49bbe9114e49214df2ccc324cb3ac8d1d1aa1c3a0947f94c286765e86647b32e"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/README.md",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/README.md",
+      "sha256": "2e1ca6d09a3d2a7befc7567c3ca01e5e62fd4fec1d7ef40df548a1617b05af0d"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/tables.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/tables.py",
+      "sha256": "02a0d3277273ca2b18371c9895837131d453bfbd257d5a5e92433ed84f066cd6"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/download_data.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/download_data.py",
+      "sha256": "50b2425f34c15f753647d424634a06e6cb83ceacfd2632a889f6fe8f80718816"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/extraction.ipynb",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/extraction.ipynb",
+      "sha256": "699797227a055621a8a6e7df95f4ccd34e7a15ede75e4f0a94a33b4d4c6568c9"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/loss.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/loss.py",
+      "sha256": "9f165f073bba3e560b51ef80e2e87943b525e8f487c8d70b5f1a4dc7f6c6085d"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/optimization.ipynb",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/optimization.ipynb",
+      "sha256": "220512f5c34272cbef15aa763345c51d5fae0c81c57c032e6d27a8c5f4233c79"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/optimize.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/optimize.py",
+      "sha256": "9b410418738be79624216eb5c098600b03ce0cebef5d8baad5ffc8ca10a3ff2d"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/render.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/render.py",
+      "sha256": "736ef16cb17257309e0cc0b717cd9773c72a3797d0beda5e5a41c1186b1f52a3"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/util.py",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/util.py",
+      "sha256": "8649c2fa83c6e9804baaaf978ed5592471c3656c857cd9e5ff2d909e4acbefc5"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/examples/data/inputmodels/block.obj",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "Replace LF with CRLF to reproduce local bytes",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/examples/data/inputmodels/block.obj",
+      "sha256": "8e265aa11467b9211363d10100ff3c9289064f49af66e76286b2a080c5348e1b"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/images/ablate_L_dev.jpg",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "original",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/images/ablate_L_dev.jpg",
+      "sha256": "91a86b3a9da166b6d3cf56f1062225b9d188033a56e45bf4bf183be79b1925f8"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/images/block_final.png",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "original",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/images/block_final.png",
+      "sha256": "d030fee195d332f63ef80805486ed0b4074b1afc34efcba621e385aca9ae9135"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/images/block_init.png",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "original",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/images/block_init.png",
+      "sha256": "699ba21d95cce9d1504d31fca3694ba339f21703ac0bc3240c87df6ac2d2db3e"
+    },
+    {
+      "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/images/teaser_top.png",
+      "revision": "815e075a2a400d06c48d94c347674344ed6ae5c5",
+      "restore": "original",
+      "url": "https://raw.githubusercontent.com/MaxtirError/FlexiCubes/815e075a2a400d06c48d94c347674344ed6ae5c5/images/teaser_top.png",
+      "sha256": "71c27efaeeb7fc3357440607b34805495fc34acf39be00bb70dd315b5b25a71d"
     }
   ],
-  "requiresLocalBackup": [
-    "trellis/representations/mesh/flexicubes/.git",
-    "trellis/representations/mesh/flexicubes/DCO.txt",
-    "trellis/representations/mesh/flexicubes/flexicubes.py",
-    "trellis/representations/mesh/flexicubes/LICENSE.txt",
-    "trellis/representations/mesh/flexicubes/README.md",
-    "trellis/representations/mesh/flexicubes/tables.py",
-    "trellis/representations/mesh/flexicubes/examples/download_data.py",
-    "trellis/representations/mesh/flexicubes/examples/extraction.ipynb",
-    "trellis/representations/mesh/flexicubes/examples/loss.py",
-    "trellis/representations/mesh/flexicubes/examples/optimization.ipynb",
-    "trellis/representations/mesh/flexicubes/examples/optimize.py",
-    "trellis/representations/mesh/flexicubes/examples/render.py",
-    "trellis/representations/mesh/flexicubes/examples/util.py",
-    "trellis/representations/mesh/flexicubes/examples/data/inputmodels/block.obj",
-    "trellis/representations/mesh/flexicubes/images/ablate_L_dev.jpg",
-    "trellis/representations/mesh/flexicubes/images/block_final.png",
-    "trellis/representations/mesh/flexicubes/images/block_init.png",
-    "trellis/representations/mesh/flexicubes/images/teaser_top.png"
-  ]
+  "requiresLocalBackup": [],
+  "historicalGitPointer": {
+    "local": "Tools/TRELLISLocal/trellis/representations/mesh/flexicubes/.git",
+    "contentBase64": "Z2l0ZGlyOiAuLi8uLi8uLi8uLi8uZ2l0L21vZHVsZXMvdHJlbGxpcy9yZXByZXNlbnRhdGlvbnMvbWVzaC9mbGV4aWN1YmVzCg==",
+    "role": "Original linked-worktree metadata. Preserve as history when rebuilding a standalone checkout."
+  }
 }
