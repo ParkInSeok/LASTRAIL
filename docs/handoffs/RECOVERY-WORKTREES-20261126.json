@@ -1,0 +1,54 @@
+{
+  "restore": "Clone the named backup branch to recover all tracked and formerly untracked files. To reproduce the original detached HEAD and untracked status, use a fresh disposable clone, detach at backupCommit, then git reset --mixed originalHead. The seven existing local copies already have this status and independent Git object databases.",
+  "copies": [
+    {
+      "copy": "0982",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/0982",
+      "backupCommit": "9abea0881544397f6c47693c4b29fa90cf045778",
+      "untrackedFiles": 15
+    },
+    {
+      "copy": "205a",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/205a",
+      "backupCommit": "1d8cc97bb1c03bb5818d12a86a3b32c5077ced5b",
+      "untrackedFiles": 3
+    },
+    {
+      "copy": "5ca3",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/5ca3",
+      "backupCommit": "99eacbd737f0ca8268be288a79e1f519dd57e5ac",
+      "untrackedFiles": 84
+    },
+    {
+      "copy": "66ce",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/66ce",
+      "backupCommit": "8b95993102db99f17e545995f23c153468fe9c99",
+      "untrackedFiles": 0
+    },
+    {
+      "copy": "98e9",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/98e9",
+      "backupCommit": "a82199052c2c2dce51e2d0d8176574cce631ccb5",
+      "untrackedFiles": 3
+    },
+    {
+      "copy": "9e3f",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/9e3f",
+      "backupCommit": "8b95993102db99f17e545995f23c153468fe9c99",
+      "untrackedFiles": 0
+    },
+    {
+      "copy": "9e48",
+      "originalHead": "8b95993102db99f17e545995f23c153468fe9c99",
+      "backupBranch": "recovery-20261126/worktree/9e48",
+      "backupCommit": "e6b55cd5e1847acb358c36ccdc2bcaf823d825ba",
+      "untrackedFiles": 3
+    }
+  ]
+}
