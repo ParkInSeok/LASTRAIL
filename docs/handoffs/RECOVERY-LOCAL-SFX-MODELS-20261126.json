@@ -1,0 +1,333 @@
+{
+  "scope": "Metadata-backed files in Tools/LocalSfxAI/models only. Local digests verified.",
+  "files": [
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/.gitattributes",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/.gitattributes",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "f1ca65ce6a5b0774360fde1ec05157d9f937aaa2",
+      "algorithm": "git-blob-sha1",
+      "bytes": 1580
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/model_index.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/model_index.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "936d7fb5d4e492b6ac64bcce94c33fbfd3a56978",
+      "algorithm": "git-blob-sha1",
+      "bytes": 504
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/README.md",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/README.md",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "8202a394458cec5b058b976c12e84a2a9cf3915e",
+      "algorithm": "git-blob-sha1",
+      "bytes": 3825
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/scheduler/scheduler_config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/scheduler/scheduler_config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "63d930b308ad1b05dd71b91a747d7f87ff903a11",
+      "algorithm": "git-blob-sha1",
+      "bytes": 134
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/text_encoder/config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/text_encoder/config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "044a86ecf7cb32238f3fae4184e55d354787edec",
+      "algorithm": "git-blob-sha1",
+      "bytes": 726
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/text_encoder/generation_config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/text_encoder/generation_config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "20a8a9156fc8c3f25295ca067f61fdf120d517c5",
+      "algorithm": "git-blob-sha1",
+      "bytes": 239
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/text_encoder/model-00001-of-00002.safetensors",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/text_encoder/model-00001-of-00002.safetensors",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+      "algorithm": "sha256",
+      "bytes": 3441185608
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/text_encoder/model-00002-of-00002.safetensors",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/text_encoder/model-00002-of-00002.safetensors",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+      "algorithm": "sha256",
+      "bytes": 622329984
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/text_encoder/model.safetensors.index.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/text_encoder/model.safetensors.index.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "986d7db875b47d21f68530f6baac038f1b297b39",
+      "algorithm": "git-blob-sha1",
+      "bytes": 25605
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/tokenizer/merges.txt",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/tokenizer/merges.txt",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+      "algorithm": "git-blob-sha1",
+      "bytes": 1671853
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/tokenizer/tokenizer.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/tokenizer/tokenizer.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "algorithm": "sha256",
+      "bytes": 11422654
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/tokenizer/tokenizer_config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/tokenizer/tokenizer_config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "417d038a63fa3de29cfde265caedae14d1a58d92",
+      "algorithm": "git-blob-sha1",
+      "bytes": 9732
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/tokenizer/vocab.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/tokenizer/vocab.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "algorithm": "git-blob-sha1",
+      "bytes": 2776833
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/transformer/config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/transformer/config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "8828d73f1202f94ef006db4655a6340659147f6e",
+      "algorithm": "git-blob-sha1",
+      "bytes": 311
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/transformer/diffusion_pytorch_model.safetensors",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/transformer/diffusion_pytorch_model.safetensors",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "bda86e4d6730ff47cea47851d219880191e9d21d4d264b21a6ffe7cb2db9dfb0",
+      "algorithm": "sha256",
+      "bytes": 5664274560
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/vae/config.json",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/vae/config.json",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "cb812e0f17f290b47131f3c6fb49d3e7af57d636",
+      "algorithm": "git-blob-sha1",
+      "bytes": 169
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/MOSS-SoundEffect-v2.0/vae/vae_128d_48k.pth",
+      "url": "https://huggingface.co/OpenMOSS-Team/MOSS-SoundEffect-v2.0/resolve/e35df4d82fbe87fcd5d14e5d100e349c0c3c076d/vae/vae_128d_48k.pth",
+      "revision": "e35df4d82fbe87fcd5d14e5d100e349c0c3c076d",
+      "digest": "07e6139ff33bd21ba8a7a7f40ed24aab13ac0d100cd686f8a9f3e03dc5251cb1",
+      "algorithm": "sha256",
+      "bytes": 1486465965
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "81b57e8e790c07e8fa7f82d8bdfd7574d485c396",
+      "algorithm": "git-blob-sha1",
+      "bytes": 4494
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/generation_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/generation_config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "1872b16d4535564abf2db5d6debe6cddd82b7f2e",
+      "algorithm": "git-blob-sha1",
+      "bytes": 245
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/merges.txt",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/merges.txt",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "20024bfe7c83998e9aeaf98a0cd6a2ce6306c2f0",
+      "algorithm": "git-blob-sha1",
+      "bytes": 1671839
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/model.safetensors",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/model.safetensors",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "38fc7fc51c5e776e840414b6fd443962e9411b9654888fd7913e4da643cb857c",
+      "algorithm": "sha256",
+      "bytes": 3857413744
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/preprocessor_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/preprocessor_config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "0525dd953bb9241912f7147666f0d535165d5d4f",
+      "algorithm": "git-blob-sha1",
+      "bytes": 127
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/README.md",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/README.md",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "ec53071d0e37736a91918b25b201080ba7776be4",
+      "algorithm": "git-blob-sha1",
+      "bytes": 57817
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/speech_tokenizer/config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/speech_tokenizer/config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "06cc8dc4c5ec8a1929086b71b98c313020d9268b",
+      "algorithm": "git-blob-sha1",
+      "bytes": 2336
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/speech_tokenizer/configuration.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/speech_tokenizer/configuration.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "ab58e2eaf53cd14a1a2a7527d9261ceea93a24cd",
+      "algorithm": "git-blob-sha1",
+      "bytes": 76
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/speech_tokenizer/model.safetensors",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/speech_tokenizer/model.safetensors",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258",
+      "algorithm": "sha256",
+      "bytes": 682293092
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/speech_tokenizer/preprocessor_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/speech_tokenizer/preprocessor_config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "ba40914f4f49ab98a8ca545d4892ef7291a39592",
+      "algorithm": "git-blob-sha1",
+      "bytes": 234
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/tokenizer_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/tokenizer_config.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "6ff9fd60cc623bb54bbd603cbd418c97a11528d7",
+      "algorithm": "git-blob-sha1",
+      "bytes": 7344
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-Base/vocab.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-Base/resolve/fd4b254389122332181a7c3db7f27e918eec64e3/vocab.json",
+      "revision": "fd4b254389122332181a7c3db7f27e918eec64e3",
+      "digest": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "algorithm": "git-blob-sha1",
+      "bytes": 2776833
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "2c2c027c574a85c0d5a5d48e3cfed1a8a051ff9d",
+      "algorithm": "git-blob-sha1",
+      "bytes": 4421
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/generation_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/generation_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "1872b16d4535564abf2db5d6debe6cddd82b7f2e",
+      "algorithm": "git-blob-sha1",
+      "bytes": 245
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/merges.txt",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/merges.txt",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "20024bfe7c83998e9aeaf98a0cd6a2ce6306c2f0",
+      "algorithm": "git-blob-sha1",
+      "bytes": 1671839
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/model.safetensors",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/model.safetensors",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "391e8db219f292c515297cdceeb43e4eae67cdde35fa57e79a6a8a532fca0522",
+      "algorithm": "sha256",
+      "bytes": 3833402552
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/preprocessor_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/preprocessor_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "0525dd953bb9241912f7147666f0d535165d5d4f",
+      "algorithm": "git-blob-sha1",
+      "bytes": 127
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/README.md",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/README.md",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "7474784d52d29a8d370e1d6bbd6044a7af61e3e8",
+      "algorithm": "git-blob-sha1",
+      "bytes": 3214
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "06cc8dc4c5ec8a1929086b71b98c313020d9268b",
+      "algorithm": "git-blob-sha1",
+      "bytes": 2336
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/configuration.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/configuration.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "ab58e2eaf53cd14a1a2a7527d9261ceea93a24cd",
+      "algorithm": "git-blob-sha1",
+      "bytes": 76
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/model.safetensors",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/model.safetensors",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "836b7b357f5ea43e889936a3709af68dfe3751881acefe4ecf0dbd30ba571258",
+      "algorithm": "sha256",
+      "bytes": 682293092
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/speech_tokenizer/preprocessor_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/speech_tokenizer/preprocessor_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "ba40914f4f49ab98a8ca545d4892ef7291a39592",
+      "algorithm": "git-blob-sha1",
+      "bytes": 234
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/tokenizer_config.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/tokenizer_config.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "6ff9fd60cc623bb54bbd603cbd418c97a11528d7",
+      "algorithm": "git-blob-sha1",
+      "bytes": 7344
+    },
+    {
+      "local": "Tools/LocalSfxAI/models/Qwen3-TTS-12Hz-1.7B-VoiceDesign/vocab.json",
+      "url": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign/resolve/5ecdb67327fd37bb2e042aab12ff7391903235d3/vocab.json",
+      "revision": "5ecdb67327fd37bb2e042aab12ff7391903235d3",
+      "digest": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "algorithm": "git-blob-sha1",
+      "bytes": 2776833
+    }
+  ]
+}
