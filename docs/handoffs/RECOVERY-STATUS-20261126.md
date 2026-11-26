@@ -29,6 +29,13 @@
 - [제작 음성 및 분석 보충본](https://github.com/ParkInSeok/LASTRAIL/releases/tag/project-audio-reference-records-20261126)에는 자체 제작 자료 90개 경로 및 외부 참고자료의 출처·해시가 있다.
 - 프로젝트 원본 폴더의 Git 저장소에 연결돼 있던 외부 작업 사본 7개는 독립 Git 디렉터리로 전환했고, 미추적 파일 108개의 원격 Git 객체를 대조했다. 개인 대화 로그 609개와 인증 데이터는 E 백업에 보존했다.
 
-D 삭제 조건은 충족하지 않았다. 전체 파일 대조와 FrameStudio 최종 색인, 고립 객체의 소유·보안 판별이 남아 있다. Unity 빌드 58개 디렉터리의 패키징 데이터 418개는 고유 파일 167개, 17,017,958,040바이트다. 해당 빌드 바이너리는 공개 전송을 진행하지 않았다.
+## 삭제 전 추가 대조
 
+- 검수 빌드의 고유 파일 167개(418개 경로), 구 Runtime·Editor·Tests DLL/PDB 6개는 사용자가 삭제 대상으로 확정했다. 원격에서 다시 받은 중복 ZIP 1,399,628,513바이트는 보관본과 SHA-256 대조 후 삭제했다.
+- [FrameStudio 원본](https://github.com/ParkInSeok/LASTRAIL/releases/tag/framestudio-source-20261126) 44,096개 경로를 검증했다. 보류한 258개 모두 복구 위치와 해시를 확인했다. [컷신과 제작 스크립트](https://github.com/ParkInSeok/LASTRAIL/releases/tag/reconciled-frame-sources-20261126), [추가 네이티브 컷신](https://github.com/ParkInSeok/LASTRAIL/releases/tag/native-frame-cuts-20261126), [일반 제작 로그](https://github.com/ParkInSeok/LASTRAIL/releases/tag/frame-production-records-20261126)를 사용한다. 개인 로그는 E의 frame-private-logs 색인을 사용한다.
+- 출처를 확인할 수 없는 Git 객체 2,701개와 추가 9,530개는 E에서 원래 Git ID와 SHA-256을 검증했다. E의 unidentified-git-objects 및 additional-unidentified-git-objects 하위 restore-index.json이 위치를 기록한다.
+- [내부 작업 사본 7개와 중첩 사본 3개 복구표](https://github.com/ParkInSeok/LASTRAIL/releases/tag/checkout-layout-20261126)에는 원래 HEAD, Git 인덱스, 파일 경로, 줄바꿈 복원 정보가 있다. [미추적 자료](https://github.com/ParkInSeok/LASTRAIL/releases/tag/internal-worktree-records-20261126), [추가 테스트·설정](https://github.com/ParkInSeok/LASTRAIL/releases/tag/internal-worktree-tail-20261126), 원래 Git 이력, E 비공개 보충 자료와 함께 사용한다.
+- [도구 공식 복구 표](https://github.com/ParkInSeok/LASTRAIL/releases/tag/official-tools-addendum-20261126)에 Blender 4.5.9 공식 체크섬과 배포본 내부 파일, Unity MCP 고정 커밋, Python 패키지 73개의 버전·공급 URL·체크섬을 기록했다.
+- [외부 게임 사운드 대조](https://github.com/ParkInSeok/LASTRAIL/releases/tag/external-game-audio-note-20261126)에는 추가로 식별한 레퍼런스 영상·발췌에 대응하는 출처와 해시·분석을 보존했다.
 
+현재 프로젝트 전체 삭제는 보류 상태다. 개별 범위의 검증은 전체 프로젝트의 복원 가능성을 입증하지 않는다.
