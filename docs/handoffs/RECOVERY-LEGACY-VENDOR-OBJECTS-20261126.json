@@ -1,0 +1,1293 @@
+{
+  "packages": {
+    "shapely": {
+      "version": "2.0.7",
+      "url": "https://files.pythonhosted.org/packages/7b/95/4d164c2fcb19c51e50537aafb99ecfda82f62356bfdb6f4ca620a3932bad/shapely-2.0.7-cp39-cp39-win_amd64.whl",
+      "sha256": "a3fb7fbae257e1b042f440289ee7235d03f433ea880e73e687f108d044b24db5"
+    },
+    "mapbox_earcut": {
+      "version": "1.0.3",
+      "url": "https://files.pythonhosted.org/packages/5d/8a/158ed5c7cf9728811f32df64736c33b623319a11af200c82ee24018b3996/mapbox_earcut-1.0.3-cp39-cp39-win_amd64.whl",
+      "sha256": "2b531f4094c1643cab7ff96f296bb27277acac7204ff9415e099274299c56988"
+    },
+    "esbuild": {
+      "version": "0.25.12",
+      "url": "https://registry.npmjs.org/@esbuild/win32-x64/-/win32-x64-0.25.12.tgz",
+      "sha256": "c77076b48f96323cae6257bd515e5ea96ecf38ab8f7fa34364d4fc4ae5905b74"
+    }
+  },
+  "pythonVersion": "3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]",
+  "objects": {
+    "9638a64659be95661b882e9f9b242bc0e194331f": {
+      "package": "mapbox_earcut",
+      "entry": "mapbox_earcut.cp39-win_amd64.pyd",
+      "format": "original"
+    },
+    "d55367c1bda745c21f590710cc621615b5306d16": {
+      "package": "shapely",
+      "entry": "shapely.libs/geos-601667c569b99092781bd4af7fecde0b.dll",
+      "format": "original"
+    },
+    "a476504b6379d691c820e54a6cb95856b3f8a4d5": {
+      "package": "shapely",
+      "entry": "shapely.libs/geos_c-2ec21252057a9a4d4390485e0e576a5a.dll",
+      "format": "original"
+    },
+    "196be197f8e5e4dd54a0ad2cf04ddacebbfb68e6": {
+      "package": "shapely",
+      "entry": "shapely.libs/msvcp140-4cdfd5d0df96900d509f170af6d4ba5f.dll",
+      "format": "original"
+    },
+    "602d0585be04dfc0e4ef7442d173f962c7a779a1": {
+      "package": "shapely",
+      "entry": "shapely/lib.cp39-win_amd64.pyd",
+      "format": "original"
+    },
+    "cfbd91a2d9f5ea8d31d7bf0285d857a70f28bb46": {
+      "package": "shapely",
+      "entry": "shapely/_geometry_helpers.cp39-win_amd64.pyd",
+      "format": "original"
+    },
+    "f5f553bd7ac0576cda5bddb85fecca9f7466780e": {
+      "package": "shapely",
+      "entry": "shapely/_geos.cp39-win_amd64.pyd",
+      "format": "original"
+    },
+    "0d631d4c00b41f7810ac9d81daa9fe422a23f1c4": {
+      "package": "shapely",
+      "entry": "shapely/affinity.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a51210000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/affinity.py",
+      "localSize": 7011,
+      "deltaBase64": "eNrtl00OhCAMhYc2KTu5gWft0Q2zQH4KOoiLSd63aBQpJWD7QD8AAAAAeAsfjctbFIvyMls0lJ6+hn/wZywhmMOtrxeTYzSj7NGI6UDWm/R7WO5nvj1ALmMBAP6kEHpTTV1q9WXic1t45FYwMqqQm5kwlB+A+YR32QG8l9I9xZdRNoeL6GHJ4QsAMBTYRte3MvnN1Nfx+Z7KTw+FHHVgJVyX9byiS2/jqO4+Gv38I7g0VCsLNVpTbbXWk07Xac1DSDsJSS6hPA3S9A33AGTgBLk=",
+      "compileMarshalSHA256": "b45c92c976c9a535cd61bc25df839929aad1c9fbd3407d6be47138f7c2b9a793"
+    },
+    "e1ac097d517de015e15027fc2038e4ccb31f77df": {
+      "package": "shapely",
+      "entry": "shapely/constructive.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a3a990000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/constructive.py",
+      "localSize": 37625,
+      "deltaBase64": "eNrt3VtygjAUAFDTdIavDktgKS5Nl97pY3jEG1SkaPWcD2ohA0rh5iap5LgDuEFafY+5X2z7rm/6JG2/h2a8r9z/0lYOkaeLoWx0AIDlcTWdj7opKpf+MOADAAAAD6Rs+s/3SVb7cdfsQYi6T/Ma+wQAWJQrjYdchnHhdrqpDYrnYGdNrdyZoZtrszpgS7m/vZvgfm6K0o0TBnBFgjP0VR13QZC9Y2r4vThckIstTfYkeCD8lU3Gwyg4pD4wXhB08lyAgvDCSLUGTlJfAfDklWB3voqLMq6uKNM5nfzfuyDXUsGsRQGadvDY17zxWoRH0AyAn4u0rV3S5XdlPM8HkE8CwFU1YK1FqT4EALZISHItBdGVDeun/sWTFCT+sM0d6D9fAGp5yQXNBGkKwFNE/zknLdaFtYMaAgAAtsju85B8H0fbqsNPBn0BeNEqc67T66NWb645HpJGb2b/tYhGrC/x7i8KcDbaFnF3qhlF00kzqQjK+/AIeycZXj6xvPahMWm66Hbl6t81b7v45/DqGGalt85w28yG1Hy6KpovLpobrpst0k5PQlSu2PDeR+Fo6rn7TKWyzCeRhAlC",
+      "compileMarshalSHA256": "ed78e9647ca46e3c485a4f83c971f36327fbe226a6a6b8121be4c360d34e55cc"
+    },
+    "c838aba68b04735847f24d726fc7c82766b53648": {
+      "package": "shapely",
+      "entry": "shapely/coordinates.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66afa1c0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/coordinates.py",
+      "localSize": 6739,
+      "deltaBase64": "eNrt100KgCAQgNFU0J3dwLN69CBoakZr4UKEvrcw/xITY7RuAADgv5zkqm0Kuv3L3qsMUz4gT1qeOe9h9T/l3NWp3d/x8cg6SWakxGICANYLbk5y3ga2+HL+uhPHYQgAMP3arQcwo/jBsZpQ2CrSxes7YpFi1F06FS8RNYxM91J7labkZLZ35M+d5NsB/HIDLQ==",
+      "compileMarshalSHA256": "575984de644b15d6e75c01c4f15264631c32a63a1dddb3f8ac9200bd8bec5d4a"
+    },
+    "586ee604d3c2e606f47dd6513e020d8e4cf6b235": {
+      "package": "shapely",
+      "entry": "shapely/coords.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a36070000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/coords.py",
+      "localSize": 2247,
+      "deltaBase64": "eNprYBgFowAvYBza7kZ1PjNcCEzwD6QD2XEGM1qQMyMLD7y7h0XaZCROBSNy+OOJPWzRBTelgRhL+Ed25CEHGtPwDRmMXM4MT0sILjN6WYWmFy1o2OjpdjAhD7fWDlUJG6o6hBsZiQoVPixFNFHpAABe+gJB",
+      "compileMarshalSHA256": "323e77ead5db23fd4d2f6360e138e57d59ba53c4e41a45b63dce8ef1c917ca9c"
+    },
+    "4a5a1a8e4847d78b0360eb0125cffad983c57bc8": {
+      "package": "shapely",
+      "entry": "shapely/creation.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a65510000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/creation.py",
+      "localSize": 19131,
+      "deltaBase64": "eNrt2lFygjAQgGGWiPvUcgE7nKSeLUfvmKnBkCUkM2qZ8n8PEQYMiCa7i/gO2C1f2nj+45Pr+X4AAFtRIrzorZFb4+5LPt3xMw8sfRbz5kbMQwpXHQDw4sh2XYY3l4S3xLcRwZzZtePqAgCwHXWlLepSNwIAAAA7dLUy899/hNZvkmVbtJTmy3bur9mKlg8eTnGIq4vyQ5uugfIzwMFobT0+VFT31PUAAOxJv5rj3zPnOYcOzUdMDsb4nnJ+LA8JRZqa+64id+jIJYBDT0S1s5GLq/N+obMvY6LZesSHR4CAI0wuFTOLtswspDDA/8g68mFfHvuT2cXEpQaAPVOz7hsqikeKRbz/pxqykEtFBULFAbx7eNo3GuZyIh2VY1zya1HltOyw4bGm9oeYLsnJuPyTSE2/UgyP2cQ05vWZGAcUY8Nk7Hc2mmf5Ae96CU4=",
+      "compileMarshalSHA256": "7ebbfedcae59b7f46230ef3cbb59fbdcf54cf8e0e9b86d61a860ce4d3c0e9bfb"
+    },
+    "71201133d2b3a91443c13827e6dd345019ec1023": {
+      "package": "shapely",
+      "entry": "shapely/decorators.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a4d0a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/decorators.py",
+      "localSize": 3012,
+      "deltaBase64": "eNprYBgFQx4wD0f/IAjG0RgeTHGCVwUjvZ3EiO4uhCg2tzAS6Uh2CnIZIxHSIMMaCCoDq0Aoa0BzCpiyp1uwE7CEH0Sw4sq/jKQaNwpGqzGiM+nQrSzYJGQFVyToZnOxCzLIY5Q97Fg8x0qPAMcZtKw4si8fiOBCz97seGznwlEsEl1GU+xxZgrtrUIrqRkw+dKEahVku6vIa/wAAMVVB+4=",
+      "compileMarshalSHA256": "c62e4ac85e27574bd92fe116102c4a344a337444eef89726c2f573cb8d17267f"
+    },
+    "4f9f1139e6323986033d92828f7d87423cfd69ff": {
+      "package": "shapely",
+      "entry": "shapely/errors.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae8090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/errors.py",
+      "localSize": 3136,
+      "deltaBase64": "eNprYBgFo2AUDHXASB1jmFG5DVg5KKI8A+lrlmEVhzyoBAs2H7IMZEgPZgcOETeO+nSYxxNOz/Fgy+1Do1YYBXgAOwmpgaQEbYMShzLY45MZLsyOmo1YcNnHguouG1zplTgAAHTjBG4=",
+      "compileMarshalSHA256": "13545629bab655e21d9a177dcc83559ffe48dddad55965873ad51a36d93e07fb"
+    },
+    "1f9167afcf44074c1f0c44dad804c78be3394fee": {
+      "package": "shapely",
+      "entry": "shapely/geos.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae6000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geos.py",
+      "localSize": 357,
+      "deltaBase64": "eNprYBhRgBFO0BMAALTMAIM=",
+      "compileMarshalSHA256": "4b698f0b16494147afc34de24ed0c44ed13ee71878dbfbf96ca0632831f4f862"
+    },
+    "f795bfef6476bdf8cf50e1d95f75c7e8d45fb546": {
+      "package": "shapely",
+      "entry": "shapely/io.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a95350000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/io.py",
+      "localSize": 11719,
+      "deltaBase64": "eNrt2E0OwiAQhmFhks6SI/VqHN0lUIc/W2rU99kYCSIZ9WMwPrCYjkxy1AkAAACXkdUtpqxY1L09n24aAAAAH28NQ7kHuX8H6RqglR28VEet5/l1Ir1in/gAxNjOScp3G8B3GI2r/nllpXoay2I6tiLY9fbAfyrAr7B7LzHSwfjlu/qS0ulvhdIDf8u3c8gfr5fV6dtED0PrAgDDEb2NxLMvx0Itl0PlnUIez6EY1UNwO+Mhmj2lTB4A2pwg/fNEylW07IBTAcSozFWe8QoDVg==",
+      "compileMarshalSHA256": "13be877517bd56bbd4cc42e1a48c28ed8697b6d6df29b8e1a1d519a7298c41a9"
+    },
+    "887475675b2ed64ac669b282dd894e2df692be37": {
+      "package": "shapely",
+      "entry": "shapely/linear.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a4c1d0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/linear.py",
+      "localSize": 7323,
+      "deltaBase64": "eNrt17sOgCAQRFEnFJT7y366iQVG2fBQVIp7CmPCAhuLAdcFAIBxQmOdehbVW93qy80ATB5OIa/cAyGmN6Xx8CD/AAD4l/prnUMu3pzrnasa3DUATPIDYrX8s8ss48MBOOeInId7f1J5nebrVcxLjv2s2FKPDWJOATA=",
+      "compileMarshalSHA256": "c7d944bdce6b6108a010f12a80c199a77f2d2f72fac93cb275bc41cd22b11bd5"
+    },
+    "49994529647ed97ea7f79510a8aadd9a72c3fc2f": {
+      "package": "shapely",
+      "entry": "shapely/measurement.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a45270000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/measurement.py",
+      "localSize": 9668,
+      "deltaBase64": "eNrtmE0OhCAMRu2wYMkR5iBerkc3zoIY0mqJ6CT63sIEbCj+lH6tTgDwOtJ6Ef++XOpdbvUGcCZM0nbmW/9XsQ2MMQBM6qcgqaHl2chu1iKBAMBIcfrpkMZ6MDaW0P0N/A7DbBx/JfQQhe8Ij65bI9IAWQAAjzwFA10GqSKiEulfBFcHAIB/a2GfOaCSUcoAQ6Ixe5VpbqwzLwxgXArsbget7V01s1/qKKcaZ8WYa5q4zR7PswD79gSk",
+      "compileMarshalSHA256": "b74dd12764cda12d156b8616cfbf2000432f5c5e3572adf185cf7d454e4fdf04"
+    },
+    "4821cbe00760718a59b415f4bb459e756347881c": {
+      "package": "shapely",
+      "entry": "shapely/ops.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a28690000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/ops.py",
+      "localSize": 21748,
+      "deltaBase64": "eNrtnM1yozAMx2vcmnQ3hRw5pe/Rncy+2Q7PvIf2sJedUkbGQjIOOIQ0/9+BNHH9LVmS7aR9AAAQr/fUWfP5KJP+q6f9eqkgKGCKXkgKRaIqJXENmXdjyY5340iNNZhYAHLili0xjnTzGK4rtLgUGdrnwmItX8l8tWzBsJhgEKWerQQjP6wIUvKrwmIVXdYup4ybJV2Meht/whZUMOrbITaF3mdj84a1NaIlRfhgQ1dfrHqvUTb8q9bUz8alAoAbC3tZ7LvUGhdJBtHxHJNWDnYPAADu2lNU368eAKSaRBOGfl/ZWtaR4yBDq9jos8KIs7xRE+9PioGGeQYAAOANkFEsjU98zGw8jBaQFiPLeoVjXSngflkYcM9tQbl+5Rto5yPl2gvlPmVxp0b9kDys5T1y1J99SsZCzN9fqfkZU5EX1etbqptg0SBKU36KjnQ0tohfryox9usyjPdc+JgICnEUAa5JSWtQyU2HKsMGRmPrVIIJSXM1BD8nr4gZXXb6pF2Y1FCzdpvwd7+ri3KTNTuSCyZm9URlRxIt1ckC90gzS5I7gXkTRYcJptWWYb9a/04TVzlzAq0ewkPwLyIjiavhKW1Glk2SZI/FI7puCf1g8tcqMtRClAAAANwQdUZ7Xg2KHJrVzhL++nz84CHtvBMFM3jxtTXkXs4NrnKGg/4ejaNm7sij+Ev+RzPoeiOO6Dul5w5Xo85KI7SYfTPrnIvvNXQNAAAAAABckM5VffO+dX+qxnb/Rht/rVRWV0C3K73XqtNDl3Z+H5RCuytQz4IXbq4zygBsmVOowxP7DEynhMMo8TMA1l96/c30QHw7yf03bZseBkbRqkLupJW+K/RANR7os7Qf+3tlTRu08aDaT5vUG8UqRW7fDHYN/XaiDT2FWFU2oa+HlKbasKHSTz2wBHawzvpgaCKlTbuc/Adgzh7G",
+      "compileMarshalSHA256": "bc6116d1e8de778cc06cd86dad7d0df30fb796e2165ee14ac0d4addbd54b7434"
+    },
+    "d83abc670f7b18133d5dc5a4278c3d18ca7017f1": {
+      "package": "shapely",
+      "entry": "shapely/plotting.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae9180000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/plotting.py",
+      "localSize": 6389,
+      "deltaBase64": "eNrtWFsOgyAQtAHCRyEeoJpehMNx9MbWLBSlPGwttjMfG4k813V2FtsBe+A0GZvbO9VRfu8grGUH10MWdLsb0aAPRPLLzYGln48hUl7ot+/tOpkxO5YkbVPQ00voDvgXHs0A92JCLV6U/sYcjgcAAPi9VFEtqkxCwxRmDbW6mqKZAmN2E6dDq3oXAIDjkbJy4tx84HZiXFaXpQVvmACsx/jcY3dnelqSx7lfkXHlMFtheZ9zeSwLhPWMfitNXxCrAHBUbas8DszRoYIGnWkIIyIKlGXOhDwupAOOmrn1QYluYU3NgfgouLyp1bo3tAAH4Q==",
+      "compileMarshalSHA256": "aced236e4a29da9c6e725a23c4b403c5a9a4d981a2bf6e4872a1d9aa7ba223ed"
+    },
+    "f9688042e000ad1841869f97d7495070a8381bb0": {
+      "package": "shapely",
+      "entry": "shapely/predicates.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a3b850000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/predicates.py",
+      "localSize": 33476,
+      "deltaBase64": "eNrt3dFqgzAUANAFN/KYHxD8FH/NTx9bcZqYdJtoWec5D6G1qYLVe2+i2OkFgGfSfTSh/Xk4c+PhkRsDOCuIdnk4Dfmysjc8W4VQO7ilcA4/2lLraEtF72SHIWSCkhiQyMChDhwVGGIrMMSid7TDQPoHbqb779dTQmGTRL+ZOlqtAv5zehpa6Wkoeg92GACHDo5m0SAJAPJM+dm8VTKk214ArpscYis5uJIMsDu2hlZsNTUFUI2bJiwAhRg4uwB1NgCcnBpdFgWMhgGuEb1NiQBU69r1wLgcBCt3mX/8sZVGx6L3aIcBOzLQJP/ARc7+1K4/a6e/v2YB2Cf8pBTbBOHs2+FedxUZwEGxur+97r+aJfK+/jYkd2XlPA+1+20qaK4mbhctW06VZSGv5ZdHyRZ3XzUfi177dKxsstb8wet573yvB3Y=",
+      "compileMarshalSHA256": "5f881b162068defe5e266077407cd1c1bac68f52da723955190a4e4a2e937a0b"
+    },
+    "5af01371d90ccfcdc840a0a9e10fee095bc10d0f": {
+      "package": "shapely",
+      "entry": "shapely/prepared.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aaf090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/prepared.py",
+      "localSize": 3219,
+      "deltaBase64": "eNprYBgFo2CoA3asog0YDARgRqFGKMDwPS+6JJhghRNDGzASoaYBU4c8kjBmegEHmSyqugZsASg7xNIDMxY/cA/OlIvNqZyDOKNhcy//IC4WBnn4EhG63KPJlmaFAvtgcB4vFofRreWBKN+54XHID2chxMCKLSkLR3a6+AhShREKTwsIZYlcbzLCCXa4EmaSIgcAlW8Hsw==",
+      "compileMarshalSHA256": "858182237dcf394384ebee9b1020c7b4d94196809a7ba7dc3c35f3b625d1d3c2"
+    },
+    "e06e6d67f4151e0faf8ae3b6ef7fad32f924746b": {
+      "package": "shapely",
+      "entry": "shapely/set_operations.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a8e460000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/set_operations.py",
+      "localSize": 15781,
+      "deltaBase64": "eNrt2UsOwiAQgGEns2DJETiKV+vRTTRBO2UG1CrG/t/C2NAHNGYeuJwAAAC+QqY8Qnefpcx+UcJvCQAOnk3TQzqQmu20HuYoXeT1udePcx0IZN4+gL/qPCRqIFphUijPAQCH7CC6KVJHLgQAvNDTmCBugrAJ4fQuAIApfYN4jQJ/eQMAAHy6gGtXce5OgkvDAfVrwZtkp6Ttmz65sTw4RwBvKTZ6jLR3tHMA8IulYa8W1PW33lagyQVlNKV4lmYS0TCvJHdUt+vP4cLvtyreEvdwAdL8BUs=",
+      "compileMarshalSHA256": "76e0c5c610aea2bbdd1d725b09f549ad8456b0cb47f0c7c747c22457723e4dc3"
+    },
+    "9aec2ac380bb536ae5ac2dd3729592c45323b74f": {
+      "package": "shapely",
+      "entry": "shapely/speedups.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad8030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/speedups.py",
+      "localSize": 952,
+      "deltaBase64": "eNprYBgFo2AAATOcoA1gJMAnxZmMqA5GiLGjqWZH0oTFCHZUFjYTCQEA/VUAxQ==",
+      "compileMarshalSHA256": "0dfedbe285195be7629ad57a8f993d924e4fe88130e31b0a769e48708f582a30"
+    },
+    "852ab0641fb68a563b1f2eb1ea1aa89d162731aa": {
+      "package": "shapely",
+      "entry": "shapely/strtree.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ac6510000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/strtree.py",
+      "localSize": 19287,
+      "deltaBase64": "eNrt3NEOgiAUgGGZGFuzfAG3nqT1Xl756K3UIwqomejm/u+CqRF00IszD6tOgPVqz9E/jDRRqA16HMzw0AEAgEXZWTDVmUsnnp/mNUzNsli/N3fP4s6aWzmVlmaHSLGd4I3TrA0AAAAAAAAAYEK7JyQdXX7IxSM2jTxjTzBb+8jdJbIVi2Ypu2/XwbF/2VtEBQAAAJw4Hy0jjJxa2ZeWLKpMvJleOp1hldZYN/fjqyddq7i3AAAAAAAAAICzat6bKxbC0VYn+prERY5GZYjvae4dJFSPWOye2BtS9q9gjLchNY9KIUf9jiQ1DFqHFkpLZyMDVNIYT5gr/4SmHsQgM3aXMzesudjdNZjqEFxO5fY1odiXeAOW4Apc",
+      "compileMarshalSHA256": "df0bbbbeb70f67b14b8e170f62c079d300e6ef2f1d55bae16a7709ebe3c4faab"
+    },
+    "443b92be019d4ced30cc83a638a98f559f66c23d": {
+      "package": "shapely",
+      "entry": "shapely/testing.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a75190000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/testing.py",
+      "localSize": 4408,
+      "deltaBase64": "eNrtVkEOgCAMk5rsuCfwFN+2p3sFZDB1JmrWg2IiG7QdTJaAAfJwfJj/pBexAo8gPN4qzTedw5+aNHyW84t05iIn6oeTW6xmOBvye6omRUNSeG9E4c4Ijgwjii8QCAT+gmQ78i0nPw+/qXOPQc2I9sKaTCrnsnHBsLUj6U1ywSpGwL8WHFHXxvpUCul5nSYeok65XmsUt6V+U+thaUiQkh4+hsz1qpLW4N7qcnfbjQU2",
+      "compileMarshalSHA256": "592ef8ce27c0eb3e0003f7a892a823f0f809921ef10493e93da4307ee976fa26"
+    },
+    "1c9e2ae636a856744c5ecdad9a84682fb70fded6": {
+      "package": "shapely",
+      "entry": "shapely/validation.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad0050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/validation.py",
+      "localSize": 1618,
+      "deltaBase64": "eNprYBgFo4BS0AChmGhpB/NoMI+CUUA0YAcRjHCCCU7wwcWw60HNcWiaESbgAgBZHQFB",
+      "compileMarshalSHA256": "92d68f25c0017fcd14e99ec266a676fe42ee320171c06254298ea2ca63fe3f60"
+    },
+    "217a029a2b5292c71c786e771d8f5cee355482a8": {
+      "package": "shapely",
+      "entry": "shapely/wkb.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ab8070000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/wkb.py",
+      "localSize": 2050,
+      "deltaBase64": "eNprYBgFIwIwDjN76A7YcfiSHc5HEMw4zGAeTYejYMQXOeykZgZ2LOYSmePon/3YsdopD3cp8eUFO0G/IDQzk1oUwQEA1hsBDA==",
+      "compileMarshalSHA256": "35b8ba69f43905e984253bd5aecf973607ba6daa3a6609187cabf1f7c3ff6d00"
+    },
+    "868c5bdf095c67c00377aa7196d5cbb846cfcf5b": {
+      "package": "shapely",
+      "entry": "shapely/wkt.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af2070000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/wkt.py",
+      "localSize": 2340,
+      "deltaBase64": "eNprYBgFQxGw08ke5tGgRgkERnjgs8O5WADjaKCNgoFMpxjptYGohMs0GoijYCAAE1Jy5YclV6SqDk+ilcWR+pnhBCPcBllUA9mJKqsBwnICOA==",
+      "compileMarshalSHA256": "074d8708eb5295f9b6f65c54e1e1778fa0c2e5cd197484b9488286c5412f671b"
+    },
+    "7df244e8d0ee66cb815ff439f510c9d8e291a791": {
+      "package": "shapely",
+      "entry": "shapely/_enum.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae0020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/_enum.py",
+      "localSize": 1127,
+      "deltaBase64": "eNprYBgFo4AGgB1OjAJcIcM/kM5gRnULwkGMWBRDxRqQtDLi0o8NAACgWwF9",
+      "compileMarshalSHA256": "5b03d1e53f77c24a2fb26c41c306fb17a06cece197cabe44b03326cb1a7d2b4b"
+    },
+    "eaf43ac5b4b805a5a67b9954711d7ce9a319ef3c": {
+      "package": "shapely",
+      "entry": "shapely/_geometry.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ab3620000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/_geometry.py",
+      "localSize": 24526,
+      "deltaBase64": "eNrt3FGOwiAQgGEBlRcNN6AnNfboJtVUQKBDY9pa/+/BbbpUI9uZYVrd/gDgl6kFjmjTL/be9fiw2uQqzkDsObWY6eDTuXGG+QO2GdTDg89EsaK84T9iwJZiwCajLRMGigHFALJuwdMeYHYmCvliu0mCgvS06obNvnIidclhHTOHQn46k4iw4dXXmdUXgEWqoR5TTrRaZ7kO5OOGC89YMENzZRdAe/pw8QLPZBKJS45zTB3AmgHAzyaAetUnFQBAKYlKR+nZr/C6hec/fz1x7y/EfUAAwBe4sTpdpyrXSdBW0GJgz4tEPiwPNIXMWp+dUGnfFdS6tujUwhZt2Hfjzw4AAAAAWKH9TrakjHhUn3bKWXdZh598Zzd7s/Qg+6pSfUaATcYrV5gBDEEf1tZn9Qz/6Y5vrIbRvtd16uPzx+X9YmFN15/H29Kzm2pac4VMlzzne19XHefiuTDxls3sU6WZWtMDj9AJvQ==",
+      "compileMarshalSHA256": "93280408137123dbce7b4e93c7802590609a834ffd8dbfc7a6cccc5409337f6e"
+    },
+    "f3aec74dc8af38fb656f35e84fbb6ae43cedc7a2": {
+      "package": "shapely",
+      "entry": "shapely/_ragged_array.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a7f420000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/_ragged_array.py",
+      "localSize": 12955,
+      "deltaBase64": "eNrtmltuwyAQRQ3EIFmtWUDkeB/96coqeemVaDKAGXBCLZtW93wgxy+GyzCYIUsHAAAAgKMQ6xOWzqrKV248N1PRBKYV4bc1FfkWLDntvdqixkp9uCCCqjXkjkWHlHRbbVvH/RsjA3tt3KKwMZaOZH0D5HmDR1P9hd7zvuuKz3yPjkwoUrv68+1Ene5teVEdXfL437rOmb7zonoiMHflZSqno2XFHMvesaO6Z4RRAAAAAAAAAAAAgL+LT+60wxyYxl2az7PZVe1yXVwKixJ/9wOVSm0eRwt/+kGygyILv7pc/o3JzOryiz3rjYEfg22u7eJfjwa1/rEkj4XHX+FVm9xa78Vzu7KxAr0Fl52GF861olHQl6tx91y7lTNenjd22jGOjK30wBRI7Eb4wIg68Nr7TH4i65FqDu359RRYViWt17dn9ZXVTrSnFzffD0/j96uuJHoSgrhOTLuuZ7TY6snNyfeoDm1ya2wKbKscTYVQ5Qt9+kj6wLoCAAAqFhLhfOpXU4YitKIpoqdwb+hDajWBuFD8nv+gza5n6//CuLALaLW5qBHxF0ze3K44M8YpBB0nLG7xLCninMZAhSbtTKzNXnPkN5wZEf4=",
+      "compileMarshalSHA256": "d300e52c1bf0463c4b91eb5c31182d34eb8ea05a345a12d2818c7d33833b7118"
+    },
+    "f3d7d6902b1cb79e3dc0c7457dad420a77098ea1": {
+      "package": "shapely",
+      "entry": "shapely/_version.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a06020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/_version.py",
+      "localSize": 483,
+      "deltaBase64": "eNprYBgFxAFGODEQFjMwMIMIdlSXIAhm3PoB+BYAlQ==",
+      "compileMarshalSHA256": "df6a9da7ec6e7e25c26ce78f7b0c53177a00836b518718627ef6395816e0e970"
+    },
+    "c5a902cfe2dac0e6421548b4f3a4a9db4e1fc6b8": {
+      "package": "shapely",
+      "entry": "shapely/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a5b0a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/__init__.py",
+      "localSize": 2253,
+      "deltaBase64": "eNprYBgFo2D4ggbqGcVGsd1MtPVJA5EqiTapgbLwxHRPA0EnNZDqGTQVWJTzgghmEMEKItiplBz4sNpmMkTyhQk8UEYBO+FI1MFCiMAJdCAyHENJBgshgoWAgxyMDNKAGcpoBGUAADSnDsE=",
+      "compileMarshalSHA256": "ec57abb9cd67702e93e2db34a50da48757fc6894e7038a37daef4388ab842d23"
+    },
+    "de82dbe3260a826fa5b21f11f9d864dbf8ebe984": {
+      "package": "shapely",
+      "entry": "shapely/vectorized/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a14090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/vectorized/__init__.py",
+      "localSize": 2382,
+      "deltaBase64": "eNprYBgFQxcwjrpoFIwCmgFmPDz8WYAfzmIkRqv8aFiPguEJ2OHpnxFL5mLGnYWw5SOiMhO6ggZkU5nxaGGEZ0VmcqxlYAAAAFEBmA==",
+      "compileMarshalSHA256": "c411cf113cbbe613644853126b60d3498e5dafd4a385e0ab28eb1f680817ed2e"
+    },
+    "a6dc84a4396f83566f9aaa33c7e33a36401ae47f": {
+      "package": "shapely",
+      "entry": "shapely/tests/common.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a850e0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/common.py",
+      "localSize": 4051,
+      "deltaBase64": "eNrtVlEOgyAMXVNxPy5eYAknIbsaRzdbGEIpDB1C5uhH1afw2temqC/dup3SwDoX8PHXBZ/uSl+CtwjpPdIN+G3DiMJnaZ2BJL+cohhmCpsAJnKkySYSZNSFfBUhTtKsW5hIIB6332ABJFlA0q0kbRjYWVSDzpHKwgfR5+qS69xX2HiSPP5weo45lVunhTokCLfwZkCL43kxJKySLWV+28SQD+V5RYzrTJYeJUR4R42iQtx5WGSMSLRhtSnNZB1rg3U3v5FWEVNxKzZvdIBx40Gy72P9JUe38r8E9c50FWvd37AFMpgL6w==",
+      "compileMarshalSHA256": "10367eb5e9d6454bf78a13af81af810e1f6ec04fe32a8c464cb2e300be85f7f8"
+    },
+    "c2d069ca1fd1aa225783d05895076f1ad10f4390": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_constructive.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af2840000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_constructive.py",
+      "localSize": 23008,
+      "deltaBase64": "eNrtWmuS4ygMDsJNfkyGXCBDX6TLuVnKJ+/and0uLAnhB4iOO4V+eDKmAT0/SeDp1KlTp06dOnXq1KlTp06dOmmT+XmMWfQHVhw6Bl27d0U7rbjZlLG+pS/uWjyd4yPjXrNzneMvqxkv8HzD3JE8ISv/129P327Xhavi0Yo87bLEo1JNPu4Ipa7wULddkVe6Q0GCXWU14TfIi1RE53eFoaMcQ4aTWnGUTOwRj4GyXxCGWjrOMRRHTDlKgJhvtLlesLepdFgjWgjvgDcCgq+WLzEjvirBgoeWmA0OZJcRzfZUh4CCyvA/+/oNGSsavgDEzZLpvgGgYS2BgqYcZxpEAaGBAyaiBDpUZHhIAVOJu93sfH9FCVJRwvRrVKLr1AaQyquWkBOwtlOAdpYyi7p021mpkfEAfc9P6JctNwnsUGVYqKGZ4wZd6z6x6XBC0gWuCC+owOoIDWk2Z/UW8Fg0XOHJX3yKK4Mo5doQLWyTqgMyQhguY8Ik8OouqUZATOxGlBv4oM8Ur2w9v00V5SGZjxi5cS10qa3MmiPAFJY3xBLAoSHQhJRwcOi2effz/LDNJROxl1W70VYctkeorNZcy1OtBT29rPf9GC8/RQzyecx1dGoyawEzLfWAPExUQxxk0W1X8B63snM0AK3YarF2u9i9nBC+zVswKVTwUKE0brX8BMkBYKmeAHRaslg9aWgGsnmj2NJ+ayhtrplWdLXwInnrKJ7Q4imZYnkxZrggY3xQy4zIiOMKY6NS5k4qel73Fzp5eAoSJZdvnnJvaxOdFhwnkOlrMdKpQl/g1VWlQzzzkszRSLR5cPc0Y0OtTV7hiEYqxgJHbny1IZdPXlgL6zXkD9eMbit4NPfsVOOKyRHGHcW4FQ9ELPUsdrQOHChOvJkRK9K/NLU46ZPo/OqmJcq+81M9DBnMcJYfkigixVVJzMTRynn83UGhPpGBeGRUna/9iRu7vnXMbwSrCTVbEIl3GlNx+fIN+Pcv3bpDd3pRVNL45MHQTvdNiMy3XGmzuYGt53CdL6uqjEcTZSQoadtuMxtg2LZRvUcNqPKEZoLdZ6GGptoT5XJyBmuiyqGxD27eROqG/tC65Z2WLQ/NY5Fiurxkz/NW6WKXxg5WZWdb4JmsyftD/fF3Ay+8tDd6LXg0ySySfqt7lYEjp/kRoWkI97MqzpnOyuR8upg+VOQYkGk/hHDS4Lae01Fk1dRwOZzqtT/UqmlQcIBZH0Vf1G1gYT4rG9OieUR1Eb69nL+jc3xoPna7ZDsapS/rcQVn6N77r6qGp0JNWM+cOjeY+yS/xIej/01uv31l4YqPRgcklakwqXRiNF/PHyAVrRi/ldnj4Rm+ixPD0cv/x0F9S5cC8feNLDHyjgpfCQ5oruMr4oUtWsyhwVtNtXVLN9Cs/iBWEsn5f7GL7yhaL7sR4ZIaepAnXLixv6OFQh3Fvu9O/s6eSBpUruN+PRleMP8z7oVoHyP0/ktIpXZ18XZ6VQJaB+U76HOmPf7/n6sEvqesi79vZW+iTUDGZSqt+2lOKLKkL4xN1ICh767Cuz2HEPOsd2Gl3I7TJrV9+e20ACIr83elI78UklPJicKV5tRHfDgh2bLHKIyyGws2GoR32S9qncDGOdHsNZ753Gg1OsQu6YMmBPa40cdalvwVseo/l7ZaAdKpUydV+geeGTN+",
+      "compileMarshalSHA256": "6fe7a78cb31f79de7794fe8bf92ae1168b51fa7d50b04c52ef0311e38eb2c543"
+    },
+    "0d08037bb5b0abb2b1a5ff3f31c70772f8796d10": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_coordinates.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a76240000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_coordinates.py",
+      "localSize": 8337,
+      "deltaBase64": "eNrtWEsSwyAILcOCpUfwKD1acvSumkYFEUOr6fgWTmaMhs/jodkfCwsLCwsLC/cA2ZfALLZDw3TDYH4Tj4HfJJuvbIjS4LfmvApa9hc4YowXpQslxNyiws6YvlbxqbJgFsoiSxVQKU7ZFigxPRgtUQvmesmMEgY2vsCqHjKGh/bPbWN9fHvzcZiOp8DmrR4pq/tKN9Gow+hYReLQwFF+h0FdSow05bxM4o8O/BzluRYUVFQd+Brl+woaqyYY8/ctPNniBUmbzvP9Jfs7aaYO/uHRwcW2ErpqcHg7Oqe4OAY1m3tJqsMttACUqkjmohAij0oRzKXBMcNuAoJXKKCeS+7WoskB+qn2W1fnvniL0obfUy7LhyGnPCfNVE18uMypsYi5XU4yoih7EZXooP2/0S2YswiKHyWxyw3X9Af2ZgaPG2GibGNesW69n/4/iMj8Ubuk4ntxJBDFLkptRKsarDah2Pieybm9eurZGhsiHEeUj1VB2L019wspXq/JCn0=",
+      "compileMarshalSHA256": "ddb5c8f4e0b3ca65c30babe8d4cd256d98a5367d0e0be016bc11cc5dc9860c59"
+    },
+    "9f49d9d72d516eccfcacf07796e9e4b1d0cc4a42": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_creation.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a1e480000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_creation.py",
+      "localSize": 16156,
+      "deltaBase64": "eNrtWttu4jAQxSKTqJjAOwj4j25gv2tVVfDdPEQrWBiPx05I4nHcdjNS3ZCrz9zOjJPLbJJJJplkkkkmiSCXx99ze6ZwSCLLqHdvxTVvvkT1nFoVUzsGRIZD71lWUfVc4XQCpvjvsh8QX8SRqt4+rjrqielYDQmm0roIyJGm7VSSNfhHFqYAFE3+FbHB7G7DVnL6xJzbsUwiDWBNvG0XRkrQJ5pGTZSdpeB+D93y7yAzjBvhTmKkJUhFbLAk52R++laiTvgZFymQvUsCF/DZAUiKdBZk7vPBsQLBqh09V3IpxEqEo1pScXMqCZs+aemLkHCYQBMMo5aqA9a7Os/e+h1slQ0zcqgT6vhKfDykRNY0OlFCOApfI1LxxOXsWMZ3o4JrwNc1nB03glDFfP8AnMSypUnkhZ2eMrsCdTKTs+OXJyTddAW8OtfyxBeF/ZRVFlec1s3hguS/zL+WMcfzBtKifHvDqF1xttJW9DsFDRB0Gj2HFu3BmMldI6I3vhM6V/F8WdiDs+M+HMQb6iJyBvLzOEjy+OM59wx1vA2/eWvl0PcSa/jvI1WXlEzbaBBNwOVskh4hBR6+VdyCB8x6zIzgXxI5k4gyRLQW5tixq0Ags75tX4gaWQl85HllKOwr8mwRk3nG7zuB87vxsa3tVJr0l2CrAzwuWYp52VUe/9pbkIFdkkmso9XxbDjH6dU4vflgnrzGUm8toNRrghAxRS3t4n30Wdt1cpjP56OvFfDG7IiY5jKYFqORKIWVNwESQvUjca0ShJTtfTU7EpB/86S5wrO0u5Doxjbpqoac28kQpgg0I/ukCV/blly1++nCORaqgnyWVho1YXx64/qknPVT42/SAbi49hHgx6UWeFHIKEkc4/GkhOguiyV1jBY6OvWyZSG22N+C1CjjP3aMprmXqNBVJK+InwqhqbVscJ0wfKc4IBo/iEF5F4Ii5rPvOORfuxfxdyCCc3+Z/sz9yZp2SafH3kwJvqTIeFBoVPeppyNtLG+9n/6BQ0HOKOxDGxFIK5x3b5vtCTkO9p8MH93r+Sk6gZFImKIHu7XPuub+iy9K+kah/u7q3LxQYt7aOMvksDf2W/Kl/GNK65csh2cN4rc0LzjfCCqNO9ry3Z++4M5WrBieyDCvK3wmW0c3NV3XKqn1dgfPvqXNbNmT3S4vY9b9tIbiNMz4iT9LvFbbp5jv5He4jx29b11xqO2fOfLLAunGxN3ejkV23kKy1D15HmDmsLfdzOv7ol8NThJP/gK2q0mS",
+      "compileMarshalSHA256": "ba73877527698e6183663c906b7f28d69f3d816d2a62dd09eef619085d8ddf8f"
+    },
+    "cdd5c8627ee2fb484f37773ceb238ff71b13c4f6": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_creation_indices.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af8350000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_creation_indices.py",
+      "localSize": 10698,
+      "deltaBase64": "eNrtWEGOwyAMjGVFPlU8oS+J+rTm6Sv10IAZA0kIZHfxoU0TQhmPPRiv07Bhw4YNGzZs2H81gTfIu5Yu6/qsgI+/zx4Md0fHM7zR0tlPz0Wbu9z3g3ZGEd/FtaSB8WFgieEbX+5PKgMnsFNIuj+Uwg/ROsLFDLjQy6TfDmY6R/HUK34VPNIazJbz3SG81BCahByl6bNncCAoyiHLTZIJOSMiW7lou3qepL1fEOQlWmBcmNUAaSlBc55wEBcPYm94pHKKT77cjb4CosAR6MiD3pIu4RLpooCM2M063rYihnPPVQTw5dRncwrGB8EA/tx9w+cKsrP8TtMtpcjUlMzuQzCXj8Btr7aJZCFArsCqgrqzyFag4kd4rFQ6A6DSNBIFyiyRs4+aqgTrTHjrPYJLJIF/mSTc5oQ6wSDSKbDm5lrNvFHbNVdzb4U0ErRcvwVi9J7m4CsBek8KENzti2oAnP+5oiFZSrTYAdk6qlsjdlLuOuiZlKjVIxx+XLIezVqEqPvxWe2rTc8jIVDVyzIj+qqeXnr2BnC0ohbADAjnqn2AWFXblx+5dJ1BI7AKdm6DlAsPIc7S44Nl63IttiXpRLZy9TSsFsG62KcJugKOdKPqSmAdmunJDjqdo+kRlNoMjpa0l1xKKkBcRs3psj9Yzar/4hUqKt6GSiilZGtBrV8BkyvqKPedZFvLtncu358SloCVN9BhnewH43AP3w==",
+      "compileMarshalSHA256": "c7472287a193a8f90e02b80ed8b35df596072305e6714393dfe6b604620b318c"
+    },
+    "e984e16a597c9208fae42346bb6441070d6c0d43": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_geometry.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a68620000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_geometry.py",
+      "localSize": 19194,
+      "deltaBase64": "eNrtW1lu4zAMNUMoAlJ4fICi9T0GKHKyIr55BygCWQsla6EUZSJ+JF5km3x8XKQ42zRkyJAhQ4YMGTJkyJCnFyB2wx8BWXwnsBNrZR38IAU6IIEngNyvWxSGGOOGsIuLBP1W7ydW9QExBi8MdmKt0FjTgNwNznbXY6MF/JZbFoEW8RAY14KfGL4TmDQrcA17QCmcf296C2i2FEUIW+aTTaHG5rQHXyjIg4Rf5h9uVoUeASH7y30HD81dTg4GdlrKCrTby6UkHoF+L2UwDmqFzRrc9Ty4tPyvzCyKb1w0NnD1arwZz6HNzq3VhA7ijeZo1yo04uz97GErD1y4YLu0SNE2z40wkf1h1fyDQTommyCrYU0lBozXEXtV7FpPqdZAofYFRJbEJEoBXxrimlG2bMPW+HJJxWBWDWlpH5pkK53VxBiTldKwNTC0spbaMttlWNSxy6bMKLTc6pgj7MUnc25aJmvNYuSlMNheta5P4nMvy+dOhoeAqktmHkNOZYF9eQM6wB4COC3ZpTgXkl7Y6ciPqx8qiKSv+3PBcCCVhWW6k/WyIUn+OVgSQaJhAYJD6F7qTD7gqBRvpUEbJ6f/yoH+7tLKCGQVodZKluCsTR626DBV8eO5d49sR1MWKO/+e6lQwGSPYCiFS7kuslNKnQJ04mTTV5/pDdztePmlxY0vJbXnCP2jjZXgb9p5kW+fmF5OTgfLMZ9q64tA29sKfap7V2hisAEkbC86zGS30Z9c7ToSsX6rvygU36XlAirYmGORler/0vSTL5Uz9ERLL8PM9rDQikR2bInHWK7PAOgKrR+VZk26H5/tYQxwqFzTrXx4pspxuM8mx+hy/xQ9DblsMKtt4aeJKC5LBUHzYzsjF3bkY5MDFBK1KzOkvqN601Vj0UpnSv3Fr5WinPWK6P3RNzuvfNuU35PLHYybGiZNOknyhimYkIqjEUI7zsLu1WVUFFIfxIHXFLCLyOQsOM3xN3K8KHxPK2nexfTiAlpwxnvWeet+mzyt9hyI5W1i8aGRAPoSSXHs46DIUJVVkA1KOWqiS7Dela175C+MVr89oLt6t0vQbOxuVo/ldDCJBv95oCPRPy1x/roTa+Cl3/mDnhgFOemSeWF7rhVkk60g5apzsr5/d+Ju9FoK+iA57gGomcmRU6gnUW87ecctkeOunrNbUDNrGYv6JXYlpgxmNG0UYLN5xdVzrckK6jHUP+8u5rGTSZa9m/8ilhdmc4gwld3HfavdVW29qbx2SU7cZ8VPloWMIUOqyz80ISBk",
+      "compileMarshalSHA256": "3b83de9a38e24c8d6b379a1a24bda7b14c1237407e3dbf4deea08b797026e20d"
+    },
+    "b63ddc270122320cbe07ce02675b78d545e0b1dc": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_io.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aef760000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_io.py",
+      "localSize": 23411,
+      "deltaBase64": "eNrtXNtuozAQBSEc1SXw0ocWIfIfILo/1VWlKKr47jxUq43ascfYYPBwS3we3LQEsM/cB9M28PDw8PDw8PDw8NgBDnNePEK/ta6XC0efkZpPa/GcIooJzo8eCuLVJxe7n93AJzHYqOjxYQ24XVn8Qmy6A+OkqEO5L3HcFJGbjjL0g1D/O+B702M04dzI0kz+o19ea+nRAHJpkvkSdPzHmW6NzxrP1UhRTtyqdlgCX1eQBNw0lmrKgLRJVO2OI4+7QuiQ6Pf7zdig7LnxMo0mBWGkfpTW4mLpRz3E8Z/RC0k3XDdY36GGaDCRBWc2ZKfOJ4Zm/lA+IQObXqK+OTsbcw6DEHI5pJhU7iSo7kPoR5BFrqa5DDtijhM8Kjb3zyMHClOJwhRzNieFv3iff61Mtb8vZyc7cUHxNpWhGj87ZlApuTKrsKnUjjQvXn50ojHX2MjPWrnD4tjjhW0PDw8PDw+PBSGS4GNvklriL5eQouRSxeqS9OiRr07QuJX0NCIHq/paSmpDlwQ537C+xeNoO1ks/IfYA0FNMTnplksDNqmGTLcioU5XncvzE8+XSutKzN0jXDevzZ2eQo71oQRCnboL3w6T5aqOOk3nm7JITRcxUoOpNlhc9jRcV9AzrbWGg0ZIGpS32ZogeRoY9xBcSiyfQXEImU2DjUM2nVSjfaKZKtNE2yHms+iNvRdcb9NDPJzIByr3NH4gD3YFo35S1SekfNxmFrmEYjaPolVqbcJx0TdipnxhI7Fi5KRdn1x7UQZTtrwJWN7yJE2wwnIev9LJT0LdtzrcycNsLMNrnyD7dxCEEI2dH2hum9porE2ccJaYCrtv4XcXI8B4CjycA2ysFtlmBc3gDx3jERYi8oFa202yCWi1udgg2BpxICxrVnNfwtze0MG2I7zKfBEOdPzI0qnL97o2MUd5Gpm0duOGlIObE59/xbc7vKuriEhXsSkZ2uOkScdCVbnL36EN9GbC1baDIT9tifs+2S5dj1W1zzQqRRLv/0p3Ot4Xe0N0vsLf6OhE+NwiCVw1Z44Ne+jctvcb7j20y0I8ZBIPz6AJXNsAaHAW5aYkF0ptHvOV8zRn+zGTAJ5UAVzgbuLTx2S+E4mCN6lRNBt07/vpJdVM1aTEF1ubgMV7G4+xI1bX00kglNBuTb/hZQPVEMeL1r+7kVARsPyKld3iPW9XJJRSXmahZxDjlypBpZhNejoFpEpdrJEGHwzRqtQ5r9AhahVyBAzXqjCKnrzp0Ml2PkAfYzsBhXDC5Ni+VKDv2ftTOOv3zAnKs9laC/cSbmvZle7VHQafCpiy/NZSQqB+ieSPL5Cpp1LtV+JYF2GvorXvaGwNk8FxfPn2zvIrjh3OCNRwUj5Wq47Y1cO/1mhNE2RY+UQyINrh7zAwjYMRKnx7zvENAwo8V/xVrrkQwwcqPDyBFr7iQVhPpna/PkHRRd2ZwPCChwLbnjLMkPF6PCT+AdpNTnE=",
+      "compileMarshalSHA256": "d9c858e828d6640f8fda8713c8dd7884b3175fd7edc8e22b2ae74a648ff7d597"
+    },
+    "1e3b5e7015064df0040af5c7c474798e2e0762dd": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_linear.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae51d0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_linear.py",
+      "localSize": 6887,
+      "deltaBase64": "eNrtWNEOgyAM9NKYPvIJfso+TT99WZZMKAUDFGWbPCxGN2mv1+uxbbrXve717wt938yfK/f6IPklGh0fHqw2SVTJvJoYlK2PODjWaAUFJVu8qI7CrcD6ALgwF/J2IJNcaYwuExW1KSG1lyECvyWy9o4TMClMrQsNPRsatfURYphbix11+urijsiSrK2oMrwWsmwR6p9oGJwI2aBmOCd+bayY5vEthkkHJS9SlvCc4Nog84QUIyVr4UXYwItgYL+mwLOq9zn1YwotGx/4r/Lc3ThAeUhApQuk2awf57govWhe+Y+oU63a9WQ5zfsmDW5x/FfqAKml5RSnkbbQPzUgOYzMaM5RWQ8UbYjrsPTPsKt0+Dq3lOC3pAzkn45GM18e9MapZNN8YStESufUpGyU/L3jNh0ckDhPe5ROJmRfL5xv+HSrpJ52LhTaenRadilbvl/NoaJ1+vfRZj0Bl0sI6g==",
+      "compileMarshalSHA256": "01cf5b4d1787058212dac8b1012d9bd3a68b11b95a202cdb4cdbd7d06d22a474"
+    },
+    "665c9588f475db16e259b30d70fa778fa312e802": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_measurement.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a782b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_measurement.py",
+      "localSize": 9254,
+      "deltaBase64": "eNrtWUuOwyAMjfWisKpyBI6So00OnsVIbYcCMZRgk2Qk3oJGBMrzF7tdh46Ojo6Ojo4OJdDrA/dhZE4Xf3ZPz7MtvxRuoAKFtuT7GcCeCZ77MCxVEr0wt+Bv4leHKJ2hcKmY8JzafKNOzJDZsVRqLOMo7nts+LQzmm8+3qjcBlYw0jRr+pjYKKJQxv4YYidMzppyoUgQOWB5W3W9OzUcoii4Bn7S0VQbLa2SDEpOQY4M52UmtCbE4svzP7FJQcDsjmm/ljcd3kOHijap7c3wf0Gh2OagApTyx6mOS+nsbtTygXbfgC8Fopw0KYUuNdArbswtKjjVr78W0WUlVsd1iSpfA1ByX20rYC9JWWCDHIzvSlscamunKL58louSQ9/DObP1xLs4BKuMtN7s3/q10FjQUunU0hOMWs6dct3ltVhDb0RRhWv0jIh29mtSJz0UrqVStcBr1ygnulHqEKEfTo+9YVbNjuaJUZmvotOM1f7iL9ximls8v3mzfmuU+slOPQ2hRDxeiRrX7BZkM5PyZqTyxOfFXNGCIrwLmXVrqhuP/rhAcKF6c9xijgCcMmkneERucgOc68M57ejUqnZddxTiF5UiEmY=",
+      "compileMarshalSHA256": "81b8a22a8495c921af21e7b99ea99f422c1c8615ace61d579de28226eac43737"
+    },
+    "dc47dff5c7a1f295eab889e730d03f8183b6fdab": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_misc.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aa5160000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_misc.py",
+      "localSize": 5919,
+      "deltaBase64": "eNrtl+2ugyAMhiHKcYQt/W3MvA+zJee++HHCpe98dgXL5gCnZ7HJMNEh7dO3BZ3YbLPN/qz6/LnIM0f+8zMsbM3TkJBBTZoEhRbv+Xw85FP9T7V4uJ8RVXTBL9hCPjxNclp02c6qMGL+rhSb5QjsuzrOTKbq1PqpyaXPStHeH6jQ9jmNLLdsjsttTtNaX/cSG3Esc4Wi62I41Y1O9PLWMfzjPaAatfzUKrMTdJC7lQIJ0I53rQTX7bqTaf3jE0Srp097t/jIbKxmbSzfcPB4aeLgVTlQAEGzVu14EBRDQmcE3j4jAuld5j0p6FXkrIlCCGvdsE7rWY5Lw2I8rlECwaPxUYBC38hkU5bJ+8JKIfkHlsoJM8fxKUyDV4nxu8zvsm4mIkCqRZOzUFvqG2JHXmFG/cYFNes84UkRnRDkLdoIYSxnwKOdmgpW4vdPhxQsfzYwuE6Lfg6o/SHE0COjqry4Eu0CcNYVFg==",
+      "compileMarshalSHA256": "69025933b37d0aa3a9b37a34a924b3e51360aecd9a017320495cd94704ee44e1"
+    },
+    "6d7e3a1d4b9362e0e7c2f1d9cefdcdf6840b7ec5": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_plotting.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a860e0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_plotting.py",
+      "localSize": 3694,
+      "deltaBase64": "eNrtllEOwyAIhkdJxksTb7AdpVfj6EuWzNVftJnDtTXjobGpWPiQX/Xyt2GNHNzDwYI6Hib/WKTyjePoXog+pNPEcH2/DkkNcjRA9WXEZ9IHAWSNxa4vwPFPFvSa1HxRC9kFZZYWbKmQ8iCXpqRdUl0wVeqXKp+jm2i19dZjMSBp7mlhswAWdKwV7vTrs3aJjzQr3sZxc2iY62iXPLw2UK6EuuENWgXUU9PPQgxOQjd36dUm05wEv0JU8+TiFlHjgvJCsWrIS7MgPFh2im0y+0jM0x4TbwcA",
+      "compileMarshalSHA256": "cc6a14c2f011a05618bad111cb89dc8a970137d04a8c55aea4b814b4572e4685"
+    },
+    "3565e1d8c6e17144fe24ae8b2dc3fd65187029b2": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_predicates.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a302c0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_predicates.py",
+      "localSize": 10049,
+      "deltaBase64": "eNrtWMluwyAQLYwFsRKFcxOp/pGq+bT6s91b1SgdAx4wm13ieg4o3sKbNzv9yy677LLLLqHC0j+FEn+ysEgCHtsA93E7sKndmIMkhos0L6Ey1eY2j0cO9bmvFWJg6+d1e2V+V8zA3dJa3xBOlg8u5YQwdRdp75oGnNWTltg0V4Dtgi6tlEaJJAKSpJNNdo+NR/n0xViaugPJyHhJB3iYYR2kJbAPz0PthDeaQ+VOuOC6hIzCkxv9ll37CFvyNXOKnGEYyLsymVmxhlIQ8tyj3meejokGpNx13JWv7B43EpQsUlN/5G0LJIUCHhsnbhLACrRV9ej6jwZxZ5XRbdL/Zv68npmS9w3TLnDhuJyRvLP5QGimEv6Zmq7B93/5yDNQs8Qwwzy9aDjUZs1YUfRtf9FP4f5UnumTGbIxgESFQQR2L/34rcJOK3xZsJ8xQV7Lff2bOeRCg+/wF89V7bUAVANlh7CaVFhPPJ/3WWW8c+XT7AJ9qHIybzVwB4ofi5DHWzmUHCpxlBZ1uHhIIFnIdothvu4oRKYfYl7wa/ru48agJ4WyzUak+kNVhY9pbbhXgajhibkzENXhi2pbBUl2wuNEL+zn0tNAx2Wggh56R/mVhKjNBXJM35vokhccWpnPy5PzWzsJANCugagfMnigVi6v9GNs5oq++rVbr6WsPnjijy45x/kmpdFfWfMcx7J5R9gKzPGN45kVx/OHBpcTvnfFVleatXbARSBFLdqlLdyFbUa+AWw+Gv0=",
+      "compileMarshalSHA256": "d5b6b88225c66f41f2e7d0cf4fc757192f5d0f2b62fa00c6b99c5fbd5e1abae7"
+    },
+    "18e3b75bf96bf7e5b3c93604960509a43c677a80": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_ragged_array.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a40300000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_ragged_array.py",
+      "localSize": 8132,
+      "deltaBase64": "eNrtV22uwiAQlELtHxougPEipCfjB0d/76lZWFx4/aJUwySuuMGKs7PTrbs0NDSUBn++sd+X89nrOQ7X1fhRBgFzEqYRT9d5Rx1LHHaKVyw+5rD0nEgXHwxFkJQtN4fVCCsVb+9h53JOiStVljdVdB5LPSOFDRz0R1V/FhNs/b/5/E4pgjGRitpqjAsywCpfBEcL91WNG4RH4r63einYVvQysPsXgGELEhAekBAUbLaBWimhcsi9CVPMUafNuMvOQkWQTV/fCeGrK0BgglB7tkdojXgT73FQOEx4s1jeQ5sbqEpTpcrRUNqmJBa4Daj3OtQ4JD1f7ub5sqTimoV/kWPvfDnK9d9uAtE05PWk53h+dLntnp9rJFHBuv9gmjwbqsGs/lK+9W129tM4p8lNE/iAhstqyDE8CpqVZrBwCswOuLySg5zp1q2CEkRhgGNxoiwh8550Dsxv5vUshHBMiCEIYcWmu5OqQhxEwrNz3etTlxoQOHFElm75jNGpVNmj3P3/fYvhiFwHNsnxqOUbTeJHfIMfYSQxKh3vdj/YnhU7",
+      "compileMarshalSHA256": "21a7c39bd213cf0be4fd544b7f752978b5d6a4fde6a9b903c6a2d212c33d4da6"
+    },
+    "4e0ae6481fb556660acb5aa04b153fee49355d0d": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_set_operations.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae0430000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_set_operations.py",
+      "localSize": 12115,
+      "deltaBase64": "eNrtWVGOhCAM3bZJ+Rtv4FFmbzbx6JvsbBQKRQNFZZZ+zBhFaMvra4vL15AhQ4YMGTKke4GbKQBtl6HwrvPugRgM6zPof4d9u6cim0j3ojECKd4iiF4AKz18k6aed3tJexS8O5D4qfPh3IFjEkH++4cKFMAcZCwjkbpAFOr4cYWmuKO+NfE/3pSBVX5FDy+QH2PgoRbuoZjD0dP3lcisH7LLe06hLLxJPnQy6W7+kwnZhKbu60VQwwnWYJEenjJTvZqwDerBcAa6fOUxocNm+aySig2YTgbSvK7JlgFRa8WUJL1KxSqVesSVPFsqyTcgWD914roRfJMdOEx3qMPHrPPBswP0YW/DW56WBa+fVqK08SFJF0MLWCeDLTu8DE2/jinKmYUkOCCM1g3iLXDOF1mNoZFsbBpeiP8mBq1Z1mIH7NV8yMK077PNe/csFHcmeKQxwExjzWHLY87MfTTUt8wSYTIVrWbia4IzXBllHztbrkcaBaG3NoYjo/MLbFA/dQpVkpiJzlcjJ8cVAOXm4jTPV7nLeX8ktVNOJDA3k1KSGjcHZiCBQHnYO0Syi3MofLaj15CP4BgKewQoBgpkY7qNykcIp5BYAwqCsEMr7ZbRmpqMGjxI1gB+J/p3jcp4lH1R1NQmOl7t46B/zXLGIwPtjoQoc8IDlVUJXsdGkMB0FL6UhhXLmqL6A8B7siViIQp9647TEu1AfUqkNIUtvk/cG655b+3zlz030VrgcxioB37EG8/wAScOsvITNDiX/mfyAzoqDuo=",
+      "compileMarshalSHA256": "ea74056edec7b48097b226f4d8fa4118c98e091dce799246166ce6d1fec408f4"
+    },
+    "af1343d84b9ce4f85e718cdaa37c4e38f28ed6fc": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_strtree.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a622a0100",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_strtree.py",
+      "localSize": 39008,
+      "deltaBase64": "eNrtnMmOozAQhkGJxcWI0cinkaV+iCbqS0b9UtwmUvPQOfZhpF6MXRRLqCKQ1v8dmHQWXItrsYFpMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALA+LfvyXuTk78NGVijuPqKhWpdTcuTcm2X4/YGedQNVzaxBTarzsLLVjcqVCyRbYSLnN5m8jb4zW1e/nwSSp4IfFlr7uBdVvmSv+JArZoRQF8lHoVnsFkkpjzQloZoHpWz4yhO1jlTp4339/SXm36BLPhzDVeSWQjrlj9uU3Ien6jcKoswDNsy2A23N7J516MN24i1JR9RGZ1OceW7LBvgO+JDcjwMeKOSthH0wK8RlRVhR6htqvFGYqnGl5EPowHhZEjDnmzQ/T6Qe7nCY86WcZi8ThqvTg+33ldyp60jg+gZXjrmlF1Lnm63vopDqycabY5HEViyqG2zk8zFpydcMbYJNqr5MvVLgiV0t+CbTr0lE9syaIU54XpYV3M/og/LIYswasxfSnszK5Qa87mLB3aVQF1miW5kV6eFKF6rXpYE1xjvdO8onC2stSIb7xqRm8XRi9kqnH1rMF9R5nkmxYjdeo2JlmDp2S23nfy9pnnw4o5Noayc06SmRCwPjqiK31RBAWDjsLpyoUb6sWIx1iqjVcJXbj69EXZhTGF9leFHYePmEUHGEYMJqjO/oSkGySEiFErnH7cM9lponrjv1pjFktw4hG631z2o7Mu9arpO1Nlr1SCKGStUR2kErkgQZpRaPrjK4wAfnfSQzpaA4q4hSawggbJxl1rgq+kWe02tVQbRk8TqykEpsdrc1YbkNBs/2Rt1NBUX4pchCj79veH9X2chw3LZuvBPkwpQWT+RFrsrpbkc+HQNkr8SMf2w1TMpfAHEhYS82nmil5teS6lssbkONv2w2tUknV7BUVTBTuFYTX8cLPMkCasV818sIx3RmLzTmPSW2IontypIuN6WVyhhPRbe0T7IKvnI0GyXLA1G8NhvsRjS0pEh3kL6kaFgzNVIbXbbZMrmw1ULDQKWygZbbaH78cRVPWBWEIbC8Olx0uvgV5dYk7kMvkSu7MG3o7JauRxXy/UUuh5XmDfEePdfTG3aJECcY8bVSBQ0cK6VhlzSKdypJNh9mtWz/1thD6CLJ6zTxj3DL1ch6/MKaRWVPye/VEnVQbMQmld6+xGYbSU008btykt5tO9AoL0PDVHPsxOW6oXdXSR5WnDx014Imo/shlWZ5niN4e/fpHd8BSFwj1/S0j4TVU++k5cjnzXT6vDD00mudyJTlHnHpPUkot8VrBnYE2Xm3qsmC3C79ljFvjta2lR4bLPpDtWyGD6/K3kJ/+ImwlklrvCJvRKSXLH2A7bSiDbLs1+c/v7tBqyDJn6EKE9vqMNR2dncfF2kbREol63P+bCOOJKd/6iQsw3DpL4rvD9uhEtB1p/yTcfyEb4f73655cWkt/Xj1cfX9vX+G7q5acqGPnMSnp+N2p20qT51K1h24az7c4NfRwcnPmnC4pIcm7ZvHFeROfwq19TXMafn/egAAAAAA8JP5D5NrXC4=",
+      "compileMarshalSHA256": "5965982ca9aff5c13cbfb2af658727cec8baf49133378a1217e59d0d485a68d0"
+    },
+    "6e5c6af7f910adc45fd9b1cb2fd4aeb3fe0a565f": {
+      "package": "shapely",
+      "entry": "shapely/tests/test_testing.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a670c0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/test_testing.py",
+      "localSize": 3081,
+      "deltaBase64": "eNrtVlEKwzAINTVZvtJeILCTlF0tRx9bwcZNVhdbskHfhxQh8fnUmgInTnSGI1M7AJCMfOTvcZXdkb7KtlYLhh/I5vIwY817JRvNtyOFAAgUaeBGjVsfifD7XDlMSVfiNVKfTSxSH9Fnot8q3GSq9lpN186kk3YL20AjvEsuTTMhoGjvkWiquPrDfwWSvt7E+Yl8fGcEitPIMrMioqIXcOMNEXljOprdF19UPCG8uH4/L7+3FVNqrRLRSbzU2arkDrgDmDMG3Q==",
+      "compileMarshalSHA256": "1bc85ea7f6073722a75739ce813c7fdad75671c71810122f3a88145012258b1e"
+    },
+    "55022526d4e0defc42fca2baf29584be88915e79": {
+      "package": "shapely",
+      "entry": "shapely/tests/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a00000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/__init__.py",
+      "localSize": 165,
+      "deltaBase64": "eNprYCAOMKIS9AUAVI0AhA==",
+      "compileMarshalSHA256": "b1c830d1945213888b03ff2bfd1bc3f841b41bab8cebab0e7e80b44642fceb19"
+    },
+    "4a8aa77a76ae521eaaafe726d1ab61665bb4d1ac": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/conftest.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a61020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/conftest.py",
+      "localSize": 804,
+      "deltaBase64": "eNprYBhygJFmihkGh8nEgAacXNbBEk+sBMOJGdMjtHADGsFOqiEAZVMCLQ==",
+      "compileMarshalSHA256": "0965640d07e2a35a7410c38c430b100ecddf5440d1f912cd31f8302063968499"
+    },
+    "bbebbddbdc0d5bd8944b835e25c9752aa3fd6efd": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_affinity.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a2a320000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_affinity.py",
+      "localSize": 9384,
+      "deltaBase64": "eNrtWduSgyAMNWDlYR38gk4/pLvjnzl8esd2l2tYudiOODkPqFRpAjknQVVHIJRjWhtYG67PhD5LBFQaAbQOTYQIIJdBB+T0tQHDiqInOcUQgZDFGZxyUJY2DAuJintn4mxBh8Smc4uS7eDQXSbbBP87u/UNkEafJhCtYiQzyNxA4wcrTgQa+CKXcXyTPS/ckoZUrbDH813GqI97QKpA+MTGlZXq3HusDPURe0OADnyWjMosd5g/J0ZKGFURK4YwiCGYRv9Hhm+T3clVv3dImmhCXQFQisU5xLRiKNPxIkHne80LRCVeRWtQ6fotfJtaJulguSBQ1e9J9ZvAwdZEYHlxsQRGhWJSqyhvwLTraMf7AuCLImzUvvJUkjBans2uPz0p3u7q1G/xYjJXk468b7y4Zm4Qzv9X1X+gZa1fxtpJW9J34R3yijJak436zrHpVR6xmkwhfHkeLh8VY+lSz+Tuq7b8SbGftblr+76QHa2xdEgtUzWUCUdlxwFPSbciKfCMZWUfTh5sXgvq",
+      "compileMarshalSHA256": "2022096f868808c0d6fd13b1f52cf7176dc54c86fe3f7041ab66422e07a4154c"
+    },
+    "7016042907be225c23ce5c786e54fbd5367f54aa": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_box.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a6b020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_box.py",
+      "localSize": 1105,
+      "deltaBase64": "eNprYBgFSICRFHVQxcxA3ECMJqaRGqDssGCCcMEsNniIgAm5oeUZWNzzwwkoRX8PyqHaw4TFWkaSUjozFoVMRHsGALmIAhI=",
+      "compileMarshalSHA256": "e986c9d4c4cd2a23e97ed4c15a88537a879b18d591f576f1dd34b68405345b27"
+    },
+    "04be7f7f27d1b49ccbe958e7525aabb4085612ec": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_buffer.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a251a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_buffer.py",
+      "localSize": 5816,
+      "deltaBase64": "eNrtmFEOgyAMhgUSeOMEs0fhaAtHX7IHhFpKnY6Y2D6QooLy/aUl5kVtphn+di6eOzE13HDhVrWXKugKL8uzhLZ57K4Rj0vVRVNIeiF22jzRlc7yGAGRJLGfFGwLMT4U0zGUsYGZqp6h8G6MEx7hO9UHjfMqFRfZ7f6ve5sPLUxQhD8mEUSYik8l/K9sA1XSoON84CfsA1mNNfVclpKiYrvcInfyJE6v3+gO3eOkajKhaNS1412aXeYxrbc9qUpNUgiXgZ1EoXiOKBj3ksgS5QulZU/UOiAaK3/hjeWNWFIvXUteet0zkr/mUcgsB+r4enxNK/+/wg0+NIxW4vZCMNFnC+G1F9Uy+wBKMg/1",
+      "compileMarshalSHA256": "0fe8b0075e55838dfc4a57efd30e08c397145627817f76ff877f3defe860c67e"
+    },
+    "fbbe378f4cae17df0c367cf10b13768281fa9a7d": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_cga.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a18060000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_cga.py",
+      "localSize": 2304,
+      "deltaBase64": "eNrtVEEOgDAIk/TAcU/wKX7NpxuNWXACQbNFl6wHDhsJtEDXaaAmKAfrUwBe8i1x4N00QhLj0TzqYc4lobSBfjYBpd7yAeYdfKW7cbRHJ2yNo4Y6aQ+LUgGOfVC3xwfBn22rVHj/YjOa2JGOJDLS9eEUkXMgx+eouXjFMsO1sMAyc7Scxh0W8Rj7DeP5Afk=",
+      "compileMarshalSHA256": "39b4fe566fdeeb2c493018bcd702f75c7e28394852ddfd1bf5aad6a5b429e0db"
+    },
+    "1646c8a64777254501d718bf06ef55eb22efba90": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_clip_by_rect.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a54100000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_clip_by_rect.py",
+      "localSize": 4177,
+      "deltaBase64": "eNrtlUEOgCAMBGl66NEn8BS/xtP1pEEIJLSFgvRkGizsOovB7dp1F7AnoP4WFmU37YjPE7xNipteyPZ+Mg6ultGYqIii4XzL0QamcquBH1pWWF3PiJ3hS9rWhTsbSOLmdXJwPRIVf5p/D7Syi7iQc+6T4YKrfiriKHMMYNt1iuFEbaRBTDZmPhalvZBOheKbQom5AMQMBC0=",
+      "compileMarshalSHA256": "11369fc29c2c6899ec1996aa8191ea8c3bd3d8142e2c4620b910e2ba64e7a8fc"
+    },
+    "a94f684800a2d2184e4e541be300c3d82ff2940d": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_create_inconsistent_dimensionality.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a6a2a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_create_inconsistent_dimensionality.py",
+      "localSize": 5127,
+      "deltaBase64": "eNrtlUEKwCAMBBtz8OgT+tU8vZdi1RpRoWjoziEIKxK3myoHAACAz/HJOsSiQ3u0TRAg/EbonmD4tbHgVwrT96C8hPKpSLeFjV4IAOzDsVQH1uKs0XpD7ybOuOKnMdH+qpTv7saZ+BykufJGqkdMOMPNZPBAeHyrg5HAiZqB4jyXx2bWAqByAS7HA84=",
+      "compileMarshalSHA256": "ac2ee5114463d40d7de61579c7a022c8da8d2e9f4da2b18b5bec253cc33b401d"
+    },
+    "403d8e32182e49f4903cd71822c987c266f31081": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_delaunay.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a66030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_delaunay.py",
+      "localSize": 1536,
+      "deltaBase64": "eNprYBgFQxYwwglkAVRxZDY7hgnMIzvs+LFKsaMEJgNcITOcYBzsvmvA5VmE88Es+UHrL+xpmBndP4wD7QF2uN1sIIIJ1T3M6C4nJwciDGHHHkxoSplJCBMApjsB1w==",
+      "compileMarshalSHA256": "85030c92b86fb3ab12e214d0eb210da65e842de2047dad5a3402bb3395729e80"
+    },
+    "c16842319612e4bf466aaf0d41ef0c26a394d227": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_empty_polygons.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ac1020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_empty_polygons.py",
+      "localSize": 1174,
+      "deltaBase64": "eNprYBgJgB1dgBlODCrAT3cbwWHAiBokCDFiAOPgi25meJxT5DMU4wYBYCQmGrEleUoDgFAwIExlh6dibCFPtBMAFhwBCA==",
+      "compileMarshalSHA256": "18ded644f06059f994a22d1256385325840f638ddff36d27ed84b0d8bea422b6"
+    },
+    "62312e72c9b5f03dbe87099b903de2c66614cdc9": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_equality.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ac3030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_equality.py",
+      "localSize": 1216,
+      "deltaBase64": "eNprYBgFmICZOGWMg8/ljEM0xNlJiQpG3F7nR+ExkhCZwyYosQcpI3qYMsLVoAUVM2XBx4jNdmacKvETBC0HANamANw=",
+      "compileMarshalSHA256": "5b891a8ea4399dd5bda0b67c50d09d52cda6e5b45e8598246e9303834e89c806"
+    },
+    "073216462317e3b4e9d4aef8eb299f729bf3d6f9": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_geointerface.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ab60e0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_geointerface.py",
+      "localSize": 2620,
+      "deltaBase64": "eNrtVdEKgCAMbA7ao39gn9Kv+elBD4puc5lBBe5BcOJxu50zLjP+Evhz/lsqIi8gFYaz1zOGn8RpLZLT9d4XZ7ozoVwa+CAxxRp/55WA/QKAlwicIdZ40KBn6UpJpY6bTKh8NzJZ4PNmq5R02jgjSbv3mWejo9argZa451m7BvWcXu9xDr0zxQamjmYMf/QGitdGCSVlg+bfq3EAQu4Czg==",
+      "compileMarshalSHA256": "f6ae2d2c39c54e0d1344a9ac8a1f25b3678e85c46ea3856cf055784b56ec17a2"
+    },
+    "52a6dc651e5287cb8875fa6cae6c33e2e123a6b9": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_invalid_geometries.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aa7030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_invalid_geometries.py",
+      "localSize": 1177,
+      "deltaBase64": "eNprYBgFIwQwwgkoYEahEGqY0RVCAD8KhdVYRnRx4gAzDTw6ClAjB0HIgwh2NIXs+I1gJyHaGLGYjM0J+AEA9ugBGg==",
+      "compileMarshalSHA256": "9af7131412b9f8f53a007302fa7a8778848ba0069c604a7d66441e828f674168"
+    },
+    "b2f1b4e88943a81e0918b30c950c3ca0cd72f119": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_linear_referencing.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aaa0b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_linear_referencing.py",
+      "localSize": 3871,
+      "deltaBase64": "eNrtVkEOgCAMcy7ISXiBb/FrPt2EEN2UzcWTID2QCUFsV9y2oaMGwDHQCR5HMuVJjMLrrMd2MGwmrZBnDYREfBBeT329xG65QpF+EJdrZl5mjZxw7al9eZuz3SfLHqZJaEM0OLj4H7pAQdLEaU5A4h/Qf6td1gxn6C9i87KFgpsiscvcrgzhUpBc6WbNP7CB49HHa3D6nrEwIDft+ZiiRWIF9lMpUplenxpUr7ZuFml3SzIDzg==",
+      "compileMarshalSHA256": "84d0127c8777652ba8cadca9bca1234bfab3bace2984cb074e81d28ee262b986"
+    },
+    "908aef9327a2bad981c5482a54fedd10f01860e2": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_linemerge.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a5e050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_linemerge.py",
+      "localSize": 1331,
+      "deltaBase64": "eNprYBgFo4AMwAgnoIAfU5qBgRkuw4guhZOPoR+DjWE3I5IDUI1jxuZahIPkkcTBFDu6Q5hxhkADNYOTbzRFgQETPDDQCKJSDZaow1THjsUgbDbiAgAiLQIS",
+      "compileMarshalSHA256": "50a1923b7add9c271a60a74bd959da27016fbb40ed1f742fc8130874610f9fa4"
+    },
+    "9b9283c523b25fc367071793a789ae57403431ce": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_locale.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad4050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_locale.py",
+      "localSize": 1519,
+      "deltaBase64": "eNprYBiGoIFhFFAZMA1GR8nR1HR2EMFIQXDxwYgGTDk0ggDgH7a5Eyl8mYkKVKaBSY02uGKOF00hLzZHs8EJFMAMDwE0Q+WwRDovmWkHBQAAAWUDIA==",
+      "compileMarshalSHA256": "8724fa6f11f162300d112e0f25c1a08f31d05d2212c1474505db4d67c0f6aa91"
+    },
+    "8c83415b5c8311f9cb14c1b7dac34cb375ca10a3": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_make_valid.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a50020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_make_valid.py",
+      "localSize": 1048,
+      "deltaBase64": "eNprYBipgBFOwCkE4IdQzHACSjGiEsyUOICZKBcOPQD2FzsRnkaEIztNwo/cRAGNfowEwo8kgOpJRrK9w06R9xjxGotwI+nuAwDjFgEc",
+      "compileMarshalSHA256": "7f211631ad7ae9ac37be07c848208e6694496980db93200b8b3b4c26c764d450"
+    },
+    "04bf11727c340fb69298ed3615e8e82ab686b6bc": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_mapping.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a99010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_mapping.py",
+      "localSize": 905,
+      "deltaBase64": "eNprYBgF6IARKxOnOmbsCplHAxI5JNghbH64ADPB8KU+YIfbyYzFHYz4UgJezzEi+RBFLzPR3gUAEbkA1Q==",
+      "compileMarshalSHA256": "a838721acbbd497704136f5d6eab1cf3131cecf467529bf05ca1e107fe1ad9fb"
+    },
+    "6a924ce3d839df6ab9edbf0ca8407845422df604": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_minimum_clearance.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66abc030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_minimum_clearance.py",
+      "localSize": 1343,
+      "deltaBase64": "eNprYBhBgHGQu68BzmIbXA5jonvUIPP5kSXYUImBdjcWV5Pv3EEY8zgiiAlOkOxB/N7Fk0WZsbuJESXj4EsI2NxLofMBrSACIg==",
+      "compileMarshalSHA256": "6986d1c652186f66c9b5cf01495dbe4655cd13fe984fc7a601cfd8becc6ef431"
+    },
+    "36afb879853f4a28daf5183327270829fce36af7": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_ndarrays.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a06050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_ndarrays.py",
+      "localSize": 1729,
+      "deltaBase64": "eNprYBgF1AXMKDxGTCF0tYxwggxAkeYhBxiJDAusAS5PjYhlRGIzY0YxI/44YcSfWIhMJsxDLsr4kZzNj+oPRqwamLGF11AMAWI8zYg3tuntYYSl7Lgcwo5FG7pYA5qPYHx+fF5nJ93rALSbAmA=",
+      "compileMarshalSHA256": "8b95c16d3fd42277917871a047873f76f7bf51b149567399bbd1426841a27ac0"
+    },
+    "3d6938a4bac5bc92815b17c7820e90a0e2f80ce7": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_nearest.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aee010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_nearest.py",
+      "localSize": 821,
+      "deltaBase64": "eNprYBgFtACMJChjJtrUBhQKBNiHWbgxwz2FIFixeRTD4/x4DMQXNey4bMQNAFnOAew=",
+      "compileMarshalSHA256": "f2c9db7ed9fee4e631a0ef372a39da1a82e0413eb53b47ef7e50effae5e2b87b"
+    },
+    "c07e74754ac05544712b0091ae7d3a1a2b80243a": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_operations.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a25110000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_operations.py",
+      "localSize": 3686,
+      "deltaBase64": "eNprYBgFo2AUjIJBBxiBuAHMaiBJHwmq+VHtoRwwo5rFTtsQshpNJIM47UKIAbAXtwgjZmplkMevHwVw4U6GYMJuaEUQOo8L3VN8qCxC8SqLZAwXmvBQDKSBzzuM8KBkpEJxT2S1wYgnJ7HAswwb1txBuWuGU0JhpK3RDTiyMEoxxQePrIEOWTtUB0qCCDlUhyFcx4ynhYECEImRmYQoYIfLMcNZ/IQ0M+NyLCEAAFOuDFo=",
+      "compileMarshalSHA256": "887679f553bbce86627c1390e906f4ee7ea4b2e51ead2aabe1a45c85001dd916"
+    },
+    "8dca44fe8d7d72e2bdb751e253c4aa1235a64a06": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_operators.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad8070000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_operators.py",
+      "localSize": 2043,
+      "deltaBase64": "eNrtU0kKwCAM1BHisT/wI/2cTy8USZNUtMvB0nYOQRJQM0t2Px4Fbxvx+l25OcVP9ghti8ATF+eSlYP2fbIO8cIc8YwhoMsXkUQCvDhDUAuVEmK5SOhH9eupkTQoEeOW0nxjn1dJClao8Bi49AgbzENiY6yBnCtfgtjFIPQfCDr4vjLFYR4WK/QFTA==",
+      "compileMarshalSHA256": "75d03de3789e8ed985d3835e0697867dcee8ee52d9ad9c4f4eb1b7dc04fbadc4"
+    },
+    "09ac95d686ded9e0aef50edea3422f4e453a6f73": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_orient.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aa0090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_orient.py",
+      "localSize": 2834,
+      "deltaBase64": "eNrtVVsKwCAMUwvuT2/gUXY2jz4GUlstbn4M7LZ8BCn4SFI1mx9KYdtCPAlIIeMofdmjYtTGqVSBmAbt9MRpPTgiTa0IAo/EU7JidnYkW512lB6QbovVprPp4Bqv8KwxyXCxnF4jHnscQv9nON5c1HnHQ5m0fwqvzsqLnna/zY60pjNOIM9HXjhxGtxkM7znXdNZ3qu1FuVVQNgmTZh6ABmjBjU=",
+      "compileMarshalSHA256": "c68d7494bb83e11fd6b20c4334fee53caf37121b058fa41a244187c2793f4298"
+    },
+    "d449f42ed253bf29559eca740237bb918dc02e2d": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_parallel_offset.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a58090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_parallel_offset.py",
+      "localSize": 2152,
+      "deltaBase64": "eNrtVVEOgzAI1aI0Mdm8QW9ivFqPbtJu7LVS3bLE1KR8ID4QIjxa3zX5Q3pRCJTFfxtYrhbE1dwU03hRscw6+wLC0SawO4Aw9JkTWqA5PhjqMLhP6E3wBe25P0ImCxClqrR1ek0D2Q6Wlt+xHrfQVb+P19PrAQ2TrkVXxq01IRjlE33ZI8R8GLAAaqVKmOgQXUN6YN5gVJP8nVOUOT9rWc9L5TvHHm+IUV7dzy3dALqGBy4=",
+      "compileMarshalSHA256": "c5277e66afb14b8ec499ad8bfef7afc37751655a9ff69c67dc6e17f02470cbc5"
+    },
+    "c2c474d644aca9f53ed144b7f4d64d905f84418f": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_persist.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ae4060000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_persist.py",
+      "localSize": 1781,
+      "deltaBase64": "eNprYBgFNADs5GpkHA07HIAZT0iD5fjhLEaksGQnJeDBhPxoWBOIBEbCaR8RI1DQgIWFFks44muYxQwzShAgPM6P1d/MWJNyA93DBWEZK4iwRRVDuIKRqFKNEV8qYsYjyY7LHJICAwAp7gP/",
+      "compileMarshalSHA256": "ed2ca38623d25e6f328b6a3c978f6182838dc1e3826717489dc8902be3798c08"
+    },
+    "9dbca1234f459b95d9ed52aa87c926950787c85a": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_pickle.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a050a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_pickle.py",
+      "localSize": 2611,
+      "deltaBase64": "eNrtVMEKgCAMbWh6EbrXoR/x4/z0MEyn2RZSUNQ7qEyd871trvvx40uY/QDH+xpNM7oS1oBMOhog2xRsEFCeFg2RPhnuxRki9rw7+nua1bqusH0wC/LCOGV0YkvXGOaV6QLNxWAoMtpINhvJ9Td5DY6hiG8FDobcYNg+rPJ6W+toOsNuujPEVeEHzrViungZFWWyq5v6IRKq98NYU9Nemkk0Fv5NCU8=",
+      "compileMarshalSHA256": "d33d72cb0b5e7c510b16305c9a5883ca7190678b1424f6fb1e1936b54e2058f8"
+    },
+    "f8d6536d811b867bb1bb12ad60dc8b972e7c6470": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_polygonize.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a99050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_polygonize.py",
+      "localSize": 1972,
+      "deltaBase64": "eNprYBgFgxswwglkAVRxXGqwS1IK2NH4/EM4dJnRAoeZkAZ+OME4mjYpS9TM8MSE4MozkBAXRMctI5aYY8aWV+id8qD+ZybZkezYAhRP2DHi8CsjahzgCPSGIZwdwO5iQnUrP2p4k1qaMaOGHD6L8RY2WBxFTFACAB+xAqU=",
+      "compileMarshalSHA256": "b51c369d3c775d28d39e3f321c47029507936d4ccda8f7f0ce0f803be0e33fe7"
+    },
+    "fba453a7d89053875e79613d5cad722a852a1c4f": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_polylabel.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66afa0c0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_polylabel.py",
+      "localSize": 3601,
+      "deltaBase64": "eNrtVkkOwjAMxLHaXFD7hLwE8bU8HYlWxVPGKYuQCngOTuNsVj1e6iHwD5BFEGTzra1b8stPw0QfPlvtpA837pVZSDA1Tha6J1liiEu1eaWwDT2KwPexJkMy0HV+KA45wvNvl4BbEM5DsuldQEAOpqE4OSzc8mvovIXTNJy3ijnrOgqGebDm87VZ1yEvqKX9XTYc6IzKKOqzjefAeLQzBqTF0IQ16kiMvYrRvetuZdh+X9stkfOH2anRM7iFC5OSBOY=",
+      "compileMarshalSHA256": "e98e8fb7338494c71c9e70805bd2f225841ccf80f4476d88a6c4f9ea08f69559"
+    },
+    "e68594afb7438b76c0cf8aad36ef6cbe5bef3223": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_predicates.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af50b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_predicates.py",
+      "localSize": 2767,
+      "deltaBase64": "eNrtVdEKwyAMNMiRhyF73yj9krJf89PLoISo0baD0T7kHuTAGNtLLubgcPwLdDAuG+wM4FL/iHiuUCWSZIAs7JoOdO6hp9qk+NOMmItQqFC0qVmqtm3HlnNtKNQVD+GjOPf/kVREPKCCeTptUyE3hvd+u8+Qp3aOLKo8i2zCanmuW35S/H3NhM+WRWn3FeLaT0kMme7dvRDFH9/lVX4pdjSgcV4M7E+GEtS7fYwVhNQGcw==",
+      "compileMarshalSHA256": "86ed49e48acf711724c8882a67675a5b74bafef79a14d663f4aab7ad30927fe8"
+    },
+    "d6e5d14aa30a922595f3eeb3a9d0d15e33da8ced": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_prepared.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a69090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_prepared.py",
+      "localSize": 2283,
+      "deltaBase64": "eNrtVEEKwCAMs8jmSXzCnuLX+vRdpLOlim7KPJhDkVKKSUPQbJQAVPKGMZZKatnmDaVhWFeAuchldFzQiyvoGleto5x9JUYH41/dA5KpeDml10crIe4k+ojA7wHUkxlls3egoqQYql6HMa7CiUnuBmw7VgpnnRUoN8JpunjmibOSfTWbCIM+o5FE93yk7+c3ngwEtA==",
+      "compileMarshalSHA256": "c4387645bc14520299a5825560a2e45c19cc6644779a66b0b5deca3b4c387772"
+    },
+    "af4a49c09e35c53345942f8be899da2576828a83": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_products_z.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a91010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_products_z.py",
+      "localSize": 824,
+      "deltaBase64": "eNprYBgF+AEjKgEF7HACKo4swI5VCyZgJt4VDSgUmYYMecAO9zCCYMUWzoyEzWLGogOb0dgBAJN6Adk=",
+      "compileMarshalSHA256": "73ae704265f380ec89358a6a35fb60ad8984b29e760402c230b26c6fef2182a9"
+    },
+    "694e7e85ea2bcc1543852c88bfe166a0fb7181ff": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_shape.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aac050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_shape.py",
+      "localSize": 1693,
+      "deltaBase64": "eNprYBgFRANG6hvJjmQuI81sGVReRjOcH4+CBiyhBGciCGZSLWajf8jBvckEJ3CxMdIBBT6FG09XIA93MMJX4ADgQ/IYG5zNR7En4bYwk+tkZqSUxoya5kh2FAXJixlrAJHqAiYUP+G2gx2/QxpwJWs21KhlQ026FMckDAAA9/QCkQ==",
+      "compileMarshalSHA256": "ea9b9f387d138a2df8f3b5810aa3ef4d7fa9497283d8757049b759536edd4abc"
+    },
+    "3e26272dcf1613141f75563e208be7e70ac4e75f": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_shared_paths.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ac7050000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_shared_paths.py",
+      "localSize": 1801,
+      "deltaBase64": "eNprYBgFIwUwwglkAVQhMGBHorCoR+Ey41DLQJwACS4fBYMrETETyUJOJqMALXCgbHZsSpnR8yg/apgORMCC7bTHEsEIx/Bj0cZPVI5mxmMnOx4fM2KxjNRgAgAG7QFw",
+      "compileMarshalSHA256": "c2d92d227781456fe4cd984807cdff8ce809768f03c7351dda404c973843b5e6"
+    },
+    "cf918f5b2d95b90e87f755d63f50ebd58537079e": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_singularity.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a8c010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_singularity.py",
+      "localSize": 832,
+      "deltaBase64": "eNprYBihgBGJQiMYGJgJaGYeiSHGDvc5I5zFjBRodHMDmvXM6LGHGcskxCVOw7EDANqlAMA=",
+      "compileMarshalSHA256": "ed18da61384e63ca7252b6dc394588c0d2853979df84e268253499ccea6f6b3e"
+    },
+    "aff581062b1ceda188dbdc061f8137a4c9f3606c": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_snap.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a15030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_snap.py",
+      "localSize": 1028,
+      "deltaBase64": "eNprYBgFAwkYMdn8cAIqBGYzo6hixGMMSXZCADsBFYxILmBEcQ1+cygCzMMigtnhXkEQ5EYhM1Gxx4jLRlwAAMj3APs=",
+      "compileMarshalSHA256": "6365ff3747cf941479d2d302a0dc7c0658c59d632a48aa089afb96748fb79fdf"
+    },
+    "9867013cba4e44282abe879d6658adc9365f2cd8": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_split.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aeb260000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_split.py",
+      "localSize": 7569,
+      "deltaBase64": "eNrtWFFqwzAMbQiqoCLNAULIPVbKDlbGcvSxzJMlWU4TBmvSWh+2GrvGlp6eZI+HIkU2JxU3LO1PV+f/NNoVxnSosvP+IE1x0EKd8kPBiPC7MPLHRnh9SzLt66q3GfeKyXx8xCbJ+ip8IvGJ7ETlCvCOgUIH/+9PhvFEJwtLSrnqW3rzuxMdqWXliNRlrNzhGthH6OwTAqgc6ErNDWp6k8H03655Z6K6aHqKu8EcjcE9sD1M6PFbWIUeYjt3IpBjUF940suErkkfEYmtIEfUvNYVu+1AwBYGIKI1hkNnS4cPHm/TpDt1N8HEHgggpegCjs3BgZwySnpuPvc0PNoKeOAsGgoIgjU+tQWl1ckZJ527GpG72tfiYBRHp7QsTO5FlTZKsEitjTZXwmyjjjfVY8XajQkbnDy+h2Ky8m9sRdbYD/Td18n3poJL8oAZCl3locJk/NpxICRvLZvjpGxI9bnIodmHnd3lIAmYmJTQ3ovQPntIOIxP/tQB9gUoGiqcuxfwnuw55G3XlfJnzZNCQlSoS6NekMyNGxBQDXJW3SQnbkJ3tjMOh6Pqon60+knssdWU2NgnJ+n0y1bwYLgwGuctx4WDs8qwiB7rmTQW46V276Biqpd10KmDhtwJlsgXvtAbTA==",
+      "compileMarshalSHA256": "739173ad7e5dbca779ea0360bda566ca222d60087150749d6707341e81d5d8a1"
+    },
+    "d75cb3bd1b4680b481b8e173c91f2e028f8a5dcc": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_substring.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a78530000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_substring.py",
+      "localSize": 20219,
+      "deltaBase64": "eNrtm2FygyAQRgVi/VPLCRxv4s0y8ehtql0XAVMnbSaS92ayIYhRdj8WZMaxgvIxYnTF+pfJnnrHVTdv4zA0X59xr0eW7jYvIbAIdzUfynWTI95ezDl7lOLDAxZ/Pb3Ko6BFFBzF4Wpq5ZylbDPuk6ygapH4QwM2KN2a7HpgLtTx5B2VfXp4mHg6aKW+zYvEp/+gTaqoD1WElDR1aJyYyXZ47IFxGFYhCErfvr9I21bGwTJspiNejZCz1DZSIpx/i1dJ0K+zos5MmanOVImwq2aMQfivjOPD9N+KttyiYRcmmVoJtUmko19fG0k/Se5KrK3m+F5u7WeY7dRllEyUolRFrxKhTazWytbH2rXd9NXnd0uC9XBhHprFOO54sq7iddJPyW5vpDRlKkj7wEk/Sx1KJv/gGW+Z+WRjnYXsoaRi5d6WabuTLp3DWduFKfgUGpPosLlfhQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwPE6bPydc+tSt95Ncoum7lHa/z/UJ0qEKOQ==",
+      "compileMarshalSHA256": "336935a569e76bcace3e32af34a7f0a50ad2a07096a98f7568d3ebda9c3bd0ef"
+    },
+    "15f6e2f4dfeb5839115d9af225806014ec55a8cf": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_svg.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a12210000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_svg.py",
+      "localSize": 7008,
+      "deltaBase64": "eNrtV80OwyAIHjGLHJbsymVPshfz2Edf2jUOLf40WUxVvoMaMYLyCbjcFApFAUvUKwoXdQKvNvfKVNxP2C5bZtfGZPZSXBK4NvAdv7kvbSe+RNah+rNjFmLMSOyOjFVUVZ6KfgcWiRqHvtGI5s9EvtlBc1CKxj2aZbl6MMoKkfIAl5jCQIix2CWXKrrKEnvEdmzq4GDoJMduJj5HTUA1BXv4GF3s2ZQ49aj5OK0GK8KMoikoN6Vfu3+/PjNv4OHlITFi0RzV8UiuBPHXeAVGR38vFNhHoZk/W012Z8Oq/9KyhywDrw/8UvABIQsQtNiT9/0BJ4oTQw==",
+      "compileMarshalSHA256": "db031cb6498285c0533e7c441841d90359e107bfb1081fa339f4c0fc11ff62ce"
+    },
+    "7e0ed2bcc9c476514d2e3f0f75bae67031be21cf": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_transform.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66ae10a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_transform.py",
+      "localSize": 4345,
+      "deltaBase64": "eNrtVssOhDAILOHQYz/BX91PN/EgLvLSGi3u9mCbxqTMDAN8yn/lX7B+XgQF73wWv7aiB4GPh3qG0O1p2doGTRRHzQOaQ9c1Z3joruaFjDw/4TfAC1Q0X/w9dfgiDxTR/ro90CnIuLJKd2ORImU2RTgJzqBfbN0frlc3OSM8adh89vIHKieSwHbVgpEtid0pztC206QH5sjj5GfrG65pYBzB9hyj+YiUcGTjTNbpkrGOJ2NRrBLVE3wpp6uKFeMQ/WYA0Y4HDh9gjmMHZpAZbpoDoA==",
+      "compileMarshalSHA256": "f906ca9fd4a57fb102d3882381e2d6acd84b823e8d5e0c8fec0a4032fbf2fb48"
+    },
+    "1143b0b9af3e19a8fc8cd40363d844a976934d1d": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_union.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a55090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_union.py",
+      "localSize": 2905,
+      "deltaBase64": "eNrtVNEKgCAMdA3x0S8IvyT6tT49elG3ttAoUOseBoqTbXe7zfz4MuDBV230AtmBBTxCGKLXPmSF0lihhIVmFgNoyf5SJlvJJKRXBK5OhuXS7kY5rHkUiBgOyM2rWn13nNzGb5d0uQqV0YzRyVBg4zjmV9iR6UochcjOnFHTynq4GCy1MVab07ONmVRDRXYGQarkK90oz9de4E1toAQ7QBEGKQ==",
+      "compileMarshalSHA256": "6f47e10cfce3d42cd3b9cc5e6a4244905448079ad12a36530000dee72269149e"
+    },
+    "38eb0e1cb10fa7abc6c35c1839249b1c33a4b13a": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_validation.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66af7000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_validation.py",
+      "localSize": 665,
+      "deltaBase64": "eNprYBjBgBGPMDOqGPMw8jY/3EMIAuxndjSF7ITNYiYybNlx2YkLAAB2IQDF",
+      "compileMarshalSHA256": "5b225a7ef56df146893335ac76f8c6fb0cc3ed486582329b28484cc43b9f573d"
+    },
+    "5437aafb375ada1d5ecf36027a6a07f7ae445def": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_vectorized.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a680e0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_vectorized.py",
+      "localSize": 4713,
+      "deltaBase64": "eNrtV1EOwiAMhVncD4YLLJ6Eo+2Do5uYSKEU7PRDYfSj2cKAvfb1QYOadhbTss8ux1YNh75ev971tZ+ZCZVneZXMXGh0jXhqP+aS5yc+i+DVPbr+8UPufHQ6CYTPYfohoBPQw1JZnnK2CHyUXftWTwxbJLl0DBbodjAdiS1KSf+cO0n9VBMM7ZLZ6NGh2OIYqySAp/2Q/CfsKKyuq+WxaumSfURGc/fHW4X4Kf//HCH+PeYXX7foyKjNcSE4/VE0Z1/SNluvPYZv9d2gvOuExuQ9GQJGzJe8291/QnZC3muNmcALeNFGu0Y7rhlcmlEyCf4HwusOOA==",
+      "compileMarshalSHA256": "16a839020cc7680dcbfb216e985f1602d6b2627158617431bb0b79ce040cbae1"
+    },
+    "e28d4475b0d0e78f328ac839a3315659799406a7": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_voronoi_diagram.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66aee110000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_voronoi_diagram.py",
+      "localSize": 4912,
+      "deltaBase64": "eNrtV0sOgyAUFHzAhngC0ps0vRgLjt7EVH5CVT5CU2bxFn6ANzMOoqaBgWSgX1rsHLmu/HYCD7LD0WmXPePqki/+xVnztU7+0IW6pcHaD/vCVjOqgVxXKYra3ON/ShKBtE4WnJgxyrNnFkiAttd285kZQiGd+M7+OMsbYuxTSXYiGf7hupS0zzog5JihlRcgaHZINzcUXiALi73oubJoD+nYCVhVWotIyb69U0gSC7IjdcS+a+4WWYeEtpboB9JQ4BH/Sa7q/P+HBHGe4QaCW8QzmO8bks9IhVpU9o8mnD4+oxNRjbYhD89TWBeiqRFu7El3OzYmoTeR9wZAOwuN",
+      "compileMarshalSHA256": "ba46c1829a5335907e6a92a133ca9de4552759ac64549baa5062d5ce448eba77"
+    },
+    "5d6535abf98441413fe5219be22e627c8da9de85": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_wkb.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66aaa180000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_wkb.py",
+      "localSize": 5843,
+      "deltaBase64": "eNrtWMESgiAQVdHIsOGq04z9RYeaPszpEJ/eNNgCKoqAmek7iDMJy9t9uyyxYMOSwXwsEvIhgsd8KL/qG8FYa/c42mykmE4M7WSbljf4yOL5rHHRx4EY4uF1Ml3SMWVVZJh4A1k2DLIKrVAobaSj7lo7spiZVgrcXICBiqOiignpUQje6J3iRUs35cMOCPcEnTRn2QB1lincm04cJ29VyYlAa0s1JyqlvvkuafAPCKUzbERcHIJZLTHLQDBc75WLD9Zxspr4FUueTSV1PEzaOFm0T3WqY6nZAjRl0Il8JU3l3GrEPumI9/jGpvIgCIF83svGlDjrfojt16S6fyFY4DUs/BwXh/n9/bjpjn1ib/vSlEFoL50fAmpfLesieLD11VVqFHKISdJu4ZBxcx6aMmnPovCmflBCw5qp94gC9iBKTgWfkA8rZiSYPTgk8iv7XrwAaAYT2Q==",
+      "compileMarshalSHA256": "c9657dafe74af624d02ca69ffcf885226ba987e4cce6098247661631766206d4"
+    },
+    "9e8f5862c51fe8736a09c22fa180a259d8edc781": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/test_wkt.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a87060000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/test_wkt.py",
+      "localSize": 2214,
+      "deltaBase64": "eNrlVdsNgCAMlDapf7ABozgboxs1qQVjhILvflyaAOHuaEvofhlBd6yfAJecGO4LKNpoYtpZAuC5b4iCYY4gauo5FPloP9AzhqGoLEjRLPAGP2yqTxoUKVlhYKDqGXL+7PFJCqLxZnCKidKcumTlYrtrTL60Bv2B0aRRY+VXhxk/27bdkTO3U9bENyWOAy9Qdb2PG1gEOA==",
+      "compileMarshalSHA256": "8b46bd5b582a85fbf185f8c802e6534f92a1d7b805c5f89257b79710b01a8deb"
+    },
+    "917df020ba83fe648d0b7eaa934b8bff91a58a1e": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/threading_test.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a34040000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/threading_test.py",
+      "localSize": 1282,
+      "deltaBase64": "eNprYBgFFIEGUhSzDX7/8FEaBmxwgoloA9hH0xEQMA6gbjIAM4iQw5EJ+FGTAiI98JGbDhlR7WGGpxs+LHmMhEQIAAx5Azk=",
+      "compileMarshalSHA256": "b53a5d3ca3a1a57d757e77dcef2d9295af4f1bc750131fa498b1cad2cd1aa70f"
+    },
+    "47b3562fb8d0348c6302da120386bc68026546c8": {
+      "package": "shapely",
+      "entry": "shapely/tests/legacy/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a00000000800ba66a1d010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/legacy/__init__.py",
+      "localSize": 398,
+      "deltaBase64": "eNprYBhWoAGrKDMBXUxwYoABACwyAQg=",
+      "compileMarshalSHA256": "439ada0aa2c4cd848d26c31e4dc725a0c11c00ae0f9ec02cb3987fa861bf1e90"
+    },
+    "c677d654507b448e20659ba40b50e3f0a8e1960f": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_collection.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a08090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_collection.py",
+      "localSize": 2562,
+      "deltaBase64": "eNrtVdEOgCAI9MaDj32Cv+qnt1ZzoDAzLX2IB4dOiTvgiu63DqNj8aePdArzPszd5W/lGy+X1dlgLlbIpzUJSLrRgnoyRpJZh+SRBNYM0ezgNw05MioRIx8dfk7qbfsjpj2kahJvQ6bAMb0Jw8ngoXiFg9rRGFQPP4bKCsmNyeGTMaqrFEkBuQ/gG/nbFC3L2iOq0GNXz5KIjPIPrSlrjSNSk1VCZnG1EvUP4g7+kQSA",
+      "compileMarshalSHA256": "7ed180367bff802c76d4c6c09def560663ec1d2024df8ca917cb59be969c490e"
+    },
+    "13717c418da9bd2ae91c08113c955e86fee584a5": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_coords.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad20d0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_coords.py",
+      "localSize": 5083,
+      "deltaBase64": "eNrtVzsWhDAIdJaCkiN4FK/m0X3b6ILk4+pL9AlFCtEEh2EC8xAW1sko5xxTDg7gKk2+C1akodHbHLwu6EwG0eFsMXmBITLc3jjzuAOFKCsVKa7cgvBvF/4pV+anRd7InmgBfGPu4SXBXAyj/xWiaJ4m0a1KbLAbw8qy14AEjR4o2K0oJXrjDn2qoSyc3+UjnWqwfa8T4qS6OBvi13UNHTx5Qn1yI611E2gJp9mO/nQI3dTbdOmc8lGh0v4AKvCMU+oCA4E6kf+KfAG5iAWo",
+      "compileMarshalSHA256": "710ce519a8c581333d2e5558c6c281d5899330d233d2c72debbaebe896ffbb0d"
+    },
+    "0ca12b8394462882f0d410512f2662d93b63dabd": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_decimal.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a330b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_decimal.py",
+      "localSize": 2081,
+      "deltaBase64": "eNprYBgFo2AUYAPsxKphxKeCGU5AFYIJeVTNzKiyCDF5FIuQXcSIZC5CgB2Vi6qQHd1FjOjOYkY1CJvbhjZgxBqxjLi8DSb4cfmdeTikYDoENSOWwGJGT5zMxKQwezDZQCAGcCZgflyuoT5oIMIjzKR5fkAAAIt1Axs=",
+      "compileMarshalSHA256": "ffd1cb7d374620d2771595b40cbc319872572cda67ce724da0fbce46e120ac74"
+    },
+    "1670d222d59e89b155f2939692496bd7812f87f9": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_emptiness.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a9c090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_emptiness.py",
+      "localSize": 3759,
+      "deltaBase64": "eNrtlsENgCAMRa1N5NgNZBRXY3QPKpaIioChoD1AuND3PyWt6f6oLbRdhAR+yPwgrRDwdlCLVGVp0T1SaUErILHsUJYJ2QYCeGoge6NIxYlDVp4t2H/QI832dgyXbjXY/7eDTR5Y5cHWrrLIppoQxHu6CRy7HpEM+asAH7gWT983OLGZYvNYn5KNlm1kCvZZzBUKZ92QLtLiHZLvwmGTZc6IdXaHZ6o0CGo=",
+      "compileMarshalSHA256": "73e4c19eaacb9b32602d057d8bd614554752b63205aba4319bf63adaec9b9344"
+    },
+    "d8d17d42fcac1a7249c5ed97934f16b8667d825d": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_equality.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a1b200000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_equality.py",
+      "localSize": 4996,
+      "deltaBase64": "eNrtVlsOxCAIlJKNnx6hV/Xom002LFJ8VG3TNcyHSYlVGGAwOoPBYFganpYVgIX4sO8A54AWblBN6TfnNr/heym/OZyPHHJ5PEmAlzEj8x6Zc2JHGEvcz33ocJqnboY3dYRSMeg1gD2deTuLmVj+BlpZgpozyHQ3Nw2msK4tjyOMsxIUMgbl5el8iA6C9p9QUig4gjmkEXZ7u6yAi7RmCS2fF91HyeLtj8kmbNYDRUmtIzaXw+wWeyX3BzKJcepbIkonbszV42GWpGf6wlzaybaRp/6qsp6CN9HEBTU=",
+      "compileMarshalSHA256": "d5c38e141e85b3c09471ac9ddb4f5d57f53a766123f944ce470ca5872499a563"
+    },
+    "3a02310725cc245990c170d8117bcfefaf4a2d3a": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_format.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a41120000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_format.py",
+      "localSize": 3287,
+      "deltaBase64": "eNprYBgFgw4wU8WUBjDJCOEwDWb/yo1G+SgYgYBxNAjwBg0zntBipo872OF2MVPbVEa6pBMmODFApSzfaGKmXQ5hgqdMNjgBrerZRosZDMA2gtqNdnARRBGAUe400KeUYMZZgjPiKBzl4EUHmheIcyQAT7QC6Q==",
+      "compileMarshalSHA256": "272b5954836354acd7b8bdbb16c188c70835adb127894efaf5ebb93c5b7cd43e"
+    },
+    "f9afd33eb176fdbad39cc6fae2f253ccaa50043d": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_geometry_base.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a3c200000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_geometry_base.py",
+      "localSize": 8788,
+      "deltaBase64": "eNrtWd2ugyAMBmRw4aYPsKgvsuzRTvbcuzrJtkDB4uGnMuOxF5o4pLTf14/iHuywww7bu/H3rTGXrdiU+6IGgWk3tgZE/GdKyjz3iZ4bCqdNTriBuDl4pNG8GpePHdWDyM0eu9P5T1yCqpkgFekxm4ZuHmrah+G9H2ETs1ZRFm91HBnr/HA7L9jSuASZsmbsaK/bmDRagFd0rLvE1Ag/Nbwq5jwQnV5ari35tGBVxVjtttR9v5uCBSYCuKP6sagHJeJSS051TOn1C4zLoJmoC+4IohvRH/mclElbQC7QSMq31ppZaihAGOVXiHCflm2rQ1DT0ni1mzaXuwcGWLXcYXOHdQXp1uDtjdde8BrFy2fAqoS3I/c6ibD3TBaiRPu49Xa9ndBeornLpjM2HUbocxC2rAA4mOrl6RIiXE9XU+379mMu4lsnNEoadDQcABD7EBARQC7ql8X+hlywrzkCUS67aF3Om8HNyn/WDE8rzmuIA86PZV5IdwiciWC7urJd2axf4kY/dBExGDuhEkLLEOkf/C0NPH5czcgeb4HX2mPa3bQeuggsyAppMkxLhwnlRLpmDK5ikHBBbR/bEwW2LSgvKnQhpL2L3ClU5p/hF6S2n2V4Pv0Hd1DPt1Cz5P6vBKSIL2QUU+sJmShCYqIE5+6uXgWaYe9H+3HZFM5jroGDwac1rz/dTyAVDssr2S8S7Rb8",
+      "compileMarshalSHA256": "56bda80bacc2593b2ef5b41f2a18d1adae5464625db31a93ed9c8df9a2641a79"
+    },
+    "81be0fd10c0ddff00904970e58a67505529c9bed": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_hash.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66abd020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_hash.py",
+      "localSize": 813,
+      "deltaBase64": "eNprYBgFaIAfRDDiUcAMV8COIg7R00B7F7KTpJoZ4Tqo2+QHQzAzo3KZiFKFEtTscBYzgXBnhvsaQciS7mQA7WoC2A==",
+      "compileMarshalSHA256": "8173fabd2af2f4cbe368a4d4ac2e27adfbca1ae497ea79f824bd7e1da0aa2c3a"
+    },
+    "1632f5fe9cec5645935cde9adcbaa17b2a391ade": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_linestring.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a98190000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_linestring.py",
+      "localSize": 6835,
+      "deltaBase64": "eNrtWF9zwiAMF3NYz27ldfbO42P42O/lw46PvqtuAdLgKlDErXlIEduG/Pslqdms9PdJRP73AsfP8m41MrhtACfR/W1vsAyiZEN9Vla+hq4xrpcm1QKikA6uKq4WZEPFqFImZYiVg4fT5GAPB6R4WkYLdj1QdwnOiYa10mMptSuibDNVdkNT6vvkOlmlUkpFx1YqaAZyBPhEMTZFIgTLGqvh9tes5fA5xuKyDACk11ad/2xNEHOBF50e183CgTOwOERzxvAPmyQd1dqDV0jSiTp5LwLfR9ZmgITWAWVfqhXBS5LepV1sgMhSng51+vsysk9kF4oGkMUI3ZpY2SeAJjyibXElZ436Qbfa6JhJOlu+PLc5FV6Nu1G/WMu60uIuFU6tcNdXdvTvJR7tca8L90L/ISLmjxeKjl+E9r6tTsjAMfn+B1AMKfk1WrpH9PvAZoQbWg6v1BxMnEvbtsmEHS4YgN8h0r+TnqsxiC2ybxRATrMH1BzxPHjVCnxfTJqGu8hF/LNDZgFT47sUSjVsUHe4OuMxRfYk/gJWoRHd",
+      "compileMarshalSHA256": "5aa67bd2c416f594eb899529d9b19e746d484f24aa8dd547d3e66d60df089a6d"
+    },
+    "16b4ace36321ca65c7f5c86c0a29888fc19a1cb7": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_multi.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a3b010000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_multi.py",
+      "localSize": 693,
+      "deltaBase64": "eNprYBgFpAFGEkSHoc/RCHYQwYymEMJvYECm8BrKjMtk7AAAwEoBog==",
+      "compileMarshalSHA256": "867527387b7abdab01f07a5cd29bca93df3a1a7b7fcf3b625aeb9d2c89063af5"
+    },
+    "cd34c73f9ee97e8a8ec6778098ad775b7d09e6a1": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_multilinestring.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a610b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_multilinestring.py",
+      "localSize": 3047,
+      "deltaBase64": "eNrtVUEKgCAQdNjAU3nv0lP62j49BCFXU5M8lDmHYSEXbWZcWQ0M9IrNkrEESUpRpg2q9JEaH1QPr94VGt9ltHQIskImVOe+bpUpxlWHLf2BpHZGasDRqkhAvFyoLZxS8Lx19X5rksWx4f/kJAcORcKNmqRmvuzmexfwTNZiabY0yT/QoQx1D2VTQKaekg7xZSs/8mZNjJYLMWsedlRbtaYMKuEABzgGDw==",
+      "compileMarshalSHA256": "03d6becbdd6aa2d6f56cd8bd53f01166106953750729963c33a1b393f64b55c4"
+    },
+    "31da2f09286639e49498403194a39928ffadbdc7": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_multipoint.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad1090000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_multipoint.py",
+      "localSize": 3006,
+      "deltaBase64": "eNrtVdEKgCAMVCb0Euzdh/qUfs1PD6NW2qxBVgoeKCg07m47c6qhoXZov4HfOjrud0ohXSQAbEX9JmdobXtnBCDuIPKGL+cxbjYyxXS1IbjifsiGW1d1mjPAqcCoyMWTFxj6V7hXi4aJiJqQN9y8dH/rwkt+cv911p6Zz1T3B6LEfJvXftf2LLpDkZML8T+cMLIPvki0DRLPfJcu1YnmS6rJkPE2FUkJZl+6Bb8=",
+      "compileMarshalSHA256": "f9ffc3ef7e14a7ecb016835922528e146f732dbf0d4d5595f491ead4caed173f"
+    },
+    "2fe30ee1e6ed61d5c64fe63a7309c2329da18eea": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_multipolygon.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a70100000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_multipolygon.py",
+      "localSize": 2493,
+      "deltaBase64": "eNrtVNEOgCAIjN2cj35Cv+qn+1CpTNBqWm15D+IAhQPULxMTfwIxwdVU7jOsTEQgLrtIDi7qrHg9iSb5nGtlSnoIZFpUalOzsTwHN2fi3eeBVjegzgudGrTB+VvtDeDayH+8P5tMjPUDPRpCj7LLf7MjcS/6+04sDYuBkjJaVbD3WBr9x64jAEdEA0Q=",
+      "compileMarshalSHA256": "28e0a05c87ff2a1b602c846e81ef28d129db441b7e9b47a757357588951ea886"
+    },
+    "00eb5badda2f62b98b3c77e084ad88cbb289dddc": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_point.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a66130000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_point.py",
+      "localSize": 5208,
+      "deltaBase64": "eNrtV00PgyAMXX0SLhrPOyz7ox746caZ8FmcpmSBhR4a4YCU1/a9mke3xo12h/zucmzg3oHMd7XBd8vYkq4o/bYG6yh074YxIiaotBoEUVP1fYFCxBcRwrqGnI5i0x6k8MO/m72oDL50p0A9RocdMRuuDC7/Z2i4SZqCZ6k4ieb7KSfpvapzXrdilOGrBMTkSR4ZcNyCCzn/Oi0FsgUEOfFAUFXtGAI2NKwO/JtH4EXdqSpAnMpflQbEmkJin+wfd7fmqAF1y5jsBMKjN2evD8tvouFkquQBiGlpCJunwz0LrzAhSz4GefrDBTLa5erE1iq+uvoRSppLWMO8nhGF9AyEKKXCEZcHT81UiGuEQyhSJ+uUvUaZ0X8DsgYK9w==",
+      "compileMarshalSHA256": "8c95c66d7e1193005299a550a9eceb209299304db871d331dd7b21deb8d0d320"
+    },
+    "65643b57b58ad85234567b252203b13700f808b0": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/test_polygon.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a8c3d0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/test_polygon.py",
+      "localSize": 13482,
+      "deltaBase64": "eNrtWtuOmzAQZWDldInqPK0apdrwFXlp1d0f44HfbitVVSgdz4yHS4Ix1gY/DKyDzVyO58Y22Ta24Y2C/7lDkjyrawxgFz7dkurfRIX87sY5dzqHUAzGUQSQNxZciGKmYOvZupIC7sis4ww4lzBkiUNoKxdpHAOmhpa8h5Z0PWdUcTIqDEhwQAhdHNaQeqLKG8UbFCpUITAs8iXwTG0X4sSaSEfw1kW7RQNQpjrKcG4wzxIcMOqWKcKChYM8tkCAuL6f/TymRYZTF523Vmir7Zb/t17DvN9sWz4tILSTwsif8hA813FTjO5iueK9aHS3VCZLeXjZNkyCNCzn5csHL5uhD0ESSCck3cXg6YFeG4Lcl24OZMdup3rqvdGMWMo3U3aB3JdIarkHSKe5TE6xwXCqo6Al68jzgw++IenQ8w3JzU61Z6mZsqyztSFWd6VFyWVXgvdBztsFcVomiQdQ1OVpLYQ6yhXEA1ngUBnt7Bo0nfRAdBadrCcZVzR7W91bz7T6KZLsLo6VsqrKFRPfLtB55XQCuIuj8J1lonOCoK1kimH5UdWRG0AdJo4t7+3MaNXZeaYhda+fhwFX2qXT4sNwHLNSrBjpNwTrNW7j0SFXZbw4Axaa3YozEjMpsSp5XCpwzvYtm/FxynJ3f4hdTq4Z+wvWyOJFykOoQK9VJk6UrPD4iap6vpI9zj37IfoXWcnx13x8xaeQEvpH4Si7GO1zn/Cnitu+7ktJjn0vP5KLkW88cuJeW0vwNFr+xqpg456yMtUl6x8aYYBa5jqwczd+AK1CXxAdrzNWVwzI2qSQdWAyBmy5+XMlvxGsbVC5XMn3K/nR13sY7oal3cA25CCRcSGWu0gbFcOJoLTk/I+R+y2Yhhuuyf7GawQKVNF4t3oJYORxtoEaOB8z8/X+i8qgri5Eby+b8rYxdFDvTZTQkeakbzCGtDCN5Xo281+v5FVh+JVxCrFeFOMd0bTmfW710kzh419SScDfMTNrc7QvyNxLX7b2WdlFzDWZX9B5gbFf6klZUdf7MkpC5T6jHPC0Grxz5AkxYniDpOTuQ+sKuhV7VMAumkX/AlEiK5s=",
+      "compileMarshalSHA256": "843cb81912301da5e0b13ebeaca2919c5d450e3277c8f678968291c83187ae35"
+    },
+    "e3613278e3efbe773861fb2098a45251d0d5504f": {
+      "package": "shapely",
+      "entry": "shapely/tests/geometry/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a00000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/tests/geometry/__init__.py",
+      "localSize": 174,
+      "deltaBase64": "eNprYCAOMKISAwQAWTEAhA==",
+      "compileMarshalSHA256": "45e278334c164ba7f2d5ad07f0e150aebf658174bb60100a32a75789e84fd1c5"
+    },
+    "60766bbf75c66b279922b4b83cc95907f70f3d3d": {
+      "package": "shapely",
+      "entry": "shapely/geometry/base.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aa0890000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/base.py",
+      "localSize": 35715,
+      "deltaBase64": "eNrtXdtuozAQrYUWh9KGp27TVG2+otqqVZvPqlZ9KN+dh2pVKzvGMMZAgrHhnAdEwm3meG42BsoLAAAA4MxIbBtEx/88Q6DJBjSwYk2ORaCgRTKePQ4xi8Qqo/RtT+LEnWvyJ+NR2U3kXm0uz82mHLpZMLL7iXTSvJ5a7EISEABmADjGOJTuuhcankoFB4pOqUJ4lsrXFava+9cRCD9Cii7F8zmjqcMTy9q1y9G6D2XzgpNEqJmjaJAo6maQcI0/RSMcw+WrLVz+8sydtPmiJ2YKt3v5SmFHpB6uyWidTqDqJCL0EHPfNzOIqdVoCK6EefQp1lGEnGHm3bz6NobgLjtk4cSZXafurD2EVB6nqNWZDieX+hbLjyZmbSNjG4CEX/bOpxb0dZqYlQRnRUqEy9DESp0dKvSUgH7GFNgISN/Q8d1/jKEP6JDDsl1OtqgdTunYkJUTchOGgNLdodyEaASyT5c4HA02DdlFBIz31WlW6sUSDGNjWjayP6dBGjjDq1lm1Vmre9QCwymTFWgr+DQwUVRjW/wZdCGu98MOdAMAAAAAAAAAAABAH8z4uayk564/U7TK2obqjRJ9V0cNWa2YxYG2Ptc5DuS2CjA1pMtOd4zN3IE3YHRTFAu1PMXDuuKNKkRnDBvruVJwW2Hi5WeRM9q/LMc1qnxc2vi4hOaRObn1YY4gi7KM5LZO1xcBCtuaT4ros6WwaMvrm80tPnTWPI9dq2ib09CDm5T7EabITrn/Bs14o2fHqfAZkQZRNUHYptDC6FccSgRvDF0t+BM2CswvJXVPQR/x+WwWrLhpFJVvN1vO4OkaelhgM6tuLAAgpV9Yvf0egREAgGlhf7uvHvfParGrNI9e8rOVbaMwbr62sL9pm8jIyNyEmHvw5wEPtLhBVAF6GI3zvdJ6NiXn3jloBDobmwpO14hQAAD4KFuZXGbtxOlwdA32gPhs/JTJXcd5lc9U6O3oZxO5RZL2mY61DQUdpjaoT0S805qawqxmr65pTb91/pE6//rtv3pnteHVPEy9fFS/+2TTukhpZ26hnxtS+93RYm0Kri8uSN+M6FNr6g6vujP9SWtfzH8fzLH6fL9JadXbvqX9CgpmeWvQe3c33oyAT5yZXu9zunLhzsAjC1E7ve3DpvNCUaHT/lXXM/lJ7TMhW4rpgkIUZ3wJBfbxqdiaoW/4gDKeEQVOHsU4BkXb+9EPpok+nSGPVe9K1UPDwRykyWnD9+AM06wP/5AmOgBIs7L7piqOK1TeHNd9G7vF99MG86b1SXdEH0MMJmNeV6QK7Q2ylgJE1cw3wTBY4ZEjcNE31YaHvXvyW+t7JCrWUMdN9ceW2mfDRG3RXkp6MLFauH0yO4JKvwei5MpmZ/sg49+CzHxni6OndZJk62n1ua9qx+nfT/9PU5pZqKz6hxzuydK6PbGeSXdyVkynTjBnFFQp7Fv94HT8A8mTNOM=",
+      "compileMarshalSHA256": "1a416fbc8758507ecc5db257b962fdd5a252aac6c1cc273be2edd87235b02b49"
+    },
+    "da4b906ce2a6033042458a20541f872ae016f03f": {
+      "package": "shapely",
+      "entry": "shapely/geometry/collection.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a79060000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/collection.py",
+      "localSize": 1718,
+      "deltaBase64": "eNprYBgFo2AUjFTAjMJjJKieEZu2YQ3YCQYGcYHGjBbozHAZ+UHiNXlUtyEcyE6EfkZCyQLVuAYGGIEeJMxEhCwAHwQCEg==",
+      "compileMarshalSHA256": "765cc4aa7a916d5ef55fce4449ef9c4bcd083836d235a9af33f501ca7f1b779e"
+    },
+    "4ad26271f07b3a0a350ba430e0e0cbb70c6688c4": {
+      "package": "shapely",
+      "entry": "shapely/geometry/conftest.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66aea000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/conftest.py",
+      "localSize": 468,
+      "deltaBase64": "eNprYBjKgBFEMONRwD6w7mMm21OoRrCjEoz4DQAA/IgAqQ==",
+      "compileMarshalSHA256": "0f438bac9446a80de782c0fdf0cb1b2ecea5fc5aa9fb2d2350a095bf658ca5da"
+    },
+    "786f907731c8b1da7767f01f3b1441651b56fed7": {
+      "package": "shapely",
+      "entry": "shapely/geometry/geo.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a89100000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/geo.py",
+      "localSize": 3986,
+      "deltaBase64": "eNrtVkkOgCAMFObQI0/iazzdg0mVTZDFYOwcDEGZNkNtx20CQR3UG0FoLj0a3/0XhqUhLgL4q/gCaWi9fOBi8LTESwpZqTyBQLCiCQAPhqgHquBTNWwSXJho9sTp9y2UTg5ZM0UltwVf+YATCcWPYC5LG+Rm+n2CYFXXriv/FB3tuDuLg9r4/Za/TIReFlPb+86H5XOBwq0NaQfMxQNr",
+      "compileMarshalSHA256": "fa4fe0bc546f3e139da55722659e015dfc0ff993385cf0b2acbc1954188d5e09"
+    },
+    "ec88be049324c2e6e0dd4daaf5be47f519658e17": {
+      "package": "shapely",
+      "entry": "shapely/geometry/linestring.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a3e1b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/linestring.py",
+      "localSize": 6545,
+      "deltaBase64": "eNrtmFEKgCAMhtNKn6oLBN2ks3n0IEqXjYRVpPF/DxIa5v65uXQVeAUFCQBAEG/Uvikae2HYFymPyrp+fyLPYVVW5NGn3a/uTu0e1EvlE1+rdzQ3ovNbMwD5MDABIkt2H2YATYK98IxWdJXDZVsDfQAAAPyQfj/uXOLnTFCdREdpB7UBC71V6fymaUnHtv8G/iogvP5eNTzfncAw8WR8o2IJxqM5wSahYQ0RLSlQWkF7KqFd5JZa5I8FGv0FOw==",
+      "compileMarshalSHA256": "2950be92d6015291e80613498b2931246724137e6cee26b405e4d0425cb2597c"
+    },
+    "47371fc08210d09c28155e771edd059e22b09dbc": {
+      "package": "shapely",
+      "entry": "shapely/geometry/multilinestring.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a490b0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/multilinestring.py",
+      "localSize": 3270,
+      "deltaBase64": "eNprYBgF1AOMo0EwCkYBNTIJIzn6mUl0SgOGCNtofNAPsGHy2OgeCXzYrWeCyTPRxtvMSCl2gHw+CkbBYARMWPMnKZmLCjmYHU/9wgw3lQlL9mWjtNSwo24AEnApI1EhykhCdctIdLAywurgBpzVAFElIgD8uQM8",
+      "compileMarshalSHA256": "59ed40b0ca49c5c8a47bb2ee964241bee4a30df47f62770e44d08eeccbd04e6f"
+    },
+    "bfa38087b00535cf293344daa37dc3981330198c": {
+      "package": "shapely",
+      "entry": "shapely/geometry/multipoint.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ada0a0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/multipoint.py",
+      "localSize": 3067,
+      "deltaBase64": "eNprYBgFFADG0SAYBaOAnpmJkThtzCRY3IDKlRsNavI0y8EJJnp7iH2A7R8Fo2BQAjbSSjRE7oFnIVLzEtaSlwkpm4LZdnACzUomCvxJCWDCwmVCLVUQLmUkyjRmEiomRkKFG4rKBrRqS46M4g8AohMEdw==",
+      "compileMarshalSHA256": "be7f85a4efa7001093ef62c97ca129e4cd1287c18c7f5b41c33c958a92ca9c02"
+    },
+    "e2218f25a5876f63a910812877da9c29b5506d6a": {
+      "package": "shapely",
+      "entry": "shapely/geometry/multipolygon.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a810f0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/multipolygon.py",
+      "localSize": 3640,
+      "deltaBase64": "eNprYBgFRAD20SAYBaNgFIwwwEyUAuah5CVGWpnJTnyI8pNofgMyowFL1YSIBsZhmxbZCUUAI6XpmgURuiMhQEfBKKB6hYCqkjqZhxGPINgabnj5wAoXY4UrsibXXntKHc6CyrWFu4YZSxlDsP4A+0ie9HhhxChGGxhQ6xFmkos8AFqwBT0=",
+      "compileMarshalSHA256": "8a3a9fc62cac3e3e7bbfdbe9b341cab3c2cf1d683fd33fb68d1f8cc05959993c"
+    },
+    "3b274f12f28e52b8c52305b7515b5221e2992190": {
+      "package": "shapely",
+      "entry": "shapely/geometry/point.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af6100000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/point.py",
+      "localSize": 4270,
+      "deltaBase64": "eNprYBgFFAL20SAYBaNgFAwAYByuHuOHE6P1CS7QQIKhDeQFPvtgTvfyKEK89HY5hhtYB33YIRcXyC5nhjuf1n5gJ1RqsQ6NkBwFo2Do1Ba8w6bgH1DAiq+k56VlFxHNAHB5bQsnWOFiaJUgwnXsJHqzAXdFi+wGopql7DDzGrClNFKSGwDpSQYs",
+      "compileMarshalSHA256": "8a1e9e60ee191ad258bdb32cf6ec1372baa38c0e6eceabed9df800e18164df94"
+    },
+    "ed19d5810bc4f2ca6e24a3302ed170a859c7d1b7": {
+      "package": "shapely",
+      "entry": "shapely/geometry/polygon.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66ad32d0000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/polygon.py",
+      "localSize": 11491,
+      "deltaBase64": "eNrtWdtuhCAQ3cmUktRY3pt2/ZLGL2uWT2+ydUFwsICK6M550PUGZ4a5svrCYCwHVsWme2bhGQwGozbAqsEVzQHKEy84+azow/xAsoJN01Ou4JIYBoOrfX9bZU2kvXOyBIQm6ym07pSE80SNVLavgR4A3cQW8Sh6w0OxzYMgQgUp89f2XNoQNTQEKGYY68oHzs4QFeX3M1NI9KVK3UhGWYvcWeNAJvjLNEdRShdcCUfHRfrzn4WVmI7xEqhKgXLOyiaVkBUgWVV/5YIN9crkBTuHMCNLc/lp7lE02tTUcyZLZjAYjKfJ3hjo34vu2hAVgHSnRqIaQ/v6o0p4yU9q2+b+ghU9kOn6PJ05JYli/591b0WaRsjHt+ajCKtcmcEgdx8VKCNYhOlRfaLdH27M0z7c4yQZ/X6eC/O69u/U10AD2YW17mKht4SaXADBoYXBSEjRJSvIDLybw7rkC+S6+Lh9G85vdFTcjSEN24d4+fR1JIPczHThqI63uYTGfLz9R/sfVOteNmb9vs2D++FjMvZ1lrHMNE6Ycj9b638b/ZZu3zyKRA2hOx12vLQOSzkqFqOh+39dNWyQctGmB8ZXtN3jfe1ppQ2FySVe9AsqJg+Z",
+      "compileMarshalSHA256": "508706d2e058d14a522544eed5dfdbe9df57ab4c40f90170d3669147d3065af1"
+    },
+    "a0e4b2c8310d6557261f9c3a111b68e26f20e124": {
+      "package": "shapely",
+      "entry": "shapely/geometry/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a17030000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/geometry/__init__.py",
+      "localSize": 921,
+      "deltaBase64": "eNprYBgFAwMY4QQziGAHEfxwLjOqEnZUxYxE2kGkYnYCriTSGH4SPE7Y2ZSYwk6EXmac8TEoAABprQDh",
+      "compileMarshalSHA256": "da421c3319708bd6f4364552360c2ad9dda749cd2546db27dc3bb2a9f70d9ea6"
+    },
+    "37feaaa298cef2e062473c4c23fd08385e90ba49": {
+      "package": "shapely",
+      "entry": "shapely/algorithms/cga.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a89020000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/algorithms/cga.py",
+      "localSize": 1018,
+      "deltaBase64": "eNprYBgFgxk0EKmOD1Ut+0C6mXlwBiXUWUzw8AETrNQxnJE05bIkO4IdPUUwoxLsWAi8xgIA1e0Ckw==",
+      "compileMarshalSHA256": "84932de74599aa61a58187f7f1548755d82bc86f039ed683f7f24528bd737430"
+    },
+    "34626495b36a37f7fca12f5aadfee0a6358d876c": {
+      "package": "shapely",
+      "entry": "shapely/algorithms/polylabel.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66adf120000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/algorithms/polylabel.py",
+      "localSize": 4035,
+      "deltaBase64": "eNrtlsEOgCAMQ9UeOBk/Yb/Kp3sb4GAGEk2UvhMH6aAzK3Eh5H+s47uO2n75jye4XkvGDfNrBV2xzqR1JiGmJdRZDxivQ2XgpI481RZUxh7cH0TK7+60CSGEfOytXOTRZuY5ynxAmVQpUXqjK9pEtQq5fFvjhUfNnvujZ0azZnA6ABWUrtOftqUGvQ==",
+      "compileMarshalSHA256": "44c503496603ab1895d356df80ffbc4905acf2ac0c774d74fdd7f52bc2eb8706"
+    },
+    "de3423f6c6325f946339f69b697a10a30b20a646": {
+      "package": "shapely",
+      "entry": "shapely/algorithms/_oriented_envelope.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66af1070000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/algorithms/_oriented_envelope.py",
+      "localSize": 1768,
+      "deltaBase64": "eNprYBgFo4CugJGgJOMQ9Rn70An4BoRQAxalDcSZ2DAU4o4Rw6mMQyelMRPONlwgQhZEsGD1OgtVPcqFlNCZ0cIViQ+m2PBECBdF0UlyDAIAl58E9A==",
+      "compileMarshalSHA256": "6d54e144877633cb954f416864dbe96b80ca5df3a85148130867a0e8f3f94a90"
+    },
+    "1dfbc773c61014bccb102640039bdecf8485af58": {
+      "package": "shapely",
+      "entry": "shapely/algorithms/__init__.py",
+      "format": "CPython-3.9-marshal-xor",
+      "header": "610d0d0a000000007f0ba66a00000000",
+      "coFilename": "C:\\Users\\dlstj\\AppData\\Local\\Temp\\pip-target-rfsbqpji\\lib\\python\\shapely/algorithms/__init__.py",
+      "localSize": 170,
+      "deltaBase64": "eNprYCAOMKISAwAAVyEAhA==",
+      "compileMarshalSHA256": "2a1641595e5c0dcab035e5d3381adf6d5d4ca529b4718c4536723b77ccd2f439"
+    },
+    "afe150252c5b22557b945967dadb1c79e4c154f6": {
+      "package": "esbuild",
+      "entry": "package/esbuild.exe",
+      "format": "original"
+    }
+  },
+  "restore": "For CPython-3.9-marshal-xor, use a fresh CPython subprocess with -B -S and PYTHONHASHSEED=0, import only sys and marshal, compile entry bytes with recorded coFilename, exec, dont_inherit=True, optimize=0 and marshal.dumps. Check compileMarshalSHA256. Pad/truncate to localSize and XOR with zlib-decompressed delta. Prepend header (hex) and verify the original Git blob ID."
+}
