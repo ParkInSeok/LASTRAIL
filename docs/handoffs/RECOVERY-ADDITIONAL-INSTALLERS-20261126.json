@@ -1,0 +1,42 @@
+[
+  {
+    "local": "Tools/Installers/Cubism/Live2D_Cubism_Setup_5.3.04.exe",
+    "version": "5.3.04",
+    "url": "https://cubism.live2d.com/editor/bin/Live2D_Cubism_Setup_5.3.04.exe",
+    "archiveEntry": null,
+    "sha256": "457421e617cc836eced24236ca3564935580b2d3b26bdeab9a304a42b83308bc",
+    "bytes": 247132880
+  },
+  {
+    "local": "Tools/cloudflared/2026.9.3/cloudflared.exe",
+    "version": "2026.9.3",
+    "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.3/cloudflared-windows-amd64.exe",
+    "archiveEntry": null,
+    "sha256": "f096265ec2fcbe9bb6e2d64268db167ced3fcbb83d894bdb9e2fcdb26f2ea7e2",
+    "bytes": 55366080
+  },
+  {
+    "local": "Tools/uv-runtime/bin/uv.exe",
+    "version": "0.12.19",
+    "url": "https://files.pythonhosted.org/packages/c2/5d/8e0b84503b77ead843ef57e4f9305eb32a95cac6806c0e0d54b9404a5f7b/uv-0.12.19-py3-none-win_amd64.whl",
+    "archiveEntry": "uv-0.12.19.data/scripts/uv.exe",
+    "sha256": "f94eddb81f3addca6ef8f2361a70c3edde31adcbd1000a55fc6674306ae0b1e7",
+    "bytes": 42417456
+  },
+  {
+    "local": "Tools/uv-runtime/bin/uvw.exe",
+    "version": "0.12.19",
+    "url": "https://files.pythonhosted.org/packages/c2/5d/8e0b84503b77ead843ef57e4f9305eb32a95cac6806c0e0d54b9404a5f7b/uv-0.12.19-py3-none-win_amd64.whl",
+    "archiveEntry": "uv-0.12.19.data/scripts/uvw.exe",
+    "sha256": "ff6a3488a4d71b035f7368cfc65273fbdaafffa300717c7886b621cfea4cf140",
+    "bytes": 348976
+  },
+  {
+    "local": "Tools/uv-runtime/bin/uvx.exe",
+    "version": "0.12.19",
+    "url": "https://files.pythonhosted.org/packages/c2/5d/8e0b84503b77ead843ef57e4f9305eb32a95cac6806c0e0d54b9404a5f7b/uv-0.12.19-py3-none-win_amd64.whl",
+    "archiveEntry": "uv-0.12.19.data/scripts/uvx.exe",
+    "sha256": "177e4eb197b040c356a96970e97f12e1da39f727e5e3a4fc3086baa20fc3a052",
+    "bytes": 348976
+  }
+]
