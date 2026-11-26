@@ -1,0 +1,268 @@
+{
+  "verified": [
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/.gitattributes",
+      "bytes": 1740,
+      "digest": "a8d4cbb214bda0ce6b6e4453c02ca1a826b9f08a",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/.gitattributes"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/config.json",
+      "bytes": 1968,
+      "digest": "6a0b5c09a654614302947fd1d7041f7ed0764d8c",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/README.md",
+      "bytes": 5496,
+      "digest": "a3115cec283fbdc2d500aa50fdffac3c87e6689a",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/README.md"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/added_tokens.json",
+      "bytes": 2217787,
+      "digest": "584075018edeacd6dcc031b3e2cbbf90836eba41",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/added_tokens.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/chat_template.jinja",
+      "bytes": 4168,
+      "digest": "01be9b307daa2d425f7c168c9fb145a286e0afb4",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/chat_template.jinja"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/config.json",
+      "bytes": 1385,
+      "digest": "1325891e0f2cb06ea22906f9c89047d09d0dac1f",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/merges.txt",
+      "bytes": 1671853,
+      "digest": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/merges.txt"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/model.safetensors",
+      "bytes": 3708521528,
+      "digest": "f161689da73e5ecefa28ff780d51c2d92a00f056d021d7933c779ed5c6cd7db8",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/model.safetensors"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/special_tokens_map.json",
+      "bytes": 1824199,
+      "digest": "aa26266349a0f38be608e07138c9047356309551",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/special_tokens_map.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/tokenizer.json",
+      "bytes": 24321939,
+      "digest": "35af56c3f5cb3ea2cc578aa28a8937770981d504f183ac5c8c38baf4bbd4af4d",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/tokenizer.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/tokenizer_config.json",
+      "bytes": 14072925,
+      "digest": "6cd70cdd89425971794f5235562edcc608b0629a6c4686ae51a8b8c8b8ba5e95",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/tokenizer_config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-5Hz-lm-1.7B/vocab.json",
+      "bytes": 2776833,
+      "digest": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-5Hz-lm-1.7B/vocab.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-v15-turbo/config.json",
+      "bytes": 1968,
+      "digest": "6a0b5c09a654614302947fd1d7041f7ed0764d8c",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-v15-turbo/config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-v15-turbo/model.safetensors",
+      "bytes": 4787825604,
+      "digest": "3f6e0797fad420a39bd33979eb6e840e30989e34a3794e843d23b60ec6e422d7",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-v15-turbo/model.safetensors"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/acestep-v15-turbo/silence_latent.pt",
+      "bytes": 3841215,
+      "digest": "a778e9dd942f5e8b2c09c55370782d318834432b03dabbcdf70e6ed49ad6358b",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/acestep-v15-turbo/silence_latent.pt"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/added_tokens.json",
+      "bytes": 707,
+      "digest": "b54f9135e44c1e81047e8d05cb027af8bc039eed",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/added_tokens.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/chat_template.jinja",
+      "bytes": 4116,
+      "digest": "699ff8df401fe4788525e9c1f9b86a99eadd6230",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/chat_template.jinja"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/config.json",
+      "bytes": 1359,
+      "digest": "21bd712c76114dc22587c6eeb84ab64186c9d245",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/merges.txt",
+      "bytes": 1671853,
+      "digest": "31349551d90c7606f325fe0f11bbb8bd5fa0d7c7",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/merges.txt"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/model.safetensors",
+      "bytes": 1191586416,
+      "digest": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/model.safetensors"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/special_tokens_map.json",
+      "bytes": 613,
+      "digest": "ac23c0aaa2434523c494330aeb79c58395378103",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/special_tokens_map.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/tokenizer.json",
+      "bytes": 11423705,
+      "digest": "def76fb086971c7867b829c23a26261e38d9d74e02139253b38aeb9df8b4b50a",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/tokenizer.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/tokenizer_config.json",
+      "bytes": 5404,
+      "digest": "ddaf69808214a44fdd26d3785b66c1367c78277a",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/tokenizer_config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/Qwen3-Embedding-0.6B/vocab.json",
+      "bytes": 2776833,
+      "digest": "4783fe10ac3adce15ac8f358ef5462739852c569",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/Qwen3-Embedding-0.6B/vocab.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/vae/config.json",
+      "bytes": 425,
+      "digest": "f49eb7b261dde15ed29c0fa1e790251dcecbd280",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/vae/config.json"
+    },
+    {
+      "local": "Tools/ACE-Step-1.5/checkpoints/vae/diffusion_pytorch_model.safetensors",
+      "bytes": 337431388,
+      "digest": "da17edb604c40deaf09e9b24974e590d1ca83a374070e5d0884cfa4bed9a99b0",
+      "revision": "19671f406d603126926c1b7e2adc169acbcade22",
+      "url": "https://huggingface.co/ACE-Step/Ace-Step1.5/resolve/19671f406d603126926c1b7e2adc169acbcade22/vae/diffusion_pytorch_model.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/video-downloads/Comfy-Org/split_files/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors",
+      "bytes": 5157348688,
+      "digest": "a498f0485dc9536735258018417c3fd7758dc3bccc0a645feaa472b34955557a",
+      "revision": "ed4b8585dc4d3204397291c35e100884686178d6",
+      "url": "https://huggingface.co/Comfy-Org/mochi_preview_repackaged/resolve/ed4b8585dc4d3204397291c35e100884686178d6/split_files/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/video-downloads/Lightricks/ltxv-2b-0.9.8-distilled-fp8.safetensors",
+      "bytes": 4461695684,
+      "digest": "d6d8fa8ed3a98346787c2503ac80fb5d7cebcf80e356b79a2ba361fbadf97e15",
+      "revision": "8984fa25007f376c1a299016d0957a37a2f797bb",
+      "url": "https://huggingface.co/Lightricks/LTX-Video/resolve/8984fa25007f376c1a299016d0957a37a2f797bb/ltxv-2b-0.9.8-distilled-fp8.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/checkpoints/v1-5-pruned-emaonly.safetensors",
+      "bytes": 4265146304,
+      "digest": "6ce0161689b3853acaa03779ec93eafe75a02f4ced659bee03f50797806fa2fa",
+      "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "url": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/resolve/451f4fe16113bff5a5d2269ed5ad43b0592e9a14/v1-5-pruned-emaonly.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/checkpoints/ltxv-2b-0.9.8-distilled-fp8.safetensors",
+      "bytes": 4461695684,
+      "digest": "d6d8fa8ed3a98346787c2503ac80fb5d7cebcf80e356b79a2ba361fbadf97e15",
+      "revision": "8984fa25007f376c1a299016d0957a37a2f797bb",
+      "url": "https://huggingface.co/Lightricks/LTX-Video/resolve/8984fa25007f376c1a299016d0957a37a2f797bb/ltxv-2b-0.9.8-distilled-fp8.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/clip_vision/CLIP-ViT-H-14-laion2B-s32B-b79K.safetensors",
+      "bytes": 2528373448,
+      "digest": "6ca9667da1ca9e0b0f75e46bb030f7e011f44f86cbfb8d5a36590fcd7507b030",
+      "revision": "018e402774aeeddd60609b4ecdb7e298259dc729",
+      "url": "https://huggingface.co/h94/IP-Adapter/resolve/018e402774aeeddd60609b4ecdb7e298259dc729/models/image_encoder/model.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors",
+      "bytes": 9999658848,
+      "digest": "456f901338bd9eadbded3828b819109a9b68e8a525ca5cf8d0049a69fcfeca1e",
+      "revision": "5df3a4a3ed0628002308022198249dbbbd045d09",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/5df3a4a3ed0628002308022198249dbbbd045d09/split_files/diffusion_models/wan2.2_ti2v_5B_fp16.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/ipadapter/ip-adapter-plus_sd15.safetensors",
+      "bytes": 98183288,
+      "digest": "a1c250be40455cc61a43da1201ec3f1edaea71214865fb47f57927e06cbe4996",
+      "revision": "018e402774aeeddd60609b4ecdb7e298259dc729",
+      "url": "https://huggingface.co/h94/IP-Adapter/resolve/018e402774aeeddd60609b4ecdb7e298259dc729/models/ip-adapter-plus_sd15.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors",
+      "bytes": 5157348688,
+      "digest": "a498f0485dc9536735258018417c3fd7758dc3bccc0a645feaa472b34955557a",
+      "revision": "ed4b8585dc4d3204397291c35e100884686178d6",
+      "url": "https://huggingface.co/Comfy-Org/mochi_preview_repackaged/resolve/ed4b8585dc4d3204397291c35e100884686178d6/split_files/text_encoders/t5xxl_fp8_e4m3fn_scaled.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "bytes": 6735906897,
+      "digest": "c3355d30191f1f066b26d93fba017ae9809dce6c627dda5f6a66eaa651204f68",
+      "revision": "5df3a4a3ed0628002308022198249dbbbd045d09",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/5df3a4a3ed0628002308022198249dbbbd045d09/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+    },
+    {
+      "local": "Tools/FrameStudio/runtime/ComfyUI/models/vae/wan2.2_vae.safetensors",
+      "bytes": 1409400960,
+      "digest": "e40321bd36b9709991dae2530eb4ac303dd168276980d3e9bc4b6e2b75fed156",
+      "revision": "5df3a4a3ed0628002308022198249dbbbd045d09",
+      "url": "https://huggingface.co/Comfy-Org/Wan_2.2_ComfyUI_Repackaged/resolve/5df3a4a3ed0628002308022198249dbbbd045d09/split_files/vae/wan2.2_vae.safetensors"
+    },
+    {
+      "local": "Tools/BlenderPortable/blender-4.5.9-windows-x64.zip",
+      "bytes": 399051129,
+      "digest": "41da973b9bf95bb312cbeff4d1982feb13259b43c821686b9bafea4dfe5477cf",
+      "revision": "4.5.9",
+      "url": "https://download.blender.org/release/Blender4.5/blender-4.5.9-windows-x64.zip"
+    }
+  ],
+  "unresolved": [
+    "Tools\\ACE-Step-1.5\\checkpoints\\acestep-v15-turbo\\configuration_acestep_v15.py",
+    "Tools\\ACE-Step-1.5\\checkpoints\\acestep-v15-turbo\\modeling_acestep_v15_turbo.py",
+    "Tools/FrameStudio/runtime/ComfyUI/models/controlnet/control_v11p_sd15_lineart.fp16.safetensors"
+  ]
+}
